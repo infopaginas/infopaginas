@@ -15,6 +15,11 @@ sonata_admin:
     title_logo: oxagile.png
     templates:
         layout: ApplicationSonataAdminBundle::layout.html.twig
+        list:   ApplicationSonataAdminBundle:CRUD:list.html.twig
+        edit:   ApplicationSonataAdminBundle:CRUD:edit.html.twig
+        show:   ApplicationSonataAdminBundle:CRUD:show.html.twig
+        base_list_field:   ApplicationSonataAdminBundle:CRUD:base_list_field.html.twig
+        batch_confirmation:   ApplicationSonataAdminBundle:CRUD:batch_confirmation.html.twig
     security:
         handler: sonata.admin.security.handler.role
     dashboard:

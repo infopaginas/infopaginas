@@ -1,2 +1,12 @@
 services:
+    gedmo.listener.softdeleteable:
+        class: Gedmo\SoftDeleteable\SoftDeleteableListener
+        tags:
+            - {name: doctrine.event_listener, event: onFlush, priority: 0}
+            - {name: doctrine.event_listener, event: loadClassMetadata}
 
+    application.listener.user_action:
+        class: Application\Sonata\AdminBundle\EventListener\UserActionListener
+        arguments: [@security.token_storage]
+        tags:
+            - {name: doctrine.event_listener, event: onFlush, priority: 1}
