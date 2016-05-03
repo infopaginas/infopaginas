@@ -5,8 +5,8 @@ services:
             - {name: doctrine.event_listener, event: onFlush, priority: 0}
             - {name: doctrine.event_listener, event: loadClassMetadata}
 
-    application.listener.user_action:
-        class: Application\Sonata\AdminBundle\EventListener\UserActionListener
+    application.listener.user_crud_action:
+        class: Application\Sonata\AdminBundle\EventListener\UserCRUDActionListener
         arguments: [@security.token_storage]
         tags:
             - {name: doctrine.event_listener, event: onFlush, priority: 1}

@@ -4,8 +4,16 @@ namespace Application\Sonata\AdminBundle\Model;
 
 use Application\Sonata\UserBundle\Entity\User;
 
+/**
+ * Should be implemented to all entities for extended CRUD functional
+ * 
+ * Interface DefaultEntityInterface
+ * @package Application\Sonata\AdminBundle\Model
+ */
 interface DefaultEntityInterface extends DeleteableEntityInterface
 {
+	const IS_ACTIVE_PROPERTY_NAME = 'isActive';
+	
 	/**
 	 * Sets createdAt.
 	 *

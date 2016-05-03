@@ -5,6 +5,12 @@ namespace Application\Sonata\AdminBundle\Util\Traits;
 use Application\Sonata\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Set user who created or updated an object
+ * 
+ * Class UserCUableEntityTrait
+ * @package Application\Sonata\AdminBundle\Util\Traits
+ */
 trait UserCUableEntityTrait
 {
 	/**

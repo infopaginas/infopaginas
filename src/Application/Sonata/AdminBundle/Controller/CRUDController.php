@@ -8,14 +8,20 @@ use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Sonata\DoctrineORMAdminBundle\Model\ModelManager;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class CRUDController
+ * @package Application\Sonata\AdminBundle\Controller
+ */
 class CRUDController extends BaseSonataCRUDController
 {
 	/**
@@ -24,7 +30,8 @@ class CRUDController extends BaseSonataCRUDController
 	public function deletePhysicalAction(Request $request)
 	{
 		$this->disableDeleteableListener($this->admin->getClass());
-		$object = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->admin->getClass())->find($request->get('id'));
+		$object = $this->get('doctrine.orm.default_entity_manager')
+			->getRepository($this->admin->getClass())->find($request->get('id'));
 
 		if ($this->getRestMethod() == 'DELETE') {
 			if (!is_null($object)) {
@@ -59,9 +66,7 @@ class CRUDController extends BaseSonataCRUDController
 		if (!is_null($id = $request->get('id'))) {
 			try {
 				$em = $this->get('doctrine.orm.default_entity_manager');
-				$em->persist(
-					$this->cloneEntity($this->admin->getSubject())
-				);
+				$em->persist($this->cloneEntity($this->admin->getSubject()));
 				$em->flush();
 
 				$this->addFlash('sonata_flash_success', $this->get('translator')->trans('flash_batch_copy_success'));
@@ -170,14 +175,9 @@ class CRUDController extends BaseSonataCRUDController
 
 	protected function deletePhysicalEntity($entity)
 	{
-		$em = $this->get('doctrine.orm.default_entity_manager');
-
-		$em->createQueryBuilder()
-			->delete(get_class($entity), 'e')
-			->where('e.id=:id')
-			->setParameter(':id', $entity->getId())
-			->getQuery()
-			->execute();
+		$this->get('doctrine.orm.default_entity_manager')
+			->getRepository('ApplicationSonataUserBundle:User')
+			->deletePhysicalEntity($entity);
 	}
 
 	protected function restoreEntity($id)
@@ -188,14 +188,8 @@ class CRUDController extends BaseSonataCRUDController
 		$softDeleteableFilter = $em->getFilters()->getFilter('softdeleteable');
 		$softDeleteableFilter->disableForEntity($this->admin->getClass());
 
-		$em->createQueryBuilder()
-			->update($this->admin->getClass(), 'e')
-			->set('e.deletedUser', 'NULL')
-			->set('e.deletedAt', 'NULL')
-			->where('e.id=:id')
-			->setParameter(':id', $id)
-			->getQuery()
-			->execute();
+		$em->getRepository('ApplicationSonataUserBundle:User')
+			->restoreEntity($this->admin->getClass(), $id);
 	}
 
 	protected function saveFilterResponse()
@@ -226,10 +220,10 @@ class CRUDController extends BaseSonataCRUDController
 		$metadata = $em->getClassMetadata(get_class($entity));
 		$existDependentField = [];
 		foreach ($metadata->getAssociationMappings() as $associationMapping) {
-			if($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY){
+			if ($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY) {
 				$methodGet = 'get'.ucfirst($associationMapping['fieldName']);
 				$childs = $entity->$methodGet();
-				if(count($childs)){
+				if (count($childs)) {
 					$existDependentField[]= $this->get('translator')->trans('form.label_'.$associationMapping['fieldName'], []);
 				}
 			}
@@ -265,7 +259,7 @@ class CRUDController extends BaseSonataCRUDController
 			// check the csrf token
 			$this->validateCsrfToken('sonata.delete');
             $existDependentFields = $this->checkExistDependentEntity($object);
-            if(!count($existDependentFields)){
+            if (!count($existDependentFields)) {
                 try {
                     $this->admin->delete($object);
                     if ($this->isXmlHttpRequest()) {

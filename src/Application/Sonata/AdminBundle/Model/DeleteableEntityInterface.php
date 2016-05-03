@@ -4,8 +4,16 @@ namespace Application\Sonata\AdminBundle\Model;
 
 use Application\Sonata\UserBundle\Entity\User;
 
+/**
+ * Used for soft delete
+ *
+ * Interface DeleteableEntityInterface
+ * @package Application\Sonata\AdminBundle\Model
+ */
 interface DeleteableEntityInterface
 {
+	const DELETED_USER_PROPERTY_NAME = 'deletedUser';
+
 	/**
 	 * Sets deletedAt.
 	 *

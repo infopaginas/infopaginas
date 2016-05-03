@@ -25,7 +25,11 @@ class UserAdmin extends ApplicationAdmin
         $this->formOptions['data_class'] = $this->getClass();
 
         $options = $this->formOptions;
-        $options['validation_groups'] = (!$this->getSubject() || is_null($this->getSubject()->getId())) ? 'Registration' : 'Profile';
+        if (!$this->getSubject() || is_null($this->getSubject()->getId())) {
+            $options['validation_groups'] = 'Registration';
+        } else {
+            $options['validation_groups'] = 'Profile';
+        }
 
         $formBuilder = $this->getFormContractor()->getFormBuilder($this->getUniqid(), $options);
 
@@ -52,6 +56,8 @@ class UserAdmin extends ApplicationAdmin
     {
         $listMapper
             ->addIdentifier('username')
+            ->addIdentifier('firstName')
+            ->addIdentifier('lastName')
             ->add('email')
             ->add('groups')
             ->add('enabled', null, array('editable' => true))
@@ -61,8 +67,9 @@ class UserAdmin extends ApplicationAdmin
 
         if ($this->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
             $listMapper
-                ->add('impersonating', 'string', array('template' => 'SonataUserBundle:Admin:Field/impersonating.html.twig'))
-            ;
+                ->add('impersonating', 'string', [
+                    'template' => 'SonataUserBundle:Admin:Field/impersonating.html.twig'
+                ]);
         }
 
         $this->addGridActions($listMapper);
@@ -90,34 +97,34 @@ class UserAdmin extends ApplicationAdmin
     {
         $showMapper
             ->with('General')
-            ->add('username')
-            ->add('email')
+                ->add('username')
+                ->add('email')
             ->end()
             ->with('Groups')
-            ->add('groups')
+                ->add('groups')
             ->end()
             ->with('Profile')
-            ->add('dateOfBirth')
-            ->add('firstname')
-            ->add('lastname')
-            ->add('website')
-            ->add('biography')
-            ->add('gender')
-            ->add('locale')
-            ->add('timezone')
-            ->add('phone')
+                ->add('dateOfBirth')
+                ->add('firstname')
+                ->add('lastname')
+                ->add('website')
+                ->add('biography')
+                ->add('gender')
+                ->add('locale')
+                ->add('timezone')
+                ->add('phone')
             ->end()
             ->with('Social')
-            ->add('facebookUid')
-            ->add('facebookName')
-            ->add('twitterUid')
-            ->add('twitterName')
-            ->add('gplusUid')
-            ->add('gplusName')
+                ->add('facebookUid')
+                ->add('facebookName')
+                ->add('twitterUid')
+                ->add('twitterName')
+                ->add('gplusUid')
+                ->add('gplusName')
             ->end()
             ->with('Security')
-            ->add('token')
-            ->add('twoStepVerificationCode')
+                ->add('token')
+                ->add('twoStepVerificationCode')
             ->end()
         ;
     }
@@ -209,15 +216,6 @@ class UserAdmin extends ApplicationAdmin
             ->end()
             ->end()
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function preUpdate($user)
-    {
-//        $this->getUserManager()->updateCanonicalFields($user);
-//        $this->getUserManager()->updatePassword($user);
     }
 
     /**

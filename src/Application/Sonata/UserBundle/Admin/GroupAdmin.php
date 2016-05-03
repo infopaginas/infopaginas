@@ -57,21 +57,15 @@ class GroupAdmin extends ApplicationAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->tab('Group')
             ->with('General', array('class' => 'col-md-6'))
-            ->add('name')
-            ->add('createdUser')
-            ->add('updatedUser')
+                ->add('name')
             ->end()
-            ->end()
-            ->tab('Security')
-            ->with('Roles', array('class' => 'col-md-12'))
+            ->with('Security', array('class' => 'col-md-6'))
             ->add('roles', 'sonata_security_roles', array(
                 'expanded' => true,
                 'multiple' => true,
                 'required' => false,
             ))
-            ->end()
             ->end()
         ;
     }
@@ -83,9 +77,7 @@ class GroupAdmin extends ApplicationAdmin
     {
         $showMapper
             ->with('General', array('class' => 'col-md-6'))
-            ->add('name')
-            ->add('createdUser')
-            ->add('updatedUser')
+                ->add('name')
             ->end()
         ;
     }

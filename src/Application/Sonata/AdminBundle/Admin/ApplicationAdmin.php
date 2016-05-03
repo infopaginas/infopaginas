@@ -76,11 +76,10 @@ class ApplicationAdmin extends BaseAdminAdmin
         $collection
             ->remove('export')
             ->add('delete_physical', null, [
-                '_controller' => 'ApplicationSonataAdminBundle:DefaultEntityCRUD:deletePhysical'
+                '_controller' => 'ApplicationSonataAdminBundle:CRUD:deletePhysical'
             ])
             ->add('restore')
             ->add('copy')
-//            ->add('show')
         ;
     }
 
@@ -88,7 +87,9 @@ class ApplicationAdmin extends BaseAdminAdmin
     {
         $listMapper->add('_action', 'actions', [
             'actions' => [
-                'all_available' => ['template' => 'ApplicationSonataAdminBundle:CRUD:list__action_delete_physical_able.html.twig']
+                'all_available' => [
+                    'template' => 'ApplicationSonataAdminBundle:CRUD:list__action_delete_physical_able.html.twig'
+                ]
             ]
         ]);
     }

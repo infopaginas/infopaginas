@@ -3,10 +3,17 @@
 namespace Application\Sonata\AdminBundle\EventListener;
 
 use Application\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Application\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class UserActionListener
+/**
+ * Set object crud action user
+ *
+ * Class UserCRUDActionListener
+ * @package Application\Sonata\AdminBundle\EventListener
+ */
+class UserCRUDActionListener
 {
 	/**
 	 * @var TokenStorageInterface
@@ -30,8 +37,10 @@ class UserActionListener
         if (!is_object($this->user)) {
             return;
         }
+
 		$uow = $args->getEntityManager()->getUnitOfWork();
 
+		// set user to created object
 		array_map(function ($entity) {
 			if ($entity instanceof DefaultEntityInterface) {
 				$entity
@@ -39,22 +48,24 @@ class UserActionListener
 			}
 		}, $uow->getScheduledEntityInsertions());
 
+		// set user to updated object
 		array_map(function ($entity) use ($uow) {
 			if ($entity instanceof DefaultEntityInterface) {
 				$entity->setUpdatedUser($this->user);
 
-				if (array_key_exists('isActive', $uow->getEntityChangeSet($entity))) {
+				if (array_key_exists(DefaultEntityInterface::IS_ACTIVE_PROPERTY_NAME, $uow->getEntityChangeSet($entity))) {
 					$entity->setIsActiveUser($this->user);
 				}
 			}
 		}, $uow->getScheduledEntityUpdates());
 
+		// set user to deleted object
 		array_map(function ($entity) use ($uow) {
 			if ($entity instanceof DefaultEntityInterface) {
 				$entity->setDeletedUser($this->user);
-				$uow->propertyChanged($entity, 'deletedUser', null, $this->user);
+				$uow->propertyChanged($entity, DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME, null, $this->user);
 				$uow->scheduleExtraUpdate($entity, [
-					'deletedUser' => [null, $this->user]
+					DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME => [null, $this->user]
 				]);
 			}
 		}, $uow->getScheduledEntityDeletions());

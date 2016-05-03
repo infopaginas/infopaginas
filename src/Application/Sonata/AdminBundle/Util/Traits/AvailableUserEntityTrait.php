@@ -5,14 +5,21 @@ namespace Application\Sonata\AdminBundle\Util\Traits;
 use Application\Sonata\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Set user who made an object active or not
+ * 
+ * Class AvailableUserEntityTrait
+ * @package Application\Sonata\AdminBundle\Util\Traits
+ */
 trait AvailableUserEntityTrait
 {
 	/**
+	 * Property must be named as DefaultEntityInterface::IS_ACTIVE_PROPERTY_NAME, used in UserCRUDActionListener
 	 * @var boolean
 	 *
 	 * @ORM\Column(name="is_active", type="boolean")
 	 */
-	protected $isActive = true;//:todo This property name have been hardcoded in AppBundle\EventListener\DefaultEntityListener
+	protected $isActive = true;
 
 	/**
 	 * @var User
