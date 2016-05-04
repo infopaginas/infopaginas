@@ -1,0 +1,68 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends "@SonataAdmin/CRUD/delete.html.twig" %}
+
+{% block navbar_title %}
+    {{ 'delete_item'|trans({'%object%': object}, 'ApplicationSonataAdmin') }}
+{% endblock %}
+
+{% block content %}
+    <div class="sonata-ba-delete">
+
+        <div class="box box-danger">
+            <div class="box-header">
+                {% if existDependentFields %}
+                    <h3 class="box-title">{{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}) }}</h3>
+                {% else %}
+                    <h3 class="box-title">{{ 'title_delete'|trans({}, 'SonataAdminBundle') }}</h3>
+                {% endif %}
+
+            </div>
+            <div class="box-body">
+                {% if existDependentFields %}
+                {% else %}
+                    {{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}
+                {% endif %}
+            </div>
+            <div class="box-footer clearfix">
+                <form method="POST" action="{{ admin.generateObjectUrl('delete', object) }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_sonata_csrf_token" value="{{ csrf_token }}">
+
+                    {% if existDependentFields is null %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            {{ 'btn_delete'|trans({}, 'SonataAdminBundle') }}
+                        </button>
+                    {% endif %}
+                    {% if admin.hasRoute('list') and admin.isGranted('LIST', object) %}
+                        <a class="btn btn-danger" href="{{ admin.generateUrl('list') }}">
+                            <i class="fa fa-minus-circle"></i>
+                            {{ 'btn_cancel'|trans({}, 'ApplicationSonataAdmin') }}
+                        </a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block nav_bar_right %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
+            <a href="{{ admin.generateUrl('list') }}">
+                <i class="fa fa-list"></i>
+                {{ 'return_to_list'|trans({}, 'ApplicationSonataAdmin') }}
+            </a>
+        {% endif %}
+    </li>
+{% endblock %}

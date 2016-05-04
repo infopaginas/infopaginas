@@ -13,10 +13,10 @@
     -->
 
     <document name="Application\Sonata\MediaBundle\Document\Media"
-              repository-class="Application\Sonata\MediaBundle\Document\MediaRepository" >
+              repository-class="Application\Sonata\MediaBundle\Document\MediaRepository">
 
         <id name="id" type="id">
-            <generator strategy="repository" />
+            <generator strategy="repository"/>
         </id>
 
     </document>

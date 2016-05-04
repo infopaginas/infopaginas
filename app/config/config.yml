@@ -70,9 +70,9 @@ doctrine:
             ApplicationSonataMediaBundle: ~
             SonataMediaBundle: ~
         filters:
-#            softdeleteable:
-#                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
-#                enabled: true
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                enabled: true
 
 # Swiftmailer Configuration
 swiftmailer:

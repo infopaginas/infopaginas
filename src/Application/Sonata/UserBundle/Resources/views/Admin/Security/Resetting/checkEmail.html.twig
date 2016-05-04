@@ -7,7 +7,8 @@
             <p>{{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle') }}</p>
         </div>
         <div class="footer">
-            <p><a href="{{ path('sonata_user_admin_security_login') }}" class="text-center">{{ 'title_user_authentication'|trans({}, 'SonataUserBundle') }}</a></p>
+            <p><a href="{{ path('sonata_user_admin_security_login') }}"
+                  class="text-center">{{ 'title_user_authentication'|trans({}, 'SonataUserBundle') }}</a></p>
         </div>
     </div>
 {% endblock sonata_wrapper %}
