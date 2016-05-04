@@ -7,7 +7,7 @@
     {% endif %}
     {% if admin.hasRoute('copy') %}
         <a href="{{ admin.generateObjectUrl('copy', object) }}" class="btn btn-sm btn-default"
-           title="{{ 'action_copy'|trans({}, 'ApplicationSonataAdminBundle') }}">
+           title="{{ 'action_copy'|trans({}, 'ApplicationSonataAdmin') }}">
             <i class="glyphicon glyphicon-subtitles"></i>
         </a>
     {% endif %}
@@ -26,14 +26,14 @@
 {% else %}
     {% if is_granted('ROLE_RESTORE_ABLE') and admin.hasRoute('restore') %}
         <a href="{{ admin.generateObjectUrl('restore', object) }}" class="btn btn-sm btn-default delete_link"
-           title="{{ 'action_restore'|trans({}, 'ApplicationSonataAdminBundle') }}">
+           title="{{ 'action_restore'|trans({}, 'ApplicationSonataAdmin') }}">
             <i class="glyphicon glyphicon-upload"></i>
         </a>
     {% endif %}
 {% endif %}
 {% if is_granted('ROLE_PHYSICAL_DELETE_ABLE') and admin.hasRoute('delete_physical') %}
     <a href="{{ admin.generateObjectUrl('delete_physical', object) }}" class="btn btn-sm btn-default delete_link"
-       title="{{ 'action_delete_physical'|trans({}, 'ApplicationSonataAdminBundle') }}">
+       title="{{ 'action_delete_physical'|trans({}, 'ApplicationSonataAdmin') }}">
         <i class="glyphicon glyphicon-remove"></i>
     </a>
 {% endif %}

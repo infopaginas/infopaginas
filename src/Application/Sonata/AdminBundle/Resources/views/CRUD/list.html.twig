@@ -2,12 +2,12 @@
 
 {% block batch_actions %}
     <label class="checkbox" for="{{ admin.uniqid }}_all_elements">
-        {{ 'all_elements'|trans({}, 'ApplicationSonataAdminBundle') }}
+        {{ 'all_elements'|trans({}, 'SonataAdminBundle') }}
     </label>
 
     <select name="action" style="width: auto; height: auto" class="form-control">
         {% for action, options in batchactions %}
-            <option value="{{ action }}">{{ options.label }}</option>
+            <option value="{{ action }}">{{ options.label|trans({}, 'ApplicationSonataAdmin') }}</option>
         {% endfor %}
     </select>
 {% endblock %}

@@ -6,13 +6,13 @@
     <div class="sonata-ba-delete">
         <h1>
             {% if data.action=="delete_physical" %}
-                {{ "title_batch_physical_delete_confirmation"|trans({}, 'SonataAdminBundle') }}
+                {{ "title_batch_physical_delete_confirmation"|trans({}, 'ApplicationSonataAdmin') }}
             {% else %}
                 {% trans with {'%action%': action_label} from 'SonataAdminBundle' %}title_batch_confirmation{% endtrans %}
             {% endif %}
         </h1>
         {% if data.action=="delete_physical" %}
-            {{ "message_batch_physical_delete_confirmation"|trans({"%elements%": get_object_list(admin.class, data.idx)|join(', ')}, 'SonataAdminBundle') }}
+            {{ "message_batch_physical_delete_confirmation"|trans({"%elements%": get_object_list(admin.class, data.idx)|join(', ')}, 'ApplicationSonataAdmin') }}
         {% else %}
             {% if data.all_elements %}
                 {{ 'message_batch_all_confirmation'|trans({}, 'SonataAdminBundle') }}
@@ -38,7 +38,7 @@
                     {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
                         <a class="btn btn-danger" href="{{ admin.generateUrl('list') }}">
                             <i class="fa fa-minus-circle"></i>
-                            {{ 'btn_cancel'|trans({}, 'SonataAdminBundle') }}
+                            {{ 'btn_cancel'|trans({}, 'ApplicationSonataAdmin') }}
                         </a>
                     {% endif %}
                 {% else %}

@@ -66,7 +66,7 @@
                 </button>
             {% endif %}
             <a class="btn btn-danger" style="float: right" href="{{ admin.generateUrl('list') }}"><i
-                        class="fa fa-minus-circle"></i> {{ 'btn_cancel'|trans({}, 'ApplicationSonataAdminBundle') }}</a>
+                        class="fa fa-minus-circle"></i> {{ 'btn_cancel'|trans({}, 'ApplicationSonataAdmin') }}</a>
         {% endif %}
     </div>
 {% endblock formactions %}
@@ -76,7 +76,7 @@
         {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>
-                {{ 'link_action_list'|trans({}, 'ApplicationSonataAdminBundle') }}
+                {{ 'return_to_list'|trans({}, 'ApplicationSonataAdmin') }}
             </a>
         {% endif %}
     </li>

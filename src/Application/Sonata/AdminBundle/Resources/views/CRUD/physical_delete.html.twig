@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block navbar_title %}
-    {{ 'physical_deleting_element'|trans({}, 'SonataAdminBundle') ~ ' "' ~ object ~ '"' }}
+    {{ 'physical_deleting_element'|trans({}, 'ApplicationSonataAdmin') ~ ' "' ~ object ~ '"' }}
 {% endblock %}
 
 {% block content %}
@@ -19,10 +19,10 @@
 
         <div class="box box-danger">
             <div class="box-header">
-                <h3 class="box-title">{{ 'title_physical_delete'|trans({}, 'SonataAdminBundle') }}</h3>
+                <h3 class="box-title">{{ 'title_physical_delete'|trans({}, 'ApplicationSonataAdmin') }}</h3>
             </div>
             <div class="box-body">
-                {{ 'message_physical_delete_confirmation'|trans({'%title%': admin.toString(object)}, 'SonataAdminBundle') }}
+                {{ 'message_physical_delete_confirmation'|trans({'%title%': admin.toString(object)}, 'ApplicationSonataAdmin') }}
             </div>
             <div class="box-footer clearfix">
                 <form method="POST" action="{{ admin.generateObjectUrl('delete_physical', object) }}">
@@ -35,7 +35,7 @@
                     {% if admin.hasRoute('list') and admin.isGranted('LIST', object) %}
                         <a class="btn btn-danger" href="{{ admin.generateUrl('list') }}">
                             <i class="fa fa-minus-circle"></i>
-                            {{ 'btn_cancel'|trans({}, 'SonataAdminBundle') }}
+                            {{ 'btn_cancel'|trans({}, 'ApplicationSonataAdmin') }}
                         </a>
                     {% endif %}
                 </form>
@@ -49,7 +49,7 @@
         {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>
-                {{ 'return_to_list'|trans() }}
+                {{ 'return_to_list'|trans({}, 'ApplicationSonataAdmin') }}
             </a>
         {% endif %}
     </li>
