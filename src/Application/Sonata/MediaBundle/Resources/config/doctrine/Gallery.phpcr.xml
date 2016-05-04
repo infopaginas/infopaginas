@@ -16,7 +16,7 @@
               repository-class="Application\Sonata\MediaBundle\PHPCR\GalleryRepository">
 
         <id name="id" type="id">
-            <generator strategy="repository" />
+            <generator strategy="repository"/>
         </id>
 
     </document>

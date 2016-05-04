@@ -16,10 +16,10 @@
               repository-class="Application\Sonata\MediaBundle\PHPCR\GalleryHasMediaRepository">
 
         <id name="id" type="id">
-            <generator strategy="repository" />
+            <generator strategy="repository"/>
         </id>
 
-        <reference-many name="media" target-document="Application\Sonata\MediaBundle\PHPCR\GalleryHasMedia" />
+        <reference-many name="media" target-document="Application\Sonata\MediaBundle\PHPCR\GalleryHasMedia"/>
 
     </document>
 

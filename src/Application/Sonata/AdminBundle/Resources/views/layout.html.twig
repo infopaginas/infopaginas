@@ -8,7 +8,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/applicationsonataadmin/js/lib/jquery.fancybox.pack.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset('bundles/applicationsonataadmin/js/lib/jquery.fancybox.pack.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/applicationsonataadmin/js/admin.js') }}"></script>
 {% endblock %}
 
@@ -76,9 +77,10 @@
                     {% endfor %}
                     <li class="treeview{% if active %} active{% endif %}">
                         {% if group.items|length==1 %}
-                            <a href="" style="display: none"></a>{# Заглушка для скрипта treeview. Или так, или удалять класс .treeview выше #}
+                            <a href=""
+                               style="display: none"></a>{# Заглушка для скрипта treeview. Или так, или удалять класс .treeview выше #}
                             {% set admin = group.items|first %}
-                            <a href="{{ admin.generateUrl('list')}}">
+                            <a href="{{ admin.generateUrl('list') }}">
                                 {% if group.icon|default() %}{{ group.icon|raw }}{% endif %}
                                 <span>{{ admin.label|trans({}, admin.translationdomain) }}</span>
                             </a>
@@ -91,7 +93,10 @@
                             <ul class="treeview-menu{% if active %} active{% endif %}">
                                 {% for admin in group.items %}
                                     {% if admin.hasroute('list') and admin.isGranted('LIST') %}
-                                        <li{% if app.request.get('_sonata_admin') == admin.code %} class="active"{% endif %}><a href="{{ admin.generateUrl('list')}}"><i class="fa fa-angle-double-right"></i> {{ admin.label|trans({}, admin.translationdomain) }}</a></li>
+                                        <li{% if app.request.get('_sonata_admin') == admin.code %} class="active"{% endif %}>
+                                            <a href="{{ admin.generateUrl('list') }}"><i
+                                                        class="fa fa-angle-double-right"></i> {{ admin.label|trans({}, admin.translationdomain) }}
+                                            </a></li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -109,7 +114,7 @@
             {% if _breadcrumb is empty %}
                 {% if action is defined %}
                     {% for menu in admin.breadcrumbs(action) %}
-                        {% if not loop.last  %}
+                        {% if not loop.last %}
                             <li>
                                 {% if menu.uri is not empty %}
                                     <a href="{{ menu.uri }}">{{ menu.label|raw }}</a>
@@ -119,7 +124,9 @@
                             </li>
                         {% else %}
                             {% set menu_label = menu.label|replace({" - ":""}) %}
-                            <li class="active"><span>{% if menu.label|length==0 %}{{ menu.label }}{% else %}<a href="javascript:return false;" style="cursor: default;padding: 0" title="{{ menu_label }}">{{ menu_label|slice(0,15) }}</a>{% endif %}</span></li>
+                            <li class="active"><span>{% if menu.label|length==0 %}{{ menu.label }}{% else %}<a
+                                        href="javascript:return false;" style="cursor: default;padding: 0"
+                                        title="{{ menu_label }}">{{ menu_label|slice(0,15) }}</a>{% endif %}</span></li>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
@@ -132,7 +139,7 @@
 
 {% block nav_bar_right %}
     <li class="dropdown sonata-actions">
-        {% if admin.hasRoute('create') and admin.isGranted('CREATE')%}
+        {% if admin.hasRoute('create') and admin.isGranted('CREATE') %}
             <a href="{{ admin.generateUrl('create') }}">
                 <i class="fa fa-plus-circle"></i>
                 {{ 'link_action_create'|trans({}, 'SonataAdminBundle') }}

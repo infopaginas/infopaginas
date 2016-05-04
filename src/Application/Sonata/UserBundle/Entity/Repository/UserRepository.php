@@ -9,7 +9,7 @@ class UserRepository extends EntityRepository
 {
     /**
      * Delete record from database
-     * 
+     *
      * @param object $entity
      */
     public function deletePhysicalEntity(object $entity)
@@ -25,7 +25,7 @@ class UserRepository extends EntityRepository
 
     /**
      * Restore deleted
-     * 
+     *
      * @param $entityClass
      * @param $id
      */

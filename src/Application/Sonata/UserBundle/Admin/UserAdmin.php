@@ -62,8 +62,7 @@ class UserAdmin extends ApplicationAdmin
             ->add('groups')
             ->add('enabled', null, array('editable' => true))
             ->add('locked', null, array('editable' => true))
-            ->add('createdAt')
-        ;
+            ->add('createdAt');
 
         if ($this->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
             $listMapper
@@ -86,8 +85,7 @@ class UserAdmin extends ApplicationAdmin
             ->add('username')
             ->add('locked')
             ->add('email')
-            ->add('groups')
-        ;
+            ->add('groups');
     }
 
     /**
@@ -97,36 +95,35 @@ class UserAdmin extends ApplicationAdmin
     {
         $showMapper
             ->with('General')
-                ->add('username')
-                ->add('email')
+            ->add('username')
+            ->add('email')
             ->end()
             ->with('Groups')
-                ->add('groups')
+            ->add('groups')
             ->end()
             ->with('Profile')
-                ->add('dateOfBirth')
-                ->add('firstname')
-                ->add('lastname')
-                ->add('website')
-                ->add('biography')
-                ->add('gender')
-                ->add('locale')
-                ->add('timezone')
-                ->add('phone')
+            ->add('dateOfBirth')
+            ->add('firstname')
+            ->add('lastname')
+            ->add('website')
+            ->add('biography')
+            ->add('gender')
+            ->add('locale')
+            ->add('timezone')
+            ->add('phone')
             ->end()
             ->with('Social')
-                ->add('facebookUid')
-                ->add('facebookName')
-                ->add('twitterUid')
-                ->add('twitterName')
-                ->add('gplusUid')
-                ->add('gplusName')
+            ->add('facebookUid')
+            ->add('facebookName')
+            ->add('twitterUid')
+            ->add('twitterName')
+            ->add('gplusUid')
+            ->add('gplusName')
             ->end()
             ->with('Security')
-                ->add('token')
-                ->add('twoStepVerificationCode')
-            ->end()
-        ;
+            ->add('token')
+            ->add('twoStepVerificationCode')
+            ->end();
     }
 
     /**
@@ -146,8 +143,7 @@ class UserAdmin extends ApplicationAdmin
             ->with('Groups', array('class' => 'col-md-4'))->end()
             ->with('Keys', array('class' => 'col-md-4'))->end()
             ->with('Roles', array('class' => 'col-md-12'))->end()
-            ->end()
-        ;
+            ->end();
 
         $now = new \DateTime();
 
@@ -162,17 +158,17 @@ class UserAdmin extends ApplicationAdmin
             ->end()
             ->with('Profile')
             ->add('dateOfBirth', 'sonata_type_date_picker', array(
-                'years'       => range(1900, $now->format('Y')),
+                'years' => range(1900, $now->format('Y')),
                 'dp_min_date' => '1-1-1900',
                 'dp_max_date' => $now->format('c'),
-                'required'    => false,
+                'required' => false,
             ))
             ->add('firstname', null, array('required' => false))
             ->add('lastname', null, array('required' => false))
             ->add('website', 'url', array('required' => false))
             ->add('biography', 'text', array('required' => false))
             ->add('gender', 'sonata_user_gender', array(
-                'required'           => true,
+                'required' => true,
                 'translation_domain' => $this->getTranslationDomain(),
             ))
             ->add('locale', 'locale', array('required' => false))
@@ -204,7 +200,7 @@ class UserAdmin extends ApplicationAdmin
             ->end()
             ->with('Roles')
             ->add('realRoles', 'sonata_security_roles', array(
-                'label'    => 'form.label_roles',
+                'label' => 'form.label_roles',
                 'expanded' => true,
                 'multiple' => true,
                 'required' => false,
@@ -214,8 +210,7 @@ class UserAdmin extends ApplicationAdmin
             ->add('token', null, array('required' => false))
             ->add('twoStepVerificationCode', null, array('required' => false))
             ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     /**

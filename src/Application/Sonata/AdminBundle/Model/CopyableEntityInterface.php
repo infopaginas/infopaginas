@@ -10,9 +10,9 @@ namespace Application\Sonata\AdminBundle\Model;
  */
 interface CopyableEntityInterface
 {
-	/**
-	 * Choose a property, which will be used to make a copied object different by adding prefix
-	 * @return mixed
-	 */
-	public function getMarkCopyPropertyName();
+    /**
+     * Choose a property, which will be used to make a copied object different by adding prefix
+     * @return mixed
+     */
+    public function getMarkCopyPropertyName();
 }

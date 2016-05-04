@@ -12,7 +12,7 @@ file that was distributed with this source code.
 {% extends "@SonataAdmin/CRUD/delete.html.twig" %}
 
 {% block navbar_title %}
-    {{ 'deleting_element'|trans ~ ' "' ~ object ~ '"'}}
+    {{ 'deleting_element'|trans ~ ' "' ~ object ~ '"' }}
 {% endblock %}
 
 {% block content %}
@@ -58,7 +58,7 @@ file that was distributed with this source code.
 
 {% block nav_bar_right %}
     <li class="dropdown sonata-actions">
-        {% if admin.hasRoute('list') and admin.isGranted('LIST')%}
+        {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>
                 {{ 'return_to_list'|trans() }}

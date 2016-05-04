@@ -7,7 +7,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * Extend TimestampableEntity trait with set user functionality
- * 
+ *
  * Class TimestampableUserEntityTrait
  * @package Application\Sonata\AdminBundle\Util\Traits
  */

@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block navbar_title %}
-    {{ 'physical_deleting_element'|trans({}, 'SonataAdminBundle') ~ ' "' ~ object ~ '"'}}
+    {{ 'physical_deleting_element'|trans({}, 'SonataAdminBundle') ~ ' "' ~ object ~ '"' }}
 {% endblock %}
 
 {% block content %}
@@ -46,7 +46,7 @@
 
 {% block nav_bar_right %}
     <li class="dropdown sonata-actions">
-        {% if admin.hasRoute('list') and admin.isGranted('LIST')%}
+        {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>
                 {{ 'return_to_list'|trans() }}

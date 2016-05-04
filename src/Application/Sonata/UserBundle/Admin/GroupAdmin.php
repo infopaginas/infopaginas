@@ -36,8 +36,7 @@ class GroupAdmin extends ApplicationAdmin
         $listMapper
             ->addIdentifier('name')
             ->add('roles')
-            ->add('isActive', null, ['editable' => true])
-        ;
+            ->add('isActive', null, ['editable' => true]);
         $this->addGridActions($listMapper);
     }
 
@@ -47,8 +46,7 @@ class GroupAdmin extends ApplicationAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name')
-        ;
+            ->add('name');
     }
 
     /**
@@ -58,7 +56,7 @@ class GroupAdmin extends ApplicationAdmin
     {
         $formMapper
             ->with('General', array('class' => 'col-md-6'))
-                ->add('name')
+            ->add('name')
             ->end()
             ->with('Security', array('class' => 'col-md-6'))
             ->add('roles', 'sonata_security_roles', array(
@@ -66,8 +64,7 @@ class GroupAdmin extends ApplicationAdmin
                 'multiple' => true,
                 'required' => false,
             ))
-            ->end()
-        ;
+            ->end();
     }
 
     /**
@@ -77,8 +74,7 @@ class GroupAdmin extends ApplicationAdmin
     {
         $showMapper
             ->with('General', array('class' => 'col-md-6'))
-                ->add('name')
-            ->end()
-        ;
+            ->add('name')
+            ->end();
     }
 }

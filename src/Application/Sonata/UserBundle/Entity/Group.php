@@ -33,7 +33,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Group extends BaseGroup implements CopyableEntityInterface, DefaultEntityInterface
 {
     use DefaultEntityTrait;
-    
+
     /**
      * @var integer $id
      *

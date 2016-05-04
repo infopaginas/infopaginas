@@ -6,85 +6,85 @@ use Application\Sonata\UserBundle\Entity\User;
 
 /**
  * Should be implemented to all entities for extended CRUD functional
- * 
+ *
  * Interface DefaultEntityInterface
  * @package Application\Sonata\AdminBundle\Model
  */
 interface DefaultEntityInterface extends DeleteableEntityInterface
 {
-	const IS_ACTIVE_PROPERTY_NAME = 'isActive';
-	
-	/**
-	 * Sets createdAt.
-	 *
-	 * @param  \DateTime $createdAt
-	 * @return $this
-	 */
-	public function setCreatedAt(\DateTime $createdAt);
+    const IS_ACTIVE_PROPERTY_NAME = 'isActive';
 
-	/**
-	 * Returns createdAt.
-	 *
-	 * @return \DateTime
-	 */
-	public function getCreatedAt();
+    /**
+     * Sets createdAt.
+     *
+     * @param  \DateTime $createdAt
+     * @return $this
+     */
+    public function setCreatedAt(\DateTime $createdAt);
 
-	/**
-	 * @param User $user
-	 * @return $this
-	 */
-	public function setCreatedUser(User $user);
+    /**
+     * Returns createdAt.
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt();
 
-	/**
-	 * @return User
-	 */
-	public function getCreatedUser();
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setCreatedUser(User $user);
 
-	/**
-	 * Sets updatedAt.
-	 *
-	 * @param  \DateTime $updatedAt
-	 * @return $this
-	 */
-	public function setUpdatedAt(\DateTime $updatedAt);
+    /**
+     * @return User
+     */
+    public function getCreatedUser();
 
-	/**
-	 * Returns updatedAt.
-	 *
-	 * @return \DateTime
-	 */
-	public function getUpdatedAt();
+    /**
+     * Sets updatedAt.
+     *
+     * @param  \DateTime $updatedAt
+     * @return $this
+     */
+    public function setUpdatedAt(\DateTime $updatedAt);
 
-	/**
-	 * @param User $user
-	 * @return $this
-	 */
-	public function setUpdatedUser(User $user);
+    /**
+     * Returns updatedAt.
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt();
 
-	/**
-	 * @return User
-	 */
-	public function getUpdatedUser();
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setUpdatedUser(User $user);
 
-	/**
-	 * @param boolean $isActive
-	 * @return $this
-	 */
-	public function setIsActive($isActive);
+    /**
+     * @return User
+     */
+    public function getUpdatedUser();
 
-	/**
-	 * @return bool
-	 */
-	public function getIsActive();
+    /**
+     * @param boolean $isActive
+     * @return $this
+     */
+    public function setIsActive($isActive);
 
-	/**
-	 * @param User $user
-	 * @return $this
-	 */
-	public function setIsActiveUser(User $user);
+    /**
+     * @return bool
+     */
+    public function getIsActive();
 
-	/**
-	 * @return User
-	 */
-	public function getIsActiveUser();
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setIsActiveUser(User $user);
+
+    /**
+     * @return User
+     */
+    public function getIsActiveUser();
 }

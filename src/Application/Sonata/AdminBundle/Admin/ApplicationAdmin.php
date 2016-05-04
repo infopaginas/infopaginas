@@ -18,7 +18,7 @@ class ApplicationAdmin extends BaseAdminAdmin
 
     public function getBatchActions()
     {
-        $actions =  parent::getBatchActions();
+        $actions = parent::getBatchActions();
 
         if ($this->hasRoute('delete')) {
             $actions['delete']['ask_confirmation'] = false;
@@ -28,21 +28,21 @@ class ApplicationAdmin extends BaseAdminAdmin
 
         if ($authorizationChecker->isGranted('ROLE_PHYSICAL_DELETE_ABLE') && $this->hasRoute('delete_physical')) {
             $actions['delete_physical'] = [
-                'label'            => $this->trans('action_delete_physical'),
+                'label' => $this->trans('action_delete_physical'),
                 'ask_confirmation' => true
             ];
         }
 
         if ($this->hasRoute('copy')) {
             $actions['copy'] = [
-                'label'            => $this->trans('action_copy'),
+                'label' => $this->trans('action_copy'),
                 'ask_confirmation' => false
             ];
         }
 
         if ($authorizationChecker->isGranted('ROLE_RESTORE_ABLE') && $this->hasRoute('restore')) {
             $actions['restore'] = [
-                'label'            => $this->trans('action_restore'),
+                'label' => $this->trans('action_restore'),
                 'ask_confirmation' => false
             ];
         }
@@ -79,8 +79,7 @@ class ApplicationAdmin extends BaseAdminAdmin
                 '_controller' => 'ApplicationSonataAdminBundle:CRUD:deletePhysical'
             ])
             ->add('restore')
-            ->add('copy')
-        ;
+            ->add('copy');
     }
 
     protected function addGridActions(ListMapper $listMapper)

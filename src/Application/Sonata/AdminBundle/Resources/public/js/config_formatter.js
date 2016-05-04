@@ -1,4 +1,4 @@
-$(function(){
+$(function () {
     var editor,
         config,
         data;
@@ -6,17 +6,17 @@ $(function(){
         editor = CKEDITOR.instances[instance];
         config = CKEDITOR.instances[instance].config;
     }
-    $('#'+instance).addClass('form-control');
-    data = $('#'+instance).val();
+    $('#' + instance).addClass('form-control');
+    data = $('#' + instance).val();
 
     if (typeof editor != 'undefined') {
-        editor.on('instanceReady', function() {
-            $('.formatter').change(function(e){
+        editor.on('instanceReady', function () {
+            $('.formatter').change(function (e) {
                 switch ($(this).val()) {
                     case 'text':
                         editor.destroy();
                         if (data) {
-                            $('#'+instance).val(data);
+                            $('#' + instance).val(data);
                             data = null;
                         }
                         break;

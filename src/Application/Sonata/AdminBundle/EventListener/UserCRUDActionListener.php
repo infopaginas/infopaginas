@@ -15,59 +15,67 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class UserCRUDActionListener
 {
-	/**
-	 * @var TokenStorageInterface
-	 */
-	private $tokenStorage;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
 
-	private $user;
+    private $user;
 
-	public function __construct(TokenStorageInterface $token)
-	{
-		$this->tokenStorage = $token;
-	}
+    public function __construct(TokenStorageInterface $token)
+    {
+        $this->tokenStorage = $token;
+    }
 
-	public function onFlush(OnFlushEventArgs $args)
-	{
-		if (is_null($this->tokenStorage->getToken())) {
-			return;
-		}
+    public function onFlush(OnFlushEventArgs $args)
+    {
+        if (is_null($this->tokenStorage->getToken())) {
+            return;
+        }
 
-		$this->user = $this->tokenStorage->getToken()->getUser();
+        $this->user = $this->tokenStorage->getToken()->getUser();
         if (!is_object($this->user)) {
             return;
         }
 
-		$uow = $args->getEntityManager()->getUnitOfWork();
+        $uow = $args->getEntityManager()->getUnitOfWork();
 
-		// set user to created object
-		array_map(function ($entity) {
-			if ($entity instanceof DefaultEntityInterface) {
-				$entity
-					->setCreatedUser($this->user);
-			}
-		}, $uow->getScheduledEntityInsertions());
+        // set user to created object
+        array_map(function ($entity) {
+            if ($entity instanceof DefaultEntityInterface) {
+                $entity
+                    ->setCreatedUser($this->user);
+            }
+        }, $uow->getScheduledEntityInsertions());
 
-		// set user to updated object
-		array_map(function ($entity) use ($uow) {
-			if ($entity instanceof DefaultEntityInterface) {
-				$entity->setUpdatedUser($this->user);
+        // set user to updated object
+        array_map(function ($entity) use ($uow) {
+            if ($entity instanceof DefaultEntityInterface) {
+                $entity->setUpdatedUser($this->user);
 
-				if (array_key_exists(DefaultEntityInterface::IS_ACTIVE_PROPERTY_NAME, $uow->getEntityChangeSet($entity))) {
-					$entity->setIsActiveUser($this->user);
-				}
-			}
-		}, $uow->getScheduledEntityUpdates());
+                if (array_key_exists(
+                    DefaultEntityInterface::IS_ACTIVE_PROPERTY_NAME,
+                    $uow->getEntityChangeSet($entity)
+                )) {
+                    $entity->setIsActiveUser($this->user);
+                }
+            }
+        }, $uow->getScheduledEntityUpdates());
 
-		// set user to deleted object
-		array_map(function ($entity) use ($uow) {
-			if ($entity instanceof DefaultEntityInterface) {
-				$entity->setDeletedUser($this->user);
-				$uow->propertyChanged($entity, DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME, null, $this->user);
-				$uow->scheduleExtraUpdate($entity, [
-					DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME => [null, $this->user]
-				]);
-			}
-		}, $uow->getScheduledEntityDeletions());
-	}
+        // set user to deleted object
+        array_map(function ($entity) use ($uow) {
+            if ($entity instanceof DefaultEntityInterface) {
+                $entity->setDeletedUser($this->user);
+                $uow->propertyChanged(
+                    $entity,
+                    DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME,
+                    null,
+                    $this->user
+                );
+                $uow->scheduleExtraUpdate($entity, [
+                    DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME => [null, $this->user]
+                ]);
+            }
+        }, $uow->getScheduledEntityDeletions());
+    }
 }
