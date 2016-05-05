@@ -42,10 +42,10 @@ class AppKernel extends Kernel
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Sonata\IntlBundle\SonataIntlBundle(),
 
-            // Application Bundles
-            new Application\Sonata\AdminBundle\ApplicationSonataAdminBundle(),
-            new Application\Sonata\UserBundle\ApplicationSonataUserBundle(),
-            new Application\Sonata\MediaBundle\ApplicationSonataMediaBundle(),
+            // Oxa Bundles
+            new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
+            new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
+            new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
 
             new Domain\DefaultBundle\DomainDefaultBundle(),
         );
