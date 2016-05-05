@@ -1,0 +1,15 @@
+parameters:
+    oxa.sonata.user.crud.controller.class: Oxa\Sonata\AdminBundle\Controller\CRUDController
+
+services:
+    sonata.user.admin.user:
+        class: Oxa\Sonata\UserBundle\Admin\UserAdmin
+        arguments: [~, %sonata.user.admin.user.entity%, %oxa.sonata.user.crud.controller.class%]
+        tags:
+            - {name: sonata.admin, show_in_dashboard: true, manager_type: orm, label: Users}
+    sonata.user.admin.group:
+        class: Oxa\Sonata\UserBundle\Admin\GroupAdmin
+        arguments: [~, %sonata.user.admin.group.entity%, %oxa.sonata.user.crud.controller.class%]
+        tags:
+        - { name: sonata.admin, manager_type: orm, show_in_dashboard: true, label: Groups }
+
