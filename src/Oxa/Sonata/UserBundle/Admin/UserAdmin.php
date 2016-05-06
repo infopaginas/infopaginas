@@ -2,10 +2,14 @@
 namespace Oxa\Sonata\UserBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\UserBundle\Entity\Group;
+use Oxa\Sonata\UserBundle\Entity\User;
+use Oxa\Sonata\UserBundle\OxaSonataUserBundle;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use FOS\UserBundle\Model\UserManagerInterface;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class UserAdmin extends OxaAdmin
@@ -52,18 +56,14 @@ class UserAdmin extends OxaAdmin
      */
     protected function configureListFields(ListMapper $listMapper)
     {
-        $options = [
-            'translation_domain' => 'OxaSonataUser'
-        ];
-        
         $listMapper
+            ->addIdentifier('id')
             ->addIdentifier('username')
-            ->addIdentifier('firstName', null, $options)
-            ->addIdentifier('lastName', null, $options)
+            ->addIdentifier('firstname')
+            ->addIdentifier('lastname')
             ->add('email')
-            ->add('groups')
+            ->add('role.name')
             ->add('enabled', null, array('editable' => true))
-            ->add('locked', null, array('editable' => true))
             ->add('createdAt');
 
         if ($this->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
@@ -85,9 +85,12 @@ class UserAdmin extends OxaAdmin
         $filterMapper
             ->add('id')
             ->add('username')
-            ->add('locked')
+            ->add('firstname')
+            ->add('lastname')
+            ->add('enabled')
             ->add('email')
-            ->add('groups');
+            ->add('role')
+        ;
     }
 
     /**
@@ -104,15 +107,9 @@ class UserAdmin extends OxaAdmin
             ->add('groups')
             ->end()
             ->with('Profile')
-            ->add('dateOfBirth')
             ->add('firstname')
             ->add('lastname')
-            ->add('website')
-            ->add('biography')
-            ->add('gender')
             ->add('locale')
-            ->add('timezone')
-            ->add('phone')
             ->end()
             ->with('Social')
             ->add('facebookUid')
@@ -121,10 +118,6 @@ class UserAdmin extends OxaAdmin
             ->add('twitterName')
             ->add('gplusUid')
             ->add('gplusName')
-            ->end()
-            ->with('Security')
-            ->add('token')
-            ->add('twoStepVerificationCode')
             ->end();
     }
 
@@ -135,22 +128,51 @@ class UserAdmin extends OxaAdmin
     {
         // define group zoning
         $formMapper
-            ->tab('User')
             ->with('Profile', array('class' => 'col-md-6'))->end()
             ->with('General', array('class' => 'col-md-6'))->end()
             ->with('Social', array('class' => 'col-md-6'))->end()
-            ->end()
-            ->tab('Security')
-            ->with('Status', array('class' => 'col-md-4'))->end()
-            ->with('Groups', array('class' => 'col-md-4'))->end()
-            ->with('Keys', array('class' => 'col-md-4'))->end()
-            ->with('Roles', array('class' => 'col-md-12'))->end()
-            ->end();
+            ->with('Security', array('class' => 'col-md-6'))->end()
+        ;
 
-        $now = new \DateTime();
+        /* @var User $loggedUser */
+        $loggedUser = $this->getConfigurationPool()->getContainer()
+            ->get('security.token_storage')->getToken()->getUser();
+
+        /* @var User $user */
+        $user = $this->getSubject();
+
+        // allowed to edit user's security data:
+        // - content_managers and administrators
+        // - if your priority higher than user's (smaller number higher)
+        // - if it's not your profile
+        if (
+            (
+                $user->getRole() != null &&
+                $loggedUser->getRole()->getCode() <= $user->getRole()->getCode() &&
+                $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
+                $loggedUser->getId() != $user->getId()
+            ) || (
+                $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
+                $user->getRole() == null
+            )
+        ) {
+            // get roles with equal or lower priority(code) than you have
+            $roles = $this->getConfigurationPool()->getContainer()->get('doctrine')
+                ->getRepository('OxaSonataUserBundle:Group')->getEqualOrLowerPriorityRoles($loggedUser->getRole()->getCode());
+
+            $formMapper
+                ->with('Security')
+                ->add('role', 'entity', [
+                    'class' => Group::class,
+                    'choices' => $roles
+                ])
+                ->add('enabled')
+//                ->add('realRoles', 'sonata_security_roles', array('expanded' => true))
+                ->end()
+            ;
+        }
 
         $formMapper
-            ->tab('User')
             ->with('General')
             ->add('username')
             ->add('email')
@@ -159,60 +181,19 @@ class UserAdmin extends OxaAdmin
             ))
             ->end()
             ->with('Profile')
-            ->add('dateOfBirth', 'sonata_type_date_picker', array(
-                'years' => range(1900, $now->format('Y')),
-                'dp_min_date' => '1-1-1900',
-                'dp_max_date' => $now->format('c'),
-                'required' => false,
-            ))
-            ->add('firstname', null, array('required' => false))
-            ->add('lastname', null, array('required' => false))
-            ->add('website', 'url', array('required' => false))
-            ->add('biography', 'text', array('required' => false))
-            ->add('gender', 'sonata_user_gender', array(
-                'required' => true,
-                'translation_domain' => $this->getTranslationDomain(),
-            ))
-            ->add('locale', 'locale', array('required' => false))
-            ->add('timezone', 'timezone', array('required' => false))
-            ->add('phone', null, array('required' => false))
+            ->add('firstname', null, ['attr' => ['maxlength' => 35]])
+            ->add('lastname', null, ['attr' => ['maxlength' => 35]])
+            ->add('locale', 'locale')
             ->end()
             ->with('Social')
-            ->add('facebookUid', null, array('required' => false))
-            ->add('facebookName', null, array('required' => false))
-            ->add('twitterUid', null, array('required' => false))
-            ->add('twitterName', null, array('required' => false))
-            ->add('gplusUid', null, array('required' => false))
-            ->add('gplusName', null, array('required' => false))
+            ->add('facebookUid')
+            ->add('facebookName')
+            ->add('twitterUid')
+            ->add('twitterName')
+            ->add('gplusUid')
+            ->add('gplusName')
             ->end()
-            ->end()
-            ->tab('Security')
-            ->with('Status')
-            ->add('locked', null, array('required' => false))
-            ->add('expired', null, array('required' => false))
-            ->add('enabled', null, array('required' => false))
-            ->add('credentialsExpired', null, array('required' => false))
-            ->end()
-            ->with('Groups')
-            ->add('groups', 'sonata_type_model', array(
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true,
-            ))
-            ->end()
-            ->with('Roles')
-            ->add('realRoles', 'sonata_security_roles', array(
-                'label' => 'form.label_roles',
-                'expanded' => true,
-                'multiple' => true,
-                'required' => false,
-            ))
-            ->end()
-            ->with('Keys')
-            ->add('token', null, array('required' => false))
-            ->add('twoStepVerificationCode', null, array('required' => false))
-            ->end()
-            ->end();
+        ;
     }
 
     /**
@@ -229,5 +210,13 @@ class UserAdmin extends OxaAdmin
     public function getUserManager()
     {
         return $this->userManager;
+    }
+
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        parent::configureRoutes($collection);
+
+        $collection
+            ->remove('copy');
     }
 }

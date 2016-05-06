@@ -12,7 +12,7 @@ class UserRepository extends EntityRepository
      *
      * @param object $entity
      */
-    public function deletePhysicalEntity(object $entity)
+    public function deletePhysicalEntity($entity)
     {
         $this->getEntityManager()
             ->createQueryBuilder()

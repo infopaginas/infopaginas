@@ -75,6 +75,7 @@ class OxaAdmin extends BaseAdmin
     {
         $collection
             ->remove('export')
+            ->add('show')
             ->add('delete_physical', null, [
                 '_controller' => 'OxaSonataAdminBundle:CRUD:deletePhysical'
             ])
@@ -89,8 +90,7 @@ class OxaAdmin extends BaseAdmin
                 'all_available' => [
                     'template' => 'OxaSonataAdminBundle:CRUD:list__action_delete_physical_able.html.twig'
                 ]
-            ],
-            'translation_domain' => 'OxaSonataUser'
+            ]
         ]);
     }
 }

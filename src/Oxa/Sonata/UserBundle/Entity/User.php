@@ -13,12 +13,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
  * @ORM\Table(name="fos_user_user")
+ * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("username")
- */
-class User extends BaseUser implements DefaultEntityInterface, CopyableEntityInterface
+ * */
+class User extends BaseUser implements DefaultEntityInterface
 {
     use AvailableUserEntityTrait, DeleteableUserEntityTrait, UserCUableEntityTrait;
 
@@ -29,8 +30,43 @@ class User extends BaseUser implements DefaultEntityInterface, CopyableEntityInt
      */
     protected $id;
 
-    public function getMarkCopyPropertyName()
+    /**
+     * @var Group
+     *
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\Group", inversedBy="role_users")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
+     */
+    protected $role;
+
+    /**
+     * Set role with group permissions
+     *
+     * @param \Oxa\Sonata\UserBundle\Entity\Group $role
+     *
+     * @return User
+     */
+    public function setRole(\Oxa\Sonata\UserBundle\Entity\Group $role)
     {
-        return 'username';
+        $this->role = $role;
+
+        // remove previous groups and add needed new one to apply group roles
+        foreach ($this->getGroups() as $group)
+        {
+            $this->removeGroup($group);
+        }
+
+        $this->addGroup($role);
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Oxa\Sonata\UserBundle\Entity\Group
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 }

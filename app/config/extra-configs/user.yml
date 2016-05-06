@@ -16,6 +16,9 @@ sonata_user:
         user:
             class: Oxa\Sonata\UserBundle\Admin\UserAdmin
             controller: OxaSonataAdminBundle:CRUD
+            translation: SonataUserBundle
         group:
             class: Oxa\Sonata\UserBundle\Admin\GroupAdmin
             controller: OxaSonataAdminBundle:CRUD
+            translation: SonataUserBundle
+

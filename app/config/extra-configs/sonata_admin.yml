@@ -22,6 +22,7 @@ sonata_admin:
         batch_confirmation:   OxaSonataAdminBundle:CRUD:batch_confirmation.html.twig
     security:
         handler: sonata.admin.security.handler.role
+#        handler: sonata.admin.security.handler.acl
     dashboard:
         groups:
             sonata.admin.group.user:
