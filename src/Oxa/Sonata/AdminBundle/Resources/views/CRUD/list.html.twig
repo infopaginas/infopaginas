@@ -7,7 +7,7 @@
 
     <select name="action" style="width: auto; height: auto" class="form-control">
         {% for action, options in batchactions %}
-            <option value="{{ action }}">{{ options.label|trans({}, 'SonataAdminBundle') }}</option>
+            <option value="{{ action }}">{% if options.label is defined %}{{ options.label|trans({}, 'SonataAdminBundle') }}{% endif %}</option>
         {% endfor %}
     </select>
 {% endblock %}

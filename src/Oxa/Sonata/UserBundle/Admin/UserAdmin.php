@@ -66,15 +66,7 @@ class UserAdmin extends OxaAdmin
             ->add('enabled', null, array('editable' => true))
             ->add('createdAt');
 
-        if ($this->isGranted('ROLE_ALLOWED_TO_SWITCH')) {
-            $listMapper
-                ->add('impersonating', 'string', [
-                    'template' => 'SonataUserBundle:Admin:Field/impersonating.html.twig'
-                ]);
-        }
-
         $this->addGridActions($listMapper);
-
     }
 
     /**
@@ -100,24 +92,24 @@ class UserAdmin extends OxaAdmin
     {
         $showMapper
             ->with('General')
-            ->add('username')
-            ->add('email')
+                ->add('username')
+                ->add('email')
             ->end()
-            ->with('Groups')
-            ->add('groups')
+            ->with('Roles')
+                ->add('role')
             ->end()
             ->with('Profile')
-            ->add('firstname')
-            ->add('lastname')
-            ->add('locale')
+                ->add('firstname')
+                ->add('lastname')
+                ->add('locale')
             ->end()
             ->with('Social')
-            ->add('facebookUid')
-            ->add('facebookName')
-            ->add('twitterUid')
-            ->add('twitterName')
-            ->add('gplusUid')
-            ->add('gplusName')
+                ->add('facebookUid')
+                ->add('facebookName')
+                ->add('twitterUid')
+                ->add('twitterName')
+                ->add('gplusUid')
+                ->add('gplusName')
             ->end();
     }
 
