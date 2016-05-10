@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserAdmin extends OxaAdmin
 {
@@ -63,7 +64,8 @@ class UserAdmin extends OxaAdmin
             ->addIdentifier('lastname')
             ->add('email')
             ->add('role.name')
-            ->add('enabled', null, array('editable' => true))
+            ->add('enabled', null, array('editable' => false))
+//            ->add('isActive', null, array('editable' => false))
             ->add('createdAt');
 
         $this->addGridActions($listMapper);
@@ -79,9 +81,20 @@ class UserAdmin extends OxaAdmin
             ->add('username')
             ->add('firstname')
             ->add('lastname')
-            ->add('enabled')
             ->add('email')
             ->add('role')
+            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, ['choices' => [
+                1 => 'label_yes',
+                2 => 'label_no',
+            ]])
+//            ->add('isActive', null, [], null, ['choices' => [
+//                1 => 'label_yes',
+//                2 => 'label_no',
+//            ]])
+            ->add('createdAt', 'doctrine_orm_datetime_range', array(
+                'field_type' => 'sonata_type_datetime_range_picker',
+                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
+            ))
         ;
     }
 
@@ -95,8 +108,10 @@ class UserAdmin extends OxaAdmin
                 ->add('username')
                 ->add('email')
             ->end()
-            ->with('Roles')
+            ->with('Security')
                 ->add('role')
+                ->add('enabled')
+//                ->add('isActive')
             ->end()
             ->with('Profile')
                 ->add('firstname')
@@ -123,7 +138,6 @@ class UserAdmin extends OxaAdmin
             ->with('Profile', array('class' => 'col-md-6'))->end()
             ->with('General', array('class' => 'col-md-6'))->end()
             ->with('Social', array('class' => 'col-md-6'))->end()
-            ->with('Security', array('class' => 'col-md-6'))->end()
         ;
 
         /* @var User $loggedUser */
@@ -149,8 +163,17 @@ class UserAdmin extends OxaAdmin
             )
         ) {
             // get roles with equal or lower priority(code) than you have
-            $roles = $this->getConfigurationPool()->getContainer()->get('doctrine')
-                ->getRepository('OxaSonataUserBundle:Group')->getEqualOrLowerPriorityRoles($loggedUser->getRole()->getCode());
+            $roles = $this->getConfigurationPool()
+                ->getContainer()
+                ->get('doctrine')
+                ->getRepository('OxaSonataUserBundle:Group')
+                ->getEqualOrLowerPriorityRoles($loggedUser->getRole()->getCode())
+            ;
+
+            // add to group zoning
+            $formMapper
+                ->with('Security', array('class' => 'col-md-6'))->end()
+            ;
 
             $formMapper
                 ->with('Security')
@@ -159,6 +182,7 @@ class UserAdmin extends OxaAdmin
                     'choices' => $roles
                 ])
                 ->add('enabled')
+//                ->add('groups')
 //                ->add('realRoles', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;

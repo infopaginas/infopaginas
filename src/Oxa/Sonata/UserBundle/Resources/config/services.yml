@@ -1,6 +1,6 @@
-parameters:
-    oxa.sonata.user.crud.controller.class: Oxa\Sonata\AdminBundle\Controller\CRUDController
-
+#parameters:
+#    oxa.sonata.user.crud.controller.class: Oxa\Sonata\AdminBundle\Controller\CRUDController
+#
 #services:
 #    sonata.user.admin.user:
 #        class: Oxa\Sonata\UserBundle\Admin\UserAdmin

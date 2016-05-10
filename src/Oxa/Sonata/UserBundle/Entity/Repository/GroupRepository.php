@@ -9,6 +9,9 @@ use Doctrine\ORM\Query;
 class GroupRepository extends EntityRepository
 {
     /**
+     * Get roles by its priorities
+     * lower code - higher priority
+     * 
      * @param int $code
      * @return array
      */
@@ -25,5 +28,4 @@ class GroupRepository extends EntityRepository
             ->getResult()
         ;
     }
-
 }

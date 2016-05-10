@@ -36,6 +36,7 @@ class GroupAdmin extends OxaAdmin
     {
         $listMapper
             ->addIdentifier('name')
+            ->add('description')
         ;
 
         $this->addGridActions($listMapper);
@@ -47,7 +48,9 @@ class GroupAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name');
+            ->add('name')
+            ->add('description')
+        ;
     }
 
     /**
@@ -70,7 +73,8 @@ class GroupAdmin extends OxaAdmin
         $showMapper
             ->with('General', array('class' => 'col-md-6'))
             ->add('name')
-            ->add('roleUsers')
+            ->add('description')
+//            ->add('roleUsers')
             ->end();
     }
 
@@ -85,8 +89,7 @@ class GroupAdmin extends OxaAdmin
             ->remove('delete_physical')
             ->remove('create')
             ->remove('restore')
-            ->remove('show')
+//            ->remove('show')
         ;
     }
-    
 }

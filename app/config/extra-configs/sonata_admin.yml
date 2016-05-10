@@ -22,7 +22,6 @@ sonata_admin:
         batch_confirmation:   OxaSonataAdminBundle:CRUD:batch_confirmation.html.twig
     security:
         handler: sonata.admin.security.handler.role
-#        handler: sonata.admin.security.handler.acl
     dashboard:
         groups:
             sonata.admin.group.user:
@@ -31,9 +30,9 @@ sonata_admin:
                 items:
                     - sonata.user.admin.user
                     - sonata.user.admin.group
-            sonata.admin.group.media:
-                label: Media
-                icon: <i class="fa fa-pencil-square-o"></i>
-                items:
-                    - sonata.media.admin.media
-                    - sonata.media.admin.gallery
+#            sonata.admin.group.media:
+#                label: Media
+#                icon: <i class="fa fa-pencil-square-o"></i>
+#                items:
+#                    - sonata.media.admin.media
+#                    - sonata.media.admin.gallery

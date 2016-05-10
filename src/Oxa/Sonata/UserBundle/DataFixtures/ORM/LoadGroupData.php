@@ -34,8 +34,7 @@ class LoadGroupData extends AbstractFixture implements ContainerAwareInterface, 
             Group::CODE_CONSUMER         => 'consumer',
         ];
 
-        foreach ($groupLabelParts as $code => $labelPart)
-        {
+        foreach ($groupLabelParts as $code => $labelPart) {
             // values has to be like 'group_administrator_name' (which is stored in translation file)
             $name = $trans->trans(sprintf('group_%s_name', $labelPart), [], $domain, $locale);
             $description = $trans->trans(sprintf('group_%s_description', $labelPart), [], $domain, $locale);
@@ -75,6 +74,4 @@ class LoadGroupData extends AbstractFixture implements ContainerAwareInterface, 
 
         return $this;
     }
-
-
 }

@@ -73,7 +73,12 @@ class Group extends BaseGroup implements DefaultEntityInterface
     /**
      * @var User
      *
-     * @ORM\OneToMany(targetEntity="Oxa\Sonata\UserBundle\Entity\User", mappedBy="role", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(
+     *     targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
+     *     mappedBy="role", 
+     *     cascade={"persist", "remove"}, 
+     *     orphanRemoval=true
+     *     )
      * @ORM\OrderBy({"createdAt" = "asc"})
      */
     protected $roleUsers;

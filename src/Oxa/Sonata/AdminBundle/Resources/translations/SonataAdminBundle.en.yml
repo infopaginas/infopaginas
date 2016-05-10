@@ -1,6 +1,6 @@
 btn_cancel: Cancel
 edit: Edit
-return_to_list: Return to list
+return_to_list: List
 title_batch_physical_delete_confirmation: Physical delete confirmation
 title_physical_delete: Physical delete
 message_physical_delete_confirmation: Are you sure you want to delete physically this item?
@@ -11,7 +11,7 @@ delete_item: Delete item: "%object%"
 action_copy: Copy
 action_restore: Restore
 action_delete_physical: Physical delete
-
+flash_restore_action_success: Item has been restored
 
 
 
