@@ -15,6 +15,8 @@ list.label_is_active: Is Active
 list.label_description: Description
 
 form.label_role: Role
+form.label_firstname: First Name
+form.label_lastname: Last Name
 
 show.label_firstname: First Name
 show.label_lastname: Last Name
