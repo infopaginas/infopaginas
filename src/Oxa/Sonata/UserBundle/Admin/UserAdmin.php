@@ -84,8 +84,8 @@ class UserAdmin extends OxaAdmin
             ->add('email')
             ->add('role')
             ->add('enabled', null, ['label' => 'filter.label_enabled'], null, ['choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
+                1 => 'filter.label_yes',
+                2 => 'filter.label_no',
             ]])
 //            ->add('isActive', null, [], null, ['choices' => [
 //                1 => 'label_yes',

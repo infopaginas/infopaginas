@@ -3,6 +3,7 @@
 namespace Oxa\Sonata\UserBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\UserBundle\Entity\GroupTranslation;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -60,9 +61,9 @@ class GroupAdmin extends OxaAdmin
     {
         $formMapper
             ->with('General', array('class' => 'col-md-12'))
-                ->add('name')
-                ->add('description')
-            ->end();
+            ->add('name')
+            ->add('description')
+        ;
     }
 
     /**

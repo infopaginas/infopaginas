@@ -6,6 +6,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Oxa\Sonata\UserBundle\Entity\Group;
+use Oxa\Sonata\UserBundle\Entity\GroupTranslation;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
