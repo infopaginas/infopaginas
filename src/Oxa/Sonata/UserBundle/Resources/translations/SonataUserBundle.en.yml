@@ -26,12 +26,12 @@ show.label_enabled: Enabled
 show.label_name: Name
 show.label_description: Description
 
+filter.label_role: Role
 filter.label_yes: Yes
 filter.label_no: No
 filter.label_enabled: Enabled
 filter.label_is_active: Is Active
 filter.label_description: Description
-
 breadcrumb.link: Users
 
 groups: Roles

@@ -84,9 +84,10 @@ class UserAdmin extends OxaAdmin
             ->add('email')
             ->add('role')
             ->add('enabled', null, ['label' => 'filter.label_enabled'], null, ['choices' => [
-                1 => 'filter.label_yes',
-                2 => 'filter.label_no',
-            ]])
+                1 => 'label_yes',
+                2 => 'label_no',
+            ], 'translation_domain' => 'SonataUserBundle'
+            ])
 //            ->add('isActive', null, [], null, ['choices' => [
 //                1 => 'label_yes',
 //                2 => 'label_no',
@@ -105,27 +106,26 @@ class UserAdmin extends OxaAdmin
     {
         $showMapper
             ->with('General')
-                ->add('username')
-                ->add('email')
+            ->add('username')
+            ->add('email')
             ->end()
             ->with('Security')
-                ->add('role')
-                ->add('enabled')
+            ->add('role')
+            ->add('enabled')
 //                ->add('isActive')
             ->end()
             ->with('Profile')
-                ->add('firstname')
-                ->add('lastname')
-                ->add('locale')
+            ->add('firstname')
+            ->add('lastname')
+            ->add('locale')
             ->end()
             ->with('Social')
-                ->add('facebookUid')
-                ->add('facebookName')
-                ->add('twitterUid')
-                ->add('twitterName')
-                ->add('gplusUid')
-                ->add('gplusName')
-            ->end();
+            ->add('facebookUid')
+            ->add('facebookName')
+            ->add('gplusUid')
+            ->add('gplusName')
+            ->end()
+        ;
     }
 
     /**
@@ -204,8 +204,6 @@ class UserAdmin extends OxaAdmin
             ->with('Social')
             ->add('facebookUid')
             ->add('facebookName')
-            ->add('twitterUid')
-            ->add('twitterName')
             ->add('gplusUid')
             ->add('gplusName')
             ->end()
