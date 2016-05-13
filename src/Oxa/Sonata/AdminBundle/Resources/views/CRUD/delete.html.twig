@@ -12,7 +12,7 @@ file that was distributed with this source code.
 {% extends "@SonataAdmin/CRUD/delete.html.twig" %}
 
 {% block navbar_title %}
-    {{ 'delete_item'|trans({'%object%': object}, 'OxaSonataAdmin') }}
+    {{ 'delete_item'|trans({'%object%': object}, 'SonataAdminBundle') }}
 {% endblock %}
 
 {% block content %}
@@ -47,7 +47,7 @@ file that was distributed with this source code.
                     {% if admin.hasRoute('list') and admin.isGranted('LIST', object) %}
                         <a class="btn btn-danger" href="{{ admin.generateUrl('list') }}">
                             <i class="fa fa-minus-circle"></i>
-                            {{ 'btn_cancel'|trans({}, 'OxaSonataAdmin') }}
+                            {{ 'btn_cancel'|trans({}, 'SonataAdminBundle') }}
                         </a>
                     {% endif %}
                 </form>
@@ -61,7 +61,7 @@ file that was distributed with this source code.
         {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>
-                {{ 'return_to_list'|trans({}, 'OxaSonataAdmin') }}
+                {{ 'return_to_list'|trans({}, 'SonataAdminBundle') }}
             </a>
         {% endif %}
     </li>

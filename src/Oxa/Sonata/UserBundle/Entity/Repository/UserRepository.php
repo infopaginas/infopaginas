@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Oxa\Sonata\UserBundle\Entity\Repository;
 
@@ -12,7 +13,7 @@ class UserRepository extends EntityRepository
      *
      * @param object $entity
      */
-    public function deletePhysicalEntity(object $entity)
+    public function deletePhysicalEntity($entity)
     {
         $this->getEntityManager()
             ->createQueryBuilder()

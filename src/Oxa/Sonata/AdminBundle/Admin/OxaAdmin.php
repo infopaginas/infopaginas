@@ -10,37 +10,35 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class OxaAdmin extends BaseAdmin
 {
+    /**
+     * Basic admin configuration
+     */
     public function configure()
     {
         $this->perPageOptions = [10, 25, 50, 100, 250, 500];
+        // custom delete page template
         $this->setTemplate('delete', 'OxaSonataAdminBundle:CRUD:delete.html.twig');
     }
 
+    /**
+     * Add additional actions
+     *
+     * @return array
+     */
     public function getBatchActions()
     {
         $actions = parent::getBatchActions();
 
-        if ($this->hasRoute('delete')) {
-            $actions['delete']['ask_confirmation'] = false;
-        }
-
-        $authorizationChecker = $this->getConfigurationPool()->getContainer()->get('security.authorization_checker');
-
-        if ($authorizationChecker->isGranted('ROLE_PHYSICAL_DELETE_ABLE') && $this->hasRoute('delete_physical')) {
+        // delete from database action
+        if ($this->isGranted('ROLE_PHYSICAL_DELETE_ABLE') && $this->hasRoute('delete_physical')) {
             $actions['delete_physical'] = [
                 'label' => $this->trans('action_delete_physical'),
                 'ask_confirmation' => true
             ];
         }
 
-        if ($this->hasRoute('copy')) {
-            $actions['copy'] = [
-                'label' => $this->trans('action_copy'),
-                'ask_confirmation' => false
-            ];
-        }
-
-        if ($authorizationChecker->isGranted('ROLE_RESTORE_ABLE') && $this->hasRoute('restore')) {
+        // restore deleted record
+        if ($this->isGranted('ROLE_RESTORE_ABLE') && $this->hasRoute('restore')) {
             $actions['restore'] = [
                 'label' => $this->trans('action_restore'),
                 'ask_confirmation' => false
@@ -50,12 +48,18 @@ class OxaAdmin extends BaseAdmin
         return $actions;
     }
 
+    /**
+     * Configure record list 
+     * 
+     * @return \Sonata\AdminBundle\Datagrid\DatagridInterface
+     */
     public function getDatagrid()
     {
-        $container = $this->getConfigurationPool()->getContainer();
-        if ($container->get('security.authorization_checker')->isGranted('ROLE_PHYSICAL_DELETE_ABLE')) {
+        // Display deleted records as well in the list
+        if ($this->isGranted('ROLE_PHYSICAL_DELETE_ABLE')) {
             /* @var \Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter $softDeleteableFilter */
-            $softDeleteableFilter = $container
+            $softDeleteableFilter = $this->getConfigurationPool()
+                ->getContainer()
                 ->get('doctrine.orm.default_entity_manager')
                 ->getFilters()
                 ->getFilter('softdeleteable');
@@ -66,15 +70,16 @@ class OxaAdmin extends BaseAdmin
         return parent::getDatagrid();
     }
 
-    public function getCULabel()
-    {
-        return $this->trans('Section');
-    }
-
+    /**
+     * Add additional routes
+     *
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection
             ->remove('export')
+            ->add('show')
             ->add('delete_physical', null, [
                 '_controller' => 'OxaSonataAdminBundle:CRUD:deletePhysical'
             ])
@@ -82,6 +87,11 @@ class OxaAdmin extends BaseAdmin
             ->add('copy');
     }
 
+    /**
+     * Show all available actions for a record
+     *
+     * @param ListMapper $listMapper
+     */
     protected function addGridActions(ListMapper $listMapper)
     {
         $listMapper->add('_action', 'actions', [
@@ -89,8 +99,7 @@ class OxaAdmin extends BaseAdmin
                 'all_available' => [
                     'template' => 'OxaSonataAdminBundle:CRUD:list__action_delete_physical_able.html.twig'
                 ]
-            ],
-            'translation_domain' => 'OxaSonataUser'
+            ]
         ]);
     }
 }

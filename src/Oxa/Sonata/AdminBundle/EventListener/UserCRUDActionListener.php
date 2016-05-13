@@ -43,8 +43,7 @@ class UserCRUDActionListener
         // set user to created object
         array_map(function ($entity) {
             if ($entity instanceof DefaultEntityInterface) {
-                $entity
-                    ->setCreatedUser($this->user);
+                $entity->setCreatedUser($this->user);
             }
         }, $uow->getScheduledEntityInsertions());
 

@@ -5,6 +5,7 @@ namespace Oxa\Sonata\UserBundle\Admin;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\UserBundle\Admin\Model\GroupAdmin as BaseGroupAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -35,8 +36,9 @@ class GroupAdmin extends OxaAdmin
     {
         $listMapper
             ->addIdentifier('name')
-            ->add('roles')
-            ->add('isActive', null, ['editable' => true]);
+            ->add('description')
+        ;
+
         $this->addGridActions($listMapper);
     }
 
@@ -46,7 +48,9 @@ class GroupAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name');
+            ->add('name')
+            ->add('description')
+        ;
     }
 
     /**
@@ -55,15 +59,9 @@ class GroupAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->with('General', array('class' => 'col-md-6'))
-            ->add('name')
-            ->end()
-            ->with('Security', array('class' => 'col-md-6'))
-            ->add('roles', 'sonata_security_roles', array(
-                'expanded' => true,
-                'multiple' => true,
-                'required' => false,
-            ))
+            ->with('General', array('class' => 'col-md-12'))
+                ->add('name')
+                ->add('description')
             ->end();
     }
 
@@ -75,6 +73,23 @@ class GroupAdmin extends OxaAdmin
         $showMapper
             ->with('General', array('class' => 'col-md-6'))
             ->add('name')
+            ->add('description')
+//            ->add('roleUsers')
             ->end();
+    }
+
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        parent::configureRoutes($collection);
+
+        $collection
+            ->remove('copy')
+            ->remove('batch')
+            ->remove('delete')
+            ->remove('delete_physical')
+            ->remove('create')
+            ->remove('restore')
+//            ->remove('show')
+        ;
     }
 }

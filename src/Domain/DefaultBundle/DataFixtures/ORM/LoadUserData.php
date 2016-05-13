@@ -1,5 +1,5 @@
 <?php
-namespace Oxa\Sonata\UserBundle\DataFixtures\ORM;
+namespace Domain\DefaultBundle\DataFixture\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -18,13 +18,12 @@ class LoadUserData extends AbstractFixture implements FixtureInterface, OrderedF
         // set reference to find this
         /** @var $adminGroup Group*/
         $adminGroup = $this->getReference('group.'.Group::CODE_ADMINISTRATOR);
-        
+
         $user = new User();
-        $user->setEmail('admin@admin.by');
-        $user->setUsername('admin');
-        $user->setPlainPassword('admin');
+        $user->setEmail('admin2@admin.by');
+        $user->setUsername('admin2');
+        $user->setPlainPassword('admin2');
         $user->setRole($adminGroup);
-        $user->setSuperAdmin(true);
         $user->setEnabled(true);
 
         $manager->persist($user);
@@ -38,6 +37,6 @@ class LoadUserData extends AbstractFixture implements FixtureInterface, OrderedF
      */
     public function getOrder()
     {
-        return 1;
+        return 2;
     }
 }

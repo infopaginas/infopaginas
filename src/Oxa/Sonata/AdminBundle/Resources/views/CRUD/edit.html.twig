@@ -66,17 +66,25 @@
                 </button>
             {% endif %}
             <a class="btn btn-danger" style="float: right" href="{{ admin.generateUrl('list') }}"><i
-                        class="fa fa-minus-circle"></i> {{ 'btn_cancel'|trans({}, 'OxaSonataAdmin') }}</a>
+                        class="fa fa-minus-circle"></i> {{ 'btn_cancel'|trans({}, 'SonataAdminBundle') }}</a>
         {% endif %}
     </div>
 {% endblock formactions %}
 
 {% block nav_bar_right %}
     <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('create') and admin.isGranted('CREATE') %}
+            <a href="{{ admin.generateUrl('create') }}">
+                <i class="fa fa-plus-circle"></i>
+                {{ 'link_action_create'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    <li class="dropdown sonata-actions">
         {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>
-                {{ 'return_to_list'|trans({}, 'OxaSonataAdmin') }}
+                {{ 'return_to_list'|trans({}, 'SonataAdminBundle') }}
             </a>
         {% endif %}
     </li>

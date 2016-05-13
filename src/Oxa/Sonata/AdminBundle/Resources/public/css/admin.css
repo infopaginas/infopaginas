@@ -31,6 +31,10 @@ h4.filter_legend:before {
     margin-left: 5px;
 }
 
+h4.filter_legend img {
+    vertical-align: inherit;
+}
+
 .box .box-header h4.box-title.filter_legend {
     padding-left: 7px;
 }

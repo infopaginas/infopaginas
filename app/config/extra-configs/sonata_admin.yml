@@ -29,10 +29,10 @@ sonata_admin:
                 icon: <i class="fa fa-users"></i>
                 items:
                     - sonata.user.admin.user
-                    - sonata.user.admin.group
-            sonata.admin.group.media:
-                label: Media
-                icon: <i class="fa fa-pencil-square-o"></i>
-                items:
-                    - sonata.media.admin.media
-                    - sonata.media.admin.gallery
+#                    - sonata.user.admin.group
+#            sonata.admin.group.media:
+#                label: Media
+#                icon: <i class="fa fa-pencil-square-o"></i>
+#                items:
+#                    - sonata.media.admin.media
+#                    - sonata.media.admin.gallery
