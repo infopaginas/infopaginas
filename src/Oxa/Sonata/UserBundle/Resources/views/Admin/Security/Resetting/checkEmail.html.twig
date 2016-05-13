@@ -1,0 +1,15 @@
+{% extends '@OxaSonataUser/Admin/Security/login.html.twig' %}
+
+{% block sonata_wrapper %}
+    <div class="form-box" id="login-box">
+        <div class="header">{{ 'title_user_resetting'|trans({}, 'SonataUserBundle') }}</div>
+        <div class="body bg-gray">
+            <p>{{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle') }}</p>
+        </div>
+        <div class="footer">
+            <p><a href="{{ path('sonata_user_admin_security_login') }}"
+                  class="text-center">{{ 'title_user_authentication'|trans({}, 'SonataUserBundle') }}</a></p>
+        </div>
+    </div>
+{% endblock sonata_wrapper %}
+
