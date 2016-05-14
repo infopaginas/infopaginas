@@ -10,3 +10,14 @@ services:
         arguments: [@security.token_storage]
         tags:
             - {name: doctrine.event_listener, event: onFlush, priority: 1}
+
+    oxa.sonata.manager.admin_manager:
+        class: Oxa\Sonata\AdminBundle\Manager\AdminManager
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    oxa.sonata.twig.admin_extension:
+        class: Oxa\Sonata\AdminBundle\Twig\AdminExtension
+        arguments: [@oxa.sonata.manager.admin_manager]
+        tags:
+            - {name: twig.extension, alias: admin_extension}
