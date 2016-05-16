@@ -1,0 +1,28 @@
+{% extends 'SonataAdminBundle:CRUD:base_show.html.twig' %}
+
+{% block nav_bar_right %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('create') and admin.isGranted('CREATE') %}
+            <a href="{{ admin.generateUrl('create') }}">
+                <i class="fa fa-plus-circle"></i>
+                {{ 'link_action_create'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('edit') and admin.isGranted('EDIT') %}
+            <a href="{{ admin.generateUrl('edit', {'id': admin.subject.id}) }}">
+                <i class="fa fa-edit"></i>
+                {{ 'edit'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
+            <a href="{{ admin.generateUrl('list') }}">
+                <i class="fa fa-list"></i>
+                {{ 'return_to_list'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+{% endblock %}

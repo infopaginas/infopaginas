@@ -1,18 +1,23 @@
 fos_user:
     db_driver:      orm # can be orm or odm
     firewall_name:  main
-    user_class:     Application\Sonata\UserBundle\Entity\User
+    user_class:     Oxa\Sonata\UserBundle\Entity\User
     group:
-        group_class:   Application\Sonata\UserBundle\Entity\Group
+        group_class:   Oxa\Sonata\UserBundle\Entity\Group
         group_manager: sonata.user.orm.group_manager
     service:
         user_manager: sonata.user.orm.user_manager
 
 sonata_user:
+    class:
+        user: Oxa\Sonata\UserBundle\Entity\User
+        group: Oxa\Sonata\UserBundle\Entity\Group
     admin:
         user:
-            class: Application\Sonata\UserBundle\Admin\UserAdmin
-#            controller: AppBundle:SonataAdmin/DefaultEntityCRUD
+            class: Oxa\Sonata\UserBundle\Admin\UserAdmin
+            controller: OxaSonataUserBundle:CRUD
+            translation: SonataUserBundle
         group:
-            class: Application\Sonata\UserBundle\Admin\GroupAdmin
-#            controller: AppBundle:SonataAdmin/DefaultEntityCRUD
+            class: Oxa\Sonata\UserBundle\Admin\GroupAdmin
+            controller: OxaSonataUserBundle:CRUD
+            translation: SonataUserBundle

@@ -1,0 +1,55 @@
+.sonata-ba-list-field-header-actions {
+    width: 183px;
+}
+
+.sonata-ba-list-field-header-boolean {
+    width: 60px;
+}
+
+.fa.pull-right {
+    margin-left: 0.3em;
+    margin-top: 3px;
+}
+
+.sidebar .sidebar-menu > li > a {
+    display: block;
+    padding: 15px 0 15px 10px;
+}
+
+h4.filter_legend:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    margin-top: -2px;
+    margin-left: 5px;
+}
+
+h4.filter_legend img {
+    vertical-align: inherit;
+}
+
+.box .box-header h4.box-title.filter_legend {
+    padding-left: 7px;
+}
+
+.width98 {
+    width: 98%;
+}
+
+#filter-switch {
+    position: absolute;
+    top: -8px;
+    right: -36px;
+    z-index: 2
+}
+
+.label-removed {
+    color: #9d0505;
+}
