@@ -10,4 +10,5 @@ namespace Domain\BusinessBundle\Repository;
  */
 class TaskRepository extends \Doctrine\ORM\EntityRepository
 {
+    const SLUG = 'DomainBusinessBundle:Task';
 }

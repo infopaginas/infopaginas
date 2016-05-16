@@ -1,4 +1,4 @@
 services:
-#    domain_business.example:
-#        class: Domain\BusinessBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
+    domain_business.manager.tasks:
+        class: Domain\BusinessBundle\Manager\TasksManager
+        arguments: ['@doctrine.orm.entity_manager']

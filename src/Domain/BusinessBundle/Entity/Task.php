@@ -32,43 +32,54 @@ class Task
      * @DoctrineAssert\Enum(entity="Domain\BusinessBundle\DBAL\Types\TaskType")
      * @Assert\NotBlank()
      */
-    private $type;
+    protected $type;
 
     /**
      * @ORM\Column(name="status", type="TaskStatusType", nullable=false)
      * @DoctrineAssert\Enum(entity="Domain\BusinessBundle\DBAL\Types\TaskStatusType")
      * @Assert\NotBlank()
      */
-    private $status;
+    protected $status;
 
     /**
      * @ORM\Column(name="reject_reason", type="text", nullable=true)
      */
-    private $rejectReason;
+    protected $rejectReason;
 
     /**
      * @ORM\OneToOne(targetEntity="BusinessProfile")
      * @ORM\JoinColumn(name="business_profile_od", referencedColumnName="id", onDelete="SET NULL")
      */
-    private $businessProfile;
+    protected $businessProfile;
 
     /**
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", inversedBy="tasks")
      * @ORM\JoinColumn(name="reviewer_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    private $reviewer;
+    protected $reviewer;
 
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
      */
-    private $modifiedAt;
+    protected $modifiedAt;
+
+    /**
+     * Task constructor.
+     * By default task should be marked as "OPEN"
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        $this->status = TaskStatusType::TASK_STATUS_OPEN;
+    }
 
     /**
      * Get id

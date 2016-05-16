@@ -10,6 +10,12 @@ namespace Domain\BusinessBundle\DBAL\Types;
 
 use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
 
+/**
+ * Class TaskType
+ * Provide 'type' field enum collection for Task Entity
+ *
+ * @package Domain\BusinessBundle\DBAL\Types
+ */
 final class TaskType extends AbstractEnumType
 {
     const TASK_PROFILE_CREATE = 'PROFILE_CREATE';
