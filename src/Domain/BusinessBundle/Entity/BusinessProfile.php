@@ -32,4 +32,3 @@ class BusinessProfile
         return $this->id;
     }
 }
-

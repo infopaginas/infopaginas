@@ -93,7 +93,6 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
             ->getEntityChangeSet($args->getEntity());
 
         if (array_key_exists(UserRoleInterface::ROLE_PROPERTY_NAME, $changedFields)) {
-
             $this->updateRoleGroup();
 
             // persist changes

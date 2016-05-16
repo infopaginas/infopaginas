@@ -49,8 +49,8 @@ class OxaAdmin extends BaseAdmin
     }
 
     /**
-     * Configure record list 
-     * 
+     * Configure record list
+     *
      * @return \Sonata\AdminBundle\Datagrid\DatagridInterface
      */
     public function getDatagrid()

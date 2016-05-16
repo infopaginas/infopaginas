@@ -206,4 +206,3 @@ class Task
         return $this;
     }
 }
-
