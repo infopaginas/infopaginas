@@ -1,4 +1,0 @@
-services:
-#    domain_default.example:
-#        class: Domain\DefaultBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]

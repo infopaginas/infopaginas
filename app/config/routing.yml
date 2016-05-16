@@ -1,7 +1,6 @@
-domain_default:
-    resource: "@DomainDefaultBundle/Controller/"
-    type:     annotation
-    prefix:   /
+domain_business:
+    resource: "@DomainBusinessBundle/Resources/config/routing.yml"
+    prefix:   /business
 
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
