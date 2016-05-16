@@ -41,6 +41,7 @@ class AppKernel extends Kernel
             new Sonata\MediaBundle\SonataMediaBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Sonata\IntlBundle\SonataIntlBundle(),
+            new Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
