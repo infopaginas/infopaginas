@@ -13,6 +13,7 @@ use Oxa\Sonata\UserBundle\Model\UserRoleInterface;
 use Sonata\UserBundle\Entity\BaseUser as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Domain\BusinessBundle\Entity\Task;
 
 /**
  * @ORM\Table(name="fos_user_user")
@@ -39,6 +40,20 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
      */
     protected $role;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="reviewer")
+     */
+    protected $tasks;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        parent::__construct();
+    }
 
     /**
      * Set role with group permissions
@@ -103,5 +118,39 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->addGroup($this->getRole());
         
         return $this;
+    }
+
+    /**
+     * Add order
+     *
+     * @param Task $task
+     *
+     * @return User
+     */
+    public function addTask(Task $task)
+    {
+        $this->tasks[] = $task;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param Task $task
+     */
+    public function removeTask(Task $task)
+    {
+        $this->tasks->removeElement($task);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
     }
 }
