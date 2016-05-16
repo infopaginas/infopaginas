@@ -41,6 +41,16 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     protected $role;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", 
+     *     mappedBy="user", 
+     *     cascade={"persist", "remove"}, 
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $businessProfiles;
+
+    /**
      * Set role with group permissions
      *
      * @param Group $role

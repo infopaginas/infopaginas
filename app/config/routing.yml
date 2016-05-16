@@ -1,3 +1,8 @@
+domain_business:
+    resource: "@DomainBusinessBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 domain_default:
     resource: "@DomainDefaultBundle/Controller/"
     type:     annotation

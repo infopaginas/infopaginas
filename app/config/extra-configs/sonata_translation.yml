@@ -4,8 +4,4 @@ sonata_translation:
     # here enable the types you need
     gedmo:
         enabled: true
-#    knplabs:
-#        enabled: true
-    #phpcr:
-    #    enabled: true
 

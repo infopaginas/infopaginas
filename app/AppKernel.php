@@ -49,6 +49,7 @@ class AppKernel extends Kernel
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
             
             new Domain\DefaultBundle\DomainDefaultBundle(),
+            new Domain\BusinessBundle\DomainBusinessBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
