@@ -17,12 +17,16 @@ use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
 /**
+ * Used to customise admin
+ * 
  * Class AdminManager
  * @package Oxa\Sonata\AdminBundle\Manager
  */
 class AdminManager extends DefaultManager
 {
     /**
+     * Get object even from deleted(soft) records if $disableSoftdelete param equals True
+     *
      * @param string $entityClass
      * @param int $id
      * @param bool $disableSoftdelete
@@ -32,9 +36,10 @@ class AdminManager extends DefaultManager
      */
     public function getObjectByClassName(string $entityClass, int $id, $disableSoftdelete = false)
     {
-        if ($disableSoftdelete)
+        if ($disableSoftdelete) {
             $this->disableDeleteableListener($entityClass);
-
+        }
+        
         $this->checkIfEntityClassIsValid($entityClass);
 
         return $this->getEntityManager()
@@ -48,13 +53,16 @@ class AdminManager extends DefaultManager
     }
 
     /**
+     * Delete record completely
+     *
      * @param $entity
      * @throws InvalidArgumentException
      */
     public function deletePhysicalEntity(DeleteableEntityInterface $entity)
     {
         // execute query here (not in repository),
-        // be course a repository requires to be related on mapped entity
+        // cuz a repository requires to be related on mapped entity
+        // but here entity is not specified
         $this->getEntityManager()
             ->createQueryBuilder()
             ->delete(get_class($entity), 'e')
@@ -66,31 +74,8 @@ class AdminManager extends DefaultManager
     }
 
     /**
-     * @param $entity
-     * @throws InvalidArgumentException
-     */
-    public function remove(DeleteableEntityInterface $entity)
-    {
-        $this->getEntityManager()->remove($entity);
-    }
-
-    /**
-     * @param $entity
-     */
-    public function persist($entity)
-    {
-        $this->getEntityManager()->persist($entity);
-    }
-
-    /**
+     * Restore deleted(soft) record
      *
-     */
-    public function flush()
-    {
-        $this->getEntityManager()->flush();
-    }
-
-    /**
      * @param $entity
      * @throws InvalidArgumentException
      */
@@ -98,6 +83,7 @@ class AdminManager extends DefaultManager
     {
         // execute query here (not in repository),
         // be course a repository requires to be related on mapped entity
+        // but here entity is not specified
         $this->getEntityManager()
             ->createQueryBuilder()
             ->update(get_class($entity), 'e')
@@ -110,12 +96,27 @@ class AdminManager extends DefaultManager
     }
 
     /**
+     * Restore deleted(soft) record
+     *
+     * @param string $entityClass
+     * @param int $id
+     * @param bool $disableSoftdelete
+     */
+    public function restoreEntityByClassName(string $entityClass, int $id, $disableSoftdelete = false)
+    {
+        $object = $this->getObjectByClassName($entityClass, $id, $disableSoftdelete);
+        $this->restoreEntity($object);
+    }
+
+    /**
+     * Clone and persist object
+     *
      * @param CopyableEntityInterface $entity
      * @return CopyableEntityInterface
      * @throws \Throwable
      * @throws \TypeError
      */
-    public function cloneEntity(CopyableEntityInterface $entity)
+    protected function cloneEntityObject(CopyableEntityInterface $entity)
     {
         $propertyAccessor = $this->getContainer()->get('property_accessor');
         $copyMark = $this->getContainer()->get('translator')->trans('copy_', [], 'SonataAdminBundle');
@@ -125,12 +126,27 @@ class AdminManager extends DefaultManager
         $propertyAccessor->setValue($clone, $entity->getMarkCopyPropertyName(), sprintf('%s%s', $copyMark, $value));
 
         $this->getEntityManager()->persist($clone);
-//        $this->getEntityManager()->flush();
 
         return $clone;
     }
 
     /**
+     * Clone object with all relations
+     *
+     * @param CopyableEntityInterface $entity
+     * @return CopyableEntityInterface
+     * @throws \Throwable
+     * @throws \TypeError
+     */
+    public function cloneEntity(CopyableEntityInterface $entity)
+    {
+        $this->cloneEntityObject($entity);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Disable Deleteable Listener to work with deleted object as well
+     *
      * @param $entityClass
      */
     public function disableDeleteableListener(string $entityClass)
@@ -148,6 +164,8 @@ class AdminManager extends DefaultManager
     }
 
     /**
+     * Check if entity has relation with other entities
+     *
      * @param $entity
      * @return array
      */
@@ -171,6 +189,8 @@ class AdminManager extends DefaultManager
     }
 
     /**
+     * Check if such entity class really exists
+     * 
      * @param $entityClass
      * @throws InvalidArgumentException
      */
@@ -181,55 +201,77 @@ class AdminManager extends DefaultManager
             ->getMetadataDriverImpl()
             ->getAllClassNames();
 
-        if (!in_array($entityClass, $mappedEntities))
+        if (!in_array($entityClass, $mappedEntities)) {
             throw new InvalidArgumentException(sprintf('Entity "%s" does not exist', $entityClass));
+        }
     }
 
     /**
+     * Delete records softly
+     *
      * @param array $entityArray
      */
     public function removeEntities(array $entityArray = [])
     {
         foreach ($entityArray as $entity) {
-            if ($entity instanceof DeleteableEntityInterface && is_null($entity->getDeletedAt()))
+            if ($entity instanceof DeleteableEntityInterface && is_null($entity->getDeletedAt())) {
                 $this->getEntityManager()->remove($entity);
+            }
         }
+        
+        $this->getEntityManager()->flush();
     }
 
     /**
+     * Delete records completely
+     *
      * @param array $entityArray
      */
-    public function physicalDeleteEntities(array $entityArray = [])
+    public function physicalDeleteEntities(array $entityArray = [], $disableSoftdelete = false)
     {
         foreach ($entityArray as $entity) {
-            if ($entity instanceof DeleteableEntityInterface)
+            if ($disableSoftdelete) {
+                $this->disableDeleteableListener(get_class($entity));
+            }
+
+            if ($entity instanceof DeleteableEntityInterface) {
                 $this->deletePhysicalEntity($entity);
+            }
         }
     }
 
     /**
+     * Restore deleted(soft) records
+     *
      * @param array $entityArray
      */
-    public function restoreEntities(array $entityArray = [])
+    public function restoreEntities(array $entityArray = [], $disableSoftdelete = false)
     {
-        // TODO Flash one query
         foreach ($entityArray as $entity) {
+            if ($disableSoftdelete) {
+                $this->disableDeleteableListener(get_class($entity));
+            }
+            
             if ($entity instanceof DeleteableEntityInterface && !is_null($entity->getDeletedAt())) {
                 $this->restoreEntity($entity);
             }
-
         }
     }
 
     /**
+     * Clone objects with all relations
+     * 
      * @param array $entityArray
      */
     public function cloneEntities(array $entityArray = [])
     {
         foreach ($entityArray as $entity) {
-            if ($entity instanceof CopyableEntityInterface)
-                $this->cloneEntity($entity);
+            if ($entity instanceof CopyableEntityInterface) {
+                $this->cloneEntityObject($entity);
+            }
         }
+        
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -252,5 +294,4 @@ class AdminManager extends DefaultManager
             ->getQuery()
             ->getResult();
     }
-
 }

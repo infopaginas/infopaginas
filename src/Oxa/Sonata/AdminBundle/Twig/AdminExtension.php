@@ -2,50 +2,68 @@
 
 namespace Oxa\Sonata\AdminBundle\Twig;
 
-use Oxa\Sonata\AdminBundle\Manager\AdminManager;
+use Doctrine\ORM\EntityManager;
 
 /**
+ * Create new twig functions
+ * 
  * Class AdminExtension
  * @package Oxa\Sonata\AdminBundle\Twig
  */
 class AdminExtension extends \Twig_Extension
 {
-	/**
-	 * @var AdminManager
-	 */
-	private $adminManager;
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
-	/**
-	 * AdminExtension constructor.
-	 * @param AdminManager $adminManager
-	 */
-	public function __construct(AdminManager $adminManager)
-	{
-		$this->adminManager = $adminManager;
-	}
+    /**
+     * AdminExtension constructor.
+     * @param EntityManager $entityManager
+     */
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
 
-	/**
-	 * Returns the name of the extension.
-	 *
-	 * @return string The extension name
-	 */
-	public function getName()
-	{
-		return 'admin_extension';
-	}
+    /**
+     * Returns the name of the extension.
+     *
+     * @return string The extension name
+     */
+    public function getName()
+    {
+        return 'admin_extension';
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getFunctions()
-	{
-		return [
-			'get_object_list' => new \Twig_SimpleFunction('get_object_list', [$this, 'getObjectList'])
-		];
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getFunctions()
+    {
+        return [
+            'get_object_list' => new \Twig_SimpleFunction('get_object_list', [$this, 'getObjectList'])
+        ];
+    }
 
-	public function getObjectList($entityClass, array $idList)
-	{
-		return $this->adminManager->getObjectList($entityClass, $idList);
-	}
+    /**
+     * Get object list by ids
+     *
+     * @param $entityClass
+     * @param array $idList
+     * @return array
+     */
+    public function getObjectList($entityClass, array $idList)
+    {
+        $qb = $this->entityManager
+            ->getRepository($entityClass)
+            ->createQueryBuilder('o');
+
+        return $qb
+            ->where(
+                $qb->expr()->in('o.id', $idList)
+            )
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -18,6 +18,6 @@ services:
 
     oxa.sonata.twig.admin_extension:
         class: Oxa\Sonata\AdminBundle\Twig\AdminExtension
-        arguments: [@oxa.sonata.manager.admin_manager]
+        arguments: [@doctrine.orm.entity_manager]
         tags:
             - {name: twig.extension, alias: admin_extension}

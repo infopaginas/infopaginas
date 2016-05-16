@@ -8,7 +8,6 @@
 
 namespace Oxa\Sonata\AdminBundle\Model\Manager;
 
-
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -43,5 +42,4 @@ class DefaultManager implements ContainerAwareInterface
     {
         return $this->getContainer()->get('doctrine.orm.default_entity_manager');
     }
-
 }

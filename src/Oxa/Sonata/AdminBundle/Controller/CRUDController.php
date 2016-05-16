@@ -1,9 +1,7 @@
 <?php
-declare(strict_types=1);
 
 namespace Oxa\Sonata\AdminBundle\Controller;
 
-use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
@@ -12,18 +10,21 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
+ * Customize sonata admin crud
+ * 
  * Class CRUDController
  * @package Oxa\Sonata\AdminBundle\Controller
  */
 class CRUDController extends BaseSonataCRUDController
 {
     /**
+     * Delete record completely
+     * 
      * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
      */
     public function deletePhysicalAction(Request $request)
@@ -51,6 +52,8 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Restore softdeleted record
+     *
      * @Security("is_granted('ROLE_RESTORE_ABLE')")
      */
     public function restoreAction(Request $request)
@@ -58,9 +61,7 @@ class CRUDController extends BaseSonataCRUDController
         $objectId = ($request->get('id') != null) ? intval($request->get('id')) : $request->get('id');
 
         $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $object = $adminManager->getObjectByClassName($this->admin->getClass(), $objectId, true);
-
-        $adminManager->restoreEntity($object);
+        $adminManager->restoreEntityByClassName($this->admin->getClass(), $objectId, true);
 
         $this->addFlash(
             'sonata_flash_success',
@@ -72,14 +73,15 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Copy record with oll relations
+     * 
      * @param Request $request
      * @return RedirectResponse
      */
     public function copyAction(Request $request)
     {
-        $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-
         try {
+            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
             $adminManager->cloneEntity($this->admin->getSubject());
             $this->addFlash(
                 'sonata_flash_success',
@@ -97,13 +99,14 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Delete records completely
+     * 
      * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
      */
     public function batchActionDeletePhysical(ProxyQuery $query)
     {
         $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $adminManager->disableDeleteableListener($this->admin->getClass());
-        $adminManager->physicalDeleteEntities($query->execute());
+        $adminManager->physicalDeleteEntities($query->execute(), true);
 
         $this->addFlash(
             'sonata_flash_success',
@@ -115,14 +118,14 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Restore softdeleted records
+     * 
      * @Security("is_granted('ROLE_RESTORE_ABLE')")
      */
     public function batchActionRestore(ProxyQuery $query)
     {
         $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $adminManager->disableDeleteableListener($this->admin->getClass());
-        $adminManager->restoreEntities($query->execute());
-        $adminManager->flush();
+        $adminManager->restoreEntities($query->execute(), true);
 
         $this->addFlash(
             'sonata_flash_success',
@@ -134,16 +137,16 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Copy records
+     * 
      * @param ProxyQuery $query
      * @return RedirectResponse
      */
     public function batchActionCopy(ProxyQuery $query)
     {
-        $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-
         try {
+            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
             $adminManager->cloneEntities($query->execute());
-            $adminManager->flush();
 
             $this->addFlash(
                 'sonata_flash_success',
@@ -157,16 +160,16 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Delete(soft) records
+     * 
      * @param ProxyQueryInterface $query
      * @return RedirectResponse
      */
     public function batchActionDelete(ProxyQueryInterface $query)
     {
-        $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-
         try {
+            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
             $adminManager->removeEntities($query->execute());
-            $adminManager->flush();
 
             $this->addFlash('sonata_flash_success', 'flash_batch_delete_success');
         } catch (\Exception $e) {
@@ -177,7 +180,7 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
-     * Save filter params if they were set
+     * Keep filter params if they were set
      * 
      * @return RedirectResponse
      */
@@ -194,6 +197,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Delete action.
+     * Action is large to keep extended methos structure
      *
      * @param int|string|null $id
      *
@@ -230,7 +234,7 @@ class CRUDController extends BaseSonataCRUDController
                     }
                     $this->addFlash(
                         'sonata_flash_success',
-                        $this->admin->trans(
+                        $this->get('translator')->trans(
                             'flash_delete_success',
                             array('%name%' => $this->escapeHtml($this->admin->toString($object))),
                             'SonataAdminBundle'
@@ -273,6 +277,8 @@ class CRUDController extends BaseSonataCRUDController
     }
 
     /**
+     * Log flush errors
+     * 
      * @param ModelManagerException $e
      */
     private function logModelManagerException(ModelManagerException $e)
