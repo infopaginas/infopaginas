@@ -38,3 +38,14 @@ sonata_admin:
 #                items:
 #                    - sonata.media.admin.media
 #                    - sonata.media.admin.gallery
+            domain.admin.group.business:
+                label: Businesses
+                icon: <i class="fa fa-table"></i>
+                items:
+                    - domain_business.admin.business_profile
+                    - domain_business.admin.area
+                    - domain_business.admin.tag
+                    - domain_business.admin.brand
+                    - domain_business.admin.payment_method
+                    - domain_business.admin.subscription
+                    - domain_business.admin.category

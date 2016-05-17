@@ -146,22 +146,33 @@ class UserAdmin extends OxaAdmin
 
         /* @var User $user */
         $user = $this->getSubject();
+        
+        $editUserRoleAccess = false;
+        $createUserRoleAccess = false;
+        
+        // check access an edit page
+        if (
+            $user->getRole() != null &&
+            $loggedUser->getRole()->getCode() <= $user->getRole()->getCode() &&
+            $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
+            $loggedUser->getId() != $user->getId()
+        ) {
+            $editUserRoleAccess = true;
+        }
+
+        // check access an create page
+        if (
+            $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
+            $user->getRole() == null
+        ) {
+            $createUserRoleAccess = true;
+        }
 
         // allowed to edit user's security data:
         // - content_managers and administrators
         // - if your priority higher than user's (smaller number higher)
         // - if it's not your profile
-        if (
-            (
-                $user->getRole() != null &&
-                $loggedUser->getRole()->getCode() <= $user->getRole()->getCode() &&
-                $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
-                $loggedUser->getId() != $user->getId()
-            ) || (
-                $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
-                $user->getRole() == null
-            )
-        ) {
+        if ( $editUserRoleAccess || $createUserRoleAccess ) {
             // get roles with equal or lower priority(code) than you have
             $roles = $this->getConfigurationPool()
                 ->getContainer()

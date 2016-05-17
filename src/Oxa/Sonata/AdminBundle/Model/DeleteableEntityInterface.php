@@ -13,6 +13,7 @@ use Oxa\Sonata\UserBundle\Entity\User;
 interface DeleteableEntityInterface
 {
     const DELETED_USER_PROPERTY_NAME = 'deletedUser';
+    const DELETED_AT_PROPERTY_NAME = 'deletedAt';
 
     /**
      * Sets deletedAt.
@@ -40,4 +41,9 @@ interface DeleteableEntityInterface
      * @return User
      */
     public function getDeletedUser();
+
+    /**
+     * @return mixed
+     */
+    public function getId();
 }

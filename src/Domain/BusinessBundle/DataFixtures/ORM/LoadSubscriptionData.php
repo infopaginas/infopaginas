@@ -1,16 +1,22 @@
 <?php
-namespace Oxa\Sonata\UserBundle\DataFixtures\ORM;
+namespace Domain\BusinessBundle\DataFixture\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Domain\BusinessBundle\Entity\Area;
+use Domain\BusinessBundle\Entity\Brand;
+use Domain\BusinessBundle\Entity\PaymentMethod;
+use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Entity\Tag;
+use Domain\BusinessBundle\Model\SubscriptionInterface;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadUserData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class LoadSubscriptionData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -18,29 +24,33 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
     protected $container;
 
     /**
+     * @var ObjectManager
+     */
+    protected $manager;
+
+    /**
      * {@inheritDoc}
      */
     public function load(ObjectManager $manager)
     {
-        // set reference to find this
-        /** @var $adminGroup Group*/
-        $adminGroup = $this->getReference('group.'.Group::CODE_ADMINISTRATOR);
-        
-        $user = new User();
-        $user->setEmail('admin@admin.by');
-        $user->setUsername('admin');
-        $user->setPlainPassword('admin');
-        $user->setRole($adminGroup);
-        $user->setSuperAdmin(true);
-        $user->setEnabled(true);
+        $this->manager = $manager;
 
-        // set reference to find this
-        $this->addReference('user.'.$user->getUsername(), $user);
+        $data = Subscription::getCodes();
 
-        $manager->persist($user);
+        foreach ($data as $code => $value) {
+            $object = new Subscription();
+            $object->setName($value);
+            $object->setCode($code);
+            $this->manager->persist($object);
+
+            // set reference to find this
+            $this->addReference('subscription.'.$code, $object);
+        }
+
         $manager->flush();
-
     }
+
+
 
     /**
      * Get the order of this fixture
@@ -49,7 +59,7 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
      */
     public function getOrder()
     {
-        return 1;
+        return 4;
     }
 
     /**

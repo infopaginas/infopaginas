@@ -1,4 +1,42 @@
 services:
-#    domain_business.example:
-#        class: Domain\BusinessBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
+    domain_business.admin.area:
+        class: Domain\BusinessBundle\Admin\AreaAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Area, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Areas}
+
+    domain_business.admin.tag:
+        class: Domain\BusinessBundle\Admin\TagAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Tag, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Tags}
+
+    domain_business.admin.brand:
+        class: Domain\BusinessBundle\Admin\BrandAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Brand, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Brands}
+
+    domain_business.admin.payment_method:
+        class: Domain\BusinessBundle\Admin\PaymentMethodAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\PaymentMethod, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Payment Methods}
+
+    domain_business.admin.subscription:
+        class: Domain\BusinessBundle\Admin\SubscriptionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Subscription, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
+
+    domain_business.admin.category:
+        class: Domain\BusinessBundle\Admin\CategoryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Category, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Categories}
+
+    domain_business.admin.business_profile:
+        class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles}

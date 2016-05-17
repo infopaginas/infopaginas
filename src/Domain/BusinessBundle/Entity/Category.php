@@ -25,14 +25,14 @@ class Category implements DefaultEntityInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string - Category name
      *
      * @ORM\Column(name="name", type="string", length=100)
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\ManyToMany(
@@ -52,5 +52,74 @@ class Category implements DefaultEntityInterface
     {
         return $this->id;
     }
-}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
+    public function __toString()
+    {
+        return ($this->getName()) ?: 'New category';
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Category
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Category
+     */
+    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles->removeElement($businessProfile);
+    }
+
+    /**
+     * Get businessProfiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
+    }
+}
