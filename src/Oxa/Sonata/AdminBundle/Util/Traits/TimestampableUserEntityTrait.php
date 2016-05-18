@@ -2,7 +2,6 @@
 
 namespace Oxa\Sonata\AdminBundle\Util\Traits;
 
-
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**

@@ -1,0 +1,3 @@
+#domain_business_default_index:
+#    path:     /
+#    defaults: { _controller: DomainBusinessBundle:Default:index }

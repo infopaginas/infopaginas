@@ -81,9 +81,9 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
      * @var User
      *
      * @ORM\OneToMany(
-     *     targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
-     *     mappedBy="role", 
-     *     cascade={"persist", "remove"}, 
+     *     targetEntity="Oxa\Sonata\UserBundle\Entity\User",
+     *     mappedBy="role",
+     *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
      * @ORM\OrderBy({"createdAt" = "asc"})
@@ -191,5 +191,15 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
     public function getRoleUsers()
     {
         return $this->roleUsers;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation
+     */
+    public function removeTranslation(\Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

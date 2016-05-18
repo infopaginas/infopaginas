@@ -90,7 +90,6 @@ class GroupAdmin extends OxaAdmin
             ->remove('delete_physical')
             ->remove('create')
             ->remove('restore')
-//            ->remove('show')
         ;
     }
 }

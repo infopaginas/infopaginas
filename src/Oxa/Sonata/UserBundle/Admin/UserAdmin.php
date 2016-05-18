@@ -236,12 +236,4 @@ class UserAdmin extends OxaAdmin
     {
         return $this->userManager;
     }
-
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        parent::configureRoutes($collection);
-
-        $collection
-            ->remove('copy');
-    }
 }

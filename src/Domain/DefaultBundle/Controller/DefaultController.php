@@ -13,7 +13,6 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function indexAction()
     {

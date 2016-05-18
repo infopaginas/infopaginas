@@ -260,9 +260,11 @@ class CRUDController extends BaseSonataCRUDController
             } else {
                 $this->addFlash(
                     'sonata_flash_error',
-                    $this->admin->trans(
+                    $this->get('translator')->trans(
                         'flash_delete_error_rel',
-                        array('%fields%' => implode(',', $existDependentFields))
+                        array('%fields%' => implode(',', $existDependentFields),
+                        'SonataAdminBundle'
+                        )
                     )
                 );
             }

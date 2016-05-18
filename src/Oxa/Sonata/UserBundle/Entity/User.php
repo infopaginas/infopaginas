@@ -3,7 +3,7 @@
 namespace Oxa\Sonata\UserBundle\Entity;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\AvailableUserEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DeleteableUserEntityTrait;
@@ -13,6 +13,7 @@ use Oxa\Sonata\UserBundle\Model\UserRoleInterface;
 use Sonata\UserBundle\Entity\BaseUser as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Domain\BusinessBundle\Entity\Task\Task;
 
 /**
  * @ORM\Table(name="fos_user_user")
@@ -35,20 +36,52 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     /**
      * @var Group
      *
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\Group", inversedBy="role_users")
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\Group", inversedBy="roleUsers")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
      */
     protected $role;
 
     /**
+     * @var BusinessProfile[]
+     * 
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", 
      *     mappedBy="user", 
-     *     cascade={"persist", "remove"}, 
-     *     orphanRemoval=true
+     *     cascade={"persist", "remove"}
      *     )
      */
     protected $businessProfiles;
+    
+    /**
+     * @var Task[]
+     * 
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task\Task", mappedBy="reviewer")
+     */
+    protected $tasks;
+
+    /**
+     * @var BusinessProfile[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove"}
+     *     )
+     */
+    protected $businessReviews;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Set role with group permissions
@@ -88,7 +121,6 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
             ->getEntityChangeSet($args->getEntity());
 
         if (array_key_exists(UserRoleInterface::ROLE_PROPERTY_NAME, $changedFields)) {
-
             $this->updateRoleGroup();
 
             // persist changes
@@ -113,5 +145,73 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->addGroup($this->getRole());
         
         return $this;
+    }
+
+    /**
+     * Add order
+     *
+     * @param Task $task
+     *
+     * @return User
+     */
+    public function addTask(Task $task)
+    {
+        $this->tasks[] = $task;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param Task $task
+     */
+    public function removeTask(Task $task)
+    {
+        $this->tasks->removeElement($task);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return User
+     */
+    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles->removeElement($businessProfile);
+    }
+
+    /**
+     * Get businessProfiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
     }
 }

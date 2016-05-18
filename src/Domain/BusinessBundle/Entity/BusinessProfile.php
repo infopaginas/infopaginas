@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Entity\Task\Task;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -41,9 +43,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var User - Business owner
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
      *     inversedBy="businessProfiles", 
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
 
@@ -205,6 +207,22 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $slug;
 
+    /**
+     * @var Task[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task\Task", mappedBy="businessProfile")
+     */
+    protected $tasks;
+
+    /**
+     * @var BusinessReview[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $businessReviews;
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -224,6 +242,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         return $this->id;
     }
+
     /**
      * Constructor
      */
@@ -234,6 +253,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->brands = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -812,5 +832,73 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getPaymentMethods()
     {
         return $this->paymentMethods;
+    }
+
+    /**
+     * Add task
+     *
+     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     *
+     * @return BusinessProfile
+     */
+    public function addTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    {
+        $this->tasks[] = $task;
+
+        return $this;
+    }
+
+    /**
+     * Remove task
+     *
+     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     */
+    public function removeTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    {
+        $this->tasks->removeElement($task);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * Add businessReview
+     *
+     * @param \Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview
+     *
+     * @return BusinessProfile
+     */
+    public function addBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
+    {
+        $this->businessReviews[] = $businessReview;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessReview
+     *
+     * @param \Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview
+     */
+    public function removeBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
+    {
+        $this->businessReviews->removeElement($businessReview);
+    }
+
+    /**
+     * Get businessReviews
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessReviews()
+    {
+        return $this->businessReviews;
     }
 }

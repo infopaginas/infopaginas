@@ -1,7 +1,6 @@
 domain_business:
-    resource: "@DomainBusinessBundle/Controller/"
-    type:     annotation
-    prefix:   /
+    resource: "@DomainBusinessBundle/Resources/config/routing.yml"
+    prefix:   /business
 
 domain_default:
     resource: "@DomainDefaultBundle/Controller/"
