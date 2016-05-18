@@ -51,6 +51,7 @@ class CategoryAdmin extends OxaAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
+            ->add('id')
             ->add('name')
         ;
     }

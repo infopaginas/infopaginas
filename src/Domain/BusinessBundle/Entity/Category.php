@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Category implements DefaultEntityInterface
+class Category implements DefaultEntityInterface, CopyableEntityInterface
 {
     use DefaultEntityTrait;
 
@@ -65,6 +66,11 @@ class Category implements DefaultEntityInterface
         return ($this->getName()) ?: 'New category';
     }
 
+    public function getMarkCopyPropertyName()
+    {
+        return 'name';
+    }
+    
     /**
      * Set name
      *

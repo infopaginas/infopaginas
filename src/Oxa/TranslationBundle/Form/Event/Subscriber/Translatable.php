@@ -126,7 +126,7 @@ class Translatable implements EventSubscriberInterface
     {
         // Validates the submitted form
         $form = $event->getForm();
-        foreach($this->getFieldNames() as $locale => $field_name) {
+        foreach ($this->getFieldNames() as $locale => $field_name) {
             $content = $form->get($field_name)->getData();
             if (null === $content && in_array($locale, $this->options['required_locale'])) {
                 $form->addError($this->getCannotBeBlankException($this->options['field'], $locale));
@@ -185,7 +185,7 @@ class Translatable implements EventSubscriberInterface
         }
         // remove string elements from "translations", we need only objects
         foreach ($data as $rec) {
-            if (! is_object($rec)){
+            if (!is_object($rec)) {
                 $data->removeElement($rec);
             }
         }

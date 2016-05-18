@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BrandRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Brand implements DefaultEntityInterface
+class Brand implements DefaultEntityInterface, CopyableEntityInterface
 {
     use DefaultEntityTrait;
 
@@ -64,7 +65,11 @@ class Brand implements DefaultEntityInterface
     {
         return ($this->getName()) ?: 'New brand';
     }
-
+    
+    public function getMarkCopyPropertyName()
+    {
+        return 'name';
+    }
     /**
      * Set name
      *

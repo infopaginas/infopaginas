@@ -3,11 +3,9 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Form\Type\CollectionType;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class BusinessProfileAdmin extends OxaAdmin
@@ -97,7 +95,10 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('email', 'email')
                     ->add('phone')
                     ->add('workingHours')
-                    ->add('slug', null, ['read_only' => true])
+                    ->add('slug', null, [
+                        'read_only' => true,
+                        'required' => false,
+                    ])
                 ->end()
                 ->with('Description')
                     ->add('slogan')
@@ -116,24 +117,26 @@ class BusinessProfileAdmin extends OxaAdmin
 //                        'expanded' => true, 'multiple' => true, 'by_reference' => false
 //                    ))
                     ->add('areas', 'sonata_type_model', [
-//                        'expanded' => true,
                         'multiple' => true,
                         'required' => false,
-                ]
-                    )
+                    ])
                     ->add('brands', 'sonata_type_model', [
-                        'multiple' => true
+                        'multiple' => true,
+                        'required' => false,
                     ])
                     ->add('tags', 'sonata_type_model', [
-                        'multiple' => true
+                        'multiple' => true,
+                        'required' => false,
                     ])
                     ->add('categories', 'sonata_type_model', [
-                        'multiple' => true
+                        'multiple' => true,
+                        'required' => false,
                     ])
 
                     ->add('paymentMethods', null, [
                         'multiple' => true,
-                        'expanded' => true
+                        'expanded' => true,
+                        'required' => false,
                     ])
                 ->end()
             ->end()

@@ -61,18 +61,18 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->setPhone('+375-29-1862356');
 
             $object->addArea($this->getReference('area.0'));
-            $object->addArea($this->getReference('area.' . rand(1,2)));
+            $object->addArea($this->getReference('area.' . rand(1, 2)));
 
             $object->addBrand($this->getReference('brand.0'));
-            $object->addBrand($this->getReference('brand.' . rand(1,2)));
+            $object->addBrand($this->getReference('brand.' . rand(1, 2)));
 
             $object->addCategory($this->getReference('category.0'));
-            $object->addCategory($this->getReference('category.' . rand(1,2)));
+            $object->addCategory($this->getReference('category.' . rand(1, 2)));
 
             $object->addPaymentMethod($this->getReference('payment_method.0'));
-            $object->addPaymentMethod($this->getReference('payment_method.' . rand(1,2)));
+            $object->addPaymentMethod($this->getReference('payment_method.' . rand(1, 2)));
 
-            $object->setSubscription($this->getReference('subscription.' . rand(1,5)));
+            $object->setSubscription($this->getReference('subscription.' . rand(1, 5)));
             $object->setUser($this->getReference('user.admin'));
 
             $this->manager->persist($object);

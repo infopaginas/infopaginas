@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 
-class LoadUserData extends AbstractFixture implements FixtureInterface, OrderedFixtureInterface
+class LoadTestUserData extends AbstractFixture implements FixtureInterface, OrderedFixtureInterface
 {
     /**
      * {@inheritDoc}

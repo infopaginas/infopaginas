@@ -39,21 +39,30 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var User - Business owner
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", inversedBy="businessProfiles", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
+     *     inversedBy="businessProfiles", 
+     *     cascade={"persist", "remove"}
+     *     )
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     protected $user;
 
     /**
      * @var Subscription - Subscription plan
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", inversedBy="businessProfiles", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", 
+     *     inversedBy="businessProfiles", 
+     *     cascade={"persist", "remove"}
+     *     )
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id", nullable=true)
      */
     protected $subscription;
 
     /**
      * @var Category[] - Business category
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category", inversedBy="businessProfiles", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category", 
+     *     inversedBy="businessProfiles", 
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinTable(name="business_profile_categories")
      */
     protected $categories;
@@ -88,7 +97,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Area[] - Using this field a User may define Areas, business is related to.
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area", inversedBy="businessProfiles")
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area", 
+     *     inversedBy="businessProfiles"
+     * )
      * @ORM\JoinTable(name="business_profile_areas")
      */
     protected $areas;
@@ -102,7 +113,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Tag[] - Tags related to Profile
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Tag", inversedBy="businessProfiles", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Tag", 
+     *     inversedBy="businessProfiles", 
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinTable(name="business_profile_tags")
      */
     protected $tags;
@@ -130,14 +144,20 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Brand[] - Brands, Business works with
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand", inversedBy="businessProfiles", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand", 
+     *     inversedBy="businessProfiles", 
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinTable(name="business_profile_brands")
      */
     protected $brands;
 
     /**
      * @var PaymentMethod[] - Contains list of Payment Methods
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod", inversedBy="businessProfiles", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod", 
+     *     inversedBy="businessProfiles", 
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinTable(name="business_profile_payment_methods")
      */
     protected $paymentMethods;

@@ -172,7 +172,7 @@ class UserAdmin extends OxaAdmin
         // - content_managers and administrators
         // - if your priority higher than user's (smaller number higher)
         // - if it's not your profile
-        if ( $editUserRoleAccess || $createUserRoleAccess ) {
+        if ($editUserRoleAccess || $createUserRoleAccess) {
             // get roles with equal or lower priority(code) than you have
             $roles = $this->getConfigurationPool()
                 ->getContainer()

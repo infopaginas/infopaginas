@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TagRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Tag implements DefaultEntityInterface
+class Tag implements DefaultEntityInterface, CopyableEntityInterface
 {
     use DefaultEntityTrait;
 
@@ -63,6 +64,11 @@ class Tag implements DefaultEntityInterface
     public function __toString()
     {
         return ($this->getName()) ?: 'New tag';
+    }
+
+    public function getMarkCopyPropertyName()
+    {
+        return 'name';
     }
 
     /**

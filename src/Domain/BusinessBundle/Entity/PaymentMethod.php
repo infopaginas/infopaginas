@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\PaymentMethodRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class PaymentMethod implements DefaultEntityInterface
+class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface
 {
     use DefaultEntityTrait;
 
@@ -72,6 +73,11 @@ class PaymentMethod implements DefaultEntityInterface
         return ($this->getName()) ?: 'New payment method';
     }
 
+    public function getMarkCopyPropertyName()
+    {
+        return 'name';
+    }
+    
     /**
      * Set name
      *
