@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "50391de987f68ef037dadd8f5ac3ba09",
-    "content-hash": "563beeb3d72b8991c056ba2e9e25fe23",
+    "hash": "cab0b28707d91345e4799f8484b0c7e6",
+    "content-hash": "488b1b9af44df2ce35aeccec05b17df3",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -4415,6 +4415,69 @@
             "time": "2016-02-11 14:21:42"
         },
         {
+            "name": "sonata-project/translation-bundle",
+            "version": "1.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sonata-project/SonataTranslationBundle.git",
+                "reference": "b04233a1923d2600e3a3aeedaadaf2e78fc644fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sonata-project/SonataTranslationBundle/zipball/b04233a1923d2600e3a3aeedaadaf2e78fc644fb",
+                "reference": "b04233a1923d2600e3a3aeedaadaf2e78fc644fb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "sonata-project/core-bundle": "^2.2.1",
+                "symfony/symfony": "~2.2|~3.0"
+            },
+            "require-dev": {
+                "sllh/php-cs-fixer-styleci-bridge": "^2.0",
+                "stof/doctrine-extensions-bundle": "~1.1",
+                "symfony/phpunit-bridge": "~2.7|~3.0"
+            },
+            "suggest": {
+                "sonata-project/doctrine-orm-admin-bundle": "~2.2",
+                "sonata-project/doctrine-phpcr-admin-bundle": "~1.0",
+                "stof/doctrine-extensions-bundle": "~1.1"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sonata\\TranslationBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Bastien",
+                    "email": "nbastien.pro@gmail.com",
+                    "homepage": "https://github.com/nicolas-bastien"
+                },
+                {
+                    "name": "Sonata Community",
+                    "homepage": "https://github.com/sonata-project/SonataTranslationBundle/contributors"
+                }
+            ],
+            "description": "SonataTranslationBundle",
+            "homepage": "http://sonata-project.org/bundles/translation",
+            "keywords": [
+                "i18n",
+                "translation"
+            ],
+            "time": "2016-05-02 07:50:56"
+        },
+        {
             "name": "sonata-project/user-bundle",
             "version": "dev-master",
             "source": {
@@ -5816,7 +5879,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "sonata-project/admin-bundle": 20,
-        "sonata-project/user-bundle": 20
+        "sonata-project/user-bundle": 20,
+        "sonata-project/translation-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

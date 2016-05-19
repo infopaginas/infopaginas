@@ -7,11 +7,14 @@ imports:
     - { resource: extra-configs/editor.yml }
     - { resource: extra-configs/extensions.yml }
     - { resource: extra-configs/sonata_media.yml }
+    - { resource: extra-configs/sonata_translation.yml }
+    - { resource: "@DomainBusinessBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    locales: [en, es]
 
 framework:
     #esi:             ~
@@ -62,7 +65,8 @@ doctrine:
                     enum: string
         types:
             json: Sonata\Doctrine\Types\JsonType
-
+            TaskType: Domain\BusinessBundle\DBAL\Types\TaskType
+            TaskStatusType: Domain\BusinessBundle\DBAL\Types\TaskStatusType
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore

@@ -1,13 +1,5 @@
 /* icons */
 
-@font-face {
-    font-family: 'sevcable';
-    src: url("/fonts/sevcable.eot");
-    src: url("/fonts/sevcable.eot?#iefix") format('embedded-opentype'), url("/fonts/sevcable.woff") format('woff'), url("/fonts/sevcable.ttf") format('truetype'), url("/fonts/sevcable.svg#sevcable") format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
 .data-icon:before,
 [class^='icon-']:before,
 [class*=' icon-']:before,

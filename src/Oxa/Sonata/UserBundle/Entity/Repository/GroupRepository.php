@@ -11,7 +11,7 @@ class GroupRepository extends EntityRepository
     /**
      * Get roles by its priorities
      * lower code - higher priority
-     * 
+     *
      * @param int $code
      * @return array
      */

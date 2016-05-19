@@ -86,9 +86,7 @@ class UserAdmin extends OxaAdmin
             ->add('enabled', null, ['label' => 'filter.label_enabled'], null, ['choices' => [
                 1 => 'label_yes',
                 2 => 'label_no',
-            ],
-                'translation_domain' => 'SonataUserBundle'
-
+            ], 'translation_domain' => 'SonataUserBundle'
             ])
 //            ->add('isActive', null, [], null, ['choices' => [
 //                1 => 'label_yes',
@@ -174,7 +172,7 @@ class UserAdmin extends OxaAdmin
         // - content_managers and administrators
         // - if your priority higher than user's (smaller number higher)
         // - if it's not your profile
-        if ( $editUserRoleAccess || $createUserRoleAccess ) {
+        if ($editUserRoleAccess || $createUserRoleAccess) {
             // get roles with equal or lower priority(code) than you have
             $roles = $this->getConfigurationPool()
                 ->getContainer()
@@ -237,13 +235,5 @@ class UserAdmin extends OxaAdmin
     public function getUserManager()
     {
         return $this->userManager;
-    }
-
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        parent::configureRoutes($collection);
-
-        $collection
-            ->remove('copy');
     }
 }

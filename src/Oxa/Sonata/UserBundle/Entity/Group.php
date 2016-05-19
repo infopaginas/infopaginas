@@ -11,10 +11,14 @@
 
 namespace Oxa\Sonata\UserBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Translatable\Translatable;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Sonata\UserBundle\Entity\BaseGroup as BaseGroup;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -30,11 +34,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="fos_user_group")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\GroupRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\TranslationEntity(class="Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation")
  * @UniqueEntity("code")
  */
-class Group extends BaseGroup implements DefaultEntityInterface
+class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
 
     // codes are also used as priority in admin panel to know if an user is able to edit another user
     const CODE_ADMINISTRATOR    = 1; // Admin portal user
@@ -66,6 +72,7 @@ class Group extends BaseGroup implements DefaultEntityInterface
     protected $code;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
@@ -74,15 +81,36 @@ class Group extends BaseGroup implements DefaultEntityInterface
      * @var User
      *
      * @ORM\OneToMany(
-     *     targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
-     *     mappedBy="role", 
-     *     cascade={"persist", "remove"}, 
+     *     targetEntity="Oxa\Sonata\UserBundle\Entity\User",
+     *     mappedBy="role",
+     *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
      * @ORM\OrderBy({"createdAt" = "asc"})
      */
     protected $roleUsers;
-    
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
+    /**
+     * Group constructor.
+     * @param $name
+     * @param array $roles
+     */
+    public function __construct($name, $roles = array())
+    {
+        parent::__construct($name, $roles = array());
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
     /**
      * Set code
      *
@@ -163,5 +191,15 @@ class Group extends BaseGroup implements DefaultEntityInterface
     public function getRoleUsers()
     {
         return $this->roleUsers;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation
+     */
+    public function removeTranslation(\Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

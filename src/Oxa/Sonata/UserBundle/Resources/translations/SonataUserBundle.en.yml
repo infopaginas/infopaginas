@@ -17,6 +17,7 @@ list.label_description: Description
 form.label_role: Role
 form.label_firstname: First Name
 form.label_lastname: Last Name
+form.label_description: Description
 
 show.label_firstname: First Name
 show.label_lastname: Last Name
@@ -26,10 +27,11 @@ show.label_name: Name
 show.label_description: Description
 
 filter.label_role: Role
+filter.label_yes: Yes
+filter.label_no: No
 filter.label_enabled: Enabled
 filter.label_is_active: Is Active
 filter.label_description: Description
-
 breadcrumb.link: Users
 
 groups: Roles
