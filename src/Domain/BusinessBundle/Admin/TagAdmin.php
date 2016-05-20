@@ -53,6 +53,7 @@ class TagAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('businessProfiles')
         ;
     }
 }

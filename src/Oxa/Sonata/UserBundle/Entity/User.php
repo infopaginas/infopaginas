@@ -214,4 +214,38 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     {
         return $this->businessProfiles;
     }
+
+    /**
+     * Add businessReview
+     *
+     * @param \Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview
+     *
+     * @return User
+     */
+    public function addBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
+    {
+        $this->businessReviews[] = $businessReview;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessReview
+     *
+     * @param \Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview
+     */
+    public function removeBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
+    {
+        $this->businessReviews->removeElement($businessReview);
+    }
+
+    /**
+     * Get businessReviews
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessReviews()
+    {
+        return $this->businessReviews;
+    }
 }

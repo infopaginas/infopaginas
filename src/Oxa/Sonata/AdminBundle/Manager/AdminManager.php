@@ -177,6 +177,9 @@ class AdminManager extends DefaultManager
             if ($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY) {
                 $methodGet = 'get' . ucfirst($associationMapping['fieldName']);
                 $childs = $entity->$methodGet();
+                foreach ($childs as $child) {
+                    $this->getEntityManager()->remove($child);
+                }
                 if (count($childs)) {
                     $existDependentField[] = $this->getContainer()->get('translator')->trans(
                         'form.label_' . $associationMapping['fieldName'],
