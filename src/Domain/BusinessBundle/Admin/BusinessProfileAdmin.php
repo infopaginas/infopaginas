@@ -96,7 +96,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General')
                     ->add('name')
                     ->add('user', 'sonata_type_model_list', [
-                        'required' => true,
+                        'required' => false,
                         'btn_delete' => false,
                         'btn_add' => false,
                     ])
@@ -143,6 +143,17 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General')
                     ->add('subscription', null, [])
                     ->add('isActive')
+                    ->add('updatedAt', 'sonata_type_datetime_picker', [
+                        'required' => false,
+                        'disabled' => true,
+
+                    ])
+                    ->add('updatedUser', 'sonata_type_model', [
+                        'required' => false,
+                        'btn_add' => false,
+                        'disabled' => true,
+
+                    ])
                 ->end()
                 ->with('Displayed blocks')
                     ->add('isSetDescription')
@@ -183,6 +194,14 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('user')
+            ->add('subscription')
+            ->add('categories')
+            ->add('areas')
+            ->add('brands')
+            ->add('paymentMethods')
+            ->add('tags')
+            ->add('businessReviews')
             ->add('website')
             ->add('email')
             ->add('phone')
@@ -197,9 +216,8 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('isSetLogo')
             ->add('isSetSlogan')
             ->add('slug')
-            ->add('deletedAt')
-            ->add('createdAt')
             ->add('updatedAt')
+            ->add('updatedUser')
             ->add('isActive')
         ;
     }

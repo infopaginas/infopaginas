@@ -56,7 +56,7 @@ class Task implements DefaultEntityInterface, TaskInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")
-     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
 

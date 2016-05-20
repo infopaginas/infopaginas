@@ -53,6 +53,7 @@ class PaymentMethodAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('businessProfiles')
         ;
     }
 }

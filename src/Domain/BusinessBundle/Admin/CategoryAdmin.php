@@ -53,6 +53,7 @@ class CategoryAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('businessProfiles')
         ;
     }
 }

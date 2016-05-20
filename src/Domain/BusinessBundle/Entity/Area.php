@@ -7,6 +7,7 @@ use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Area
@@ -14,6 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="area")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\AreaRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @UniqueEntity("name")
  */
 class Area implements DefaultEntityInterface, CopyableEntityInterface
 {

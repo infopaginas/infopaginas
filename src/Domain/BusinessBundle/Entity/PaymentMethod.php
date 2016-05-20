@@ -7,6 +7,7 @@ use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * PaymentMethod
@@ -14,6 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="payment_method")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\PaymentMethodRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @UniqueEntity("name")
  */
 class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface
 {
@@ -34,13 +36,6 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
-
-//    /**
-//     * @var string - Payment method name
-//     *
-//     * @ORM\Column(name="name", type="string", length=100)
-//     */
-//    protected $name;
 
     /**
      * @ORM\ManyToMany(

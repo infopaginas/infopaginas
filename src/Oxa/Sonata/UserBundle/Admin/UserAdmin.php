@@ -194,7 +194,7 @@ class UserAdmin extends OxaAdmin
                 ])
                 ->add('enabled')
 //                ->add('groups')
-//                ->add('realRoles', 'sonata_security_roles', array('expanded' => true))
+//                ->add('role', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;
         }
