@@ -81,14 +81,14 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
             ->end()
-            ->tab('Address', array('class' => 'col-md-6'))
-            ->end()
-            ->tab('Media', array('class' => 'col-md-6'))
-            ->end()
+//            ->tab('Address', array('class' => 'col-md-6'))
+//            ->end()
+//            ->tab('Media', array('class' => 'col-md-6'))
+//            ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
             ->end()
-            ->tab('SEO', array('class' => 'col-md-6'))
-            ->end()
+//            ->tab('SEO', array('class' => 'col-md-6'))
+//            ->end()
         ;
 
         $formMapper
