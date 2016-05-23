@@ -103,6 +103,39 @@ class TasksManager
     }
 
     /**
+     * Fetch count of approved tasks from db
+     *
+     * @access public
+     * @return int
+     */
+    public function getTotalApprovedTasksCount() : int
+    {
+        return $this->repository->getTotalApprovedTasksCount();
+    }
+
+    /**
+     * Fetch count of rejected tasks from db
+     *
+     * @access public
+     * @return int
+     */
+    public function getTotalRejectedTasksCount() : int
+    {
+        return $this->repository->getTotalRejectedTasksCount();
+    }
+
+    /**
+     * Fetch count of still open tasks from db
+     *
+     * @access public
+     * @return int
+     */
+    public function getTotalIncompleteTasksCount() : int
+    {
+        return $this->repository->getTotalIncompleteTasksCount();
+    }
+
+    /**
      * Save task entity (call $em->persist() & $em->flush())
      *
      * @access protected

@@ -1,0 +1,19 @@
+{% extends 'OxaSonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    {% set task_type = object.type %}
+
+    {% if task_type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_CREATE') %}
+        {% set label_class = 'label-success' %}
+    {% elseif task_type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_UPDATE') %}
+        {% set label_class = 'label-info' %}
+    {% elseif task_type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_CLOSE') %}
+        {% set label_class = 'label-danger' %}
+    {% else %}
+        {% set label_class = 'label-primary' %}
+    {% endif %}
+
+    <span class="label {{ label_class }}">
+        {{ dispatch_enum_value(object.type) }}
+    </span>
+{% endblock %}

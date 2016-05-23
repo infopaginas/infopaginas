@@ -1,4 +1,22 @@
+parameters:
+    domain.business.task.crud.controller.class: Domain\BusinessBundle\Controller\TaskAdminController
+    domain.business.task.admin.task.entity: Domain\BusinessBundle\Entity\Task
+
 services:
+    domain_admin.twig_extension.enum_labels_dispatcher:
+        class: Domain\BusinessBundle\Twig\Extension\EnumLabelsDispatcherExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    domain_business.admin.task:
+        class: Domain\BusinessBundle\Admin\TaskAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Task, DomainBusinessBundle:TaskAdmin]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Tasks}
+        calls:
+            - [ setTemplate, [list, DomainBusinessBundle:TaskAdmin:list.html.twig]]

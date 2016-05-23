@@ -23,7 +23,7 @@ final class TaskStatusType extends AbstractEnumType
     const TASK_STATUS_REJECTED  = 'REJECTED';
 
     protected static $choices = [
-        self::TASK_STATUS_OPEN      => 'Open',
+        self::TASK_STATUS_OPEN      => 'Incomplete',
         self::TASK_STATUS_CLOSED    => 'Closed',
         self::TASK_STATUS_REJECTED  => 'Rejected',
     ];
