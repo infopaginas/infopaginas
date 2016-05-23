@@ -21,7 +21,8 @@ file that was distributed with this source code.
         <div class="box box-danger">
             <div class="box-header">
                 {% if existDependentFields %}
-                    <h3 class="box-title">{{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}) }}</h3>
+                    {#<h3 class="box-title">{{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}</h3>#}
+                    <h3 class="box-title">{{ 'title_delete'|trans({}, 'SonataAdminBundle') }}</h3>
                 {% else %}
                     <h3 class="box-title">{{ 'title_delete'|trans({}, 'SonataAdminBundle') }}</h3>
                 {% endif %}
@@ -44,6 +45,7 @@ file that was distributed with this source code.
                             {{ 'btn_delete'|trans({}, 'SonataAdminBundle') }}
                         </button>
                     {% endif %}
+
                     {% if admin.hasRoute('list') and admin.isGranted('LIST', object) %}
                         <a class="btn btn-danger" href="{{ admin.generateUrl('list') }}">
                             <i class="fa fa-minus-circle"></i>

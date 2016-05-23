@@ -11,8 +11,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Task;
-use Domain\BusinessBundle\Model\Task\AbstractTask;
+use Domain\BusinessBundle\Entity\Task\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
 use Domain\BusinessBundle\Repository\TaskRepository;
 
@@ -30,11 +29,6 @@ class TasksManager
      * @var EntityManager
      */
     protected $em;
-
-    /**
-     * @var TaskRepository
-     */
-    protected $repository;
 
     /**
      * TasksManager constructor.

@@ -10,7 +10,7 @@ namespace Domain\BusinessBundle\Model\Task;
 
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Task;
+use Domain\BusinessBundle\Entity\Task\Task;
 
 /**
  * Class AbstractTask

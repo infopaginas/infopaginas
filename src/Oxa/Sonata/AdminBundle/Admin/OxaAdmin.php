@@ -1,6 +1,7 @@
 <?php
 namespace Oxa\Sonata\AdminBundle\Admin;
 
+use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
@@ -84,7 +85,7 @@ class OxaAdmin extends BaseAdmin
                 '_controller' => 'OxaSonataAdminBundle:CRUD:deletePhysical'
             ])
             ->add('restore')
-            ->add('copy');
+        ;
     }
 
     /**

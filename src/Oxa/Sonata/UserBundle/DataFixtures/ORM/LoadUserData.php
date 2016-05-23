@@ -7,9 +7,16 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadUserData extends AbstractFixture implements FixtureInterface, OrderedFixtureInterface
+class LoadUserData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
     /**
      * {@inheritDoc}
      */
@@ -27,8 +34,12 @@ class LoadUserData extends AbstractFixture implements FixtureInterface, OrderedF
         $user->setSuperAdmin(true);
         $user->setEnabled(true);
 
+        // set reference to find this
+        $this->addReference('user.'.$user->getUsername(), $user);
+
         $manager->persist($user);
         $manager->flush();
+
     }
 
     /**
@@ -39,5 +50,16 @@ class LoadUserData extends AbstractFixture implements FixtureInterface, OrderedF
     public function getOrder()
     {
         return 1;
+    }
+
+    /**
+     * @param ContainerInterface|null $container
+     * @return $this
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+
+        return $this;
     }
 }

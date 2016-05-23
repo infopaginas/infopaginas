@@ -41,13 +41,14 @@ class AppKernel extends Kernel
             new Sonata\MediaBundle\SonataMediaBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Sonata\IntlBundle\SonataIntlBundle(),
+            new Sonata\TranslationBundle\SonataTranslationBundle(),
             new Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
-
+            new Domain\DefaultBundle\DomainDefaultBundle(),
             new Domain\BusinessBundle\DomainBusinessBundle(),
         );
 

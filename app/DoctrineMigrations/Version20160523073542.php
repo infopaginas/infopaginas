@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20160516115519 extends AbstractMigration
+class Version20160523073542 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -21,10 +21,7 @@ class Version20160516115519 extends AbstractMigration
             'Migration can only be executed safely on \'postgresql\'.'
         );
 
-        $this->addSql('CREATE SEQUENCE business_profile_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE task_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-
-        $this->addSql('CREATE TABLE business_profile (id INT NOT NULL, PRIMARY KEY(id))');
 
         $this->addSql('
           CREATE TABLE task (
@@ -77,9 +74,7 @@ class Version20160516115519 extends AbstractMigration
 
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE task DROP CONSTRAINT FK_527EDB255A03BD95');
-        $this->addSql('DROP SEQUENCE business_profile_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE task_id_seq CASCADE');
-        $this->addSql('DROP TABLE business_profile');
         $this->addSql('DROP TABLE task');
     }
 }

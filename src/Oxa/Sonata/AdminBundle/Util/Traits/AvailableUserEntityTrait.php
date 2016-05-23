@@ -17,7 +17,7 @@ trait AvailableUserEntityTrait
      * Property must be named as DefaultEntityInterface::IS_ACTIVE_PROPERTY_NAME, used in UserCRUDActionListener
      * @var boolean
      *
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(name="is_active", type="boolean", options={"default" : 0})
      */
     protected $isActive = true;
 

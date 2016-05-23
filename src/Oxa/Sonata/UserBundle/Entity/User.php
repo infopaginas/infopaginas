@@ -3,7 +3,7 @@
 namespace Oxa\Sonata\UserBundle\Entity;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\AvailableUserEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DeleteableUserEntityTrait;
@@ -36,23 +36,51 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     /**
      * @var Group
      *
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\Group", inversedBy="role_users")
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\Group", inversedBy="roleUsers")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
      */
     protected $role;
 
     /**
+     * @var BusinessProfile[]
+     * 
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", 
+     *     mappedBy="user", 
+     *     cascade={"persist", "remove"}
+     *     )
+     */
+    protected $businessProfiles;
+    
+    /**
+     * @var Task[]
+     * 
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="reviewer")
      */
     protected $tasks;
+
+    /**
+     * @var BusinessProfile[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove"}
+     *     )
+     */
+    protected $businessReviews;
+
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         parent::__construct();
+        
+        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -151,5 +179,73 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function getTasks()
     {
         return $this->tasks;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return User
+     */
+    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles->removeElement($businessProfile);
+    }
+
+    /**
+     * Get businessProfiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
+    }
+
+    /**
+     * Add businessReview
+     *
+     * @param \Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview
+     *
+     * @return User
+     */
+    public function addBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
+    {
+        $this->businessReviews[] = $businessReview;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessReview
+     *
+     * @param \Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview
+     */
+    public function removeBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
+    {
+        $this->businessReviews->removeElement($businessReview);
+    }
+
+    /**
+     * Get businessReviews
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessReviews()
+    {
+        return $this->businessReviews;
     }
 }

@@ -3,6 +3,9 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Model\Task\TaskInterface;
+use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -12,12 +15,17 @@ use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 
 /**
  * Task
- *
+ * 
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"task" = "Task", "reviewTask" = "Domain\BusinessBundle\Entity\Task\ReviewTask"})
  * @ORM\Table(name="task")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TaskRepository")
  */
-class Task
+class Task implements DefaultEntityInterface, TaskInterface
 {
+    use DefaultEntityTrait;
+    
     /**
      * @var int
      *
@@ -25,7 +33,7 @@ class Task
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(name="type", type="TaskType", nullable=false)
@@ -47,28 +55,16 @@ class Task
     protected $rejectReason;
 
     /**
-     * @ORM\OneToOne(targetEntity="BusinessProfile")
-     * @ORM\JoinColumn(name="business_profile_od", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")
+     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
 
     /**
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", inversedBy="tasks")
-     * @ORM\JoinColumn(name="reviewer_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="reviewer_id", referencedColumnName="id")
      */
     protected $reviewer;
-
-    /**
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="create")
-     */
-    protected $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="create")
-     */
-    protected $modifiedAt;
 
     /**
      * Task constructor.
@@ -184,36 +180,34 @@ class Task
     /**
      * @return mixed
      */
-    public function getCreatedAt()
+    public static function getTypes()
     {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param mixed $createdAt
-     * @return Task
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
+        return TaskType::getChoices();
     }
 
     /**
      * @return mixed
      */
-    public function getModifiedAt()
+    public static function getStatuses()
     {
-        return $this->modifiedAt;
+        return TaskStatusType::getChoices();
     }
 
     /**
-     * @param mixed $modifiedAt
-     * @return Task
+     * @return mixed
      */
-    public function setModifiedAt($modifiedAt)
+    public function getStatusName()
     {
-        $this->modifiedAt = $modifiedAt;
-        return $this;
+        $statuses = $this->getStatuses();
+        return $statuses[$this->getStatus()];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTypeName()
+    {
+        $types = $this->getTypes();
+        return $types[$this->getType()];
     }
 }

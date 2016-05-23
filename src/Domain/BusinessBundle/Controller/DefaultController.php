@@ -11,6 +11,7 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
+        //$this->getDoctrine()->getRepository('DomainBusinessBundle:Task\Task')
         return $this->render('DomainBusinessBundle:Default:index.html.twig');
     }
 }
