@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Repository;
+
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;

@@ -56,7 +56,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var string - Profile Rating – 5 mandatory selectable stars
-     * 
+     *
      * @Assert\Range(min = 0, max = 5)
      * @ORM\Column(name="rate", type="integer", nullable=true)
      */
