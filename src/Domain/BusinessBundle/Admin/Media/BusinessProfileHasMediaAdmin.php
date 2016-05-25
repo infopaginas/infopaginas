@@ -1,8 +1,7 @@
 <?php
 
-namespace Domain\BusinessBundle\Admin\Task;
+namespace Domain\BusinessBundle\Admin\Media;
 
-use Domain\BusinessBundle\Entity\Task\Task;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -11,7 +10,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class TaskAdmin extends OxaAdmin
+class BusinessProfileHasMediaAdmin extends OxaAdmin
 {
     /**
      * @param DatagridMapper $datagridMapper
@@ -20,21 +19,7 @@ class TaskAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('type', 'doctrine_orm_choice', [
-                'field_options' => [
-                    'required' => false,
-                    'choices' => Task::getTypes()
-                ],
-                'field_type' => 'choice'
-            ])
-            ->add('status', 'doctrine_orm_choice', [
-                'field_options' => [
-                    'required' => false,
-                    'choices' => Task::getStatuses()
-                ],
-                'field_type' => 'choice'
-            ])
-            ->add('reviewer')
+            ->add('media.name')
             ->add('businessProfile')
         ;
     }
@@ -46,12 +31,12 @@ class TaskAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('typeName')
-            ->add('statusName')
-            ->add('reviewer')
+            ->add('media', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfileHasMedia/list_image.html.twig'
+            ])
+            ->add('media.name')
             ->add('businessProfile')
         ;
-
         $this->addGridActions($listMapper);
     }
 
@@ -61,12 +46,23 @@ class TaskAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('type')
-            ->add('status')
-            ->add('reviewer')
-            ->add('businessProfile')
-            ->add('rejectReason')
+            ->add('media', 'sonata_type_model_list', array(
+                'required' => false,
+//                'btn_delete' => false,
+            ), array(
+                'link_parameters' => array(
+                    'context' => 'business_profile_images'
+                )
+            ))
         ;
+
+        // show this field if we edit this page on this page itself
+        // (not through relation from other admin page)
+        if ($this->getRoot()->getClass() == $this->getClass()) {
+            $formMapper->add('businessProfile', null, [
+                'required' => true,
+            ]);
+        }
     }
 
     /**
@@ -76,11 +72,11 @@ class TaskAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('typeName')
-            ->add('statusName')
-            ->add('reviewer')
+            ->add('media', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfileHasMedia/show_image.html.twig'
+            ])
+            ->add('media.name')
             ->add('businessProfile')
-            ->add('rejectReason')
         ;
     }
 }

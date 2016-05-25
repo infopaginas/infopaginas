@@ -38,7 +38,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'choices' => [
                     1 => 'label_yes',
                     2 => 'label_no',
-                ], 
+                ],
                 'translation_domain' => 'AdminDomainBusinessBundle'
             ])
         ;
@@ -52,6 +52,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('name')
+            ->add('logo', null, ['template' => 'OxaSonataMediaBundle:MediaAdmin:list_image.html.twig'])
             ->add('user.username')
             ->add('subscription.name')
             ->add('categories')
@@ -83,9 +84,12 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
 //            ->tab('Address', array('class' => 'col-md-6'))
 //            ->end()
-//            ->tab('Media', array('class' => 'col-md-6'))
-//            ->end()
+            ->tab('Media', array('class' => 'col-md-6'))
+                ->with('General', array('class' => 'col-md-6'))->end()
+                ->with('Gallery', array('class' => 'col-md-6'))->end()
+            ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
+                ->with('User Reviews')->end()
             ->end()
 //            ->tab('SEO', array('class' => 'col-md-6'))
 //            ->end()
@@ -164,24 +168,51 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ->end()
             ->tab('Reviews')
-                ->add('businessReviews', 'sonata_type_collection', array(
-                    'mapped' => true,
-                    'type_options' => array(
-                        'delete' => true,
-                        'delete_options' => array(
-                            'type'         => 'checkbox',
-                            'type_options' => array(
-                                'mapped'   => false,
-                                'required' => false,
+                ->with('User Reviews')
+                    ->add('businessReviews', 'sonata_type_collection', array(
+                        'mapped' => true,
+                        'type_options' => array(
+                            'delete' => true,
+                            'delete_options' => array(
+                                'type'         => 'checkbox',
+                                'type_options' => array(
+                                    'mapped'   => false,
+                                    'required' => false,
+                                )
                             )
                         )
-                    )
-                ), array(
-                    'edit' => 'inline',
-                    'inline' => 'table',
-                    'sortable' => 'id',
-                    'allow_delete' => true,
-                ))
+                    ), array(
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'sortable' => 'id',
+                        'allow_delete' => true,
+                    ))
+                ->end()
+            ->end()
+            ->tab('Media')
+                ->with('General')
+                    ->add('logo', 'sonata_type_model_list', array(), array(
+                        'link_parameters' => array(
+                            'context' => 'business_profile_logo',
+                            'provider' => 'sonata.media.provider.image',
+                    )))
+                ->end()
+                ->with('Gallery')
+                    ->add('images', 'sonata_type_collection', array(
+                        'by_reference' => false,
+//                        'type_options' => array(
+////                            'delete' => true
+//                        )
+                    ), array(
+                        'edit' => 'inline',
+                        'delete_empty' => true,
+                        'inline' => 'table',
+                        'link_parameters' => array(
+                            'context' => 'business_profile_images',
+                            'provider' => 'sonata.media.provider.image',
+                        )
+                    ))
+                ->end()
             ->end()
         ;
     }
@@ -194,6 +225,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('images')
             ->add('user')
             ->add('subscription')
             ->add('categories')
@@ -220,31 +252,5 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedUser')
             ->add('isActive')
         ;
-    }
-
-    public function preUpdate($object)
-    {
-        $this->setReviewBusinessProfile($object);
-    }
-
-    public function prePersist($object)
-    {
-        $this->setReviewBusinessProfile($object);
-    }
-
-    /**
-     * Used for sonata_type_collection
-     *
-     * @param BusinessProfile $object
-     */
-    private function setReviewBusinessProfile(BusinessProfile $object)
-    {
-        /** @var BusinessProfile $object */
-        foreach($object->getBusinessReviews() as $businessReview) {
-            /** @var BusinessReview $businessReview */
-            if( !$businessReview->getId() ) {
-                $businessReview->setBusinessProfile($object);
-            }
-        }
     }
 }

@@ -24,7 +24,7 @@ class CRUDController extends BaseSonataCRUDController
 {
     /**
      * Delete record completely
-     * 
+     *
      * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
      */
     public function deletePhysicalAction(Request $request)
@@ -74,7 +74,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Copy record with oll relations
-     * 
+     *
      * @param Request $request
      * @return RedirectResponse
      */
@@ -100,7 +100,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Delete records completely
-     * 
+     *
      * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
      */
     public function batchActionDeletePhysical(ProxyQuery $query)
@@ -113,13 +113,13 @@ class CRUDController extends BaseSonataCRUDController
             $this->get('translator')
                 ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
         );
-        
+
         return $this->saveFilterResponse();
     }
 
     /**
      * Restore softdeleted records
-     * 
+     *
      * @Security("is_granted('ROLE_RESTORE_ABLE')")
      */
     public function batchActionRestore(ProxyQuery $query)
@@ -138,7 +138,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Copy records
-     * 
+     *
      * @param ProxyQuery $query
      * @return RedirectResponse
      */
@@ -161,7 +161,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Delete(soft) records
-     * 
+     *
      * @param ProxyQueryInterface $query
      * @return RedirectResponse
      */
@@ -181,7 +181,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Keep filter params if they were set
-     * 
+     *
      * @return RedirectResponse
      */
     protected function saveFilterResponse()
@@ -191,7 +191,7 @@ class CRUDController extends BaseSonataCRUDController
                 'filter' => $this->admin->getFilterParameters()
             ]));
         }
-        
+
         return $this->redirect('list');
     }
 
@@ -225,7 +225,7 @@ class CRUDController extends BaseSonataCRUDController
             $this->validateCsrfToken('sonata.delete');
             $adminManager = $this->get('oxa.sonata.manager.admin_manager');
             $existDependentFields = $adminManager->checkExistDependentEntity($object);
-            
+
             if (!count($existDependentFields)) {
                 try {
                     $this->admin->delete($object);
@@ -280,7 +280,7 @@ class CRUDController extends BaseSonataCRUDController
 
     /**
      * Log flush errors
-     * 
+     *
      * @param ModelManagerException $e
      */
     private function logModelManagerException(ModelManagerException $e)

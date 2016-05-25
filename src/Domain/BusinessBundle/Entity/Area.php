@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -15,6 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="area")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\AreaRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @ORM\HasLifecycleCallbacks
  * @UniqueEntity("name")
  */
 class Area implements DefaultEntityInterface, CopyableEntityInterface
@@ -40,7 +42,8 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @ORM\ManyToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     mappedBy="areas"
+     *     mappedBy="areas",
+     *     cascade={"persist"}
      *     )
      */
     protected $businessProfiles;
@@ -107,6 +110,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles[] = $businessProfile;
+        $businessProfile->addArea($this);
 
         return $this;
     }
@@ -119,6 +123,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles->removeElement($businessProfile);
+        $businessProfile->removeArea($this);
     }
 
     /**

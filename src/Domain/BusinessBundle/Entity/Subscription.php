@@ -133,6 +133,7 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles[] = $businessProfile;
+        $businessProfile->setSubscription($this);
 
         return $this;
     }

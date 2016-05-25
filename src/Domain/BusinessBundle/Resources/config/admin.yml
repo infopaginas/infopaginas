@@ -1,0 +1,70 @@
+services:
+    domain_business.admin.area:
+        class: Domain\BusinessBundle\Admin\AreaAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Area, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Areas}
+
+    domain_business.admin.tag:
+        class: Domain\BusinessBundle\Admin\TagAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Tag, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Tags}
+
+    domain_business.admin.brand:
+        class: Domain\BusinessBundle\Admin\BrandAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Brand, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Brands}
+
+    domain_business.admin.payment_method:
+        class: Domain\BusinessBundle\Admin\PaymentMethodAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\PaymentMethod, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Payment Methods}
+
+    domain_business.admin.subscription:
+        class: Domain\BusinessBundle\Admin\SubscriptionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Subscription, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
+
+    domain_business.admin.category:
+        class: Domain\BusinessBundle\Admin\CategoryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Category, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Categories}
+
+    domain_business.admin.business_profile:
+        class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles}
+        calls:
+            - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
+
+    domain_business.admin.task:
+        class: Domain\BusinessBundle\Admin\Task\TaskAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Task\Task, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Tasks}
+
+    domain_business.admin.review_task:
+        class: Domain\BusinessBundle\Admin\Task\ReviewTaskAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Task\ReviewTask, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Review Tasks}
+
+    domain_business.admin.business_review:
+        class: Domain\BusinessBundle\Admin\Review\BusinessReviewAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Review\BusinessReview, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Reviews}
+
+    domain_business.admin.business_profile_has_media:
+        class: Domain\BusinessBundle\Admin\Media\BusinessProfileHasMediaAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia, SonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Gallery}
+        calls:
+#            - [ setTemplate, ['inner_list_row', "OxaSonataMediaBundle:MediaAdmin:inner_row_media.html.twig"]]

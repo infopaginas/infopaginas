@@ -107,6 +107,7 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles[] = $businessProfile;
+        $businessProfile->addTag($this);
 
         return $this;
     }
@@ -119,6 +120,7 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles->removeElement($businessProfile);
+        $businessProfile->removeTag($this);
     }
 
     /**

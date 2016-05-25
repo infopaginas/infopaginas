@@ -106,6 +106,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles[] = $businessProfile;
+        $businessProfile->addBrand($this);
 
         return $this;
     }
@@ -118,6 +119,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles->removeElement($businessProfile);
+        $businessProfile->removeBrand($this);
     }
 
     /**

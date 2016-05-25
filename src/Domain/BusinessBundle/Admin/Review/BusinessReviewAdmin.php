@@ -52,7 +52,7 @@ class BusinessReviewAdmin extends OxaAdmin
             ->add('user')
             ->add('businessProfile')
             ->add('username')
-            ->add('rate')
+            ->add('rating')
             ->add('isActive')
             ->add('createdAt')
         ;
@@ -81,8 +81,8 @@ class BusinessReviewAdmin extends OxaAdmin
             ->end()
             ->with('Review')
                 ->add('username')
-                ->add('rate', 'choice', [
-                    'choices' => range(0,5),
+                ->add('rating', 'choice', [
+                    'choices' => range(0, 5),
                     'required' => false
                 ])
                 ->add('content')
@@ -98,11 +98,9 @@ class BusinessReviewAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('username')
-            ->add('rate')
+            ->add('rating')
             ->add('content')
             ->add('isActive')
         ;
     }
-    
-    
 }

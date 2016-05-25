@@ -58,9 +58,9 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Profile Rating – 5 mandatory selectable stars
      * 
      * @Assert\Range(min = 0, max = 5)
-     * @ORM\Column(name="rate", type="integer", nullable=true)
+     * @ORM\Column(name="rating", type="integer", nullable=true)
      */
-    protected $rate;
+    protected $rating;
 
     /**
      * @var string - Mandatory review text area
@@ -71,9 +71,9 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     inversedBy="businessReviews",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id")
      */
     protected $businessProfile;
     
@@ -99,30 +99,6 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set rate
-     *
-     * @param integer $rate
-     *
-     * @return BusinessReview
-     */
-    public function setRate($rate)
-    {
-        $this->rate = $rate;
-
-        return $this;
-    }
-
-    /**
-     * Get rate
-     *
-     * @return integer
-     */
-    public function getRate()
-    {
-        return $this->rate;
     }
 
     /**
@@ -219,5 +195,29 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * Set rating
+     *
+     * @param integer $rating
+     *
+     * @return BusinessReview
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Get rating
+     *
+     * @return integer
+     */
+    public function getRating()
+    {
+        return $this->rating;
     }
 }
