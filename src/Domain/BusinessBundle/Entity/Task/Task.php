@@ -15,7 +15,7 @@ use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 
 /**
  * Task
- * 
+ *
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({"task" = "Task", "reviewTask" = "ReviewTask"})

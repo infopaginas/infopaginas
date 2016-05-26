@@ -43,10 +43,10 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     /**
      * @var BusinessProfile[]
-     * 
+     *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", 
-     *     mappedBy="user", 
+     *     mappedBy="user",
      *     cascade={"persist", "remove"}
      *     )
      */
@@ -54,7 +54,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     
     /**
      * @var Task[]
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task\Task", mappedBy="reviewer")
      */
     protected $tasks;

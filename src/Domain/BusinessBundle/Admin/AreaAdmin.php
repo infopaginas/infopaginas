@@ -47,7 +47,7 @@ class AreaAdmin extends OxaAdmin
                 'multiple' => true,
                 'required' => false,
                 'by_reference' => false,
-            ]);;
+            ]);
 
         // remove businessProfiles field if we create object on businessProfile edit page
         $parentCode = $this->getRequest()->get('pcode');

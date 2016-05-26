@@ -67,6 +67,7 @@ class MediaAdmin extends SonataMediaAdmin
 
         $collection
             ->remove('export')
+            ->remove('delete')
         ;
     }
 }

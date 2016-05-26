@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 
 /**
  * Create new twig functions
- * 
+ *
  * Class AdminExtension
  * @package Oxa\Sonata\AdminBundle\Twig
  */

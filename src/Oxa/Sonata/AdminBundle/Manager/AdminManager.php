@@ -18,7 +18,7 @@ use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
 /**
  * Used to customise admin
- * 
+ *
  * Class AdminManager
  * @package Oxa\Sonata\AdminBundle\Manager
  */
@@ -190,7 +190,7 @@ class AdminManager extends DefaultManager
 
     /**
      * Check if such entity class really exists
-     * 
+     *
      * @param $entityClass
      * @throws InvalidArgumentException
      */
@@ -260,7 +260,7 @@ class AdminManager extends DefaultManager
 
     /**
      * Clone objects with all relations
-     * 
+     *
      * @param array $entityArray
      */
     public function cloneEntities(array $entityArray = [])

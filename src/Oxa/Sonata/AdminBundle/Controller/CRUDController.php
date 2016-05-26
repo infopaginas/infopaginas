@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Customize sonata admin crud
- * 
+ *
  * Class CRUDController
  * @package Oxa\Sonata\AdminBundle\Controller
  */

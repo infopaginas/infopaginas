@@ -151,8 +151,7 @@ class UserAdmin extends OxaAdmin
         $createUserRoleAccess = false;
         
         // check access an edit page
-        if (
-            $user->getRole() != null &&
+        if ( $user->getRole() != null &&
             $loggedUser->getRole()->getCode() <= $user->getRole()->getCode() &&
             $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
             $loggedUser->getId() != $user->getId()
@@ -161,9 +160,8 @@ class UserAdmin extends OxaAdmin
         }
 
         // check access an create page
-        if (
-            $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER &&
-            $user->getRole() == null
+        if ( $user->getRole() == null &&
+            $loggedUser->getRole()->getCode() <= Group::CODE_CONTENT_MANAGER
         ) {
             $createUserRoleAccess = true;
         }
