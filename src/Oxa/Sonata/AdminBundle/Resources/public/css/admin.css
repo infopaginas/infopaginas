@@ -1,5 +1,10 @@
 .sonata-ba-list-field-header-actions {
-    width: 183px;
+    /*min-width: 183px;*/
+}
+.btn-list-action{
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+    margin-bottom: 4px !important;
 }
 
 .sonata-ba-list-field-header-boolean {
@@ -52,4 +57,10 @@ h4.filter_legend img {
 
 .label-removed {
     color: #9d0505;
+}
+
+.btn-list-sorting {
+    min-width: 32px;
+    margin-right: 1px;
+    margin-bottom: 4px;
 }

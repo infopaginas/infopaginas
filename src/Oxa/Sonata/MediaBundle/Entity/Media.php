@@ -11,6 +11,7 @@
 
 namespace Oxa\Sonata\MediaBundle\Entity;
 
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseMedia as BaseMedia;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author <yourname> <youremail>
  */
-class Media extends BaseMedia
+class Media extends BaseMedia implements OxaMediaInterface
 {
     /**
      * @var integer $id
@@ -37,5 +38,32 @@ class Media extends BaseMedia
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Available contexts
+     *
+     * @return array
+     */
+    public static function getContexts() : array
+    {
+        return [
+            self::CONTEXT_DEFAULT                   => self::CONTEXT_DEFAULT,
+            self::CONTEXT_BUSINESS_PROFILE_IMAGES   => self::CONTEXT_BUSINESS_PROFILE_IMAGES,
+            self::CONTEXT_BUSINESS_PROFILE_LOGO     => self::CONTEXT_BUSINESS_PROFILE_LOGO,
+        ];
+    }
+
+    /**
+     * Available providers
+     *
+     * @return array
+     */
+    public static function getProviders() : array
+    {
+        return [
+            self::PROVIDER_IMAGE    => self::PROVIDER_IMAGE,
+            self::PROVIDER_FILE     => self::PROVIDER_FILE,
+        ];
     }
 }

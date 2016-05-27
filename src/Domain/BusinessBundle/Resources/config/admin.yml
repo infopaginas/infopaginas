@@ -42,6 +42,7 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles}
         calls:
             - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
+            - [setPositionService, ['@pix_sortable_behavior.position']]
 
     domain_business.admin.task:
         class: Domain\BusinessBundle\Admin\Task\TaskAdmin
@@ -67,4 +68,4 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Gallery}
         calls:
-#            - [ setTemplate, ['inner_list_row', "OxaSonataMediaBundle:MediaAdmin:inner_row_media.html.twig"]]
+             - [setPositionService, ['@pix_sortable_behavior.position']]

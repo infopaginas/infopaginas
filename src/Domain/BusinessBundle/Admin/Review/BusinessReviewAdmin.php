@@ -80,12 +80,20 @@ class BusinessReviewAdmin extends OxaAdmin
                 ->add('isActive')
             ->end()
             ->with('Review')
-                ->add('username')
+                ->add('username', null, [
+
+                ])
                 ->add('rating', 'choice', [
                     'choices' => range(0, 5),
                     'required' => false
                 ])
-                ->add('content')
+                ->add('content', null, [
+                    'attr' => [
+                        'rows' => 3,
+                        'cols' => 100,
+                        'style' => 'resize: none'
+                    ]
+                ])
             ->end()
         ;
     }

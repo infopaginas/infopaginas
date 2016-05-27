@@ -8,6 +8,7 @@
 
 namespace Domain\BusinessBundle\Entity\Media;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -15,6 +16,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\MediaBundle\Entity\BaseGalleryHasMedia;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * BusinessProfileHasMedia
@@ -36,6 +38,26 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var string - Description of Image
+     *
+     * @ORM\Column(name="description", type="text", length=1000, nullable=true)
+     */
+    protected $description;
+
+    /**
+     * @Gedmo\SortablePosition
+     * @ORM\Column(name="position", type="integer", nullable=false)
+     */
+    protected $position;
+
+    /**
+     * @var string - Is Primary
+     *
+     * @ORM\Column(name="is_primary", type="boolean", options={"default" : 0})
+     */
+    protected $isPrimary = false;
 
     /**
      * @var BusinessProfile
@@ -117,5 +139,77 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
     public function getMedia()
     {
         return $this->media;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return BusinessProfileHasMedia
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set isPrimary
+     *
+     * @param boolean $isPrimary
+     *
+     * @return BusinessProfileHasMedia
+     */
+    public function setIsPrimary($isPrimary)
+    {
+        $this->isPrimary = $isPrimary;
+
+        return $this;
+    }
+
+    /**
+     * Get isPrimary
+     *
+     * @return boolean
+     */
+    public function getIsPrimary()
+    {
+        return $this->isPrimary;
+    }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return BusinessProfileHasMedia
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 }

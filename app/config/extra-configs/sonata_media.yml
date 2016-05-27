@@ -29,6 +29,7 @@ sonata_media:
                 mode: http
             providers:
                 - sonata.media.provider.image
+                - sonata.media.provider.file
             formats:
                 small:         { width: 100, quality: 100}
                 admin_show:    { width: 1000, quality: 100}

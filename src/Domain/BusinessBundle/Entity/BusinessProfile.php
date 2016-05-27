@@ -12,6 +12,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * BusinessProfile
@@ -231,8 +232,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
      *     )
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $images;
 
@@ -244,6 +246,12 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
      */
     protected $logo;
+
+    /**
+     * @Gedmo\SortablePosition
+     * @ORM\Column(name="position", type="integer", nullable=false)
+     */
+    protected $position;
 
     public function getMarkCopyPropertyName()
     {
@@ -983,4 +991,29 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         return $this->images;
     }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return BusinessProfile
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
 }

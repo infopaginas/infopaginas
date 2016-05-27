@@ -8,6 +8,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CRUDController extends AdminCRUDController
 {
+    
+    
+    
     /**
      * Extended to allow any user to show his profile info
      *

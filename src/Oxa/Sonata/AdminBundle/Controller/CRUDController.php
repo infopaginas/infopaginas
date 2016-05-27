@@ -2,6 +2,7 @@
 
 namespace Oxa\Sonata\AdminBundle\Controller;
 
+use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class CRUDController
  * @package Oxa\Sonata\AdminBundle\Controller
  */
-class CRUDController extends BaseSonataCRUDController
+class CRUDController extends SortableAdminController
 {
     /**
      * Delete record completely

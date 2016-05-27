@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -24,13 +25,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('user')
             ->add('subscription')
             ->add('categories')
-            ->add('email')
-            ->add('phone')
             ->add('registrationDate', 'doctrine_orm_datetime_range', array(
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
-            ))
-            ->add('updatedAt', 'doctrine_orm_datetime_range', array(
                 'field_type' => 'sonata_type_datetime_range_picker',
                 'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
             ))
@@ -51,16 +46,14 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name')
             ->add('logo', null, ['template' => 'OxaSonataMediaBundle:MediaAdmin:list_image.html.twig'])
+            ->add('name')
             ->add('user.username')
             ->add('subscription.name')
             ->add('categories')
-            ->add('email')
-            ->add('phone')
             ->add('registrationDate')
-            ->add('updatedAt')
             ->add('isActive', null, ['editable' => true])
+            ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
         ;
 
         $this->addGridActions($listMapper);
@@ -85,8 +78,8 @@ class BusinessProfileAdmin extends OxaAdmin
 //            ->tab('Address', array('class' => 'col-md-6'))
 //            ->end()
             ->tab('Media', array('class' => 'col-md-6'))
-                ->with('General', array('class' => 'col-md-6'))->end()
-                ->with('Gallery', array('class' => 'col-md-6'))->end()
+                ->with('General')->end()
+                ->with('Gallery')->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
@@ -99,6 +92,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Profile')
                 ->with('General')
                     ->add('name')
+            ->add('position')
                     ->add('user', 'sonata_type_model_list', [
                         'required' => false,
                         'btn_delete' => false,
@@ -156,7 +150,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                         'btn_add' => false,
                         'disabled' => true,
-
                     ])
                 ->end()
                 ->with('Displayed blocks')
@@ -193,23 +186,21 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General')
                     ->add('logo', 'sonata_type_model_list', array(), array(
                         'link_parameters' => array(
-                            'context' => 'business_profile_logo',
-                            'provider' => 'sonata.media.provider.image',
+                            'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                     )))
                 ->end()
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', array(
                         'by_reference' => false,
-//                        'type_options' => array(
-////                            'delete' => true
-//                        )
                     ), array(
                         'edit' => 'inline',
+                        'sortable'  => 'position',
                         'delete_empty' => true,
                         'inline' => 'table',
                         'link_parameters' => array(
-                            'context' => 'business_profile_images',
-                            'provider' => 'sonata.media.provider.image',
+                            'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
+                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         )
                     ))
                 ->end()
