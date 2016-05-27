@@ -92,7 +92,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Profile')
                 ->with('General')
                     ->add('name')
-            ->add('position')
                     ->add('user', 'sonata_type_model_list', [
                         'required' => false,
                         'btn_delete' => false,

@@ -10,7 +10,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class BusinessProfileHasMediaAdmin extends OxaAdmin
+class BusinessGalleryAdmin extends OxaAdmin
 {
     /**
      * @param DatagridMapper $datagridMapper
@@ -42,7 +42,7 @@ class BusinessProfileHasMediaAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('media', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfileHasMedia/list_image.html.twig'
+                'template' => 'DomainBusinessBundle:Admin:BusinessGallery/list_image.html.twig'
             ])
             ->add('media.name')
             ->addIdentifier('description')
@@ -98,7 +98,7 @@ class BusinessProfileHasMediaAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('media', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfileHasMedia/show_image.html.twig'
+                'template' => 'DomainBusinessBundle:Admin:BusinessGallery/show_image.html.twig'
             ])
             ->add('media.name')
             ->add('businessProfile')

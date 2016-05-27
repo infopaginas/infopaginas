@@ -63,8 +63,8 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Reviews}
 
     domain_business.admin.business_profile_has_media:
-        class: Domain\BusinessBundle\Admin\Media\BusinessProfileHasMediaAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia, SonataAdminBundle:CRUD]
+        class: Domain\BusinessBundle\Admin\Media\BusinessGalleryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Media\BusinessGallery, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Gallery}
         calls:

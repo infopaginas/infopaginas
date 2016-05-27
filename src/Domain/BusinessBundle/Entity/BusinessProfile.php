@@ -2,8 +2,9 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task\Task;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -12,6 +13,8 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
@@ -21,10 +24,12 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
-class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
+class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
 
     /**
      * @var int
@@ -38,6 +43,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Business name
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
@@ -113,6 +119,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Slogan of a Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="slogan", type="string", length=255, nullable=true)
      */
     protected $slogan;
@@ -130,6 +137,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Description of Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      */
     protected $description;
@@ -137,6 +145,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Products of Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="product", type="text", length=1000, nullable=true)
      */
     protected $product;
@@ -144,6 +153,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Operational Hours
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="working_hours", type="string", length=255, nullable=true)
      */
     protected $workingHours;
@@ -228,8 +238,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $businessReviews;
 
     /**
-     * @var BusinessProfileHasMedia[] - Media Images
-     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia",
+     * @var BusinessGallery[] - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true,
@@ -253,6 +263,17 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $position;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+    
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -285,6 +306,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -960,11 +982,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Add image
      *
-     * @param \Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia $image
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
      *
      * @return BusinessProfile
      */
-    public function addImage(\Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia $image)
+    public function addImage(\Domain\BusinessBundle\Entity\Media\BusinessGallery $image)
     {
         $this->images[] = $image;
         $image->setBusinessProfile($this);
@@ -975,9 +997,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Remove image
      *
-     * @param \Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia $image
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
      */
-    public function removeImage(\Domain\BusinessBundle\Entity\Media\BusinessProfileHasMedia $image)
+    public function removeImage(\Domain\BusinessBundle\Entity\Media\BusinessGallery $image)
     {
         $this->images->removeElement($image);
     }
@@ -1016,4 +1038,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $this->position;
     }
 
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
+    }
 }

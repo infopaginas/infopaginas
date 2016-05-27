@@ -8,6 +8,7 @@
 
 namespace Domain\BusinessBundle\Entity\Media;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -16,19 +17,23 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\MediaBundle\Entity\BaseGalleryHasMedia;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
- * BusinessProfileHasMedia
+ * BusinessGallery
  *
- * @ORM\Table(name="business_profile_has_media")
+ * @ORM\Table(name="business_gallery")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation")
  */
-class BusinessProfileHasMedia implements DefaultEntityInterface
+class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
     
     /**
      * @var integer
@@ -42,6 +47,7 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
     /**
      * @var string - Description of Image
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      */
     protected $description;
@@ -77,6 +83,17 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
      */
     protected $media;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
     
     /**
      * Get id
@@ -94,11 +111,19 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
     }
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Set businessProfile
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      *
-     * @return BusinessProfileHasMedia
+     * @return BusinessGallery
      */
     public function setBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile = null)
     {
@@ -122,7 +147,7 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
      *
      * @param MediaInterface $media
      *
-     * @return BusinessProfileHasMedia
+     * @return BusinessGallery
      */
     public function setMedia(MediaInterface $media = null)
     {
@@ -146,7 +171,7 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
      *
      * @param string $description
      *
-     * @return BusinessProfileHasMedia
+     * @return BusinessGallery
      */
     public function setDescription($description)
     {
@@ -170,7 +195,7 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
      *
      * @param boolean $isPrimary
      *
-     * @return BusinessProfileHasMedia
+     * @return BusinessGallery
      */
     public function setIsPrimary($isPrimary)
     {
@@ -194,7 +219,7 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
      *
      * @param integer $position
      *
-     * @return BusinessProfileHasMedia
+     * @return BusinessGallery
      */
     public function setPosition($position)
     {
@@ -211,5 +236,15 @@ class BusinessProfileHasMedia implements DefaultEntityInterface
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

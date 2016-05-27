@@ -6,7 +6,7 @@ sonata_block:
         sonata.user.block.account: # used to display menu option (login option)
         sonata.block.service.text: # used to if you plan to use Sonata user routes
         sonata.admin.block.admin_list:
-            contexts:   [admin]
+            contexts: [admin]
         sonata.admin.block.search_result:
             contexts: [admin]
         sonata_translation.block.locale_switcher:

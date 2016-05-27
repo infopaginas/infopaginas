@@ -1,10 +1,10 @@
 <?php
 
-namespace Oxa\TranslationBundle;
+namespace Oxa\Sonata\TranslationBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class OxaTranslationBundle extends Bundle
+class OxaSonataTranslationBundle extends Bundle
 {
     public function getParent()
     {

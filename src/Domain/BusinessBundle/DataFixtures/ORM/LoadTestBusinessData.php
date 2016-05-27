@@ -11,8 +11,16 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Tag;
+use Domain\BusinessBundle\Entity\Translation\AreaTranslation;
+use Domain\BusinessBundle\Entity\Translation\BrandTranslation;
+use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
+use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
+use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
+use Domain\BusinessBundle\Entity\Translation\TagTranslation;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -59,6 +67,9 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->setEmail('test@test.com');
             $object->setWebsite('www.google.com');
             $object->setPhone('+375-29-1862356');
+            $object->setSlogan('Just do it');
+            $object->setProduct('Good product');
+            $object->setDescription('Some description');
 
             $object->addArea($this->getReference('area.0'));
             $object->addArea($this->getReference('area.' . rand(1, 2)));
@@ -75,8 +86,22 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->setSubscription($this->getReference('subscription.' . rand(1, 5)));
             $object->setUser($this->getReference('user.admin'));
 
+            $this->addTranslation( new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $value), $object);
+            $this->addTranslation( new BusinessProfileTranslation(), 'slogan', 'Spain Slogan', $object);
+            $this->addTranslation( new BusinessProfileTranslation(), 'product', 'Spain Product', $object);
+            $this->addTranslation( new BusinessProfileTranslation(), 'description', 'Spain Description', $object);
+
             $this->manager->persist($object);
         }
+    }
+    
+    protected function addTranslation(AbstractPersonalTranslation $translation, $fieldName, $value, TranslatableInterface $object, $locale = 'es')
+    {
+        $translation->setField($fieldName);
+        $translation->setContent($value);
+        $translation->setLocale($locale);
+        $translation->setObject($object);
+        $this->manager->persist($translation);
     }
 
     protected function loadTags()
@@ -90,6 +115,14 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         foreach ($data as $key => $value) {
             $object = new Tag();
             $object->setName($value);
+
+            $translation = new TagTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
             $this->manager->persist($object);
 
             // set reference to find this
@@ -108,6 +141,14 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         foreach ($data as $key => $value) {
             $object = new Brand();
             $object->setName($value);
+
+            $translation = new BrandTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
             $this->manager->persist($object);
 
             // set reference to find this
@@ -126,6 +167,14 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         foreach ($data as $key => $value) {
             $object = new PaymentMethod();
             $object->setName($value);
+
+            $translation = new PaymentMethodTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
             $this->manager->persist($object);
 
             // set reference to find this
@@ -144,6 +193,14 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         foreach ($data as $key => $value) {
             $object = new Area();
             $object->setName($value);
+
+            $translation = new AreaTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
             $this->manager->persist($object);
 
             // set reference to find this
@@ -162,6 +219,14 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         foreach ($data as $key => $value) {
             $object = new Category();
             $object->setName($value);
+
+            $translation = new CategoryTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
             $this->manager->persist($object);
 
             // set reference to find this

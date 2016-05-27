@@ -10,12 +10,14 @@ sonata_media:
         gallery:            Oxa\Sonata\MediaBundle\Entity\Gallery
         gallery_has_media:  Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia
     contexts:
+        # when you add a new one or edit context name,
+        # edit OxaMediaInterface constans
         default:  # the default context is mandatory
             download:
                 mode: http # X-Sendfile | http
             providers:
                 - sonata.media.provider.image
-                - sonata.media.provider.file
+#                - sonata.media.provider.file
 #                - sonata.media.provider.dailymotion
 #                - sonata.media.provider.youtube
 #                - sonata.media.provider.vimeo
@@ -29,7 +31,6 @@ sonata_media:
                 mode: http
             providers:
                 - sonata.media.provider.image
-                - sonata.media.provider.file
             formats:
                 small:         { width: 100, quality: 100}
                 admin_show:    { width: 1000, quality: 100}
