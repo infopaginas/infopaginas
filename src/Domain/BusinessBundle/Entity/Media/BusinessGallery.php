@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
 
 /**
  * BusinessGallery
@@ -243,7 +244,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      *
      * @param \Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation
      */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation)
+    public function removeTranslation(BusinessGalleryTranslation $translation)
     {
         $this->translations->removeElement($translation);
     }

@@ -86,16 +86,23 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->setSubscription($this->getReference('subscription.' . rand(1, 5)));
             $object->setUser($this->getReference('user.admin'));
 
-            $this->addTranslation( new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $value), $object);
-            $this->addTranslation( new BusinessProfileTranslation(), 'slogan', 'Spain Slogan', $object);
-            $this->addTranslation( new BusinessProfileTranslation(), 'product', 'Spain Product', $object);
-            $this->addTranslation( new BusinessProfileTranslation(), 'description', 'Spain Description', $object);
+            $this->addTranslation(new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $value), $object);
+            $this->addTranslation(new BusinessProfileTranslation(), 'slogan', 'Spain Slogan', $object);
+            $this->addTranslation(new BusinessProfileTranslation(), 'product', 'Spain Product', $object);
+            $this->addTranslation(new BusinessProfileTranslation(), 'description', 'Spain Description', $object);
 
             $this->manager->persist($object);
         }
     }
-    
-    protected function addTranslation(AbstractPersonalTranslation $translation, $fieldName, $value, TranslatableInterface $object, $locale = 'es')
+
+    /**
+     * @param AbstractPersonalTranslation $translation
+     * @param string $fieldName
+     * @param string $value
+     * @param TranslatableInterface $object
+     * @param string $locale
+     */
+    protected function addTranslation($translation, $fieldName, $value, $object, $locale = 'es')
     {
         $translation->setField($fieldName);
         $translation->setContent($value);

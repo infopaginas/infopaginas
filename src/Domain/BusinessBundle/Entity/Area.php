@@ -13,7 +13,6 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 
-
 /**
  * Area
  *

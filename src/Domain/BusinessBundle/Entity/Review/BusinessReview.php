@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -250,7 +251,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
      *
      * @param \Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation $translation
      */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation $translation)
+    public function removeTranslation(BusinessReviewTranslation $translation)
     {
         $this->translations->removeElement($translation);
     }
