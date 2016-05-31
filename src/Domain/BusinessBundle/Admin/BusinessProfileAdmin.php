@@ -46,7 +46,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('logo', null, ['template' => 'OxaSonataMediaBundle:MediaAdmin:list_image.html.twig'])
+            ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:list_image.html.twig'])
             ->add('name')
             ->add('user.username')
             ->add('subscription.name')
@@ -214,6 +214,9 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
+            ->add('logo', null, [
+                'template' => 'DomainBusinessBundle:Admin:show_image.html.twig'
+            ])
             ->add('name')
             ->add('images')
             ->add('user')

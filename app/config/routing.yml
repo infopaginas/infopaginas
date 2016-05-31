@@ -1,9 +1,14 @@
+domain_banner:
+    resource: "@DomainBannerBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 domain_business:
     resource: "@DomainBusinessBundle/Resources/config/routing.yml"
     prefix:   /business
 
-domain_default:
-    resource: "@DomainDefaultBundle/Controller/"
+oxa_config:
+    resource: "@OxaConfigBundle/Controller/"
     type:     annotation
     prefix:   /
 

@@ -43,6 +43,16 @@ sonata_media:
             formats:
                 small:    { width: 1000, quality: 100}
 
+        banner:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                home:       { width: 120, height: 420, quality: 100}
+                portal:     { width: 300, height: 250, quality: 100}
+                serp:       { width: 728, height: 90, quality: 100}
+                serp_boxed: { width: 250, height: 250, quality: 100}
     cdn:
         #define the public base url for the uploaded media
         server:
