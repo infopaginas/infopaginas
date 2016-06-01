@@ -1,0 +1,3 @@
+domain_site_profile_index:
+   path:     profile/
+   defaults: { _controller: DomainSiteBundle:Profile:index }

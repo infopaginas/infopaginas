@@ -3,8 +3,7 @@ domain_business:
     prefix:   /business
 
 domain_site:
-    resource: "@DomainSiteBundle/Controller/"
-    type:     annotation
+    resource: "@DomainSiteBundle/Resources/config/routing.yml"
     prefix:   /
 
 admin_area:

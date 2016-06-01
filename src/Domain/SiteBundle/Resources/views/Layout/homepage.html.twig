@@ -1,0 +1,370 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta name="title" content="infopáginas">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="../assets/styles/style.min.css"/>
+    {% endblock %}
+</head>
+<body>
+
+<!-- Header -->
+<header class="header homepage-header">
+    {% block homapage-header %}
+        <div class="container container-nav">
+            <div class="row">
+                {% block homapage-header-top-bar %}
+                    <div class="col-md-12">
+                        <nav class="navbar main-nav navbar-default">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                        data-target="#navbar-col" aria-expanded="false">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a href="" class="logo-header"></a>
+                                <ul class="menu-nav">
+                                    <li class="ad desc-menu"><a href="">Advertise with us</a></li>
+                                    <li class="login-link mobile-menu btn"><a href="">login</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="collapse navbar-collapse" id="navbar-col">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="lang btn"><a href="">español</a></li>
+                                    <li class="lang btn"><a href="" class="active">english</a></li>
+                                    <li class="login-link desc-menu btn"><a href="" class="login-button">login</a></li>
+                                    <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                {% endblock %}
+
+                {% block  homapage-header-search-block %}
+                    <div class="col-md-6 header-form">
+                        <form class="form-horizontal search-form">
+                            <span class="form-title">We can find everything!</span>
+
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <input type="text" placeholder="What do you want to find?" class="form-control what">
+                                </div>
+                                <div class="col-xs-8 search-input">
+                                    <input type="text" class="form-control" placeholder="San Juan"><span class="cross"></span>
+                                </div>
+                                <div class="col-xs-4 search-button">
+                                    <button type="submit" class="btn btn-primary green-btn search-btn"><i class="fa fa-search"
+                                                                                                          aria-hidden="true"></i><span>Search</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                {% endblock %}
+
+                {% block homapage-header-hexagon-desc %}
+                <div class="col-md-6 menu-hexagon menu-desc">
+                    <ol class="even">
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk sol-icon"
+                                                        href="#"><span>Solicitors</span></a></div>
+                        </li>
+                        <li class="r-hex photo-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-build" href="#"><span>Builders</span></a>
+                            </div>
+                        </li>
+                    </ol>
+                    <ol class="odd">
+                        <li class="r-hex photo-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-pharma"
+                                                        href="#"><span>Pharmacies</span></a></div>
+                        </li>
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 grey-bk el-icon"
+                                                        href="#"><span>Electricians</span></a></div>
+                        </li>
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk plum-icon"
+                                                        href="#"><span>Plumbers</span></a></div>
+                        </li>
+                    </ol>
+                    <ol class="odd">
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk mech-icon"
+                                                        href="#"><span>Mechanics</span></a></div>
+                        </li>
+                        <li class="r-hex photo-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-dent"
+                                                        href="#"><span>Dentists</span></a></div>
+                        </li>
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk rest-icon"
+                                                        href="#"><span>Restaurants</span></a></div>
+                        </li>
+                    </ol>
+                    <ol class="odd">
+                        <li class="r-hex photo-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-flor"
+                                                        href="#"><span>Florists</span></a></div>
+                        </li>
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk salon-icon" href="#"><span>Beauty Salons</span></a>
+                            </div>
+                        </li>
+                        <li class="r-hex photo-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-hair"
+                                                        href="#"><span>Hairdressers</span></a></div>
+                        </li>
+                        <li class="r-hex">
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk doc-icon" href="#"><span>Doctors</span></a>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+                {% endblock %}
+
+                {% block homapage-header-hexagon-mobile %}
+                    <div class="col-xs-12 menu-hexagon menu-mobile">
+                        <ol>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk sol-icon"
+                                                            href="#"><span>Solicitors</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-build" href="#"><span>Builders</span></a>
+                                </div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk plum-icon"
+                                                            href="#"><span>Plumbers</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-pharma"
+                                                            href="#"><span>Pharmacies</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk mech-icon"
+                                                            href="#"><span>Mechanics</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-dent"
+                                                            href="#"><span>Dentists</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 grey-bk el-icon"
+                                                            href="#"><span>Electricians</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk rest-icon"
+                                                            href="#"><span>Restaurants</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-flor"
+                                                            href="#"><span>Florists</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk salon-icon" href="#"><span>Beauty Salons</span></a>
+                                </div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-hair"
+                                                            href="#"><span>Hairdressers</span></a></div>
+                            </li>
+                            <li class="r-hex">
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk doc-icon" href="#"><span>Doctors</span></a>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</header>
+
+<main>
+    {% block main-block %}
+        <!-- Banner -->
+        {% block main-block-banner %}
+            <section id="banner" class="banner">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 banner-block desc-banner">
+                            <img src="../assets/images/banner.png">
+                        </div>
+                        <div class="col-xs-12 mobile-banner">
+                            <img src="http://placehold.it/300x250">
+                            <img src="http://placehold.it/300x250">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endblock %}
+
+        <!-- Articles and Videos-->
+        {% block main-block-containers %}
+            <section id="articles-videos" class="articles-videos">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 articles-section">
+                            <div class="section-title"><span class="blue-c">Articles</span>
+                                <hr>
+                                <a href="#" class="btn">View more articles</a></div>
+                            <div class="articles">
+                                <div class="col-xs-6 article">
+                                    <div class="article-pic"><a href="#"><img src="../assets/images/homepage/article1.png"></a>
+                                    </div>
+                                    <div class="article-info">
+                                        <a href="#" class="article-title blue-c">Why you feel grumpy when the seasons change</a>
+
+                                        <div class="article-area green-c">Psychologists</div>
+                                        <div class="article-text">If you live in a part of Australia with cold, cheerless
+                                            winters,
+                                            you’ll understand. Your energy levels plummet, you want to hide under the doona, and
+                                            you
+                                            feel well, sad. You’re not sick, you’re actually depressed.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 article">
+                                    <div class="article-pic"><a href="#"><img src="../assets/images/homepage/article2.png"></a>
+                                    </div>
+                                    <div class="article-info">
+                                        <a href="#" class="article-title blue-c">Why you feel grumpy when the seasons change</a>
+
+                                        <div class="article-area green-c">Psychologists</div>
+                                        <div class="article-text">If you live in a part of Australia with cold, cheerless
+                                            winters,
+                                            you’ll understand. Your energy levels plummet, you want to hide under the doona, and
+                                            you
+                                            feel well, sad. You’re not sick, you’re actually depressed.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 videos-section">
+                            <div class="section-title"><span class="blue-c">Videos</span>
+                                <hr>
+                                <a href="#" class="btn">View more videos</a></div>
+                            <div class="articles videos">
+                                <div class="col-xs-6 article">
+                                    <div class="article-pic video-preview"><a href="#"><img
+                                            src="../assets/images/homepage/article3.png"></a>
+                                    </div>
+                                    <div class="article-info">
+                                        <a href="#" class="article-title blue-c">How to choose the right builder</a>
+
+                                        <div class="article-area green-c">Building Contractors</div>
+                                        <div class="article-text">There’s nothing like being home for the holidays to start
+                                            noticing
+                                            all the little annoying bits and pieces around the house that you’d really like to
+                                            change. The kitchen is always top of the list when it comes to sprucing up.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 article">
+                                    <div class="article-pic video-preview"><a href="#"><img
+                                            src="../assets/images/homepage/article4.png"></a>
+                                    </div>
+                                    <div class="article-info">
+                                        <a href="#" class="article-title blue-c">How to choose the right builder</a>
+
+                                        <div class="article-area green-c">Building Contractors</div>
+                                        <div class="article-text">There’s nothing like being home for the holidays to start
+                                            noticing
+                                            all the little annoying bits and pieces around the house that you’d really like to
+                                            change. The kitchen is always top of the list when it comes to sprucing up.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endblock %}   
+
+        {% block main-block-banners %}
+            <!-- Banners -->
+            <section id="banners" class="banners">
+                
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-6 banner-small">
+                                <div class="small-banner"></div>
+                            </div>
+                            <div class="col-xs-6 banner-small">
+                                <div class="small-banner"></div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+        {% endblock %}
+    {% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="blue-bk">
+    {% block footer %}
+        <div class="container default-footer">
+            <div class="row">
+                <div class="col-xs-6 copyright white-c">
+                    <a href="" class="footer-logo"></a>
+
+                    <div class="copyright-date">
+                        <span>&copy; 2016 infopáginas</span>
+                        <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
+                            <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
+                                <span itemprop="streetAddress">90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo, </span> 
+                                <span itemprop="addressLocality">PR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 footer-menu">
+                    <ul class="footer-links green-c">
+                        <li><a class="green-c" href="">About Us</a></li>
+                        <li><a class="green-c" href="">Contact Us</a></li>
+                    </ul>
+                    <ul class="footer-links column">
+                        <li><a class="green-c" href="">Privacy Statement</a></li>
+                        <li><a class="green-c" href="">Terms of Use</a></li>
+                    </ul>
+                    <ul class="social-icons">
+                        <li><a class="white-c" href=""><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                        <li><a class="white-c" href=""><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                        <li><a class="white-c" href=""><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                        <li><a class="white-c" href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                        <li><a class="white-c" href=""><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-12 copyright small-view white-c">
+                    <div>
+                        <span>&copy; 2016 infopáginas</span>
+                        <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
+                            <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
+                                <span itemprop="streetAddress">90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo, </span> 
+                                <span itemprop="addressLocality">PR</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endblock %}
+</footer>
+
+<!-- Scripts -->
+{% block scripts %}
+    <script type="text/javascript" src="../assets/scripts/vendors/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../assets/scripts/vendors/bootstrap.min.js"></script>
+{% endblock %}
+</body>
+</html>
