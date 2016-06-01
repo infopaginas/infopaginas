@@ -37,8 +37,6 @@ class CRUDController extends AdminCRUDController
                 'action'   => 'show',
                 'object'   => $object,
                 'elements' => $this->admin->getShow(),
-            ],
-            null
-        );
+        ]);
     }
 }
