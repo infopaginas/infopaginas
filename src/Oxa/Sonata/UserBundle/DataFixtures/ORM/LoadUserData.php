@@ -25,7 +25,7 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
         // set reference to find this
         /** @var $adminGroup Group*/
         $adminGroup = $this->getReference('group.'.Group::CODE_ADMINISTRATOR);
-        
+
         $user = new User();
         $user->setEmail('admin@admin.by');
         $user->setUsername('admin');
@@ -39,7 +39,6 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
 
         $manager->persist($user);
         $manager->flush();
-
     }
 
     /**

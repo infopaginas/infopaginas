@@ -48,7 +48,6 @@ class BrandAdmin extends OxaAdmin
                 'required' => false,
                 'by_reference' => false,
             ]);
-        ;
 
         // remove businessProfiles field if we create object on businessProfile edit page
         $parentCode = $this->getRequest()->get('pcode');

@@ -9,6 +9,9 @@ domain_business:
 
 oxa_config:
     resource: "@OxaConfigBundle/Controller/"
+
+domain_site:
+    resource: "@DomainSiteBundle/Controller/"
     type:     annotation
     prefix:   /
 

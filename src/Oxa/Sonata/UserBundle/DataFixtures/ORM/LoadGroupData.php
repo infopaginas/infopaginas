@@ -26,7 +26,7 @@ class LoadGroupData extends AbstractFixture implements ContainerAwareInterface, 
         $trans = $this->container->get('translator');
         $domain = 'OxaUserGroupDataFixtures';
         $locale = 'en';
-        
+
         $groupLabelParts = [
             Group::CODE_ADMINISTRATOR    => 'administrator',
             Group::CODE_CONTENT_MANAGER  => 'content_manager',

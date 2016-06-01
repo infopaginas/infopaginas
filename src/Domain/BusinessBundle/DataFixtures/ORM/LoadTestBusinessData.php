@@ -61,7 +61,7 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             'Test business profile 4',
         ];
 
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $object = new BusinessProfile();
             $object->setName($value);
             $object->setEmail('test@test.com');

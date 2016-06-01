@@ -45,11 +45,6 @@ sonata_admin:
                     - domain_business.admin.tag
                     - domain_business.admin.brand
                     - domain_business.admin.payment_method
-            sonata.admin.group.media:
-                label: Media
-                icon: <i class="fa fa-picture-o"></i>
-                items:
-                    - sonata.media.admin.media
             domain.admin.group.banner:
                 label: Banners
                 icon: <i class="fa fa-picture-o"></i>
@@ -57,6 +52,11 @@ sonata_admin:
                     - domain_banner.admin.banner
                     - domain_banner.admin.type
                     - domain_banner.admin.template
+            sonata.admin.group.media:
+                label: Media
+                icon: <i class="fa fa-picture-o"></i>
+                items:
+                    - sonata.media.admin.media
             oxa.admin.group.config:
                 label: Configs
                 icon: <i class="fa fa-cogs"></i>

@@ -25,10 +25,11 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('user')
             ->add('subscription')
             ->add('categories')
-            ->add('registrationDate', 'doctrine_orm_datetime_range', array(
+            ->add('registrationDate', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
-            ))
+                'field_options' => [
+                    'format' => 'dd-MM-y hh:mm:ss'
+            ]])
             ->add('isActive', null, [], null, [
                 'choices' => [
                     1 => 'label_yes',
@@ -75,18 +76,13 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
             ->end()
-//            ->tab('Address', array('class' => 'col-md-6'))
-//            ->end()
             ->tab('Media', array('class' => 'col-md-6'))
                 ->with('General')->end()
                 ->with('Gallery')->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
-            ->end()
-//            ->tab('SEO', array('class' => 'col-md-6'))
-//            ->end()
-        ;
+            ->end();
 
         $formMapper
             ->tab('Profile')
@@ -101,10 +97,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('email', 'email')
                     ->add('phone')
                     ->add('workingHours')
-                    ->add('slug', null, [
-                        'read_only' => true,
-                        'required' => false,
-                    ])
+                    ->add('slug', null, ['read_only' => true, 'required' => false])
                 ->end()
                 ->with('Description')
                     ->add('slogan')
@@ -112,27 +105,13 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('description', 'ckeditor')
                 ->end()
                 ->with('Categories')
-                    ->add('areas', 'sonata_type_model', [
-                        'multiple' => true,
-                        'required' => false,
-                    ])
-                    ->add('brands', 'sonata_type_model', [
-                        'multiple' => true,
-                        'required' => false,
-                    ])
-                    ->add('tags', 'sonata_type_model', [
-                        'multiple' => true,
-                        'required' => false,
-                    ])
-                    ->add('categories', 'sonata_type_model', [
-                        'multiple' => true,
-                        'required' => false,
-                    ])
-
-                    ->add('paymentMethods', 'sonata_type_model', [
+                    ->add('areas', null, ['multiple' => true])
+                    ->add('brands', null, ['multiple' => true])
+                    ->add('tags', null, ['multiple' => true])
+                    ->add('categories', null, ['multiple' => true])
+                    ->add('paymentMethods', null, [
                         'multiple' => true,
                         'expanded' => true,
-                        'required' => false,
                     ])
                 ->end()
             ->end()
@@ -140,11 +119,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General')
                     ->add('subscription', null, [])
                     ->add('isActive')
-                    ->add('updatedAt', 'sonata_type_datetime_picker', [
-                        'required' => false,
-                        'disabled' => true,
-
-                    ])
+                    ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                     ->add('updatedUser', 'sonata_type_model', [
                         'required' => false,
                         'btn_add' => false,
@@ -161,50 +136,42 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
-                    ->add('businessReviews', 'sonata_type_collection', array(
+                    ->add('businessReviews', 'sonata_type_collection', [
                         'mapped' => true,
-                        'type_options' => array(
+                        'type_options' => [
                             'delete' => true,
-                            'delete_options' => array(
-                                'type'         => 'checkbox',
-                                'type_options' => array(
-                                    'mapped'   => false,
-                                    'required' => false,
-                                )
-                            )
-                        )
-                    ), array(
+                            'delete_options' => [
+                                'type' => 'checkbox',
+                                'type_options' => ['mapped' => false, 'required' => false]
+                        ]]
+                    ], [
                         'edit' => 'inline',
                         'inline' => 'table',
                         'sortable' => 'id',
                         'allow_delete' => true,
-                    ))
+                    ])
                 ->end()
             ->end()
             ->tab('Media')
                 ->with('General')
-                    ->add('logo', 'sonata_type_model_list', array(), array(
-                        'link_parameters' => array(
-                            'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
-                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    )))
+                    ->add('logo', 'sonata_type_model_list', [], ['link_parameters' => [
+                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                    ]])
                 ->end()
                 ->with('Gallery')
-                    ->add('images', 'sonata_type_collection', array(
-                        'by_reference' => false,
-                    ), array(
+                    ->add('images', 'sonata_type_collection', ['by_reference' => false], [
                         'edit' => 'inline',
                         'sortable'  => 'position',
                         'delete_empty' => true,
                         'inline' => 'table',
-                        'link_parameters' => array(
+                        'link_parameters' => [
                             'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                        )
-                    ))
+                        ]
+                    ])
                 ->end()
-            ->end()
-        ;
+            ->end();
     }
 
     /**

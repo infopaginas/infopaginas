@@ -231,33 +231,42 @@ class CRUDController extends SortableAdminController
                 try {
                     $this->admin->delete($object);
                     if ($this->isXmlHttpRequest()) {
-                        return $this->renderJson(array('result' => 'ok'));
+                        $xmlHttpResult = 'ok';
+                    } else {
+                        $this->addFlash(
+                            'sonata_flash_success',
+                            $this->get('translator')->trans(
+                                'flash_delete_success',
+                                array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                                'SonataAdminBundle'
+                            )
+                        );
                     }
-                    $this->addFlash(
-                        'sonata_flash_success',
-                        $this->get('translator')->trans(
-                            'flash_delete_success',
-                            array('%name%' => $this->escapeHtml($this->admin->toString($object))),
-                            'SonataAdminBundle'
-                        )
-                    );
                 } catch (ModelManagerException $e) {
                     $this->logModelManagerException($e);
 
                     if ($this->isXmlHttpRequest()) {
-                        return $this->renderJson(array('result' => 'error'));
+                        $xmlHttpResult = 'error';
+                    } else {
+                        $this->addFlash(
+                            'sonata_flash_error',
+                            $this->admin->trans(
+                                'flash_delete_error',
+                                array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                                'SonataAdminBundle'
+                            )
+                        );
                     }
-
-                    $this->addFlash(
-                        'sonata_flash_error',
-                        $this->admin->trans(
-                            'flash_delete_error',
-                            array('%name%' => $this->escapeHtml($this->admin->toString($object))),
-                            'SonataAdminBundle'
-                        )
-                    );
                 }
-                return $this->redirectTo($object);
+
+                if (isset($xmlHttpResult)) {
+                    $returnResult = $this->renderJson(array('result' => $xmlHttpResult));
+                } else {
+                    $returnResult = $this->redirectTo($object);
+                }
+
+                return $returnResult;
+
             } else {
                 $this->addFlash(
                     'sonata_flash_error',
@@ -265,18 +274,17 @@ class CRUDController extends SortableAdminController
                         'flash_delete_error_rel',
                         array('%fields%' => implode(',', $existDependentFields),
                         'SonataAdminBundle'
-                        )
-                    )
+                    ))
                 );
             }
         }
 
-        return $this->render($this->admin->getTemplate('delete'), array(
+        return $this->render($this->admin->getTemplate('delete'), [
             'object' => $object,
             'action' => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.delete'),
             'existDependentFields' => $existDependentFields
-        ));
+        ]);
     }
 
     /**

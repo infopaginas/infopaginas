@@ -3,14 +3,10 @@
 namespace Oxa\Sonata\UserBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController as AdminCRUDController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CRUDController extends AdminCRUDController
 {
-    
-    
-    
     /**
      * Extended to allow any user to show his profile info
      *
@@ -21,7 +17,7 @@ class CRUDController extends AdminCRUDController
     public function showAction($id = null)
     {
         $request = $this->getRequest();
-        $id      = $request->get($this->admin->getIdParameter());
+        $id = $request->get($this->admin->getIdParameter());
 
         $object = $this->admin->getObject($id);
 
@@ -37,10 +33,10 @@ class CRUDController extends AdminCRUDController
 
         $this->admin->setSubject($object);
 
-        return $this->render($this->admin->getTemplate('show'), array(
-            'action'   => 'show',
-            'object'   => $object,
-            'elements' => $this->admin->getShow(),
-        ), null);
+        return $this->render($this->admin->getTemplate('show'), [
+                'action'   => 'show',
+                'object'   => $object,
+                'elements' => $this->admin->getShow(),
+        ]);
     }
 }

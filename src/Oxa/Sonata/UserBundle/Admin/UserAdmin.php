@@ -83,19 +83,19 @@ class UserAdmin extends OxaAdmin
             ->add('lastname')
             ->add('email')
             ->add('role')
-            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, ['choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
-            ], 'translation_domain' => 'SonataUserBundle'
+            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, [
+                'choices' => [
+                    1 => 'label_yes',
+                    2 => 'label_no',
+                ],
+                'translation_domain' => 'SonataUserBundle'
             ])
-//            ->add('isActive', null, [], null, ['choices' => [
-//                1 => 'label_yes',
-//                2 => 'label_no',
-//            ]])
-            ->add('createdAt', 'doctrine_orm_datetime_range', array(
+            ->add('createdAt', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
-            ))
+                'field_options' => [
+                    'format' => 'dd-MM-y hh:mm:ss'
+                ]
+            ])
         ;
     }
 
@@ -106,24 +106,23 @@ class UserAdmin extends OxaAdmin
     {
         $showMapper
             ->with('General')
-            ->add('username')
-            ->add('email')
+                ->add('username')
+                ->add('email')
             ->end()
             ->with('Security')
-            ->add('role')
-            ->add('enabled')
-//                ->add('isActive')
+                ->add('role')
+                ->add('enabled')
             ->end()
             ->with('Profile')
-            ->add('firstname')
-            ->add('lastname')
-            ->add('locale')
+                ->add('firstname')
+                ->add('lastname')
+                ->add('locale')
             ->end()
             ->with('Social')
-            ->add('facebookUid')
-            ->add('facebookName')
-            ->add('gplusUid')
-            ->add('gplusName')
+                ->add('facebookUid')
+                ->add('facebookName')
+                ->add('gplusUid')
+                ->add('gplusName')
             ->end()
         ;
     }
@@ -146,10 +145,10 @@ class UserAdmin extends OxaAdmin
 
         /* @var User $user */
         $user = $this->getSubject();
-        
+
         $editUserRoleAccess = false;
         $createUserRoleAccess = false;
-        
+
         // check access an edit page
         if ($user->getRole() != null &&
             $loggedUser->getRole()->getCode() <= $user->getRole()->getCode() &&
@@ -191,30 +190,28 @@ class UserAdmin extends OxaAdmin
                     'choices' => $roles
                 ])
                 ->add('enabled')
-//                ->add('groups')
-//                ->add('role', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;
         }
 
         $formMapper
             ->with('General')
-            ->add('username')
-            ->add('email')
-            ->add('plainPassword', 'text', array(
-                'required' => (!$this->getSubject() || is_null($this->getSubject()->getId())),
-            ))
+                ->add('username')
+                ->add('email')
+                ->add('plainPassword', 'text', [
+                    'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                ])
             ->end()
             ->with('Profile')
-            ->add('firstname', null, ['attr' => ['maxlength' => 35]])
-            ->add('lastname', null, ['attr' => ['maxlength' => 35]])
-            ->add('locale', 'locale')
+                ->add('firstname')
+                ->add('lastname')
+                ->add('locale', 'locale')
             ->end()
             ->with('Social')
-            ->add('facebookUid')
-            ->add('facebookName')
-            ->add('gplusUid')
-            ->add('gplusName')
+                ->add('facebookUid')
+                ->add('facebookName')
+                ->add('gplusUid')
+                ->add('gplusName')
             ->end()
         ;
     }

@@ -51,7 +51,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface, Translat
      *     )
      */
     protected $businessProfiles;
-    
+
     /**
      * @var ArrayCollection
      *
@@ -84,7 +84,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface, Translat
     {
         return ($this->getName()) ?: 'New brand';
     }
-    
+
     public function getMarkCopyPropertyName()
     {
         return 'name';

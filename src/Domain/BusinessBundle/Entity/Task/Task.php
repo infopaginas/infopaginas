@@ -25,7 +25,7 @@ use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 class Task implements DefaultEntityInterface, TaskInterface
 {
     use DefaultEntityTrait;
-    
+
     /**
      * @var int
      *
