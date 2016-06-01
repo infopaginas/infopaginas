@@ -24,7 +24,7 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface, Tra
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    
+
     /**
      * @var int
      *

@@ -62,7 +62,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * )
      */
     protected $translations;
-    
+
     /**
      * Get id
      *
@@ -90,7 +90,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     {
         return 'name';
     }
-    
+
     /**
      * Set name
      *

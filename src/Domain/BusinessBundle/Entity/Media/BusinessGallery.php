@@ -35,7 +35,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    
+
     /**
      * @var integer
      *
@@ -68,7 +68,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 
     /**
      * @var BusinessProfile
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", 
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     cascade={"persist"},
      *     inversedBy="images"
      * )
@@ -78,7 +78,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 
     /**
      * @var \Oxa\Sonata\MediaBundle\Entity\Media
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media", 
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
@@ -95,7 +95,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      * )
      */
     protected $translations;
-    
+
     /**
      * Get id
      *

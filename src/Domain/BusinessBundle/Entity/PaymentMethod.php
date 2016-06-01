@@ -62,7 +62,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
      * )
      */
     protected $translations;
-    
+
     /**
      * Get id
      *
@@ -90,7 +90,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     {
         return 'name';
     }
-    
+
     /**
      * Set name
      *

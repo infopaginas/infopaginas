@@ -68,23 +68,16 @@ class BusinessGalleryAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->add('media', 'sonata_type_model_list', array(
-                'required' => false,
-//                'btn_delete' => false,
-            ), array(
-                'link_parameters' => array(
-                    'context' => 'business_profile_images',
-                    'provider' => 'sonata.media.provider.image',
-                    'allow_switch_context' => false
-                )
-            ))
-            ->add('description', null, [
-                'attr' => [
-                    'rows' => 2,
-                    'cols' => 100,
-                    'style' => 'resize: none'
-                ]
-            ])
+            ->add('media', 'sonata_type_model_list', ['required' => false], ['link_parameters' => [
+                'context' => 'business_profile_images',
+                'provider' => 'sonata.media.provider.image',
+                'allow_switch_context' => false
+            ]])
+            ->add('description', null, ['attr' => [
+                'rows' => 2,
+                'cols' => 100,
+                'style' => 'resize: none'
+            ]])
             ->add('isPrimary')
             ->add('isActive')
         ;

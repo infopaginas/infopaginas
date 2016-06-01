@@ -84,21 +84,21 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\Column(name="website", type="string", length=30)
      */
     protected $website;
-    
+
     /**
      * @var string - Email address
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
      */
     protected $email;
-    
+
     /**
      * @var string - Contact phone number
      *
      * @ORM\Column(name="phone", type="string", length=15, nullable=true)
      */
     protected $phone;
-    
+
     /**
      * @var \DateTime - Date of registration in Infopaginas
      * @Gedmo\Timestampable(on="create")
@@ -273,7 +273,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * )
      */
     protected $translations;
-    
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -990,7 +990,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->images[] = $image;
         $image->setBusinessProfile($this);
-        
+
         return $this;
     }
 
@@ -1037,7 +1037,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         return $this->position;
     }
-
 
     /**
      * Remove translation

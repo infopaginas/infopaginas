@@ -93,7 +93,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
      * )
      */
     protected $translations;
-    
+
     /**
      * Constructor
      */
@@ -101,7 +101,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     public function getMarkCopyPropertyName()
     {
         return 'name';

@@ -21,6 +21,4 @@ use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
  */
 class ReviewTask extends Task
 {
-    
-
 }

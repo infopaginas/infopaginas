@@ -35,10 +35,12 @@ class BusinessReviewAdmin extends OxaAdmin
                 ],
                 'translation_domain' => 'AdminDomainBusinessBundle'
             ])
-            ->add('createdAt', 'doctrine_orm_datetime_range', array(
+            ->add('createdAt', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
-            ))
+                'field_options' => [
+                    'format' => 'dd-MM-y hh:mm:ss'
+                ]
+            ])
         ;
     }
 

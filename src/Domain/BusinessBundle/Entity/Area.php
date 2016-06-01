@@ -64,7 +64,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      * )
      */
     protected $translations;
-    
+
     /**
      * Get id
      *
@@ -77,7 +77,6 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
 
     public function __toString()
     {
-        // TODO decide how to show not translated objects
         switch (true) {
             case $this->getName():
                 $result = $this->getName();
