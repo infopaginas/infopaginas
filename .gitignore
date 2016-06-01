@@ -16,3 +16,5 @@
 /web/css/
 /web/assets/
 *.php~
+components
+web/layout
