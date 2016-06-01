@@ -6,13 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * Class HomeController
+ * Class ProfileController
  * @package Domain\SiteBundle\Controller
  */
 class ProfileController extends Controller
 {
     /**
-     * @Route("/")
+     * Main profile page
      */
     public function indexAction()
     {

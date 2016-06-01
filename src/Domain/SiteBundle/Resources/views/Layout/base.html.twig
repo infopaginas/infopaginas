@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     {% block styles %}
-        <link rel="stylesheet" href="../assets/styles/style.min.css"/>
+        <link rel="stylesheet" href="{{ asset('assets/styles/style.min.css')}}" />
     {% endblock %}
 </head>
 <body>
@@ -85,237 +85,7 @@
 
 <main>
     {% block main %}
-    <!-- Profile -->
-        {% block profile %}
-            <section id="profile" class="profile">
-                {% block container %}
-                    <div class="container">
-                        {% block row-block %}
-                        <div class="row">
-                            {% block mainColumn %}
-                            <div class="col-md-9">
-                                <div class="cards">
-                                    {% block card-items %}
-                                    <div class="card-item">
-                                        <div class="card-title">
-                                            <label class="control-label card-label" for="card-check">
-                                                <span class="card-name">&nbsp;SONS Notebooks</span>
-                                                <span class="card-slogan">&nbsp;<q>Organize, store, plan, prioritize.</q></span>
-                                            </label>
-                                        </div>
-                                        <div class="col-xs-3 schedule">
-                                            <div class="address">
-                                                <span>San Juan, Puerto Rico 00919</span>
-                                                <a href="">Get Direction <span>&#187;</span></a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-9 company-contact">
-                                            <ul class="company-info">
-                                                <li><a href=""><i class="fa fa-home" aria-hidden="true"></i><span>http://sonsnotebooks.com/</span></a>
-                                                </li>
-                                                <li><a href="mailto:sonsnotebooks@yahoo.com"><i class="fa fa-envelope"
-                                                                                                aria-hidden="true"></i><span>sonsnotebooks@yahoo.com</span></a>
-                                                </li>
-                                                <li>
-                                                    <div class="dropdown filter-drop">
-                                                        <i class="fa fa-phone" aria-hidden="true"></i>
-
-                                                        <div class="select-container">
-                                                            <select class="form-control select-control">
-                                                                <option>phone number</option>
-                                                                <option>NY</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="company-logo"><img src="http://placehold.it/120x120"></div>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Description:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>At the time of study, all parents, teachers, students we welcome ideas that foster greater productivity and end of the day, produce better academic achievement. SONS notebooks system is a logical and convenient answer that uses colors to organize and at the same time create immediate recognition by association of the matters at hand.With notebooks and schoolbags color coded, the process is simplified organization.</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Products or Services:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>The SONS system currently offers the SON'S starter kit, notebooks, writing pads and labels.</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Categories:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>The SONS system currently offers the SON'S starter kit, notebooks, writing pads and labels.</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Working hours:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>Mon - Fri  9 a.m. - 7 p.m.  Sat  9:00 am-2:00pm</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>social networks:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <ul class="social-icons">
-                                                <li><a class="blue-c" href=""><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                                <li><a class="blue-c" href=""><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                                <li><a class="blue-c" href=""><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
-                                                <li><a class="blue-c" href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                                                <li><a class="blue-c" href=""><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Extra Phones:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>(787) 594-7273</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Price Range:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>250$ - 3 000$</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Payment Methods:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <ul class="payment-methods">
-                                                <li><a class="blue-c" href=""><img src="../assets/images/cash.png"></a></li>
-                                                <li><a class="blue-c" href=""><img src="../assets/images/visa.png"></a></li>
-                                                <li><a class="blue-c" href=""><img src="../assets/images/mastercard.png"></a></li>
-                                                <li><a class="blue-c" href=""><img src="../assets/images/paypal.png"></a></li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Parking:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>yes</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Bike parking:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>no</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Additional Info:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>SONS notebooks system is a logical and convenient answer that uses colors to organize and at the same time create immediate recognition by association of the matters at hand.</p>
-                                        </div>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Discounts:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p>10% Off on Mondaday</p>
-                                        </div>
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Coupons:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <p><a href="" class="green-btn btn print-btn"><i class="fa fa-print" aria-hidden="true"></i>Print</a></p>
-                                        </div>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span>Reviews:</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <div class="reviews">
-                                                <div class="star-rating">
-                                                    <span class="fa fa-star-o" data-rating="1"></span>
-                                                    <span class="fa fa-star-o" data-rating="2"></span>
-                                                    <span class="fa fa-star-o" data-rating="3"></span>
-                                                    <span class="fa fa-star-o" data-rating="4"></span>
-                                                    <span class="fa fa-star-o" data-rating="5"></span>
-                                                    <input type="hidden" name="whatever" class="rating-value" value="3">
-                                                </div>
-                                                <span class="blue-c">16 Reviews</span>
-                                            </div>
-                                            <a href="" class="green-btn btn write-btn"><i class="fa fa-pencil" aria-hidden="true"></i>Write a Review</a>
-                                        </div>
-                                        <div class="col-xs-3 fields-item review-col">
-                                            <div class="account-photo"><i class="fa fa-user" aria-hidden="true"></i><img src=""></div>
-                                            <span class="blue-c bold">Elyse M</span>
-                                            <div class="reviews">
-                                                <div class="star-rating">
-                                                    <span class="fa fa-star-o" data-rating="1"></span>
-                                                    <span class="fa fa-star-o" data-rating="2"></span>
-                                                    <span class="fa fa-star-o" data-rating="3"></span>
-                                                    <span class="fa fa-star-o" data-rating="4"></span>
-                                                    <span class="fa fa-star-o" data-rating="5"></span>
-                                                    <input type="hidden" name="whatever" class="rating-value" value="3">
-                                                </div>
-                                            </div>
-                                            <span class="review-date">13 APR 2016</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item review-col">
-                                            <p>The BEST salon in the Western suburbs! I've been coming here for 10 years and it just keeps getting better. The staff are super fun, friendly and so talented! If your just looking for your usual cut and colour or something a bit more creative make sure you get to Aqua Lounge! Also if you have a special event like a engagement or wedding coming up make sure you come see the girls.....they've got you covered!!</p>
-                                        </div>
-                                        <a href="" class="more-reviews blue-c">View more reviews</a>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span><i class="ad-icon icon"></i>Advertisement</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <div class="carousel-property">
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span><i class="photo-icon icon"></i>Photos</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <ul class="images-wrapper">
-                                                <li class="image-wrap"><img src="http://placehold.it/90x90"></li>
-                                                <li class="image-wrap"><img src="http://placehold.it/90x290"></li>
-                                                <li class="image-wrap"><img src="http://placehold.it/190x90"></li>
-                                                <li class="image-wrap"><img src="http://placehold.it/90x390"></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="card-item">
-                                        <div class="col-xs-3 fields-item">
-                                            <span><i class="video-icon icon"></i>Video</span>
-                                        </div>
-                                        <div class="col-xs-9 fields-item">
-                                            <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                        </div>
-                                    </div>
-                                    {% endblock %}
-                                </div>
-                            </div>
-                            <aside class="map col-md-3">
-                                {% block side-block %}
-                                    <img src="http://placehold.it/410x350">
-                                {% endblock %}
-                            </aside>
-                            {% endblock %}
-                        </div>
-                    </div>
-                {% endblock %}
-            </section>
-        {% endblock %}
+    
     {% endblock %}
 </main>
 
@@ -387,19 +157,19 @@
 
 <!-- Scripts -->
 {% block scripts %}
-    <script type="text/javascript" src="../assets/scripts/vendors/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="../assets/scripts/vendors/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/vendors/jquery-2.1.4.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/vendors/bootstrap.min.js')}}"></script>
     <!-- нужны на страницах с селектами -->
-    <script type="text/javascript" src="../assets/scripts/vendors/select2.min.js"></script>
-    <script type="text/javascript" src="../assets/scripts/select.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/vendors/select2.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/select.js')}}"></script>
     <!-- нужны на страницах с рейтингом -->
-    <script type="text/javascript" src="../assets/scripts/star-rating.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/star-rating.js')}}"></script>
     <!-- нужны на страницах со слайдером-->
-    <script type="text/javascript" src="../assets/scripts/vendors/slick.min.js"></script>
-    <script type="text/javascript" src="../assets/scripts/slick.js"></script>
-    <script type="text/javascript" src="../assets/scripts/vendors/jquery.mobile.custom.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/vendors/slick.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/slick.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/vendors/jquery.mobile.custom.min.js')}}"></script>
     <!-- нужны на страницах с фото -->
-    <script type="text/javascript" src="../assets/scripts/vendors/photo-gallery.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/scripts/vendors/photo-gallery.js')}}"></script>
 {% endblock %}
 </body>
 </html>

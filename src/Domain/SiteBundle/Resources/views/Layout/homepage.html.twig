@@ -12,10 +12,10 @@
 
 <!-- Header -->
 <header class="header homepage-header">
-    {% block homapage-header %}
+    {% block homapageHeader %}
         <div class="container container-nav">
             <div class="row">
-                {% block homapage-header-top-bar %}
+                {% block homapageHeaderTopBar %}
                     <div class="col-md-12">
                         <nav class="navbar main-nav navbar-default">
                             <div class="navbar-header">
@@ -44,7 +44,7 @@
                     </div>
                 {% endblock %}
 
-                {% block  homapage-header-search-block %}
+                {% block  homapageHeaderSearchBlock %}
                     <div class="col-md-6 header-form">
                         <form class="form-horizontal search-form">
                             <span class="form-title">We can find everything!</span>
@@ -66,7 +66,7 @@
                     </div>
                 {% endblock %}
 
-                {% block homapage-header-hexagon-desc %}
+                {% block homapageHeaderHexagonDesc %}
                 <div class="col-md-6 menu-hexagon menu-desc">
                     <ol class="even">
                         <li class="r-hex">
@@ -127,7 +127,7 @@
                 </div>
                 {% endblock %}
 
-                {% block homapage-header-hexagon-mobile %}
+                {% block homapageHeaderHexagonMobile %}
                     <div class="col-xs-12 menu-hexagon menu-mobile">
                         <ol>
                             <li class="r-hex">
@@ -187,9 +187,9 @@
 </header>
 
 <main>
-    {% block main-block %}
+    {% block mainColumn %}
         <!-- Banner -->
-        {% block main-block-banner %}
+        {% block mainColumnBanner %}
             <section id="banner" class="banner">
                 <div class="container">
                     <div class="row">
@@ -206,7 +206,7 @@
         {% endblock %}
 
         <!-- Articles and Videos-->
-        {% block main-block-containers %}
+        {% block mainColumnContainers %}
             <section id="articles-videos" class="articles-videos">
                 <div class="container">
                     <div class="row">
@@ -289,7 +289,7 @@
             </section>
         {% endblock %}   
 
-        {% block main-block-banners %}
+        {% block mainContainerBanners %}
             <!-- Banners -->
             <section id="banners" class="banners">
                 
