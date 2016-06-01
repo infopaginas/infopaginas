@@ -87,7 +87,7 @@ class UserAdmin extends OxaAdmin
                 'choices' => [
                     1 => 'label_yes',
                     2 => 'label_no',
-                ], 
+                ],
                 'translation_domain' => 'SonataUserBundle'
             ])
             ->add('createdAt', 'doctrine_orm_datetime_range', [
@@ -198,13 +198,13 @@ class UserAdmin extends OxaAdmin
             ->with('General')
                 ->add('username')
                 ->add('email')
-                ->add('plainPassword', 'text', array(
-                    'required' => (!$this->getSubject() || is_null($this->getSubject()->getId())),
-                ))
+                ->add('plainPassword', 'text', [
+                    'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                ])
             ->end()
             ->with('Profile')
-                ->add('firstname', null, ['attr' => ['maxlength' => 35]])
-                ->add('lastname', null, ['attr' => ['maxlength' => 35]])
+                ->add('firstname')
+                ->add('lastname')
                 ->add('locale', 'locale')
             ->end()
             ->with('Social')
