@@ -41,20 +41,18 @@ class MediaAdmin extends SonataMediaAdmin
         ;
 
         $context = $this->getPersistentParameter('context');
-        $datagridMapper->add('context', 'doctrine_orm_choice', array(
-            'field_options' => array(
-                'choices'  => [$context => $this->trans($context, [], 'SonataMediaBundle')],
-            ),
+        $datagridMapper->add('context', 'doctrine_orm_choice', ['field_options' => ['choices' => [
+                $context => $this->trans($context, [], 'SonataMediaBundle')
+            ]],
             'field_type' => 'choice',
-        ));
+        ]);
 
         $provider = $this->getPersistentParameter('provider');
-        $datagridMapper->add('providerName', 'doctrine_orm_choice', array(
-            'field_options' => array(
-                'choices'  => [$provider => $this->trans($provider, [], 'SonataMediaBundle')],
-            ),
+        $datagridMapper->add('providerName', 'doctrine_orm_choice', ['field_options' => ['choices' => [
+                $provider => $this->trans($provider, [], 'SonataMediaBundle')
+            ]],
             'field_type' => 'choice',
-        ));
+        ]);
     }
 
     /**
@@ -71,7 +69,7 @@ class MediaAdmin extends SonataMediaAdmin
             ->getContainer()
             ->get('oxa_sonata_media.admin.media')
             ->getCode();
-        
+
         $this->showOtherContexts = true;
 
         if ($parentCode && $parentCode != $mediaCode) {
