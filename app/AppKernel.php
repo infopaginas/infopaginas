@@ -49,7 +49,7 @@ class AppKernel extends Kernel
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
-            new Domain\DefaultBundle\DomainDefaultBundle(),
+            new Domain\SiteBundle\DomainSiteBundle(),
             new Domain\BusinessBundle\DomainBusinessBundle(),
         );
 
