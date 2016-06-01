@@ -258,13 +258,13 @@ class CRUDController extends SortableAdminController
                         );
                     }
                 }
-                
+
                 if (isset($xmlHttpResult)) {
                     $returnResult = $this->renderJson(array('result' => $xmlHttpResult));
                 } else {
                     $returnResult = $this->redirectTo($object);
                 }
-                
+
                 return $returnResult;
 
             } else {
@@ -279,12 +279,12 @@ class CRUDController extends SortableAdminController
             }
         }
 
-        return $this->render($this->admin->getTemplate('delete'), array(
+        return $this->render($this->admin->getTemplate('delete'), [
             'object' => $object,
             'action' => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.delete'),
             'existDependentFields' => $existDependentFields
-        ));
+        ]);
     }
 
     /**

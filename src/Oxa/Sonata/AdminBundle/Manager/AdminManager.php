@@ -39,7 +39,7 @@ class AdminManager extends DefaultManager
         if ($disableSoftdelete) {
             $this->disableDeleteableListener($entityClass);
         }
-        
+
         $this->checkIfEntityClassIsValid($entityClass);
 
         return $this->getEntityManager()
@@ -218,7 +218,7 @@ class AdminManager extends DefaultManager
                 $this->getEntityManager()->remove($entity);
             }
         }
-        
+
         $this->getEntityManager()->flush();
     }
 
@@ -251,7 +251,7 @@ class AdminManager extends DefaultManager
             if ($disableSoftdelete) {
                 $this->disableDeleteableListener(get_class($entity));
             }
-            
+
             if ($entity instanceof DeleteableEntityInterface && !is_null($entity->getDeletedAt())) {
                 $this->restoreEntity($entity);
             }
@@ -270,7 +270,7 @@ class AdminManager extends DefaultManager
                 $this->cloneEntityObject($entity);
             }
         }
-        
+
         $this->getEntityManager()->flush();
     }
 

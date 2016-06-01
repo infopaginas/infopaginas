@@ -8,9 +8,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CRUDController extends AdminCRUDController
 {
-    
-    
-    
     /**
      * Extended to allow any user to show his profile info
      *
@@ -37,10 +34,12 @@ class CRUDController extends AdminCRUDController
 
         $this->admin->setSubject($object);
 
-        return $this->render($this->admin->getTemplate('show'), array(
-            'action'   => 'show',
-            'object'   => $object,
-            'elements' => $this->admin->getShow(),
-        ), null);
+        return $this->render($this->admin->getTemplate('show'), [
+                'action'   => 'show',
+                'object'   => $object,
+                'elements' => $this->admin->getShow(),
+            ], 
+            null
+        );
     }
 }

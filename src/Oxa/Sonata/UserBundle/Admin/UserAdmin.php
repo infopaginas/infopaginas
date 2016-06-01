@@ -83,18 +83,18 @@ class UserAdmin extends OxaAdmin
             ->add('lastname')
             ->add('email')
             ->add('role')
-            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, ['choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
-            ], 'translation_domain' => 'SonataUserBundle'
+            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, [
+                'choices' => [
+                    1 => 'label_yes',
+                    2 => 'label_no',
+                ], 
+                'translation_domain' => 'SonataUserBundle'
             ])
-//            ->add('isActive', null, [], null, ['choices' => [
-//                1 => 'label_yes',
-//                2 => 'label_no',
-//            ]])
             ->add('createdAt', 'doctrine_orm_datetime_range', array(
                 'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
+                'field_options' => array(
+                    'format' => 'dd-MM-y hh:mm:ss'
+                )
             ))
         ;
     }
@@ -112,7 +112,6 @@ class UserAdmin extends OxaAdmin
             ->with('Security')
             ->add('role')
             ->add('enabled')
-//                ->add('isActive')
             ->end()
             ->with('Profile')
             ->add('firstname')
@@ -191,8 +190,6 @@ class UserAdmin extends OxaAdmin
                     'choices' => $roles
                 ])
                 ->add('enabled')
-//                ->add('groups')
-//                ->add('role', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;
         }
