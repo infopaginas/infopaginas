@@ -83,5 +83,4 @@ class TaskAdmin extends OxaAdmin
             ->add('rejectReason')
         ;
     }
-
 }

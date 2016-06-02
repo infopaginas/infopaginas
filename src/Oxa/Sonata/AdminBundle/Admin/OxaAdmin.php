@@ -2,6 +2,7 @@
 namespace Oxa\Sonata\AdminBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
@@ -12,11 +13,39 @@ use Sonata\AdminBundle\Show\ShowMapper;
 class OxaAdmin extends BaseAdmin
 {
     /**
+     * Default values to the datagrid.
+     *
+     * @var array
+     */
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_per_page'   => 10,
+        '_sort_by' => 'position',
+    );
+
+    /**
+     * @var int
+     */
+    public $lastPosition = 1;
+
+    /**
+     * @var PositionHandler $positionService
+     */
+    public $positionService;
+
+    public function setPositionService(PositionHandler $positionHandler)
+    {
+        $this->positionService = $positionHandler;
+        $this->lastPosition = $this->positionService->getLastPosition($this->getRoot()->getClass());
+    }
+
+    /**
      * Basic admin configuration
      */
     public function configure()
     {
-        $this->perPageOptions = [10, 25, 50, 100, 250, 500];
+        $this->setPerPageOptions([10, 25, 50, 100, 250, 500]);
+
         // custom delete page template
         $this->setTemplate('delete', 'OxaSonataAdminBundle:CRUD:delete.html.twig');
     }
@@ -85,6 +114,7 @@ class OxaAdmin extends BaseAdmin
                 '_controller' => 'OxaSonataAdminBundle:CRUD:deletePhysical'
             ])
             ->add('restore')
+            ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }
 
@@ -99,7 +129,7 @@ class OxaAdmin extends BaseAdmin
             'actions' => [
                 'all_available' => [
                     'template' => 'OxaSonataAdminBundle:CRUD:list__action_delete_physical_able.html.twig'
-                ]
+                ],
             ]
         ]);
     }

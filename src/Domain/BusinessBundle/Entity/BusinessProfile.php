@@ -2,14 +2,20 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task\Task;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * BusinessProfile
@@ -18,10 +24,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
-class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
+class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
 
     /**
      * @var int
@@ -35,14 +43,15 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Business name
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
 
     /**
      * @var User - Business owner
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
@@ -51,9 +60,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Subscription - Subscription plan
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", 
-     *     inversedBy="businessProfiles", 
-     *     cascade={"persist", "remove"}
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id", nullable=true)
      */
@@ -61,8 +70,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Category[] - Business category
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
@@ -75,21 +84,21 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\Column(name="website", type="string", length=30)
      */
     protected $website;
-    
+
     /**
      * @var string - Email address
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
      */
     protected $email;
-    
+
     /**
      * @var string - Contact phone number
      *
      * @ORM\Column(name="phone", type="string", length=15, nullable=true)
      */
     protected $phone;
-    
+
     /**
      * @var \DateTime - Date of registration in Infopaginas
      * @Gedmo\Timestampable(on="create")
@@ -99,9 +108,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Area[] - Using this field a User may define Areas, business is related to.
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area", 
-     *     inversedBy="businessProfiles"
-     * )
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinTable(name="business_profile_areas")
      */
     protected $areas;
@@ -109,14 +119,15 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Slogan of a Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="slogan", type="string", length=255, nullable=true)
      */
     protected $slogan;
 
     /**
      * @var Tag[] - Tags related to Profile
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Tag", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Tag",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_tags")
@@ -126,6 +137,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Description of Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      */
     protected $description;
@@ -133,6 +145,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Products of Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="product", type="text", length=1000, nullable=true)
      */
     protected $product;
@@ -140,14 +153,15 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Operational Hours
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="working_hours", type="string", length=255, nullable=true)
      */
     protected $workingHours;
 
     /**
      * @var Brand[] - Brands, Business works with
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_brands")
@@ -156,8 +170,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var PaymentMethod[] - Contains list of Payment Methods
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_payment_methods")
@@ -223,6 +237,43 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $businessReviews;
 
+    /**
+     * @var BusinessGallery[] - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
+     *     )
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    protected $images;
+
+    /**
+     * @var Media - Media Logo
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
+     */
+    protected $logo;
+
+    /**
+     * @Gedmo\SortablePosition
+     * @ORM\Column(name="position", type="integer", nullable=false)
+     */
+    protected $position;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -254,6 +305,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->brands = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -708,7 +761,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function addArea(\Domain\BusinessBundle\Entity\Area $area)
     {
         $this->areas[] = $area;
-
         return $this;
     }
 
@@ -878,6 +930,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function addBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
     {
         $this->businessReviews[] = $businessReview;
+        $businessReview->setBusinessProfile($this);
 
         return $this;
     }
@@ -900,5 +953,98 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getBusinessReviews()
     {
         return $this->businessReviews;
+    }
+
+    /**
+     * Set logo
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\Media $logo
+     *
+     * @return BusinessProfile
+     */
+    public function setLogo(\Oxa\Sonata\MediaBundle\Entity\Media $logo = null)
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
+
+    /**
+     * Get logo
+     *
+     * @return \Oxa\Sonata\MediaBundle\Entity\Media
+     */
+    public function getLogo()
+    {
+        return $this->logo;
+    }
+
+    /**
+     * Add image
+     *
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
+     *
+     * @return BusinessProfile
+     */
+    public function addImage(\Domain\BusinessBundle\Entity\Media\BusinessGallery $image)
+    {
+        $this->images[] = $image;
+        $image->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove image
+     *
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
+     */
+    public function removeImage(\Domain\BusinessBundle\Entity\Media\BusinessGallery $image)
+    {
+        $this->images->removeElement($image);
+    }
+
+    /**
+     * Get images
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return BusinessProfile
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

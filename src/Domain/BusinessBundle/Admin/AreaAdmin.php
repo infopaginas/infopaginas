@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\Area;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -18,8 +20,7 @@ class AreaAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
-        ;
+            ->add('name');
     }
 
     /**
@@ -29,8 +30,7 @@ class AreaAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name')
-        ;
+            ->add('name');
 
         $this->addGridActions($listMapper);
     }
@@ -42,7 +42,23 @@ class AreaAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-        ;
+            ->add('businessProfiles', 'sonata_type_model', [
+                'btn_add' => false,
+                'multiple' => true,
+                'required' => false,
+                'by_reference' => false,
+            ]);
+
+        // remove businessProfiles field if we create object on businessProfile edit page
+        $parentCode = $this->getRequest()->get('pcode');
+        $businessProfileCode = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('domain_business.admin.business_profile')
+            ->getCode();
+
+        if ($parentCode && $parentCode == $businessProfileCode) {
+            $formMapper->remove('businessProfiles');
+        }
     }
 
     /**
@@ -53,7 +69,6 @@ class AreaAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
-            ->add('businessProfiles')
-        ;
+            ->add('businessProfiles');
     }
 }

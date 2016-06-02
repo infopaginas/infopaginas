@@ -4,4 +4,3 @@ sonata_translation:
     # here enable the types you need
     gedmo:
         enabled: true
-

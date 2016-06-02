@@ -91,7 +91,7 @@ class TasksManager
      */
     public function createBusinessReviewConfirmationRequest(BusinessProfile $businessProfile) : array
     {
-        //TODO: implement REVIEW object saving here (when we'll have Review entity class)
+        //need to implement REVIEW object saving here (when we'll have Review entity class)
         $task = TasksFactory::create(TaskType::TASK_REVIEW_APPROVE, $businessProfile);
         return $this->save($task);
     }

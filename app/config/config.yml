@@ -8,7 +8,6 @@ imports:
     - { resource: extra-configs/extensions.yml }
     - { resource: extra-configs/sonata_media.yml }
     - { resource: extra-configs/sonata_translation.yml }
-    - { resource: "@DomainBusinessBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -45,7 +44,7 @@ twig:
     form:
         resources:
             - 'SonataFormatterBundle:Form:formatter.html.twig'
-            - 'SonataMediaBundle:Form:media_widgets.html.twig'
+            - 'OxaSonataMediaBundle:Form:media_widgets.html.twig'
             - 'SonataCoreBundle:Form:datepicker.html.twig'
 
 # Doctrine Configuration

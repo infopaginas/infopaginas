@@ -1,0 +1,14 @@
+services:
+    oxa_sonata_media.admin.media:
+        class: Oxa\Sonata\MediaBundle\Admin\MediaAdmin
+        arguments:
+            - ~
+            - Oxa\Sonata\MediaBundle\Entity\Media
+            - OxaSonataMediaBundle:MediaAdmin
+            - @sonata.media.pool
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Media}
+        calls:
+            - [ setTemplate, ['edit', 'OxaSonataMediaBundle:MediaAdmin:edit.html.twig']]
+            - [ setTemplate, ['list', 'OxaSonataMediaBundle:MediaAdmin:list.html.twig']]
+            - [ setTemplate, ['inner_list_row', 'OxaSonataMediaBundle:MediaAdmin:inner_row_media.html.twig']]

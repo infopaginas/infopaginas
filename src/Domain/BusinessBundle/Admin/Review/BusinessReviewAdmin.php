@@ -35,10 +35,12 @@ class BusinessReviewAdmin extends OxaAdmin
                 ],
                 'translation_domain' => 'AdminDomainBusinessBundle'
             ])
-            ->add('createdAt', 'doctrine_orm_datetime_range', array(
+            ->add('createdAt', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => array('format' => 'dd-MM-y hh:mm:ss')
-            ))
+                'field_options' => [
+                    'format' => 'dd-MM-y hh:mm:ss'
+                ]
+            ])
         ;
     }
 
@@ -52,7 +54,7 @@ class BusinessReviewAdmin extends OxaAdmin
             ->add('user')
             ->add('businessProfile')
             ->add('username')
-            ->add('rate')
+            ->add('rating')
             ->add('isActive')
             ->add('createdAt')
         ;
@@ -80,12 +82,20 @@ class BusinessReviewAdmin extends OxaAdmin
                 ->add('isActive')
             ->end()
             ->with('Review')
-                ->add('username')
-                ->add('rate', 'choice', [
-                    'choices' => range(0,5),
+                ->add('username', null, [
+
+                ])
+                ->add('rating', 'choice', [
+                    'choices' => range(0, 5),
                     'required' => false
                 ])
-                ->add('content')
+                ->add('content', null, [
+                    'attr' => [
+                        'rows' => 3,
+                        'cols' => 100,
+                        'style' => 'resize: none'
+                    ]
+                ])
             ->end()
         ;
     }
@@ -98,11 +108,9 @@ class BusinessReviewAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('username')
-            ->add('rate')
+            ->add('rating')
             ->add('content')
             ->add('isActive')
         ;
     }
-    
-    
 }

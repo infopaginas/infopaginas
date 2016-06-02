@@ -6,7 +6,7 @@ sonata_block:
         sonata.user.block.account: # used to display menu option (login option)
         sonata.block.service.text: # used to if you plan to use Sonata user routes
         sonata.admin.block.admin_list:
-            contexts:   [admin]
+            contexts: [admin]
         sonata.admin.block.search_result:
             contexts: [admin]
         sonata_translation.block.locale_switcher:
@@ -31,18 +31,13 @@ sonata_admin:
                 icon: <i class="fa fa-users"></i>
                 items:
                     - sonata.user.admin.user
-#                    - sonata.user.admin.group
-#            sonata.admin.group.media:
-#                label: Media
-#                icon: <i class="fa fa-pencil-square-o"></i>
-#                items:
-#                    - sonata.media.admin.media
-#                    - sonata.media.admin.gallery
+                    - sonata.user.admin.group
             domain.admin.group.business:
                 label: Businesses
-                icon: <i class="fa fa-table"></i>
+                icon: <i class="fa fa-briefcase"></i>
                 items:
                     - domain_business.admin.business_profile
+                    - domain_business.admin.business_profile_has_media
                     - domain_business.admin.business_review
                     - domain_business.admin.subscription
                     - domain_business.admin.category
@@ -50,6 +45,11 @@ sonata_admin:
                     - domain_business.admin.tag
                     - domain_business.admin.brand
                     - domain_business.admin.payment_method
+            sonata.admin.group.media:
+                label: Media
+                icon: <i class="fa fa-picture-o"></i>
+                items:
+                    - sonata.media.admin.media
 #            domain.admin.group.business.task:
 #                label: Tasks
 #                icon: <i class="fa fa-table"></i>

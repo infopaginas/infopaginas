@@ -81,6 +81,14 @@
         {% endif %}
     </li>
     <li class="dropdown sonata-actions">
+        {% if object.id and admin.hasRoute('show') and admin.isGranted('SHOW') %}
+            <a href="{{ admin.generateObjectUrl('show', object) }}">
+                <i class="fa fa-eye"></i>
+                {{ 'action_show'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    <li class="dropdown sonata-actions">
         {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
                 <i class="fa fa-list"></i>

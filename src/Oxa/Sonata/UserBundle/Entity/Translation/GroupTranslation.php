@@ -9,8 +9,6 @@
 namespace Oxa\Sonata\UserBundle\Entity\Translation;
 
 use Doctrine\ORM\Mapping as ORM;
-//use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
-
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 
 /**

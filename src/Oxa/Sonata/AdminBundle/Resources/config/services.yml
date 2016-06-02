@@ -5,6 +5,13 @@ services:
             - {name: doctrine.event_listener, event: onFlush, priority: 0}
             - {name: doctrine.event_listener, event: loadClassMetadata}
 
+    gedmo.listener.sortable:
+        class: Gedmo\Sortable\SortableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
     oxa.listener.user_crud_action:
         class: Oxa\Sonata\AdminBundle\EventListener\UserCRUDActionListener
         arguments: [@security.token_storage]
