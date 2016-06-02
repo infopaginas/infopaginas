@@ -33,7 +33,7 @@ class TemplateAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
         ;
-        
+
         $this->addGridActions($listMapper);
     }
 

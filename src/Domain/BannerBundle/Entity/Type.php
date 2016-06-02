@@ -17,7 +17,7 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
  * @ORM\Table(name="type")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\TypeRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\TypeTranslation") 
+ * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\TypeTranslation")
  */
 class Type extends TypeModel implements DefaultEntityInterface, TranslatableInterface
 {
@@ -43,7 +43,7 @@ class Type extends TypeModel implements DefaultEntityInterface, TranslatableInte
 
     /**
      * @var integer
-     * 
+     *
      * @ORM\Column(name="code", type="integer", nullable=true)
      */
     protected $code;

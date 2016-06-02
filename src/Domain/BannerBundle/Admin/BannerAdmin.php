@@ -78,11 +78,10 @@ class BannerAdmin extends OxaAdmin
             ->end()
             ->with('Type')
             ->add('type', 'sonata_type_model_list', [], [])
-            ->add('image', 'sonata_type_model_list', [], array(
-                'link_parameters' => array(
-                    'context' => OxaMediaInterface::CONTEXT_BANNER,
-                    'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-            )))
+            ->add('image', 'sonata_type_model_list', [], ['link_parameters' => [
+                'context' => OxaMediaInterface::CONTEXT_BANNER,
+                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+            ]])
             ->end()
             ->with('Template')
             ->add('template', 'sonata_type_model_list', [], [

@@ -20,7 +20,7 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
      * @var ContainerInterface $container
      */
     protected $container;
-    
+
     /**
      * {@inheritDoc}
      */

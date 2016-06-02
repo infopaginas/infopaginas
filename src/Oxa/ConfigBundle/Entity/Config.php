@@ -85,11 +85,11 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
      * )
      */
     protected $translations;
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -112,7 +112,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
     /**
      * Get key
      *
-     * @return string 
+     * @return string
      */
     public function getKey()
     {
@@ -135,7 +135,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -158,7 +158,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
     /**
      * Get value
      *
-     * @return string 
+     * @return string
      */
     public function getValue()
     {
@@ -181,7 +181,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
     /**
      * Get format
      *
-     * @return string 
+     * @return string
      */
     public function getFormat()
     {

@@ -70,7 +70,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     /**
      * @var Template - Banner Template, If a User selects template,
      * all entered data of “Type”, “Size” and “Body” fields are overwritten by template data.
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Domain\BannerBundle\Entity\Template",
      *     inversedBy="banners",
      *     cascade={"persist"}
@@ -105,7 +105,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      * )
      */
     protected $translations;
-    
+
     /**
      * Get id
      *
@@ -115,7 +115,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     {
         return $this->id;
     }
-    
+
     /**
      * Constructor
      */

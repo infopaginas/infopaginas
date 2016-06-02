@@ -21,12 +21,12 @@ interface TypeInterface
     const CODE_SERP_BOXED           = 5;
     const CODE_SERP_FEATUREAD       = 6;
     const CODE_SERP_MOBILE_TOP      = 7;
-    
+
     const SIZE_120_420 = '120x420';
     const SIZE_300_250 = '300x250';
     const SIZE_250_250 = '250x250';
     const SIZE_728_90  = '728x90';
-    
+
     const MEDIA_FORMAT_HOME         = 'home';
     const MEDIA_FORMAT_PORTAL       = 'portal';
     const MEDIA_FORMAT_SERP         = 'serp';
@@ -47,19 +47,19 @@ interface TypeInterface
      * @return array - Media sizes
      */
     public static function getCodeSizes() : array;
-    
+
     /**
      * @return array - Exists media format names
      */
     public static function getMediaFormats() : array;
-    
+
     /**
      * @return string
      */
     public function getSize() : string;
 
     /**
-     * @return string - 
+     * @return string
      */
     public function getMediaFormat() : string;
 }

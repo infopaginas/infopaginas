@@ -78,7 +78,7 @@ class TypeModel implements TypeInterface
         if (!array_key_exists($code, self::getCodeSizes())) {
             throw new InvalidArgumentException('Unknown type code');
         }
-        
+
         $this->code = $code;
     }
 

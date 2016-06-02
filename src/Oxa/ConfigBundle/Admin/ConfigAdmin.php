@@ -32,7 +32,6 @@ class ConfigAdmin extends OxaAdmin
             ->add('title')
             ->add('format')
             ->add('value', null, array('template' => 'OxaConfigBundle:Admin:list__value.html.twig'))
-//            ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
         ;
 
         $this->addGridActions($listMapper);
@@ -46,16 +45,16 @@ class ConfigAdmin extends OxaAdmin
         $formMapper
             ->add('title')
             ->add('key')
-            ->add('format', 'choice', array(
-                'choices' => array(
+            ->add('format', 'choice', [
+                'choices' => [
                     'html'=>'html',
                     'text'=>'text'
-                ),
-                'attr' => array(
+                ],
+                'attr' => [
                     'class' => 'formatter'
-                )
-            ))
-            ->add('value', 'ckeditor', array('config_name' => 'default'))
+                ]
+            ])
+            ->add('value', 'ckeditor', ['config_name' => 'default'])
         ;
     }
 

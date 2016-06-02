@@ -10,9 +10,8 @@ use Oxa\ConfigBundle\Service\Config;
  */
 class ConfigExtension extends \Twig_Extension
 {
-
     private $config;
-    
+
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -20,10 +19,12 @@ class ConfigExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return array('config' => new \Twig_Function_Method($this, 'getSetting', array(
+        return array('config' => new \Twig_Function_Method($this, 'getSetting', [
             'needs_environment'=> true,
-            'is_safe' => array('all')
-        )));
+            'is_safe' => [
+                'all'
+            ]
+        ]));
     }
 
     public function getSetting($env, $key)

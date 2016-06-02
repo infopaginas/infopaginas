@@ -22,12 +22,12 @@ class MediaAdmin extends SonataMediaAdmin
     {
         parent::configureFormFields($formMapper);
 
-//        $formMapper
-//            ->remove('enabled')
-//            ->remove('authorName')
-//            ->remove('cdnIsFlushable')
-//            ->remove('copyright')
-//        ;
+        $formMapper
+            ->remove('enabled')
+            ->remove('authorName')
+            ->remove('cdnIsFlushable')
+            ->remove('copyright')
+        ;
     }
 
     /**
