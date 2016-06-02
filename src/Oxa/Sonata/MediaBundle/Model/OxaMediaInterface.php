@@ -14,6 +14,7 @@ interface OxaMediaInterface
     const CONTEXT_DEFAULT                   = 'default';
     const CONTEXT_BUSINESS_PROFILE_IMAGES   = 'business_profile_images';
     const CONTEXT_BUSINESS_PROFILE_LOGO     = 'business_profile_logo';
+    const CONTEXT_BANNER                    = 'banner';
 
     /**
      * @return mixed
