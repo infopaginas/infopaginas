@@ -26,15 +26,15 @@ class BannerAdmin extends OxaAdmin
             ],
             'translation_domain' => $this->getTranslationDomain()
         ];
-
         $datagridMapper
             ->add('id')
             ->add('title')
-            ->add('allowedForBusinesses', null, [], null, $choiceOptions)
-            ->add('isActive', null, [], null, $choiceOptions)
             ->add('type')
             ->add('template')
+            ->add('allowedForBusinesses', null, [], null, $choiceOptions)
+            ->add('isActive', null, [], null, $choiceOptions)
         ;
+
     }
 
     /**
@@ -48,6 +48,7 @@ class BannerAdmin extends OxaAdmin
             ->add('title')
             ->add('type')
             ->add('size')
+            ->add('template')
             ->add('allowedForBusinesses')
             ->add('isActive')
             ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
@@ -71,22 +72,23 @@ class BannerAdmin extends OxaAdmin
 
         $formMapper
             ->with('General')
-            ->add('title')
-            ->add('description')
-            ->add('allowedForBusinesses')
-            ->add('isActive')
+                ->add('title')
+                ->add('description')
+                ->add('allowedForBusinesses')
+                ->add('isActive')
             ->end()
             ->with('Type')
-            ->add('type', 'sonata_type_model_list', [], [])
-            ->add('image', 'sonata_type_model_list', [], ['link_parameters' => [
-                'context' => OxaMediaInterface::CONTEXT_BANNER,
-                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-            ]])
+                ->add('type', 'sonata_type_model_list', [], [])
+                ->add('image', 'sonata_type_model_list', [], ['link_parameters' => [
+                    'context' => OxaMediaInterface::CONTEXT_BANNER,
+                    'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                ]])
             ->end()
             ->with('Template')
-            ->add('template', 'sonata_type_model_list', [], [
-                'required' => false
-            ])
+                ->add('template', 'sonata_type_model_list', [
+                    'required' => false,
+                    'btn_add' => false,
+                ])
             ->end()
         ;
     }
@@ -118,12 +120,12 @@ class BannerAdmin extends OxaAdmin
     {
         $errorElement
             ->with('type')
-            ->assertNotBlank()
-            ->assertNotNull()
+                ->assertNotBlank()
+                ->assertNotNull()
             ->end()
             ->with('image')
-            ->assertNotBlank()
-            ->assertNotNull()
+                ->assertNotBlank()
+                ->assertNotNull()
             ->end()
         ;
     }

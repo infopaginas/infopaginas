@@ -29,7 +29,6 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             $config->setTitle($item['title']);
             $config->setValue($item['value']);
             $config->setFormat($item['format']);
-            $config->setIsActive($item['is_active']);
             $config->setDescription($item['description']);
             $manager->persist($config);
         }
@@ -45,21 +44,18 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'title' => 'Default title',
                 'value' => 'Infopaginas',
                 'format' => 'text',
-                'is_active' => true,
                 'description' => 'Default site title',
             ], [
                 'key' => ConfigInterface::DEFAULT_META_DESCRIPTION,
                 'title' => 'Default Meta-description',
                 'value' => 'Default Meta-description',
                 'format' => 'text',
-                'is_active' => true,
                 'description' => 'Meta-description by default',
             ], [
                 'key' => ConfigInterface::DEFAULT_META_KEYWORDS,
                 'title' => 'Default Meta-keywords',
                 'value' => 'Default Meta-keywords',
                 'format' => 'text',
-                'is_active' => true,
                 'description' => 'Meta-keywords by default',
             ], [
                 'key' => ConfigInterface::FOOTER_CONTENT,
@@ -68,7 +64,6 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                     'OxaConfigBundle:Fixtures:footer_content.html.twig'
                 ),
                 'format' => 'html',
-                'is_active' => true,
                 'description' => 'Footer content',
             ], [
                 'key' => ConfigInterface::MAIL_TEMPLATE_TO_USER,
@@ -77,8 +72,37 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                     'OxaConfigBundle:Fixtures:mail_template_to_user.html.twig'
                 ),
                 'format' => 'html',
-                'is_active' => true,
                 'description' => 'User mail template',
+            ], [
+                'key' => ConfigInterface::SOCIAL_FACEBOOK_PROFILE,
+                'title' => 'Social Facebook profile',
+                'value' => 'https://www.facebook.com/',
+                'format' => 'text',
+                'description' => 'Facebook profile link',
+            ], [
+                'key' => ConfigInterface::SOCIAL_TWITTER_PROFILE,
+                'title' => 'Social Twitter profile',
+                'value' => 'https://www.twitter.com/',
+                'format' => 'text',
+                'description' => 'Twitter profile link',
+            ], [
+                'key' => ConfigInterface::SOCIAL_GOOGLE_PROFILE,
+                'title' => 'Social Google Plus profile',
+                'value' => 'https://plus.google.com/',
+                'format' => 'text',
+                'description' => 'Google Plus profile link',
+            ], [
+                'key' => ConfigInterface::SOCIAL_LINKEDIN_PROFILE,
+                'title' => 'Social LinkendIn profile',
+                'value' => 'https://www.linkedin.com/',
+                'format' => 'text',
+                'description' => 'LinkendIn profile link',
+            ], [
+                'key' => ConfigInterface::SOCIAL_INSTAGRAM_PROFILE,
+                'title' => 'Social Instagram profile',
+                'value' => 'https://www.instagram.com/',
+                'format' => 'text',
+                'description' => 'Instagram profile link',
             ],
         ];
     }

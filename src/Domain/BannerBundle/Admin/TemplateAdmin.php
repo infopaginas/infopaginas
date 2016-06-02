@@ -19,6 +19,12 @@ class TemplateAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('name')
+            ->add('updatedAt', 'doctrine_orm_datetime_range', [
+                'field_type' => 'sonata_type_datetime_range_picker',
+                'field_options' => [
+                    'format' => 'dd-MM-y hh:mm:ss'
+            ]])
+            ->add('updatedUser')
         ;
     }
 
@@ -49,6 +55,10 @@ class TemplateAdmin extends OxaAdmin
                     'rows' => 20,
                 ]
             ])
+            ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
+            ->add('updatedUser', null, [
+                'disabled' => true,
+            ])
         ;
     }
 
@@ -61,6 +71,8 @@ class TemplateAdmin extends OxaAdmin
             ->add('id')
             ->add('name')
             ->add('body')
+            ->add('updatedAt')
+            ->add('updatedUser')
             ->add('banners')
         ;
     }
