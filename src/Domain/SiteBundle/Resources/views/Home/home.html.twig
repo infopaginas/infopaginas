@@ -1,0 +1,11 @@
+{% extends "DomainSiteBundle:Layout:homepage.html.twig" %}
+
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['/bundles/domainsite/scripts/modules/homepage.js'])
+        })
+    </script>
+{% endblock%}
