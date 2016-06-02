@@ -19,7 +19,6 @@ class ConfigAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('title')
-            ->add('format')
         ;
     }
 
@@ -44,17 +43,17 @@ class ConfigAdmin extends OxaAdmin
     {
         $formMapper
             ->add('title')
-            ->add('key')
             ->add('format', 'choice', [
                 'choices' => [
-                    'html'=>'html',
-                    'text'=>'text'
+                    'html' => 'html',
+                    'text' => 'text'
                 ],
                 'attr' => [
                     'class' => 'formatter'
                 ]
             ])
             ->add('value', 'ckeditor', ['config_name' => 'default'])
+            ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
         ;
     }
 
@@ -65,7 +64,6 @@ class ConfigAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('key')
             ->add('title')
             ->add('value')
             ->add('format')
@@ -74,7 +72,7 @@ class ConfigAdmin extends OxaAdmin
 
     protected function configureRoutes(RouteCollection $collection)
     {
-//        $collection->remove('create');
+        $collection->remove('create');
         $collection->remove('delete');
         $collection->remove('export');
     }

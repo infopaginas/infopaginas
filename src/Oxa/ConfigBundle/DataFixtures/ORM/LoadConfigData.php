@@ -17,7 +17,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
      * @var ContainerInterface $container
      */
     protected $container;
-    
+
     /**
      * {@inheritDoc}
      */
