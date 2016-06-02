@@ -12,10 +12,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class HomeController extends Controller
 {
     /**
-     * @Route("/")
+     * Temp actions and templates
      */
     public function indexAction()
     {
         return $this->render('DomainSiteBundle:Home:index.html.twig');
+    }
+
+    /**
+     * Temp actions and templates
+     */
+    public function homeAction()
+    {
+        return $this->render('DomainSiteBundle:Layout:homepage.html.twig');
     }
 }
