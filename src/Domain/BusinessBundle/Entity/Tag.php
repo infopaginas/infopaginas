@@ -83,7 +83,17 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
 
     public function __toString()
     {
-        return ($this->getName()) ?: 'New tag';
+        switch (true) {
+            case $this->getName():
+                $result = $this->getName();
+                break;
+            case $this->getId():
+                $result = sprintf('id(%s): not translated', $this->getId());
+                break;
+            default:
+                $result = 'New tag';
+        }
+        return $result;
     }
 
     public function getMarkCopyPropertyName()

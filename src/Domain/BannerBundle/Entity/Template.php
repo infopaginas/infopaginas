@@ -13,7 +13,7 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 /**
  * Template
  *
- * @ORM\Table(name="template")
+ * @ORM\Table(name="banner_template")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\TemplateRepository")
  * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\TemplateTranslation")

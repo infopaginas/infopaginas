@@ -51,7 +51,6 @@ class BannerAdmin extends OxaAdmin
             ->add('template')
             ->add('allowedForBusinesses')
             ->add('isActive')
-            ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
         ;
 
         $this->addGridActions($listMapper);
@@ -128,15 +127,5 @@ class BannerAdmin extends OxaAdmin
                 ->assertNotNull()
             ->end()
         ;
-    }
-
-    /**
-     * @param RouteCollection $collection
-     */
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        parent::configureRoutes($collection);
-
-        $collection->add('copy');
     }
 }

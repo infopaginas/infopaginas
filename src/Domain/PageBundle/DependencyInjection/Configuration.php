@@ -1,12 +1,14 @@
 <?php
 
-namespace Oxa\ConfigBundle\DependencyInjection;
+namespace Domain\PageBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
+ *
+ * To learn more see
  */
 class Configuration implements ConfigurationInterface
 {
@@ -16,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('oxa_config');
+        $treeBuilder->root('domain_page');
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for

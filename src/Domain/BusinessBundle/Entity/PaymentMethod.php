@@ -83,7 +83,17 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
 
     public function __toString()
     {
-        return ($this->getName()) ?: 'New payment method';
+        switch (true) {
+            case $this->getName():
+                $result = $this->getName();
+                break;
+            case $this->getId():
+                $result = sprintf('id(%s): not translated', $this->getId());
+                break;
+            default:
+                $result = 'New payment method';
+        }
+        return $result;
     }
 
     public function getMarkCopyPropertyName()

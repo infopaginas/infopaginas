@@ -199,7 +199,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('phone')
             ->add('registrationDate')
             ->add('slogan')
-            ->add('description')
+            ->add('description', null, array('template' => 'DomainBusinessBundle:Admin:show_description.html.twig'))
             ->add('product')
             ->add('workingHours')
             ->add('isSetDescription')

@@ -31,7 +31,7 @@ sonata_admin:
                 icon: <i class="fa fa-users"></i>
                 items:
                     - sonata.user.admin.user
-                    - sonata.user.admin.group
+#                    - sonata.user.admin.group
             domain.admin.group.business:
                 label: Businesses
                 icon: <i class="fa fa-briefcase"></i>
@@ -45,9 +45,15 @@ sonata_admin:
                     - domain_business.admin.tag
                     - domain_business.admin.brand
                     - domain_business.admin.payment_method
+            domain.admin.group.page:
+                label: Pages
+                icon: <i class="fa fa-file"></i>
+                items:
+                    - domain_page.admin.page
+                    - domain_page.admin.template
             domain.admin.group.banner:
                 label: Banners
-                icon: <i class="fa fa-picture-o"></i>
+                icon: <i class="fa fa-star"></i>
                 items:
                     - domain_banner.admin.banner
                     - domain_banner.admin.type
