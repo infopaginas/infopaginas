@@ -12,7 +12,10 @@ file that was distributed with this source code.
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 
 {% block field%}
-    <a href="{{ admin.generateUrl('edit', {'id' : object|sonata_urlsafeid }) }}">
-        {% thumbnail attribute(object, field_description.name ), 'admin' with {'width': 75} %}
-    </a>
+    {% if object.logo is not null %}
+        <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.logo|sonata_urlsafeid }) }}">
+            <img style="max-height: 150px; max-width: 150px; !important;"
+                 src="{% path object.logo, 'preview' %}" alt="{{ object.logo.name }}">
+        </a>
+    {% endif %}
 {% endblock %}

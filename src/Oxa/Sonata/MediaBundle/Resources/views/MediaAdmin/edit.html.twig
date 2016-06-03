@@ -46,6 +46,7 @@ file that was distributed with this source code.
 
                             <center> <!-- yeah, center is still awesome ;) -->
                                 {% media object, 'reference' with {'width': null, 'height': null, 'class': 'img-responsive img-rounded'} %}
+                                <br>
                             </center>
 
                             <table class="table">
@@ -69,16 +70,6 @@ file that was distributed with this source code.
                                         {% endif %}
                                     </td>
                                 <tr>
-
-                                {% if app.user.hasRole('ROLE_SUPER_ADMIN')%}
-                                    <tr>
-                                        <th><a href="{{ path('sonata_media_download', {'id': object|sonata_urlsafeid }) }}">{{ 'label.protected_download_url'|trans({}, 'SonataMediaBundle') }}</a></th>
-                                        <td>
-                                            <input type="text" class="form-control" onClick="this.select();" readonly="readonly" value="{{ path('sonata_media_download', {'id': object|sonata_urlsafeid }) }}" />
-                                            <span class="label label-warning">{{ 'label.protected_download_url_notice'|trans({}, 'SonataMediaBundle') }}</span> {{ sonata_media.pool.downloadSecurity(object).description|raw }}
-                                        </td>
-                                    <tr>
-                                {% endif %}
 
                                 <tr>
                                     <th>

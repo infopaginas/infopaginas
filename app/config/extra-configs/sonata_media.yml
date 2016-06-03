@@ -22,27 +22,24 @@ sonata_media:
 #                - sonata.media.provider.youtube
 #                - sonata.media.provider.vimeo
             formats:
-                small:    { width: 100, quality: 100}
+                small:    { width: 150, quality: 150}
                 medium:   { width: 300, quality: 100}
                 preview:  { width: 220, quality: 100}
-
         business_profile_images:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                small:         { width: 100, quality: 100}
-                admin_show:    { width: 1000, quality: 100}
-
+                preview:   { width: 150, height: 150, quality: 100}
+                normal:    { width: 500, height: 500, quality: 100}
         business_profile_logo:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                small:    { width: 1000, quality: 100}
-
+                preview:    { width: 150, height: 150, quality: 100}
         banner:
             download:
                 mode: http
@@ -53,6 +50,14 @@ sonata_media:
                 portal:     { width: 300, height: 250, quality: 100}
                 serp:       { width: 728, height: 90, quality: 100}
                 serp_boxed: { width: 250, height: 250, quality: 100}
+        page:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:    { width: 150, height: 150, quality: 100}
+                normal:     { width: 500, height: 500, quality: 100}
     cdn:
         #define the public base url for the uploaded media
         server:

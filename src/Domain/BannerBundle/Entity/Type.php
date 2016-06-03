@@ -14,7 +14,7 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 /**
  * Type
  *
- * @ORM\Table(name="type")
+ * @ORM\Table(name="banner_type")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\TypeRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\TypeTranslation")

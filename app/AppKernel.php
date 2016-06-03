@@ -53,6 +53,7 @@ class AppKernel extends Kernel
             new Domain\SiteBundle\DomainSiteBundle(),
             new Domain\BusinessBundle\DomainBusinessBundle(),
             new Domain\BannerBundle\DomainBannerBundle(),
+            new Domain\PageBundle\DomainPageBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

@@ -23,13 +23,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->getData() as $item) {
+        foreach ($this->getData() as $key => $item) {
             $config = new Config();
             $config->setKey($item['key']);
             $config->setTitle($item['title']);
             $config->setValue($item['value']);
             $config->setFormat($item['format']);
             $config->setDescription($item['description']);
+            $config->setPosition($key);
             $manager->persist($config);
         }
 

@@ -7,8 +7,8 @@ use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="type_translation",
- *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_type_translation_idx", columns={
+ * @ORM\Table(name="banner_type_translation",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_banner_type_translation_idx", columns={
  *         "locale", "object_id", "field"
  *     })}
  * )

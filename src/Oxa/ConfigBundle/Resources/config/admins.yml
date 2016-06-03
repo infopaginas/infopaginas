@@ -6,4 +6,3 @@ services:
             - {name: sonata.admin, manager_type: orm, group: Settings, label: Configs}
         calls:
             - [ setTemplate, ['edit', 'OxaConfigBundle:Admin:edit.html.twig']]
-            - [ setPositionService, ['@pix_sortable_behavior.position']]

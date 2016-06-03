@@ -65,7 +65,6 @@ class UserAdmin extends OxaAdmin
             ->add('email')
             ->add('role.name')
             ->add('enabled', null, array('editable' => false))
-//            ->add('isActive', null, array('editable' => false))
             ->add('createdAt');
 
         $this->addGridActions($listMapper);
@@ -190,6 +189,7 @@ class UserAdmin extends OxaAdmin
                     'choices' => $roles
                 ])
                 ->add('enabled')
+//                ->add('role', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;
         }

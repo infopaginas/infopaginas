@@ -1,9 +1,14 @@
+domain_page:
+    resource: "@DomainPageBundle/Resources/config/routing.yml"
+    prefix:   /page
+
 domain_business:
     resource: "@DomainBusinessBundle/Resources/config/routing.yml"
     prefix:   /business
 
-#oxa_config:
-#    resource: "@OxaConfigBundle/Controller/"
+oxa_config:
+    resource: "@OxaConfigBundle/Resources/config/routing.yml"
+    prefix:   /config
 
 domain_site:
     resource: "@DomainSiteBundle/Resources/config/routing.yml"

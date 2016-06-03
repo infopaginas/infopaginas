@@ -10,6 +10,10 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
+/**
+ * Class ConfigAdmin
+ * @package Oxa\ConfigBundle\Admin
+ */
 class ConfigAdmin extends OxaAdmin
 {
     /**
@@ -19,6 +23,7 @@ class ConfigAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('title')
+            ->add('value')
         ;
     }
 
@@ -29,7 +34,6 @@ class ConfigAdmin extends OxaAdmin
     {
         $listMapper
             ->add('title')
-            ->add('format')
             ->add('value', null, array('template' => 'OxaConfigBundle:Admin:list__value.html.twig'))
         ;
 
@@ -53,7 +57,6 @@ class ConfigAdmin extends OxaAdmin
                 ]
             ])
             ->add('value', 'ckeditor', ['config_name' => 'default'])
-            ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
         ;
     }
 
@@ -65,13 +68,18 @@ class ConfigAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('title')
-            ->add('value')
             ->add('format')
+            ->add('value', null, array('template' => 'OxaConfigBundle:Admin:show__value.html.twig'))
+
         ;
     }
 
     protected function configureRoutes(RouteCollection $collection)
     {
+        parent::configureRoutes($collection);
+
+        $collection->remove('restore');
+        $collection->remove('delete_physical');
         $collection->remove('create');
         $collection->remove('delete');
         $collection->remove('export');
