@@ -66,13 +66,11 @@ class PageAdmin extends OxaAdmin
                 ->add('image', 'sonata_type_model_list', [
                         'required' => false,
                         'btn_delete' => true,
-                    ]
-                    , [
-                    'link_parameters' => [
-                    'context' => OxaMediaInterface::CONTEXT_PAGE,
-                    'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                ]]
-                )
+                    ], [
+                        'link_parameters' => [
+                        'context' => OxaMediaInterface::CONTEXT_PAGE,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                ]])
                 ->add('template', 'sonata_type_model_list', [
                     'required' => false,
                     'btn_add' => false,

@@ -16,13 +16,13 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
  * @ORM\Table(name="page_template")
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\TemplateRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\TemplateTranslation") 
+ * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\TemplateTranslation")
  */
 class Template implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    
+
     /**
      * @var int
      *

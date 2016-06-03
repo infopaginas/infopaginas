@@ -31,7 +31,6 @@ sonata_admin:
                 icon: <i class="fa fa-users"></i>
                 items:
                     - sonata.user.admin.user
-#                    - sonata.user.admin.group
             domain.admin.group.business:
                 label: Businesses
                 icon: <i class="fa fa-briefcase"></i>
