@@ -2,17 +2,17 @@
 
 {% block  homapageHeaderSearchBlock %}
     <div class="col-md-6 header-form">
-        <form class="form-horizontal search-form">
+        <form class="form-horizontal search-form"  action="{{ path('domain_site_search_index')}}">
             <span class="form-title">We can find everything!</span>
 
             <div class="form-group row">
                 <div class="col-xs-12">
-                    <input type="text" id='searchBox' placeholder="What do you want to find?" class="form-control what">
+                    <input type="text" id='searchBox' name='q' placeholder="What do you want to find?" class="form-control what">
                     <ul id="searchHint" class="search-dropdown recent-searches" style="display: none;"><li class="search-hint">Search by<b> business name,</b> or<b> keyword</b></li></ul>
                     <ul id="searchResultsAutosuggest" data-analytics="" class="search-dropdown autosuggest-term" data-impressed="1" style="display: none;"></ul>
                 </div>
                 <div class="col-xs-8 search-input">
-                    <input type="text" id='searchLocation' class="form-control" placeholder="San Juan"><span class="cross"></span>
+                    <input type="text" id='searchLocation' name='loc' class="form-control" placeholder="San Juan"><span class="cross"></span>
                 </div>
                 <div class="col-xs-4 search-button">
                     <button type="submit" id='searchButton' class="btn btn-primary green-btn search-btn"><i class="fa fa-search"

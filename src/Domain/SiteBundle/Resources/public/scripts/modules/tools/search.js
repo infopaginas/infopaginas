@@ -4,13 +4,14 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     var search = function( options ) {
         this.events = {};
         
-        this.events[options.searchSelector + ' focus'] = 'onSearchBoxFocus';
-        this.events[options.searchSelector + ' blur'] = 'onSearchBoxBlur';
+        this.events[options.searchSelector + ' focus']  = 'onSearchBoxFocus';
+        this.events[options.searchSelector + ' blur']   = 'onSearchBoxBlur';
         
         this.options = {
             autoComplete : true,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
+            searchBaseUrl : '/search/'
         };
 
         $.extend( this.options, options );
@@ -71,6 +72,6 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype.setLocation = function (data) {
         this.searchLocations.val(data);
     }
-
+    
     return search;
 });
