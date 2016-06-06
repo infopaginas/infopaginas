@@ -1,4 +1,4 @@
-define(['jquery', 'abstract/view',  'jquery-ui'], function( $, view ) {
+define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( $, view, Geolocation ) {
     'use strict'
 
     var search = function( options ) {
@@ -11,7 +11,6 @@ define(['jquery', 'abstract/view',  'jquery-ui'], function( $, view ) {
             autoComplete : true,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
-            geoCodeApiURL : 'http://maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng='
         };
 
         $.extend( this.options, options );
@@ -35,14 +34,16 @@ define(['jquery', 'abstract/view',  'jquery-ui'], function( $, view ) {
         this.searchLocations    = this.$( this.options.locationsSelector );
         this.submitButton       = this.$( this.options.submitSelector );
 
+        this.geolocation        = new Geolocation( { 'locationBox' : this.searchLocations } );
+
         if ( this.options.autoComplete ) {
             this.initAutocomplete( this.options.autoCompleteUrl );
         }
 
-        if (navigator.geolocation) {
-            this.initGeolocation();
+        if (this.geolocation.isGelocationAvailable()) {
+            this.geolocation.getAddress(this.setLocation.bind(this));
         } else {
-            this.onGeolocationError();
+            this.geolocation.locationAutocomplete()
         }
     }
 
@@ -67,37 +68,8 @@ define(['jquery', 'abstract/view',  'jquery-ui'], function( $, view ) {
         this.searchHintBox.hide();
     }
 
-    search.prototype.initGeolocation = function () {
-        navigator.geolocation.getCurrentPosition( this.showPosition.bind(this) );
-    }
-
-    search.prototype.showPosition = function ( position ) {
-        console.log(position);
-        this.getLocationsNameByLatLng.bind(this)( position.coords.latitude, position.coords.longitude );
-    }
-
-    search.prototype.onGeolocationError = function () {
-
-    }
-
-    search.prototype.getLocationsNameByLatLng = function ( lat, lng ) {
-        var self = this;
-        $.when(
-            $.get(this.options.geoCodeApiURL + (lat + ',' + lng))
-        ).then(
-            this.onGeoLocationSuccess,
-            this.onGeoLocationError
-        );
-    }
-
-
-
-    search.prototype.onGeoLocationSuccess = function (data) {
-        console.log(data);
-    }
-
-    search.prototype.onGeoLocationError = function (data) {
-        console.log(data);
+    search.prototype.setLocation = function (data) {
+        this.searchLocations.val(data);
     }
 
     return search;
