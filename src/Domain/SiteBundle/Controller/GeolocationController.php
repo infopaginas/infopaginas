@@ -19,6 +19,8 @@ class GeolocationController extends Controller
     public function autocompleteAction(Request $request)
     {
         $term = $request->get('term', '');
-        return (new JsonResponse)->setData(array($term, $term, $term, $term,$term, $term, $term, $term,$term, $term, $term));
+        return (new JsonResponse)->setData(
+            array($term)
+        );
     }
 }
