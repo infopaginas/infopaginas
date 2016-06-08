@@ -51,13 +51,13 @@
 
                             <div class="form-group row">
                                 <div class="col-xs-12">
-                                    <input type="text" placeholder="What do you want to find?" class="form-control what">
+                                    <input type="text" id='searchBox' placeholder="What do you want to find?" class="form-control what">
                                 </div>
                                 <div class="col-xs-8 search-input">
-                                    <input type="text" class="form-control" placeholder="San Juan"><span class="cross"></span>
+                                    <input type="text" id='searchLocation' class="form-control" placeholder="San Juan"><span class="cross"></span>
                                 </div>
                                 <div class="col-xs-4 search-button">
-                                    <button type="submit" class="btn btn-primary green-btn search-btn"><i class="fa fa-search"
+                                    <button type="submit" id='searchButton' class="btn btn-primary green-btn search-btn"><i class="fa fa-search"
                                                                                                           aria-hidden="true"></i><span>Search</span>
                                     </button>
                                 </div>
@@ -363,8 +363,7 @@
 
 <!-- Scripts -->
 {% block scripts %}
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/jquery-2.1.4.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
 {% endblock %}
 </body>
 </html>
