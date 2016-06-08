@@ -18,6 +18,10 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
             autoCompleteMinLen : 2,
         };
         $.extend( this.options, options );
+
+        if ( _.isNull(this.options.locationBox) || _.isUndefined(this.options.locationBox) ) {
+            this.options.locationBox = this.$(this.options.locationBoxSelector);
+        }
     }
 
     geolocation.prototype.getAddress = function ( callback ) {

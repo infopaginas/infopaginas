@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'bootstrap', 'tools/search'], 
-    function ( $, bootstrap, Search, require ) {
+    ['jquery', 'bootstrap', 'tools/search', 'tools/searchMenu','tools/geolocation'], 
+    function ( $, bootstrap, Search, SearchMenu, Geolocation ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -23,6 +23,7 @@ define(
     }
 
     homepage.prototype.initSearch = function ( ) {
+        var searchMenu = new SearchMenu();
         var searchOptions = {
             selector            : '.search-form',
             searchSelector      : '#searchBox',
@@ -30,11 +31,14 @@ define(
             searchResultsSelector : '#searchResultsAutosuggest',
             locationsSelector   : '#searchLocation',
             submitSelector      : '#searchButton',
+            searchMenu          : searchMenu
         }
 
+        searchOptions['geolocation'] = new Geolocation( { 'locationBoxSelector' : searchOptions.locationsSelector } )
+
         var search = new Search(searchOptions);
+        
     }
    
-
     return homepage;
 });

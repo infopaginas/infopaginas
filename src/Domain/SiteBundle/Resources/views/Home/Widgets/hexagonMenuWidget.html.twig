@@ -1,0 +1,12 @@
+<div class="col-md-6 menu-hexagon menu-desc">
+    {% for row in searchMenuList %}
+        <ol class="{{ row['sectionClass'] }}">
+            {% for item in row['items'] %}
+                <li class="r-hex {{item['liClass']}}">
+                    <div class="r-hex-inner"><a class="r-hex-inner-2 {{ item['aClass'] }}" data-search="{{ item['data'] }}"
+                                                href="#"><span>{{ item['data'] }}</span></a></div>
+                </li> 
+            {% endfor %}
+        </ol>
+    {% endfor%}
+</div>

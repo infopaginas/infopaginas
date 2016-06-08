@@ -24,6 +24,12 @@ class HomeController extends Controller
      */
     public function homeAction()
     {
-        return $this->render('DomainSiteBundle:Home:home.html.twig');
+        $searchManager = $this->get('domain_site.manager.search');
+        $searchMenuList = $searchManager->getQuickSearchMenuLinksList();
+        
+        return $this->render(
+            'DomainSiteBundle:Home:home.html.twig',
+            array('searchMenuList' => $searchMenuList)
+        );
     }
 }

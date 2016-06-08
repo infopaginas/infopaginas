@@ -9,6 +9,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         
         this.options = {
             autoComplete : true,
+            searchMenu : false,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
             searchBaseUrl : '/search/'
@@ -35,16 +36,25 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.searchLocations    = this.$( this.options.locationsSelector );
         this.submitButton       = this.$( this.options.submitSelector );
 
-        this.geolocation        = new Geolocation( { 'locationBox' : this.searchLocations } );
+        if( _.isNull(this.options.geolocation) || _.isUndefined(this.options.geolocation) ) {
+            this.geolocation        = new Geolocation( { 'locationBox' : this.searchLocations } );
+        } else {
+            this.geolocation = this.options.geolocation;
+        }
+        
 
         if ( this.options.autoComplete ) {
             this.initAutocomplete( this.options.autoCompleteUrl );
         }
 
-        if (this.geolocation.isGelocationAvailable()) {
-            this.geolocation.getAddress(this.setLocation.bind(this));
+        if ( this.geolocation.isGelocationAvailable( )) {
+            var address = this.geolocation.getAddress(this.setLocation.bind(this));
         } else {
             this.geolocation.locationAutocomplete()
+        }
+
+        if ( this.options.searchMenu !== false ) {
+            this.options.searchMenu.initQuickLinks(this.quickSearch.bind(this))
         }
     }
 
@@ -69,9 +79,14 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.searchHintBox.hide();
     }
 
-    search.prototype.setLocation = function (data) {
+    search.prototype.setLocation = function ( data ) {
         this.searchLocations.val(data);
     }
     
+    search.prototype.quickSearch = function ( searchQuery ) {
+        this.searchBox.val( searchQuery );
+        this.submitButton.first().click();
+    }
+
     return search;
 });
