@@ -18,14 +18,13 @@ class CountryRepository extends \Doctrine\ORM\EntityRepository
     public function getCountriesShortNames()
     {
         $countries = $this->createQueryBuilder('c')
-            ->select('c')
+            ->select(['c.shortName', 'c.name'])
             ->getQuery()
             ->getResult();
 
         $result = [];
         foreach ($countries as $country) {
-            /** @var Country $country */
-            $result[$country->getShortName()] = $country->getName();
+            $result[$country['shortName']] = $country['name'];
         }
 
         return $result;

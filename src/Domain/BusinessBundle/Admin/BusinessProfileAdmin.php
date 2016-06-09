@@ -42,7 +42,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'field_type' => 'sonata_type_datetime_range_picker',
                 'field_options' => [
                     'format' => 'dd-MM-y hh:mm:ss'
-                ]])
+            ]])
             ->add('isActive', null, [], null, [
                 'choices' => [
                     1 => 'label_yes',
@@ -114,7 +114,7 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         if ($this->getSubject()->getLatitude()) {
-            $longitude = $this->getSubject()->getLatitude();
+            $longitude = $this->getSubject()->getLongitude();
         } else {
             $longitude = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
@@ -154,7 +154,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('customAddress')
                 ->end()
                 ->with('Map')
-                    ->add('useMapAddress')
+                    ->add('useMapAddress', null, [
+                        'label' => 'Update address using map coordinates'
+                    ])
                     ->add('fullAddress', 'google_map', [
                         'google_api_key' => $googleApiKey,
                         'latitude' => $latitude,
@@ -258,7 +260,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('phone')
             ->add('registrationDate')
             ->add('slogan')
-            ->add('description', null, array('template' => 'DomainBusinessBundle:Admin:show_description.html.twig'))
+            ->add('description', null, [
+                'template' => 'DomainBusinessBundle:Admin:show_description.html.twig'
+            ])
             ->add('product')
             ->add('workingHours')
             ->add('isSetDescription')
@@ -270,7 +274,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('isActive')
-            ->add('coordinates')
         ;
     }
 
@@ -290,7 +293,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
             if (!empty($addressResult['error'])) {
                 $errorElement->with('fullAddress')
-                        ->addViolation($addressResult['error'])
+                    ->addViolation($addressResult['error'])
                     ->end()
                 ;
             } else {

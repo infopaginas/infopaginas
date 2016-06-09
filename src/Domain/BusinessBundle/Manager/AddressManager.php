@@ -94,6 +94,8 @@ class AddressManager extends DefaultManager
     }
 
     /**
+     * Check if google provide valid address data for address string
+     *
      * @param $address
      * @return array|bool
      */
@@ -111,15 +113,23 @@ class AddressManager extends DefaultManager
         }
 
         if ($results) {
+            // get first address result
+            // usually google returns list of addresses
+            // even searching by specific address or coordinates
+            // but the first one the best one (more correct)
             $result = array_shift($results);
+            
+            // data bellow is required
+            // street, city, country, zip_code
             if (
                 !$result->getAddressComponents('route') ||
                 !$result->getAddressComponents('locality') ||
                 !$result->getAddressComponents('country') ||
                 !$result->getAddressComponents('postal_code')
             ) {
-                $response['error'] = 'Invalid address';
+                $response['error'] = 'Invalid address. Please, be more specific';
             } else {
+                // check if we get address from allowed country list
                 $countries = $this->getEntityManager()
                     ->getRepository('DomainBusinessBundle:Address\Country')
                     ->getCountriesShortNames();
@@ -133,11 +143,12 @@ class AddressManager extends DefaultManager
                     );
                 }
             }
+            // return first address result to use it next
             $response['result'] = $result;
         } else {
             $response['error'] = 'Invalid address';
         }
-
+        
         return $response;
     }
 }

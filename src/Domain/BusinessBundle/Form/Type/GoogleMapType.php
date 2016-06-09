@@ -31,9 +31,10 @@ class GoogleMapType extends AbstractType
     {
         parent::buildView($view, $form, $options);
 
+        $view->vars['required'] = $options['required'];
         $view->vars['language'] = $options['language'];
-        $view->vars['latitude'] = floatval($options['latitude']);
-        $view->vars['longitude'] = floatval($options['longitude']);
+        $view->vars['latitude'] = $options['latitude'];
+        $view->vars['longitude'] = $options['longitude'];
         $view->vars['zoom'] = $options['zoom'];
         $view->vars['google_api_key'] = $options['google_api_key'];
     }
@@ -44,6 +45,7 @@ class GoogleMapType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'required' => false,
             'language' => 'en',
             'latitude' => 18.4248008,
             'longitude' => -66.1185967,
