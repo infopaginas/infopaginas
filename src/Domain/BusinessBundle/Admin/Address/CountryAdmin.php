@@ -34,7 +34,7 @@ class CountryAdmin extends OxaAdmin
             ->add('name')
             ->add('shortName')
         ;
-        
+
         $this->addGridActions($listMapper);
     }
 

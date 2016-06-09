@@ -280,7 +280,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function validate(ErrorElement $errorElement, $object)
     {
-        if ($object->getUseMapAddress() == true) {
+        if ($object->getUseMapAddress()) {
 
             $addressManager = $this->configurationPool
                 ->getContainer()

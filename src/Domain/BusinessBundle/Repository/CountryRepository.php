@@ -27,7 +27,7 @@ class CountryRepository extends \Doctrine\ORM\EntityRepository
             /** @var Country $country */
             $result[$country->getShortName()] = $country->getName();
         }
- 
+
         return $result;
     }
 }
