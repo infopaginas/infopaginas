@@ -71,6 +71,12 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->setProduct('Good product');
             $object->setDescription('Some description');
 
+            $object->setStreetAddress('address');
+            $object->setCity('address');
+            $object->setCustomAddress('address');
+            $object->setLongitude(5);
+            $object->setLatitude(5);
+
             $object->addArea($this->getReference('area.0'));
             $object->addArea($this->getReference('area.' . rand(1, 2)));
 
@@ -83,6 +89,7 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->addPaymentMethod($this->getReference('payment_method.0'));
             $object->addPaymentMethod($this->getReference('payment_method.' . rand(1, 2)));
 
+            $object->setCountry($this->getReference('country.PR'));
             $object->setSubscription($this->getReference('subscription.' . rand(1, 5)));
             $object->setUser($this->getReference('user.admin'));
 

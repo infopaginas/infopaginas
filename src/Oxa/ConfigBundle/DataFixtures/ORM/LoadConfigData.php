@@ -104,6 +104,24 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'value' => 'https://www.instagram.com/',
                 'format' => 'text',
                 'description' => 'Instagram profile link',
+            ], [
+                'key' => ConfigInterface::GOOGLE_API_KEY,
+                'title' => 'Google api key',
+                'value' => 'AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw',
+                'format' => 'text',
+                'description' => 'Used for access to google map',
+            ], [
+                'key' => ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE,
+                'title' => 'Default map latitude parameter',
+                'value' => '18.4248008',
+                'format' => 'text',
+                'description' => 'Used to show default map position',
+            ], [
+                'key' => ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE,
+                'title' => 'Default map longitude parameter',
+                'value' => '-66.1185967',
+                'format' => 'text',
+                'description' => 'Used to show default map position',
             ],
         ];
     }

@@ -5,6 +5,13 @@ services:
             - {name: doctrine.event_listener, event: onFlush, priority: 0}
             - {name: doctrine.event_listener, event: loadClassMetadata}
 
+    gedmo.listener.loggable:
+        class: Gedmo\Loggable\LoggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
     gedmo.listener.sortable:
         class: Gedmo\Sortable\SortableListener
         tags:

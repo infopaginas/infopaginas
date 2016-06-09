@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task\Task;
@@ -23,6 +24,7 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  * @ORM\Table(name="business_profile")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
@@ -273,6 +275,101 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * )
      */
     protected $translations;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
+     */
+    protected $streetAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="street_number", type="string", length=50, nullable=true)
+     */
+    protected $streetNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="extended_address", type="string", length=50, nullable=true)
+     */
+    protected $extendedAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="full_address", type="string", nullable=true)
+     */
+    protected $fullAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=30, nullable=true)
+     */
+    protected $state;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", nullable=true)
+     */
+    protected $city;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
+     */
+    protected $zipCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="latitude", type="float", nullable=true)
+     */
+    protected $latitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="longitude", type="float", nullable=true)
+     */
+    protected $longitude;
+
+    /**
+     * @var string
+     *
+     * @Gedmo\Translatable
+     * @ORM\Column(name="custom_address", type="string", nullable=true)
+     */
+    protected $customAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="use_map_address", type="boolean", options={"default" : 1})
+     */
+    protected $useMapAddress = true;
+
+    /**
+     * @var string - If checkbox is checked, both address of Business and mark on map are not shown to Consumer.
+     *
+     * @ORM\Column(name="hide_address", type="boolean", options={"default" : 0})
+     */
+    protected $hideAddress = false;
+
+    /**
+     * @var Country - Country, Business is located in
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Address\Country",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
+     */
+    protected $country;
 
     public function getMarkCopyPropertyName()
     {
@@ -1046,5 +1143,317 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set streetAddress
+     *
+     * @param string $streetAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setStreetAddress($streetAddress)
+    {
+        $this->streetAddress = $streetAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get streetAddress
+     *
+     * @return string
+     */
+    public function getStreetAddress()
+    {
+        return $this->streetAddress;
+    }
+
+    /**
+     * Set fullAddress
+     *
+     * @param string $fullAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setFullAddress($fullAddress)
+    {
+        $this->fullAddress = $fullAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get fullAddress
+     *
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        return $this->fullAddress;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return BusinessProfile
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set zipCode
+     *
+     * @param string $zipCode
+     *
+     * @return BusinessProfile
+     */
+    public function setZipCode($zipCode)
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    /**
+     * Get zipCode
+     *
+     * @return string
+     */
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * Set city
+     *
+     * @param string $city
+     *
+     * @return BusinessProfile
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * Set latitude
+     *
+     * @param string $latitude
+     *
+     * @return BusinessProfile
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return string
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * Set longitude
+     *
+     * @param string $longitude
+     *
+     * @return BusinessProfile
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return string
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * Set customAddress
+     *
+     * @param string $customAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setCustomAddress($customAddress)
+    {
+        $this->customAddress = $customAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get customAddress
+     *
+     * @return string
+     */
+    public function getCustomAddress()
+    {
+        return $this->customAddress;
+    }
+
+    /**
+     * Set hideAddress
+     *
+     * @param boolean $hideAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setHideAddress($hideAddress)
+    {
+        $this->hideAddress = $hideAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get hideAddress
+     *
+     * @return boolean
+     */
+    public function getHideAddress()
+    {
+        return $this->hideAddress;
+    }
+
+    /**
+     * Set extendedAddress
+     *
+     * @param string $extendedAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setExtendedAddress($extendedAddress)
+    {
+        $this->extendedAddress = $extendedAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get extendedAddress
+     *
+     * @return string
+     */
+    public function getExtendedAddress()
+    {
+        return $this->extendedAddress;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \Domain\BusinessBundle\Entity\Address\Country $country
+     *
+     * @return BusinessProfile
+     */
+    public function setCountry(\Domain\BusinessBundle\Entity\Address\Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \Domain\BusinessBundle\Entity\Address\Country
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set streetNumber
+     *
+     * @param string $streetNumber
+     *
+     * @return BusinessProfile
+     */
+    public function setStreetNumber($streetNumber)
+    {
+        $this->streetNumber = $streetNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get streetNumber
+     *
+     * @return string
+     */
+    public function getStreetNumber()
+    {
+        return $this->streetNumber;
+    }
+
+    /**
+     * Set useMapAddress
+     *
+     * @param boolean $useMapAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setUseMapAddress($useMapAddress)
+    {
+        $this->useMapAddress = $useMapAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get useMapAddress
+     *
+     * @return boolean
+     */
+    public function getUseMapAddress()
+    {
+        return $this->useMapAddress;
     }
 }
