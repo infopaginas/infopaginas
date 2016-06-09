@@ -11,18 +11,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Class HomeController
  * @package Domain\SiteBundle\Controller
  */
-class SearchController extends Controller
+class GeolocationController extends Controller
 {
     /**
-     * Main Search page
-     */
-    public function indexAction()
-    {
-        return $this->render('DomainSiteBundle:Home:search.html.twig');
-    }
-
-    /**
-     * Source endpoint for jQuery UI Autocomplete plugin in search widget
+     * Source endpoint for jQuery UI Autocomplete plugin in geolocation widget
      */
     public function autocompleteAction(Request $request)
     {
