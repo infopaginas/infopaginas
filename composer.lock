@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "da982b635c58db51f82bf1294e68cb89",
-    "content-hash": "482ae52c6fed66a81fd12b9d8abce10f",
+    "hash": "16ac7ac529695c3930fbc3584407dde6",
+    "content-hash": "b929465e78a4386f10dad76a3f3c5937",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1420,6 +1420,116 @@
                 "CKEditor"
             ],
             "time": "2014-11-08 10:48:36"
+        },
+        {
+            "name": "egeloen/google-map",
+            "version": "1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/egeloen/ivory-google-map.git",
+                "reference": "9770a3f47888494e9f2d449144508bc805af124f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/egeloen/ivory-google-map/zipball/9770a3f47888494e9f2d449144508bc805af124f",
+                "reference": "9770a3f47888494e9f2d449144508bc805af124f",
+                "shasum": ""
+            },
+            "require": {
+                "egeloen/json-builder": "~1.0.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6",
+                "widop/http-adapter": "~1.1.0",
+                "willdurand/geocoder": "~2.0"
+            },
+            "suggest": {
+                "widop/http-adapter": "Allows to use services",
+                "willdurand/geocoder": "Allows to use geocoding service"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ivory\\GoogleMap\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric GELOEN",
+                    "email": "geloen.eric@gmail.com"
+                }
+            ],
+            "description": "Google Map API v3 integration for PHP 5.3+",
+            "keywords": [
+                "google map"
+            ],
+            "time": "2014-10-30 19:30:44"
+        },
+        {
+            "name": "egeloen/google-map-bundle",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/egeloen/IvoryGoogleMapBundle.git",
+                "reference": "92abf41dbf77e395fba685538c4c99b857f7114c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/egeloen/IvoryGoogleMapBundle/zipball/92abf41dbf77e395fba685538c4c99b857f7114c",
+                "reference": "92abf41dbf77e395fba685538c4c99b857f7114c",
+                "shasum": ""
+            },
+            "require": {
+                "egeloen/google-map": "~1.4.0",
+                "php": ">=5.3.0",
+                "symfony/framework-bundle": "~2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6",
+                "symfony/form": "~2.1",
+                "symfony/yaml": "~2.0",
+                "twig/twig": "~1.12",
+                "widop/http-adapter-bundle": "~1.1.0",
+                "willdurand/geocoder": "~2.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ivory\\GoogleMapBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric GELOEN",
+                    "email": "geloen.eric@gmail.com"
+                }
+            ],
+            "description": "Provides a google map integration for your Symfony2 Project.",
+            "keywords": [
+                "google map"
+            ],
+            "time": "2014-10-30 19:37:27"
         },
         {
             "name": "egeloen/json-builder",
@@ -5423,16 +5533,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.8.6",
+            "version": "v2.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "8408816780215fae055599d100b5385d9a247151"
+                "reference": "663b2d6202c3149515b39cfe50a174a130acb8e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/8408816780215fae055599d100b5385d9a247151",
-                "reference": "8408816780215fae055599d100b5385d9a247151",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/663b2d6202c3149515b39cfe50a174a130acb8e2",
+                "reference": "663b2d6202c3149515b39cfe50a174a130acb8e2",
                 "shasum": ""
             },
             "require": {
@@ -5553,7 +5663,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-05-09 21:45:54"
+            "time": "2016-06-06 16:05:37"
         },
         {
             "name": "twig/extensions",
@@ -5667,6 +5777,70 @@
                 "templating"
             ],
             "time": "2016-05-30 09:11:59"
+        },
+        {
+            "name": "willdurand/geocoder",
+            "version": "2.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/geocoder-php/Geocoder.git",
+                "reference": "d11967da897abd22a129d0b0f232a92fda18ff01"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/geocoder-php/Geocoder/zipball/d11967da897abd22a129d0b0f232a92fda18ff01",
+                "reference": "d11967da897abd22a129d0b0f232a92fda18ff01",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "geoip/geoip": "~1.13",
+                "geoip2/geoip2": "~0.6",
+                "guzzle/guzzle": "@stable",
+                "kriswallsmith/buzz": "@stable",
+                "zendframework/zend-http": "~2.1"
+            },
+            "suggest": {
+                "ext-curl": "Enabling the curl extension allows you to use the CurlHttpAdapter.",
+                "ext-geoip": "Enabling the geoip extension allows you to use the MaxMindProvider.",
+                "geoip/geoip": "If you are going to use the MaxMindBinaryProvider (conflict with geoip extension).",
+                "geoip2/geoip2": "If you are going to use the GeoIP2DatabaseProvider.",
+                "guzzle/guzzle": "Enabling Guzzle allows you to use the GuzzleHttpAdapter.",
+                "kriswallsmith/buzz": "Enabling Buzz allows you to use the BuzzHttpAdapter.",
+                "zendframework/zend-http": "Enabling Zend Http allows you to use the ZendHttpAdapter."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Geocoder": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "William Durand",
+                    "email": "william.durand1@gmail.com"
+                }
+            ],
+            "description": "The almost missing Geocoder PHP 5.3 library.",
+            "homepage": "http://geocoder-php.org",
+            "keywords": [
+                "abstraction",
+                "geocoder",
+                "geocoding",
+                "geoip"
+            ],
+            "time": "2014-12-08 09:28:04"
         },
         {
             "name": "willdurand/jsonp-callback-validator",

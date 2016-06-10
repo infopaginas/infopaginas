@@ -5,12 +5,25 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Gedmo\Loggable\Entity\LogEntry;
+use Geocoder\HttpAdapter\CurlHttpAdapter;
+use Ivory\GoogleMap\Base\Coordinate;
+use Ivory\GoogleMap\Controls\ControlPosition;
+use Ivory\GoogleMap\Overlays\Animation;
+use Ivory\GoogleMap\Overlays\Marker;
+use Ivory\GoogleMap\Overlays\Polyline;
+use Ivory\GoogleMap\Places\AutocompleteComponentRestriction;
+use Ivory\GoogleMap\Places\AutocompleteType;
+use Ivory\GoogleMap\Services\Geocoding\Geocoder;
+use Ivory\GoogleMap\Services\Geocoding\GeocoderProvider;
+use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Validator\ErrorElement;
 
 class BusinessProfileAdmin extends OxaAdmin
 {
@@ -70,6 +83,10 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Profile', array('class' => 'col-md-6'))
                 ->with('General', array('class' => 'col-md-4'))->end()
                 ->with('Description', array('class' => 'col-md-8'))->end()
+                ->with('Address', array('class' => 'col-md-4'))->end()
+                ->with('Map', array('class' => 'col-md-8'))->end()
+            ->end()
+            ->tab('Categories', array('class' => 'col-md-12'))
                 ->with('Categories', array('class' => 'col-md-12'))->end()
             ->end()
             ->tab('Status', array('class' => 'col-md-6'))
@@ -83,6 +100,18 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
             ->end();
+
+        $oxaConfig = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('oxa_config');
+
+        if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
+            $latitude   = $this->getSubject()->getLatitude();
+            $longitude  = $this->getSubject()->getLongitude();
+        } else {
+            $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
+            $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+        }
 
         $formMapper
             ->tab('Profile')
@@ -104,6 +133,31 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('product')
                     ->add('description', 'ckeditor')
                 ->end()
+                ->with('Address')
+                    ->add('country', 'sonata_type_model_list', [
+                        'required' => false,
+                        'btn_delete' => false,
+                        'btn_add' => false,
+                    ])
+                    ->add('state')
+                    ->add('city')
+                    ->add('zipCode')
+                    ->add('streetAddress')
+                    ->add('extendedAddress')
+                    ->add('streetNumber')
+                    ->add('customAddress')
+                ->end()
+                ->with('Map')
+                    ->add('useMapAddress', null, [
+                        'label' => 'Update address using map coordinates'
+                    ])
+                    ->add('fullAddress', 'google_map', [
+                        'latitude' => $latitude,
+                        'longitude' => $longitude,
+                    ])
+                ->end()
+            ->end()
+            ->tab('Categories')
                 ->with('Categories')
                     ->add('areas', null, ['multiple' => true])
                     ->add('brands', null, ['multiple' => true])
@@ -143,15 +197,15 @@ class BusinessProfileAdmin extends OxaAdmin
                             'delete_options' => [
                                 'type' => 'checkbox',
                                 'type_options' => ['mapped' => false, 'required' => false]
-                        ]]
+                            ]]
                     ], [
                         'edit' => 'inline',
                         'inline' => 'table',
                         'sortable' => 'id',
                         'allow_delete' => true,
                     ])
+                    ->end()
                 ->end()
-            ->end()
             ->tab('Media')
                 ->with('General')
                     ->add('logo', 'sonata_type_model_list', [], ['link_parameters' => [
@@ -199,7 +253,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('phone')
             ->add('registrationDate')
             ->add('slogan')
-            ->add('description', null, array('template' => 'DomainBusinessBundle:Admin:show_description.html.twig'))
+            ->add('description', null, [
+                'template' => 'DomainBusinessBundle:Admin:show_description.html.twig'
+            ])
             ->add('product')
             ->add('workingHours')
             ->add('isSetDescription')
@@ -212,5 +268,30 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedUser')
             ->add('isActive')
         ;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        if ($object->getUseMapAddress()) {
+
+            $addressManager = $this->configurationPool
+                ->getContainer()
+                ->get('domain_business.manager.address_manager');
+
+            $addressResult = $addressManager->validateAddress($object->getFullAddress());
+
+            if (!empty($addressResult['error'])) {
+                $errorElement->with('fullAddress')
+                    ->addViolation($addressResult['error'])
+                    ->end()
+                ;
+            } else {
+                $addressManager->setGoogleAddress($addressResult['result'], $object);
+            }
+        }
     }
 }

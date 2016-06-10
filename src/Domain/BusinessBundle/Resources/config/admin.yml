@@ -39,10 +39,11 @@ services:
         class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, OxaSonataAdminBundle:CRUD]
         tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles}
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles, audit: true}
         calls:
             - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
             - [setPositionService, ['@pix_sortable_behavior.position']]
+            - [ setTemplate, ['edit', 'DomainBusinessBundle:Admin:edit.html.twig']]
 
     domain_business.admin.task:
         class: Domain\BusinessBundle\Admin\Task\TaskAdmin
@@ -69,3 +70,9 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Gallery}
         calls:
              - [setPositionService, ['@pix_sortable_behavior.position']]
+
+    domain_business.admin.address.country:
+        class: Domain\BusinessBundle\Admin\Address\CountryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Address\Country, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Country}
