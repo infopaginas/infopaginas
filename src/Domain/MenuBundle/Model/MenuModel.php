@@ -1,18 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/31/16
- * Time: 11:58 AM
- */
 
-namespace Domain\BannerBundle\Model;
-
+namespace Domain\MenuBundle\Model;
 
 use Gedmo\Exception\InvalidArgumentException;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
-class TypeModel implements TypeInterface
+class MenuModel implements MenuInterface
 {
     /**
      * @var integer
@@ -22,43 +14,46 @@ class TypeModel implements TypeInterface
     /**
      * @return array
      */
-    public static function getMediaFormats() : array
+    public static function getCodes()
     {
         return [
-            self::CODE_HOME                 => self::MEDIA_FORMAT_HOME,
-            self::CODE_PORTAL               => self::MEDIA_FORMAT_PORTAL,
-            self::CODE_PORTAL_LEADERBOARD   => self::MEDIA_FORMAT_SERP,
-            self::CODE_SERP_BANNER          => self::MEDIA_FORMAT_SERP,
-            self::CODE_SERP_BOXED           => self::MEDIA_FORMAT_SERP_BOXED,
-            self::CODE_SERP_FEATUREAD       => self::MEDIA_FORMAT_SERP,
-            self::CODE_SERP_MOBILE_TOP      => self::MEDIA_FORMAT_SERP,
+            self::CODE_ELECTRICIANS,
+            self::CODE_SOLICITORS,
+            self::CODE_BUILDERS,
+            self::CODE_PHARMACIES,
+            self::CODE_ELECTRICIANS,
+            self::CODE_PLUMBERS,
+            self::CODE_MECHANICS,
+            self::CODE_DENTISTS,
+            self::CODE_RESTAURANTS,
+            self::CODE_FLORISTS,
+            self::CODE_BEAUTY_SALONS,
+            self::CODE_HAIRDRESSERS,
+            self::CODE_DOCTORS
         ];
     }
 
     /**
+     * Used to load default fixtures
+     *
      * @return array
      */
-    public static function getCodeSizes() : array
+    public static function getMenuCategoriesNames()
     {
         return [
-            self::CODE_HOME                 => self::SIZE_120_420,
-            self::CODE_PORTAL               => self::SIZE_300_250,
-            self::CODE_PORTAL_LEADERBOARD   => self::SIZE_728_90,
-            self::CODE_SERP_BANNER          => self::SIZE_728_90,
-            self::CODE_SERP_BOXED           => self::SIZE_250_250,
-            self::CODE_SERP_FEATUREAD       => self::SIZE_728_90,
-            self::CODE_SERP_MOBILE_TOP      => self::SIZE_728_90,
+            self::CODE_SOLICITORS      => 'Solicitors',
+            self::CODE_BUILDERS        => 'Builders',
+            self::CODE_PHARMACIES      => 'Pharmacies',
+            self::CODE_ELECTRICIANS    => 'Electricians',
+            self::CODE_PLUMBERS        => 'Plumbers',
+            self::CODE_MECHANICS       => 'Mechanics',
+            self::CODE_DENTISTS        => 'Dentists',
+            self::CODE_RESTAURANTS     => 'Restaurants',
+            self::CODE_FLORISTS        => 'Florists',
+            self::CODE_BEAUTY_SALONS   => 'Beauty salons',
+            self::CODE_HAIRDRESSERS    => 'Hairdressers',
+            self::CODE_DOCTORS         => 'Doctors',
         ];
-    }
-
-    /**
-     * @return string
-     */
-    public function getSize() : string
-    {
-        $codeSizes = self::getCodeSizes();
-
-        return $codeSizes[$this->getCode()];
     }
 
     /**
@@ -73,22 +68,12 @@ class TypeModel implements TypeInterface
      * @param int $code
      * @return mixed
      */
-    public function setCode(int $code)
+    public function setCode($code)
     {
-        if (!array_key_exists($code, self::getCodeSizes())) {
-            throw new InvalidArgumentException('Unknown type code');
+        if (!in_array($code, self::getCodes())) {
+            throw new InvalidArgumentException('Unknown menu code');
         }
 
         $this->code = $code;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMediaFormat() : string
-    {
-        $mediaFormats = self::getMediaFormats();
-
-        return $mediaFormats[$this->getCode()];
     }
 }

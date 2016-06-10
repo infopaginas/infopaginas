@@ -44,7 +44,6 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         $this->manager = $manager;
         $this->loadTags();
         $this->loadArea();
-        $this->loadCategory();
         $this->loadBrands();
         $this->loadPaymentMethods();
         $this->loadBusiness();
@@ -83,8 +82,9 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->addBrand($this->getReference('brand.0'));
             $object->addBrand($this->getReference('brand.' . rand(1, 2)));
 
-            $object->addCategory($this->getReference('category.0'));
-            $object->addCategory($this->getReference('category.' . rand(1, 2)));
+            $object->addCategory($this->getReference('category.' . rand(1, 4)));
+            $object->addCategory($this->getReference('category.' . rand(5, 8)));
+            $object->addCategory($this->getReference('category.' . rand(9, 12)));
 
             $object->addPaymentMethod($this->getReference('payment_method.0'));
             $object->addPaymentMethod($this->getReference('payment_method.' . rand(1, 2)));
@@ -219,32 +219,6 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
 
             // set reference to find this
             $this->addReference('area.'.$key, $object);
-        }
-    }
-
-    protected function loadCategory()
-    {
-        $data = [
-            'Education',
-            'Service',
-            'Shop',
-        ];
-
-        foreach ($data as $key => $value) {
-            $object = new Category();
-            $object->setName($value);
-
-            $translation = new CategoryTranslation();
-            $translation->setContent(sprintf('Spain %s', $value));
-            $translation->setField('name');
-            $translation->setLocale('es');
-            $translation->setObject($object);
-
-            $this->manager->persist($translation);
-            $this->manager->persist($object);
-
-            // set reference to find this
-            $this->addReference('category.'.$key, $object);
         }
     }
 

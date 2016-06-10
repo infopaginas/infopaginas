@@ -14,13 +14,15 @@ use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\Tag;
 use Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation;
 use Domain\BusinessBundle\Model\SubscriptionInterface;
+use Domain\MenuBundle\Entity\Menu;
 use Domain\MenuBundle\Model\MenuInterface;
+use Domain\MenuBundle\Model\MenuModel;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadCategoryData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class LoadMenuData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -39,35 +41,18 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
     {
         $this->manager = $manager;
 
-        $data = [
-            MenuInterface::CODE_SOLICITORS      => 'Solicitors',
-            MenuInterface::CODE_BUILDERS        => 'Builders',
-            MenuInterface::CODE_PHARMACIES      => 'Pharmacies',
-            MenuInterface::CODE_ELECTRICIANS    => 'Electricians',
-            MenuInterface::CODE_PLUMBERS        => 'Plumbers',
-            MenuInterface::CODE_MECHANICS       => 'Mechanics',
-            MenuInterface::CODE_DENTISTS        => 'Dentists',
-            MenuInterface::CODE_RESTAURANTS     => 'Restaurants',
-            MenuInterface::CODE_FLORISTS        => 'Florists',
-            MenuInterface::CODE_BEAUTY_SALONS   => 'Beauty salons',
-            MenuInterface::CODE_HAIRDRESSERS    => 'Hairdressers',
-            MenuInterface::CODE_DOCTORS         => 'Doctors',
-        ];
+        $data = MenuModel::getMenuCategoriesNames();
 
         foreach ($data as $menuCode => $value) {
-            $object = new Category();
-            $object->setName($value);
+            $object = new Menu();
+            $object->setCode($menuCode);
+            $object->setCategory($this->getReference(sprintf('category.%s', $menuCode)));
 
             $this->manager->persist($object);
-
-            // set reference to find this
-            $this->addReference('category.'.$menuCode, $object);
         }
 
         $manager->flush();
     }
-
-
 
     /**
      * Get the order of this fixture
@@ -76,7 +61,7 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
      */
     public function getOrder()
     {
-        return 4;
+        return 5;
     }
 
     /**
