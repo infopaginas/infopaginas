@@ -118,7 +118,7 @@ class AddressManager extends DefaultManager
             // even searching by specific address or coordinates
             // but the first one the best one (more correct)
             $result = array_shift($results);
-            
+
             // data bellow is required
             // street, city, country, zip_code
             if (
@@ -148,7 +148,7 @@ class AddressManager extends DefaultManager
         } else {
             $response['error'] = 'Invalid address';
         }
-        
+
         return $response;
     }
 }

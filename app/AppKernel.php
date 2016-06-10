@@ -56,6 +56,7 @@ class AppKernel extends Kernel
             new Domain\PageBundle\DomainPageBundle(),
             
             new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
+            new Domain\MenuBundle\DomainMenuBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

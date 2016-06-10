@@ -44,7 +44,7 @@ class Type extends TypeModel implements DefaultEntityInterface, TranslatableInte
     /**
      * @var integer
      *
-     * @ORM\Column(name="code", type="integer", nullable=true)
+     * @ORM\Column(name="code", type="integer")
      */
     protected $code;
 

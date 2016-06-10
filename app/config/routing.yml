@@ -1,3 +1,7 @@
+domain_menu:
+    resource: "@DomainMenuBundle/Resources/config/routing.yml"
+    prefix:   /
+
 domain_page:
     resource: "@DomainPageBundle/Resources/config/routing.yml"
     prefix:   /page
