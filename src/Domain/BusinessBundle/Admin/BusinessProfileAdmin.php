@@ -107,16 +107,12 @@ class BusinessProfileAdmin extends OxaAdmin
 
         $googleApiKey = $oxaConfig->getValue(ConfigInterface::GOOGLE_API_KEY);
 
-        if ($this->getSubject()->getLatitude()) {
-            $latitude = $this->getSubject()->getLatitude();
+        if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
+            $latitude   = $this->getSubject()->getLatitude();
+            $longitude  = $this->getSubject()->getLongitude();
         } else {
-            $latitude = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
-        }
-
-        if ($this->getSubject()->getLatitude()) {
-            $longitude = $this->getSubject()->getLongitude();
-        } else {
-            $longitude = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+            $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
+            $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
 
         $formMapper
