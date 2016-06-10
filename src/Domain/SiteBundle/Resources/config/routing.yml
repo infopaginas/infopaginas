@@ -1,6 +1,10 @@
 domain_site_home:
     resource: "@DomainSiteBundle/Resources/config/routes/homeControllerRoutes.yml"
+    host: "{_locale}.{domain}"
     prefix:   /
+    requirements:
+        _locale : '%route_locales%'
+    
 
 domain_site_profile:
     resource: "@DomainSiteBundle/Resources/config/routes/profileControllerRoutes.yml"
