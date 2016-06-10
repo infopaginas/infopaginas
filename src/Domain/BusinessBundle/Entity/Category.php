@@ -46,7 +46,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
 
     /**
      * @var BusinessProfile[]
-     * 
+     *
      * @ORM\ManyToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     mappedBy="categories",
@@ -62,7 +62,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
 
     /**
      * @var Article[]
-     * 
+     *
      * @ORM\OneToMany(
      *     targetEntity="Domain\ArticleBundle\Entity\Article",
      *     mappedBy="category",

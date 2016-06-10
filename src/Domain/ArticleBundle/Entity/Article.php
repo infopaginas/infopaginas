@@ -108,7 +108,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
      */
     protected $category;
-    
+
     /**
      * Get id
      *
