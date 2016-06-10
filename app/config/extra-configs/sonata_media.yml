@@ -58,6 +58,14 @@ sonata_media:
             formats:
                 preview:    { width: 150, height: 150, quality: 100}
                 normal:     { width: 500, height: 500, quality: 100}
+        article:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:      { width: 150, height: 150, quality: 100}
+                homepage:     { width: 260, height: 260, quality: 100}
     cdn:
         #define the public base url for the uploaded media
         server:

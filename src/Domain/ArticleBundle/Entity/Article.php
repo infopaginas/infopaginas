@@ -1,10 +1,10 @@
 <?php
 
-namespace Domain\PageBundle\Entity;
+namespace Domain\ArticleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Domain\PageBundle\Model\PageInterface;
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -13,19 +13,17 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Page
+ * Article
  *
- * @ORM\Table(name="page")
- * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\PageRepository")
- * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="article")
+ * @ORM\Entity(repositoryClass="Domain\ArticleBundle\Repository\ArticleRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
+ * @Gedmo\TranslationEntity(class="Domain\ArticleBundle\Entity\Translation\ArticleTranslation")
  */
-class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface
+class Article implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-
     /**
      * @var int
      *
@@ -36,7 +34,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     private $id;
 
     /**
-     * @var string - Page title
+     * @var string - Article title
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=100)
@@ -53,10 +51,10 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $image;
 
     /**
-     * @var string - Page description
+     * @var string - Article description
      *
      * @Gedmo\Translatable
-     * @ORM\Column(name="description", type="string", length=100, nullable=true)
+     * @ORM\Column(name="description", type="text", length=100, nullable=true)
      */
     protected $description;
 
@@ -69,11 +67,18 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $body;
 
     /**
-     * @var string - Using this checkbox a User may define whether to show a page.
+     * @var string - Using this checkbox a User may define whether to show an article.
      *
      * @ORM\Column(name="is_published", type="boolean", options={"default" : 0})
      */
     protected $isPublished = false;
+
+    /**
+     * @var string - Using this checkbox a User may define whether to show an article on homepage.
+     *
+     * @ORM\Column(name="is_on_homepage", type="boolean", options={"default" : 0})
+     */
+    protected $isOnHomepage = false;
 
     /**
      * @var string - Used to create human like url
@@ -84,33 +89,26 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $slug;
 
     /**
-     * @var Template
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\PageBundle\Entity\Template",
-     *     inversedBy="pages",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
-     */
-    protected $template;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
-
-    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\PageBundle\Entity\Translation\PageTranslation",
+     *     targetEntity="Domain\ArticleBundle\Entity\Translation\ArticleTranslation",
      *     mappedBy="object",
      *     cascade={"persist", "remove"}
      * )
      */
     protected $translations;
 
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Category",
+     *     inversedBy="articles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
+     */
+    protected $category;
+    
     /**
      * Get id
      *
@@ -119,6 +117,13 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function getId()
     {
         return $this->id;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
@@ -131,17 +136,9 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
                 $result = sprintf('id(%s): not translated', $this->getId());
                 break;
             default:
-                $result = 'New banner';
+                $result = 'New article';
         }
         return $result;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -149,7 +146,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      *
      * @param string $title
      *
-     * @return Page
+     * @return Article
      */
     public function setTitle($title)
     {
@@ -173,7 +170,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      *
      * @param string $description
      *
-     * @return Page
+     * @return Article
      */
     public function setDescription($description)
     {
@@ -197,7 +194,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      *
      * @param string $body
      *
-     * @return Page
+     * @return Article
      */
     public function setBody($body)
     {
@@ -221,7 +218,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      *
      * @param boolean $isPublished
      *
-     * @return Page
+     * @return Article
      */
     public function setIsPublished($isPublished)
     {
@@ -245,7 +242,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      *
      * @param string $slug
      *
-     * @return Page
+     * @return Article
      */
     public function setSlug($slug)
     {
@@ -265,35 +262,11 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     }
 
     /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return Page
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
      * Set image
      *
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $image
      *
-     * @return Page
+     * @return Article
      */
     public function setImage(\Oxa\Sonata\MediaBundle\Entity\Media $image = null)
     {
@@ -313,36 +286,60 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     }
 
     /**
-     * Set template
+     * Remove translation
      *
-     * @param \Domain\PageBundle\Entity\Template $template
-     *
-     * @return Page
+     * @param \Domain\ArticleBundle\Entity\Translation\ArticleTranslation $translation
      */
-    public function setTemplate(\Domain\PageBundle\Entity\Template $template = null)
+    public function removeTranslation(\Domain\ArticleBundle\Entity\Translation\ArticleTranslation $translation)
     {
-        $this->template = $template;
+        $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Domain\BusinessBundle\Entity\Category $category
+     *
+     * @return Article
+     */
+    public function setCategory(\Domain\BusinessBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
 
         return $this;
     }
 
     /**
-     * Get template
+     * Get category
      *
-     * @return \Domain\PageBundle\Entity\Template
+     * @return \Domain\BusinessBundle\Entity\Category
      */
-    public function getTemplate()
+    public function getCategory()
     {
-        return $this->template;
+        return $this->category;
     }
 
     /**
-     * Remove translation
+     * Set isOnHomepage
      *
-     * @param \Domain\BannerBundle\Entity\Translation\BannerTranslation $translation
+     * @param boolean $isOnHomepage
+     *
+     * @return Article
      */
-    public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
+    public function setIsOnHomepage($isOnHomepage)
     {
-        $this->translations->removeElement($translation);
+        $this->isOnHomepage = $isOnHomepage;
+
+        return $this;
+    }
+
+    /**
+     * Get isOnHomepage
+     *
+     * @return boolean
+     */
+    public function getIsOnHomepage()
+    {
+        return $this->isOnHomepage;
     }
 }

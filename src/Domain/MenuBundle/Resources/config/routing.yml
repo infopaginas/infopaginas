@@ -1,3 +1,2 @@
 domain_menu_homepage:
     path:     /
-    defaults: { _controller: DomainMenuBundle:Default:index }

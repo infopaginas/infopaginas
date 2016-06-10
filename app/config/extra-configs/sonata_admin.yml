@@ -54,6 +54,7 @@ sonata_admin:
                 label: Pages
                 icon: <i class="fa fa-file"></i>
                 items:
+                    - domain_article.admin.article
                     - domain_page.admin.page
                     - domain_page.admin.template
             domain.admin.group.banner:
