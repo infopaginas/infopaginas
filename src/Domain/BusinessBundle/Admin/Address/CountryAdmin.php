@@ -1,20 +1,16 @@
 <?php
 
-namespace Oxa\ConfigBundle\Admin;
+namespace Domain\BusinessBundle\Admin\Address;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Show\ShowMapper;
 
-/**
- * Class ConfigAdmin
- * @package Oxa\ConfigBundle\Admin
- */
-class ConfigAdmin extends OxaAdmin
+class CountryAdmin extends OxaAdmin
 {
     /**
      * @param DatagridMapper $datagridMapper
@@ -22,8 +18,9 @@ class ConfigAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('title')
-            ->add('value')
+            ->add('id')
+            ->add('name')
+            ->add('shortName')
         ;
     }
 
@@ -33,8 +30,9 @@ class ConfigAdmin extends OxaAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('title')
-            ->add('value', null, array('template' => 'OxaConfigBundle:Admin:list__value.html.twig'))
+            ->add('id')
+            ->add('name')
+            ->add('shortName')
         ;
 
         $this->addGridActions($listMapper);
@@ -46,17 +44,8 @@ class ConfigAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('title')
-            ->add('format', 'choice', [
-                'choices' => [
-                    'html' => 'html',
-                    'text' => 'text'
-                ],
-                'attr' => [
-                    'class' => 'formatter'
-                ]
-            ])
-            ->add('value', 'ckeditor', ['config_name' => 'default'])
+            ->add('name')
+            ->add('shortName')
         ;
     }
 
@@ -67,20 +56,23 @@ class ConfigAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('title')
-            ->add('format')
-            ->add('value', null, array('template' => 'OxaConfigBundle:Admin:show__value.html.twig'))
+            ->add('name')
+            ->add('shortName')
         ;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         parent::configureRoutes($collection);
 
-        $collection->remove('restore');
-        $collection->remove('delete_physical');
-        $collection->remove('create');
-        $collection->remove('delete');
-        $collection->remove('export');
+        $collection
+            ->remove('delete')
+            ->remove('delete_physical')
+            ->remove('restore')
+            ->remove('create')
+        ;
     }
 }

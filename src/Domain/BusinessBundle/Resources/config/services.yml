@@ -2,3 +2,17 @@ services:
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    domain_business.form.type.google_map:
+        class: Domain\BusinessBundle\Form\Type\GoogleMapType
+        arguments:
+            - '%ivory_google_map.map.class%'
+        tags:
+            - { name: form.type, alias: google_map }
+        calls:
+            - [ setConfig, [ '@oxa_config' ] ]
+
+    domain_business.manager.address_manager:
+        class: Domain\BusinessBundle\Manager\AddressManager
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
