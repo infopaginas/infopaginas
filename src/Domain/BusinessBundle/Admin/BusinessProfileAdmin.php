@@ -105,8 +105,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->getContainer()
             ->get('oxa_config');
 
-        $googleApiKey = $oxaConfig->getValue(ConfigInterface::GOOGLE_API_KEY);
-
         if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
             $latitude   = $this->getSubject()->getLatitude();
             $longitude  = $this->getSubject()->getLongitude();
@@ -154,7 +152,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'label' => 'Update address using map coordinates'
                     ])
                     ->add('fullAddress', 'google_map', [
-                        'google_api_key' => $googleApiKey,
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])

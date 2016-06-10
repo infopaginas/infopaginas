@@ -9,6 +9,8 @@ services:
             - '%ivory_google_map.map.class%'
         tags:
             - { name: form.type, alias: google_map }
+        calls:
+            - [ setConfig, [ '@oxa_config' ] ]
 
     domain_business.manager.address_manager:
         class: Domain\BusinessBundle\Manager\AddressManager

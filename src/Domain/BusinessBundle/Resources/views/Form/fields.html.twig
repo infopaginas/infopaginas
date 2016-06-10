@@ -89,15 +89,11 @@
          * Init map with search box
          */
         function initAutocomplete() {
-
-            {% set lat = latitude ? latitude : 18.4248008 %}
-            {% set lng = longitude ? longitude : -66.1185967 %}
-
-            var myLatLng = new google.maps.LatLng({{ lat }}, {{ lng }});
+            var myLatLng = new google.maps.LatLng({{ latitude }}, {{ longitude }});
             var infowindow = new google.maps.InfoWindow;
 
             var map = new google.maps.Map(document.getElementById('google-map'), {
-                center: {lat: {{ lat }}, lng: {{ lng }} },
+                center: {lat: {{ latitude }}, lng: {{ longitude }} },
                 zoom: {{ zoom }},
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             });

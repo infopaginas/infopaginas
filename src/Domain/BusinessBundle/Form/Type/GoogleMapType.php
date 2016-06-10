@@ -9,6 +9,8 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 
+use Oxa\ConfigBundle\Model\ConfigInterface;
+use Oxa\ConfigBundle\Service\Config;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -22,6 +24,19 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class GoogleMapType extends AbstractType
 {
+    /**
+     * @var Config $config
+     */
+    protected $config;
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * @param FormView $view
      * @param FormInterface $form
@@ -47,10 +62,10 @@ class GoogleMapType extends AbstractType
         $resolver->setDefaults([
             'required' => false,
             'language' => 'en',
-            'latitude' => 18.4248008,
-            'longitude' => -66.1185967,
+            'latitude' => $this->config->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE),
+            'longitude' => $this->config->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE),
+            'google_api_key' => $this->config->getValue(ConfigInterface::GOOGLE_API_KEY),
             'zoom' => 12,
-            'google_api_key' => '',
         ]);
     }
 
