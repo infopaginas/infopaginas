@@ -18,7 +18,7 @@ use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
 /**
  * Used to customise admin
- * 
+ *
  * Class AdminManager
  * @package Oxa\Sonata\AdminBundle\Manager
  */
@@ -39,7 +39,7 @@ class AdminManager extends DefaultManager
         if ($disableSoftdelete) {
             $this->disableDeleteableListener($entityClass);
         }
-        
+
         $this->checkIfEntityClassIsValid($entityClass);
 
         return $this->getEntityManager()
@@ -174,12 +174,12 @@ class AdminManager extends DefaultManager
         $metadata = $this->getEntityManager()->getClassMetadata(get_class($entity));
         $existDependentField = [];
         foreach ($metadata->getAssociationMappings() as $associationMapping) {
-            if ($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY) {
+            if (
+                $associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY ||
+                $associationMapping['type'] == ClassMetadataInfo::ONE_TO_ONE
+            ) {
                 $methodGet = 'get' . ucfirst($associationMapping['fieldName']);
                 $childs = $entity->$methodGet();
-//                foreach ($childs as $child) {
-//                    $this->getEntityManager()->remove($child);
-//                }
                 if (count($childs)) {
                     $existDependentField[] = $this->getContainer()->get('translator')->trans(
                         'form.label_' . $associationMapping['fieldName'],
@@ -193,7 +193,7 @@ class AdminManager extends DefaultManager
 
     /**
      * Check if such entity class really exists
-     * 
+     *
      * @param $entityClass
      * @throws InvalidArgumentException
      */
@@ -221,7 +221,7 @@ class AdminManager extends DefaultManager
                 $this->getEntityManager()->remove($entity);
             }
         }
-        
+
         $this->getEntityManager()->flush();
     }
 
@@ -254,7 +254,7 @@ class AdminManager extends DefaultManager
             if ($disableSoftdelete) {
                 $this->disableDeleteableListener(get_class($entity));
             }
-            
+
             if ($entity instanceof DeleteableEntityInterface && !is_null($entity->getDeletedAt())) {
                 $this->restoreEntity($entity);
             }
@@ -263,7 +263,7 @@ class AdminManager extends DefaultManager
 
     /**
      * Clone objects with all relations
-     * 
+     *
      * @param array $entityArray
      */
     public function cloneEntities(array $entityArray = [])
@@ -273,7 +273,7 @@ class AdminManager extends DefaultManager
                 $this->cloneEntityObject($entity);
             }
         }
-        
+
         $this->getEntityManager()->flush();
     }
 

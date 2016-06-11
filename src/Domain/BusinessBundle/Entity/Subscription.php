@@ -2,11 +2,14 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Model\SubscriptionInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -15,11 +18,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="subscription")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
  * @UniqueEntity("code")
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
  */
-class Subscription implements DefaultEntityInterface, SubscriptionInterface
+class Subscription implements DefaultEntityInterface, SubscriptionInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
-    
+    use PersonalTranslatable;
+
     /**
      * @var int
      *
@@ -32,6 +37,7 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface
     /**
      * @var string - Subscription name
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
@@ -52,6 +58,17 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface
      *     )
      */
     protected $businessProfiles;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * @return array
@@ -92,11 +109,22 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface
     public function __construct()
     {
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
     {
-        return ($this->getName()) ?: 'New subscription';
+        switch (true) {
+            case $this->getName():
+                $result = $this->getName();
+                break;
+            case $this->getId():
+                $result = sprintf('id(%s): not translated', $this->getId());
+                break;
+            default:
+                $result = 'New subscription';
+        }
+        return $result;
     }
 
     /**
@@ -133,6 +161,7 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles[] = $businessProfile;
+        $businessProfile->setSubscription($this);
 
         return $this;
     }
@@ -179,5 +208,15 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

@@ -6,7 +6,7 @@ sonata_block:
         sonata.user.block.account: # used to display menu option (login option)
         sonata.block.service.text: # used to if you plan to use Sonata user routes
         sonata.admin.block.admin_list:
-            contexts:   [admin]
+            contexts: [admin]
         sonata.admin.block.search_result:
             contexts: [admin]
         sonata_translation.block.locale_switcher:
@@ -38,13 +38,44 @@ sonata_admin:
                     - domain_business.admin.task
             domain.admin.group.business:
                 label: Businesses
-                icon: <i class="fa fa-table"></i>
+                icon: <i class="fa fa-briefcase"></i>
                 items:
                     - domain_business.admin.business_profile
+                    - domain_business.admin.business_profile_has_media
                     - domain_business.admin.business_review
+                    - domain_business.admin.address.country
                     - domain_business.admin.subscription
                     - domain_business.admin.category
                     - domain_business.admin.area
                     - domain_business.admin.tag
                     - domain_business.admin.brand
                     - domain_business.admin.payment_method
+            domain.admin.group.menu:
+                label: Pages
+                icon: <i class="fa fa-list"></i>
+                items:
+                    - domain_menu.admin.menu
+            domain.admin.group.page:
+                label: Pages
+                icon: <i class="fa fa-file"></i>
+                items:
+                    - domain_article.admin.article
+                    - domain_page.admin.page
+                    - domain_page.admin.template
+            domain.admin.group.banner:
+                label: Banners
+                icon: <i class="fa fa-star"></i>
+                items:
+                    - domain_banner.admin.banner
+                    - domain_banner.admin.type
+                    - domain_banner.admin.template
+            sonata.admin.group.media:
+                label: Media
+                icon: <i class="fa fa-picture-o"></i>
+                items:
+                    - sonata.media.admin.media
+            oxa.admin.group.config:
+                label: Configs
+                icon: <i class="fa fa-cogs"></i>
+                items:
+                    - oxa_config.admin.config

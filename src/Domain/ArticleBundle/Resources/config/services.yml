@@ -1,0 +1,9 @@
+services:
+#    domain_article.example:
+#        class: Domain\ArticleBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]
+    domain_article.admin.article:
+        class: Domain\ArticleBundle\Admin\ArticleAdmin
+        arguments: [~, Domain\ArticleBundle\Entity\Article, SonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Articles}

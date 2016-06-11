@@ -8,12 +8,16 @@
 
 namespace Domain\BusinessBundle\Entity\Review;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,10 +27,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessReviewRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation")
  */
-class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
+class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
 
     /**
      * @var int
@@ -58,9 +64,9 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Profile Rating – 5 mandatory selectable stars
      *
      * @Assert\Range(min = 0, max = 5)
-     * @ORM\Column(name="rate", type="integer", nullable=true)
+     * @ORM\Column(name="rating", type="integer", nullable=true)
      */
-    protected $rate;
+    protected $rating;
 
     /**
      * @var string - Mandatory review text area
@@ -71,12 +77,31 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     inversedBy="businessReviews",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id")
      */
     protected $businessProfile;
-    
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -99,30 +124,6 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set rate
-     *
-     * @param integer $rate
-     *
-     * @return BusinessReview
-     */
-    public function setRate($rate)
-    {
-        $this->rate = $rate;
-
-        return $this;
-    }
-
-    /**
-     * Get rate
-     *
-     * @return integer
-     */
-    public function getRate()
-    {
-        return $this->rate;
     }
 
     /**
@@ -219,5 +220,39 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * Set rating
+     *
+     * @param integer $rating
+     *
+     * @return BusinessReview
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Get rating
+     *
+     * @return integer
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation $translation
+     */
+    public function removeTranslation(BusinessReviewTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 }

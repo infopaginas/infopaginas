@@ -1,0 +1,8 @@
+services:
+    oxa_config.admin.config:
+        class: Oxa\ConfigBundle\Admin\ConfigAdmin
+        arguments: [~, Oxa\ConfigBundle\Entity\Config, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: Settings, label: Configs}
+        calls:
+            - [ setTemplate, ['edit', 'OxaConfigBundle:Admin:edit.html.twig']]

@@ -1,10 +1,25 @@
+domain_article:
+    resource: "@DomainArticleBundle/Resources/config/routing.yml"
+    prefix:   /article
+
+domain_menu:
+    resource: "@DomainMenuBundle/Resources/config/routing.yml"
+    prefix:   /menu
+
+domain_page:
+    resource: "@DomainPageBundle/Resources/config/routing.yml"
+    prefix:   /page
+
 domain_business:
     resource: "@DomainBusinessBundle/Resources/config/routing.yml"
     prefix:   /business
 
-domain_default:
-    resource: "@DomainDefaultBundle/Controller/"
-    type:     annotation
+oxa_config:
+    resource: "@OxaConfigBundle/Resources/config/routing.yml"
+    prefix:   /config
+
+domain_site:
+    resource: "@DomainSiteBundle/Resources/config/routing.yml"
     prefix:   /
 
 admin_area:

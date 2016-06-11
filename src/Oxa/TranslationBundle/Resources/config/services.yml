@@ -1,6 +1,0 @@
-services:
-    form.type.translatable:
-        class: Oxa\TranslationBundle\Form\TranslatableType
-        arguments: [ '@doctrine.orm.default_entity_manager', '@validator', '%locales%', '%locale%' ]
-        tags:
-            - { name: form.type, alias: translatable }

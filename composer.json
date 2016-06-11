@@ -27,10 +27,13 @@
         "helios-ag/fm-elfinder-bundle": "^5.3",
         "doctrine/doctrine-migrations-bundle": "^1.1",
         "doctrine/doctrine-fixtures-bundle": "~2.2",
-        "sonata-project/media-bundle": "~2.3",
+        "sonata-project/media-bundle": "2.3.3",
         "sonata-project/translation-bundle": "1.0.x-dev",
         "twig/extensions": "~1.0",
-        "fresh/doctrine-enum-bundle": "4.5"
+        "fresh/doctrine-enum-bundle": "4.5",
+        "pixassociates/sortable-behavior-bundle": "1.0",
+        "egeloen/google-map-bundle": "~2.1",
+        "willdurand/geocoder": "2.8.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

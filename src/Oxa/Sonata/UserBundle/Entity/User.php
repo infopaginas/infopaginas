@@ -43,18 +43,18 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     /**
      * @var BusinessProfile[]
-     * 
+     *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", 
-     *     mappedBy="user", 
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     mappedBy="user",
      *     cascade={"persist", "remove"}
      *     )
      */
     protected $businessProfiles;
-    
+
     /**
      * @var Task[]
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="reviewer")
      */
     protected $tasks;
@@ -77,7 +77,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
@@ -143,7 +143,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
         // add needed group to apply group roles
         $this->addGroup($this->getRole());
-        
+
         return $this;
     }
 

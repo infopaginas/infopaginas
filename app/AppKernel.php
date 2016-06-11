@@ -43,13 +43,21 @@ class AppKernel extends Kernel
             new Sonata\IntlBundle\SonataIntlBundle(),
             new Sonata\TranslationBundle\SonataTranslationBundle(),
             new Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle(),
+            new Pix\SortableBehaviorBundle\PixSortableBehaviorBundle(),
+            new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
-            new Domain\DefaultBundle\DomainDefaultBundle(),
+            new Oxa\ConfigBundle\OxaConfigBundle(),
+            new Domain\SiteBundle\DomainSiteBundle(),
             new Domain\BusinessBundle\DomainBusinessBundle(),
+            new Domain\BannerBundle\DomainBannerBundle(),
+            new Domain\PageBundle\DomainPageBundle(),
+            
+            new Domain\MenuBundle\DomainMenuBundle(),
+            new Domain\ArticleBundle\DomainArticleBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

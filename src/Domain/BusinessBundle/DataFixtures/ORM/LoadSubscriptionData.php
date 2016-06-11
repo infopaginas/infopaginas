@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\Tag;
+use Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation;
 use Domain\BusinessBundle\Model\SubscriptionInterface;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -41,7 +42,15 @@ class LoadSubscriptionData extends AbstractFixture implements ContainerAwareInte
             $object = new Subscription();
             $object->setName($value);
             $object->setCode($code);
+
+            $translation = new SubscriptionTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
             $this->manager->persist($object);
+            $this->manager->persist($translation);
 
             // set reference to find this
             $this->addReference('subscription.'.$code, $object);

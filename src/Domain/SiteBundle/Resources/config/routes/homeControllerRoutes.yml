@@ -1,0 +1,7 @@
+domain_site_home_index:
+   path:     /
+   defaults: { _controller: DomainSiteBundle:Home:index }
+
+domain_site_home_home:
+   path:     /home
+   defaults: { _controller: DomainSiteBundle:Home:home }

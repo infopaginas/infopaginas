@@ -1,0 +1,5 @@
+services:
+    domain_site.manager.search:
+        class: Domain\SiteBundle\Manager\SearchManager
+        arguments: ['@doctrine.orm.entity_manager']
+

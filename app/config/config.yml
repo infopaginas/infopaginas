@@ -8,7 +8,8 @@ imports:
     - { resource: extra-configs/extensions.yml }
     - { resource: extra-configs/sonata_media.yml }
     - { resource: extra-configs/sonata_translation.yml }
-    - { resource: "@DomainBusinessBundle/Resources/config/services.yml" }
+    - { resource: "@DomainMenuBundle/Resources/config/services.yml" }
+    - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -45,8 +46,10 @@ twig:
     form:
         resources:
             - 'SonataFormatterBundle:Form:formatter.html.twig'
-            - 'SonataMediaBundle:Form:media_widgets.html.twig'
+            - 'OxaSonataMediaBundle:Form:media_widgets.html.twig'
             - 'SonataCoreBundle:Form:datepicker.html.twig'
+    form_themes:
+        - 'DomainBusinessBundle:Form:fields.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -77,6 +80,13 @@ doctrine:
             FOSUserBundle: ~
             OxaSonataMediaBundle: ~
             SonataMediaBundle: ~
+            SonataMediaBundle: ~
+            gedmo_loggable:
+                type: annotation
+                prefix: Gedmo\Loggable\Entity
+                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                alias: GedmoLoggable
+                is_bundle: false
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
@@ -108,3 +118,11 @@ doctrine_migrations:
     namespace: Application\Migrations
     table_name: migration_versions
     name: Application Migrations
+
+ivory_google_map:
+    geocoder:
+        enabled: true
+        class: "Ivory\GoogleMap\Services\Geocoding\Geocoder"
+        provider:
+            class: "Ivory\GoogleMap\Services\Geocoding\GeocoderProvider"
+        adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"

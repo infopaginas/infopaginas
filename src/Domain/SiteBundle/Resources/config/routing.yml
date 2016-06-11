@@ -1,0 +1,15 @@
+domain_site_home:
+    resource: "@DomainSiteBundle/Resources/config/routes/homeControllerRoutes.yml"
+    prefix:   /
+
+domain_site_profile:
+    resource: "@DomainSiteBundle/Resources/config/routes/profileControllerRoutes.yml"
+    prefix:   /profile
+
+domain_site_search:
+    resource: "@DomainSiteBundle/Resources/config/routes/searchControllerRoutes.yml"
+    prefix:   /search
+
+domain_site_geolocation:
+    resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
+    prefix:   /geolocation

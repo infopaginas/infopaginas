@@ -2,14 +2,21 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\Address\Country;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
-use Domain\BusinessBundle\Entity\Task\Task;
+use Domain\BusinessBundle\Entity\Task;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * BusinessProfile
@@ -17,11 +24,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="business_profile")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
-class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
+class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
 
     /**
      * @var int
@@ -35,14 +45,15 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Business name
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
 
     /**
      * @var User - Business owner
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
@@ -51,9 +62,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Subscription - Subscription plan
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", 
-     *     inversedBy="businessProfiles", 
-     *     cascade={"persist", "remove"}
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id", nullable=true)
      */
@@ -61,8 +72,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Category[] - Business category
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
@@ -75,21 +86,21 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\Column(name="website", type="string", length=30)
      */
     protected $website;
-    
+
     /**
      * @var string - Email address
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
      */
     protected $email;
-    
+
     /**
      * @var string - Contact phone number
      *
      * @ORM\Column(name="phone", type="string", length=15, nullable=true)
      */
     protected $phone;
-    
+
     /**
      * @var \DateTime - Date of registration in Infopaginas
      * @Gedmo\Timestampable(on="create")
@@ -99,9 +110,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Area[] - Using this field a User may define Areas, business is related to.
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area", 
-     *     inversedBy="businessProfiles"
-     * )
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
      * @ORM\JoinTable(name="business_profile_areas")
      */
     protected $areas;
@@ -109,14 +121,15 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Slogan of a Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="slogan", type="string", length=255, nullable=true)
      */
     protected $slogan;
 
     /**
      * @var Tag[] - Tags related to Profile
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Tag", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Tag",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_tags")
@@ -126,6 +139,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Description of Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      */
     protected $description;
@@ -133,6 +147,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Products of Business
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="product", type="text", length=1000, nullable=true)
      */
     protected $product;
@@ -140,14 +155,15 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Operational Hours
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="working_hours", type="string", length=255, nullable=true)
      */
     protected $workingHours;
 
     /**
      * @var Brand[] - Brands, Business works with
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_brands")
@@ -156,8 +172,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var PaymentMethod[] - Contains list of Payment Methods
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod", 
-     *     inversedBy="businessProfiles", 
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\PaymentMethod",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_payment_methods")
@@ -230,6 +246,138 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $closureReason;
 
+    /*
+     * @var BusinessGallery[] - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
+     *     )
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    protected $images;
+
+    /**
+     * @var Media - Media Logo
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
+     */
+    protected $logo;
+
+    /**
+     * @Gedmo\SortablePosition
+     * @ORM\Column(name="position", type="integer", nullable=false)
+     */
+    protected $position;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
+     */
+    protected $streetAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="street_number", type="string", length=50, nullable=true)
+     */
+    protected $streetNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="extended_address", type="string", length=50, nullable=true)
+     */
+    protected $extendedAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="full_address", type="string", nullable=true)
+     */
+    protected $fullAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=30, nullable=true)
+     */
+    protected $state;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", nullable=true)
+     */
+    protected $city;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
+     */
+    protected $zipCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="latitude", type="float", nullable=true)
+     */
+    protected $latitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="longitude", type="float", nullable=true)
+     */
+    protected $longitude;
+
+    /**
+     * @var string
+     *
+     * @Gedmo\Translatable
+     * @ORM\Column(name="custom_address", type="string", nullable=true)
+     */
+    protected $customAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="use_map_address", type="boolean", options={"default" : 1})
+     */
+    protected $useMapAddress = true;
+
+    /**
+     * @var string - If checkbox is checked, both address of Business and mark on map are not shown to Consumer.
+     *
+     * @ORM\Column(name="hide_address", type="boolean", options={"default" : 0})
+     */
+    protected $hideAddress = false;
+
+    /**
+     * @var Country - Country, Business is located in
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Address\Country",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
+     */
+    protected $country;
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -261,6 +409,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->brands = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -715,7 +865,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function addArea(\Domain\BusinessBundle\Entity\Area $area)
     {
         $this->areas[] = $area;
-
         return $this;
     }
 
@@ -858,7 +1007,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Remove task
      *
-     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     * @param \Domain\BusinessBundle\Entity\Task $task
      */
     public function removeTask(\Domain\BusinessBundle\Entity\Task $task)
     {
@@ -885,6 +1034,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function addBusinessReview(\Domain\BusinessBundle\Entity\Review\BusinessReview $businessReview)
     {
         $this->businessReviews[] = $businessReview;
+        $businessReview->setBusinessProfile($this);
 
         return $this;
     }
@@ -925,5 +1075,410 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->closureReason = $closureReason;
         return $this;
+    }
+
+    /*
+     * Set logo
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\Media $logo
+     *
+     * @return BusinessProfile
+     */
+    public function setLogo(\Oxa\Sonata\MediaBundle\Entity\Media $logo = null)
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
+
+    /**
+     * Get logo
+     *
+     * @return \Oxa\Sonata\MediaBundle\Entity\Media
+     */
+    public function getLogo()
+    {
+        return $this->logo;
+    }
+
+    /**
+     * Add image
+     *
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
+     *
+     * @return BusinessProfile
+     */
+    public function addImage(\Domain\BusinessBundle\Entity\Media\BusinessGallery $image)
+    {
+        $this->images[] = $image;
+        $image->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove image
+     *
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
+     */
+    public function removeImage(\Domain\BusinessBundle\Entity\Media\BusinessGallery $image)
+    {
+        $this->images->removeElement($image);
+    }
+
+    /**
+     * Get images
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return BusinessProfile
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set streetAddress
+     *
+     * @param string $streetAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setStreetAddress($streetAddress)
+    {
+        $this->streetAddress = $streetAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get streetAddress
+     *
+     * @return string
+     */
+    public function getStreetAddress()
+    {
+        return $this->streetAddress;
+    }
+
+    /**
+     * Set fullAddress
+     *
+     * @param string $fullAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setFullAddress($fullAddress)
+    {
+        $this->fullAddress = $fullAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get fullAddress
+     *
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        return $this->fullAddress;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return BusinessProfile
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set zipCode
+     *
+     * @param string $zipCode
+     *
+     * @return BusinessProfile
+     */
+    public function setZipCode($zipCode)
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    /**
+     * Get zipCode
+     *
+     * @return string
+     */
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * Set city
+     *
+     * @param string $city
+     *
+     * @return BusinessProfile
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * Set latitude
+     *
+     * @param string $latitude
+     *
+     * @return BusinessProfile
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return string
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * Set longitude
+     *
+     * @param string $longitude
+     *
+     * @return BusinessProfile
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return string
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * Set customAddress
+     *
+     * @param string $customAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setCustomAddress($customAddress)
+    {
+        $this->customAddress = $customAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get customAddress
+     *
+     * @return string
+     */
+    public function getCustomAddress()
+    {
+        return $this->customAddress;
+    }
+
+    /**
+     * Set hideAddress
+     *
+     * @param boolean $hideAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setHideAddress($hideAddress)
+    {
+        $this->hideAddress = $hideAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get hideAddress
+     *
+     * @return boolean
+     */
+    public function getHideAddress()
+    {
+        return $this->hideAddress;
+    }
+
+    /**
+     * Set extendedAddress
+     *
+     * @param string $extendedAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setExtendedAddress($extendedAddress)
+    {
+        $this->extendedAddress = $extendedAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get extendedAddress
+     *
+     * @return string
+     */
+    public function getExtendedAddress()
+    {
+        return $this->extendedAddress;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \Domain\BusinessBundle\Entity\Address\Country $country
+     *
+     * @return BusinessProfile
+     */
+    public function setCountry(\Domain\BusinessBundle\Entity\Address\Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \Domain\BusinessBundle\Entity\Address\Country
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set streetNumber
+     *
+     * @param string $streetNumber
+     *
+     * @return BusinessProfile
+     */
+    public function setStreetNumber($streetNumber)
+    {
+        $this->streetNumber = $streetNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get streetNumber
+     *
+     * @return string
+     */
+    public function getStreetNumber()
+    {
+        return $this->streetNumber;
+    }
+
+    /**
+     * Set useMapAddress
+     *
+     * @param boolean $useMapAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setUseMapAddress($useMapAddress)
+    {
+        $this->useMapAddress = $useMapAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get useMapAddress
+     *
+     * @return boolean
+     */
+    public function getUseMapAddress()
+    {
+        return $this->useMapAddress;
     }
 }

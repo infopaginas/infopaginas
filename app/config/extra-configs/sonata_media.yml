@@ -10,27 +10,62 @@ sonata_media:
         gallery:            Oxa\Sonata\MediaBundle\Entity\Gallery
         gallery_has_media:  Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia
     contexts:
+        # when you add a new one or edit context name,
+        # edit OxaMediaInterface constans
         default:  # the default context is mandatory
             download:
                 mode: http # X-Sendfile | http
             providers:
+                - sonata.media.provider.image
+#                - sonata.media.provider.file
 #                - sonata.media.provider.dailymotion
 #                - sonata.media.provider.youtube
-                - sonata.media.provider.image
-                - sonata.media.provider.file
 #                - sonata.media.provider.vimeo
             formats:
-                small:    { width: 100, quality: 100}
+                small:    { width: 150, quality: 150}
                 medium:   { width: 300, quality: 100}
                 preview:  { width: 220, quality: 100}
-
-        review_pdf:
+        business_profile_images:
+            download:
+                mode: http
             providers:
-                - sonata.media.provider.file
+                - sonata.media.provider.image
             formats:
-                small: { width: 100, quality: 100}
-
-
+                preview:   { width: 150, height: 150, quality: 100}
+                normal:    { width: 500, height: 500, quality: 100}
+        business_profile_logo:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:    { width: 150, height: 150, quality: 100}
+        banner:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                home:       { width: 120, height: 420, quality: 100}
+                portal:     { width: 300, height: 250, quality: 100}
+                serp:       { width: 728, height: 90, quality: 100}
+                serp_boxed: { width: 250, height: 250, quality: 100}
+        page:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:    { width: 150, height: 150, quality: 100}
+                normal:     { width: 500, height: 500, quality: 100}
+        article:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:      { width: 150, height: 150, quality: 100}
+                homepage:     { width: 260, height: 260, quality: 100}
     cdn:
         #define the public base url for the uploaded media
         server:

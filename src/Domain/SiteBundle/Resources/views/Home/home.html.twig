@@ -1,0 +1,37 @@
+{% extends "DomainSiteBundle:Layout:homepage.html.twig" %}
+
+{% block homapageHeaderHexagonDesc %}
+    {% include 'DomainSiteBundle:Home:Widgets/hexagonMenuWidget.html.twig' %}
+{% endblock %}
+
+{% block  homapageHeaderSearchBlock %}
+    {% include 'DomainSiteBundle:Home:Widgets/searchWidget.html.twig' %}
+{% endblock %}
+
+{% block mainColumnBanner %}
+    <section id="banner" class="banner">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 banner-block desc-banner">
+                    {{banner|raw}}
+                </div>
+                <div class="col-xs-12 mobile-banner">
+                    <img src="http://placehold.it/300x250">
+                    <img src="http://placehold.it/300x250">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+                var siteHomepage = new Homepage;
+            })
+        })
+    </script>
+{% endblock%}
+ 

@@ -2,11 +2,15 @@
 
 namespace Domain\BusinessBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\ArticleBundle\Entity\Article;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -16,10 +20,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("name")
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
  */
-class Category implements DefaultEntityInterface, CopyableEntityInterface
+class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
+    use PersonalTranslatable;
 
     /**
      * @var int
@@ -33,11 +39,14 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Category name
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
      */
     protected $name;
 
     /**
+     * @var BusinessProfile[]
+     *
      * @ORM\ManyToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     mappedBy="categories",
@@ -45,6 +54,33 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface
      *     )
      */
     protected $businessProfiles;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\MenuBundle\Entity\Menu", mappedBy="category")
+     */
+    protected $menu;
+
+    /**
+     * @var Article[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ArticleBundle\Entity\Article",
+     *     mappedBy="category",
+     *     cascade={"persist", "remove"}
+     *     )
+     */
+    protected $articles;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\CategoryTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
 
     /**
      * Get id
@@ -61,18 +97,30 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface
     public function __construct()
     {
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
     {
-        return ($this->getName()) ?: 'New category';
+        switch (true) {
+            case $this->getName():
+                $result = $this->getName();
+                break;
+            case $this->getId():
+                $result = sprintf('id(%s): not translated', $this->getId());
+                break;
+            default:
+                $result = 'New category';
+        }
+        return $result;
     }
 
     public function getMarkCopyPropertyName()
     {
         return 'name';
     }
-    
+
     /**
      * Set name
      *
@@ -107,6 +155,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles[] = $businessProfile;
+        $businessProfile->addCategory($this);
 
         return $this;
     }
@@ -119,6 +168,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfiles->removeElement($businessProfile);
+        $businessProfile->removeCategory($this);
     }
 
     /**
@@ -129,5 +179,73 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface
     public function getBusinessProfiles()
     {
         return $this->businessProfiles;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\CategoryTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\CategoryTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set menu
+     *
+     * @param \Domain\MenuBundle\Entity\Menu $menu
+     *
+     * @return Category
+     */
+    public function setMenu(\Domain\MenuBundle\Entity\Menu $menu = null)
+    {
+        $this->menu = $menu;
+
+        return $this;
+    }
+
+    /**
+     * Get menu
+     *
+     * @return \Domain\MenuBundle\Entity\Menu
+     */
+    public function getMenu()
+    {
+        return $this->menu;
+    }
+
+    /**
+     * Add article
+     *
+     * @param \Domain\ArticleBundle\Entity\Article $article
+     *
+     * @return Category
+     */
+    public function addArticle(\Domain\ArticleBundle\Entity\Article $article)
+    {
+        $this->articles[] = $article;
+
+        return $this;
+    }
+
+    /**
+     * Remove article
+     *
+     * @param \Domain\ArticleBundle\Entity\Article $article
+     */
+    public function removeArticle(\Domain\ArticleBundle\Entity\Article $article)
+    {
+        $this->articles->removeElement($article);
+    }
+
+    /**
+     * Get articles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArticles()
+    {
+        return $this->articles;
     }
 }
