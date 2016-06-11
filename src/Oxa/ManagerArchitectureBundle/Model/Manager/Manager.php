@@ -2,6 +2,8 @@
 
 namespace Oxa\ManagerArchitectureBundle\Model\Manager;
 
+use Doctrine\ORM\EntityManager;
+
 abstract class Manager
 {
     /**

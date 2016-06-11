@@ -1,5 +1,5 @@
 <?php
-namespace Domain\BusinessBundle\DataFixture\ORM;
+namespace Domain\MenuBundle\DataFixture\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -42,7 +42,7 @@ class LoadMenuData extends AbstractFixture implements ContainerAwareInterface, O
         $this->manager = $manager;
 
         $data = MenuModel::getMenuCategoriesNames();
-
+var_dump($data); die;
         foreach ($data as $menuCode => $value) {
             $object = new Menu();
             $object->setCode($menuCode);

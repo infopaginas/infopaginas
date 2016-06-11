@@ -7,5 +7,8 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class MenuManager extends Manager
 {
-    
+    public function fetchAll()
+    {
+        return $this->em->getRepository('DomainMenuBundle:Menu')->getMenuItems();
+    }
 }
