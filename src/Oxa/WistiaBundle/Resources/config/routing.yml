@@ -1,0 +1,3 @@
+oxa_wistia_default_index:
+   path:     /wistia
+   defaults: { _controller: OxaWistiaBundle:Default:index }

@@ -58,6 +58,7 @@ class AppKernel extends Kernel
             
             new Domain\MenuBundle\DomainMenuBundle(),
             new Domain\ArticleBundle\DomainArticleBundle(),
+            new Oxa\WistiaBundle\OxaWistiaBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
