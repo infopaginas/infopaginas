@@ -64,6 +64,8 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Tasks}
         calls:
             - [ setTemplate, [list, DomainBusinessBundle:TaskAdmin:list.html.twig]]
+            - [ setTemplate, [edit, DomainBusinessBundle:TaskAdmin:edit.html.twig]]
+            - [ setTasksManager, ['@domain_business.manager.tasks']]
 
     domain_business.admin.review_task:
         class: Domain\BusinessBundle\Admin\Task\ReviewTaskAdmin

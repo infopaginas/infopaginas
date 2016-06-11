@@ -1,0 +1,110 @@
+{% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
+
+{% block form %}
+    <div class="sonata-ba-view">
+
+        {{ sonata_block_render_event('sonata.admin.show.top', { 'admin': admin, 'object': object }) }}
+
+        {% set business = object.businessProfile %}
+
+        <table class="table table-bordered">
+            <thead>
+            <tr class="sonata-ba-view-title">
+                <th colspan="2">
+                    {{ admin.trans('Business') }}
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Name') }}</td>
+                <td>{{ business.name }}</td>
+            </tr>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Phone') }}</td>
+                <td>{{ business.phone }}</td>
+            </tr>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Address') }}</td>
+                <td>??</td>
+            </tr>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Email') }}</td>
+                <td>{{ business.email }}</td>
+            </tr>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Website') }}</td>
+                <td>{{ business.website }}</td>
+            </tr>
+            {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_CLOSE')) %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ admin.trans('Subscription') }}</td>
+                    <td>{{ business.subscription.name }}</td>
+                </tr>
+                <tr class="sonata-ba-view-container">
+                    <td>{{ admin.trans('Closure Reason') }}</td>
+                    <td>-</td>
+                </tr>
+            {% endif %}
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Profile') }}</td>
+                <td>
+                    <a href="{{ path('admin_domain_business_businessprofile_show', {'id': business.id}) }}">
+                        {{ admin.trans('View') }}
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form
+        {% if admin_pool.getOption('form_type') == 'horizontal' %}class="form-horizontal"{% endif %}
+        role="form"
+        action="{{ admin.generateUrl('edit', {'id': admin.id(object), 'uniqid': admin.uniqid, 'subclass': app.request.get('subclass')}) }}" {{ form_enctype(form) }}
+        method="POST"
+        {% if not admin_pool.getOption('html5_validate') %}novalidate="novalidate"{% endif %}>
+
+        {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_REVIEW_APPROVE')) %}
+            {{ form_row(form.businessProfile__businessReviews) }}
+        {% endif %}
+
+        {% if (object.status == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_OPEN')) %}
+            <div class="well well-small form-actions">
+                <button class="btn btn-success" type="submit"  name="status"
+                        value="{{ constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_CLOSED') }}">
+                    Approve
+                </button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#rejectReasonModal" type="button">
+                    Reject
+                </button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="rejectReasonModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Reject Reason</h4>
+                        </div>
+                        <div class="modal-body">
+                            {{ form_widget(form.rejectReason) }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="status" class="btn btn-danger"
+                                    value="{{ constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_REJECTED') }}">
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
+        {{ form_row(form._token) }}
+    </form>
+{% endblock %}

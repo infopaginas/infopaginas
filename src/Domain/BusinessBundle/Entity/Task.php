@@ -16,9 +16,6 @@ use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 /**
  * Task
  *
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"task" = "Task", "reviewTask" = "Domain\BusinessBundle\Entity\Task\ReviewTask"})
  * @ORM\Table(name="task")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TaskRepository")
  */
@@ -65,6 +62,12 @@ class Task implements DefaultEntityInterface, TaskInterface
      * @ORM\JoinColumn(name="reviewer_id", referencedColumnName="id")
      */
     protected $reviewer;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview")
+     * @ORM\JoinColumn(name="review_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $review;
 
     /**
      * Task constructor.
@@ -209,5 +212,23 @@ class Task implements DefaultEntityInterface, TaskInterface
     {
         $types = $this->getTypes();
         return $types[$this->getType()];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReview()
+    {
+        return $this->review;
+    }
+
+    /**
+     * @param mixed $review
+     * @return Task
+     */
+    public function setReview($review)
+    {
+        $this->review = $review;
+        return $this;
     }
 }

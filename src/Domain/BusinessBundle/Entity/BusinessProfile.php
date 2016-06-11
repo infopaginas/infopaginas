@@ -223,6 +223,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $businessReviews;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="closure_reason", type="string", length=255, nullable=true)
+     */
+    protected $closureReason;
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -837,11 +844,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Add task
      *
-     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     * @param \Domain\BusinessBundle\Entity\Task $task
      *
      * @return BusinessProfile
      */
-    public function addTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    public function addTask(\Domain\BusinessBundle\Entity\Task $task)
     {
         $this->tasks[] = $task;
 
@@ -853,7 +860,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @param \Domain\BusinessBundle\Entity\Task\Task $task
      */
-    public function removeTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    public function removeTask(\Domain\BusinessBundle\Entity\Task $task)
     {
         $this->tasks->removeElement($task);
     }
@@ -900,5 +907,23 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getBusinessReviews()
     {
         return $this->businessReviews;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClosureReason()
+    {
+        return $this->closureReason;
+    }
+
+    /**
+     * @param string $closureReason
+     * @return BusinessProfile
+     */
+    public function setClosureReason($closureReason)
+    {
+        $this->closureReason = $closureReason;
+        return $this;
     }
 }

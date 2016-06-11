@@ -3,7 +3,12 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
+use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskAdminController extends CRUDController
@@ -55,6 +60,41 @@ class TaskAdminController extends CRUDController
             'totalApprovedTasksCount' => $totalApprovedTasksCount,
             'totalRejectedTasksCount' => $totalRejectedTasksCount,
             'totalCompleteTasksCount' => $totalCompleteTasksCount,
+        ), null);
+    }
+
+    /**
+     * Show action.
+     *
+     * @param int|string|null $id
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @throws NotFoundHttpException If the object does not exist
+     * @throws AccessDeniedException If access is not granted
+     */
+    public function showAction($id = null)
+    {
+        $request = $this->getRequest();
+        $id      = $request->get($this->admin->getIdParameter());
+
+        $object = $this->admin->getObject($id);
+
+        if (!$object) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
+        }
+
+        if (false === $this->admin->isGranted('VIEW', $object)) {
+            throw new AccessDeniedException();
+        }
+
+        $this->admin->setSubject($object);
+
+        return $this->render($this->admin->getTemplate('show'), array(
+            'action'   => 'show',
+            'object'   => $object,
+            'elements' => $this->admin->getShow(),
         ), null);
     }
 }
