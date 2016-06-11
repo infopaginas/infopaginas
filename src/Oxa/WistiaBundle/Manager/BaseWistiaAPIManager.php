@@ -65,9 +65,6 @@ abstract class BaseWistiaAPIManager
         $requestData['form_params']['api_password'] = WistiaAPIClient::API_PASSWORD;
 
         return $requestData;
-
-        /*$authData = ['auth' => [WistiaAPIClient::API_USER, WistiaAPIClient::API_PASSWORD]];
-        return array_merge($authData, $data);*/
     }
 
     protected function getEndpointModule()

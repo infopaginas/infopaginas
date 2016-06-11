@@ -23,6 +23,6 @@ class WistiaMediaManager extends BaseWistiaAPIManager
     public function stats(string $hash)
     {
         $endpoint = $this->getEndpointModule() . '/' . $hash . '/stats';
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_POST, $endpoint);
+        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_GET, $endpoint);
     }
 }
