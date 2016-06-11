@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\ArticleBundle\Entity\Article;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -44,6 +45,8 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $name;
 
     /**
+     * @var BusinessProfile[]
+     *
      * @ORM\ManyToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     mappedBy="categories",
@@ -56,6 +59,17 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\OneToOne(targetEntity="Domain\MenuBundle\Entity\Menu", mappedBy="category")
      */
     protected $menu;
+
+    /**
+     * @var Article[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ArticleBundle\Entity\Article",
+     *     mappedBy="category",
+     *     cascade={"persist", "remove"}
+     *     )
+     */
+    protected $articles;
 
     /**
      * @var ArrayCollection
@@ -84,6 +98,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     {
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
@@ -198,5 +213,39 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getMenu()
     {
         return $this->menu;
+    }
+
+    /**
+     * Add article
+     *
+     * @param \Domain\ArticleBundle\Entity\Article $article
+     *
+     * @return Category
+     */
+    public function addArticle(\Domain\ArticleBundle\Entity\Article $article)
+    {
+        $this->articles[] = $article;
+
+        return $this;
+    }
+
+    /**
+     * Remove article
+     *
+     * @param \Domain\ArticleBundle\Entity\Article $article
+     */
+    public function removeArticle(\Domain\ArticleBundle\Entity\Article $article)
+    {
+        $this->articles->removeElement($article);
+    }
+
+    /**
+     * Get articles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArticles()
+    {
+        return $this->articles;
     }
 }
