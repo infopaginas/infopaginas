@@ -1,1 +1,7 @@
-{{ embed.html | raw }}
+Thumbnail example: <br />
+{{ render_wistia_thumbnail(media, {width: 500, height: 200}) | raw }}
+
+<br /><br />
+
+Video example: <br />
+{{ render_wistia_embed(media, {width: 500}) | raw }}

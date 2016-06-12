@@ -61,3 +61,16 @@ services:
             - '@oxa.uploader.wistia_remote_file_uploader'
             - '@oxa.manager.wistia_media'
             - '@oxa.manager.wistia_api_embed'
+
+    oxa.twig_extension.wistia_media_thumbnail:
+        class: Oxa\WistiaBundle\Twig\Extension\WistiaMediaThumbnailExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+
+    oxa.twig_extension.wistia_media_embed:
+        class: Oxa\WistiaBundle\Twig\Extension\WistiaMediaEmbedExtension
+        arguments: ['@oxa.manager.wistia_api_embed']
+        public: false
+        tags:
+            -  { name: twig.extension }

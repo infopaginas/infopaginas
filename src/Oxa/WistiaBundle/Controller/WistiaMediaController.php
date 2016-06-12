@@ -63,12 +63,10 @@ class WistiaMediaController extends Controller
     {
         $wistiaMediaManager = $this->get('oxa.manager.wistia_media');
 
-        $storedMediaData = $wistiaMediaManager->find($id);
-
-        $embed = $this->getWistiaManager()->getEmbedCode($storedMediaData->getHashedId(), ['width' => 200]);
+        $media = $wistiaMediaManager->find($id);
 
         return $this->render('OxaWistiaBundle:WistiaMedia:view.html.twig', [
-            'embed' => $embed,
+            'media' => $media
         ]);
     }
 
