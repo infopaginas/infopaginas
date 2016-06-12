@@ -32,7 +32,7 @@ class HomeController extends Controller
 
         $menuItems      = $menuManager->fetchAll();
         $banner         = $bannerManager->getBanner(TypeInterface::CODE_HOME);
-// dump($menuItems); die;
+
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             array(

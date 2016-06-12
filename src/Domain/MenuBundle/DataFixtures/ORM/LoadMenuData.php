@@ -42,7 +42,7 @@ class LoadMenuData extends AbstractFixture implements ContainerAwareInterface, O
         $this->manager = $manager;
 
         $data = MenuModel::getMenuCategoriesNames();
-var_dump($data); die;
+
         foreach ($data as $menuCode => $value) {
             $object = new Menu();
             $object->setCode($menuCode);
