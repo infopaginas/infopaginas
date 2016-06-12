@@ -24,7 +24,7 @@ class SearchController extends Controller
     /**
      * Search by category
      */
-    public function categoryAction()
+    public function categoryAction(Request $request)
     {
         return $this->render('DomainSiteBundle:Home:search.html.twig');
     }
