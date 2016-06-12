@@ -61,24 +61,13 @@ class DefaultController extends Controller
 
         $localFileUploadResult = $wistiaLocalFileUploader->upload();*/
 
-        /*$remoteFileUploadData = [
-            'url' => 'http://www.w3schools.com/html/mov_bbb.mp4',
-            'name' => 'Dummy love story',
-        ];
 
-        $wistiaRemoteFileUploader = $this->get('oxa.uploader.wistia_remote_file_uploader')->setData($remoteFileUploadData);
-        $remoteFileUploadResult = $wistiaRemoteFileUploader->upload();*/
-
-        //var_dump($localFileUploadResult);
-
-        //$dummyVideoURL = 'https://d1wst0behutosd.cloudfront.net/videos/9551051/25636925.480p.mp4?Expires=1465657550&Signature=iZ7oOEy-DXBXbDSpvMQnZ9sBOuuCWOb9-ht-26nbBHaGicjvV-CBmyew2iWMi5b7jXw7UvD345OL08paeIgcis0hCDyi-HYaxt0k0kchC09K~SRGfK8mwlVljgZ4c1Fng2snTSH7aNf~EQej~zGgS4r8Ng861ykliH6meZ4GsWwlUtta8PpmcP3Y0e70G27QjE-iNNj8W9zh6gY2J6xvaOgpOL63vxxLN8rOMzCmzKSGlQ1PAU6AxSv9gEYG9c9reqCTfHrHKS3xQRyErmSH759w~UCr78UTEEVjBKVZNjCt50mLQx2YnYmnYEHFHUoiHgtnPHCCH0TWQ--Fny3mzA__&Key-Pair-Id=APKAJJ6WELAPEP47UKWQ';
-
-        /*$remoteFileUploadResult = $wistiaManager->uploadRemoteFile('http://www.w3schools.com/html/mov_bbb.mp4', [
+        $remoteFileUploadResult = $wistiaManager->uploadRemoteFile('http://www.w3schools.com/html/mov_bbb.mp4', [
             'name' => 'test',
             'description' => 'desc',
         ]);
 
-        var_dump($remoteFileUploadResult);*/
+        var_dump($remoteFileUploadResult);
 
         die();
         return $this->render('OxaWistiaBundle:Default:index.html.twig');

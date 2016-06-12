@@ -8,6 +8,7 @@
 
 namespace Oxa\WistiaBundle\Uploader;
 
+use Oxa\WistiaBundle\Exception\URLNotProvidedException;
 use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Oxa\WistiaBundle\Uploader\Model\WistiaFileUploaderInterface;
 
@@ -20,18 +21,29 @@ class WistiaRemoteFileUploader extends WistiaFileUploader implements WistiaFileU
 
     protected function prepareRequestData() : array
     {
-        //todo: exception if URL not provided
+        if (!isset($this->requestData['url'])) {
+            throw new URLNotProvidedException();
+        }
+
         $url = $this->requestData['url'];
-        $filename = isset($this->requestData['name']) ? $this->requestData['name'] : '';
+
+        $name        = $this->requestData['name'] ?? '';
+        $description = $this->requestData['description'] ?? '';
+        $project     = $this->requestData['project_id'] ?? 2394117; //todo implement project id getter
 
         $uploadData = [
             'form_params'    => [
                 'api_password' => WistiaApiClientInterface::API_PASSWORD,
                 'url'          => $url,
-                'name'         => $filename,
-                'project_id'   => 2394117 //todo implement project id getter
+                'name'         => $name,
+                'project_id'   => $project,
+                'description'  => $description,
             ]
         ];
+
+        if (isset($this->requestData['contact_id'])) {
+            $uploadData['form_params']['contact_id'] = $this->requestData['contact_id'];
+        }
 
         return $uploadData;
     }

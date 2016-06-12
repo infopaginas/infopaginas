@@ -8,6 +8,7 @@
 
 namespace Oxa\WistiaBundle\Uploader;
 
+use Oxa\WistiaBundle\Exception\FileNotProvidedException;
 use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Oxa\WistiaBundle\Uploader\Model\WistiaFileUploaderInterface;
 
@@ -20,8 +21,15 @@ class WistiaLocalFileUploader extends WistiaFileUploader implements WistiaFileUp
 
     protected function prepareRequestData() : array
     {
-        //todo: exception if file not provided
+        if (!isset($this->requestData['file'])) {
+            throw new FileNotProvidedException();
+        }
+
         $path = $this->requestData['file'];
+
+        $name        = $this->requestData['name'] ?? '';
+        $description = $this->requestData['description'] ?? '';
+        $project     = $this->requestData['project_id'] ?? 2394117; //todo implement project id getter
 
         $uploadData = [
             'multipart'    => [
@@ -34,8 +42,16 @@ class WistiaLocalFileUploader extends WistiaFileUploader implements WistiaFileUp
                     'contents' => WistiaApiClientInterface::API_PASSWORD,
                 ],
                 [
+                    'name'     => 'name',
+                    'contents' => $name,
+                ],
+                [
+                    'name'     => 'description',
+                    'contents' => $description,
+                ],
+                [
                     'name'     => 'project_id',
-                    'contents' => 2394117 //todo: get project id
+                    'contents' => $project,
                 ],
             ]
         ];
