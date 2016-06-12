@@ -19,9 +19,12 @@ abstract class BaseWistiaAPIManager
 
     private $wistiaApiClient;
 
-    public function __construct(WistiaApiClientInterface $apiClient)
+    private $apiPassword;
+
+    public function __construct(WistiaApiClientInterface $apiClient, string $apiPassword)
     {
         $this->wistiaApiClient = $apiClient;
+        $this->apiPassword = $apiPassword;
     }
 
     public function list()
@@ -62,17 +65,22 @@ abstract class BaseWistiaAPIManager
     protected function buildAPIRequestDataArray(array $data = []) : array
     {
         $requestData = ['form_params' => $data];
-        $requestData['form_params']['api_password'] = WistiaApiClientInterface::API_PASSWORD;
+        $requestData['form_params']['api_password'] = $this->getApiPassword();
 
         return $requestData;
     }
 
-    protected function getEndpointModule()
+    protected function getEndpointModule() : string
     {
         if (empty($this->endpointModule)) {
             throw new \Exception(self::ENDPOINT_NOT_DEFINED_ERROR_MESSAGE);
         }
 
         return $this->endpointModule;
+    }
+
+    private function getApiPassword() : string
+    {
+        return $this->apiPassword;
     }
 }

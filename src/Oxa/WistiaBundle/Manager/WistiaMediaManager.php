@@ -15,9 +15,9 @@ class WistiaMediaManager extends BaseWistiaAPIManager
 {
     protected $endpointModule = 'medias';
 
-    public function __construct(WistiaApiClientInterface $apiClient)
+    public function __construct(WistiaApiClientInterface $apiClient, string $apiPassword)
     {
-        parent::__construct($apiClient);
+        parent::__construct($apiClient, $apiPassword);
     }
 
     public function stats(string $hash)

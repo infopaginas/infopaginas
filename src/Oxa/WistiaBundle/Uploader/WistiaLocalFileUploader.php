@@ -14,9 +14,13 @@ use Oxa\WistiaBundle\Uploader\Model\WistiaFileUploaderInterface;
 
 class WistiaLocalFileUploader extends WistiaFileUploader implements WistiaFileUploaderInterface
 {
-    public function __construct(WistiaApiClientInterface $wistiaAPIClient)
-    {
-        parent::__construct($wistiaAPIClient);
+    public function __construct(
+        WistiaApiClientInterface $wistiaAPIClient,
+        string $apiPassword,
+        int $projectId,
+        bool $useProjectId
+    ) {
+        parent::__construct($wistiaAPIClient, $apiPassword, $projectId, $useProjectId);
     }
 
     protected function prepareRequestData() : array
@@ -29,7 +33,6 @@ class WistiaLocalFileUploader extends WistiaFileUploader implements WistiaFileUp
 
         $name        = $this->requestData['name'] ?? '';
         $description = $this->requestData['description'] ?? '';
-        $project     = $this->requestData['project_id'] ?? 2394117; //todo implement project id getter
 
         $uploadData = [
             'multipart'    => [
@@ -39,7 +42,7 @@ class WistiaLocalFileUploader extends WistiaFileUploader implements WistiaFileUp
                 ],
                 [
                     'name'     => 'api_password',
-                    'contents' => WistiaApiClientInterface::API_PASSWORD,
+                    'contents' => $this->getApiPassword(),
                 ],
                 [
                     'name'     => 'name',
@@ -49,12 +52,20 @@ class WistiaLocalFileUploader extends WistiaFileUploader implements WistiaFileUp
                     'name'     => 'description',
                     'contents' => $description,
                 ],
-                [
-                    'name'     => 'project_id',
-                    'contents' => $project,
-                ],
             ]
         ];
+
+        if (isset($this->requestData['project_id'])) {
+            $projectData = ['name' => 'project_id', 'contents' => $this->requestData['project_id']];
+            array_push($uploadData['multipart'], $projectData);
+        } else {
+            $project = $this->getProjectId();
+
+            if ($project !== 0) {
+                $projectData = ['name' => 'project_id', 'contents' => $project];
+                array_push($uploadData['multipart'], $projectData);
+            }
+        }
 
         return $uploadData;
     }

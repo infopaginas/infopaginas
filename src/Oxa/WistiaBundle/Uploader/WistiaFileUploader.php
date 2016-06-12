@@ -17,9 +17,25 @@ abstract class WistiaFileUploader implements WistiaFileUploaderInterface
 
     protected $wistiaAPIClient;
 
-    public function __construct(WistiaApiClientInterface $wistiaAPIClient)
-    {
+    protected $apiPassword;
+
+    protected $projectId;
+    protected $useProjectId;
+
+    public function __construct(
+        WistiaApiClientInterface $wistiaAPIClient,
+        string $apiPassword,
+        int $projectId,
+        bool $useProjectId
+    ) {
+        $this->requestData = [];
+
         $this->wistiaAPIClient = $wistiaAPIClient;
+
+        $this->apiPassword = $apiPassword;
+
+        $this->projectId    = $projectId;
+        $this->useProjectId = $useProjectId;
     }
 
     public function setData(array $data) : WistiaFileUploaderInterface
@@ -34,6 +50,20 @@ abstract class WistiaFileUploader implements WistiaFileUploaderInterface
         $result = $this->wistiaAPIClient->call(WistiaApiClientInterface::HTTP_METHOD_POST, '', $requestData);
 
         return $result;
+    }
+
+    protected function getApiPassword()
+    {
+        return $this->apiPassword;
+    }
+
+    protected function getProjectId()
+    {
+        if ($this->useProjectId) {
+            return $this->requestData['project_id'] ?? $this->projectId;
+        }
+
+        return 0;
     }
 
     abstract protected function prepareRequestData() : array;

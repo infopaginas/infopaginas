@@ -19,7 +19,6 @@ interface WistiaApiClientInterface
     const HTTP_METHOD_DELETE = 'DELETE';
 
     const API_USER     = 'api';
-    const API_PASSWORD = 'ddd4273a9f4408e692633fea2bee70620d8982774ee82c44c9452263596e4d8c';
 
     const RESPONSE_FORMAT   = 'json';
 

@@ -1,3 +1,8 @@
+parameters:
+    oxa.wistia.default_project_id: 2394117
+    oxa.wistia.use_project_id: true
+    oxa.wistia.api_password: 'ddd4273a9f4408e692633fea2bee70620d8982774ee82c44c9452263596e4d8c'
+
 services:
 
     oxa.service.http_client:
@@ -13,19 +18,27 @@ services:
 
     oxa.uploader.wistia_local_file_uploader:
         class: Oxa\WistiaBundle\Uploader\WistiaLocalFileUploader
-        arguments: ['@oxa.service.wistia_upload_api_client']
+        arguments:
+            - '@oxa.service.wistia_upload_api_client'
+            - %oxa.wistia.api_password%
+            - %oxa.wistia.default_project_id%
+            - %oxa.wistia.use_project_id%
 
     oxa.uploader.wistia_remote_file_uploader:
         class: Oxa\WistiaBundle\Uploader\WistiaRemoteFileUploader
-        arguments: ['@oxa.service.wistia_upload_api_client']
+        arguments:
+            - '@oxa.service.wistia_upload_api_client'
+            - %oxa.wistia.api_password%
+            - %oxa.wistia.default_project_id%
+            - %oxa.wistia.use_project_id%
 
     oxa.manager.wistia_projects:
         class: Oxa\WistiaBundle\Manager\WistiaProjectManager
-        arguments: ['@oxa.service.wistia_data_api_client']
+        arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
 
     oxa.manager.wistia_medias:
         class: Oxa\WistiaBundle\Manager\WistiaMediaManager
-        arguments: ['@oxa.service.wistia_data_api_client']
+        arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
 
     oxa.manager.wistia:
         class: Oxa\WistiaBundle\Manager\WistiaManager

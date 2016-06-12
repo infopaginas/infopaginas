@@ -62,12 +62,13 @@ class DefaultController extends Controller
         $localFileUploadResult = $wistiaLocalFileUploader->upload();*/
 
 
-        $remoteFileUploadResult = $wistiaManager->uploadRemoteFile('http://www.w3schools.com/html/mov_bbb.mp4', [
+        /*$remoteFileUploadResult = $wistiaManager->uploadRemoteFile('http://www.w3schools.com/html/mov_bbb.mp4', [
             'name' => 'test',
-            'description' => 'desc',
-        ]);
+        ]);*/
 
-        var_dump($remoteFileUploadResult);
+        //$localFileUploadResult = $wistiaManager->uploadLocalFile('/var/www/symfony/dummy.mp4', ['description' => 'dum']);
+
+        //var_dump($remoteFileUploadResult);
 
         die();
         return $this->render('OxaWistiaBundle:Default:index.html.twig');

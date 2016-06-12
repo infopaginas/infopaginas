@@ -12,7 +12,12 @@ use Oxa\WistiaBundle\Service\WistiaAPIClient;
  */
 interface WistiaFileUploaderInterface
 {
-    public function __construct(WistiaApiClientInterface $wistiaAPIClient);
+    public function __construct(
+        WistiaApiClientInterface $wistiaAPIClient,
+        string $apiPassword,
+        int $projectId,
+        bool $useProjectId
+    );
 
     public function setData(array $data);
 

@@ -14,9 +14,13 @@ use Oxa\WistiaBundle\Uploader\Model\WistiaFileUploaderInterface;
 
 class WistiaRemoteFileUploader extends WistiaFileUploader implements WistiaFileUploaderInterface
 {
-    public function __construct(WistiaApiClientInterface $wistiaAPIClient)
-    {
-        parent::__construct($wistiaAPIClient);
+    public function __construct(
+        WistiaApiClientInterface $wistiaAPIClient,
+        string $apiPassword,
+        int $projectId,
+        bool $useProjectId
+    ) {
+        parent::__construct($wistiaAPIClient, $apiPassword, $projectId, $useProjectId);
     }
 
     protected function prepareRequestData() : array
@@ -29,20 +33,28 @@ class WistiaRemoteFileUploader extends WistiaFileUploader implements WistiaFileU
 
         $name        = $this->requestData['name'] ?? '';
         $description = $this->requestData['description'] ?? '';
-        $project     = $this->requestData['project_id'] ?? 2394117; //todo implement project id getter
 
         $uploadData = [
             'form_params'    => [
-                'api_password' => WistiaApiClientInterface::API_PASSWORD,
+                'api_password' => $this->getApiPassword(),
                 'url'          => $url,
                 'name'         => $name,
-                'project_id'   => $project,
                 'description'  => $description,
             ]
         ];
 
         if (isset($this->requestData['contact_id'])) {
             $uploadData['form_params']['contact_id'] = $this->requestData['contact_id'];
+        }
+
+        if (isset($this->requestData['project_id'])) {
+            $uploadData['form_params']['project_id'] = $this->requestData['project_id'];
+        } else {
+            $project = $this->getProjectId();
+
+            if ($project !== 0) {
+                $uploadData['form_params']['project_id'] = $project;
+            }
         }
 
         return $uploadData;

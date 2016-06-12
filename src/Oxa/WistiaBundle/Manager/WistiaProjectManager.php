@@ -14,9 +14,9 @@ class WistiaProjectManager extends BaseWistiaAPIManager
 {
     protected $endpointModule = 'projects';
 
-    public function __construct(WistiaApiClientInterface $apiClient)
+    public function __construct(WistiaApiClientInterface $apiClient, string $apiPassword)
     {
-        parent::__construct($apiClient);
+        parent::__construct($apiClient, $apiPassword);
     }
 
     public function create(array $data)
