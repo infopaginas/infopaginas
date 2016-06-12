@@ -8,19 +8,19 @@
 
 namespace Oxa\WistiaBundle\Manager;
 
-use Oxa\WistiaBundle\Service\WistiaAPIClient;
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 
 class WistiaProjectManager extends BaseWistiaAPIManager
 {
     protected $endpointModule = 'projects';
 
-    public function __construct(WistiaAPIClient $apiClient)
+    public function __construct(WistiaApiClientInterface $apiClient)
     {
         parent::__construct($apiClient);
     }
 
     public function create(array $data)
     {
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_POST, $this->getEndpointModule(), $data);
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_POST, $this->getEndpointModule(), $data);
     }
 }

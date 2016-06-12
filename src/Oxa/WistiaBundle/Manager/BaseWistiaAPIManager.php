@@ -9,7 +9,7 @@
 namespace Oxa\WistiaBundle\Manager;
 
 
-use Oxa\WistiaBundle\Service\WistiaAPIClient;
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 
 abstract class BaseWistiaAPIManager
 {
@@ -17,52 +17,52 @@ abstract class BaseWistiaAPIManager
 
     protected $endpointModule = '';
 
-    private $wistiaAPIClient;
+    private $wistiaApiClient;
 
-    public function __construct(WistiaAPIClient $apiClient)
+    public function __construct(WistiaApiClientInterface $apiClient)
     {
-        $this->wistiaAPIClient = $apiClient;
+        $this->wistiaApiClient = $apiClient;
     }
 
     public function list()
     {
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_GET, $this->getEndpointModule());
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_GET, $this->getEndpointModule());
     }
 
     public function show(string $hash)
     {
         $endpoint = $this->getEndpointModule() . '/' . $hash;
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_GET, $endpoint);
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_GET, $endpoint);
     }
 
     public function update(string $hash, array $data)
     {
         $endpoint = $this->getEndpointModule() . '/' . $hash;
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_PUT, $endpoint, $data);
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_PUT, $endpoint, $data);
     }
 
     public function remove(string $hash)
     {
         $endpoint = $this->getEndpointModule() . '/' . $hash;
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_DELETE, $endpoint);
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_DELETE, $endpoint);
     }
 
     public function copy(string $hash)
     {
         $endpoint = $this->getEndpointModule() . '/' . $hash . '/copy';
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_POST, $endpoint);
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_POST, $endpoint);
     }
 
     protected function doAPICall(string $method, string $endpoint, array $data = [])
     {
         $requestData = $this->buildAPIRequestDataArray($data);
-        return $this->wistiaAPIClient->call($method, $endpoint, $requestData);
+        return $this->wistiaApiClient->call($method, $endpoint, $requestData);
     }
 
     protected function buildAPIRequestDataArray(array $data = []) : array
     {
         $requestData = ['form_params' => $data];
-        $requestData['form_params']['api_password'] = WistiaAPIClient::API_PASSWORD;
+        $requestData['form_params']['api_password'] = WistiaApiClientInterface::API_PASSWORD;
 
         return $requestData;
     }

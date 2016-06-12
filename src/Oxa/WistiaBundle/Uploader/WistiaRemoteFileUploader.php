@@ -8,12 +8,31 @@
 
 namespace Oxa\WistiaBundle\Uploader;
 
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Oxa\WistiaBundle\Uploader\Model\WistiaFileUploaderInterface;
 
 class WistiaRemoteFileUploader extends WistiaFileUploader implements WistiaFileUploaderInterface
 {
-    protected function prepareRequestData()
+    public function __construct(WistiaApiClientInterface $wistiaAPIClient)
     {
-        // TODO: Implement prepareRequestData() method.
+        parent::__construct($wistiaAPIClient);
+    }
+
+    protected function prepareRequestData() : array
+    {
+        //todo: exception if URL not provided
+        $url = $this->requestData['url'];
+        $filename = isset($this->requestData['name']) ? $this->requestData['name'] : '';
+
+        $uploadData = [
+            'form_params'    => [
+                'api_password' => WistiaApiClientInterface::API_PASSWORD,
+                'url'          => $url,
+                'name'         => $filename,
+                'project_id'   => 2394117 //todo implement project id getter
+            ]
+        ];
+
+        return $uploadData;
     }
 }

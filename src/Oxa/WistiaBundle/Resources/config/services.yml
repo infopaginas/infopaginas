@@ -3,18 +3,34 @@ services:
     oxa.service.http_client:
         class: GuzzleHttp\Client
 
-    oxa.service.wistia_api_client:
-        class: Oxa\WistiaBundle\Service\WistiaAPIClient
+    oxa.service.wistia_data_api_client:
+        class: Oxa\WistiaBundle\Service\WistiaDataAPIClient
         arguments: ['@oxa.service.http_client']
+
+    oxa.service.wistia_upload_api_client:
+        class: Oxa\WistiaBundle\Service\WistiaUploadAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    oxa.uploader.wistia_local_file_uploader:
+        class: Oxa\WistiaBundle\Uploader\WistiaLocalFileUploader
+        arguments: ['@oxa.service.wistia_upload_api_client']
+
+    oxa.uploader.wistia_remote_file_uploader:
+        class: Oxa\WistiaBundle\Uploader\WistiaRemoteFileUploader
+        arguments: ['@oxa.service.wistia_upload_api_client']
 
     oxa.manager.wistia_projects:
         class: Oxa\WistiaBundle\Manager\WistiaProjectManager
-        arguments: ['@oxa.service.wistia_api_client']
+        arguments: ['@oxa.service.wistia_data_api_client']
 
     oxa.manager.wistia_medias:
         class: Oxa\WistiaBundle\Manager\WistiaMediaManager
-        arguments: ['@oxa.service.wistia_api_client']
+        arguments: ['@oxa.service.wistia_data_api_client']
 
     oxa.manager.wistia:
         class: Oxa\WistiaBundle\Manager\WistiaManager
-        arguments: ['@oxa.manager.wistia_projects', '@oxa.manager.wistia_medias']
+        arguments:
+            - '@oxa.manager.wistia_projects'
+            - '@oxa.manager.wistia_medias'
+            - '@oxa.uploader.wistia_local_file_uploader'
+            - '@oxa.uploader.wistia_remote_file_uploader'

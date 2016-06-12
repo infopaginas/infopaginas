@@ -1,6 +1,7 @@
 <?php
 
 namespace Oxa\WistiaBundle\Uploader\Model;
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Oxa\WistiaBundle\Service\WistiaAPIClient;
 
 /**
@@ -11,7 +12,7 @@ use Oxa\WistiaBundle\Service\WistiaAPIClient;
  */
 interface WistiaFileUploaderInterface
 {
-    public function __construct(WistiaAPIClient $wistiaAPIClient);
+    public function __construct(WistiaApiClientInterface $wistiaAPIClient);
 
     public function setData(array $data);
 

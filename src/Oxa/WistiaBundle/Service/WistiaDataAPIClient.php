@@ -1,29 +1,20 @@
 <?php
-
-namespace Oxa\WistiaBundle\Service;
-use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
-
 /**
  * Created by PhpStorm.
  * User: Xedin
- * Date: 11.06.16
- * Time: 22:37
+ * Date: 12.06.16
+ * Time: 11:33
  */
-class WistiaAPIClient
+
+namespace Oxa\WistiaBundle\Service;
+
+
+use GuzzleHttp\Client;
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
+use Psr\Http\Message\ResponseInterface;
+
+class WistiaDataAPIClient implements WistiaApiClientInterface
 {
-    const HTTP_METHOD_GET    = 'GET';
-    const HTTP_METHOD_POST   = 'POST';
-    const HTTP_METHOD_PUT    = 'PUT';
-    const HTTP_METHOD_DELETE = 'DELETE';
-
-    const API_USER     = 'api';
-    const API_PASSWORD = 'ddd4273a9f4408e692633fea2bee70620d8982774ee82c44c9452263596e4d8c';
-
-    const RESPONSE_FORMAT   = 'json';
-
-    const WISTIA_BASE_URL = "https://api.wistia.com/v1/";
-
     private $httpClient;
 
     public function __construct(Client $httpClient)
@@ -46,12 +37,12 @@ class WistiaAPIClient
         return json_decode($jsonResponse, true);
     }
 
-    private function buildRequestURL(string $endpoint)
+    private function buildRequestURL(string $endpoint) : string
     {
-        return self::WISTIA_BASE_URL . $endpoint . '.' . self::RESPONSE_FORMAT;
+        return WistiaApiClientInterface::WISTIA_DATA_API_URL . $endpoint . '.' . self::RESPONSE_FORMAT;
     }
 
-    private function getHttpClient()
+    private function getHttpClient() : Client
     {
         return $this->httpClient;
     }

@@ -1,6 +1,7 @@
 <?php
 
 namespace Oxa\WistiaBundle\Uploader;
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Oxa\WistiaBundle\Service\WistiaAPIClient;
 use Oxa\WistiaBundle\Uploader\Model\WistiaFileUploaderInterface;
 
@@ -16,7 +17,7 @@ abstract class WistiaFileUploader implements WistiaFileUploaderInterface
 
     protected $wistiaAPIClient;
 
-    public function __construct(WistiaAPIClient $wistiaAPIClient)
+    public function __construct(WistiaApiClientInterface $wistiaAPIClient)
     {
         $this->wistiaAPIClient = $wistiaAPIClient;
     }
@@ -29,8 +30,11 @@ abstract class WistiaFileUploader implements WistiaFileUploaderInterface
 
     public function upload()
     {
-        // TODO: Implement upload() method.
+        $requestData = $this->prepareRequestData();
+        $result = $this->wistiaAPIClient->call(WistiaApiClientInterface::HTTP_METHOD_POST, '', $requestData);
+
+        return $result;
     }
 
-    abstract protected function prepareRequestData();
+    abstract protected function prepareRequestData() : array;
 }

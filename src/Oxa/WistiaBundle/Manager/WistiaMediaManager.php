@@ -9,13 +9,13 @@
 namespace Oxa\WistiaBundle\Manager;
 
 
-use Oxa\WistiaBundle\Service\WistiaAPIClient;
+use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 
 class WistiaMediaManager extends BaseWistiaAPIManager
 {
     protected $endpointModule = 'medias';
 
-    public function __construct(WistiaAPIClient $apiClient)
+    public function __construct(WistiaApiClientInterface $apiClient)
     {
         parent::__construct($apiClient);
     }
@@ -23,6 +23,6 @@ class WistiaMediaManager extends BaseWistiaAPIManager
     public function stats(string $hash)
     {
         $endpoint = $this->getEndpointModule() . '/' . $hash . '/stats';
-        return $this->doAPICall(WistiaAPIClient::HTTP_METHOD_GET, $endpoint);
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_GET, $endpoint);
     }
 }
