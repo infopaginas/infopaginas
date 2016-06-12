@@ -1,3 +1,11 @@
-oxa_wistia_default_index:
-   path:     /wistia
-   defaults: { _controller: OxaWistiaBundle:Default:index }
+oxa_wistia_upload_local_file:
+    path: /wistia/upload_local_file
+    defaults: { _controller: OxaWistiaBundle:WistiaMedia:uploadLocalFile }
+
+oxa_wistia_upload_remote_file:
+    path: /wistia/upload_remote_file
+    defaults: { _controller: OxaWistiaBundle:WistiaMedia:uploadRemoteFile }
+
+oxa_wistia_view_media_file:
+    path: /wistia/view/{id}
+    defaults: { _controller: OxaWistiaBundle:WistiaMedia:view }
