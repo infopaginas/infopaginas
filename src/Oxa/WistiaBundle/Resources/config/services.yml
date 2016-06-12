@@ -16,6 +16,10 @@ services:
         class: Oxa\WistiaBundle\Service\WistiaUploadAPIClient
         arguments: ['@oxa.service.http_client']
 
+    oxa.service.wistia_embed_api_client:
+        class: Oxa\WistiaBundle\Service\WistiaEmbedAPIClient
+        arguments: ['@oxa.service.http_client']
+
     oxa.uploader.wistia_local_file_uploader:
         class: Oxa\WistiaBundle\Uploader\WistiaLocalFileUploader
         arguments:
@@ -40,6 +44,10 @@ services:
         class: Oxa\WistiaBundle\Manager\WistiaMediaAPIManager
         arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
 
+    oxa.manager.wistia_api_embed:
+        class: Oxa\WistiaBundle\Manager\WistiaEmbedAPIManager
+        arguments: ['@oxa.service.wistia_embed_api_client', %oxa.wistia.api_password%]
+
     oxa.manager.wistia_media:
         class: Oxa\WistiaBundle\Manager\WistiaMediaManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -52,3 +60,4 @@ services:
             - '@oxa.uploader.wistia_local_file_uploader'
             - '@oxa.uploader.wistia_remote_file_uploader'
             - '@oxa.manager.wistia_media'
+            - '@oxa.manager.wistia_api_embed'

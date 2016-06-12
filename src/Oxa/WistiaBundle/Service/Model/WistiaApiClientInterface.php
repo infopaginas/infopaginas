@@ -24,6 +24,7 @@ interface WistiaApiClientInterface
 
     const WISTIA_DATA_API_URL = 'https://api.wistia.com/v1/';
     const WISTIA_UPLOAD_API_URL = 'https://upload.wistia.com/';
+    const WISTIA_EMBED_API_URL = 'http://fast.wistia.net/oembed/';
 
     public function __construct(Client $httpClient);
 

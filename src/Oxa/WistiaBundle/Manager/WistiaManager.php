@@ -15,12 +15,15 @@ class WistiaManager
 
     private $wistiaMediaManager;
 
+    private $wistiaEmbedAPIManager;
+
     public function __construct(
         WistiaProjectAPIManager $projectManager,
         WistiaMediaAPIManager $mediaManager,
         WistiaLocalFileUploader $localFileUploader,
         WistiaRemoteFileUploader $remoteFileUploader,
-        wistiaMediaManager $wistiaMediaManager
+        WistiaMediaManager $wistiaMediaManager,
+        WistiaEmbedAPIManager $wistiaEmbedAPIManager
     ) {
         $this->wistiaProjectAPIManager     = $projectManager;
         $this->wistiaMediaAPIManager       = $mediaManager;
@@ -28,6 +31,8 @@ class WistiaManager
         $this->wistiaRemoteFileUploader    = $remoteFileUploader;
 
         $this->wistiaMediaManager = $wistiaMediaManager;
+
+        $this->wistiaEmbedAPIManager = $wistiaEmbedAPIManager;
     }
 
     public function listProjects() : array
@@ -108,5 +113,10 @@ class WistiaManager
         $wistiaMediaData = $fileUploader->upload();
 
         return $this->wistiaMediaManager->save($wistiaMediaData);
+    }
+
+    public function getEmbedCode(string $hash, array $dimensions = [])
+    {
+        return $this->wistiaEmbedAPIManager->get($hash, $dimensions);
     }
 }
