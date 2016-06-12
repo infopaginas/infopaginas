@@ -4,8 +4,9 @@ namespace Oxa\WistiaBundle\Controller;
 
 use Oxa\WistiaBundle\Manager\WistiaManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller
+class WistiaMediaController extends Controller
 {
     public function indexAction()
     {
@@ -66,11 +67,26 @@ class DefaultController extends Controller
             'name' => 'test',
         ]);*/
 
-        //$localFileUploadResult = $wistiaManager->uploadLocalFile('/var/www/symfony/dummy.mp4', ['description' => 'dum']);
+        $localFileUploadResult = $wistiaManager->uploadLocalFile('/var/www/symfony/dummy.mp4', ['description' => 'dum']);
 
-        //var_dump($remoteFileUploadResult);
+        var_dump($localFileUploadResult->getId());
 
         die();
         return $this->render('OxaWistiaBundle:Default:index.html.twig');
+    }
+
+    public function uploadLocalFileAction(Request $request)
+    {
+
+    }
+
+    public function uploadRemoteFileAction(Request $request)
+    {
+
+    }
+
+    public function viewAction(Request $request, int $id)
+    {
+        
     }
 }

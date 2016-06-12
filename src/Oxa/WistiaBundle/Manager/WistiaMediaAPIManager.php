@@ -8,19 +8,21 @@
 
 namespace Oxa\WistiaBundle\Manager;
 
+
 use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 
-class WistiaProjectManager extends BaseWistiaAPIManager
+class WistiaMediaAPIManager extends BaseWistiaAPIManager
 {
-    protected $endpointModule = 'projects';
+    protected $endpointModule = 'medias';
 
     public function __construct(WistiaApiClientInterface $apiClient, string $apiPassword)
     {
         parent::__construct($apiClient, $apiPassword);
     }
 
-    public function create(array $data)
+    public function stats(string $hash)
     {
-        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_POST, $this->getEndpointModule(), $data);
+        $endpoint = $this->getEndpointModule() . '/' . $hash . '/stats';
+        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_GET, $endpoint);
     }
 }

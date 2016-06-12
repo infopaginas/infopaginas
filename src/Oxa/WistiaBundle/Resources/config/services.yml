@@ -32,18 +32,23 @@ services:
             - %oxa.wistia.default_project_id%
             - %oxa.wistia.use_project_id%
 
-    oxa.manager.wistia_projects:
-        class: Oxa\WistiaBundle\Manager\WistiaProjectManager
+    oxa.manager.wistia_api_projects:
+        class: Oxa\WistiaBundle\Manager\WistiaProjectAPIManager
         arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
 
-    oxa.manager.wistia_medias:
-        class: Oxa\WistiaBundle\Manager\WistiaMediaManager
+    oxa.manager.wistia_api_medias:
+        class: Oxa\WistiaBundle\Manager\WistiaMediaAPIManager
         arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
+
+    oxa.manager.wistia_media:
+        class: Oxa\WistiaBundle\Manager\WistiaMediaManager
+        arguments: ['@doctrine.orm.entity_manager']
 
     oxa.manager.wistia:
         class: Oxa\WistiaBundle\Manager\WistiaManager
         arguments:
-            - '@oxa.manager.wistia_projects'
-            - '@oxa.manager.wistia_medias'
+            - '@oxa.manager.wistia_api_projects'
+            - '@oxa.manager.wistia_api_medias'
             - '@oxa.uploader.wistia_local_file_uploader'
             - '@oxa.uploader.wistia_remote_file_uploader'
+            - '@oxa.manager.wistia_media'

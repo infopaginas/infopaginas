@@ -2,27 +2,32 @@
 /**
  * Created by PhpStorm.
  * User: Xedin
- * Date: 11.06.16
- * Time: 22:35
+ * Date: 12.06.16
+ * Time: 15:34
  */
 
 namespace Oxa\WistiaBundle\Manager;
 
 
-use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
+use Doctrine\ORM\EntityManager;
+use Oxa\WistiaBundle\Entity\WistiaMedia;
 
-class WistiaMediaManager extends BaseWistiaAPIManager
+class WistiaMediaManager
 {
-    protected $endpointModule = 'medias';
+    private $em;
 
-    public function __construct(WistiaApiClientInterface $apiClient, string $apiPassword)
+    public function __construct(EntityManager $entityManager)
     {
-        parent::__construct($apiClient, $apiPassword);
+        $this->em = $entityManager;
     }
 
-    public function stats(string $hash)
+    public function save(array $wistiaMediaData) : WistiaMedia
     {
-        $endpoint = $this->getEndpointModule() . '/' . $hash . '/stats';
-        return $this->doAPICall(WistiaApiClientInterface::HTTP_METHOD_GET, $endpoint);
+        $wistiaMedia = new WistiaMedia($wistiaMediaData);
+
+        $this->em->persist($wistiaMedia);
+        $this->em->flush();
+
+        return $wistiaMedia;
     }
 }
