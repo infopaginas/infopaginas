@@ -26,19 +26,18 @@ class HomeController extends Controller
      */
     public function homeAction()
     {
-        $searchManager  = $this->get('domain_site.manager.search');
+        $menuManager    = $this->get('domain_menu.manager.menu');
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $artcileManager = $this->get('domain_site.manager.search');
 
-
-        $searchMenuList = $searchManager->getQuickSearchMenuLinksList();
+        $menuItems      = $menuManager->fetchAll();
         $banner         = $bannerManager->getBanner(TypeInterface::CODE_HOME);
 
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             array(
-                'searchMenuList'    => $searchMenuList,
-                'banner'            => $banner
+                'menuItems'    => $menuItems,
+                'banner'       => $banner
             )
         );
     }

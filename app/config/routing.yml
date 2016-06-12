@@ -22,6 +22,10 @@ domain_site:
     resource: "@DomainSiteBundle/Resources/config/routing.yml"
     prefix:   /
 
+domain_search:
+    resource: "@DomainSearchBundle/Resources/config/routing.yml"
+    prefix:   /search
+
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
     prefix: /admin

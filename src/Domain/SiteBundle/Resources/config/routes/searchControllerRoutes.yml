@@ -1,6 +1,0 @@
-domain_site_search_index:
-    path:   /
-    defaults: { _controller: DomainSiteBundle:Search:index }
-domain_site_search_autocomplete:
-    path:   /autocomplete
-    defaults: { _controller: DomainSiteBundle:Search:autocomplete }
