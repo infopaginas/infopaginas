@@ -28,8 +28,9 @@ class HomeController extends Controller
     {
         $menuManager    = $this->get('domain_menu.manager.menu');
         $bannerManager  = $this->get('domain_banner.manager.banner');
-        $artcileManager = $this->get('domain_site.manager.search');
+        $articleManager = $this->get('domain_article.manager.article');
 
+        $articles       = $articleManager->fetchHomepageArticles();
         $menuItems      = $menuManager->fetchAll();
         $banner         = $bannerManager->getBanner(TypeInterface::CODE_HOME);
 
@@ -37,7 +38,8 @@ class HomeController extends Controller
             'DomainSiteBundle:Home:home.html.twig',
             array(
                 'menuItems'    => $menuItems,
-                'banner'       => $banner
+                'banner'       => $banner,
+                'articles'     => $articles
             )
         );
     }

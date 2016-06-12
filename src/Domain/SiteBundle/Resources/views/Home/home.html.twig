@@ -30,6 +30,10 @@
     </section>
 {% endblock %}
 
+{% block  mainColumnContainers %}
+    {% include 'DomainSiteBundle:Home:Widgets/articlesWidget.html.twig' %}
+{% endblock %}
+
 {% block scripts %}
     {{ parent() }}
     <script type="text/javascript">
