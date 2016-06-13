@@ -18,19 +18,15 @@ class HomeController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('DomainSiteBundle:Home:index.html.twig');
-    }
-
-    /**
-     * Temp actions and templates
-     */
-    public function homeAction()
-    {
         $menuManager    = $this->get('domain_menu.manager.menu');
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $articleManager = $this->get('domain_article.manager.article');
+        //temporary call for article manger instead of video manager
+        $videoManager   = $this->get('domain_article.manager.article');
 
         $articles       = $articleManager->fetchHomepageArticles();
+        $videos         = $videoManager->fetchHomepageArticles();
+
         $menuItems      = $menuManager->fetchAll();
         $banner         = $bannerManager->getBanner(TypeInterface::CODE_HOME);
 
@@ -39,7 +35,8 @@ class HomeController extends Controller
             array(
                 'menuItems'    => $menuItems,
                 'banner'       => $banner,
-                'articles'     => $articles
+                'articles'     => $articles,
+                'videos'       => $videos
             )
         );
     }
