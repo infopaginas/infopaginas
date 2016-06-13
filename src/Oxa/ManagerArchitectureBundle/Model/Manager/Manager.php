@@ -13,7 +13,8 @@ abstract class Manager
 
     /**
      * Manager constructor.
-     * Accepts only entityManager as main dependency. Regargless hole container, need to keep it clear and work only with needed dependency
+     * Accepts only entityManager as main dependency.
+     * Regargless hole container, need to keep it clear and work only with needed dependency
      *
      * @access public
      * @param EntityManager $entityManager
