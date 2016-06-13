@@ -1,8 +1,10 @@
 <?php
 
-namespace Domain\BannerBundle\Model\Banner\Factory
+namespace Domain\BannerBundle\Model\Banner\Factory;
 
-class BannerFactory
+use Oxa\ManagerArchitectureBundle\Model\Factory\Factory;
+
+class BannerFactory extends Factory
 {
     
 }
