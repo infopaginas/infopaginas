@@ -1,9 +1,10 @@
 <?php
 
-namespace Domain\BannerBundle\Model\Banner\Factory;
+namespace Domain\BannerBundle\Model\Banner;
 
 use Oxa\ManagerArchitectureBundle\Model\Factory\Factory;
 use Domain\BannerBundle\Model\TypeInterface as BannerType;
+use Domain\BannerBundle\Entity\Banner;
 
 class BannerFactory extends Factory
 {
@@ -12,9 +13,10 @@ class BannerFactory extends Factory
         $banner = null;
         switch ($type) {
             case BannerType::CODE_HOME:
-                $this->getHomepageBanner();
+                $banner = $this->getHomepageBanner();
                 break;
             case BannerType::CODE_PORTAL:
+                $banner = $this->getPortalBanner();
                 break;
             case BannerType::CODE_PORTAL_LEADERBOARD:
                 break;
@@ -30,10 +32,19 @@ class BannerFactory extends Factory
                 // TODO: proper exception type/message
                 throw new Exception('Undefined type');
         }
+
+        return $banner;
     }
 
-    protected function getHomepageBanner()
+    protected function getHomepageBanner() : Banner
     {
-        
+        //temporaty logic
+        return $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_HOME)[0];
+    }
+
+    protected function getPortalBanner() : Banner
+    {
+        //temporaty logic
+        return $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_PORTAL)[0];
     }
 }
