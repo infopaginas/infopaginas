@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 use Domain\BannerBundle\Model\TypeInterface;
 
@@ -16,7 +17,7 @@ class HomeController extends Controller
     /**
      * Temp actions and templates
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $menuManager    = $this->get('domain_menu.manager.menu');
         $bannerManager  = $this->get('domain_banner.manager.banner');
