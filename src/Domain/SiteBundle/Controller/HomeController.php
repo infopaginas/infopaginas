@@ -19,8 +19,6 @@ class HomeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $locale = $request->getLocale();
-
         $menuManager    = $this->get('domain_menu.manager.menu');
         $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
         $articleManager = $this->get('domain_article.manager.article');
