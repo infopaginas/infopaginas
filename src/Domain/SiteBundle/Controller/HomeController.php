@@ -19,6 +19,8 @@ class HomeController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $locale         = $request->getLocale();
+
         $menuManager    = $this->get('domain_menu.manager.menu');
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $articleManager = $this->get('domain_article.manager.article');
@@ -37,7 +39,8 @@ class HomeController extends Controller
                 'menuItems'    => $menuItems,
                 'banner'       => $banner,
                 'articles'     => $articles,
-                'videos'       => $videos
+                'videos'       => $videos,
+                'locale'       => $locale
             )
         );
     }
