@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 use Domain\BannerBundle\Model\TypeInterface;
 
@@ -16,10 +17,10 @@ class HomeController extends Controller
     /**
      * Temp actions and templates
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $menuManager    = $this->get('domain_menu.manager.menu');
-        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
         $articleManager = $this->get('domain_article.manager.article');
         //temporary call for article manger instead of video manager
         $videoManager   = $this->get('domain_article.manager.article');
@@ -28,13 +29,15 @@ class HomeController extends Controller
         $videos         = $videoManager->fetchHomepageArticles();
 
         $menuItems      = $menuManager->fetchAll();
-        $banner         = $bannerManager->getBanner(TypeInterface::CODE_HOME);
+        $banner         = $bannerFactory->get(TypeInterface::CODE_HOME);
+        $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
 
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             array(
                 'menuItems'    => $menuItems,
                 'banner'       => $banner,
+                'bannerBottom' => $bannerBottom,
                 'articles'     => $articles,
                 'videos'       => $videos
             )

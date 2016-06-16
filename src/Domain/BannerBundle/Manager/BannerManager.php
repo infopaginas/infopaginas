@@ -3,6 +3,7 @@
 namespace Domain\BannerBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 /**
  * Class BannerManager
@@ -10,24 +11,8 @@ use Doctrine\ORM\EntityManager;
  *
  * @package Domain\BannerBundle\Manager
  */
-class BannerManager
+class BannerManager extends Manager
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * BannerManager constructor.
-     *
-     * @access public
-     * @param EntityManager $entityManager
-     */
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->em = $entityManager;
-    }
-
     /**
      * factory-like methid for retrieving banners for different places
      *

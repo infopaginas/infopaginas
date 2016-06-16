@@ -3,8 +3,9 @@
 namespace Oxa\ManagerArchitectureBundle\Model\Manager;
 
 use Doctrine\ORM\EntityManager;
+use Oxa\ManagerArchitectureBundle\Model\Interfaces\ManagerInterface;
 
-abstract class Manager
+abstract class Manager implements ManagerInterface
 {
     /**
      * @var EntityManager
