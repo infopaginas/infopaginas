@@ -6,7 +6,10 @@ domain_site_home:
     requirements:
         _locale : '%route_locales%'
         domain:  "localhost"
-    
+
+domain_site_home_nolocale:
+    resource: "@DomainSiteBundle/Resources/config/routes/homeControllerRoutes.yml"
+    prefix:   /
 
 domain_site_profile:
     resource: "@DomainSiteBundle/Resources/config/routes/profileControllerRoutes.yml"
@@ -24,3 +27,7 @@ domain_site_geolocation:
     requirements:
         _locale : '%route_locales%'
         domain:  "localhost"
+
+domain_site_geolocation_nolocale:
+    resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
+    prefix:   /geolocation

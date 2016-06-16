@@ -32,7 +32,11 @@ define(
             submitSelector      : '#searchButton'
         }
 
-        searchOptions['geolocation'] = new Geolocation( { 'locationBoxSelector' : searchOptions.locationsSelector } )
+        searchOptions['geolocation'] = new Geolocation( { 
+            'locationBoxSelector' : searchOptions.locationsSelector,
+            'googleApiKey'        : this.options.googleApiKey,
+            'locale'              : this.options.locale
+        } )
 
         var search = new Search(searchOptions);
         
