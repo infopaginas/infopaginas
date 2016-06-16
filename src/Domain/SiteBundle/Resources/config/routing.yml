@@ -1,11 +1,26 @@
 domain_site_home:
     resource: "@DomainSiteBundle/Resources/config/routes/homeControllerRoutes.yml"
+    host: "{_locale}.{domain}"
     prefix:   /
+    defaults:  { _locale: "%locale%", domain: "localhost" }
+    requirements:
+        _locale : '%route_locales%'
+        domain:  "localhost"
+    
 
 domain_site_profile:
     resource: "@DomainSiteBundle/Resources/config/routes/profileControllerRoutes.yml"
+    host: "{_locale}.{domain}"
     prefix:   /profile
+    defaults:  { _locale: "%locale%", domain: "localhost" }
+    requirements:
+        _locale : '%route_locales%'
+        domain:  "localhost"
 
 domain_site_geolocation:
     resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
+    host: "{_locale}.{domain}"
     prefix:   /geolocation
+    requirements:
+        _locale : '%route_locales%'
+        domain:  "localhost"

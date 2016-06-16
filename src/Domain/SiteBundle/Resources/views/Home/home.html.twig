@@ -13,6 +13,13 @@
     {% include 'DomainSiteBundle:Home:Widgets/searchWidget.html.twig' %}
 {% endblock %}
 
+{% block homepageHeaderTopBarNavigation %}
+    <ul class="nav navbar-nav navbar-right">
+        {% include 'DomainSiteBundle:Home:Widgets/languageWidget.html.twig' %}
+        <li class="login-link desc-menu btn"><a href="" class="login-button">login</a></li>
+        <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
+    </ul>
+{% endblock %}
 
 {% block mainColumnBanner %}
     <section id="banner" class="banner">
