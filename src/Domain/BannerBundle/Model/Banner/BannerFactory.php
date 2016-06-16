@@ -4,7 +4,9 @@ namespace Domain\BannerBundle\Model\Banner;
 
 use Oxa\ManagerArchitectureBundle\Model\Factory\Factory;
 use Domain\BannerBundle\Model\TypeInterface as BannerType;
+
 use Domain\BannerBundle\Entity\Banner;
+
 
 class BannerFactory extends Factory
 {
@@ -17,6 +19,8 @@ class BannerFactory extends Factory
                 break;
             case BannerType::CODE_PORTAL:
                 $banner = $this->getPortalBanner();
+                break;
+            case BannerType::CODE_PORTAL:
                 break;
             case BannerType::CODE_PORTAL_LEADERBOARD:
                 break;
