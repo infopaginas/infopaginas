@@ -20,8 +20,6 @@ class BannerFactory extends Factory
             case BannerType::CODE_PORTAL:
                 $banner = $this->getPortalBanner();
                 break;
-            case BannerType::CODE_PORTAL:
-                break;
             case BannerType::CODE_PORTAL_LEADERBOARD:
                 break;
             case BannerType::CODE_SERP_BANNER:
