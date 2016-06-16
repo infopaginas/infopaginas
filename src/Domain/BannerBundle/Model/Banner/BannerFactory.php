@@ -4,7 +4,9 @@ namespace Domain\BannerBundle\Model\Banner;
 
 use Oxa\ManagerArchitectureBundle\Model\Factory\Factory;
 use Domain\BannerBundle\Model\TypeInterface as BannerType;
+
 use Domain\BannerBundle\Entity\Banner;
+
 
 class BannerFactory extends Factory
 {
