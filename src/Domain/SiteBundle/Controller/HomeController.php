@@ -30,14 +30,14 @@ class HomeController extends Controller
 
         $menuItems      = $menuManager->fetchAll();
         $banner         = $bannerFactory->get(TypeInterface::CODE_HOME);
-        $banner1        = $bannerFactory->get(TypeInterface::CODE_PORTAL);
+        $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
 
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             array(
                 'menuItems'    => $menuItems,
                 'banner'       => $banner,
-                'banner1'      => $banner1,
+                'bannerBottom' => $bannerBottom,
                 'articles'     => $articles,
                 'videos'       => $videos
             )
