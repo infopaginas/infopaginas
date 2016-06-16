@@ -14,8 +14,8 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
     geolocation.prototype.init = function ( options ) {
         this.options = {
             geoCodeApiURL : 'http://maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng=',
-            googleAutoSuggestApiURL : 'https://maps.googleapis.com/maps/api/js?key=%google_api_key%&libraries=places&callback=initAutocomplete&language=%language%'
-            autoCompleteUrl : '/geolocation/autocomplete',
+            googleAutoSuggestApiURL : '',
+            autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
             autoCompleteMinLen : 2,
         };
         $.extend( this.options, options );
@@ -129,11 +129,5 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
             select: this.onAutoCompleteSelect
         });
     }
-
-    geolocation.prototype.locationAutocompleteGoogleSource = function ( request, responce ) {
-        var url = this.options.googleAutoSuggestApiURL;
-        url = url.replace('%google_api_key%', this.options.googleApiKey).replace('%language%', this.options.locale);
-    }
-
     return geolocation;
 })

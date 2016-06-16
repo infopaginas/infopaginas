@@ -58,7 +58,6 @@
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
                 var siteHomepage = new Homepage({
-                    'googleApiKey' : '{{ googleApiKey }}',
                     'locale'       : '{{ locale }}'
                 });
             })
