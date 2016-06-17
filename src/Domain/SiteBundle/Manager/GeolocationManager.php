@@ -46,7 +46,7 @@ class GeolocationManager extends Manager
 
         $url = $this->getPlacesUrl($lang);
         
-        $url = $url . $term;
+        $url = $url . urlencode($term);
         curl_setopt($this->ch, CURLOPT_URL, $url);
 
         $results = $this->getPlacesData();
