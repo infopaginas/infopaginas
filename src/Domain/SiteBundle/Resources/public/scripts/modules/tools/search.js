@@ -63,7 +63,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.searchBox.autocomplete({
             'source': url,
             minLength: this.options.autoCompleteMinLen,
-            select: this.onAutoCompleteSelect
+            // select: this.onAutoCompleteSelect
         });
     }
 
