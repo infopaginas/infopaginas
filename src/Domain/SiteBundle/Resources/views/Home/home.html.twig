@@ -26,7 +26,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
-                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner } %}
+                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
                 </div>
                 <div class="col-xs-12 mobile-banner">
                     <img src="http://placehold.it/300x250">
@@ -58,10 +58,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom } %}
+                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
                     </div>
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom } %}
+                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
                     </div>
                 </div>
             </div>
