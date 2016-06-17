@@ -1,0 +1,6 @@
+domain_article_homepage:
+    path:     /
+    defaults: { _controller: DomainArticleBundle:Default:index}
+domain_article_view:
+    path:     /{slug}
+    defaults: { _controller: DomainArticleBundle:Default:view }
