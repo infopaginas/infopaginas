@@ -31,7 +31,7 @@ class HomeController extends Controller
         $videos         = $videoManager->fetchHomepageArticles();
 
         $menuItems      = $menuManager->fetchAll();
-        $banner         = $bannerFactory->get(TypeInterface::CODE_HOME);
+        $banner         = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
         $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
 
         return $this->render(

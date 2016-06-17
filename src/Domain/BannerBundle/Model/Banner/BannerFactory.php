@@ -21,6 +21,7 @@ class BannerFactory extends Factory
                 $banner = $this->getPortalBanner();
                 break;
             case BannerType::CODE_PORTAL_LEADERBOARD:
+                $banner = $this->getLeaderboardBanner();
                 break;
             case BannerType::CODE_SERP_BANNER:
                 break;
@@ -38,15 +39,32 @@ class BannerFactory extends Factory
         return $banner;
     }
 
-    protected function getHomepageBanner() : Banner
+    protected function getHomepageBanner()
     {
         //temporaty logic
-        return $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_HOME)[0];
+        $homapageBanners = $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_HOME);
+        if (count($homapageBanners)) {
+            return $homapageBanners[0];
+        }
+        return null;
     }
 
-    protected function getPortalBanner() : Banner
+    protected function getPortalBanner()
+    {
+        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_PORTAL);
+        if (count($portalBanners)) {
+            return $portalBanners[0];
+        }
+        return null;
+    }
+
+    protected function getLeaderboardBanner()
     {
         //temporaty logic
-        return $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_PORTAL)[0];
+        $leaderboardBanners = $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_PORTAL_LEADERBOARD);
+        if (count($leaderboardBanners)) {
+            return $leaderboardBanners[0];
+        }
+        return null;
     }
 }
