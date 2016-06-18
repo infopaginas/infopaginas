@@ -52,6 +52,10 @@ services:
         class: Oxa\WistiaBundle\Manager\WistiaMediaManager
         arguments: ['@doctrine.orm.entity_manager']
 
+    oxa.manager.wistia_media_embed:
+        class: Oxa\WistiaBundle\Manager\WistiaMediaEmbedManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa.manager.wistia_api_embed']
+
     oxa.manager.wistia:
         class: Oxa\WistiaBundle\Manager\WistiaManager
         arguments:
@@ -70,7 +74,7 @@ services:
 
     oxa.twig_extension.wistia_media_embed:
         class: Oxa\WistiaBundle\Twig\Extension\WistiaMediaEmbedExtension
-        arguments: ['@oxa.manager.wistia_api_embed']
+        arguments: ['@oxa.manager.wistia_media_embed']
         public: false
         tags:
             -  { name: twig.extension }

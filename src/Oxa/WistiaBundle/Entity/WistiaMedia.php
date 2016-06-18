@@ -97,6 +97,11 @@ class WistiaMedia
      */
     private $thumbnail;
 
+    /**
+     * @ORM\OneToMany(targetEntity="WistiaMediaEmbed", mappedBy="media")
+     */
+    private $mediaEmbeds;
+
     public function __construct(array $wistiaMediaData)
     {
         $this->setWistiaId($wistiaMediaData['id']);
@@ -388,5 +393,39 @@ class WistiaMedia
     public function getThumbnail()
     {
         return $this->thumbnail;
+    }
+
+    /**
+     * Add mediaEmbed
+     *
+     * @param \Oxa\WistiaBundle\Entity\WistiaMediaEmbed $mediaEmbed
+     *
+     * @return WistiaMedia
+     */
+    public function addMediaEmbed(\Oxa\WistiaBundle\Entity\WistiaMediaEmbed $mediaEmbed)
+    {
+        $this->mediaEmbeds[] = $mediaEmbed;
+
+        return $this;
+    }
+
+    /**
+     * Remove mediaEmbed
+     *
+     * @param \Oxa\WistiaBundle\Entity\WistiaMediaEmbed $mediaEmbed
+     */
+    public function removeMediaEmbed(\Oxa\WistiaBundle\Entity\WistiaMediaEmbed $mediaEmbed)
+    {
+        $this->mediaEmbeds->removeElement($mediaEmbed);
+    }
+
+    /**
+     * Get mediaEmbeds
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMediaEmbeds()
+    {
+        return $this->mediaEmbeds;
     }
 }

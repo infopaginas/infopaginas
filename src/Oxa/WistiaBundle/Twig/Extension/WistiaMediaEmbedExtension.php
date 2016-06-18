@@ -11,25 +11,45 @@ namespace Oxa\WistiaBundle\Twig\Extension;
 
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Manager\WistiaEmbedAPIManager;
+use Oxa\WistiaBundle\Manager\WistiaMediaEmbedManager;
 
+/**
+ * Class WistiaMediaEmbedExtension
+ * @package Oxa\WistiaBundle\Twig\Extension
+ */
 class WistiaMediaEmbedExtension extends \Twig_Extension
 {
-    private $wistiaEmbedAPIManager;
+    /**
+     * @var WistiaMediaEmbedManager
+     */
+    private $wistiaEmbedManager;
 
-    public function __construct(WistiaEmbedAPIManager $embedAPIManager)
+    /**
+     * WistiaMediaEmbedExtension constructor.
+     * @param WistiaMediaEmbedManager $wistiaMediaEmbedManager
+     */
+    public function __construct(WistiaMediaEmbedManager $wistiaMediaEmbedManager)
     {
-        $this->wistiaEmbedAPIManager = $embedAPIManager;
+        $this->wistiaEmbedManager = $wistiaMediaEmbedManager;
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions()
     {
         return ['render_wistia_embed' => new \Twig_Function_Method($this, 'renderWistiaEmbed')];
     }
 
+    /**
+     * @param WistiaMedia $media
+     * @param array $dimensions
+     * @return string
+     */
     public function renderWistiaEmbed(WistiaMedia $media, array $dimensions = []) : string
     {
-        $embedData = $this->wistiaEmbedAPIManager->get($media->getHashedId(), $dimensions);
-        return $embedData['html'] ?? '';
+        $html = $this->wistiaEmbedManager->getHTML($media, $dimensions);
+        return $html;
     }
 
     /**
