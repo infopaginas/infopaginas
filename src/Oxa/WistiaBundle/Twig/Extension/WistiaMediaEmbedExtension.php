@@ -8,7 +8,6 @@
 
 namespace Oxa\WistiaBundle\Twig\Extension;
 
-
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Manager\WistiaEmbedAPIManager;
 use Oxa\WistiaBundle\Manager\WistiaMediaEmbedManager;

@@ -8,7 +8,6 @@
 
 namespace Oxa\WistiaBundle\Twig\Extension;
 
-
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 
 class WistiaMediaThumbnailExtension extends \Twig_Extension

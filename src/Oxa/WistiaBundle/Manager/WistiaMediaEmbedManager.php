@@ -8,9 +8,7 @@
 
 namespace Oxa\WistiaBundle\Manager;
 
-
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Entity\WistiaMediaEmbed;
 use Oxa\WistiaBundle\Repository\WistiaMediaEmbedRepository;

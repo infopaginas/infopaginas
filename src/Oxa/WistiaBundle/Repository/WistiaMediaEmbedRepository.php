@@ -1,6 +1,7 @@
 <?php
 
 namespace Oxa\WistiaBundle\Repository;
+
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 
 /**

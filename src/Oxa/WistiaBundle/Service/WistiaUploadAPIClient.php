@@ -8,7 +8,6 @@
 
 namespace Oxa\WistiaBundle\Service;
 
-
 use GuzzleHttp\Client;
 use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Psr\Http\Message\ResponseInterface;

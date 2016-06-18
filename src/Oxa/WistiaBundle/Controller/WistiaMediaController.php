@@ -15,11 +15,9 @@ class WistiaMediaController extends Controller
         $form = $this->createForm(new FileUploadType());
 
         if ($request->isMethod('POST')) {
-
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-
                 $filename = $form['file']->getData()->getClientOriginalName();
                 $file = $form['file']->getData()->getRealPath();
 
@@ -40,11 +38,9 @@ class WistiaMediaController extends Controller
         $form = $this->createForm(new UrlUploadType());
 
         if ($request->isMethod('POST')) {
-
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-
                 $url = $form['url']->getData();
 
                 $media = $this->getWistiaManager()->uploadRemoteFile($url);

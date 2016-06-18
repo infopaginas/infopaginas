@@ -8,7 +8,6 @@
 
 namespace Oxa\WistiaBundle\Manager;
 
-
 use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 
 abstract class BaseWistiaAPIManager

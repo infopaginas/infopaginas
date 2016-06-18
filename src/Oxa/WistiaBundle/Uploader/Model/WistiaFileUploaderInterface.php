@@ -1,6 +1,7 @@
 <?php
 
 namespace Oxa\WistiaBundle\Uploader\Model;
+
 use Oxa\WistiaBundle\Service\Model\WistiaApiClientInterface;
 use Oxa\WistiaBundle\Service\WistiaAPIClient;
 

@@ -8,7 +8,6 @@
 
 namespace Oxa\WistiaBundle\Manager;
 
-
 use Doctrine\ORM\EntityManager;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Repository\WistiaMediaRepository;
