@@ -70,6 +70,25 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      */
     protected $businessReviews;
 
+    /**
+     * @ORM\Column(name="facebook_id", type="string", length=255, nullable=true)
+     */
+    private $facebookId;
+
+    /**
+     * @ORM\Column(name="facebook_access_token", type="string", length=255, nullable=true)
+     */
+    private $facebookAccessToken;
+
+    /**
+     * @ORM\Column(name="google_id", type="string", length=255, nullable=true)
+     */
+    private $googleId;
+
+    /**
+     * @ORM\Column(name="google_access_token", type="string", length=255, nullable=true)
+     */
+    private $googleAccessToken;
 
     /**
      * Constructor
@@ -247,5 +266,79 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function getBusinessReviews()
     {
         return $this->businessReviews;
+    }
+
+    /**
+     * @param string $facebookId
+     * @return User
+     */
+    public function setFacebookId($facebookId)
+    {
+        $this->facebookId = $facebookId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacebookId()
+    {
+        return $this->facebookId;
+    }
+
+    /**
+     * @param string $facebookAccessToken
+     * @return User
+     */
+    public function setFacebookAccessToken($facebookAccessToken)
+    {
+        $this->facebookAccessToken = $facebookAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacebookAccessToken()
+    {
+        return $this->facebookAccessToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoogleId()
+    {
+        return $this->googleId;
+    }
+
+    /**
+     * @param mixed $googleId
+     * @return User
+     */
+    public function setGoogleId($googleId)
+    {
+        $this->googleId = $googleId;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoogleAccessToken()
+    {
+        return $this->googleAccessToken;
+    }
+
+    /**
+     * @param mixed $googleAccessToken
+     * @return User
+     */
+    public function setGoogleAccessToken($googleAccessToken)
+    {
+        $this->googleAccessToken = $googleAccessToken;
+        return $this;
     }
 }

@@ -31,3 +31,11 @@ domain_site_geolocation:
 domain_site_geolocation_nolocale:
     resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
     prefix:   /geolocation
+
+domain_site_oauth:
+    resource: "@DomainSiteBundle/Resources/config/routes/oauth.yml"
+    prefix:   /oauth
+
+domain_site_connect_service:
+   path:     /login/service/{service}
+   defaults: { _controller: DomainSiteBundle:Connect:connectService }
