@@ -1,11 +1,4 @@
-#services:
-#    sonata.user.admin.user:
-#        class: Oxa\Sonata\UserBundle\Admin\UserAdmin
-#        arguments: [~, %sonata.user.admin.user.entity%, %oxa.sonata.user.crud.controller.class%]
-#        tags:
-#            - {name: sonata.admin, show_in_dashboard: true, manager_type: orm, label: Users}
-#    sonata.user.admin.group:
-#        class: Oxa\Sonata\UserBundle\Admin\GroupAdmin
-#        arguments: [~, %sonata.user.admin.group.entity%, %oxa.sonata.user.crud.controller.class%]
-#        tags:
-#            - {name: sonata.admin, show_in_dashboard: true, manager_type: orm, label: Roles}
+services:
+    oxa.user.authentication_handler:
+        class:        Oxa\Sonata\UserBundle\Handler\AuthenticationHandler
+        arguments:    [@router, @security.context, @fos_user.user_manager, @service_container]

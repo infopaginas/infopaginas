@@ -48,6 +48,12 @@ security:
             pattern:             .*
             context:             user
             anonymous:           true
+            form_login:
+                provider: fos_userbundle
+                login_path: /login
+                check_path: /login_check
+                success_handler: oxa.user.authentication_handler
+                failure_handler: oxa.user.authentication_handler
 
     access_control:
         # URL of FOSUserBundle which need to be available to anonymous users

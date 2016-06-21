@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Controller;
 
+use Domain\SiteBundle\Form\LoginType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +35,8 @@ class HomeController extends Controller
         $banner         = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
         $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
 
+        $loginForm = $this->createForm(new LoginType());
+
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             array(
@@ -42,7 +45,8 @@ class HomeController extends Controller
                 'bannerBottom' => $bannerBottom,
                 'articles'     => $articles,
                 'videos'       => $videos,
-                'locale'       => $locale
+                'locale'       => $locale,
+                'loginForm'    => $loginForm->createView(),
             )
         );
     }

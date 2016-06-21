@@ -8,6 +8,7 @@ imports:
     - { resource: extra-configs/extensions.yml }
     - { resource: extra-configs/sonata_media.yml }
     - { resource: extra-configs/sonata_translation.yml }
+    - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
     - { resource: "@DomainMenuBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
 
@@ -51,7 +52,6 @@ twig:
             - 'SonataCoreBundle:Form:datepicker.html.twig'
     form_themes:
         - 'DomainBusinessBundle:Form:fields.html.twig'
-
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -127,3 +127,6 @@ ivory_google_map:
         provider:
             class: "Ivory\GoogleMap\Services\Geocoding\GeocoderProvider"
         adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"
+
+fos_js_routing:
+    routes_to_expose: [ fos_user_security_check ]

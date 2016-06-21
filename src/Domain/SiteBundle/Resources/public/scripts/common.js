@@ -16,6 +16,7 @@ requirejs.config({
         'jquery-ui'     : 'jquery-ui.min',
         'jquery-mobile' : 'jquery.mobile.custom.min',
         'bootstrap'     : 'bootstrap.min',
-        'underscore'    : 'underscore-min'
+        'underscore'    : 'underscore-min',
+        'alertify'      : 'alertify.min'
     }
 });
