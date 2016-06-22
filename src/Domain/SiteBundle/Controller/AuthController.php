@@ -27,11 +27,7 @@ class AuthController extends Controller
         $formHandler = $this->getRegistrationFormHandler();
 
         try {
-            $form = $this->getRegistrationForm();
-
-            $isProcessed = $formHandler->process();
-
-            if ($isProcessed) {
+            if ($formHandler->process()) {
                 return $this->getSuccessResponse();
             }
         } catch (\Exception $e) {
@@ -40,8 +36,6 @@ class AuthController extends Controller
 
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
-
-
 
     /**
      * @return RegistrationFormHandler
