@@ -14,6 +14,7 @@ use Sonata\UserBundle\Entity\BaseUser as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Domain\BusinessBundle\Entity\Task\Task;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="fos_user_user")
@@ -32,6 +33,21 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @Assert\NotBlank()
+     */
+    protected $firstname;
+
+    /**
+     * @Assert\NotBlank()
+     */
+    protected $lastname;
+
+    /**
+     * @ORM\Column(name="location", type="string", nullable=true, length=255)
+     */
+    protected $location;
 
     /**
      * @var Group
@@ -81,6 +97,75 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * @param mixed $firstname
+     * @return User
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param mixed $lastname
+     * @return User
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     * @return $this
+     */
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+
+        //we use email as username
+        $this->setUsername($email);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     * @return User
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+        return $this;
     }
 
     /**

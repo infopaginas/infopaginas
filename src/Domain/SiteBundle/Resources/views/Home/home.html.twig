@@ -78,7 +78,7 @@
 
 {% block homeModals %}
     {% include 'DomainSiteBundle:Home:Modals/login.html.twig' with { 'loginForm' : loginForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' %}
+    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' with { 'registrationForm' : registrationForm } %}
 {% endblock %}
 
 {% block scripts %}

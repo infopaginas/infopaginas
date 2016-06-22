@@ -1,0 +1,5 @@
+domain_site_auth_registration:
+    path:     /register
+    defaults: { _controller: DomainSiteBundle:Auth:registration }
+    options:
+        expose: true

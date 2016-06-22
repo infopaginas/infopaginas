@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/login'],
+    ['jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/login', 'tools/registration'],
     function ( $, bootstrap, Search, Geolocation ) {
     'use strict';
 
