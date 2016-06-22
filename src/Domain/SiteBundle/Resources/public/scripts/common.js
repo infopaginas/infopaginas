@@ -17,6 +17,7 @@ requirejs.config({
         'jquery-mobile' : 'jquery.mobile.custom.min',
         'bootstrap'     : 'bootstrap.min',
         'underscore'    : 'underscore-min',
-        'alertify'      : 'alertify.min'
+        'alertify'      : 'alertify.min',
+        'spin'          : 'spin.min'
     }
 });

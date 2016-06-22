@@ -8,6 +8,8 @@
 
 namespace Oxa\Sonata\UserBundle\Handler;
 
+use Sonata\UserBundle\Model\UserManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,13 +20,33 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 
+/**
+ * Class AuthenticationHandler
+ * @package Oxa\Sonata\UserBundle\Handler
+ */
 class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, AuthenticationFailureHandlerInterface
 {
+    const SUCCESS_LOGIN_MESSAGE = 'Successfully logged in. Please wait...';
+
+    /** @var RouterInterface */
     protected $router;
+
+    /** @var SecurityContext */
     protected $security;
+
+    /** @var  UserManagerInterface $userManager */
     protected $userManager;
+
+    /** @var  ContainerInterface */
     protected $service_container;
 
+    /**
+     * AuthenticationHandler constructor.
+     * @param RouterInterface $router
+     * @param SecurityContext $security
+     * @param $userManager
+     * @param $service_container
+     */
     public function __construct(RouterInterface $router, SecurityContext $security, $userManager, $service_container)
     {
         $this->router = $router;
@@ -33,35 +55,29 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
         $this->service_container = $service_container;
     }
 
+    /**
+     * @param Request $request
+     * @param TokenInterface $token
+     * @return JsonResponse
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        /*if ($request->isXmlHttpRequest()) {
-            $result = array('success' => true);
-            $response = new Response(json_encode($result));
-            $response->headers->set('Content-Type', 'application/json');
-            return $response;
-        } else {
-            // Create a flash message with the authentication error message
-            //$request->getSession()->getFlashBag()->set('error', $exception->getMessage());
-            //$url = $this->router->generate('fos_user_security_login');
-
-            //return new RedirectResponse($url);
-        }*/
-
-        //return new RedirectResponse($this->router->generate('anag_new'));
+        return new JsonResponse([
+            'success' => true,
+            'message' => self::SUCCESS_LOGIN_MESSAGE,
+        ]);
     }
 
+    /**
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return JsonResponse|Response
+     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        if ($request->isXmlHttpRequest()) {
-            $result = ['success' => false, 'message' => $exception->getMessage()];
-
-            $response = new JsonResponse($result);
-            $response->headers->set('Content-Type', 'application/json');
-
-            return $response;
-        }
-
-        return new Response();
+        return new JsonResponse([
+            'success' => false,
+            'message' => $exception->getMessage(),
+        ]);
     }
 }

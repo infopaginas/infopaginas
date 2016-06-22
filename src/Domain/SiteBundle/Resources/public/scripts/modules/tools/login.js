@@ -1,4 +1,4 @@
-define(['jquery', 'alertify'], function( $, alertify ) {
+define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
     'use strict'
 
     var login = function() {
@@ -11,6 +11,8 @@ define(['jquery', 'alertify'], function( $, alertify ) {
 
         this.emailInputId = '#_username';
         this.passwordInputId = '#_password';
+
+        this.spinner = new Spin();
     };
 
     login.prototype.enableFieldsHighlight = function() {
@@ -27,12 +29,22 @@ define(['jquery', 'alertify'], function( $, alertify ) {
         return $( this.formId ).serialize();
     };
 
+    login.prototype.beforeRequestHandler = function () {
+        this.disableFieldsHighlight();
+        this.spinner.show( 'login-spin-container' );
+    };
+
+    login.prototype.completeHandler = function() {
+        this.spinner.hide();
+    };
+
     login.prototype.successHandler = function( response ) {
-        if( !response.success ) {
+        if( response.success ) {
+            alertify.success( response.message );
+            document.location.href = this.urls.home;
+        } else {
             this.enableFieldsHighlight();
             alertify.error( response.message );
-        } else {
-            document.location.href( this.urls.home );
         }
     };
 
@@ -47,6 +59,8 @@ define(['jquery', 'alertify'], function( $, alertify ) {
             type: 'POST',
             dataType: 'JSON',
             data: data,
+            beforeSend: $.proxy(this.beforeRequestHandler, this),
+            complete: $.proxy(this.completeHandler, this),
             success: $.proxy(this.successHandler, this),
             error: $.proxy(this.errorHandler, this)
         });
@@ -57,8 +71,6 @@ define(['jquery', 'alertify'], function( $, alertify ) {
         var that = this;
 
         $loginButton.on( 'click', function( event ) {
-            that.disableFieldsHighlight();
-
             var serializedData = that.getSerializedFormData();
             that.doRequest( that.urls.login_check, serializedData );
 

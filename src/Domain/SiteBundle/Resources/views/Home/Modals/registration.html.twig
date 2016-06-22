@@ -12,23 +12,31 @@
                     <a href="">Terms of Service</a> and <a href="">Privacy Policy</a>.
                     We value your privacy, and will not post to your wall without your permission.
                 </div>
-                <form class="form-horizontal login-form">
+                <div id="spin-container"></div>
+                <form class="form-horizontal login-form" id="registrationForm">
                     <div class="row">
                         <div class="form-group">
                             <div class="col-xs-6">
-                                <input class="form-control" type="text" placeholder="First name">
+                                {{ form_widget(registrationForm.firstname) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-6">
-                                <input class="form-control" type="text" placeholder="Last name">
+                                {{ form_widget(registrationForm.lastname) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-12">
-                                <input class="form-control" type="email" placeholder="Email">
-                                <input class="form-control" type="password" placeholder="Password">
-                                <input class="form-control" type="password" placeholder="Confirm password">
-                                <input class="form-control" type="text" placeholder="Location">
+                                {{ form_widget(registrationForm.email) }}
+                                <span class="help-block"></span>
+                                {{ form_widget(registrationForm.plainPassword.first) }}
+                                <span class="help-block"></span>
+                                {{ form_widget(registrationForm.plainPassword.second) }}
+                                <span class="help-block"></span>
+                                {{ form_widget(registrationForm.location) }}
+                                <span class="help-block"></span>
+                                {{ form_rest(registrationForm) }}
                             </div>
                             <div class="col-xs-12">
-                                <a href="" class="green-btn login-btn">
+                                <a href="" class="green-btn login-btn" id="registrationButton">
                                     <i class="fa fa-user" aria-hidden="true"></i>
                                     Create Account
                                 </a>

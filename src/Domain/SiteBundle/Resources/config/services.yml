@@ -5,3 +5,20 @@ services:
     domain_site.manager.geolocation:
         class: Domain\SiteBundle\Manager\GeolocationManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    domain_site.registration.form.type:
+        class: Domain\SiteBundle\Form\Type\RegistrationType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_registration }
+
+    domain_site.registration.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_registration, domain_site_registration]
+
+    domain_site.registration.form.handler:
+        class: Domain\SiteBundle\Form\Handler\RegistrationFormHandler
+        scope: request
+        arguments: ['@domain_site.registration.form', '@request', '@fos_user.user_manager', '@oxa.manager.groups']
