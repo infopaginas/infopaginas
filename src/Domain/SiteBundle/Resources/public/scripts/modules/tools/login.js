@@ -7,26 +7,31 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
             home: Routing.generate('domain_site_home_index')
         };
 
-        this.formId = '#loginForm';
-
-        this.emailInputId = '#_username';
-        this.passwordInputId = '#_password';
+        this.html = {
+            forms: {
+                loginFormId: '#loginForm'
+            },
+            fields: {
+                emailInputId: '#_username',
+                passwordInputId: '#_password'
+            }
+        };
 
         this.spinner = new Spin();
     };
 
     login.prototype.enableFieldsHighlight = function() {
-        $( this.emailInputId ).addClass( 'error' );
-        $( this.passwordInputId ).addClass( 'error' );
+        $( this.html.fields.emailInputId ).addClass( 'error' );
+        $( this.html.fields.passwordInputId ).addClass( 'error' );
     };
 
     login.prototype.disableFieldsHighlight = function() {
-        $( this.emailInputId ).removeClass( 'error' );
-        $( this.passwordInputId ).removeClass( 'error' );
+        $( this.html.fields.emailInputId ).removeClass( 'error' );
+        $( this.html.fields.passwordInputId ).removeClass( 'error' );
     };
 
     login.prototype.getSerializedFormData = function() {
-        return $( this.formId ).serialize();
+        return $( this.html.forms.loginFormId ).serialize();
     };
 
     login.prototype.beforeRequestHandler = function () {
