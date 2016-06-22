@@ -8,17 +8,15 @@
 
 namespace Oxa\Sonata\UserBundle\Handler;
 
-use Sonata\UserBundle\Model\UserManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
 
 /**
  * Class AuthenticationHandler
@@ -28,31 +26,16 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 {
     const SUCCESS_LOGIN_MESSAGE = 'Successfully logged in. Please wait...';
 
-    /** @var RouterInterface */
-    protected $router;
-
-    /** @var SecurityContext */
-    protected $security;
-
-    /** @var  UserManagerInterface $userManager */
-    protected $userManager;
-
-    /** @var  ContainerInterface */
-    protected $service_container;
+    /** @var  DataCollectorTranslator $translator */
+    protected $translator;
 
     /**
      * AuthenticationHandler constructor.
-     * @param RouterInterface $router
-     * @param SecurityContext $security
-     * @param $userManager
-     * @param $service_container
+     * @param DataCollectorTranslator $translator
      */
-    public function __construct(RouterInterface $router, SecurityContext $security, $userManager, $service_container)
+    public function __construct(DataCollectorTranslator $translator)
     {
-        $this->router = $router;
-        $this->security = $security;
-        $this->userManager = $userManager;
-        $this->service_container = $service_container;
+        $this->translator = $translator;
     }
 
     /**
@@ -64,7 +47,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     {
         return new JsonResponse([
             'success' => true,
-            'message' => self::SUCCESS_LOGIN_MESSAGE,
+            'message' => $this->getTranslator()->trans(self::SUCCESS_LOGIN_MESSAGE),
         ]);
     }
 
@@ -79,5 +62,10 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
             'success' => false,
             'message' => $exception->getMessage(),
         ]);
+    }
+
+    private function getTranslator() : DataCollectorTranslator
+    {
+        return $this->translator;
     }
 }
