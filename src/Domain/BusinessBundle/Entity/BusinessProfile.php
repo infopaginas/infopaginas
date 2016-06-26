@@ -371,6 +371,21 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $country;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="search_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "name",
+     *              "description"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchFts;
+
     public function getMarkCopyPropertyName()
     {
         return 'name';

@@ -26,4 +26,74 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $businessProfiles;
     }
+    
+    public function search($searchQuery)
+    {
+        $searchQuery = $this->splitPhraseToPlain($searchQuery);
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($this->getSearchSQLQuery());
+
+        $statement->bindValue("searchQuery", $searchQuery);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        dump($results); die;
+    }
+
+
+    public function searchAutosuggest($searchQuery)
+    {
+        $searchQuery    = $this->splitPhraseToPlain($searchQuery);
+        $searchSQL      = $this->getSearchSQLQuery();
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare(
+            "SELECT
+                ts_headline(name, q) as data
+            FROM
+            (
+                $searchSQL
+            ) as search
+            "
+        );
+
+        $statement->bindValue("searchQuery", $searchQuery);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return $results;
+    }
+
+    protected function splitPhraseToPlain(string $phrase)
+    {
+        $words = explode(' ', $phrase);
+        $wordParts = array_map(
+            function ($item) {
+                return $item . ":*";
+            },
+            $words
+        );
+        $plain = implode(' & ', $wordParts);
+
+        return $plain;
+    }
+
+    private function getSearchSQLQuery()
+    {
+        return 'SELECT
+                    bp.id AS id,
+                    bp.name,
+                    q,
+                    ts_rank(bp.search_fts, q) AS rank
+                FROM
+                    business_profile bp,
+                    to_tsquery(:searchQuery) q
+                WHERE
+                    bp.search_fts @@ q
+                AND (
+                    bp.deleted_at IS NULL
+                )
+                ORDER BY rank DESC';
+    }
 }

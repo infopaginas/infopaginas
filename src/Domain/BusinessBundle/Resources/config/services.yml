@@ -16,3 +16,7 @@ services:
         class: Domain\BusinessBundle\Manager\AddressManager
         calls:
             - [ setContainer, [ '@service_container' ] ]
+
+    domain_business.manager.business_profile:
+        class: Domain\BusinessBundle\Manager\BusinessProfileManager
+        arguments: ['@doctrine.orm.entity_manager']
