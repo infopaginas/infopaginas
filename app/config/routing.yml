@@ -68,8 +68,14 @@ sonata_user_change_password:
 gallery:
     resource: '@SonataMediaBundle/Resources/config/routing/gallery.xml'
     prefix: /media/gallery
+
 media:
     resource: '@SonataMediaBundle/Resources/config/routing/media.xml'
     prefix: /media
 
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
 
+fos_user_resetting_reset:
+    path:     /password_reset/{token}
+    defaults: { _controller: DomainSiteBundle:Home:index }

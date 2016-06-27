@@ -1,0 +1,81 @@
+<!-- Modal Registration -->
+<div class="modal fade" id="regModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#10005;</button>
+                <h4 class="modal-title">
+                    {% trans %}Create account{% endtrans %}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="terms">
+                    {% trans %}
+                        By joining Infopaginas you agree to our
+                        <a href="">Terms of Service</a> and <a href="">Privacy Policy</a>.
+                        We value your privacy, and will not post to your wall without your permission.
+                    {% endtrans %}
+                </div>
+                <div id="spin-container"></div>
+                <form class="form-horizontal login-form" id="registrationForm">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                {{ form_widget(registrationForm.firstname) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-6">
+                                {{ form_widget(registrationForm.lastname) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-12">
+                                {{ form_widget(registrationForm.email) }}
+                                <span class="help-block"></span>
+                                {{ form_widget(registrationForm.plainPassword.first) }}
+                                <span class="help-block"></span>
+                                {{ form_widget(registrationForm.plainPassword.second) }}
+                                <span class="help-block"></span>
+                                {{ form_widget(registrationForm.location) }}
+                                <span class="help-block"></span>
+                                {{ form_rest(registrationForm) }}
+                            </div>
+                            <div class="col-xs-12">
+                                <a href="#" class="green-btn login-btn" id="registrationButton">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    {% trans %}Create Account{% endtrans %}
+                                </a>
+                            </div>
+                            <div class="col-xs-12 alt-block">
+                                <span class="alternative-login">{% trans %}or{% endtrans %}</span>
+                            </div>
+                            <div class="col-xs-12 social-buttons">
+                                <a href="" class="facebook-btn btn">
+                                    <span>
+                                        {% trans %}Log In with{% endtrans %}
+                                    </span>
+                                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                                </a>
+                                <a href="" class="google-btn btn">
+                                    <span>
+                                        {% trans %}Log In with{% endtrans %}
+                                    </span>
+                                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                            <div class="col-xs-12 question-block">
+                                <span>
+                                    {% trans %}Already have an account?{% endtrans %}
+                                </span>
+                                <a href="#" class="create-acc" data-dismiss="modal" data-toggle="modal" data-target="#loginModal">
+                                    {% trans %}Log In{% endtrans %}
+                                    <span>&#187;</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>

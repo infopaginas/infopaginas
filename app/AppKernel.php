@@ -45,6 +45,7 @@ class AppKernel extends Kernel
             new Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle(),
             new Pix\SortableBehaviorBundle\PixSortableBehaviorBundle(),
             new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),

@@ -16,8 +16,28 @@
 {% block homepageHeaderTopBarNavigation %}
     <ul class="nav navbar-nav navbar-right">
         {% include 'DomainSiteBundle:Home:Widgets/languageWidget.html.twig' %}
-        <li class="login-link desc-menu btn"><a href="" class="login-button">login</a></li>
-        <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
+        {% if (app.user) %}
+            <li class="login-link desc-menu">
+                <a href="#" class="login-button">
+                    <span class="welcome">Welcome, </span>
+                    <span class="user-name">
+                        {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
+                    </span>
+                </a>
+            </li>
+        {% else %}
+            <li class="login-link desc-menu btn">
+                <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
+                    login
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="ad mobile-menu">
+            <a href="">
+                Advertise with us
+            </a>
+        </li>
     </ul>
 {% endblock %}
 
@@ -66,6 +86,13 @@
                 </div>
             </div>
     </section>
+{% endblock %}
+
+{% block homeModals %}
+    {% include 'DomainSiteBundle:Home:Modals/login.html.twig' with { 'loginForm' : loginForm } %}
+    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' with { 'registrationForm' : registrationForm } %}
+    {% include 'DomainSiteBundle:Home:Modals/forgotten_password.html.twig' with { 'resetPasswordRequestForm' : resetPasswordRequestForm} %}
+    {% include 'DomainSiteBundle:Home:Modals/reset_password.html.twig' with { 'resetPasswordForm' : resetPasswordForm} %}
 {% endblock %}
 
 {% block scripts %}
