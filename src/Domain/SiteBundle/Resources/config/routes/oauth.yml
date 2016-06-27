@@ -1,3 +1,3 @@
-domain_site_oauth_index:
-   path:     /
-   defaults: { _controller: DomainSiteBundle:Oauth:index }
+domain_site_oauth_connect:
+   path:     /login/service/{service}
+   defaults: { _controller: DomainSiteBundle:OAuth:connectService }

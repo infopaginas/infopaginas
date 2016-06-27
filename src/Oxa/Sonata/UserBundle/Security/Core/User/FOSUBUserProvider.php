@@ -75,13 +75,13 @@ class FOSUBUserProvider extends BaseClass
             $service = $response->getResourceOwner()->getName();
 
             $setter = 'set'.ucfirst($service);
-            $setter_id = $setter.'Id';
-            $setter_token = $setter.'AccessToken';
+            $setterId = $setter.'Id';
+            $setterToken = $setter.'AccessToken';
 
             // create new user here
             $user = $this->userManager->createUser();
-            $user->$setter_id($email);
-            $user->$setter_token($response->getAccessToken());
+            $user->$setterId($email);
+            $user->$setterToken($response->getAccessToken());
 
             //I have set all requested data with the user's username
             //modify here with relevant data
