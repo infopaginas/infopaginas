@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Controller;
 
 use Domain\SiteBundle\Form\Handler\RegistrationFormHandler;
+use Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler;
 use Domain\SiteBundle\Form\Handler\ResetPasswordRequestFormHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -61,7 +62,11 @@ class AuthController extends Controller
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
-    public function resetPasswordAction(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function resetPasswordAction(Request $request) : JsonResponse
     {
         $formHandler = $this->getResetPasswordFormHandler();
 
@@ -84,7 +89,10 @@ class AuthController extends Controller
         return $this->get('translator');
     }
 
-    private function getResetPasswordFormHandler()
+    /**
+     * @return ResetPasswordFormHandler
+     */
+    private function getResetPasswordFormHandler() : ResetPasswordFormHandler
     {
         return $this->get('domain_site.reset_password.form.handler');
     }
