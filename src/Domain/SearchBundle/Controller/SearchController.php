@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Domain\BannerBundle\Model\TypeInterface;
+
 /**
  * Class SearchController
  * @package Domain\SearchBundle\Controller
@@ -16,9 +18,21 @@ class SearchController extends Controller
     /**
      * Main Search page
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('DomainSiteBundle:Home:search.html.twig');
+        $query = $request->get('q', '');
+        $location = $request->get('loc', '');
+
+        $searchManager = $this->get('domain_business.manager.business_profile');
+        $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
+
+        $results       = $searchManager->searchByPhraseAndLocation($query, $location);
+        $banner         = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
+
+        return $this->render('DomainSiteBundle:Search:index.html.twig', array(
+            'results' => $results,
+            'banner'  => $banner
+        ));
     }
 
     /**

@@ -1,3 +1,11 @@
+define(
+    ['jquery', 'abstract/view'],
+    function( $, view) {
+    'use strict'
+
+
+
+
 var rating = function() {
 };
 

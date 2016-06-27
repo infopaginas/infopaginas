@@ -27,7 +27,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $businessProfiles;
     }
     
-    public function search($searchQuery)
+    public function search($searchQuery, $location)
     {
         $searchQuery = $this->splitPhraseToPlain($searchQuery);
 
@@ -38,7 +38,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $statement->execute();
         $results = $statement->fetchAll();
 
-        dump($results); die;
+        return $results;
     }
 
 
@@ -50,7 +50,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $connection = $this->getEntityManager()->getConnection();
         $statement = $connection->prepare(
             "SELECT
-                ts_headline(name, q) as data
+                ts_headline(name, q) as data,
+                name
             FROM
             (
                 $searchSQL
@@ -84,8 +85,15 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return 'SELECT
                     bp.id AS id,
                     bp.name,
+                    bp.slogan,
+                    bp.city,
+                    bp.state,
+                    bp.zip_code,
+                    bp.website,
+                    bp.email,
                     q,
-                    ts_rank(bp.search_fts, q) AS rank
+                    ts_rank(bp.search_fts, q) AS rank,
+                    ROW_NUMBER() over (order by id) as order
                 FROM
                     business_profile bp,
                     to_tsquery(:searchQuery) q

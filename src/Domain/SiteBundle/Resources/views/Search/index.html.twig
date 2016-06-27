@@ -1,0 +1,57 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block main %}
+ <!-- Search Results -->
+    <section id="search-results" class="search-results">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 banner-block desc-banner">
+                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class="search-title blue-c">Bookstores in San Juan,Puerto Rico</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 list-block">
+                    <div class="list-info">
+                        <div class="results-info">
+                            <span>1-20 of 53 Results </span><span>for Bookstores in San Juan</span>
+                        </div>
+                        <div class="sort-by">
+                            <span>Sort by:</span>
+
+                            <div class="dropdown filter-drop">
+                                <div class="select-container">
+                                    <select class="form-control select-control">
+                                        <option>Relevance</option>
+                                        <option>NY</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cards">
+                        {% for item in results %}
+                            {% include 'DomainSiteBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <aside class="map col-md-3">
+                    <img src="http://placehold.it/410x350">
+                </aside>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/bundles/domainsite/scripts/modules/searchpage.js")}}'])
+        })
+    </script>
+{% endblock%}

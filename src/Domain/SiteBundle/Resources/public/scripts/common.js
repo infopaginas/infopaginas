@@ -19,5 +19,9 @@ requirejs.config({
         'underscore'    : 'underscore-min',
         'alertify'      : 'alertify.min',
         'spin'          : 'spin.min'
+        'slick'         : 'slick.min',
+        'photo-gallery' : 'photo-gallery',
+        'lightbox'      : 'simple-lightbox.min',
+        'select2'       : 'select2.min'
     }
 });

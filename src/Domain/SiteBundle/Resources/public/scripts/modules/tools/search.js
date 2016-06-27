@@ -66,12 +66,17 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             minLength: this.options.autoCompleteMinLen,
             create: function() {
                 $(this).data('ui-autocomplete')._renderItem = self.returnAutocompleteDataElement
-            }
+            },
+            select: this.onAutoCompleteSelect.bind(self),
+            change: function(event, ui){},
+            close: function(event, ui){}
         });
     }
 
     search.prototype.onAutoCompleteSelect = function ( event, ui ) {
-        alert('olololo');
+        this.searchBox.val(ui.item.name);
+        event.preventDefault();
+        return true;
     }
 
     search.prototype.onSearchBoxFocus = function () {
@@ -95,6 +100,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         return $( "<li>" )
             .append( $( "<a></a>" )["html"]( item.data ) )
             .attr( "data-value",  decodeURIComponent(item.data))
+            .attr( "data-name",  item.name)
             .appendTo( ul );
     }
 

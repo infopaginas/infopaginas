@@ -8,7 +8,7 @@ class BusinessProfileManager extends Manager
 {
     public function searchByPhraseAndLocation(string $phrase, string $location)
     {
-        $this->getRepository()->search($phrase, $location);
+        return $this->getRepository()->search($phrase, $location);
     }
 
     public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
