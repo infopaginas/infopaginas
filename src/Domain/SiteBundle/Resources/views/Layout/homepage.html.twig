@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('/bundles/domainsite/styles/style.min.css')}}"/>
+        <link rel="stylesheet" href="{{ asset('/bundles/domainsite/styles/alertify.core.css')}}" />
+        <link rel="stylesheet" href="{{ asset('/bundles/domainsite/styles/alertify.default.css')}}"/>
     {% endblock %}
 </head>
 <body>
@@ -357,8 +359,12 @@
     {% endblock %}
 </footer>
 
+{% block homeModals %} {% endblock %}
+
 <!-- Scripts -->
 {% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
 {% endblock %}
 </body>

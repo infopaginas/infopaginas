@@ -39,3 +39,7 @@ domain_site_oauth:
 domain_site_connect_service:
    path:     /login/service/{service}
    defaults: { _controller: DomainSiteBundle:Connect:connectService }
+
+domain_site_auth:
+    resource: "@DomainSiteBundle/Resources/config/routes/auth.yml"
+    prefix:   /auth

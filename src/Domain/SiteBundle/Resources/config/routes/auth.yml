@@ -1,0 +1,17 @@
+domain_site_auth_registration:
+    path:     /register
+    defaults: { _controller: DomainSiteBundle:Auth:registration }
+    options:
+        expose: true
+
+domain_site_auth_reset_password_request:
+    path:     /password/reset_request
+    defaults: { _controller: DomainSiteBundle:Auth:sendPasswordResetLink }
+    options:
+        expose: true
+
+domain_site_auth_reset_password:
+    path:     /password/reset
+    defaults: { _controller: DomainSiteBundle:Auth:resetPassword }
+    options:
+        expose: true

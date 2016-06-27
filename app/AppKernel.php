@@ -46,6 +46,7 @@ class AppKernel extends Kernel
             new Pix\SortableBehaviorBundle\PixSortableBehaviorBundle(),
             new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
