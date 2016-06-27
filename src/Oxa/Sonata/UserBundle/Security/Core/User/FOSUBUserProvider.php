@@ -3,6 +3,7 @@
 namespace Oxa\Sonata\UserBundle\Security\Core\User;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
@@ -41,19 +42,22 @@ class FOSUBUserProvider extends BaseClass
         //on connect - get the access token and the user ID
         $service = $response->getResourceOwner()->getName();
         $setter = 'set'.ucfirst($service);
-        $setter_id = $setter.'Id';
-        $setter_token = $setter.'AccessToken';
+        $setterId = $setter.'Id';
+        $setterToken = $setter.'AccessToken';
+
+        $previousUser = $this->userManager->findUserBy(['email' => $email]);
 
         //we "disconnect" previously connected users
-        if (null !== $previousUser = $this->userManager->findUserBy(array('email' => $email))) {
-            $previousUser->$setter_id(null);
-            $previousUser->$setter_token(null);
+        if ($previousUser !== null) {
+            $previousUser->$setterId(null);
+            $previousUser->$setterToken(null);
+
             $this->userManager->updateUser($previousUser);
         }
 
         //we connect current user
-        $user->$setter_id($email);
-        $user->$setter_token($response->getAccessToken());
+        $user->$setterId($email);
+        $user->$setterToken($response->getAccessToken());
 
         $this->userManager->updateUser($user);
     }
@@ -92,7 +96,7 @@ class FOSUBUserProvider extends BaseClass
             $user->setFirstName($response->getFirstName());
             $user->setLastName($response->getLastName());
 
-            $group = $this->em->getRepository('OxaSonataUserBundle:Group')->findOneBy(['code' => Group::CODE_CONSUMER]);
+            $group = $this->getGroupsRepository()->findOneBy(['code' => Group::CODE_CONSUMER]);
 
             $user->addGroup($group);
             $user->setRole($group);
@@ -118,5 +122,13 @@ class FOSUBUserProvider extends BaseClass
         $user->$setter($response->getAccessToken());
 
         return $user;
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    private function getGroupsRepository() : EntityRepository
+    {
+        return $this->em->getRepository('OxaSonataUserBundle:Group');
     }
 }
