@@ -128,5 +128,29 @@ ivory_google_map:
             class: "Ivory\GoogleMap\Services\Geocoding\GeocoderProvider"
         adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"
 
+hwi_oauth:
+    connect:
+        account_connector: oxa.user.oauth_provider
+        confirmation: false
+    firewall_name: main
+    fosub:
+        username_iterations: 30
+        properties:
+            facebook: facebookId
+    resource_owners:
+        facebook:
+            type:                facebook
+            client_id:           1092749047449814
+            client_secret:       dd4c134dfa083b580ee1d0fe2f2e0a97
+            scope:         "email"
+            infos_url:     "https://graph.facebook.com/me?fields=id,name,email,first_name,last_name"
+            paths:
+                email:          email
+        google:
+            type:                google
+            client_id:           762185179500-76hu2nbchsk35h0vb8amh7d8m7t665uc.apps.googleusercontent.com
+            client_secret:       b44x5xaqKgt6iaPPmaAcqLrz
+            scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+
 fos_js_routing:
     routes_to_expose: [ fos_user_security_check ]

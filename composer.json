@@ -34,6 +34,7 @@
         "pixassociates/sortable-behavior-bundle": "1.0",
         "egeloen/google-map-bundle": "~2.1",
         "willdurand/geocoder": "2.8.1",
+        "hwi/oauth-bundle": "^0.4.1",
         "friendsofsymfony/jsrouting-bundle": "^1.6"
     },
     "require-dev": {

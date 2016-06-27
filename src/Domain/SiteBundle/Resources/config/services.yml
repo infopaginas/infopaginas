@@ -1,4 +1,5 @@
 services:
+
     #managers section
     domain_site.manager.search:
         class: Domain\SiteBundle\Manager\SearchManager

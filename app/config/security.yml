@@ -46,9 +46,18 @@ security:
         # This firewall is used to handle the public login area
         # This part is handled by the FOS User Bundle
         main:
-            pattern:             .*
+            pattern:             ^/
             context:             user
             anonymous:           true
+            oauth:
+                resource_owners:
+                    facebook:           "/login/check-facebook"
+                    google:             "/login/check-google"
+                login_path:        /login
+                failure_path:      /login
+                default_target_path: /
+                oauth_user_provider:
+                    service: oxa.user.oauth_provider
             form_login:
                 provider: fos_userbundle
                 login_path: /login

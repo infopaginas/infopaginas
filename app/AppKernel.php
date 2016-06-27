@@ -45,6 +45,7 @@ class AppKernel extends Kernel
             new Fresh\DoctrineEnumBundle\FreshDoctrineEnumBundle(),
             new Pix\SortableBehaviorBundle\PixSortableBehaviorBundle(),
             new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
+            new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
 
             // Oxa Bundles
@@ -52,15 +53,14 @@ class AppKernel extends Kernel
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
             new Oxa\ConfigBundle\OxaConfigBundle(),
-            new Oxa\ManagerArchitectureBundle\OxaManagerArchitectureBundle(),
             new Domain\SiteBundle\DomainSiteBundle(),
             new Domain\BusinessBundle\DomainBusinessBundle(),
             new Domain\BannerBundle\DomainBannerBundle(),
             new Domain\PageBundle\DomainPageBundle(),
-            new Domain\SearchBundle\DomainSearchBundle(),
-            
+
             new Domain\MenuBundle\DomainMenuBundle(),
             new Domain\ArticleBundle\DomainArticleBundle(),
+            new Domain\SearchBundle\DomainSearchBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

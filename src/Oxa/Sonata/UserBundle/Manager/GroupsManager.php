@@ -17,6 +17,8 @@ use Oxa\Sonata\UserBundle\Entity\Group;
  */
 class GroupsManager
 {
+    const ERROR_NO_GROUP_FOUND_MESSAGE = 'Unable to find group by passed code';
+
     /**
      * @var EntityRepository
      */
@@ -41,7 +43,7 @@ class GroupsManager
         $group = $this->repository->findOneBy(['code' => $code]);
 
         if ($group === null) {
-            throw new \Exception("Unable to find group by passed code");
+            throw new \Exception(self::ERROR_NO_GROUP_FOUND_MESSAGE);
         }
 
         return $group;
