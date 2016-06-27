@@ -57,7 +57,7 @@ security:
                 failure_path:      /login
                 default_target_path: /
                 oauth_user_provider:
-                    service: my_user_provider
+                    service: oxa.user.oauth_provider
             form_login:
                 provider: fos_userbundle
                 login_path: /login

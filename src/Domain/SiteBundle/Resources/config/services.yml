@@ -1,8 +1,5 @@
-#danvbe/UserBundle/Resources/services.yml
-parameters:
-    my_user_provider.class: Domain\SiteBundle\Security\Core\User\FOSUBUserProvider
-
 services:
+
     #managers section
     domain_site.manager.search:
         class: Domain\SiteBundle\Manager\SearchManager
@@ -10,13 +7,6 @@ services:
     domain_site.manager.geolocation:
         class: Domain\SiteBundle\Manager\GeolocationManager
         arguments: ['@doctrine.orm.entity_manager']
-
-    my_user_provider:
-        class: "%my_user_provider.class%"
-        #this is the place where the properties are passed to the UserProvider - see config.yml
-        arguments: [@fos_user.user_manager, {facebook: facebookId, google: googleId}]
-        calls:
-            - [setEntityManager, ['@doctrine.orm.entity_manager']]
 
     #form types section
     domain_site.registration.form.type:

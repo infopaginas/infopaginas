@@ -130,7 +130,7 @@ ivory_google_map:
 
 hwi_oauth:
     connect:
-        account_connector: my_user_provider
+        account_connector: oxa.user.oauth_provider
         confirmation: false
     firewall_name: main
     fosub:

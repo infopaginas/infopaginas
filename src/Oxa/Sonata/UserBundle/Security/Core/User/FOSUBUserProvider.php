@@ -1,8 +1,9 @@
 <?php
 
-namespace Domain\SiteBundle\Security\Core\User;
+namespace Oxa\Sonata\UserBundle\Security\Core\User;
 
 use Doctrine\ORM\EntityManager;
+use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
@@ -11,6 +12,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class FOSUBUserProvider extends BaseClass
 {
+    /**
+     * @var UserManagerInterface
+     */
     protected $userManager;
 
     /**

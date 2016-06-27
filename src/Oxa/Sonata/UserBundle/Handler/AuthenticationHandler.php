@@ -64,6 +64,9 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
         ]);
     }
 
+    /**
+     * @return DataCollectorTranslator
+     */
     private function getTranslator() : DataCollectorTranslator
     {
         return $this->translator;
