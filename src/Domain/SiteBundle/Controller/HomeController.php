@@ -4,6 +4,8 @@ namespace Domain\SiteBundle\Controller;
 
 use Domain\SiteBundle\Form\Type\RegistrationType;
 use Domain\SiteBundle\Form\Type\LoginType;
+use Domain\SiteBundle\Form\Type\ResetPasswordRequestType;
+use Domain\SiteBundle\Form\Type\ResetPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,20 +37,24 @@ class HomeController extends Controller
         $banner         = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
         $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
 
-        $loginForm        = $this->createForm(new LoginType());
-        $registrationForm = $this->createForm(new RegistrationType());
+        $loginForm                = $this->createForm(new LoginType());
+        $registrationForm         = $this->createForm(new RegistrationType());
+        $resetPasswordRequestForm = $this->createForm(new ResetPasswordRequestType());
+        $resetPasswordForm        = $this->createForm(new ResetPasswordType());
 
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             array(
-                'menuItems'    => $menuItems,
-                'banner'       => $banner,
-                'bannerBottom' => $bannerBottom,
-                'articles'     => $articles,
-                'videos'       => $videos,
-                'locale'       => $locale,
-                'loginForm'    => $loginForm->createView(),
-                'registrationForm' => $registrationForm->createView(),
+                'menuItems'                => $menuItems,
+                'banner'                   => $banner,
+                'bannerBottom'             => $bannerBottom,
+                'articles'                 => $articles,
+                'videos'                   => $videos,
+                'locale'                   => $locale,
+                'loginForm'                => $loginForm->createView(),
+                'registrationForm'         => $registrationForm->createView(),
+                'resetPasswordRequestForm' => $resetPasswordRequestForm->createView(),
+                'resetPasswordForm'        => $resetPasswordForm->createView(),
             )
         );
     }

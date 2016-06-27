@@ -1,6 +1,8 @@
 define(
-    ['jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/login', 'tools/registration'],
-    function ( $, bootstrap, Search, Geolocation ) {
+    [
+        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/login', 'tools/registration',
+        'tools/resetPassword'
+    ], function ( $, bootstrap, Search, Geolocation ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -8,11 +10,11 @@ define(
         options.selector = options.selector || 'body';
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
-        }
+        };
 
         this.init( options );
         return this;
-    }
+    };
 
     homepage.prototype.init = function ( options ) {
         this.options = {};
@@ -20,7 +22,7 @@ define(
         $.extend( this.options, options );
 
         this.initSearch();
-    }
+    };
 
     homepage.prototype.initSearch = function ( ) {
         var searchOptions = {
@@ -30,17 +32,17 @@ define(
             searchResultsSelector : '#searchResultsAutosuggest',
             locationsSelector   : '#searchLocation',
             submitSelector      : '#searchButton'
-        }
+        };
 
         searchOptions['geolocation'] = new Geolocation( { 
             'locationBoxSelector' : searchOptions.locationsSelector,
             'googleApiKey'        : this.options.googleApiKey,
             'locale'              : this.options.locale
-        } )
+        } );
 
         var search = new Search(searchOptions);
         
-    }
+    };
    
     return homepage;
 });

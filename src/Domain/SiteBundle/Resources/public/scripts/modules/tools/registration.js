@@ -79,7 +79,7 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         $form.find( '.help-block' ).html('');
     };
 
-    //action before ajax send
+    //actions before ajax send
     registration.prototype.beforeRequestHandler = function () {
         this.disableFieldsHighlight();
         this.spinner.show( 'spin-container' );
