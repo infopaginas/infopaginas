@@ -8,7 +8,6 @@
 
 namespace Oxa\Sonata\UserBundle\Handler;
 
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class AuthenticationHandler
@@ -26,14 +26,14 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 {
     const SUCCESS_LOGIN_MESSAGE = 'Successfully logged in. Please wait...';
 
-    /** @var  Translator $translator */
+    /** @var  TranslatorInterface $translator */
     protected $translator;
 
     /**
      * AuthenticationHandler constructor.
-     * @param Translator $translator
+     * @param TranslatorInterface $translator
      */
-    public function __construct(Translator $translator)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
@@ -65,9 +65,9 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     }
 
     /**
-     * @return Translator
+     * @return TranslatorInterface
      */
-    private function getTranslator() : Translator
+    private function getTranslator() : TranslatorInterface
     {
         return $this->translator;
     }
