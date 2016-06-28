@@ -7,10 +7,9 @@ use Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler;
 use Domain\SiteBundle\Form\Handler\ResetPasswordRequestFormHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class AuthController
@@ -82,9 +81,9 @@ class AuthController extends Controller
     }
 
     /**
-     * @return DataCollectorTranslator
+     * @return TranslatorInterface
      */
-    private function getTranslator() : DataCollectorTranslator
+    private function getTranslator() : TranslatorInterface
     {
         return $this->get('translator');
     }

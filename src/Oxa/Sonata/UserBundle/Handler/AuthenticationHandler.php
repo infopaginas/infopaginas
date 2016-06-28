@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class AuthenticationHandler
@@ -26,14 +26,14 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 {
     const SUCCESS_LOGIN_MESSAGE = 'Successfully logged in. Please wait...';
 
-    /** @var  DataCollectorTranslator $translator */
+    /** @var  TranslatorInterface $translator */
     protected $translator;
 
     /**
      * AuthenticationHandler constructor.
-     * @param DataCollectorTranslator $translator
+     * @param TranslatorInterface $translator
      */
-    public function __construct(DataCollectorTranslator $translator)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
@@ -65,9 +65,9 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     }
 
     /**
-     * @return DataCollectorTranslator
+     * @return TranslatorInterface
      */
-    private function getTranslator() : DataCollectorTranslator
+    private function getTranslator() : TranslatorInterface
     {
         return $this->translator;
     }
