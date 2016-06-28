@@ -6,6 +6,7 @@ use Domain\SiteBundle\Form\Handler\RegistrationFormHandler;
 use Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler;
 use Domain\SiteBundle\Form\Handler\ResetPasswordRequestFormHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,9 +83,9 @@ class AuthController extends Controller
     }
 
     /**
-     * @return DataCollectorTranslator
+     * @return Translator
      */
-    private function getTranslator() : DataCollectorTranslator
+    private function getTranslator() : Translator
     {
         return $this->get('translator');
     }
