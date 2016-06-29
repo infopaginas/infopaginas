@@ -51,7 +51,7 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
 
     /**
      * Influence on search result, bigger number - more relevant business
-     * @var string - Subscription rank, 
+     * @var string - Subscription rank
      *
      * @ORM\Column(name="rank", type="integer", nullable=false, options={"default":0})
      */

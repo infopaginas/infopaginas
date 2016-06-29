@@ -24,7 +24,7 @@ class OxaAdmin extends BaseAdmin
 
     /**
      * Used to set default translations for filter boolean labels
-     * 
+     *
      * @var array
      */
     protected $defaultDatagridBooleanTypeOptions = [
@@ -34,7 +34,7 @@ class OxaAdmin extends BaseAdmin
         ],
         'translation_domain' => 'SonataAdminBundle'
     ];
-    
+
     /**
      * Default values to the datagrid.
      *

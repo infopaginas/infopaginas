@@ -8,7 +8,6 @@
 
 namespace Domain\BusinessBundle\Manager;
 
-use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
 use Sonata\DoctrineORMAdminBundle\Model\ModelManager;
 
@@ -16,13 +15,13 @@ use Sonata\DoctrineORMAdminBundle\Model\ModelManager;
  * Class SonataQueryManager
  * @package Domain\BusinessBundle\Manager
  */
-class SonataQueryManager extends DefaultManager
+class SonataQueryManager
 {
     /**
      * @var ModelManagerInterface
      */
     protected $modelManager;
-    
+
     public function __construct(ModelManager $modelManager)
     {
         $this->modelManager = $modelManager;
@@ -41,8 +40,9 @@ class SonataQueryManager extends DefaultManager
             ->leftJoin('s.businessProfile', 'bp')
             ->andWhere('bp.id = :businessProfileId')
             ->setParameter('businessProfileId', $businessProfileId)
-            ->orderBy('s.id', 'DESC');
-        
+            ->orderBy('s.id', 'DESC')
+        ;
+
         return $query;
     }
 }

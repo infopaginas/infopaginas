@@ -63,7 +63,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Subscription[] - Business subscriptions
-     * 
+     *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Subscription",
      *     mappedBy="businessProfile",
