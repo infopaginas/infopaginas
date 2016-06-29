@@ -70,7 +70,7 @@ class BusinessReviewAdmin extends OxaAdmin
         $formMapper
             ->with('General', array('class' => 'col-md-4'))->end()
             ->with('Review', array('class' => 'col-md-8'))->end()
-            ;
+        ;
 
         $formMapper
             ->with('General')
@@ -82,9 +82,7 @@ class BusinessReviewAdmin extends OxaAdmin
                 ->add('isActive')
             ->end()
             ->with('Review')
-                ->add('username', null, [
-
-                ])
+                ->add('username')
                 ->add('rating', 'choice', [
                     'choices' => range(0, 5),
                     'required' => false

@@ -205,7 +205,6 @@ class UserAdmin extends OxaAdmin
             ->with('Profile')
                 ->add('firstname')
                 ->add('lastname')
-                ->add('locale', 'locale')
             ->end()
             ->with('Social')
                 ->add('facebookUid')

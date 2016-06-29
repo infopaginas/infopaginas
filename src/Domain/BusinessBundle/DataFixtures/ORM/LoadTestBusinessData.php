@@ -90,7 +90,6 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->addPaymentMethod($this->getReference('payment_method.' . rand(1, 2)));
 
             $object->setCountry($this->getReference('country.PR'));
-            $object->setSubscription($this->getReference('subscription.' . rand(1, 5)));
             $object->setUser($this->getReference('user.admin'));
 
             $this->addTranslation(new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $value), $object);

@@ -40,6 +40,7 @@ sonata_admin:
                     - domain_business.admin.business_review
                     - domain_business.admin.address.country
                     - domain_business.admin.subscription
+                    - domain_business.admin.subscription_plan
                     - domain_business.admin.category
                     - domain_business.admin.area
                     - domain_business.admin.tag

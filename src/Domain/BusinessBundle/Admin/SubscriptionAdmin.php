@@ -2,12 +2,14 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\Subscription;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Validator\ErrorElement;
 
 class SubscriptionAdmin extends OxaAdmin
 {
@@ -18,7 +20,19 @@ class SubscriptionAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('businessProfile')
+            ->add('subscriptionPlan')
+            ->add('startDate', 'doctrine_orm_datetime_range', [
+                'field_type' => 'sonata_type_datetime_range_picker',
+                'field_options' => [
+                    'format' => self::FILTER_DATETIME_FORMAT
+            ]])
+            ->add('endDate', 'doctrine_orm_datetime_range', [
+                'field_type' => 'sonata_type_datetime_range_picker',
+                'field_options' => [
+                    'format' => self::FILTER_DATETIME_FORMAT
+            ]])
+            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
 
@@ -29,7 +43,11 @@ class SubscriptionAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name')
+            ->add('businessProfile')
+            ->add('subscriptionPlan')
+            ->add('startDate')
+            ->add('endDate')
+            ->add('isActive')
         ;
 
         $this->addGridActions($listMapper);
@@ -41,24 +59,35 @@ class SubscriptionAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
-            ->add('businessProfiles', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
-                'required' => false,
-                'by_reference' => false,
-            ]);
+            ->with('General', array('class' => 'col-md-4'))->end()
+            ->with('Period', array('class' => 'col-md-4'))->end()
+            ->with('Status', array('class' => 'col-md-4'))->end()
+        ;
 
-        // remove businessProfiles field if we create object on businessProfile edit page
-        $parentCode = $this->getRequest()->get('pcode');
-        $businessProfileCode = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('domain_business.admin.business_profile')
-            ->getCode();
-
-        if ($parentCode && $parentCode == $businessProfileCode) {
-            $formMapper->remove('businessProfiles');
-        }
+        $formMapper
+            ->with('General')
+                ->add('businessProfile', null, [
+                    // hide this field if this page used as sonata_type_collection on other pages
+                    'attr' => [
+                        'hidden' => $this->getRoot()->getClass() != $this->getClass()
+                    ]
+                ])
+                ->add('subscriptionPlan')
+            ->end()
+            ->with('Period')
+                ->add('startDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
+                ->add('endDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
+            ->end()
+            ->with('Status')
+                ->add('isActive')
+                ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
+                ->add('updatedUser', 'sonata_type_model', [
+                    'required' => false,
+                    'btn_add' => false,
+                    'disabled' => true,
+                ])
+            ->end()
+        ;
     }
 
     /**
@@ -68,8 +97,29 @@ class SubscriptionAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('name')
-            ->add('businessProfiles')
+            ->add('businessProfile')
+            ->add('subscriptionPlan')
+            ->add('startDate')
+            ->add('endDate')
+            ->add('isActive')
+            ->add('updatedAt')
+            ->add('updatedUser')
         ;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        if ($object instanceof Subscription && $object->getStartDate()) {
+            if ($object->getStartDate()->diff($object->getEndDate())->invert) {
+                $errorElement->with('endDate')
+                    ->addViolation('End Date must be later than Start Date')
+                    ->end()
+                ;
+            }
+        }
     }
 }

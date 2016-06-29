@@ -27,6 +27,10 @@ use Sonata\AdminBundle\Validator\ErrorElement;
 
 class BusinessProfileAdmin extends OxaAdmin
 {
+//    protected $formOptions = array(
+//        'cascade_validation' => true
+//    );
+    
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -36,20 +40,14 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->add('name')
             ->add('user')
-            ->add('subscription')
+            ->add('subscriptions')
             ->add('categories')
             ->add('registrationDate', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
                 'field_options' => [
                     'format' => 'dd-MM-y hh:mm:ss'
             ]])
-            ->add('isActive', null, [], null, [
-                'choices' => [
-                    1 => 'label_yes',
-                    2 => 'label_no',
-                ],
-                'translation_domain' => 'AdminDomainBusinessBundle'
-            ])
+            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
 
@@ -63,7 +61,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:list_image.html.twig'])
             ->add('name')
             ->add('user.username')
-            ->add('subscription.name')
             ->add('categories')
             ->add('registrationDate')
             ->add('isActive', null, ['editable' => true])
@@ -92,6 +89,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Status', array('class' => 'col-md-6'))
                 ->with('General', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
+                ->with('Subscriptions', array('class' => 'col-md-12'))->end()
             ->end()
             ->tab('Media', array('class' => 'col-md-6'))
                 ->with('General')->end()
@@ -171,7 +169,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
             ->tab('Status')
                 ->with('General')
-                    ->add('subscription', null, [])
                     ->add('isActive')
                     ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                     ->add('updatedUser', 'sonata_type_model', [
@@ -186,6 +183,22 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('isSetAd')
                     ->add('isSetLogo')
                     ->add('isSetSlogan')
+                ->end()
+                ->with('Subscriptions')
+                    ->add('subscriptions', 'sonata_type_collection', [
+                        'mapped' => true,
+                        'type_options' => [
+                            'delete' => true,
+                            'delete_options' => [
+                                'type' => 'checkbox',
+                                'type_options' => ['mapped' => false, 'required' => false]
+                            ]]
+                    ], [
+                        'read_only' => true,
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'allow_delete' => true,
+                    ])
                 ->end()
             ->end()
             ->tab('Reviews')
@@ -241,7 +254,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('name')
             ->add('images')
             ->add('user')
-            ->add('subscription')
+            ->add('subscriptions')
             ->add('categories')
             ->add('areas')
             ->add('brands')
