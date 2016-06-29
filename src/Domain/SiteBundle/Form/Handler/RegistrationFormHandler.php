@@ -8,6 +8,7 @@
 
 namespace Domain\SiteBundle\Form\Handler;
 
+use Domain\SiteBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Oxa\Sonata\UserBundle\Entity\Group;
@@ -34,6 +35,9 @@ class RegistrationFormHandler
     /** @var GroupsManager */
     protected $groupsManager;
 
+    /** @var Mailer */
+    protected $mailer;
+
     /**
      * RegistrationFormHandler constructor.
      * @param FormInterface $form
@@ -45,12 +49,14 @@ class RegistrationFormHandler
         FormInterface $form,
         Request $request,
         UserManagerInterface $userManager,
-        GroupsManager $groupsManager
+        GroupsManager $groupsManager,
+        Mailer $mailer
     ) {
-        $this->form = $form;
-        $this->request = $request;
-        $this->userManager = $userManager;
+        $this->form          = $form;
+        $this->request       = $request;
+        $this->userManager   = $userManager;
         $this->groupsManager = $groupsManager;
+        $this->mailer        = $mailer;
     }
 
     /**
@@ -114,5 +120,7 @@ class RegistrationFormHandler
         $user->setEnabled(true);
 
         $this->userManager->updateUser($user);
+
+        $this->mailer->sendRegistrationCompleteEmailMessage($user);
     }
 }

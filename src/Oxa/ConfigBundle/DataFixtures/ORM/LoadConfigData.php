@@ -67,6 +67,20 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'html',
                 'description' => 'Footer content',
             ], [
+                'key' => ConfigInterface::DEFAULT_EMAIL_ADDRESS,
+                'title' => 'Default Email Address',
+                'value' => 'info@infopaginas.com',
+                'format' => 'text',
+                'description' => 'Used as "from" value in emails',
+            ],[
+                'key' => ConfigInterface::MAIL_REGISTRATION_TEMPLATE,
+                'title' => 'Registration mail template',
+                'value' => $this->container->get('templating')->render(
+                    'OxaConfigBundle:Fixtures:mail_registration_template.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Registration mail template',
+            ], [
                 'key' => ConfigInterface::MAIL_TEMPLATE_TO_USER,
                 'title' => 'User mail template',
                 'value' => $this->container->get('templating')->render(
