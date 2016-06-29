@@ -30,9 +30,11 @@
                                 <a href="" class="logo-header"></a>
                                 <ul class="menu-nav">
                                     <li class="ad desc-menu"><a href="#">Advertise with us</a></li>
-                                    <li class="login-link mobile-menu btn">
-                                        <a href="#" data-toggle="modal" data-target="#loginModal">login</a>
-                                    </li>
+                                    {% if not app.user %}
+                                        <li class="login-link mobile-menu btn">
+                                            <a href="#" data-toggle="modal" data-target="#loginModal">login</a>
+                                        </li>
+                                    {% endif %}
                                 </ul>
                             </div>
 
