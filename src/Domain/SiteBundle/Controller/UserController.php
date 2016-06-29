@@ -30,20 +30,6 @@ class UserController extends Controller
      */
     public function profileAction(Request $request)
     {
-        $formHandler = $this->getUserProfileFormHandler();
-
-        try {
-            if ($formHandler->process()) {
-                return $this->getSuccessResponse(self::SUCCESS_PROFILE_UPDATE_MESSAGE);
-            }
-        } catch (\Exception $e) {
-            return $this->getFailureResponse($e->getMessage());
-        }
-
-        if ($request->isMethod('POST')) {
-            return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
-        }
-
         $profileForm        = $this->getUserProfileForm();
         $passwordUpdateForm = $this->getPasswordUpdateForm();
 
@@ -60,6 +46,24 @@ class UserController extends Controller
             'userBusinessProfiles' => $userBusinessProfiles,
             'userReviews'          => $userReviews,
         ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function saveProfileAction()
+    {
+        $formHandler = $this->getUserProfileFormHandler();
+
+        try {
+            if ($formHandler->process()) {
+                return $this->getSuccessResponse(self::SUCCESS_PROFILE_UPDATE_MESSAGE);
+            }
+        } catch (\Exception $e) {
+            return $this->getFailureResponse($e->getMessage());
+        }
+
+        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
     /**

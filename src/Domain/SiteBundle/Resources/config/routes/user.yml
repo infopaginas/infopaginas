@@ -1,6 +1,10 @@
 domain_site_user_profile:
     path:     /profile
     defaults: { _controller: DomainSiteBundle:User:profile }
+
+domain_site_user_profile_save:
+    path:     /profile/save
+    defaults: { _controller: DomainSiteBundle:User:saveProfile }
     options:
         expose: true
 

@@ -4,7 +4,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
     //init userProfile object variables
     var userProfile = function() {
         this.urls = {
-            saveProfile: Routing.generate('domain_site_user_profile'),
+            saveProfile: Routing.generate('domain_site_user_profile_save'),
             savePassword: Routing.generate('domain_site_user_password_update')
         };
 
