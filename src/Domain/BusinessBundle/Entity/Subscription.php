@@ -95,7 +95,12 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface
     public function __toString()
     {
         if ($this->getId()) {
-            $result = sprintf('%s: %s - %s', $this->getId(), $this->getBusinessProfile(), $this->getSubscriptionPlan());
+            $result = sprintf('%s: %s (%s - %s)',
+                $this->getId(), 
+                $this->getSubscriptionPlan(), 
+                $this->getStartDate()->format('d/M/Y, H:m'),
+                $this->getEndDate()->format('d/M/Y, H:m')
+            );
         } else {
             $result = 'New Subscription';
         }

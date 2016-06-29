@@ -81,4 +81,4 @@ services:
         class: Domain\BusinessBundle\Admin\Address\CountryAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Address\Country, OxaSonataAdminBundle:CRUD]
         tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Country}
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Countries}

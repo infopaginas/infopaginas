@@ -71,8 +71,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
+     * @ORM\OrderBy({"id" = "desc"})
      */
     protected $subscriptions;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", mappedBy="businessProfile")
+     */
+    protected $subscription;
 
     /**
      * @var Category[] - Business category
@@ -1472,5 +1478,31 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getSubscriptions()
     {
         return $this->subscriptions;
+    }
+
+    /**
+     * Set subscription
+     *
+     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     *
+     * @return BusinessProfile
+     */
+    public function setSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription = null)
+    {
+        $this->subscription = $subscription;
+
+        $subscription->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Get subscription
+     *
+     * @return \Domain\BusinessBundle\Entity\Subscription
+     */
+    public function getSubscription()
+    {
+        return $this->subscription;
     }
 }

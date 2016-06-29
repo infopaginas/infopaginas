@@ -30,6 +30,7 @@ class SubscriptionPlanAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('name')
+            ->add('rank')
         ;
 
         $this->addGridActions($listMapper);
@@ -42,6 +43,7 @@ class SubscriptionPlanAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
+            ->add('rank')
         ;
     }
 
@@ -53,6 +55,7 @@ class SubscriptionPlanAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('rank')
         ;
     }
 }

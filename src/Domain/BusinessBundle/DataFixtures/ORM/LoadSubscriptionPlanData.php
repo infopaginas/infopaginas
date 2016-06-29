@@ -43,6 +43,7 @@ class LoadSubscriptionPlanData extends AbstractFixture implements ContainerAware
             $object = new SubscriptionPlan();
             $object->setName($value);
             $object->setCode($code);
+            $object->setRank($code);
 
             $translation = new SubscriptionPlanTranslation();
             $translation->setContent(sprintf('Spain %s', $value));

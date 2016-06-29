@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Manager\SonataQueryManager;
 use Gedmo\Loggable\Entity\LogEntry;
 use Geocoder\HttpAdapter\CurlHttpAdapter;
 use Ivory\GoogleMap\Base\Coordinate;
@@ -24,13 +25,10 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\DoctrineORMAdminBundle\Model\ModelManager;
 
 class BusinessProfileAdmin extends OxaAdmin
 {
-//    protected $formOptions = array(
-//        'cascade_validation' => true
-//    );
-    
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -40,7 +38,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->add('name')
             ->add('user')
-            ->add('subscriptions')
+            ->add('subscription')
             ->add('categories')
             ->add('registrationDate', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
@@ -61,6 +59,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:list_image.html.twig'])
             ->add('name')
             ->add('user.username')
+            ->add('subscription')
             ->add('categories')
             ->add('registrationDate')
             ->add('isActive', null, ['editable' => true])
@@ -110,6 +109,11 @@ class BusinessProfileAdmin extends OxaAdmin
             $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
+
+        // create query to choose subscriptions which related only to current business profile
+        $sonataQueryManager = new SonataQueryManager($this->modelManager);
+        $businessId = ($this->getSubject()) ? $this->getSubject()->getId() : null;
+        $subscriptionQuery = $sonataQueryManager->getBusinessSubscriptionQuery($businessId);
 
         $formMapper
             ->tab('Profile')
@@ -185,10 +189,18 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('isSetSlogan')
                 ->end()
                 ->with('Subscriptions')
+                    ->add('subscription', 'sonata_type_model', [
+                        'btn_add' => false,
+                        'query' => $subscriptionQuery,
+                        'required' => false,
+                    ])
                     ->add('subscriptions', 'sonata_type_collection', [
+                        'modifiable' => false,
+                        'btn_add' => false,
                         'mapped' => true,
+                        'required' => false,
                         'type_options' => [
-                            'delete' => true,
+                            'delete' => false,
                             'delete_options' => [
                                 'type' => 'checkbox',
                                 'type_options' => ['mapped' => false, 'required' => false]
@@ -197,7 +209,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'read_only' => true,
                         'edit' => 'inline',
                         'inline' => 'table',
-                        'allow_delete' => true,
+                        'allow_delete' => false,
                     ])
                 ->end()
             ->end()

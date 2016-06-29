@@ -32,7 +32,6 @@ class SubscriptionAdmin extends OxaAdmin
                 'field_options' => [
                     'format' => self::FILTER_DATETIME_FORMAT
             ]])
-            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
 
@@ -47,7 +46,10 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('subscriptionPlan')
             ->add('startDate')
             ->add('endDate')
-            ->add('isActive')
+            ->add('createdAt')
+            ->add('createdUser')
+            ->add('updatedAt')
+            ->add('updatedUser')
         ;
 
         $this->addGridActions($listMapper);
@@ -64,13 +66,22 @@ class SubscriptionAdmin extends OxaAdmin
             ->with('Status', array('class' => 'col-md-4'))->end()
         ;
 
+        if ($this->getRoot()->getClass() != $this->getClass()) {
+            $formMapper
+                ->with('General')
+                    ->add('subscriptionId', 'text', [
+                        'read_only' => true,
+                        'mapped' => false,
+                        'data' => ($this->getSubject()) ? $this->getSubject()->getId() : null
+                    ])
+                ->end();
+        }
+
         $formMapper
             ->with('General')
                 ->add('businessProfile', null, [
                     // hide this field if this page used as sonata_type_collection on other pages
-                    'attr' => [
-                        'hidden' => $this->getRoot()->getClass() != $this->getClass()
-                    ]
+                    'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass()]
                 ])
                 ->add('subscriptionPlan')
             ->end()
@@ -79,7 +90,12 @@ class SubscriptionAdmin extends OxaAdmin
                 ->add('endDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
             ->end()
             ->with('Status')
-                ->add('isActive')
+                ->add('createdAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
+                ->add('createdUser', 'sonata_type_model', [
+                    'required' => false,
+                    'btn_add' => false,
+                    'disabled' => true,
+                ])
                 ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                 ->add('updatedUser', 'sonata_type_model', [
                     'required' => false,
@@ -101,7 +117,8 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('subscriptionPlan')
             ->add('startDate')
             ->add('endDate')
-            ->add('isActive')
+            ->add('createdAt')
+            ->add('createdUser')
             ->add('updatedAt')
             ->add('updatedUser')
         ;

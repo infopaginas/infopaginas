@@ -38,7 +38,6 @@ sonata_admin:
                     - domain_business.admin.business_profile
                     - domain_business.admin.business_profile_has_media
                     - domain_business.admin.business_review
-                    - domain_business.admin.address.country
                     - domain_business.admin.subscription
                     - domain_business.admin.subscription_plan
                     - domain_business.admin.category
@@ -46,6 +45,7 @@ sonata_admin:
                     - domain_business.admin.tag
                     - domain_business.admin.brand
                     - domain_business.admin.payment_method
+                    - domain_business.admin.address.country
             domain.admin.group.menu:
                 label: Pages
                 icon: <i class="fa fa-list"></i>

@@ -50,6 +50,14 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
     protected $code;
 
     /**
+     * Influence on search result, bigger number - more relevant business
+     * @var string - Subscription rank, 
+     *
+     * @ORM\Column(name="rank", type="integer", nullable=false, options={"default":0})
+     */
+    protected $rank = 0;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Subscription",
      *     mappedBy="subscriptionPlan",
@@ -217,5 +225,29 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
     public function getSubscriptions()
     {
         return $this->subscriptions;
+    }
+
+    /**
+     * Set rank
+     *
+     * @param integer $rank
+     *
+     * @return SubscriptionPlan
+     */
+    public function setRank($rank)
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+    /**
+     * Get rank
+     *
+     * @return integer
+     */
+    public function getRank()
+    {
+        return $this->rank;
     }
 }
