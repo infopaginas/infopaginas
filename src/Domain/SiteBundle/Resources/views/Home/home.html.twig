@@ -18,7 +18,7 @@
         {% include 'DomainSiteBundle:Home:Widgets/languageWidget.html.twig' %}
         {% if (app.user) %}
             <li class="login-link desc-menu logged">
-                <a href="#" class="login-button">
+                <a href="{{ path('domain_site_user_profile') }}" class="login-button">
                     <span class="welcome">
                         Welcome,
                     </span>
@@ -109,4 +109,3 @@
         })
     </script>
 {% endblock%}
- 

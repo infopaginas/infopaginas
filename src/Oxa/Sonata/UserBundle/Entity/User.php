@@ -50,6 +50,26 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     protected $location;
 
     /**
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     */
+    protected $twitterURL;
+
+    /**
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     */
+    protected $facebookURL;
+
+    /**
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     */
+    protected $googleURL;
+
+    /**
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     */
+    protected $youtubeURL;
+
+    /**
      * @var Group
      *
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\Group", inversedBy="roleUsers")
@@ -184,6 +204,78 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setLocation($location)
     {
         $this->location = $location;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTwitterURL()
+    {
+        return $this->twitterURL;
+    }
+
+    /**
+     * @param mixed $twitterURL
+     * @return User
+     */
+    public function setTwitterURL($twitterURL)
+    {
+        $this->twitterURL = $twitterURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookURL()
+    {
+        return $this->facebookURL;
+    }
+
+    /**
+     * @param mixed $facebookURL
+     * @return User
+     */
+    public function setFacebookURL($facebookURL)
+    {
+        $this->facebookURL = $facebookURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoogleURL()
+    {
+        return $this->googleURL;
+    }
+
+    /**
+     * @param mixed $googleURL
+     * @return User
+     */
+    public function setGoogleURL($googleURL)
+    {
+        $this->googleURL = $googleURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getYoutubeURL()
+    {
+        return $this->youtubeURL;
+    }
+
+    /**
+     * @param mixed $youtubeURL
+     * @return User
+     */
+    public function setYoutubeURL($youtubeURL)
+    {
+        $this->youtubeURL = $youtubeURL;
         return $this;
     }
 

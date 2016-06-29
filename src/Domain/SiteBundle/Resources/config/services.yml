@@ -4,6 +4,7 @@ services:
     domain_site.manager.search:
         class: Domain\SiteBundle\Manager\SearchManager
         arguments: ['@doctrine.orm.entity_manager']
+
     domain_site.manager.geolocation:
         class: Domain\SiteBundle\Manager\GeolocationManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -27,6 +28,18 @@ services:
         tags:
         - { name: form.type, alias: domain_site_reset_password }
 
+    domain_site.user_profile.form.type:
+        class: Domain\SiteBundle\Form\Type\UserProfileType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_user_profile }
+
+    domain_site.user_password_update.form.type:
+        class: Domain\SiteBundle\Form\Type\PasswordUpdateType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_user_password_update }
+
     #forms section
     domain_site.registration.form:
         factory_method: createNamed
@@ -45,6 +58,18 @@ services:
         factory_service: form.factory
         class: Symfony\Component\Form\Form
         arguments: [domain_site_reset_password, domain_site_reset_password]
+
+    domain_site.user_profile.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_user_profile, domain_site_user_profile]
+
+    domain_site.user_password_update.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_user_password_update, domain_site_user_password_update]
 
     #form handlers section
     domain_site.registration.form.handler:
@@ -69,3 +94,21 @@ services:
             - '@domain_site.reset_password.form'
             - '@request'
             - '@fos_user.user_manager'
+
+    domain_site.user_profile.form.handler:
+        class: Domain\SiteBundle\Form\Handler\UserProfileFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.user_profile.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'
+
+    domain_site.user_password_update.form.handler:
+        class: Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.user_password_update.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'

@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use FOS\UserBundle\Model\UserInterface;
+
 /**
  * BusinessReviewRepository
  *
@@ -10,4 +12,18 @@ namespace Domain\BusinessBundle\Repository;
  */
 class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
 {
+    const SLUG = 'DomainBusinessBundle:Review\BusinessReview';
+
+    /**
+     * @param UserInterface $user
+     * @return array
+     */
+    public function findUserReviews(UserInterface $user)
+    {
+        $reviews = $this->findBy([
+            'user' => $user,
+        ]);
+
+        return $reviews;
+    }
 }
