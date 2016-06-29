@@ -129,37 +129,51 @@
                                 <div class="card-item-name">
                                     <span>Reviews</span>
                                 </div>
+                                {% if userReviews|length > 0 %}
+                                    {% set reviewsPerColumn = ((userReviews|length) / 2)|round %}
 
-                                {% set reviewsPerColumn = ((userReviews|length) / 2)|round %}
-
-                                {% for row in userReviews|batch(reviewsPerColumn) %}
-                                    <div class="col-xs-6 form-col">
-                                        {% for review in row %}
-                                            <div class="col-xs-12">
-                                                <span>{{ review.getBusinessProfile().getName() }}</span>
-                                            </div>
-                                        {% endfor %}
+                                    {% for row in userReviews|batch(reviewsPerColumn) %}
+                                        <div class="col-xs-6 form-col">
+                                            {% for review in row %}
+                                                <div class="col-xs-12">
+                                                    <span>{{ review.getBusinessProfile().getName() }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-warning" role="alert">
+                                            No reviews found.
+                                        </div>
                                     </div>
-                                {% endfor %}
+                                {% endif %}
                             </div>
 
                             <div class="form-group card-item titles-only">
                                 <div class="card-item-name">
                                     <span>My Business Profiles</span>
                                 </div>
-                                {% set businessesPerColumn = ((userReviews|length) / 2)|round %}
+                                {% if userBusinessProfiles|length > 0 %}
+                                    {% set businessesPerColumn = ((userBusinessProfiles|length) / 2)|round %}
 
-                                {% for row in userBusinessProfiles|batch(businessesPerColumn) %}
-                                    <div class="col-xs-6 form-col">
-                                        {% for business in row %}
-                                            <div class="col-xs-12">
-                                                <span>{{ business.getName() }}</span>
-                                            </div>
-                                        {% endfor %}
+                                    {% for row in userBusinessProfiles|batch(businessesPerColumn) %}
+                                        <div class="col-xs-6 form-col">
+                                            {% for business in row %}
+                                                <div class="col-xs-12">
+                                                    <span>{{ business.getName() }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-warning" role="alert">
+                                            No business profiles found.
+                                        </div>
                                     </div>
-                                {% endfor %}
+                                {% endif %}
                             </div>
-
                         </div>
                     </div>
                     <div class="form-footer col-xs-12">

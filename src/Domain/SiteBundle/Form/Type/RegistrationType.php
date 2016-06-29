@@ -52,6 +52,7 @@ class RegistrationType extends AbstractType
                     'class'       => 'form-control',
                     'placeholder' => 'Location',
                 ],
+                'empty_data' => 'San Juan, Puerto Rico',
             ])
         ;
     }

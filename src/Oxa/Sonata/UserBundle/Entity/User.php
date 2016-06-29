@@ -47,7 +47,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     /**
      * @ORM\Column(name="location", type="string", nullable=true, length=255)
      */
-    protected $location;
+    protected $location = 'San Juan, Puerto Rico';
 
     /**
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
