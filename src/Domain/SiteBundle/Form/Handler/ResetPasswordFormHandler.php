@@ -15,6 +15,10 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class ResetPasswordFormHandler
+ * @package Domain\SiteBundle\Form\Handler
+ */
 class ResetPasswordFormHandler
 {
     const ERROR_EMPTY_TOKEN = 'Error: Empty token.';
@@ -79,20 +83,6 @@ class ResetPasswordFormHandler
     }
 
     /**
-     * @param UserInterface $user
-     * @param string $password
-     */
-    protected function onSuccess(UserInterface $user, string $password)
-    {
-        $user->setPlainPassword($password);
-        $user->setConfirmationToken(null);
-        $user->setPasswordRequestedAt(null);
-        $user->setEnabled(true);
-
-        $this->getUsersManager()->updateUser($user);
-    }
-
-    /**
      * @param null $form
      * @return array
      */
@@ -119,6 +109,20 @@ class ResetPasswordFormHandler
         }
 
         return $errors;
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param string $password
+     */
+    protected function onSuccess(UserInterface $user, string $password)
+    {
+        $user->setPlainPassword($password);
+        $user->setConfirmationToken(null);
+        $user->setPasswordRequestedAt(null);
+        $user->setEnabled(true);
+
+        $this->getUsersManager()->updateUser($user);
     }
 
     /**

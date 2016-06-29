@@ -39,3 +39,7 @@ domain_site_auth:
 domain_site_oauth:
     resource: "@DomainSiteBundle/Resources/config/routes/oauth.yml"
     prefix:   /
+
+domain_site_user:
+    resource: "@DomainSiteBundle/Resources/config/routes/user.yml"
+    prefix:   /user
