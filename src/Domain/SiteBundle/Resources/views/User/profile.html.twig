@@ -10,11 +10,12 @@
     <div class="container">
         <div class="row">
             <div class="crumbs">
-                <a href="{{ path('domain_site_home_index') }}"> Homepage
+                <a href="{{ path('domain_site_home_index') }}">
+                    {% trans %}Homepage{% endtrans %}
                     <span>&nbsp; » &nbsp; </span>
                 </a>
                 <span>
-                    User profile
+                    {% trans %}User profile{% endtrans %}
                 </span>
             </div>
         </div>
@@ -32,7 +33,9 @@
                         <div class="cards">
                             <div class="form-group card-item">
                                 <div class="card-item-name">
-                                    <span>Personal Information</span>
+                                    <span>
+                                        {% trans %}Personal Information{% endtrans %}
+                                    </span>
                                 </div>
                                 <div class="col-xs-6 form-col">
                                     <div class="col-xs-4">
@@ -67,7 +70,9 @@
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-xs-4">
-                                        <span>Password:</span>
+                                        <span>
+                                            {% trans %}Password{% endtrans %}:
+                                        </span>
                                     </div>
                                     <div class="col-xs-8">
                                         <a class="btn green-btn" href="#" data-dismiss="modal"
@@ -127,7 +132,9 @@
 
                             <div class="form-group card-item titles-only">
                                 <div class="card-item-name">
-                                    <span>Reviews</span>
+                                    <span>
+                                        {% trans %}Reviews{% endtrans %}
+                                    </span>
                                 </div>
                                 {% if userReviews|length > 0 %}
                                     {% set reviewsPerColumn = ((userReviews|length) / 2)|round %}
@@ -144,7 +151,7 @@
                                 {% else %}
                                     <div class="col-xs-12">
                                         <div class="alert alert-warning" role="alert">
-                                            No reviews found.
+                                            {% trans %}No reviews found.{% endtrans %}
                                         </div>
                                     </div>
                                 {% endif %}
@@ -152,7 +159,9 @@
 
                             <div class="form-group card-item titles-only">
                                 <div class="card-item-name">
-                                    <span>My Business Profiles</span>
+                                    <span>
+                                        {% trans %}My Business Profiles{% endtrans %}
+                                    </span>
                                 </div>
                                 {% if userBusinessProfiles|length > 0 %}
                                     {% set businessesPerColumn = ((userBusinessProfiles|length) / 2)|round %}
@@ -169,7 +178,7 @@
                                 {% else %}
                                     <div class="col-xs-12">
                                         <div class="alert alert-warning" role="alert">
-                                            No business profiles found.
+                                            {% trans %}No business profiles found.{% endtrans %}
                                         </div>
                                     </div>
                                 {% endif %}
@@ -181,11 +190,11 @@
                         <div class="form-btn">
                             <button type="reset" class="btn btn-default grey-light-bk">
                                 <i class="fa fa-times-circle" aria-hidden="true"></i>
-                                Cancel
+                                {% trans %}Cancel{% endtrans %}
                             </button>
                             <button type="submit" class="btn green-btn" id="saveProfile">
                                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                Save
+                                {% trans %}Save{% endtrans %}
                             </button>
                         </div>
                     </div>
