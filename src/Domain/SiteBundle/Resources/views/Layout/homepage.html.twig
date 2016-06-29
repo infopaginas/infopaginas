@@ -5,7 +5,9 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('/bundles/domainsite/styles/style.min.css')}}"/>
+        <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}"/>
+        <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
+        <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
     {% endblock %}
 </head>
 <body>
@@ -196,7 +198,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12 banner-block desc-banner">
-                            <img src="{{ asset('/bundles/domainsite/images/banner.png')}}">
+                            <img src="{{ asset('/assets/images/banner.png')}}">
                         </div>
                         <div class="col-xs-12 mobile-banner">
                             <img src="http://placehold.it/300x250">
@@ -218,7 +220,7 @@
                                 <a href="#" class="btn">View more articles</a></div>
                             <div class="articles">
                                 <div class="col-xs-6 article">
-                                    <div class="article-pic"><a href="#"><img src="{{ asset('/bundles/domainsite/images/homepage/article1.png')}}"></a>
+                                    <div class="article-pic"><a href="#"><img src="{{ asset('/assets/images/homepage/article1.png')}}"></a>
                                     </div>
                                     <div class="article-info">
                                         <a href="#" class="article-title blue-c">Why you feel grumpy when the seasons change</a>
@@ -233,7 +235,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-6 article">
-                                    <div class="article-pic"><a href="#"><img src="{{ asset('/bundles/domainsite/images/homepage/article2.png')}}"></a>
+                                    <div class="article-pic"><a href="#"><img src="{{ asset('/assets/images/homepage/article2.png')}}"></a>
                                     </div>
                                     <div class="article-info">
                                         <a href="#" class="article-title blue-c">Why you feel grumpy when the seasons change</a>
@@ -256,7 +258,7 @@
                             <div class="articles videos">
                                 <div class="col-xs-6 article">
                                     <div class="article-pic video-preview"><a href="#"><img
-                                            src="{{ asset('/bundles/domainsite/images/homepage/article3.png')}}"></a>
+                                            src="{{ asset('/assets/images/homepage/article3.png')}}"></a>
                                     </div>
                                     <div class="article-info">
                                         <a href="#" class="article-title blue-c">How to choose the right builder</a>
@@ -271,7 +273,7 @@
                                 </div>
                                 <div class="col-xs-6 article">
                                     <div class="article-pic video-preview"><a href="#"><img
-                                            src="{{ asset('/bundles/domainsite/images/homepage/article4.png')}}"></a>
+                                            src="{{ asset('/assets/images/homepage/article4.png')}}"></a>
                                     </div>
                                     <div class="article-info">
                                         <a href="#" class="article-title blue-c">How to choose the right builder</a>
@@ -357,8 +359,12 @@
     {% endblock %}
 </footer>
 
+{% block homeModals %} {% endblock %}
+
 <!-- Scripts -->
 {% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
 {% endblock %}
 </body>

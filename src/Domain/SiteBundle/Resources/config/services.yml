@@ -1,7 +1,123 @@
 services:
+    #services section:
+    domain_site.mailer:
+        class: Domain\SiteBundle\Mailer\Mailer
+        arguments: ['@mailer', '@oxa_config']
+
+    #managers section
     domain_site.manager.search:
         class: Domain\SiteBundle\Manager\SearchManager
         arguments: ['@doctrine.orm.entity_manager']
+
     domain_site.manager.geolocation:
         class: Domain\SiteBundle\Manager\GeolocationManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    #form types section
+    domain_site.registration.form.type:
+        class: Domain\SiteBundle\Form\Type\RegistrationType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_registration }
+
+    domain_site.reset_password_request.form.type:
+        class: Domain\SiteBundle\Form\Type\ResetPasswordRequestType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_reset_password_request }
+
+    domain_site.reset_password.form.type:
+        class: Domain\SiteBundle\Form\Type\ResetPasswordType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_reset_password }
+
+    domain_site.user_profile.form.type:
+        class: Domain\SiteBundle\Form\Type\UserProfileType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_user_profile }
+
+    domain_site.user_password_update.form.type:
+        class: Domain\SiteBundle\Form\Type\PasswordUpdateType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_user_password_update }
+
+    #forms section
+    domain_site.registration.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_registration, domain_site_registration]
+
+    domain_site.reset_password_request.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_reset_password_request, domain_site_reset_password_request]
+
+    domain_site.reset_password.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_reset_password, domain_site_reset_password]
+
+    domain_site.user_profile.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_user_profile, domain_site_user_profile]
+
+    domain_site.user_password_update.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_user_password_update, domain_site_user_password_update]
+
+    #form handlers section
+    domain_site.registration.form.handler:
+        class: Domain\SiteBundle\Form\Handler\RegistrationFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.registration.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@oxa.manager.groups'
+            - '@domain_site.mailer'
+
+    domain_site.reset_password_request.form.handler:
+        class: Domain\SiteBundle\Form\Handler\ResetPasswordRequestFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.reset_password_request.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@fos_user.util.token_generator'
+            - '@fos_user.mailer'
+
+    domain_site.reset_password.form.handler:
+        class: Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.reset_password.form'
+            - '@request'
+            - '@fos_user.user_manager'
+
+    domain_site.user_profile.form.handler:
+        class: Domain\SiteBundle\Form\Handler\UserProfileFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.user_profile.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'
+
+    domain_site.user_password_update.form.handler:
+        class: Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.user_password_update.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'

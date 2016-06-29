@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use FOS\UserBundle\Model\UserInterface;
+
 /**
  * BusinessProfileRepository
  *
@@ -10,4 +12,18 @@ namespace Domain\BusinessBundle\Repository;
  */
 class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 {
+    const SLUG = 'DomainBusinessBundle:BusinessProfile';
+
+    /**
+     * @param UserInterface $user
+     * @return array
+     */
+    public function findUserBusinessProfiles(UserInterface $user)
+    {
+        $businessProfiles = $this->findBy([
+            'user' => $user,
+        ]);
+
+        return $businessProfiles;
+    }
 }
