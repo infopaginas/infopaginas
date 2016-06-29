@@ -2,26 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 21.06.16
- * Time: 17:30
+ * Date: 28.06.16
+ * Time: 20:29
  */
 
 namespace Domain\SiteBundle\Form\Handler;
 
-use Domain\SiteBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Oxa\Sonata\UserBundle\Entity\Group;
-use Oxa\Sonata\UserBundle\Manager\GroupsManager;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class RegistrationFormHandler
+ * Class PasswordUpdateFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class RegistrationFormHandler
+class PasswordUpdateFormHandler
 {
     /** @var FormInterface  */
     protected $form;
@@ -32,46 +31,38 @@ class RegistrationFormHandler
     /** @var UserManagerInterface */
     protected $userManager;
 
-    /** @var GroupsManager */
-    protected $groupsManager;
-
-    /** @var Mailer */
-    protected $mailer;
+    /** @var  UserInterface */
+    protected $currentUser;
 
     /**
-     * RegistrationFormHandler constructor.
+     * PasswordUpdateFormHandler constructor.
      * @param FormInterface $form
      * @param Request $request
      * @param UserManagerInterface $userManager
-     * @param GroupsManager $groupsManager
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         FormInterface $form,
         Request $request,
         UserManagerInterface $userManager,
-        GroupsManager $groupsManager,
-        Mailer $mailer
+        TokenStorageInterface $tokenStorage
     ) {
-        $this->form          = $form;
-        $this->request       = $request;
-        $this->userManager   = $userManager;
-        $this->groupsManager = $groupsManager;
-        $this->mailer        = $mailer;
+        $this->form           = $form;
+        $this->request        = $request;
+        $this->userManager    = $userManager;
+        $this->currentUser    = $tokenStorage->getToken()->getUser();
     }
 
     /**
      * @return bool
      */
-    public function process() : bool
+    public function process()
     {
-        $user = $this->userManager->createUser();
-        $this->form->setData($user);
-
         if ($this->request->getMethod() == 'POST') {
             $this->form->handleRequest($this->request);
 
             if ($this->form->isValid()) {
-                $this->onSuccess($user);
+                $this->onSuccess();
 
                 return true;
             }
@@ -110,17 +101,19 @@ class RegistrationFormHandler
     }
 
     /**
-     * @param UserInterface $user
+     * @return void
      */
-    protected function onSuccess(UserInterface $user)
+    protected function onSuccess()
     {
-        $consumerGroup = $this->groupsManager->findByCode(Group::CODE_CONSUMER);
+        $this->currentUser->setPlainPassword($this->getNewPassword());
+        $this->userManager->updateUser($this->currentUser);
+    }
 
-        $user->setRole($consumerGroup);
-        $user->setEnabled(true);
-
-        $this->userManager->updateUser($user);
-
-        $this->mailer->sendRegistrationCompleteEmailMessage($user);
+    /**
+     * @return string
+     */
+    private function getNewPassword() : string
+    {
+        return $this->form->get('newPassword')->getData();
     }
 }

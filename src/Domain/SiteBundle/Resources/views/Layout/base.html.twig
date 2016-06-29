@@ -58,8 +58,16 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="lang btn"><a href="">español</a></li>
                             <li class="lang btn"><a href="" class="active">english</a></li>
-                            <li class="login-link desc-menu"><a href="" class="login-button"><span class="welcome">Welcome, </span><span
-                                    class="user-name">Catalá Joyeros</span></a></li>
+                            {% if (app.user) %}
+                                <li class="login-link desc-menu">
+                                    <a href="" class="login-button">
+                                        <span class="welcome">Welcome, </span>
+                                    <span class="user-name">
+                                        {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
+                                    </span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
                         </ul>
                     </div>
