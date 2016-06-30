@@ -89,6 +89,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
     search.prototype.setLocation = function ( data ) {
         this.searchLocations.val(data);
+        this.onSearchBoxBlur();
     }
     
     search.prototype.quickSearch = function ( searchQuery ) {
