@@ -13,6 +13,7 @@ use Oxa\Sonata\UserBundle\Entity\User;
 interface DefaultEntityInterface extends DeleteableEntityInterface
 {
     const IS_ACTIVE_PROPERTY_NAME = 'isActive';
+    const CREATE_USER_PROPERTY_NAME = 'createdUser';
 
     /**
      * Sets createdAt.

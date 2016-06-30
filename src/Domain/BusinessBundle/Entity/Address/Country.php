@@ -18,7 +18,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="country")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CountryRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @UniqueEntity("short_name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation")
  */
 class Country implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
@@ -46,7 +45,7 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
     /**
      * @var string - Short country name (code)
      *
-     * @ORM\Column(name="short_name", type="string", length=3)
+     * @ORM\Column(name="short_name", type="string", length=3, unique=true)
      */
     protected $shortName;
 

@@ -9,7 +9,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class CategoryAdmin extends OxaAdmin
+class SubscriptionPlanAdmin extends OxaAdmin
 {
     /**
      * @param DatagridMapper $datagridMapper
@@ -30,6 +30,7 @@ class CategoryAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('name')
+            ->add('rank')
         ;
 
         $this->addGridActions($listMapper);
@@ -42,24 +43,8 @@ class CategoryAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('slug', null, ['read_only' => true, 'required' => false])
-            ->add('businessProfiles', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
-                'required' => false,
-                'by_reference' => false,
-            ]);
-
-        // remove businessProfiles field if we create object on businessProfile edit page
-        $parentCode = $this->getRequest()->get('pcode');
-        $businessProfileCode = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('domain_business.admin.business_profile')
-            ->getCode();
-
-        if ($parentCode && $parentCode == $businessProfileCode) {
-            $formMapper->remove('businessProfiles');
-        }
+            ->add('rank')
+        ;
     }
 
     /**
@@ -70,8 +55,7 @@ class CategoryAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
-            ->add('slug')
-            ->add('businessProfiles')
+            ->add('rank')
         ;
     }
 }

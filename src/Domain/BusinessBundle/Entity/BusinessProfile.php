@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BusinessProfile
@@ -61,12 +62,21 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $user;
 
     /**
-     * @var Subscription - Subscription plan
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription",
-     *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     * @var Subscription[] - Business subscriptions
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Subscription",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      *     )
-     * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id", nullable=true)
+     * @Assert\Valid
+     * @ORM\OrderBy({"id" = "desc"})
+     */
+    protected $subscriptions;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", mappedBy="businessProfile")
      */
     protected $subscription;
 
@@ -396,6 +406,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function __construct()
     {
+        $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
@@ -788,30 +799,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Set subscription
-     *
-     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
-     *
-     * @return BusinessProfile
-     */
-    public function setSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription = null)
-    {
-        $this->subscription = $subscription;
-
-        return $this;
-    }
-
-    /**
-     * Get subscription
-     *
-     * @return \Domain\BusinessBundle\Entity\Subscription
-     */
-    public function getSubscription()
-    {
-        return $this->subscription;
     }
 
     /**
@@ -1455,5 +1442,67 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getUseMapAddress()
     {
         return $this->useMapAddress;
+    }
+
+    /**
+     * Add subscription
+     *
+     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     *
+     * @return BusinessProfile
+     */
+    public function addSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription)
+    {
+        $this->subscriptions[] = $subscription;
+
+        $subscription->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove subscription
+     *
+     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     */
+    public function removeSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription)
+    {
+        $this->subscriptions->removeElement($subscription);
+    }
+
+    /**
+     * Get subscriptions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSubscriptions()
+    {
+        return $this->subscriptions;
+    }
+
+    /**
+     * Set subscription
+     *
+     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     *
+     * @return BusinessProfile
+     */
+    public function setSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription = null)
+    {
+        $this->subscription = $subscription;
+
+        $subscription->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Get subscription
+     *
+     * @return \Domain\BusinessBundle\Entity\Subscription
+     */
+    public function getSubscription()
+    {
+        return $this->subscription;
     }
 }

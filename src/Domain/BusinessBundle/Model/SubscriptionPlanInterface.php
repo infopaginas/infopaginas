@@ -9,10 +9,10 @@
 namespace Domain\BusinessBundle\Model;
 
 /**
- * Class SubscriptionInterface
+ * Class SubscriptionPlanInterface
  * @package Domain\BusinessBundle\Model
  */
-interface SubscriptionInterface
+interface SubscriptionPlanInterface
 {
     const CODE_FREE             = 1;
     const CODE_PRIORITY         = 2;

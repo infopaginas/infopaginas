@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Manager\SonataQueryManager;
 use Gedmo\Loggable\Entity\LogEntry;
 use Geocoder\HttpAdapter\CurlHttpAdapter;
 use Ivory\GoogleMap\Base\Coordinate;
@@ -24,6 +25,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\DoctrineORMAdminBundle\Model\ModelManager;
 
 class BusinessProfileAdmin extends OxaAdmin
 {
@@ -43,13 +45,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'field_options' => [
                     'format' => 'dd-MM-y hh:mm:ss'
             ]])
-            ->add('isActive', null, [], null, [
-                'choices' => [
-                    1 => 'label_yes',
-                    2 => 'label_no',
-                ],
-                'translation_domain' => 'AdminDomainBusinessBundle'
-            ])
+            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
 
@@ -63,7 +59,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:list_image.html.twig'])
             ->add('name')
             ->add('user.username')
-            ->add('subscription.name')
+            ->add('subscription')
             ->add('categories')
             ->add('registrationDate')
             ->add('isActive', null, ['editable' => true])
@@ -92,6 +88,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Status', array('class' => 'col-md-6'))
                 ->with('General', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
+                ->with('Subscriptions', array('class' => 'col-md-12'))->end()
             ->end()
             ->tab('Media', array('class' => 'col-md-6'))
                 ->with('General')->end()
@@ -112,6 +109,11 @@ class BusinessProfileAdmin extends OxaAdmin
             $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
+
+        // create query to choose subscriptions which related only to current business profile
+        $sonataQueryManager = new SonataQueryManager($this->modelManager);
+        $businessId = ($this->getSubject()) ? $this->getSubject()->getId() : null;
+        $subscriptionQuery = $sonataQueryManager->getBusinessSubscriptionQuery($businessId);
 
         $formMapper
             ->tab('Profile')
@@ -171,7 +173,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
             ->tab('Status')
                 ->with('General')
-                    ->add('subscription', null, [])
                     ->add('isActive')
                     ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                     ->add('updatedUser', 'sonata_type_model', [
@@ -186,6 +187,30 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('isSetAd')
                     ->add('isSetLogo')
                     ->add('isSetSlogan')
+                ->end()
+                ->with('Subscriptions')
+                    ->add('subscription', 'sonata_type_model', [
+                        'btn_add' => false,
+                        'query' => $subscriptionQuery,
+                        'required' => false,
+                    ])
+                    ->add('subscriptions', 'sonata_type_collection', [
+                        'modifiable' => false,
+                        'btn_add' => false,
+                        'mapped' => true,
+                        'required' => false,
+                        'type_options' => [
+                            'delete' => false,
+                            'delete_options' => [
+                                'type' => 'checkbox',
+                                'type_options' => ['mapped' => false, 'required' => false]
+                            ]]
+                    ], [
+                        'read_only' => true,
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'allow_delete' => false,
+                    ])
                 ->end()
             ->end()
             ->tab('Reviews')
@@ -241,7 +266,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('name')
             ->add('images')
             ->add('user')
-            ->add('subscription')
+            ->add('subscriptions')
             ->add('categories')
             ->add('areas')
             ->add('brands')
