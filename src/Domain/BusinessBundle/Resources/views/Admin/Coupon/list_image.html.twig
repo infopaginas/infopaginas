@@ -14,7 +14,7 @@ file that was distributed with this source code.
 {% block field%}
     {% if object.image is not null %}
         <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.image|sonata_urlsafeid }) }}">
-            <img class="list-preview-image" src="{% path object.image, object.type.mediaFormat %}" alt="">
+            <img class="list-preview-image" src="{% path object.image, 'preview' %}" alt="{{ object.image.name }}">
         </a>
     {% endif %}
 {% endblock %}

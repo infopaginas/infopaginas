@@ -12,10 +12,9 @@ file that was distributed with this source code.
 {% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
 
 {% block field%}
-    {% if object.logo is not null %}
-        <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.logo|sonata_urlsafeid }) }}">
-            <img style="max-height: 150px; max-width: 150px; !important;"
-                 src="{% path object.logo, 'preview' %}" alt="{{ object.logo.name }}">
+    {% if object.subscriptionPlan is not null %}
+        <a href="{{ path('admin_domain_business_subscription_edit', {'id' : object.subscription.id }) }}">
+            {{ object.subscriptionPlan }}
         </a>
     {% endif %}
 {% endblock %}
