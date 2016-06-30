@@ -10,4 +10,11 @@ class CategoryManager extends Manager
     {
         return $this->getRepository()->searchAutosuggest($name);
     }
+
+    public function getCategoriesByProfiles(array $profileList)
+    {
+        return $this->getRepository()->getCategoryByBusinessesIds(
+            array_column($profileList, 'id')
+        );
+    }
 }

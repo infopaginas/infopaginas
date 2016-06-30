@@ -21,18 +21,22 @@ class SearchController extends Controller
     public function indexAction(Request $request)
     {
         $query = $request->get('q', '');
-        $location = $request->get('geo', '');
+        $location = $request->get('geo', 'San Juan');
         $page     = $request->get('page', 1);
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
+        $categoryManager         = $this->get('domain_business.manager.category');
         $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
 
         $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $location);
+
+        $categories    = $categoryManager->getCategoriesByProfiles($results);
         $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
 
         return $this->render('DomainSearchBundle:Search:index.html.twig', array(
-            'results' => $results,
-            'banner'  => $banner
+            'results'       => $results,
+            'banner'        => $banner,
+            'categories'    => $categories
         ));
     }
 
@@ -63,16 +67,21 @@ class SearchController extends Controller
     public function mapAction(Request $request)
     {
         $query = $request->get('q', '');
-        $location = $request->get('geo', '');
+        $location = $request->get('geo', 'San Juan');
         $page     = $request->get('page', 1);
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
+        $categoryManager         = $this->get('domain_business.manager.category');
+
         $results            = $businessProfilehManager->searchWithMapByPhraseAndLocation($query, $location);
+
         $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($results);
+        $categories         = $categoryManager->getCategoriesByProfiles($results);
 
         return $this->render('DomainSearchBundle:Search:map.html.twig', array(
-            'results' => $results,
-            'markers'    => $locationMarkers
+            'results'    => $results,
+            'markers'    => $locationMarkers,
+            'categories' => $categories
         ));
     }
 }
