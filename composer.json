@@ -38,12 +38,6 @@
         "friendsofsymfony/jsrouting-bundle": "^1.6",
         "alsatian/postgres-search-bundle": "dev-master"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url":  "git@github.com:Alsatian67/PostgresSearchBundle.git"
-        }
-    ],
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
     },
