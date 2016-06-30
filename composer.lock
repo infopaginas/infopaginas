@@ -4,9 +4,55 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7ad1536c734bf726e1d23a0949957215",
-    "content-hash": "dcb6d1deee94f3eabae9e72f431b56b4",
+    "hash": "bb97e3e130c68ed4cad16fb6d7d4be9a",
+    "content-hash": "febf1355ef1473b4c5aace47bd683ff6",
     "packages": [
+        {
+            "name": "alsatian/postgres-search-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Alsatian67/PostgresSearchBundle.git",
+                "reference": "2318c067753d7b6861b65d2ce8e76bdee65d7890"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Alsatian67/PostgresSearchBundle/zipball/2318c067753d7b6861b65d2ce8e76bdee65d7890",
+                "reference": "2318c067753d7b6861b65d2ce8e76bdee65d7890",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": ">=2.2.3",
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.1|~3.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Alsatian\\PostgresSearchBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gruzd Sergey",
+                    "homepage": "https://github.com/ddmaster"
+                }
+            ],
+            "description": "Tools to use full-text search PostgreSQL in Doctrine.",
+            "homepage": "https://github.com/ddmaster/PostgresSearchBundle",
+            "keywords": [
+                "Symfony2",
+                "doctrine2",
+                "postgresql",
+                "search",
+                "symfony3"
+            ],
+            "time": "2016-05-07 22:35:35"
+        },
         {
             "name": "behat/transliterator",
             "version": "v1.1.0",
@@ -5735,16 +5781,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.8.7",
+            "version": "v2.8.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "663b2d6202c3149515b39cfe50a174a130acb8e2"
+                "reference": "038d13264f732f9bba850c423e374dc72874d1a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/663b2d6202c3149515b39cfe50a174a130acb8e2",
-                "reference": "663b2d6202c3149515b39cfe50a174a130acb8e2",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/038d13264f732f9bba850c423e374dc72874d1a6",
+                "reference": "038d13264f732f9bba850c423e374dc72874d1a6",
                 "shasum": ""
             },
             "require": {
@@ -5818,7 +5864,7 @@
                 "doctrine/dbal": "~2.4",
                 "doctrine/doctrine-bundle": "~1.2",
                 "doctrine/orm": "~2.4,>=2.4.5",
-                "egulias/email-validator": "~1.2",
+                "egulias/email-validator": "~1.2,>=1.2.1",
                 "monolog/monolog": "~1.11",
                 "ocramius/proxy-manager": "~0.4|~1.0|~2.0",
                 "phpdocumentor/reflection": "^1.0.7"
@@ -5865,7 +5911,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-06-06 16:05:37"
+            "time": "2016-06-30 15:42:24"
         },
         {
             "name": "twig/extensions",
@@ -6308,7 +6354,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "sonata-project/translation-bundle": 20
+        "sonata-project/translation-bundle": 20,
+        "alsatian/postgres-search-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

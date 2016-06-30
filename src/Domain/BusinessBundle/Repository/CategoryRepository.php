@@ -10,4 +10,79 @@ namespace Domain\BusinessBundle\Repository;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function searchAutosuggest($name)
+    {
+        $name    = $this->splitPhraseToPlain($name);
+        $connection = $this->getEntityManager()->getConnection();
+
+        $searchSQL = $this->getSearchSQLQuery();
+        $statement = $connection->prepare(
+            "SELECT
+                ts_headline(name, q) as data,
+                name
+            FROM
+            (
+                $searchSQL
+            ) as search
+            LIMIT 5"
+        );
+
+        $statement->bindValue("searchQuery", $name);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return $results;
+    }
+
+    protected function getSearchSQLQuery()
+    {
+        return 'SELECT
+                c.id AS id,
+                c.name,
+                q,
+                ts_rank(c.search_fts, q) AS rank
+            FROM
+                category c,
+                to_tsquery(:searchQuery) q
+            WHERE
+                c.search_fts @@ q
+            AND (
+                c.deleted_at IS NULL
+            )
+            ORDER BY rank DESC';
+    }
+
+    protected function splitPhraseToPlain(string $phrase)
+    {
+        $words = explode(' ', $phrase);
+        $wordParts = array_map(
+            function ($item) {
+                return $item . ":*";
+            },
+            $words
+        );
+        $plain = implode(' & ', $wordParts);
+
+        return $plain;
+    }
+
+    protected function getCategoryQueryBuilder()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->from('DomainBusinessBundle:Category', 'c');
+
+        return $queryBuilder;
+    }
+
+    public function getCategoryByBusinessesIds(array $businessIdList)
+    {
+        $queryBuilder = $this->getEntityManager()->createQuery('SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)')
+            ->setParameter('ids', $businessIdList);
+            
+        $results = $queryBuilder->getResult();
+
+        return $results;
+    }
+
 }
