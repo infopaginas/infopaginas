@@ -37,4 +37,9 @@ class DefaultController extends Controller
 
         return $this->render('DomainBusinessBundle:Default:index.html.twig');
     }
+
+    public function viewAction()
+    {
+        return $this->render('DomainBusinessBundle:Default:index.html.twig');
+    }
 }

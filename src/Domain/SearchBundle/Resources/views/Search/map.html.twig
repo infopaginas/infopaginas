@@ -1,0 +1,67 @@
+{% extends "DomainSearchBundle:Layout:base.html.twig" %}
+
+{% block tabMenu %}
+    <ul class="tab-btn">
+        <li><a href="{{ path('domain_search_index', app.request.query.all) }}"><i class="fa fa-list" aria-hidden="true"></i><span>list</span></a>
+        </li>
+        <li class="active"><a href="{{ path('domain_search_map', app.request.query.all) }}"><i class="map-icon"></i><span>map</span></a></li>
+        <li><a href=""><i class="compare-icon"></i><span>compare</span></a></li>
+    </ul>
+{% endblock %}
+
+{% block main %}
+ <section id="search-results-map" class="search-results map-view">
+    <div class="row search-map">
+        <!--Breadcrumbs-->
+        <div class="crumbs">
+            <a href="">Home <span>&nbsp; &#187; &nbsp; </span></a><span>Bookstores in San Juan</span>
+        </div>
+        <aside>
+
+
+            <div class="map-view-aside">
+                <div class="map-search-aside">
+                    <div class="sort-by">
+                        <span>Sort by:</span>
+
+                        <div class="dropdown filter-drop">
+                            <div class="select-container">
+                                <select class="form-control select-control">
+                                    <option>Relevance</option>
+                                    <option>NY</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cards">
+                    {% if results is defined and results is not null %}
+                        {% for item in results %}
+                            {% include 'DomainSearchBundle:Search:Templates/mapSearchResultItem.html.twig' with { 'item' : item } %}
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="map-wrap" id="map-canvas">
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+parent()
+{{ parent() }}
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/bundles/domainsite/scripts/modules/mapsearchpage.js")}}'], function(mapSearchPage) {
+                var mapSearchPage = new mapSearchPage({
+                    'markers' : {{ markers|raw }}
+                });
+            })
+        })
+</script>
+{% endblock %}

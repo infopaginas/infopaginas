@@ -76,6 +76,8 @@
         </div>
     </nav>
 {% endblock %}
+{% block headerFilters %}
+{% endblock %}
 </header>
 
 <!--Breadcrumbs-->
@@ -165,19 +167,7 @@
 
 <!-- Scripts -->
 {% block scripts %}
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/jquery-2.1.4.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/bootstrap.min.js')}}"></script>
-    <!-- нужны на страницах с селектами -->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/select2.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/select.js')}}"></script>
-    <!-- нужны на страницах с рейтингом -->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/star-rating.js')}}"></script>
-    <!-- нужны на страницах со слайдером-->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/slick.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/slick.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/jquery.mobile.custom.min.js')}}"></script>
-    <!-- нужны на страницах с фото -->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/photo-gallery.js')}}"></script>
-{% endblock %}
+    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
+{% endblock %} 
 </body>
 </html>
