@@ -32,6 +32,7 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
             $user->setRole($userData['role']);
             $user->setSuperAdmin($userData['super_admin']);
             $user->setEnabled($userData['enabled']);
+            $user->updateRoleGroup();
 
             // set reference to find this
             $this->addReference('user.'.$user->getUsername(), $user);
