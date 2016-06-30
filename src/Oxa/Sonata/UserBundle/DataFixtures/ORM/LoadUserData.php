@@ -29,6 +29,8 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
         $user = new User();
         $user->setEmail('admin@admin.by');
         $user->setUsername('admin');
+        $user->setFirstname('Main');
+        $user->setLastname('Admin');
         $user->setPlainPassword('admin');
         $user->setRole($adminGroup);
         $user->setSuperAdmin(true);
@@ -41,6 +43,20 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, O
         $manager->flush();
     }
 
+    private function getData()
+    {
+        return [
+            [
+//                'email' => ConfigInterface::DEFAULT_TITLE,
+//                'username' => 'Default title',
+//                'value' => 'Infopaginas',
+//                'format' => 'text',
+//                'description' => 'Default site title',
+            ], [
+
+            ]
+            ];
+    }
     /**
      * Get the order of this fixture
      *

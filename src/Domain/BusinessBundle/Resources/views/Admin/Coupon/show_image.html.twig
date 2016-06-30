@@ -9,12 +9,12 @@ file that was distributed with this source code.
 
 #}
 
-{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
 
 {% block field%}
     {% if object.image is not null %}
         <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.image|sonata_urlsafeid }) }}">
-            <img class="list-preview-image" src="{% path object.image, object.type.mediaFormat %}" alt="">
+            <img src="{% path object.image, 'normal' %}" alt="{{ object.image.name }}">
         </a>
     {% endif %}
 {% endblock %}

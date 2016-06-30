@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -22,16 +23,17 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('id')
             ->add('businessProfile')
             ->add('subscriptionPlan')
-            ->add('startDate', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
+            ->add('status', 'doctrine_orm_choice', [
+                'field_type' => 'choice',
                 'field_options' => [
-                    'format' => self::FILTER_DATETIME_FORMAT
-            ]])
-            ->add('endDate', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => self::FILTER_DATETIME_FORMAT
-            ]])
+                    'required'  => false,
+                    'choices'   => StatusTrait::getStatuses()
+                ]
+            ])
+            ->add('startDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('endDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
 
@@ -44,6 +46,7 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('id')
             ->add('businessProfile')
             ->add('subscriptionPlan')
+            ->add('statusValue')
             ->add('startDate')
             ->add('endDate')
             ->add('createdAt')
@@ -83,6 +86,7 @@ class SubscriptionAdmin extends OxaAdmin
                     // hide this field if this page used as sonata_type_collection on other pages
                     'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass()]
                 ])
+                ->add('status', 'choice', ['choices' => StatusTrait::getStatuses()])
                 ->add('subscriptionPlan')
             ->end()
             ->with('Period')

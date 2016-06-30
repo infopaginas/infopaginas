@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task\Task;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -71,14 +72,23 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
-     * @ORM\OrderBy({"id" = "desc"})
+     * @ORM\OrderBy({"status" = "ASC"})
      */
     protected $subscriptions;
 
     /**
-     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription", mappedBy="businessProfile")
+     * @var Discount[] - Business Discounts
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Discount",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @ORM\OrderBy({"status" = "ASC"})
      */
-    protected $subscription;
+    protected $discounts;
 
     /**
      * @var Category[] - Business category
@@ -406,6 +416,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function __construct()
     {
+        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
@@ -1481,28 +1492,86 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * Set subscription
+     * @return Subscription|null
+     */
+    public function getSubscription()
+    {
+        $result = null;
+        
+        foreach ($this->getSubscriptions() as $subscription) {
+            /** @var $subscription Subscription */
+            if ($subscription->getStatus() == StatusInterface::STATUS_ACTIVE) {
+                $result = $subscription;
+            }
+        }
+        
+        return $result;
+    }
+
+    /**
+     * @return SubscriptionPlan|null
+     */
+    public function getSubscriptionPlan()
+    {
+        $result = null;
+
+        if ($subscription = $this->getSubscription()) {
+            $result = $subscription->getSubscriptionPlan();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return Discount|null
+     */
+    public function getDiscount()
+    {
+        $result = null;
+
+        foreach ($this->getDiscounts() as $discount) {
+            /** @var $discount Discount */
+            if ($discount->getStatus() == StatusInterface::STATUS_ACTIVE) {
+                $result = $discount;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Add discount
      *
-     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     * @param \Domain\BusinessBundle\Entity\Discount $discount
      *
      * @return BusinessProfile
      */
-    public function setSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription = null)
+    public function addDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
     {
-        $this->subscription = $subscription;
+        $this->discounts[] = $discount;
 
-        $subscription->setBusinessProfile($this);
+        $discount->setBusinessProfile($this);
 
         return $this;
     }
 
     /**
-     * Get subscription
+     * Remove discount
      *
-     * @return \Domain\BusinessBundle\Entity\Subscription
+     * @param \Domain\BusinessBundle\Entity\Discount $discount
      */
-    public function getSubscription()
+    public function removeDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
     {
-        return $this->subscription;
+        $this->discounts->removeElement($discount);
+    }
+
+    /**
+     * Get discounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
     }
 }

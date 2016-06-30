@@ -1,6 +1,7 @@
 <?php
 namespace Oxa\Sonata\AdminBundle\Admin;
 
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -34,6 +35,17 @@ class OxaAdmin extends BaseAdmin
         ],
         'translation_domain' => 'SonataAdminBundle'
     ];
+
+    /**
+     * Used to set default datetime options
+     *
+     * @var array
+     */
+    protected $defaultDatagridDatetimeTypeOptions = [
+        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_options' => [
+            'format' => self::FILTER_DATETIME_FORMAT
+    ]];
 
     /**
      * Default values to the datagrid.

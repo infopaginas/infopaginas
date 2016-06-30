@@ -82,3 +82,15 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\Address\Country, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Countries}
+
+    domain_business.admin.discount:
+        class: Domain\BusinessBundle\Admin\DiscountAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Discount, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Discounts}
+
+    domain_business.admin.coupon:
+        class: Domain\BusinessBundle\Admin\CouponAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Coupon, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Coupons}

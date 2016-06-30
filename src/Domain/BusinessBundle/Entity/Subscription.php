@@ -4,6 +4,9 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Model\SubscriptionInterface;
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -19,11 +22,13 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
+ * @UniqueEntity(fields = {"businessProfile", "status"}, message="Active subscription already exists for this business")
  */
-class Subscription implements DefaultEntityInterface, TranslatableInterface
+class Subscription implements DefaultEntityInterface, TranslatableInterface, StatusInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use StatusTrait;
 
     /**
      * @var int

@@ -38,13 +38,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->add('name')
             ->add('user')
-            ->add('subscription')
             ->add('categories')
-            ->add('registrationDate', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => 'dd-MM-y hh:mm:ss'
-            ]])
+            ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
@@ -56,10 +52,11 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:list_image.html.twig'])
+            ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_image.html.twig'])
             ->add('name')
-            ->add('user.username')
-            ->add('subscription')
+            ->add('user')
+            ->add('subscriptionPlan', null, ['template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'])
+            ->add('discount', null, ['template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_discount.html.twig'])
             ->add('categories')
             ->add('registrationDate')
             ->add('isActive', null, ['editable' => true])
@@ -81,6 +78,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Description', array('class' => 'col-md-8'))->end()
                 ->with('Address', array('class' => 'col-md-4'))->end()
                 ->with('Map', array('class' => 'col-md-8'))->end()
+                ->with('Gallery')->end()
             ->end()
             ->tab('Categories', array('class' => 'col-md-12'))
                 ->with('Categories', array('class' => 'col-md-12'))->end()
@@ -89,10 +87,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('General', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
                 ->with('Subscriptions', array('class' => 'col-md-12'))->end()
-            ->end()
-            ->tab('Media', array('class' => 'col-md-6'))
-                ->with('General')->end()
-                ->with('Gallery')->end()
+                ->with('Discounts', array('class' => 'col-md-12'))->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
@@ -124,15 +119,19 @@ class BusinessProfileAdmin extends OxaAdmin
                         'btn_delete' => false,
                         'btn_add' => false,
                     ])
+                    ->add('logo', 'sonata_type_model_list', [], ['link_parameters' => [
+                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                    ]])
                     ->add('website')
                     ->add('email', 'email')
                     ->add('phone')
-                    ->add('workingHours')
                     ->add('slug', null, ['read_only' => true, 'required' => false])
                 ->end()
                 ->with('Description')
                     ->add('slogan')
                     ->add('product')
+                    ->add('workingHours')
                     ->add('description', 'ckeditor')
                 ->end()
                 ->with('Address')
@@ -158,6 +157,18 @@ class BusinessProfileAdmin extends OxaAdmin
                         'longitude' => $longitude,
                     ])
                 ->end()
+                ->with('Gallery')
+                    ->add('images', 'sonata_type_collection', ['by_reference' => false], [
+                        'edit' => 'inline',
+                        'sortable'  => 'position',
+                        'delete_empty' => true,
+                        'inline' => 'table',
+                        'link_parameters' => [
+                            'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
+                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                        ]
+                    ])
+                ->end()
             ->end()
             ->tab('Categories')
                 ->with('Categories')
@@ -180,6 +191,12 @@ class BusinessProfileAdmin extends OxaAdmin
                         'btn_add' => false,
                         'disabled' => true,
                     ])
+                    ->add('createdAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
+                    ->add('createdUser', 'sonata_type_model', [
+                        'required' => false,
+                        'btn_add' => false,
+                        'disabled' => true,
+                    ])
                 ->end()
                 ->with('Displayed blocks')
                     ->add('isSetDescription')
@@ -189,12 +206,26 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('isSetSlogan')
                 ->end()
                 ->with('Subscriptions')
-                    ->add('subscription', 'sonata_type_model', [
-                        'btn_add' => false,
-                        'query' => $subscriptionQuery,
-                        'required' => false,
-                    ])
                     ->add('subscriptions', 'sonata_type_collection', [
+                        'modifiable' => false,
+                        'btn_add' => false,
+                        'mapped' => true,
+                        'required' => false,
+                        'type_options' => [
+                            'delete' => false,
+                            'delete_options' => [
+                                'type' => 'checkbox',
+                                'type_options' => ['mapped' => false, 'required' => false]
+                            ]]
+                    ], [
+                        'read_only' => true,
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'allow_delete' => false,
+                    ])
+                ->end()
+                ->with('Discounts')
+                    ->add('discounts', 'sonata_type_collection', [
                         'modifiable' => false,
                         'btn_add' => false,
                         'mapped' => true,
@@ -229,28 +260,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         'sortable' => 'id',
                         'allow_delete' => true,
                     ])
-                    ->end()
                 ->end()
-            ->tab('Media')
-                ->with('General')
-                    ->add('logo', 'sonata_type_model_list', [], ['link_parameters' => [
-                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]])
-                ->end()
-                ->with('Gallery')
-                    ->add('images', 'sonata_type_collection', ['by_reference' => false], [
-                        'edit' => 'inline',
-                        'sortable'  => 'position',
-                        'delete_empty' => true,
-                        'inline' => 'table',
-                        'link_parameters' => [
-                            'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
-                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                        ]
-                    ])
-                ->end()
-            ->end();
+            ->end()
+        ;
     }
 
     /**
@@ -261,12 +273,15 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('logo', null, [
-                'template' => 'DomainBusinessBundle:Admin:show_image.html.twig'
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_image.html.twig'
             ])
             ->add('name')
             ->add('images')
             ->add('user')
+            ->add('subscription')
             ->add('subscriptions')
+            ->add('discount')
+            ->add('discounts')
             ->add('categories')
             ->add('areas')
             ->add('brands')
@@ -279,7 +294,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('registrationDate')
             ->add('slogan')
             ->add('description', null, [
-                'template' => 'DomainBusinessBundle:Admin:show_description.html.twig'
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig'
             ])
             ->add('product')
             ->add('workingHours')
@@ -318,5 +333,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 $addressManager->setGoogleAddress($addressResult['result'], $object);
             }
         }
+        
     }
 }

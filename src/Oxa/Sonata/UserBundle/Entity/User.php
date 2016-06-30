@@ -138,6 +138,32 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function __toString()
+    {
+        if ($this->getFullname()) {
+            $result = $this->getFullname();
+        } elseif ($this->getUsername()) {
+            $result = $this->getUsername();
+        } else {
+            $result = '-';
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullname()
+    {
+        $fullNameArray = [];
+
+        if ($this->getFirstname())  $fullNameArray[] = $this->getFirstname();
+        if ($this->getLastname())   $fullNameArray[] = $this->getLastname();
+
+        return implode(' ', $fullNameArray);
+    }
+
     /**
      * @return mixed
      */
