@@ -45,7 +45,7 @@ requirejs.config({
         'bootstrap'     : 'bootstrap.min',
         'underscore'    : 'underscore-min',
         'alertify'      : 'alertify.min',
-        'spin'          : 'spin.min'
+        'spin'          : 'spin.min',
         'slick'         : 'slick.min',
         'photo-gallery' : 'photo-gallery',
         'lightbox'      : 'simple-lightbox.min',

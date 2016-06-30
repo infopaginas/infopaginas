@@ -65,4 +65,24 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
         return $plain;
     }
+
+    protected function getCategoryQueryBuilder()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->from('DomainBusinessBundle:Category', 'c');
+
+        return $queryBuilder;
+    }
+
+    public function getCategoryByBusinessesIds(array $businessIdList)
+    {
+        $queryBuilder = $this->getEntityManager()->createQuery('SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)')
+            ->setParameter('ids', $businessIdList);
+            
+        $results = $queryBuilder->getResult();
+
+        return $results;
+    }
+
 }
