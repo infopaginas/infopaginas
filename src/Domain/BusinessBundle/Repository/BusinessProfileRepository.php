@@ -45,7 +45,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function searchAutosuggest($searchQuery)
     {
         $searchQuery    = $this->splitPhraseToPlain($searchQuery);
-        $searchSQL      = $this->getSearchSQLQuery();
+        $searchSQL      = $this->getSearchByNameSQLQuery();
 
         $connection = $this->getEntityManager()->getConnection();
         $statement = $connection->prepare(
@@ -56,6 +56,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             (
                 $searchSQL
             ) as search
+            LIMIT 5
             "
         );
 
@@ -84,24 +85,59 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         return 'SELECT
                     bp.id AS id,
+                    bp.slug,
                     bp.name,
+                    bp.description,
                     bp.slogan,
                     bp.city,
                     bp.state,
                     bp.zip_code,
                     bp.website,
                     bp.email,
+                    bp.latitude,
+                    bp.longitude,
                     q,
                     ts_rank(bp.search_fts, q) AS rank,
-                    ROW_NUMBER() over (order by id) as order
+                    max(ts_rank(c.search_fts, q)) as rank_c,
+                    ROW_NUMBER() over (order by bp.id) as order
                 FROM
                     business_profile bp,
+                    business_profile_categories bpc,
+                    category c,
                     to_tsquery(:searchQuery) q
                 WHERE
+                (
                     bp.search_fts @@ q
+                OR
+                    c.search_fts @@ q
+                )
+                AND 
+                    bp.id = bpc.business_profile_id
+                AND
+                    bpc.category_id = c.id
                 AND (
                     bp.deleted_at IS NULL
                 )
-                ORDER BY rank DESC';
+                GROUP BY bp.id, q
+                ORDER BY rank_c DESC, rank DESC';
+    }
+
+    private function getSearchByNameSQLQuery()
+    {
+        return '
+            SELECT 
+                bp.name,
+                q,
+                ts_rank(bp.search_name_fts, q) AS rank
+            FROM
+                business_profile bp,
+                to_tsquery(:searchQuery) q
+            WHERE
+                bp.search_name_fts @@ q
+            AND (
+                bp.deleted_at IS NULL
+            )
+            ORDER BY rank DESC
+        ';
     }
 }

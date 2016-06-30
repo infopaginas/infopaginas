@@ -3,11 +3,17 @@
         <input type="checkbox" name="card-check" class="form-control checkbox-btn"
                id="card-check">
         <label class="control-label card-label" for="card-check">
-            <span class="card-number">{{ item.order }}.</span>
-            &nbsp;
-            <span class="card-name">{{ item.name }}</span>
-            &nbsp;
-            <span class="card-slogan"><q>{{ item.slogan }}</q></span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                <span class="card-number">{{ item.order }}.</span>
+            </a>
+                &nbsp;
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                <span class="card-name">{{ item.name }}</span>
+            </a>
+                &nbsp;
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                <span class="card-slogan"><q>{{ item.slogan }}</q></span>
+            </a>
         </label>
     </div>
     <div class="col-xs-5 schedule">
@@ -22,7 +28,7 @@
     </div>
     <div class="col-xs-7 company-contact">
         <ul class="company-info">
-            <li><a href=""><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+            <li><a href="//{{ item.website }}"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
             </li>
             <li><a href="mailto:sonsnotebooks@yahoo.com"><i class="fa fa-envelope"
                                                             aria-hidden="true"></i><span>{{ item.email }}</span></a>

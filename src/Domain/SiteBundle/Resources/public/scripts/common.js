@@ -6,12 +6,39 @@ requirejs.config({
         },
         "underscore": {
             exports: "_"
+        },
+        "jquery" : {
+            exports: "$"
+        },
+        'photo-gallery' : {
+            deps: ['jquery']
+        },
+        'comparasion' : {
+            deps: ['jquery']
+        },
+        'modal' : {
+            deps: ['jquery']
+        },
+        'select' : {
+            deps: ['$']
+        },
+        'slick' : {
+            deps: ['jquery']
+        },
+        'slider' : {
+            deps: ['jquery']
+        },
+        'star-rating' : {
+            deps: ['$']
         }
     },
     paths: {
         modules         : '../modules',
         tools           : '../modules/tools',
-        abstract        : '../abstract', 
+        abstract        : '../abstract',
+        async           : 'require/async',
+        goog            : 'require/goog',
+        propertyParser  : 'require/propertyParser',
         'jquery'        : 'jquery.min',
         'jquery-ui'     : 'jquery-ui.min',
         'jquery-mobile' : 'jquery.mobile.custom.min',
@@ -23,5 +50,6 @@ requirejs.config({
         'photo-gallery' : 'photo-gallery',
         'lightbox'      : 'simple-lightbox.min',
         'select2'       : 'select2.min'
+
     }
 });

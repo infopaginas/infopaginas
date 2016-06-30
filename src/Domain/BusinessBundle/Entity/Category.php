@@ -83,6 +83,20 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $translations;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="search_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "name"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchFts;
+
+    /**
      * Get id
      *
      * @return int

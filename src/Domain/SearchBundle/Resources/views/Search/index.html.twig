@@ -1,4 +1,4 @@
-{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+{% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
 {% block main %}
  <!-- Search Results -->
@@ -34,9 +34,11 @@
                         </div>
                     </div>
                     <div class="cards">
+                    {% if results is defined and results is not null %}
                         {% for item in results %}
-                            {% include 'DomainSiteBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
+                            {% include 'DomainSearchBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
                         {% endfor %}
+                    {% endif %}
                     </div>
                 </div>
                 <aside class="map col-md-3">

@@ -1,35 +1,39 @@
-var select = function() {
-    this.selectControl = $( '.select-control' );
-    this.selectArrow = $( '.select2-selection__arrow' );
-    this.tab = $('.tabs-block a');
-};
+define(['jquery'], function ($) {
+    'use strict';
 
-select.prototype.initSelect = function() {
-    var self = this;
+    var select = function() {
+        this.selectControl = $( '.select-control' );
+        this.selectArrow = $( '.select2-selection__arrow' );
+        this.tab = $('.tabs-block a');
+    };
 
-    self.selectControl.select2({
-        placeholder: function(){
-            $(this).data('placeholder');
-        }
-    });
-    self.selectArrow.hide();
-    $( window ).resize(function() {
-        self.selectControl.select2();
+    select.prototype.initSelect = function() {
+        var self = this;
+
+        self.selectControl.select2({
+            placeholder: function(){
+                $(this).data('placeholder');
+            }
+        });
         self.selectArrow.hide();
-    }.bind( this ) );
+        $( window ).resize(function() {
+            self.selectControl.select2();
+            self.selectArrow.hide();
+        }.bind( this ) );
 
-    this.tab.click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
-        self.selectControl.select2();
-    })
-};
+        this.tab.click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+            self.selectControl.select2();
+        })
+    };
 
-select.prototype.run = function() {
-    this.initSelect();
-};
+    select.prototype.run = function() {
+        this.initSelect();
+    };
 
-$( function () {
-    var controller = new select();
-    controller.run();
+    $( function () {
+        var controller = new select();
+        controller.run();
+    });
 });
