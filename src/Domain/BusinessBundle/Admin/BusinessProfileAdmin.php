@@ -55,8 +55,12 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('logo', null, ['template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_image.html.twig'])
             ->add('name')
             ->add('user')
-            ->add('subscriptionPlan', null, ['template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'])
-            ->add('discount', null, ['template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_discount.html.twig'])
+            ->add('subscriptionPlan', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
+            ])
+            ->add('discount', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_discount.html.twig'
+            ])
             ->add('categories')
             ->add('registrationDate')
             ->add('isActive', null, ['editable' => true])
@@ -104,11 +108,6 @@ class BusinessProfileAdmin extends OxaAdmin
             $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
-
-        // create query to choose subscriptions which related only to current business profile
-        $sonataQueryManager = new SonataQueryManager($this->modelManager);
-        $businessId = ($this->getSubject()) ? $this->getSubject()->getId() : null;
-        $subscriptionQuery = $sonataQueryManager->getBusinessSubscriptionQuery($businessId);
 
         $formMapper
             ->tab('Profile')
@@ -333,6 +332,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 $addressManager->setGoogleAddress($addressResult['result'], $object);
             }
         }
-        
+
     }
 }

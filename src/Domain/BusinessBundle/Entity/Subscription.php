@@ -102,8 +102,8 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Sta
         if ($this->getId()) {
             $result = sprintf(
                 '%s: %s (%s - %s)',
-                $this->getId(), 
-                $this->getSubscriptionPlan(), 
+                $this->getId(),
+                $this->getSubscriptionPlan(),
                 $this->getStartDate()->format('d/M/Y, H:m'),
                 $this->getEndDate()->format('d/M/Y, H:m')
             );

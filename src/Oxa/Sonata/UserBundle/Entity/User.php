@@ -158,8 +158,13 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     {
         $fullNameArray = [];
 
-        if ($this->getFirstname())  $fullNameArray[] = $this->getFirstname();
-        if ($this->getLastname())   $fullNameArray[] = $this->getLastname();
+        if ($this->getFirstname()) {
+            $fullNameArray[] = $this->getFirstname();
+        }
+
+        if ($this->getLastname()) {
+            $fullNameArray[] = $this->getLastname();
+        }
 
         return implode(' ', $fullNameArray);
     }

@@ -44,7 +44,7 @@ trait StatusTrait
     {
         return $this->status;
     }
-    
+
     /**
      * @return array
      */

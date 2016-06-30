@@ -1526,14 +1526,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getSubscription()
     {
         $result = null;
-        
+
         foreach ($this->getSubscriptions() as $subscription) {
             /** @var $subscription Subscription */
             if ($subscription->getStatus() == StatusInterface::STATUS_ACTIVE) {
                 $result = $subscription;
             }
         }
-        
+
         return $result;
     }
 

@@ -24,7 +24,7 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    
+
     /**
      * @var int
      *
@@ -71,7 +71,7 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
      */
     protected $image;
-    
+
     /**
      * Get id
      *
@@ -101,7 +101,7 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
         }
         return $result;
     }
-    
+
     /**
      * Constructor
      */
