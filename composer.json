@@ -35,8 +35,15 @@
         "egeloen/google-map-bundle": "~2.1",
         "willdurand/geocoder": "2.8.1",
         "hwi/oauth-bundle": "^0.4.1",
-        "friendsofsymfony/jsrouting-bundle": "^1.6"
+        "friendsofsymfony/jsrouting-bundle": "^1.6",
+        "alsatian/postgres-search-bundle": "dev-master"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url":  "git@github.com:Alsatian67/PostgresSearchBundle.git"
+        }
+    ],
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
     },
