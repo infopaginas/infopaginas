@@ -22,7 +22,6 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
- * @UniqueEntity(fields = {"businessProfile", "status"}, message="Active subscription already exists for this business")
  */
 class Subscription implements DefaultEntityInterface, TranslatableInterface, StatusInterface
 {

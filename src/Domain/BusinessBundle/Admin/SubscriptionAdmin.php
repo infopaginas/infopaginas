@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
+use Symfony\Component\Validator\ConstraintViolation;
 
 class SubscriptionAdmin extends OxaAdmin
 {
@@ -75,10 +76,24 @@ class SubscriptionAdmin extends OxaAdmin
                     ->add('subscriptionId', 'text', [
                         'read_only' => true,
                         'mapped' => false,
+                        'disabled' => true,
                         'data' => ($this->getSubject()) ? $this->getSubject()->getId() : null
                     ])
                 ->end();
         }
+
+        // put this in admin helper
+        $systemDatetimeOptions = [
+            'format' => self::FORM_DATETIME_FORMAT,
+            'required' => false,
+            'disabled' => true
+        ];
+
+        $systemUserOptions = [
+            'required' => false,
+            'btn_add' => false,
+            'disabled' => true,
+        ];
 
         $formMapper
             ->with('General')
@@ -94,18 +109,10 @@ class SubscriptionAdmin extends OxaAdmin
                 ->add('endDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
             ->end()
             ->with('Status')
-                ->add('createdAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
-                ->add('createdUser', 'sonata_type_model', [
-                    'required' => false,
-                    'btn_add' => false,
-                    'disabled' => true,
-                ])
-                ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
-                ->add('updatedUser', 'sonata_type_model', [
-                    'required' => false,
-                    'btn_add' => false,
-                    'disabled' => true,
-                ])
+                ->add('createdAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)
+                ->add('createdUser', 'sonata_type_model', $systemUserOptions)
+                ->add('updatedAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)
+                ->add('updatedUser', 'sonata_type_model', $systemUserOptions)
             ->end()
         ;
     }
@@ -128,19 +135,19 @@ class SubscriptionAdmin extends OxaAdmin
         ;
     }
 
-    /**
-     * @param ErrorElement $errorElement
-     * @param mixed $object
-     */
-    public function validate(ErrorElement $errorElement, $object)
-    {
-        if ($object instanceof Subscription && $object->getStartDate()) {
-            if ($object->getStartDate()->diff($object->getEndDate())->invert) {
-                $errorElement->with('endDate')
-                    ->addViolation('End Date must be later than Start Date')
-                    ->end()
-                ;
-            }
-        }
-    }
+//    /**
+//     * @param ErrorElement $errorElement
+//     * @param mixed $object
+//     */
+//    public function validate(ErrorElement $errorElement, $object)
+//    {
+//        if ($object instanceof Subscription && $object->getStartDate()) {
+//                if ($object->getStartDate()->diff($object->getEndDate())->invert) {
+//                $errorElement->with('endDate')
+//                    ->addViolation('End Date must be later than Start Date')
+//                    ->end()
+//                ;
+//            }
+//        }
+//    }
 }

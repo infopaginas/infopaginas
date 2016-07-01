@@ -14,6 +14,7 @@ interface DefaultEntityInterface extends DeleteableEntityInterface
 {
     const IS_ACTIVE_PROPERTY_NAME = 'isActive';
     const CREATE_USER_PROPERTY_NAME = 'createdUser';
+    const UPDATE_USER_PROPERTY_NAME = 'updatedUser';
 
     /**
      * Sets createdAt.
