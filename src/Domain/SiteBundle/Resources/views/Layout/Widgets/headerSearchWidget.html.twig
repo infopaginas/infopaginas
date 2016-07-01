@@ -1,11 +1,11 @@
 <div class="col-xs-6 find-input">
-    <input type="text" id='headerSearch' placeholder="What do you want to find?"
+    <input type="text" id='headerSearch' name="q" placeholder="What do you want to find?"
         {% if app.request.query.get('q') is not null %} value="{{ app.request.query.get('q') }}" {% endif %}
            class="form-control what">
         
 </div>
 <div class="col-xs-4 search-input">
-    <input type="text" id='headerGeo' placeholder="San Juan"
+    <input type="text" id='headerGeo'  name="geo" placeholder="San Juan"
         {% if app.request.query.get('geo') is not null %} value="{{ app.request.query.get('geo') }}" {% endif %}
         class="form-control">
         <span class="cross"></span>
