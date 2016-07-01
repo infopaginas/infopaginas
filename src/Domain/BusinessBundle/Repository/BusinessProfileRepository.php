@@ -30,11 +30,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function search($searchQuery, $location)
     {
         $searchQuery = $this->splitPhraseToPlain($searchQuery);
+        $location    = $this->splitPhraseToPlain($location);
 
         $connection = $this->getEntityManager()->getConnection();
         $statement = $connection->prepare($this->getSearchSQLQuery());
 
         $statement->bindValue("searchQuery", $searchQuery);
+        $statement->bindValue("location", $location);
         $statement->execute();
         $results = $statement->fetchAll();
 
@@ -84,7 +86,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     private function getSearchSQLQuery()
     {
         return 'SELECT
-                    bp.id AS id,
+                    bp.id as id,
                     bp.slug,
                     bp.name,
                     bp.description,
@@ -97,29 +99,42 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
                     bp.latitude,
                     bp.longitude,
                     q,
-                    ts_rank(bp.search_fts, q) AS rank,
+                    ts_rank(bp.search_fts, q) as rank,
+                    ts_rank(bp.search_city_fts, qa) as rank_city,
                     max(ts_rank(c.search_fts, q)) as rank_c,
+                    max(ts_rank(a.search_fts,qa)) as rank_a,
                     ROW_NUMBER() over (order by bp.id) as order
                 FROM
                     business_profile bp,
                     business_profile_categories bpc,
                     category c,
-                    to_tsquery(:searchQuery) q
+                    business_profile_areas bpa,
+                    area a,
+                    to_tsquery(:searchQuery) q,
+                    to_tsquery(:location) qa
                 WHERE
                 (
                     bp.search_fts @@ q
                 OR
                     c.search_fts @@ q
+                OR
+                    bp.search_city_fts @@ qa
+                OR
+                    a.search_fts @@ qa
                 )
                 AND 
                     bp.id = bpc.business_profile_id
                 AND
                     bpc.category_id = c.id
+                AND
+                    bp.id = bpa.business_profile_id
+                AND
+                    a.id = bpa.area_id
                 AND (
                     bp.deleted_at IS NULL
                 )
-                GROUP BY bp.id, q
-                ORDER BY rank_c DESC, rank DESC';
+                GROUP BY bp.id, q, qa
+                ORDER BY rank_c DESC, rank DESC, rank_city DESC, rank_a DESC';
     }
 
     private function getSearchByNameSQLQuery()

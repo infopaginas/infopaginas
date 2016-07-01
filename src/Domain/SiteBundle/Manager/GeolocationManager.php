@@ -12,7 +12,7 @@ class GeolocationManager extends Manager
     const   ACCEPT_TYPE           = 'Accept: application/json';
     const   GOOGLE_API_KEY        = 'AIzaSyBBl4CQTYhUmdK4zs9EVcPmPjLBiIWez3w';
 
-    const   GOOGLE_PLACES_URL     = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&types=(cities)&components=country:pr&language=locale&key=google_api_key&input=';
+    const   GOOGLE_PLACES_URL     = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&types=(cities)&components=country:pr&language=locale&region=pr&key=google_api_key&input=';
 
     protected function initCurl()
     {

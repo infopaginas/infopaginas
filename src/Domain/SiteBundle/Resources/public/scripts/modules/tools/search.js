@@ -76,6 +76,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype.onAutoCompleteSelect = function ( event, ui ) {
         this.searchBox.val(ui.item.name);
         event.preventDefault();
+        this.onSearchBoxBlur();
         return true;
     }
 

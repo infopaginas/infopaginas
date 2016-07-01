@@ -24,26 +24,15 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a href="" class="logo-header"></a>
+                        <a href="{{ path('domain_site_home_index')}}" class="logo-header"></a>
 
                         <div class="header-form">
                             <form class="form-horizontal search-form">
 
                                 <div class="form-group row">
-                                    <div class="col-xs-6 find-input">
-                                        <input type="text" placeholder="What do you want to find?"
-                                               class="form-control what">
-                                    </div>
-                                    <div class="col-xs-4 search-input">
-                                        <input type="text" class="form-control" placeholder="San Juan"><span
-                                            class="cross"></span>
-                                    </div>
-                                    <div class="col-xs-1 search-button">
-                                        <button type="submit" class="btn btn-primary green-btn search-btn"><i
-                                                class="fa fa-search"
-                                                aria-hidden="true"></i>
-                                        </button>
-                                    </div>
+                                    {% block headerSearch %}
+                                        {% include 'DomainSiteBundle:Layout:Widgets/headerSearchWidget.html.twig' %}
+                                    {% endblock %}
                                 </div>
                             </form>
                         </div>
