@@ -206,18 +206,13 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
-                        'modifiable' => false,
-                        'btn_add' => false,
-                        'mapped' => true,
-                        'required' => false,
                         'type_options' => [
-                            'delete' => false,
+                            'delete' => true,
                             'delete_options' => [
                                 'type' => 'checkbox',
                                 'type_options' => ['mapped' => false, 'required' => false]
                             ]]
                     ], [
-                        'read_only' => true,
                         'edit' => 'inline',
                         'inline' => 'table',
                         'allow_delete' => false,
@@ -225,18 +220,14 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Discounts')
                     ->add('discounts', 'sonata_type_collection', [
-                        'modifiable' => false,
-                        'btn_add' => false,
                         'mapped' => true,
-                        'required' => false,
                         'type_options' => [
-                            'delete' => false,
+                            'delete' => true,
                             'delete_options' => [
                                 'type' => 'checkbox',
                                 'type_options' => ['mapped' => false, 'required' => false]
                             ]]
                     ], [
-                        'read_only' => true,
                         'edit' => 'inline',
                         'inline' => 'table',
                         'allow_delete' => false,
@@ -312,10 +303,23 @@ class BusinessProfileAdmin extends OxaAdmin
     /**
      * @param ErrorElement $errorElement
      * @param mixed $object
+     * @return null
      */
     public function validate(ErrorElement $errorElement, $object)
     {
         if ($object->getUseMapAddress()) {
+
+            if (!$object->getFullAddress()) {
+                $errorElement->with('fullAddress')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.full_address.required',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+                return null;
+            }
 
             $addressManager = $this->configurationPool
                 ->getContainer()
@@ -325,13 +329,16 @@ class BusinessProfileAdmin extends OxaAdmin
 
             if (!empty($addressResult['error'])) {
                 $errorElement->with('fullAddress')
-                    ->addViolation($addressResult['error'])
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.full_address.invalid',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
                     ->end()
                 ;
             } else {
                 $addressManager->setGoogleAddress($addressResult['result'], $object);
             }
         }
-
     }
 }

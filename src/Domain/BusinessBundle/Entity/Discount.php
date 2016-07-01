@@ -22,7 +22,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\DiscountRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\DiscountTranslation")
- * @UniqueEntity(fields = {"businessProfile", "status"}, message="Active discount already exists for this business")
  */
 class Discount implements DefaultEntityInterface, TranslatableInterface, StatusInterface
 {

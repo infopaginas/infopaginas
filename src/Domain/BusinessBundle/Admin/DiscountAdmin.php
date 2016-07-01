@@ -53,12 +53,13 @@ class DiscountAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-
+        // to show record Id in sonata_type_collection form type
         if ($this->getRoot()->getClass() != $this->getClass()) {
             $formMapper
                 ->add('discountId', 'text', [
                     'read_only' => true,
                     'mapped' => false,
+                    'disabled' => true,
                     'data' => ($this->getSubject()) ? $this->getSubject()->getId() : null
                 ])
             ;
@@ -69,7 +70,8 @@ class DiscountAdmin extends OxaAdmin
             ->add('businessProfile', null, [
                 // hide this field if this page used as sonata_type_collection on other pages
                 'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass()]
-            ])            ->add('coupon')
+            ])
+            ->add('coupon')
             ->add('description')
             ->add('value')
         ;

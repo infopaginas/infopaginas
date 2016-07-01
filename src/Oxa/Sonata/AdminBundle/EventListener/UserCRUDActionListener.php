@@ -44,6 +44,8 @@ class UserCRUDActionListener
         array_map(function ($entity) use ($uow) {
             if ($entity instanceof DefaultEntityInterface) {
                 $entity->setCreatedUser($this->user);
+                $entity->setUpdatedUser($this->user);
+
                 $uow->propertyChanged(
                     $entity,
                     DefaultEntityInterface::CREATE_USER_PROPERTY_NAME,
@@ -52,6 +54,16 @@ class UserCRUDActionListener
                 );
                 $uow->scheduleExtraUpdate($entity, [
                     DefaultEntityInterface::CREATE_USER_PROPERTY_NAME => [null, $this->user]
+                ]);
+
+                $uow->propertyChanged(
+                    $entity,
+                    DefaultEntityInterface::UPDATE_USER_PROPERTY_NAME,
+                    null,
+                    $this->user
+                );
+                $uow->scheduleExtraUpdate($entity, [
+                    DefaultEntityInterface::UPDATE_USER_PROPERTY_NAME=> [null, $this->user]
                 ]);
             }
         }, $uow->getScheduledEntityInsertions());
