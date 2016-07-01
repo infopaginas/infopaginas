@@ -73,9 +73,7 @@ class DiscountAdmin extends OxaAdmin
             ])
             ->add('coupon')
             ->add('description')
-            ->add('value', null, [
-                'required' => true
-            ])
+            ->add('value')
         ;
     }
 

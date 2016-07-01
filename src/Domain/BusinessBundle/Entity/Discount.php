@@ -50,7 +50,7 @@ class Discount implements DefaultEntityInterface, TranslatableInterface, StatusI
      * @var string - Discount value
      *
      * @Gedmo\Translatable
-     * @ORM\Column(name="value", type="float", nullable=true)
+     * @ORM\Column(name="value", type="float")
      */
     protected $value;
 
