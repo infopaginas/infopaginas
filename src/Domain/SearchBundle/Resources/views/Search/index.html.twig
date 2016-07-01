@@ -11,14 +11,14 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <span class="search-title blue-c">Bookstores in San Juan,Puerto Rico</span>
+                    <span class="search-title blue-c">{{ query }} in {{ location }}</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-9 list-block">
                     <div class="list-info">
                         <div class="results-info">
-                            <span>1-20 of 53 Results </span><span>for Bookstores in San Juan</span>
+                            <span>{{ (page - 1)* limit }}-{{ page * limit }} of {{ total }} Results </span><span>for {{ query }} in {{ location }}</span>
                         </div>
                         <div class="sort-by">
                             <span>Sort by:</span>

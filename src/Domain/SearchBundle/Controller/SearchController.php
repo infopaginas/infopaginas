@@ -23,6 +23,8 @@ class SearchController extends Controller
         $query = $request->get('q', '');
         $location = $request->get('geo', 'San Juan');
         $page     = $request->get('page', 1);
+        $total = 0;
+        $limit = 30;
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
         $categoryManager         = $this->get('domain_business.manager.category');
@@ -35,6 +37,11 @@ class SearchController extends Controller
 
         return $this->render('DomainSearchBundle:Search:index.html.twig', array(
             'results'       => $results,
+            'query'         => $query,
+            'page'          => $page,
+            'total'         => $total,
+            'limit'         => $limit,
+            'location'      => $location,
             'banner'        => $banner,
             'categories'    => $categories
         ));
