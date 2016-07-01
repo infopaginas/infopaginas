@@ -54,10 +54,10 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
     protected function loadBusiness()
     {
         $data = [
-            'Panadería La Catalana (test)'      => '78 Calle El Tren, Cataño, 00962, Puerto Rico',
-            'RST Puerto Rico (test)'            => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
-            'Chinchorreando En Hato Rey (test)' => '67 Cll Bolivia, San Juan, Puerto Rico',
-            'CASA DE LAS ARMADURAS INC. (test)' => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
+            'Panadería La Catalana'      => '78 Calle El Tren, Cataño, 00962, Puerto Rico',
+            'RST Puerto Rico'            => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
+            'Chinchorreando En Hato Rey' => '67 Cll Bolivia, San Juan, Puerto Rico',
+            'CASA DE LAS ARMADURAS INC.' => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
         ];
 
         $addressManager = $this->container->get('domain_business.manager.address_manager');
