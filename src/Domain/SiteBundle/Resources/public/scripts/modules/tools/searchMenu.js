@@ -13,6 +13,7 @@ define(
         };
 
         this.init( options );
+        this.$el = $( this.options.selector );
         this.bindEvents();
         return this;
     }
