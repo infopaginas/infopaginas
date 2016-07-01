@@ -90,6 +90,15 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $type;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Campaign",
+     *     inversedBy="banners",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="campaign_id", referencedColumnName="id")
+     */
+    protected $campaign;
+
+    /**
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer", nullable=false)
      */

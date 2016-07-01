@@ -1603,4 +1603,52 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         return $this->discounts;
     }
+
+    /**
+     * Set searchFts
+     *
+     * @param tsvector $searchFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchFts($searchFts)
+    {
+        $this->searchFts = $searchFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchFts
+     *
+     * @return tsvector
+     */
+    public function getSearchFts()
+    {
+        return $this->searchFts;
+    }
+
+    /**
+     * Set searchNameFts
+     *
+     * @param tsvector $searchNameFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchNameFts($searchNameFts)
+    {
+        $this->searchNameFts = $searchNameFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchNameFts
+     *
+     * @return tsvector
+     */
+    public function getSearchNameFts()
+    {
+        return $this->searchNameFts;
+    }
 }
