@@ -30,6 +30,10 @@ class BusinessProfileManager extends Manager
 
     public function searchByPhraseAndLocation(string $phrase, string $location)
     {
+        if (empty($location)) {
+            // TODO Move magic string this to config
+            $location = "San Juan";
+        }
         return $this->getRepository()->search($phrase, $location);
     }
 
