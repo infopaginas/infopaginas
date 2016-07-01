@@ -53,7 +53,7 @@ class DiscountAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-
+        // to show record Id in sonata_type_collection form type
         if ($this->getRoot()->getClass() != $this->getClass()) {
             $formMapper
                 ->add('discountId', 'text', [

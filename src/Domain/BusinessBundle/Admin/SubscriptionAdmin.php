@@ -70,6 +70,7 @@ class SubscriptionAdmin extends OxaAdmin
             ->with('Status', array('class' => 'col-md-4'))->end()
         ;
 
+        // to show record Id in sonata_type_collection form type
         if ($this->getRoot()->getClass() != $this->getClass()) {
             $formMapper
                 ->with('General')
@@ -135,19 +136,19 @@ class SubscriptionAdmin extends OxaAdmin
         ;
     }
 
-//    /**
-//     * @param ErrorElement $errorElement
-//     * @param mixed $object
-//     */
-//    public function validate(ErrorElement $errorElement, $object)
-//    {
-//        if ($object instanceof Subscription && $object->getStartDate()) {
-//                if ($object->getStartDate()->diff($object->getEndDate())->invert) {
-//                $errorElement->with('endDate')
-//                    ->addViolation('End Date must be later than Start Date')
-//                    ->end()
-//                ;
-//            }
-//        }
-//    }
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        if ($object instanceof Subscription && $object->getStartDate()) {
+                if ($object->getStartDate()->diff($object->getEndDate())->invert) {
+                $errorElement->with('endDate')
+                    ->addViolation('End Date must be later than Start Date')
+                    ->end()
+                ;
+            }
+        }
+    }
 }
