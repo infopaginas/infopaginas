@@ -36,7 +36,7 @@ class BusinessProfileManager extends Manager
         }
 
         // TODO Move to filtering functionality
-        $phrase = preg_replace("/[^a-zA-Z0-9]+/", "", $phrase);
+        $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
         return $this->getRepository()->search($phrase, $location);
     }
 
@@ -51,6 +51,13 @@ class BusinessProfileManager extends Manager
 
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
+        if (empty($location)) {
+            // TODO Move magic string this to config
+            $location = "San Juan";
+        }
+
+        // TODO Move to filtering functionality
+        $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
         return $this->getRepository()->search($phrase, $location);
     }
 
