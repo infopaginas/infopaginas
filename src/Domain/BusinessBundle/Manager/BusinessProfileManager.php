@@ -34,6 +34,9 @@ class BusinessProfileManager extends Manager
             // TODO Move magic string this to config
             $location = "San Juan";
         }
+
+        // TODO Move to filtering functionality
+        $phrase = preg_replace("/[^a-zA-Z0-9]+/", "", $phrase);
         return $this->getRepository()->search($phrase, $location);
     }
 
