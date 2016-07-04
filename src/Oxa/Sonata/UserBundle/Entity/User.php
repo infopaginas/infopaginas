@@ -13,7 +13,7 @@ use Oxa\Sonata\UserBundle\Model\UserRoleInterface;
 use Sonata\UserBundle\Entity\BaseUser as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Domain\BusinessBundle\Entity\Task\Task;
+use Domain\BusinessBundle\Entity\Task;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -91,7 +91,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     /**
      * @var Task[]
      *
-     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task\Task", mappedBy="reviewer")
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="reviewer")
      */
     protected $tasks;
 
@@ -136,6 +136,37 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        if ($this->getFullname()) {
+            $result = $this->getFullname();
+        } elseif ($this->getUsername()) {
+            $result = $this->getUsername();
+        } else {
+            $result = '-';
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullname()
+    {
+        $fullNameArray = [];
+
+        if ($this->getFirstname()) {
+            $fullNameArray[] = $this->getFirstname();
+        }
+
+        if ($this->getLastname()) {
+            $fullNameArray[] = $this->getLastname();
+        }
+
+        return implode(' ', $fullNameArray);
     }
 
     /**

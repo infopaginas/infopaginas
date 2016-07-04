@@ -54,15 +54,23 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
     protected function loadBusiness()
     {
         $data = [
-            'Test business profile 1',
-            'Test business profile 2',
-            'Test business profile 3',
-            'Test business profile 4',
+            'Panadería La Catalana'      => '78 Calle El Tren, Cataño, 00962, Puerto Rico',
+            'RST Puerto Rico'            => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
+            'Chinchorreando En Hato Rey' => '67 Cll Bolivia, San Juan, Puerto Rico',
+            'CASA DE LAS ARMADURAS INC.' => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
         ];
 
-        foreach ($data as $value) {
+        $addressManager = $this->container->get('domain_business.manager.address_manager');
+
+        foreach ($data as $name => $address) {
+            $googleResponse = $addressManager->validateAddress($address);
+
+            if ($googleResponse['error']) {
+                throw new \Exception('Invalid business address. Fixture');
+            }
+
             $object = new BusinessProfile();
-            $object->setName($value);
+            $object->setName($name);
             $object->setEmail('test@test.com');
             $object->setWebsite('www.google.com');
             $object->setPhone('+375-29-1862356');
@@ -70,11 +78,8 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->setProduct('Good product');
             $object->setDescription('Some description');
 
-            $object->setStreetAddress('address');
-            $object->setCity('address');
-            $object->setCustomAddress('address');
-            $object->setLongitude(5);
-            $object->setLatitude(5);
+            $object->setFullAddress($address);
+            $addressManager->setGoogleAddress($googleResponse['result'], $object);
 
             $object->addArea($this->getReference('area.0'));
             $object->addArea($this->getReference('area.' . rand(1, 2)));
@@ -90,10 +95,9 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $object->addPaymentMethod($this->getReference('payment_method.' . rand(1, 2)));
 
             $object->setCountry($this->getReference('country.PR'));
-            $object->setSubscription($this->getReference('subscription.' . rand(1, 5)));
             $object->setUser($this->getReference('user.admin'));
 
-            $this->addTranslation(new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $value), $object);
+            $this->addTranslation(new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $name), $object);
             $this->addTranslation(new BusinessProfileTranslation(), 'slogan', 'Spain Slogan', $object);
             $this->addTranslation(new BusinessProfileTranslation(), 'product', 'Spain Product', $object);
             $this->addTranslation(new BusinessProfileTranslation(), 'description', 'Spain Description', $object);

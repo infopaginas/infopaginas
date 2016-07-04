@@ -9,11 +9,14 @@
 namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Task\Task;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
 use Domain\BusinessBundle\Repository\TaskRepository;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class TasksManager
@@ -86,13 +89,86 @@ class TasksManager
      * Create new 'Approve Business Review' task
      *
      * @access public
-     * @param BusinessProfile $businessProfile
+     * @param BusinessReview $businessReview
      * @return array
      */
-    public function createBusinessReviewConfirmationRequest(BusinessProfile $businessProfile) : array
+    public function createBusinessReviewConfirmationRequest(BusinessReview $businessReview) : array
     {
-        //need to implement REVIEW object saving here (when we'll have Review entity class)
-        $task = TasksFactory::create(TaskType::TASK_REVIEW_APPROVE, $businessProfile);
+        $businessProfile = $businessReview->getBusinessProfile();
+        $task = TasksFactory::create(TaskType::TASK_REVIEW_APPROVE, $businessProfile, $businessReview);
+        return $this->save($task);
+    }
+
+    /**
+     * Fetch count of approved tasks from db
+     *
+     * @access public
+     * @return int
+     */
+    public function getTotalApprovedTasksCount() : int
+    {
+        return $this->repository->getTotalApprovedTasksCount();
+    }
+
+    /**
+     * Fetch count of rejected tasks from db
+     *
+     * @access public
+     * @return int
+     */
+    public function getTotalRejectedTasksCount() : int
+    {
+        return $this->repository->getTotalRejectedTasksCount();
+    }
+
+    /**
+     * Fetch count of still open tasks from db
+     *
+     * @access public
+     * @return int
+     */
+    public function getTotalIncompleteTasksCount() : int
+    {
+        return $this->repository->getTotalIncompleteTasksCount();
+    }
+
+    /**
+     * Associate user object with task
+     *
+     * @access public
+     * @param Task $task
+     * @param User $reviewer
+     * @return array
+     */
+    public function setReviewerForTask(Task $task, User $reviewer) : array
+    {
+        $task->setReviewer($reviewer);
+        return $this->save($task);
+    }
+
+    /**
+     * Set "Rejected" status for task
+     *
+     * @access public
+     * @param Task $task
+     * @return array
+     */
+    public function reject(Task $task) : array
+    {
+        $task->setStatus(TaskStatusType::TASK_STATUS_REJECTED);
+        return $this->save($task);
+    }
+
+    /**
+     * Set "Closed" (== APPROVED) status for task
+     *
+     * @access public
+     * @param Task $task
+     * @return array
+     */
+    public function approve(Task $task) : array
+    {
+        $task->setStatus(TaskStatusType::TASK_STATUS_CLOSED);
         return $this->save($task);
     }
 

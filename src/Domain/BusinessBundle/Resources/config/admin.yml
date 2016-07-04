@@ -29,6 +29,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
 
+    domain_business.admin.subscription_plan:
+        class: Domain\BusinessBundle\Admin\SubscriptionPlanAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\SubscriptionPlan, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscription Plans}
+
     domain_business.admin.category:
         class: Domain\BusinessBundle\Admin\CategoryAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Category, OxaSonataAdminBundle:CRUD]
@@ -46,16 +52,14 @@ services:
             - [ setTemplate, ['edit', 'DomainBusinessBundle:Admin:edit.html.twig']]
 
     domain_business.admin.task:
-        class: Domain\BusinessBundle\Admin\Task\TaskAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Task\Task, OxaSonataAdminBundle:CRUD]
+        class: Domain\BusinessBundle\Admin\TaskAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Task, DomainBusinessBundle:TaskAdmin]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Tasks}
-
-    domain_business.admin.review_task:
-        class: Domain\BusinessBundle\Admin\Task\ReviewTaskAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Task\ReviewTask, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Review Tasks}
+        calls:
+            - [ setTemplate, [list, DomainBusinessBundle:TaskAdmin:list.html.twig]]
+            - [ setTemplate, [edit, DomainBusinessBundle:TaskAdmin:edit.html.twig]]
+            - [ setTasksManager, ['@domain_business.manager.tasks']]
 
     domain_business.admin.business_review:
         class: Domain\BusinessBundle\Admin\Review\BusinessReviewAdmin
@@ -75,4 +79,16 @@ services:
         class: Domain\BusinessBundle\Admin\Address\CountryAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Address\Country, OxaSonataAdminBundle:CRUD]
         tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Country}
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Countries}
+
+    domain_business.admin.discount:
+        class: Domain\BusinessBundle\Admin\DiscountAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Discount, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Discounts}
+
+    domain_business.admin.coupon:
+        class: Domain\BusinessBundle\Admin\CouponAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Coupon, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Coupons}

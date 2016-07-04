@@ -1,0 +1,20 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field%}
+    {% if object.logo is not null %}
+        <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.logo|sonata_urlsafeid }) }}">
+            <img class="list-preview-image" src="{% path object.logo, 'preview' %}" alt="{{ object.logo.name }}">
+        </a>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'OxaSonataAdminBundle:CRUD:list.html.twig' %}
+
+{% block list_table %}
+    <div class="box box-primary">
+        <div class="box-body table-responsive no-padding">
+            <table class="table">
+                <thead>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Total Approved: </td>
+                    <td>{{ totalApprovedTasksCount }}</td>
+                </tr>
+                <tr>
+                    <td>Total Rejected: </td>
+                    <td>{{ totalRejectedTasksCount }}</td>
+                </tr>
+                <tr>
+                    <td>Total Incomplete: </td>
+                    <td>{{ totalCompleteTasksCount }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{ parent() }}
+{% endblock %}

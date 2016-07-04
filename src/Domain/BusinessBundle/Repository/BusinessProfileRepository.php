@@ -26,4 +26,133 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $businessProfiles;
     }
+    
+    public function search($searchQuery, $location)
+    {
+        $searchQuery = $this->splitPhraseToPlain($searchQuery);
+        $location    = $this->splitPhraseToPlain($location);
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($this->getSearchSQLQuery());
+
+        $statement->bindValue("searchQuery", $searchQuery);
+        $statement->bindValue("location", $location);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return $results;
+    }
+
+
+    public function searchAutosuggest($searchQuery)
+    {
+        $searchQuery    = $this->splitPhraseToPlain($searchQuery);
+        $searchSQL      = $this->getSearchByNameSQLQuery();
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare(
+            "SELECT
+                ts_headline(name, q) as data,
+                name
+            FROM
+            (
+                $searchSQL
+            ) as search
+            LIMIT 5
+            "
+        );
+
+        $statement->bindValue("searchQuery", $searchQuery);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return $results;
+    }
+
+    protected function splitPhraseToPlain(string $phrase)
+    {
+        $words = explode(' ', $phrase);
+        $wordParts = array_map(
+            function ($item) {
+                return $item . ":*";
+            },
+            $words
+        );
+        $plain = implode(' & ', $wordParts);
+
+        return $plain;
+    }
+
+    private function getSearchSQLQuery()
+    {
+        return 'SELECT
+                    bp.id as id,
+                    bp.slug,
+                    bp.name,
+                    bp.description,
+                    bp.slogan,
+                    bp.city,
+                    bp.state,
+                    bp.zip_code,
+                    bp.website,
+                    bp.email,
+                    bp.latitude,
+                    bp.longitude,
+                    q,
+                    ts_rank(bp.search_fts, q) as rank,
+                    ts_rank(bp.search_city_fts, qa) as rank_city,
+                    max(ts_rank(c.search_fts, q)) as rank_c,
+                    max(ts_rank(a.search_fts,qa)) as rank_a,
+                    ROW_NUMBER() over (order by bp.id) as order
+                FROM
+                    business_profile bp,
+                    business_profile_categories bpc,
+                    category c,
+                    business_profile_areas bpa,
+                    area a,
+                    to_tsquery(:searchQuery) q,
+                    to_tsquery(:location) qa
+                WHERE
+                (
+                    bp.search_fts @@ q
+                OR
+                    c.search_fts @@ q
+                OR
+                    bp.search_city_fts @@ qa
+                OR
+                    a.search_fts @@ qa
+                )
+                AND 
+                    bp.id = bpc.business_profile_id
+                AND
+                    bpc.category_id = c.id
+                AND
+                    bp.id = bpa.business_profile_id
+                AND
+                    a.id = bpa.area_id
+                AND (
+                    bp.deleted_at IS NULL
+                )
+                GROUP BY bp.id, q, qa
+                ORDER BY rank_c DESC, rank DESC, rank_city DESC, rank_a DESC';
+    }
+
+    private function getSearchByNameSQLQuery()
+    {
+        return '
+            SELECT 
+                bp.name,
+                q,
+                ts_rank(bp.search_name_fts, q) AS rank
+            FROM
+                business_profile bp,
+                to_tsquery(:searchQuery) q
+            WHERE
+                bp.search_name_fts @@ q
+            AND (
+                bp.deleted_at IS NULL
+            )
+            ORDER BY rank DESC
+        ';
+    }
 }

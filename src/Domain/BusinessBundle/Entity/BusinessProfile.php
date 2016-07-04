@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
-use Domain\BusinessBundle\Entity\Task\Task;
+use Domain\BusinessBundle\Entity\Task;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -63,14 +64,32 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $user;
 
     /**
-     * @var Subscription - Subscription plan
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Subscription",
-     *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     * @var Subscription[] - Business subscriptions
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Subscription",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      *     )
-     * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id", nullable=true)
+     * @Assert\Valid
+     * @ORM\OrderBy({"status" = "ASC"})
      */
-    protected $subscription;
+    protected $subscriptions;
+
+    /**
+     * @var Discount[] - Business Discounts
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Discount",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @ORM\OrderBy({"status" = "ASC"})
+     */
+    protected $discounts;
 
     /**
      * @var Category[] - Business category
@@ -236,7 +255,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Task[]
-     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task\Task", mappedBy="businessProfile")
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="businessProfile")
      */
     protected $tasks;
 
@@ -251,6 +270,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $businessReviews;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="closure_reason", type="string", length=255, nullable=true)
+     */
+    protected $closureReason;
+
+    /*
      * @var BusinessGallery[] - Media Images
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
      *     mappedBy="businessProfile",
@@ -426,6 +452,49 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->locale = $locale;
     }
 
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="search_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "name",
+     *              "description"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchFts;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="search_name_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "name"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchNameFts;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="search_city_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "city"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchCityFts;
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -451,6 +520,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function __construct()
     {
+        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
@@ -865,30 +936,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * Set subscription
-     *
-     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
-     *
-     * @return BusinessProfile
-     */
-    public function setSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription = null)
-    {
-        $this->subscription = $subscription;
-
-        return $this;
-    }
-
-    /**
-     * Get subscription
-     *
-     * @return \Domain\BusinessBundle\Entity\Subscription
-     */
-    public function getSubscription()
-    {
-        return $this->subscription;
-    }
-
-    /**
      * Add category
      *
      * @param \Domain\BusinessBundle\Entity\Category $category
@@ -1060,11 +1107,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Add task
      *
-     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     * @param \Domain\BusinessBundle\Entity\Task $task
      *
      * @return BusinessProfile
      */
-    public function addTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    public function addTask(\Domain\BusinessBundle\Entity\Task $task)
     {
         $this->tasks[] = $task;
 
@@ -1074,9 +1121,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Remove task
      *
-     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     * @param \Domain\BusinessBundle\Entity\Task $task
      */
-    public function removeTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    public function removeTask(\Domain\BusinessBundle\Entity\Task $task)
     {
         $this->tasks->removeElement($task);
     }
@@ -1127,6 +1174,24 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getClosureReason()
+    {
+        return $this->closureReason;
+    }
+
+    /**
+     * @param string $closureReason
+     * @return BusinessProfile
+     */
+    public function setClosureReason($closureReason)
+    {
+        $this->closureReason = $closureReason;
+        return $this;
+    }
+
+    /*
      * Set logo
      *
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $logo
@@ -1550,7 +1615,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $this->useMapAddress;
     }
 
-
     /**
      * @return mixed
      */
@@ -1602,6 +1666,106 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setGoogleURL($googleURL)
     {
         $this->googleURL = $googleURL;
+
+    }
+
+    /**
+     * Add subscription
+     *
+     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     *
+     * @return BusinessProfile
+     */
+    public function addSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription)
+    {
+        $this->subscriptions[] = $subscription;
+
+        $subscription->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove subscription
+     *
+     * @param \Domain\BusinessBundle\Entity\Subscription $subscription
+     */
+    public function removeSubscription(\Domain\BusinessBundle\Entity\Subscription $subscription)
+    {
+        $this->subscriptions->removeElement($subscription);
+    }
+
+    /**
+     * Get subscriptions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSubscriptions()
+    {
+        return $this->subscriptions;
+    }
+
+    /**
+     * @return Subscription|null
+     */
+    public function getSubscription()
+    {
+        $result = null;
+
+        foreach ($this->getSubscriptions() as $subscription) {
+            /** @var $subscription Subscription */
+            if ($subscription->getStatus() == StatusInterface::STATUS_ACTIVE) {
+                $result = $subscription;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return SubscriptionPlan|null
+     */
+    public function getSubscriptionPlan()
+    {
+        $result = null;
+
+        if ($subscription = $this->getSubscription()) {
+            $result = $subscription->getSubscriptionPlan();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return Discount|null
+     */
+    public function getDiscount()
+    {
+        $result = null;
+
+        foreach ($this->getDiscounts() as $discount) {
+            /** @var $discount Discount */
+            if ($discount->getStatus() == StatusInterface::STATUS_ACTIVE) {
+                $result = $discount;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Add discount
+     *
+     * @param \Domain\BusinessBundle\Entity\Discount $discount
+     *
+     * @return BusinessProfile
+     */
+    public function addDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
+    {
+        $this->discounts[] = $discount;
+
+        $discount->setBusinessProfile($this);
+
         return $this;
     }
 
@@ -1621,5 +1785,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->youtubeURL = $youtubeURL;
         return $this;
+    }
+
+     /**
+     * Remove discount
+     *
+     * @param \Domain\BusinessBundle\Entity\Discount $discount
+     */
+    public function removeDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
+    {
+        $this->discounts->removeElement($discount);
+    }
+
+    /**
+     * Get discounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
     }
 }
