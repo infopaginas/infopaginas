@@ -1,0 +1,27 @@
+<!-- ProfileManage -->
+<form
+      class="form-horizontal general-manage"
+      id="businessProfileRequestForm"
+      novalidate="novalidate"
+      name="{{ businessProfileForm.vars.name }}"
+      {% if businessProfileForm.vars.value %} data-id="{{ businessProfileForm.vars.value.getId() }}"{% endif %}
+>
+    <div id="new-profile-loading-spinner-container-id"></div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="general">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/general.html.twig'
+            with { 'businessProfileForm' : businessProfileForm} %}
+        </div>
+        <!-- Business Address tab -->
+        <div class="tab-pane" id="businessAddress">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/address.html.twig'
+            with { 'businessProfileForm' : businessProfileForm} %}
+        </div>
+        <!-- Social Networks tab -->
+        <div class="tab-pane" id="socialNetworks">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/social.html.twig'
+            with { 'businessProfileForm' : businessProfileForm} %}
+        </div>
+    </div>
+</form>

@@ -170,7 +170,11 @@
                                         <div class="col-xs-6 form-col">
                                             {% for business in row %}
                                                 <div class="col-xs-12">
-                                                    <span>{{ business.getName() }}</span>
+                                                    <span>
+                                                        <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
+                                                            {{ business.getName() }}
+                                                        </a>
+                                                    </span>
                                                 </div>
                                             {% endfor %}
                                         </div>
@@ -182,11 +186,15 @@
                                         </div>
                                     </div>
                                 {% endif %}
+                                <div class="col-xs-12">
+                                    <a class="btn green-btn request" href="{{ path('domain_business_profile_create') }}">
+                                        {% trans %}Request Business Profile{% endtrans %}
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-footer col-xs-12">
-
                         <div class="form-btn">
                             <button type="reset" class="btn btn-default grey-light-bk">
                                 <i class="fa fa-times-circle" aria-hidden="true"></i>

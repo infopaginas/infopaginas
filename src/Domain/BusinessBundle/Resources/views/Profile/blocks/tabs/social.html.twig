@@ -1,0 +1,64 @@
+{% import '::widgets/custom_form_label.html.twig' as custom_form_label %}
+
+<section id="social-networks" class="profile-manage profile-manage-general">
+    <div class="container general-manage">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="cards">
+                    <div class="form-group card-item">
+                        <div class="card-item-name">
+                            <span>Social Networks</span>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.facebookURL) }}
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.facebookURL) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.twitterURL) }}
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.twitterURL) }}
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.googleURL) }}
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.googleURL) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.youtubeURL) }}
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.youtubeURL) }}
+                            </div>
+                        </div>
+                        {{ form_rest(businessProfileForm) }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-footer col-xs-12">
+                <div class="form-btn">
+                    <button type="reset" class="btn btn-default grey-light-bk">
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn green-btn">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

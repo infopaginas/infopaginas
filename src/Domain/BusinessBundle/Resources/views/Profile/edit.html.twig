@@ -1,0 +1,47 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block breakcrumbs %} {% endblock %}
+
+{% block header %}
+    {% include 'DomainBusinessBundle:Profile:blocks/navigation.html.twig' %}
+{% endblock %}
+
+{% block main %}
+
+    <!-- ProfileManage -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="general">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/general.html.twig'
+                with { 'businessProfileForm' : businessProfileForm} %}
+        </div>
+
+        <!-- Business Address tab -->
+        <div class="tab-pane" id="businessAddress">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/address.html.twig'
+                with { 'businessProfileForm' : businessProfileForm} %}
+        </div>
+
+        <!-- Media tab -->
+        <div class="tab-pane" id="media">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/media.html.twig' %}
+        </div>
+
+        <!-- Social Networks tab -->
+        <div class="tab-pane" id="socialNetworks">
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/social.html.twig'
+                with { 'businessProfileForm' : businessProfileForm} %}
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainbusiness/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfile.js")}}'], function(businessProfile) {
+                var profile = new businessProfile();
+            })
+        })
+    </script>
+{% endblock%}

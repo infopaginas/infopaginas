@@ -1,0 +1,13 @@
+{% macro widget(field) %}
+    {% set label = field.vars.label %}
+    {% set required = field.vars.required %}
+    {% set translation_domain = field.vars.translation_domain %}
+
+    <span>
+        {{ label|trans({}, translation_domain) }}
+        {% if required %}
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+        {% endif %}
+        :
+    </span>
+{% endmacro %}

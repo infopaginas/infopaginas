@@ -1,0 +1,159 @@
+{% import '::widgets/custom_form_checkbox.html.twig' as custom_form_checkbox %}
+{% import '::widgets/custom_form_label.html.twig' as custom_form_label %}
+
+<section id="business-address" class="profile-manage profile-manage-general">
+    <div class="container general-manage business-address-manage">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="cards">
+                    <div class="form-group card-item">
+                        <div class="card-item-name">
+                            <span>Service Areas</span>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="radio-row col-xs-12">
+                                <label class="control-label" for="area">Area</label>
+                                <input type="radio" name="loc" class="form-control radio-btn" id="ares">
+                            </div>
+                            <div class="radio-row col-xs-12">
+                                <label class="control-label" for="local">Locality</label>
+                                <input type="radio" name="loc" class="form-control radio-btn"
+                                       id="local">
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>Within miles of my Business</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" placeholder="100">
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Localities:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        <select class="form-control select-control" disabled>
+                                            <option>4 selected</option>
+                                            <option>NY</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group card-item business-info">
+                        <div class="card-item-name">
+                            <span>Address</span>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.streetAddress) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.streetAddress) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.country) }}
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.country) }}
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.state) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.state) }}
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.city) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.city) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.zipCode) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.zipCode) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.extendedAddress) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.extendedAddress) }}
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.crossStreet) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.crossStreet) }}
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.customAddress) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.customAddress) }}
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.hideAddress) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.hideAddress) }}
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>Map:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.map) }}
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.latitude) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.latitude) }}
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.longitude) }}
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.longitude) }}
+                                <a href="#" class="btn green-btn geo-btn" id="geocodeButton">
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    Geocode
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-footer col-xs-12">
+                {#<span>
+                    Last date of profile update: <span>-</span>
+                </span>#}
+                <div class="form-btn">
+                    <button type="reset" class="btn btn-default grey-light-bk">
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn green-btn">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

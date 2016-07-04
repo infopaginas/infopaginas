@@ -10,4 +10,11 @@ namespace Domain\BusinessBundle\Repository;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAvailableCategoriesQb()
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->where('c.isActive = TRUE');
+
+        return $qb;
+    }
 }

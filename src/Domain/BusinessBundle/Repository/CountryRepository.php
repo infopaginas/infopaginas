@@ -29,4 +29,12 @@ class CountryRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    public function getAvailableCountriesQb()
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->where('c.isActive = TRUE');
+
+        return $qb;
+    }
 }

@@ -10,4 +10,11 @@ namespace Domain\BusinessBundle\Repository;
  */
 class TagRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAvailableTagsQb()
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb->where('t.isActive = TRUE');
+
+        return $qb;
+    }
 }

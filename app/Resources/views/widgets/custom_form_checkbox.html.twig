@@ -1,0 +1,8 @@
+{% macro widget(field) %}
+    <div class="checkbox">
+        <label>
+            {{ form_widget(field) }}
+            {{ field.vars.label }}
+        </label>
+    </div>
+{% endmacro %}

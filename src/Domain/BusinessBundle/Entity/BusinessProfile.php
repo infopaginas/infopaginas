@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BusinessProfile
@@ -47,6 +48,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -77,13 +79,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
+     * @Assert\Count(min = 1, minMessage = "At least 1 category should be selected")
      */
     protected $categories;
 
     /**
      * @var string - Website
      *
-     * @ORM\Column(name="website", type="string", length=30)
+     * @ORM\Column(name="website", type="string", length=30, nullable=true)
      */
     protected $website;
 
@@ -115,6 +118,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_areas")
+     * @Assert\Count(min = 1, minMessage = "At least 1 area should be selected")
      */
     protected $areas;
 
@@ -216,6 +220,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $isSetSlogan = false;
 
     /**
+     * @var string - Field is checked, if Video field of profile is set.
+     *
+     * @ORM\Column(name="is_set_video", type="boolean", options={"default" : 0})
+     */
+    protected $isSetVideo = false;
+
+    /**
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"})
@@ -280,6 +291,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
+     * @Assert\NotBlank()
      */
     protected $streetAddress;
 
@@ -300,6 +312,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
+     * @ORM\Column(name="cross_street", type="string", length=50, nullable=true)
+     */
+    protected $crossStreet;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="full_address", type="string", nullable=true)
      */
     protected $fullAddress;
@@ -315,6 +334,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="city", type="string", nullable=true)
+     * @Assert\NotBlank()
      */
     protected $city;
 
@@ -322,6 +342,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
+     * @Assert\NotBlank()
      */
     protected $zipCode;
 
@@ -362,14 +383,48 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $hideAddress = false;
 
     /**
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     */
+    protected $twitterURL;
+
+    /**
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     */
+    protected $facebookURL;
+
+    /**
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     */
+    protected $googleURL;
+
+    /**
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     */
+    protected $youtubeURL;
+
+    /**
      * @var Country - Country, Business is located in
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Address\Country",
      *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank()
      */
     protected $country;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     * and it is not necessary because globally locale can be set in listener
+     */
+    protected $locale;
+
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
 
     public function getMarkCopyPropertyName()
     {
@@ -740,6 +795,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getIsSetSlogan()
     {
         return $this->isSetSlogan;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsSetVideo()
+    {
+        return $this->isSetVideo;
+    }
+
+    /**
+     * @param string $isSetVideo
+     * @return BusinessProfile
+     */
+    public function setIsSetVideo($isSetVideo)
+    {
+        $this->isSetVideo = $isSetVideo;
+
+        return $this;
     }
 
     /**
@@ -1386,6 +1460,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCrossStreet()
+    {
+        return $this->crossStreet;
+    }
+
+    /**
+     * @param string $crossStreet
+     * @return BusinessProfile
+     */
+    public function setCrossStreet($crossStreet)
+    {
+        $this->crossStreet = $crossStreet;
+
+        return $this;
+    }
+
+    /**
      * Set country
      *
      * @param \Domain\BusinessBundle\Entity\Address\Country $country
@@ -1455,5 +1548,78 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getUseMapAddress()
     {
         return $this->useMapAddress;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getTwitterURL()
+    {
+        return $this->twitterURL;
+    }
+
+    /**
+     * @param mixed $twitterURL
+     * @return User
+     */
+    public function setTwitterURL($twitterURL)
+    {
+        $this->twitterURL = $twitterURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookURL()
+    {
+        return $this->facebookURL;
+    }
+
+    /**
+     * @param mixed $facebookURL
+     * @return User
+     */
+    public function setFacebookURL($facebookURL)
+    {
+        $this->facebookURL = $facebookURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoogleURL()
+    {
+        return $this->googleURL;
+    }
+
+    /**
+     * @param mixed $googleURL
+     * @return User
+     */
+    public function setGoogleURL($googleURL)
+    {
+        $this->googleURL = $googleURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getYoutubeURL()
+    {
+        return $this->youtubeURL;
+    }
+
+    /**
+     * @param mixed $youtubeURL
+     * @return User
+     */
+    public function setYoutubeURL($youtubeURL)
+    {
+        $this->youtubeURL = $youtubeURL;
+        return $this;
     }
 }

@@ -1,0 +1,33 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}"/>
+    <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
+    <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
+{% endblock %}
+
+{% block breakcrumbs %} {% endblock %}
+
+{% block header %}
+    {% include 'DomainBusinessBundle:Profile:blocks/profile_request_navigation.html.twig' %}
+{% endblock %}
+
+
+{% block main %}
+    {% include 'DomainBusinessBundle:Profile:blocks/edit_form.html.twig'
+        with { 'businessProfileForm' : businessProfileForm} %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainbusiness/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfile.js")}}'], function(businessProfile) {
+                var profile = new businessProfile();
+            })
+        })
+    </script>
+{% endblock%}
