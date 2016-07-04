@@ -64,3 +64,7 @@ h4.filter_legend img {
     margin-right: 1px;
     margin-bottom: 4px;
 }
+
+.list-preview-image{
+    max-height: 150px; max-width: 150px; !important;
+}

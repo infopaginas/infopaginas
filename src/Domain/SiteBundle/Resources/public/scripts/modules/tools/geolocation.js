@@ -14,7 +14,8 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
     geolocation.prototype.init = function ( options ) {
         this.options = {
             geoCodeApiURL : 'http://maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng=',
-            autoCompleteUrl : '/geolocation/autocomplete',
+            googleAutoSuggestApiURL : '',
+            autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
             autoCompleteMinLen : 2,
         };
         $.extend( this.options, options );
@@ -128,6 +129,5 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
             select: this.onAutoCompleteSelect
         });
     }
-
     return geolocation;
 })

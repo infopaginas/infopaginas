@@ -19,15 +19,10 @@ class MenuRepository extends \Doctrine\ORM\EntityRepository
     {
         $menuObjects = $this->createQueryBuilder('m')
             ->select('m')
+            ->indexBy('m', 'm.code')
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
-        $menuItems = [];
-        foreach ($menuObjects as $menuObject) {
-            /** @var Menu $menuObject */
-            $menuItems[$menuObject->getCode()] = $menuObject;
-        }
-
-        return $menuItems;
+        return $menuObjects;
     }
 }

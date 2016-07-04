@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     {% block styles %}
-        <link rel="stylesheet" href="{{ asset('/bundles/domainsite/styles/style.min.css')}}" />
+        <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}" />
     {% endblock %}
 </head>
 <body>
@@ -24,33 +24,22 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a href="" class="logo-header"></a>
+                        <a href="{{ path('domain_site_home_index')}}" class="logo-header"></a>
 
                         <div class="header-form">
                             <form class="form-horizontal search-form">
 
                                 <div class="form-group row">
-                                    <div class="col-xs-6 find-input">
-                                        <input type="text" placeholder="What do you want to find?"
-                                               class="form-control what">
-                                    </div>
-                                    <div class="col-xs-4 search-input">
-                                        <input type="text" class="form-control" placeholder="San Juan"><span
-                                            class="cross"></span>
-                                    </div>
-                                    <div class="col-xs-1 search-button">
-                                        <button type="submit" class="btn btn-primary green-btn search-btn"><i
-                                                class="fa fa-search"
-                                                aria-hidden="true"></i>
-                                        </button>
-                                    </div>
+                                    {% block headerSearch %}
+                                        {% include 'DomainSiteBundle:Layout:Widgets/headerSearchWidget.html.twig' %}
+                                    {% endblock %}
                                 </div>
                             </form>
                         </div>
                         <ul class="menu-nav">
                             <li class="ad desc-menu"><a href="">Advertise with us</a></li>
-                            <!-- <li class="login-link mobile-menu"><a href="">Welcome, <span class="user-name">Catalá Joyeros</span></a> -->
-                            </li>
+                            <!-- <li class="login-link mobile-menu"><a href="">Welcome, <span class="user-name">Catalá Joyeros</span></a>
+                            </li>-->
                         </ul>
                     </div>
 
@@ -58,8 +47,16 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="lang btn"><a href="">español</a></li>
                             <li class="lang btn"><a href="" class="active">english</a></li>
-                            <li class="login-link desc-menu"><a href="" class="login-button"><span class="welcome">Welcome, </span><span
-                                    class="user-name">Catalá Joyeros</span></a></li>
+                            {% if (app.user) %}
+                                <li class="login-link desc-menu">
+                                    <a href="" class="login-button">
+                                        <span class="welcome">Welcome, </span>
+                                    <span class="user-name">
+                                        {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
+                                    </span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
                         </ul>
                     </div>
@@ -67,6 +64,8 @@
             </div>
         </div>
     </nav>
+{% endblock %}
+{% block headerFilters %}
 {% endblock %}
 </header>
 
@@ -157,19 +156,7 @@
 
 <!-- Scripts -->
 {% block scripts %}
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/jquery-2.1.4.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/bootstrap.min.js')}}"></script>
-    <!-- нужны на страницах с селектами -->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/select2.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/select.js')}}"></script>
-    <!-- нужны на страницах с рейтингом -->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/star-rating.js')}}"></script>
-    <!-- нужны на страницах со слайдером-->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/slick.min.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/slick.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/jquery.mobile.custom.min.js')}}"></script>
-    <!-- нужны на страницах с фото -->
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/vendors/photo-gallery.js')}}"></script>
-{% endblock %}
+    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
+{% endblock %} 
 </body>
 </html>

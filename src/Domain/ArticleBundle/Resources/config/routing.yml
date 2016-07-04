@@ -1,2 +1,3 @@
-domain_article_homepage:
-    path:     /
+domain_article:
+    resource: "@DomainArticleBundle/Resources/config/routes/articleControllerRoutes.yml"
+    prefix:     /

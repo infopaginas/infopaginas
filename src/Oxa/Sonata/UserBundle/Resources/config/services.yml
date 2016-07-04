@@ -1,11 +1,28 @@
-#services:
-#    sonata.user.admin.user:
-#        class: Oxa\Sonata\UserBundle\Admin\UserAdmin
-#        arguments: [~, %sonata.user.admin.user.entity%, %oxa.sonata.user.crud.controller.class%]
-#        tags:
-#            - {name: sonata.admin, show_in_dashboard: true, manager_type: orm, label: Users}
-#    sonata.user.admin.group:
-#        class: Oxa\Sonata\UserBundle\Admin\GroupAdmin
-#        arguments: [~, %sonata.user.admin.group.entity%, %oxa.sonata.user.crud.controller.class%]
-#        tags:
-#            - {name: sonata.admin, show_in_dashboard: true, manager_type: orm, label: Roles}
+services:
+    #hwioauth user provider
+    oxa.user.oauth_provider:
+        class: Oxa\Sonata\UserBundle\Security\Core\User\FOSUBUserProvider
+        arguments: [@fos_user.user_manager, {facebook: facebookId, google: googleId}]
+        calls:
+            - [setEntityManager, ['@doctrine.orm.entity_manager']]
+
+    #handlers section
+    oxa.user.authentication_handler:
+        class:        Oxa\Sonata\UserBundle\Handler\AuthenticationHandler
+        arguments:    ['@translator']
+
+    #repository section
+    oxa.repository.group:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - Oxa\Sonata\UserBundle\Entity\Group
+
+    #managers section
+    oxa.manager.groups:
+        class: Oxa\Sonata\UserBundle\Manager\GroupsManager
+        arguments: ['@oxa.repository.group']
+
+    oxa.manager.users:
+        class: Oxa\Sonata\UserBundle\Manager\UsersManager
+        arguments: ['@doctrine.orm.entity_manager']

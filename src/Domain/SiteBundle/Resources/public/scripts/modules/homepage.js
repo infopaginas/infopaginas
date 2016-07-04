@@ -1,6 +1,8 @@
 define(
-    ['jquery', 'bootstrap', 'tools/search', 'tools/searchMenu','tools/geolocation'], 
-    function ( $, bootstrap, Search, SearchMenu, Geolocation ) {
+    [
+        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/login', 'tools/registration',
+        'tools/resetPassword'
+    ], function ( $, bootstrap, Search, Geolocation, SearchMenu ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -8,11 +10,11 @@ define(
         options.selector = options.selector || 'body';
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
-        }
+        };
 
         this.init( options );
         return this;
-    }
+    };
 
     homepage.prototype.init = function ( options ) {
         this.options = {};
@@ -20,25 +22,27 @@ define(
         $.extend( this.options, options );
 
         this.initSearch();
-    }
+    };
 
     homepage.prototype.initSearch = function ( ) {
-        var searchMenu = new SearchMenu();
         var searchOptions = {
             selector            : '.search-form',
             searchSelector      : '#searchBox',
             searchHintSelector  : '#searchHint',
             searchResultsSelector : '#searchResultsAutosuggest',
             locationsSelector   : '#searchLocation',
-            submitSelector      : '#searchButton',
-            searchMenu          : searchMenu
-        }
+            submitSelector      : '#searchButton'
+        };
 
-        searchOptions['geolocation'] = new Geolocation( { 'locationBoxSelector' : searchOptions.locationsSelector } )
+        searchOptions['geolocation'] = new Geolocation( { 
+            'locationBoxSelector' : searchOptions.locationsSelector
+        } );
+
+        searchOptions['searchMenu'] = new SearchMenu;
 
         var search = new Search(searchOptions);
         
-    }
+    };
    
     return homepage;
 });

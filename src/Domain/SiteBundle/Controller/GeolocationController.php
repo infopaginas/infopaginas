@@ -18,9 +18,12 @@ class GeolocationController extends Controller
      */
     public function autocompleteAction(Request $request)
     {
-        $term = $request->get('term', '');
-        return (new JsonResponse)->setData(
-            array($term)
-        );
+        $locale = $request->getLocale();
+        $term   = $request->get('term', '');
+
+        $geolocationManager = $this->get('domain_site.manager.geolocation');
+        $data = $geolocationManager->getGooglePlacesSuggestions($term, $locale);
+
+        return (new JsonResponse)->setData($data);
     }
 }

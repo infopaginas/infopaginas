@@ -10,4 +10,24 @@ namespace Domain\ArticleBundle\Repository;
  */
 class ArticleRepository extends \Doctrine\ORM\EntityRepository
 {
+    protected function getArticlesQueryBuilder()
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.isPublished = true');
+    }
+
+    protected function getArticlesForHomepageQueryBuilder()
+    {
+        return $this->getArticlesQueryBuilder()
+            ->andWhere('a.isOnHomepage = true')
+            ->addOrderBy('a.createdAt', "DESC");
+    }
+
+    public function getArticlesForHomepage($limit)
+    {
+        return $this->getArticlesForHomepageQueryBuilder()
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,0 +1,13 @@
+domain_search_index:
+    path:   /
+    defaults: { _controller: DomainSearchBundle:Search:index }
+domain_search_autocomplete:
+    path:   /autocomplete
+    defaults: { _controller: DomainSearchBundle:Search:autocomplete }
+domain_search_category:
+    path:   /category/{id}
+    defaults: { _controller: DomainSearchBundle:Search:category }
+domain_search_map:
+    path:   /map
+    defaults: { _controller: DomainSearchBundle:Search:map }
+

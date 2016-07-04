@@ -47,6 +47,7 @@ class ConfigAdmin extends OxaAdmin
     {
         $formMapper
             ->add('title')
+            ->add('description')
             ->add('format', 'choice', [
                 'choices' => [
                     'html' => 'html',

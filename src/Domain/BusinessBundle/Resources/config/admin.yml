@@ -29,6 +29,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
 
+    domain_business.admin.subscription_plan:
+        class: Domain\BusinessBundle\Admin\SubscriptionPlanAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\SubscriptionPlan, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscription Plans}
+
     domain_business.admin.category:
         class: Domain\BusinessBundle\Admin\CategoryAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Category, OxaSonataAdminBundle:CRUD]
@@ -69,4 +75,16 @@ services:
         class: Domain\BusinessBundle\Admin\Address\CountryAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Address\Country, OxaSonataAdminBundle:CRUD]
         tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Country}
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Countries}
+
+    domain_business.admin.discount:
+        class: Domain\BusinessBundle\Admin\DiscountAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Discount, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Discounts}
+
+    domain_business.admin.coupon:
+        class: Domain\BusinessBundle\Admin\CouponAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Coupon, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Coupons}
