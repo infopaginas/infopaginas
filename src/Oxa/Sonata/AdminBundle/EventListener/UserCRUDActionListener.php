@@ -45,7 +45,7 @@ class UserCRUDActionListener
             if ($entity instanceof DefaultEntityInterface) {
                 $entity->setCreatedUser($this->user);
                 $entity->setUpdatedUser($this->user);
-                
+
                 // create fields
                 $uow->propertyChanged(
                     $entity,

@@ -18,7 +18,7 @@ interface DatetimePeriodInterface
      * @return $this
      */
     public function setStartDate($startDate);
-    
+
     /**
      * @return \DateTime
      */
@@ -39,4 +39,9 @@ interface DatetimePeriodInterface
      * @return \DateTime
      */
     public function getEndDate();
+
+    /**
+     * @return boolean
+     */
+    public function isExpired();
 }

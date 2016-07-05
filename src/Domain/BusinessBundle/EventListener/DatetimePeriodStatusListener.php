@@ -27,7 +27,7 @@ class DatetimePeriodStatusListener
     private $em;
 
     /**
-     * @var StatusInterface $entityToSetStatusAsActive
+     * @var DatetimePeriodStatusInterface $entityToSetStatusAsActive
      */
     private $entityToSetStatusAsActive;
 
@@ -56,25 +56,21 @@ class DatetimePeriodStatusListener
      */
     private function applyValidStatus(DatetimePeriodStatusInterface $entity)
     {
-        $datetime = new \DateTime('now');
-        $diff = $datetime->diff($entity->getEndDate());
-
         $uow = $this->em->getUnitOfWork();
-
         $changeSet = $uow->getEntityChangeSet($entity);
 
         // find old status value (before update)
         // need to track changes in UnitOfWork
         if (isset($changeSet[DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS])) {
             $oldStatus = current($changeSet[DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS]);
-        } elseif($entity->getStatus()) {
+        } elseif ($entity->getStatus()) {
             $oldStatus = $entity->getStatus();
         } else {
             $oldStatus = null;
         }
 
         // set status as expired if it's
-        if ($diff->invert == true) {
+        if ($entity->isExpired()) {
             $uow->scheduleExtraUpdate($entity, [
                 DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS => [
                     $oldStatus,
@@ -122,11 +118,11 @@ class DatetimePeriodStatusListener
 
                 $baseEntities = $this->em->getRepository(get_class($entity))->findBy([
                     DatetimePeriodStatusInterface::PROPERTY_NAME_BUSINESS_PROFILE => $entity->getBusinessProfile(),
-                    DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS => StatusInterface::STATUS_ACTIVE
+                    DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS => DatetimePeriodStatusInterface::STATUS_ACTIVE
                 ]);
 
                 foreach ($baseEntities as $baseEntity) {
-                    /** @var StatusInterface $baseEntity*/
+                    /** @var DatetimePeriodStatusInterface $baseEntity*/
                     $uow->scheduleExtraUpdate($baseEntity, [
                         DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS => [
                             $baseEntity->getStatus(),

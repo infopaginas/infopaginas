@@ -14,7 +14,7 @@ namespace Domain\BusinessBundle\Model;
  */
 interface StatusInterface
 {
-    const PROPERTY_NAME_STATUS              = 'status';
+    const PROPERTY_NAME_STATUS  = 'status';
 
     const STATUS_ACTIVE     = 1;
     const STATUS_EXPIRED    = 2;
@@ -41,3 +41,4 @@ interface StatusInterface
      */
     public static function getStatuses();
 }
+
