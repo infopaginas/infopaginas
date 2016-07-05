@@ -4,9 +4,13 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Oxa\Sonata\AdminBundle\Model\DatetimePeriodInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\DatetimePeriodTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -20,11 +24,11 @@ use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
  */
-class Subscription implements DefaultEntityInterface, TranslatableInterface, StatusInterface
+class Subscription implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    use StatusTrait;
+    use DatetimePeriodStatusTrait;
 
     /**
      * @var int
@@ -52,18 +56,6 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Sta
      * @ORM\JoinColumn(name="subscription_plan_id", referencedColumnName="id", nullable=false)
      */
     protected $subscriptionPlan;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(name="start_date", type="datetime")
-     */
-    protected $startDate;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(name="end_date", type="datetime")
-     */
-    protected $endDate;
 
     /**
      * @var ArrayCollection
@@ -108,54 +100,6 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Sta
         }
 
         return $result;
-    }
-
-    /**
-     * Set startDate
-     *
-     * @param \DateTime $startDate
-     *
-     * @return Subscription
-     */
-    public function setStartDate($startDate)
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    /**
-     * Get startDate
-     *
-     * @return \DateTime
-     */
-    public function getStartDate()
-    {
-        return $this->startDate;
-    }
-
-    /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     *
-     * @return Subscription
-     */
-    public function setEndDate($endDate)
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
     }
 
     /**

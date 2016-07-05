@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
@@ -89,6 +90,20 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\OrderBy({"status" = "ASC"})
      */
     protected $discounts;
+
+    /**
+     * @var Campaign[] - Business Campaigns
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @ORM\OrderBy({"status" = "ASC"})
+     */
+    protected $campaigns;
 
     /**
      * @var Category[] - Business category

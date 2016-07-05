@@ -140,8 +140,8 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     public function __toString()
     {
-        if ($this->getFullname()) {
-            $result = $this->getFullname();
+        if ($this->getFullName()) {
+            $result = $this->getFullName();
         } elseif ($this->getUsername()) {
             $result = $this->getUsername();
         } else {
@@ -154,7 +154,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     /**
      * @return string
      */
-    public function getFullname()
+    public function getFullName()
     {
         $fullNameArray = [];
 

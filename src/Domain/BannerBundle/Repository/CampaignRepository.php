@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\BusinessBundle\Repository;
+namespace Domain\BannerBundle\Repository;
 
 /**
  * CampaignRepository

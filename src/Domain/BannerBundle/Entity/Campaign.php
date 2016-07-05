@@ -1,10 +1,12 @@
 <?php
 
-namespace Domain\BusinessBundle\Entity;
+namespace Domain\BannerBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BannerBundle\Entity\Banner;
+use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
@@ -15,13 +17,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Campaign
  *
  * @ORM\Table(name="campaign")
- * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CampaignRepository")
+ * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\CampaignRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
  */
-class Campaign implements DefaultEntityInterface, TranslatableInterface
+class Campaign implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use DatetimePeriodStatusTrait;
+
     /**
      * @var int
      *
@@ -40,33 +44,29 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface
     protected $title;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(name="start_date", type="datetime")
-     */
-    protected $startDate;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(name="end_date", type="datetime")
-     */
-    protected $endDate;
-
-    /**
      * @var Banner[]
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Banner",
-     *     mappedBy="campaign",
+     * @ORM\ManyToMany(targetEntity="Domain\BannerBundle\Entity\Banner",
+     *     inversedBy="campaigns",
      *     cascade={"persist", "remove"}
      *     )
+     * @ORM\JoinTable(name="campaign_areas")
      */
     protected $banners;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     inversedBy="campaigns",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false)
+     */
+    protected $businessProfile;
 
     /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\Translation\CampaignTranslation",
+     *     targetEntity="Domain\BannerBundle\Entity\Translation\CampaignTranslation",
      *     mappedBy="object",
      *     cascade={"persist", "remove"}
      * )
@@ -89,6 +89,21 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface
     {
         $this->banners = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        switch (true) {
+            case $this->getTitle():
+                $result = $this->getTitle();
+                break;
+            case $this->getId():
+                $result = sprintf('id(%s): not translated', $this->getId());
+                break;
+            default:
+                $result = 'New Campaign';
+        }
+        return $result;
     }
 
     /**
@@ -116,51 +131,13 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface
     }
 
     /**
-     * Set startDate
+     * Remove translation
      *
-     * @param \DateTime $startDate
-     *
-     * @return Campaign
+     * @param \Domain\BannerBundle\Entity\Translation\CampaignTranslation $translation
      */
-    public function setStartDate($startDate)
+    public function removeTranslation(\Domain\BannerBundle\Entity\Translation\CampaignTranslation $translation)
     {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    /**
-     * Get startDate
-     *
-     * @return \DateTime
-     */
-    public function getStartDate()
-    {
-        return $this->startDate;
-    }
-
-    /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     *
-     * @return Campaign
-     */
-    public function setEndDate($endDate)
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
+        $this->translations->removeElement($translation);
     }
 
     /**
@@ -198,12 +175,26 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface
     }
 
     /**
-     * Remove translation
+     * Set businessProfile
      *
-     * @param \Domain\BusinessBundle\Entity\Translation\CampaignTranslation $translation
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Campaign
      */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\CampaignTranslation $translation)
+    public function setBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
-        $this->translations->removeElement($translation);
+        $this->businessProfile = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Get businessProfile
+     *
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function getBusinessProfile()
+    {
+        return $this->businessProfile;
     }
 }

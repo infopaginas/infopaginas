@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\BusinessBundle\Entity\Translation;
+namespace Domain\BannerBundle\Entity\Translation;
 
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
@@ -16,7 +16,7 @@ use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 class CampaignTranslation extends AbstractPersonalTranslation
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Campaign", inversedBy="translations")
+     * @ORM\ManyToOne(targetEntity="Domain\BannerBundle\Entity\Campaign", inversedBy="translations")
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $object;

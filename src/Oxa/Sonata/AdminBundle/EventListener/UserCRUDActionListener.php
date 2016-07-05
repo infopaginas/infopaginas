@@ -45,7 +45,8 @@ class UserCRUDActionListener
             if ($entity instanceof DefaultEntityInterface) {
                 $entity->setCreatedUser($this->user);
                 $entity->setUpdatedUser($this->user);
-
+                
+                // create fields
                 $uow->propertyChanged(
                     $entity,
                     DefaultEntityInterface::CREATE_USER_PROPERTY_NAME,
@@ -56,6 +57,7 @@ class UserCRUDActionListener
                     DefaultEntityInterface::CREATE_USER_PROPERTY_NAME => [null, $this->user]
                 ]);
 
+                // update fields
                 $uow->propertyChanged(
                     $entity,
                     DefaultEntityInterface::UPDATE_USER_PROPERTY_NAME,
@@ -63,7 +65,7 @@ class UserCRUDActionListener
                     $this->user
                 );
                 $uow->scheduleExtraUpdate($entity, [
-                    DefaultEntityInterface::UPDATE_USER_PROPERTY_NAME=> [null, $this->user]
+                    DefaultEntityInterface::UPDATE_USER_PROPERTY_NAME => [null, $this->user]
                 ]);
             }
         }, $uow->getScheduledEntityInsertions());
