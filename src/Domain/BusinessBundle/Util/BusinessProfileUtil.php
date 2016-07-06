@@ -1,11 +1,12 @@
 <?php
 
-namespace Domain\BusinessBundle\Utils;
+namespace Domain\BusinessBundle\Util;
 
-class BusinessProfileUtils
+class BusinessProfileUtil
 {
     public static function filterLocationMarkers(array $profileList)
     {
+        //dump($profileList); die;
         return json_encode(
             array_map(
                 array(
@@ -20,10 +21,10 @@ class BusinessProfileUtils
     protected static function markersFilter($item)
     {
         return array(
-            "id" => $item['id'],
-            "name" => $item['name'],
-            "latitude" => $item['latitude'],
-            "longitude" => $item['longitude']
+            "id" => $item[0]->getId(),
+            "name" => $item[0]->getName(),
+            "latitude" => $item[0]->getLatitude(),
+            "longitude" => $item[0]->getLongitude()
         );
     }
 }

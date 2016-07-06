@@ -1,7 +1,5 @@
 <div class="card-item premium">
     <div class="card-title">
-<!--         <input type="checkbox" name="card-check" class="form-control checkbox-btn"
-               id="card-check"> -->
         <label class="control-label card-label" for="card-check">
             <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
                 <span class="card-number">{# item.order #}.</span>
@@ -18,8 +16,10 @@
     </div>
     <div class="col-xs-5 schedule">
         <div class="address">
-            <span>{{ item[0].city}}, {{ item[0].state }} {{ item[0].zipCode }}</span>
-            <a href="">Get Direction <span>&#187;</span></a>
+            <span class="address-info">{{ item[0].city}}, {{ item[0].state }} {{ item[0].zipCode }}</span>
+            <a href="" class="direction">Get Direction <span>&#187;</span></a>
+            <a href="" class="btn green-btn mobile-btn"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; Call<span></span></a>
+            <a href="" class="get-direction mobile-btn btn">Get Direction<span></span></a>
         </div>
         <div class="shift">
             <span>Mon - Fri  9 a.m. - 7 p.m.</span>

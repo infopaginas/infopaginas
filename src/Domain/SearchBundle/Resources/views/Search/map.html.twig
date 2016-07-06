@@ -53,7 +53,6 @@
 {% endblock %}
 
 {% block scripts %}
-parent()
 {{ parent() }}
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {

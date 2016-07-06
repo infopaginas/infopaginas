@@ -4,8 +4,10 @@ define(
     'use strict';
 
     var mapSearchPage = function ( options ) {
-        options = options || {};
-        options.selector = options.selector || 'body';
+        this.options = {
+            itemsListScrollable : '.map-view-aside'
+        };
+        this.options.selector = options.selector || 'body';
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
         }
@@ -57,6 +59,19 @@ define(
                 title: marker.name
               })
         );
+    }
+
+    mapSearchPage.prototype.scrollTo = function ( elementId )
+    {
+        this.$(this.itemsListScrollable)
+            .animate({
+                scrollTo : this.$('#' + elementId).offset().top
+            }, 1500);
+    }
+
+    mapSearchPage.prototype.highlightMarker = function ( elementId )
+    {
+        
     }
 
     return mapSearchPage;

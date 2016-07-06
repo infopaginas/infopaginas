@@ -5,7 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
-use Domain\BusinessBundle\Utils\BusinessProfileUtils;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 
 class BusinessProfileManager extends Manager
 {
@@ -63,6 +63,6 @@ class BusinessProfileManager extends Manager
 
     public function getLocationMarkersFromProfileData(array $profilesList)
     {
-        return BusinessProfileUtils::filterLocationMarkers($profilesList);
+        return BusinessProfileUtil::filterLocationMarkers($profilesList);
     }
 }
