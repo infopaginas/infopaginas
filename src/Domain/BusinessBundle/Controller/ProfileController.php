@@ -61,8 +61,12 @@ class ProfileController extends Controller
     {
         $formHandler = $this->getFreeBusinessProfileFormHandler();
 
-        if ($formHandler->process()) {
-            return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
+        try {
+            if ($formHandler->process()) {
+                return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
+            }
+        } catch (\Exception $e) {
+            return $this->getFailureResponse($e->getMessage(), [], self::INTERNAL_SERVER_ERROR_STATUS_CODE);
         }
 
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
