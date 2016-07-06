@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Oxa\Sonata\AdminBundle\Manager;
 
 use Doctrine\DBAL\Exception\InvalidArgumentException;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -174,10 +175,27 @@ class AdminManager extends DefaultManager
         $metadata = $this->getEntityManager()->getClassMetadata(get_class($entity));
         $existDependentField = [];
         foreach ($metadata->getAssociationMappings() as $associationMapping) {
+
             if (
                 $associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY ||
                 $associationMapping['type'] == ClassMetadataInfo::ONE_TO_ONE
             ) {
+
+                // ignore for translations
+                if ($associationMapping['fieldName'] == 'translations') {
+
+                    // disable sonata event listener 
+                    // to prevent removing record translations
+                    // while we softdelete record
+                    $this->getEntityManager()
+                        ->getEventManager()
+                        ->removeEventSubscriber(
+                            $this->getContainer()->get('sonata_translation.listener.translatable')
+                        );
+
+                    continue;
+                }
+
                 $methodGet = 'get' . ucfirst($associationMapping['fieldName']);
                 $childs = $entity->$methodGet();
                 if (count($childs)) {
@@ -213,11 +231,25 @@ class AdminManager extends DefaultManager
      * Delete records softly
      *
      * @param array $entityArray
+     * @throws \Exception
      */
     public function removeEntities(array $entityArray = [])
     {
         foreach ($entityArray as $entity) {
             if ($entity instanceof DeleteableEntityInterface && is_null($entity->getDeletedAt())) {
+                $existDependentFields = $this->checkExistDependentEntity($entity);
+
+                if ($existDependentFields) {
+                    throw new \Exception($this->getContainer()->get('translator')->trans(
+                        'batch_delete_error_rel',
+                        array(
+                            'record_id' => $entity->getId(),
+                            '%fields%' => implode(',', $existDependentFields),
+                        ),
+                        'SonataAdminBundle'
+                    ));
+                }
+
                 $this->getEntityManager()->remove($entity);
             }
         }
@@ -229,10 +261,25 @@ class AdminManager extends DefaultManager
      * Delete records completely
      *
      * @param array $entityArray
+     * @param bool $disableSoftdelete
+     * @throws \Exception
      */
     public function physicalDeleteEntities(array $entityArray = [], $disableSoftdelete = false)
     {
         foreach ($entityArray as $entity) {
+
+            $existDependentFields = $this->checkExistDependentEntity($entity);
+            if ($existDependentFields) {
+                throw new \Exception($this->getContainer()->get('translator')->trans(
+                    'batch_delete_error_rel',
+                    array(
+                        'record_id' => $entity->getId(),
+                        '%fields%' => implode(',', $existDependentFields),
+                    ),
+                    'SonataAdminBundle'
+                ));
+            }
+
             if ($disableSoftdelete) {
                 $this->disableDeleteableListener(get_class($entity));
             }

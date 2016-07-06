@@ -238,7 +238,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Used to create human like url
      *
-     * @Gedmo\Slug(fields={"name"})
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
      * @ORM\Column(name="slug", type="string", length=100)
      */
     protected $slug;
