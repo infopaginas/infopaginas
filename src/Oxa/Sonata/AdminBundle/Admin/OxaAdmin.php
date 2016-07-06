@@ -1,6 +1,7 @@
 <?php
 namespace Oxa\Sonata\AdminBundle\Admin;
 
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -12,6 +13,40 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class OxaAdmin extends BaseAdmin
 {
+    /**
+     * Valid form datetime format
+     */
+    const FORM_DATETIME_FORMAT = 'dd.MM.yyyy, HH:mm';
+
+    /**
+     * Valid filter datetime format
+     */
+    const FILTER_DATETIME_FORMAT = 'dd-MM-y hh:mm:ss';
+
+    /**
+     * Used to set default translations for filter boolean labels
+     *
+     * @var array
+     */
+    protected $defaultDatagridBooleanTypeOptions = [
+        'choices' => [
+            1 => 'label_yes',
+            2 => 'label_no',
+        ],
+        'translation_domain' => 'SonataAdminBundle'
+    ];
+
+    /**
+     * Used to set default datetime options
+     *
+     * @var array
+     */
+    protected $defaultDatagridDatetimeTypeOptions = [
+        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_options' => [
+            'format' => self::FILTER_DATETIME_FORMAT
+    ]];
+
     /**
      * Default values to the datagrid.
      *

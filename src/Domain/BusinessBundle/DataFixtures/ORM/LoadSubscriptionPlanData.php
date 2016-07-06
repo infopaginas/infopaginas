@@ -9,15 +9,16 @@ use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Entity\Tag;
+use Domain\BusinessBundle\Entity\Translation\SubscriptionPlanTranslation;
 use Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation;
-use Domain\BusinessBundle\Model\SubscriptionInterface;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadSubscriptionData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class LoadSubscriptionPlanData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -36,14 +37,15 @@ class LoadSubscriptionData extends AbstractFixture implements ContainerAwareInte
     {
         $this->manager = $manager;
 
-        $data = Subscription::getCodes();
+        $data = SubscriptionPlan::getCodes();
 
         foreach ($data as $code => $value) {
-            $object = new Subscription();
+            $object = new SubscriptionPlan();
             $object->setName($value);
             $object->setCode($code);
+            $object->setRank($code);
 
-            $translation = new SubscriptionTranslation();
+            $translation = new SubscriptionPlanTranslation();
             $translation->setContent(sprintf('Spain %s', $value));
             $translation->setField('name');
             $translation->setLocale('es');
@@ -53,7 +55,7 @@ class LoadSubscriptionData extends AbstractFixture implements ContainerAwareInte
             $this->manager->persist($translation);
 
             // set reference to find this
-            $this->addReference('subscription.'.$code, $object);
+            $this->addReference('subscription_plan.'.$code, $object);
         }
 
         $manager->flush();

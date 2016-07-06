@@ -98,6 +98,8 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 
+            google.maps.event.trigger(map, 'resize');
+
             var marker = addMarker(myLatLng, map, infowindow, '{{ value }}');
 
             // Create the search box and link it to the UI element.

@@ -16,7 +16,7 @@ define(['jquery', 'underscore'], function( $ ) {
         var self = this;
         _.each( _.keys( this.events ), function(e) {
             var targetEvent = e.split(" ");
-            self.$( targetEvent[0] ).on( targetEvent[1], _.bind( self[self.events[e]], self ) );
+            self.$el.find( targetEvent[0] ).on( targetEvent[1], _.bind( self[self.events[e]], self ) );
         });
     }
 

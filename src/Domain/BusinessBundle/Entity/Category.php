@@ -72,6 +72,14 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $articles;
 
     /**
+     * @var string - Used to create human like url
+     *
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(name="slug", type="string", length=100)
+     */
+    protected $slug;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
@@ -81,6 +89,20 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * )
      */
     protected $translations;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="search_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "name"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchFts;
 
     /**
      * Get id
@@ -247,5 +269,29 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getArticles()
     {
         return $this->articles;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Category
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

@@ -42,6 +42,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
+            ->add('slug', null, ['read_only' => true, 'required' => false])
             ->add('businessProfiles', 'sonata_type_model', [
                 'btn_add' => false,
                 'multiple' => true,
@@ -69,6 +70,7 @@ class CategoryAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('slug')
             ->add('businessProfiles')
         ;
     }

@@ -1,8 +1,8 @@
 define(
     [
-        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/login', 'tools/registration',
+        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/login', 'tools/registration',
         'tools/resetPassword'
-    ], function ( $, bootstrap, Search, Geolocation ) {
+    ], function ( $, bootstrap, Search, Geolocation, SearchMenu ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -35,10 +35,10 @@ define(
         };
 
         searchOptions['geolocation'] = new Geolocation( { 
-            'locationBoxSelector' : searchOptions.locationsSelector,
-            'googleApiKey'        : this.options.googleApiKey,
-            'locale'              : this.options.locale
+            'locationBoxSelector' : searchOptions.locationsSelector
         } );
+
+        searchOptions['searchMenu'] = new SearchMenu;
 
         var search = new Search(searchOptions);
         

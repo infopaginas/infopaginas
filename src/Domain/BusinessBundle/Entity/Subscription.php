@@ -4,26 +4,30 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionInterface;
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 /**
  * Subscription
  *
  * @ORM\Table(name="subscription")
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
- * @UniqueEntity("code")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
  */
-class Subscription implements DefaultEntityInterface, SubscriptionInterface, TranslatableInterface
+class Subscription implements DefaultEntityInterface, TranslatableInterface, StatusInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use StatusTrait;
 
     /**
      * @var int
@@ -35,29 +39,34 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface, Tra
     protected $id;
 
     /**
-     * @var string - Subscription name
-     *
-     * @Gedmo\Translatable
-     * @ORM\Column(name="name", type="string", length=100)
-     */
-    protected $name;
-
-    /**
-     * @var string - Subscription code
-     *
-     * @ORM\Column(name="code", type="integer", nullable=false)
-     */
-    protected $code;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     mappedBy="subscription",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     inversedBy="subscriptions",
+     *     cascade={"persist"}
      *     )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false)
      */
-    protected $businessProfiles;
+    protected $businessProfile;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\SubscriptionPlan",
+     *     inversedBy="subscriptions",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="subscription_plan_id", referencedColumnName="id", nullable=false)
+     */
+    protected $subscriptionPlan;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="start_date", type="datetime")
+     */
+    protected $startDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="end_date", type="datetime")
+     */
+    protected $endDate;
 
     /**
      * @var ArrayCollection
@@ -69,30 +78,6 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface, Tra
      * )
      */
     protected $translations;
-
-    /**
-     * @return array
-     */
-    public static function getCodes()
-    {
-        return [
-            self::CODE_FREE             => 'Free',
-            self::CODE_PRIORITY         => 'Priority',
-            self::CODE_PREMIUM_PLUS     => 'Premium Plus',
-            self::CODE_PREMIUM_GOLD     => 'Premium Gold',
-            self::CODE_PREMIUM_PLATINUM => 'Premium Platinum'
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getCodeValue()
-    {
-        $codes = self::getCodes();
-
-        return $codes[$this->getCode()];
-    }
 
     /**
      * Get id
@@ -108,106 +93,120 @@ class Subscription implements DefaultEntityInterface, SubscriptionInterface, Tra
      */
     public function __construct()
     {
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New subscription';
+        if ($this->getId()) {
+            $result = sprintf(
+                '%s: %s (%s - %s)',
+                $this->getId(),
+                $this->getSubscriptionPlan(),
+                $this->getStartDate()->format('d/M/Y, H:m'),
+                $this->getEndDate()->format('d/M/Y, H:m')
+            );
+        } else {
+            $result = 'New Subscription';
         }
+
         return $result;
     }
 
     /**
-     * Set name
+     * Set startDate
      *
-     * @param string $name
+     * @param \DateTime $startDate
      *
      * @return Subscription
      */
-    public function setName($name)
+    public function setStartDate($startDate)
     {
-        $this->name = $name;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get startDate
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getName()
+    public function getStartDate()
     {
-        return $this->name;
+        return $this->startDate;
     }
 
     /**
-     * Add businessProfile
+     * Set endDate
+     *
+     * @param \DateTime $endDate
+     *
+     * @return Subscription
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    /**
+     * Get endDate
+     *
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Set businessProfile
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      *
      * @return Subscription
      */
-    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    public function setBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile = null)
     {
-        $this->businessProfiles[] = $businessProfile;
-        $businessProfile->setSubscription($this);
+        $this->businessProfile = $businessProfile;
 
         return $this;
     }
 
     /**
-     * Remove businessProfile
+     * Get businessProfile
      *
-     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
      */
-    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    public function getBusinessProfile()
     {
-        $this->businessProfiles->removeElement($businessProfile);
+        return $this->businessProfile;
     }
 
     /**
-     * Get businessProfiles
+     * Set subscriptionPlan
      *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBusinessProfiles()
-    {
-        return $this->businessProfiles;
-    }
-
-    /**
-     * Set code
-     *
-     * @param integer $code
+     * @param \Domain\BusinessBundle\Entity\SubscriptionPlan $subscriptionPlan
      *
      * @return Subscription
      */
-    public function setCode($code)
+    public function setSubscriptionPlan(\Domain\BusinessBundle\Entity\SubscriptionPlan $subscriptionPlan = null)
     {
-        $this->code = $code;
+        $this->subscriptionPlan = $subscriptionPlan;
 
         return $this;
     }
 
     /**
-     * Get code
+     * Get subscriptionPlan
      *
-     * @return integer
+     * @return \Domain\BusinessBundle\Entity\SubscriptionPlan
      */
-    public function getCode()
+    public function getSubscriptionPlan()
     {
-        return $this->code;
+        return $this->subscriptionPlan;
     }
 
     /**
