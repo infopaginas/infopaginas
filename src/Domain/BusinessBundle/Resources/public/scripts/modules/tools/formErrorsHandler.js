@@ -31,7 +31,14 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
             for (var field in errors) {
                 //check for "repeated" fields or embed forms
                 if (Array.isArray(errors[field])) {
-                    var $field = $(this.getFormFieldId( prefix, field ));
+                    var fieldId = this.getFormFieldId( prefix, field );
+
+                    if (Array.isArray(errors[field][0])) {
+                        fieldId = fieldId + '_0';
+                        errors[field] = errors[field][0];
+                    }
+
+                    var $field = $( fieldId );
 
                     if ($field.is(':visible')) {
                         this.visibleErrorsExists = true;

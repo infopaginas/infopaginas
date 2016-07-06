@@ -1,6 +1,15 @@
 {% import '::widgets/custom_form_checkbox.html.twig' as custom_form_checkbox %}
 {% import '::widgets/custom_form_label.html.twig' as custom_form_label %}
 
+{% macro phone_prototype(phoneField) %}
+    <br />
+    <div>
+        {{ form_widget(phoneField) }}
+        <span class="help-block"></span>
+        <a class="pull-right remove-phone" href="#">X</a>
+    </div>
+{% endmacro %}
+
 <section id="profile-manage-general" class="profile-manage profile-manage-general">
     <div class="container general-manage">
         <div class="row">
@@ -52,10 +61,28 @@
                                 {{ form_widget(businessProfileForm.website) }}
                             </div>
                             <div class="col-xs-4">
-                                <span>Phone Number:</span>
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.phones) }}
+                                </span>
                             </div>
                             <div class="col-xs-8">
-                                {{ form_widget(businessProfileForm.phone) }}
+                                <ul id="phone-fields-list"
+                                    data-length="{{ businessProfileForm.phones|length }}"
+                                    data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
+                                    {% for phoneField in businessProfileForm.phones %}
+                                        <li>
+                                            {{ form_widget(phoneField) }}
+                                            <br>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <ul>
+                                    <li>
+                                        <a href="#" id="add-another-phone">
+                                            {% trans %}Add{% endtrans %}
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="col-xs-4">
                                 <span>Email:</span>

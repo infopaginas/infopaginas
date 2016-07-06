@@ -2,19 +2,25 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\BrandRepository;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\CountryRepository;
+use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Url;
 
@@ -39,10 +45,15 @@ class FreeBusinessProfileFormType extends AbstractType
                 'label' => 'Website',
                 'required' => false,
             ])
-            ->add('phone', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => '(787) 594-7273',
+            ->add('phones', CollectionType::class, [
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'entry_type'   => TextType::class,
+                'entry_options'  => [
+                    'attr'  => [
+                        'class' => 'form-control',
+                        'placeholder' => '(787) 594-7273',
+                    ],
                 ],
                 'label' => 'Phone number',
                 'required' => false,
@@ -174,6 +185,39 @@ class FreeBusinessProfileFormType extends AbstractType
                 'label' => 'yes',
                 'required' => false,
                 'read_only' => true,
+            ])
+            ->add('serviceAreasType', ChoiceType::class, [
+                'choices' => array(
+                    'area' => 'Area',
+                    'locality' => 'Locality'
+                ),
+                'multiple' => false,
+                'expanded' => true,
+                'required' => true,
+                'data'     => 'area'
+            ])
+            ->add('milesOfMyBusiness', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => '100',
+                ],
+                'label' => 'Within miles of my business',
+                'required' => false,
+            ])
+            ->add('localities', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control',
+                    'data-placeholder' => 'Select Localities',
+                    'disabled' => 'disabled',
+                    'multiple' => 'multiple',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Locality',
+                'label' => 'Localities',
+                'multiple' => true,
+                'query_builder' => function(LocalityRepository $repository) {
+                    return $repository->getAvailableLocalitiesQb();
+                },
+                'required' => false,
             ])
             ->add('streetAddress', TextType::class, [
                 'attr' => [
@@ -307,6 +351,17 @@ class FreeBusinessProfileFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => 'Domain\BusinessBundle\Entity\BusinessProfile',
+            'validation_groups' => function(FormInterface $form) {
+
+                /** @var BusinessProfile $profile */
+                $profile = $form->getData();
+
+                if (BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE == $profile->getServiceAreasType()) {
+                    return array('Default', 'service_area_chosen');
+                } else {
+                    return ['Default'];
+                }
+            },
         ]);
     }
 

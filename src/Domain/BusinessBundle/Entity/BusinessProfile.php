@@ -35,6 +35,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
+
     /**
      * @var int
      *
@@ -438,6 +440,40 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @Assert\NotBlank()
      */
     protected $country;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
+     * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "You must choose a valid Service Area.")
+     */
+    protected $serviceAreasType = 'area';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="miles_of_my_business", type="string", length=50, nullable=true)
+     * @Assert\NotBlank(groups={"service_area_chosen"})
+     */
+    protected $milesOfMyBusiness;
+
+    /**
+     * @var Locality[] - Using this field a User may define Localities, business is related to.
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinTable(name="business_profile_localities")
+     */
+    protected $localities;
+
+    /**
+     * @ORM\Column(name="phones", type="array", nullable=true)
+     * @Assert\All({
+     *     @Assert\Length(max=10)
+     * })
+     */
+    protected $phones;
 
     /**
      * @Gedmo\Locale
@@ -1805,5 +1841,77 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getDiscounts()
     {
         return $this->discounts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceAreasType()
+    {
+        return $this->serviceAreasType;
+    }
+
+    /**
+     * @param string $serviceAreasType
+     * @return BusinessProfile
+     */
+    public function setServiceAreasType($serviceAreasType)
+    {
+        $this->serviceAreasType = $serviceAreasType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMilesOfMyBusiness()
+    {
+        return $this->milesOfMyBusiness;
+    }
+
+    /**
+     * @param string $milesOfMyBusiness
+     * @return BusinessProfile
+     */
+    public function setMilesFromMyBusiness($milesOfMyBusiness)
+    {
+        $this->milesOfMyBusiness = $milesOfMyBusiness;
+        return $this;
+    }
+
+    /**
+     * @return Locality[]
+     */
+    public function getLocalities()
+    {
+        return $this->localities;
+    }
+
+    /**
+     * @param Locality[] $localities
+     * @return BusinessProfile
+     */
+    public function setLocalities($localities)
+    {
+        $this->localities = $localities;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhones()
+    {
+        return $this->phones;
+    }
+
+    /**
+     * @param mixed $phones
+     * @return BusinessProfile
+     */
+    public function setPhones($phones)
+    {
+        $this->phones = $phones;
+        return $this;
     }
 }

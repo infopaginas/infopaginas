@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/select'], function( $, bootstrap, alertify, FormHandler, Spin, select ) {
+define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/select', 'tools/phones'], function( $, bootstrap, alertify, FormHandler, Spin, select, phones ) {
     'use strict';
 
     //init businessProfile object variables
@@ -9,6 +9,8 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
 
         this.modals = {
         };
+
+        this.serviceAreasAreaChoiceValue = 'area';
 
         this.freeProfileFormName = 'domain_business_bundle_free_business_profile_form_type';
 
@@ -27,7 +29,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
                 zipInputId: '#' + this.freeProfileFormName + '_zipCode',
                 addressInputId: '#' + this.freeProfileFormName + '_streetAddress',
                 latitudeInputId: '#' + this.freeProfileFormName + '_latitude',
-                longitudeInputId: '#' + this.freeProfileFormName + '_longitude'
+                longitudeInputId: '#' + this.freeProfileFormName + '_longitude',
+                withinMilesOfMyBusinessFieldId: '#' + this.freeProfileFormName + '_milesOfMyBusiness',
+                localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
+                serviceAreaRadioName: '[serviceAreasType]'
             },
 
             loadingSpinnerContainerClass: '.spinner-container',
@@ -55,8 +60,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
         var zip = $( this.html.fields.zipInputId ).val();
         var address = $( this.html.fields.addressInputId ).val();
 
-        var result = country + ' ' + state + ' ' + city + ' ' + zip + ' ' + address;
-        return result;
+        return country + ' ' + state + ' ' + city + ' ' + zip + ' ' + address;
     };
 
     businessProfile.prototype.getLatLngByAddress = function(address, callback) {
@@ -208,11 +212,32 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
         });
     };
 
+    businessProfile.prototype.handleServiceAreaChange = function() {
+        var that = this;
+
+        var serviceAreasRadioName = this.freeProfileFormName + this.html.fields.serviceAreaRadioName;
+
+        $( document ).on( 'change' , 'input[name="' + serviceAreasRadioName + '"]', function() {
+            var $self = $(this);
+
+            if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
+                $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
+            } else {
+                $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+            }
+
+            new select();
+        });
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
         this.handleNewProfileRequest();
         this.handleLocaleChange();
+        this.handleServiceAreaChange();
 
         var that = this;
 

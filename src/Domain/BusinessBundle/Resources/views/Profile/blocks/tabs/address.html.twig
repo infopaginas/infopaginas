@@ -8,36 +8,37 @@
                 <div class="cards">
                     <div class="form-group card-item">
                         <div class="card-item-name">
-                            <span>Service Areas</span>
+                            <span>
+                                {% trans %}Service Areas{% endtrans %}
+                            </span>
                         </div>
                         <div class="col-xs-6 form-col">
-                            <div class="radio-row col-xs-12">
-                                <label class="control-label" for="area">Area</label>
-                                <input type="radio" name="loc" class="form-control radio-btn" id="ares">
-                            </div>
-                            <div class="radio-row col-xs-12">
-                                <label class="control-label" for="local">Locality</label>
-                                <input type="radio" name="loc" class="form-control radio-btn"
-                                       id="local">
-                            </div>
+                            {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
+                                <div class="radio-row col-xs-12">
+                                    <label class="control-label">{{ serviceType.vars.label }}:</label>
+                                    {{ form_widget(serviceType) }}
+                                </div>
+                            {% endfor %}
                         </div>
                         <div class="col-xs-6 form-col">
                             <div class="col-xs-4">
-                                <span>Within miles of my Business</span>
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.milesOfMyBusiness) }}
+                                </span>
                             </div>
                             <div class="col-xs-8">
-                                <input type="text" class="form-control" placeholder="100">
+                                {{ form_widget(businessProfileForm.milesOfMyBusiness) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
-                                <span>Localities:</span>
+                                <span>
+                                     {{ custom_form_label.widget(businessProfileForm.localities) }}
+                                </span>
                             </div>
                             <div class="col-xs-8">
                                 <div class="dropdown">
                                     <div class="select-container">
-                                        <select class="form-control select-control" disabled>
-                                            <option>4 selected</option>
-                                            <option>NY</option>
-                                        </select>
+                                        {{ form_widget(businessProfileForm.localities) }}
                                     </div>
                                 </div>
                             </div>

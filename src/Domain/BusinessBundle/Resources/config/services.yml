@@ -85,7 +85,7 @@ services:
             - '@request'
             - '@domain_business.manager.business_profiles'
             - '@domain_business.manager.tasks'
-            - [ setContainer, [ '@service_container' ] ]
+            - '@validator'
 
     domain_business.manager.category:
         class: Domain\BusinessBundle\Manager\CategoryManager

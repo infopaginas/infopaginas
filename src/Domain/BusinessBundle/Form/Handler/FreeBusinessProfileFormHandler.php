@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Manager\TasksManager;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class FreeBusinessProfileFormHandler
@@ -33,6 +34,9 @@ class FreeBusinessProfileFormHandler
     /** @var TasksManager */
     protected $tasksManager;
 
+    /** @var ValidatorInterface */
+    protected $validator;
+
     /**
      * FreeBusinessProfileFormHandler constructor.
      * @param FormInterface $form
@@ -44,12 +48,14 @@ class FreeBusinessProfileFormHandler
         FormInterface $form,
         Request $request,
         BusinessProfilesManager $manager,
-        TasksManager $tasksManager
+        TasksManager $tasksManager,
+        ValidatorInterface $validator
     ) {
         $this->form         = $form;
         $this->request      = $request;
         $this->manager      = $manager;
         $this->tasksManager = $tasksManager;
+        $this->validator    = $validator;
     }
 
     /**
@@ -60,8 +66,18 @@ class FreeBusinessProfileFormHandler
         if ($this->request->getMethod() == 'POST') {
             $this->form->handleRequest($this->request);
 
+            $businessProfile = $this->form->getData();
+
+            //$validationGroups = $this->getValidationGroups($businessProfile);
+            //$validationErrors = $this->validator->validate($businessProfile, null, $validationGroups);
+
+            /** @var FormError $error */
+            /*foreach ($validationErrors as $error) {
+                var_dump($error->getMessage());
+            }
+            die();*/
+
             if ($this->form->isValid()) {
-                $businessProfile = $this->form->getData();
                 $this->onSuccess($businessProfile);
                 return true;
             }
@@ -106,6 +122,17 @@ class FreeBusinessProfileFormHandler
     {
         $this->getBusinessProfilesManager()->saveProfile($businessProfile);
         $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
+    }
+
+    private function getValidationGroups(BusinessProfile $formData)
+    {
+        $groups = ['Default'];
+
+        if ($formData->getServiceAreasType() == 'area') {
+            array_push($groups, 'service_area_chosen');
+        }
+
+        return $groups;
     }
 
     /**
