@@ -16,3 +16,9 @@ services:
         arguments: [~, Domain\BannerBundle\Entity\Type, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Types}
+
+    domain_banner.admin.campaign:
+        class: Domain\BannerBundle\Admin\CampaignAdmin
+        arguments: [~, Domain\BannerBundle\Entity\Campaign, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Campaigns}

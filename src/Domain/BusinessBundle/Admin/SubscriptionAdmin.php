@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -24,13 +25,7 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('id')
             ->add('businessProfile')
             ->add('subscriptionPlan')
-            ->add('status', 'doctrine_orm_choice', [
-                'field_type' => 'choice',
-                'field_options' => [
-                    'required'  => false,
-                    'choices'   => StatusTrait::getStatuses()
-                ]
-            ])
+            ->add('status', 'doctrine_orm_choice', AdminHelper::getDatagridStatusOptions())
             ->add('startDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('endDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
@@ -47,7 +42,7 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('id')
             ->add('businessProfile')
             ->add('subscriptionPlan')
-            ->add('statusValue')
+            ->add('statusValue', null, ['label' => 'Status'])
             ->add('startDate')
             ->add('endDate')
             ->add('createdAt')
@@ -134,21 +129,5 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
         ;
-    }
-
-    /**
-     * @param ErrorElement $errorElement
-     * @param mixed $object
-     */
-    public function validate(ErrorElement $errorElement, $object)
-    {
-        if ($object instanceof Subscription && $object->getStartDate()) {
-                if ($object->getStartDate()->diff($object->getEndDate())->invert) {
-                $errorElement->with('endDate')
-                    ->addViolation('End Date must be later than Start Date')
-                    ->end()
-                ;
-            }
-        }
     }
 }

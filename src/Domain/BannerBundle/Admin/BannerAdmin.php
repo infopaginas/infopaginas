@@ -32,7 +32,6 @@ class BannerAdmin extends OxaAdmin
             ->add('type')
             ->add('template')
             ->add('allowedForBusinesses', null, [], null, $choiceOptions)
-            ->add('isActive', null, [], null, $choiceOptions)
         ;
 
     }
@@ -50,7 +49,6 @@ class BannerAdmin extends OxaAdmin
             ->add('size')
             ->add('template')
             ->add('allowedForBusinesses')
-            ->add('isActive')
         ;
 
         $this->addGridActions($listMapper);
@@ -74,7 +72,6 @@ class BannerAdmin extends OxaAdmin
                 ->add('title')
                 ->add('description')
                 ->add('allowedForBusinesses')
-                ->add('isActive')
             ->end()
             ->with('Type')
                 ->add('type', 'sonata_type_model_list', [], [])
@@ -104,7 +101,6 @@ class BannerAdmin extends OxaAdmin
             ->add('type')
             ->add('size')
             ->add('allowedForBusinesses')
-            ->add('isActive')
             ->add('image', null, [
                 'template' => 'DomainBannerBundle:Admin:show_image.html.twig'
             ])

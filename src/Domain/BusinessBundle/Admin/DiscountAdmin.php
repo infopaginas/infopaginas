@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -19,13 +20,7 @@ class DiscountAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('businessProfile')
-            ->add('status', 'doctrine_orm_choice', [
-                'field_type' => 'choice',
-                'field_options' => [
-                    'required'  => false,
-                    'choices'   => StatusTrait::getStatuses()
-                ]
-            ])
+            ->add('status', 'doctrine_orm_choice', AdminHelper::getDatagridStatusOptions())
             ->add('coupon')
             ->add('description')
             ->add('value')
@@ -41,6 +36,7 @@ class DiscountAdmin extends OxaAdmin
             ->add('id')
             ->add('businessProfile')
             ->add('coupon')
+            ->add('statusValue', null, ['label' => 'Status'])
             ->add('value')
             ->add('statusValue')
         ;

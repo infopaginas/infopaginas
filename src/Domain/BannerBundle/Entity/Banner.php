@@ -55,7 +55,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      * @var string - Banner description
      *
      * @Gedmo\Translatable
-     * @ORM\Column(name="description", type="string", length=100)
+     * @ORM\Column(name="description", type="text", length=100)
      */
     protected $description;
 
@@ -88,6 +88,15 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
      */
     protected $type;
+
+    /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
+     *     mappedBy="banners",
+     *     cascade={"persist"}
+     *     )
+     */
+    protected $campaigns;
 
     /**
      * @Gedmo\SortablePosition
@@ -328,5 +337,39 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Add campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return Banner
+     */
+    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        $this->campaigns[] = $campaign;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     */
+    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        $this->campaigns->removeElement($campaign);
+    }
+
+    /**
+     * Get campaigns
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaigns()
+    {
+        return $this->campaigns;
     }
 }

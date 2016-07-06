@@ -4,10 +4,14 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\DatetimePeriodInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\DatetimePeriodTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
@@ -23,11 +27,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\DiscountTranslation")
  */
-class Discount implements DefaultEntityInterface, TranslatableInterface, StatusInterface
+class Discount implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    use StatusTrait;
+    use DatetimePeriodStatusTrait;
 
     /**
      * @var int
