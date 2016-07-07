@@ -11,8 +11,9 @@ namespace Oxa\Sonata\MediaBundle\Controller;
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
+use \Sonata\MediaBundle\Controller\MediaAdminController;
 
-class MediaAdminController extends CRUDController
+class BaseMediaAdminController extends CRUDController
 {
     /**
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException

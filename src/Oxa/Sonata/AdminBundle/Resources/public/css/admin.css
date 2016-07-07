@@ -73,3 +73,7 @@ h4.filter_legend img {
     pointer-events: none;
     cursor: default;
 }
+
+.media-list-deleted-image{
+    margin-right: 6px;
+}

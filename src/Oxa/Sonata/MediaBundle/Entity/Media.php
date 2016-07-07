@@ -20,17 +20,22 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="media__media")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @ORM\HasLifecycleCallbacks
  */
 class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface
 {
     use DefaultEntityTrait;
 
     /**
-     * @var integer $id
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * Get id
