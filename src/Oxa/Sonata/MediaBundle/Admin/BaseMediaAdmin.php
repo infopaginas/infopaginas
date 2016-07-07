@@ -58,7 +58,10 @@ class BaseMediaAdmin extends OxaAdmin
             return;
         }
 
-        $formMapper->getFormBuilder()->addModelTransformer(new ProviderDataTransformer($this->pool, $this->getClass()), true);
+        $formMapper->getFormBuilder()->addModelTransformer(
+            new ProviderDataTransformer($this->pool, $this->getClass()),
+            true
+        );
 
         $provider = $this->pool->getProvider($media->getProviderName());
 
@@ -141,19 +144,25 @@ class BaseMediaAdmin extends OxaAdmin
 
         $providers = array();
 
-        $providerNames = (array) $this->pool->getProviderNamesByContext($this->getPersistentParameter('context', $this->pool->getDefaultContext()));
+        $providerNames = (array) $this->pool->getProviderNamesByContext(
+            $this->getPersistentParameter('context', $this->pool->getDefaultContext())
+        );
         foreach ($providerNames as $name) {
             $providers[$name] = $name;
         }
 
-        $datagridMapper->add('providerName', 'doctrine_orm_choice', array(
-            'field_options' => array(
-                'choices'  => $providers,
-                'required' => false,
-                'multiple' => false,
-                'expanded' => false,
-            ),
-            'field_type' => 'choice',
-        ));
+        $datagridMapper->add(
+            'providerName', 
+            'doctrine_orm_choice',
+            array(
+                'field_options' => array(
+                    'choices'  => $providers,
+                    'required' => false,
+                    'multiple' => false,
+                    'expanded' => false,
+                ),
+                'field_type' => 'choice',
+            )
+        );
     }
 }

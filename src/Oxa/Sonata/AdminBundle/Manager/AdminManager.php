@@ -184,7 +184,7 @@ class AdminManager extends DefaultManager
                 // ignore for translations
                 if ($associationMapping['fieldName'] == 'translations') {
 
-                    // disable sonata event listener 
+                    // disable sonata event listener
                     // to prevent removing record translations
                     // while we softdelete record
                     $this->getEntityManager()
