@@ -27,20 +27,19 @@ class MediaAdminController extends CRUDController
 
         $parameters = $this->admin->getPersistentParameters();
         $providers  = $this->get('sonata.media.pool')->getProvidersByContext(
-                        $this->get('request')->get(
-                                'context',
-                                $this->get('sonata.media.pool')
-                                ->getDefaultContext()
-                            )
+                        $this->get('request')->get('context', $this->get('sonata.media.pool')->getDefaultContext())
                         );
 
         if (!$parameters['provider']) {
-            return $this->render('SonataMediaBundle:MediaAdmin:select_provider.html.twig', array(
-                'providers'     => $providers,
-                'base_template' => $this->getBaseTemplate(),
-                'admin'         => $this->admin,
-                'action'        => 'create',
-            ));
+            return $this->render(
+                'SonataMediaBundle:MediaAdmin:select_provider.html.twig',
+                array(
+                    'providers'     => $providers,
+                    'base_template' => $this->getBaseTemplate(),
+                    'admin'         => $this->admin,
+                    'action'        => 'create',
+                )
+            );
         }
 
         return parent::createAction();
@@ -86,11 +85,14 @@ class MediaAdminController extends CRUDController
         // set the theme for the current Admin Form
         $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
 
-        return $this->render($this->admin->getTemplate('list'), array(
-            'action'     => 'list',
-            'form'       => $formView,
-            'datagrid'   => $datagrid,
-            'csrf_token' => $this->getCsrfToken('sonata.batch'),
-        ));
+        return $this->render(
+            $this->admin->getTemplate('list'),
+            array(
+                'action'     => 'list',
+                'form'       => $formView,
+                'datagrid'   => $datagrid,
+                'csrf_token' => $this->getCsrfToken('sonata.batch'),
+            )
+        );
     }
 }

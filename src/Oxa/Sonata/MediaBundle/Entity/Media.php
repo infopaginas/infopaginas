@@ -46,7 +46,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     {
         return $this->id;
     }
-    
+
     /**
      * Available contexts
      *

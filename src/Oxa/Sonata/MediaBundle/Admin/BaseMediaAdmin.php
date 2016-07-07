@@ -152,7 +152,7 @@ class BaseMediaAdmin extends OxaAdmin
         }
 
         $datagridMapper->add(
-            'providerName', 
+            'providerName',
             'doctrine_orm_choice',
             array(
                 'field_options' => array(
