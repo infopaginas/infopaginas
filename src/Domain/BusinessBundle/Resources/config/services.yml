@@ -24,7 +24,7 @@ services:
     domain_business.manager.business_profile:
         class: Domain\BusinessBundle\Manager\BusinessProfileManager
         arguments: ['@doctrine.orm.entity_manager', '@domain_business.manager.category']
-
+        
     domain_business.listener.subscription_listener:
         class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusListener
         tags:
@@ -34,3 +34,8 @@ services:
         class: Domain\BusinessBundle\Service\DatetimePeriodStatusService
         arguments:
             - '@doctrine.orm.entity_manager'
+
+    domain_business.twig.has_subscription_extension:
+        class: Domain\BusinessBundle\Twig\Extension\HasSubscriptionExtension
+        tags:
+            - { name: twig.extension }

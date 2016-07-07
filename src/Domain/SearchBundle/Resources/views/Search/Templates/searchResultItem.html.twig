@@ -1,4 +1,8 @@
-<div class="card-item premium">
+<div class="card-item
+    {% if (hasSubs(item[0], 'CODE_PREMIUM_PLUS')) %}
+        premium
+    {% endif %}
+    ">
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
             <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
@@ -9,9 +13,11 @@
                 <span class="card-name">{{ item[0].name }}</span>
             </a>
                 &nbsp;
-            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
-                <span class="card-slogan"><q>{{ item[0].slogan }}</q></span>
-            </a>
+            {% if (hasSubs(item[0], "CODE_PREMIUM_PLUS")) %}
+                <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
+                    <span class="card-slogan"><q>{{ item[0].slogan }}</q></span>
+                </a>
+            {% endif %}
         </label>
     </div>
     <div class="col-xs-5 schedule">
@@ -49,9 +55,15 @@
     </div>
     <div class="col-xs-12 additional-info">
         <div class="icons">
-            <a href=""><i class="photo"></i></a>
-            <a href=""><i class="video"></i></a>
-            <a href=""><i class="ad"></i></a>
+            {% if (hasSubs(item[0], "CODE_PREMIUM_GOLD")) %}
+                <a href=""><i class="photo"></i></a>
+            {% endif %}
+            {% if (hasSubs(item[0], "CODE_PREMIUM_PLATINUM")) %}
+                <a href=""><i class="video"></i></a>
+            {% endif %}
+            {% if (hasSubs(item[0], "CODE_PRIORITY")) %}
+                <a href=""><i class="ad"></i></a>
+            {% endif %}
         </div>
         <div class="reviews">
             <div class="star-rating">
@@ -65,5 +77,7 @@
             <span>16 Reviews</span>
         </div>
     </div>
-    <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+    {% if (hasSubs(item[0], "CODE_PREMIUM_PLUS")) %}
+        <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+    {% endif %}
 </div>

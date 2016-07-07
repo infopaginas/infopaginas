@@ -1,4 +1,4 @@
-define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, view ) {
+define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], function( $, _, view, cookie ) {
     'use strict'
 
     var geolocation = function ( options ) {
@@ -40,7 +40,6 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
     }
 
     geolocation.prototype.showPosition = function ( position ) {
-        console.log(position);
         this.getLocationsNameByLatLng.bind(this)( position.coords.latitude, position.coords.longitude );
     }
 
@@ -84,6 +83,9 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
 
     geolocation.prototype.setPosition = function ( position ) {
         this.position = position;
+
+        cookie.set('lat', this.getLat());
+        cookie.set('lng', this.getLng());
 
         return this;
     }

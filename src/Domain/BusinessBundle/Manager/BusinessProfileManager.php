@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 
@@ -28,16 +29,17 @@ class BusinessProfileManager extends Manager
         $this->categoryManager = $categoryManager;
     }
 
-    public function searchByPhraseAndLocation(string $phrase, string $location)
+    public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location)
     {
-        if (empty($location)) {
+        $locationName = $location->name;
+        if (empty($locationName)) {
             // TODO Move magic string this to config
-            $location = "San Juan";
+            $locationName = "San Juan";
         }
 
         // TODO Move to filtering functionality
         $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->searchWithQueryBuilder($phrase, $location);
+        return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName);
     }
 
     public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)

@@ -30,6 +30,9 @@ requirejs.config({
         },
         'star-rating' : {
             deps: ['$']
+        },
+        'js-cookie' : {
+            exports: 'Cookies'
         }
     },
     paths: {
@@ -42,6 +45,7 @@ requirejs.config({
         'jquery'        : 'jquery.min',
         'jquery-ui'     : 'jquery-ui.min',
         'jquery-mobile' : 'jquery.mobile.custom.min',
+        'js-cookie'     : 'js.cookie.min',
         'bootstrap'     : 'bootstrap.min',
         'underscore'    : 'underscore-min',
         'alertify'      : 'alertify.min',
@@ -49,7 +53,7 @@ requirejs.config({
         'slick'         : 'slick.min',
         'photo-gallery' : 'photo-gallery',
         'lightbox'      : 'simple-lightbox.min',
-        'select2'       : 'select2.min'
+        'select2'       : 'select2.min',
 
     }
 });

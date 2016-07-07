@@ -38,7 +38,6 @@ class LoadSubscriptionPlanData extends AbstractFixture implements ContainerAware
         $this->manager = $manager;
 
         $data = SubscriptionPlan::getCodes();
-
         foreach ($data as $code => $value) {
             $object = new SubscriptionPlan();
             $object->setName($value);

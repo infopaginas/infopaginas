@@ -21,16 +21,19 @@ class SearchController extends Controller
     public function indexAction(Request $request)
     {
         $query = $request->get('q', '');
-        $location = $request->get('geo', 'San Juan');
         $page     = $request->get('page', 1);
+
+        $geolocationManager = $this->get('oxa_geolocation.manager');
+        $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
+
         $total = 0;
         $limit = 30;
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
         $categoryManager         = $this->get('domain_business.manager.category');
-        $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
+        $bannerFactory           = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
 
-        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $location);
+        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue);
 
         $categories    = $categoryManager->getCategoriesByProfiles($results);
         $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
@@ -41,7 +44,7 @@ class SearchController extends Controller
             'page'          => $page,
             'total'         => $total,
             'limit'         => $limit,
-            'location'      => $location,
+            'location'      => $locationValue->name,
             'banner'        => $banner,
             'categories'    => $categories
         ));
