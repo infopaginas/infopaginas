@@ -64,6 +64,7 @@ sonata_admin:
                 label: Banners
                 icon: <i class="fa fa-star"></i>
                 items:
+                    - domain_banner.admin.campaign
                     - domain_banner.admin.banner
                     - domain_banner.admin.type
                     - domain_banner.admin.template

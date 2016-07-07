@@ -3,22 +3,22 @@
 <!--         <input type="checkbox" name="card-check" class="form-control checkbox-btn"
                id="card-check"> -->
         <label class="control-label card-label" for="card-check">
-            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
-                <span class="card-number">{{ item.order }}.</span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
+                <span class="card-number">{# item.order #}.</span>
             </a>
                 &nbsp;
-            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
+                <span class="card-name">{{ item[0].name }}</span>
             </a>
                 &nbsp;
-            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
-                <span class="card-slogan"><q>{{ item.slogan }}</q></span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
+                <span class="card-slogan"><q>{{ item[0].slogan }}</q></span>
             </a>
         </label>
     </div>
     <div class="col-xs-5 schedule">
         <div class="address">
-            <span>{{ item.city}}, {{ item.state }} {{ item.zip_code }}</span>
+            <span>{{ item[0].city}}, {{ item[0].state }} {{ item[0].zipCode }}</span>
             <a href="">Get Direction <span>&#187;</span></a>
         </div>
         <div class="shift">
@@ -28,10 +28,10 @@
     </div>
     <div class="col-xs-7 company-contact">
         <ul class="company-info">
-            <li><a href="//{{ item.website }}"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+            <li><a href="//{{ item[0].website }}"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item[0].website }}</span></a>
             </li>
             <li><a href="mailto:sonsnotebooks@yahoo.com"><i class="fa fa-envelope"
-                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
+                                                            aria-hidden="true"></i><span>{{ item[0].email }}</span></a>
             </li>
             <li>
                 <div class="dropdown filter-drop">

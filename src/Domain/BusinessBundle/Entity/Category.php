@@ -309,4 +309,28 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     {
         return $this->slug;
     }
+
+    /**
+     * Set searchFts
+     *
+     * @param tsvector $searchFts
+     *
+     * @return Category
+     */
+    public function setSearchFts($searchFts)
+    {
+        $this->searchFts = $searchFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchFts
+     *
+     * @return tsvector
+     */
+    public function getSearchFts()
+    {
+        return $this->searchFts;
+    }
 }

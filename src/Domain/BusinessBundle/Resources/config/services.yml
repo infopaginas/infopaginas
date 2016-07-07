@@ -24,3 +24,13 @@ services:
     domain_business.manager.business_profile:
         class: Domain\BusinessBundle\Manager\BusinessProfileManager
         arguments: ['@doctrine.orm.entity_manager', '@domain_business.manager.category']
+
+    domain_business.listener.subscription_listener:
+        class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusListener
+        tags:
+            - {name: doctrine.event_listener, event: onFlush, priority: 2}
+
+    domain_business.service.datetime_period_status_service:
+        class: Domain\BusinessBundle\Service\DatetimePeriodStatusService
+        arguments:
+            - '@doctrine.orm.entity_manager'

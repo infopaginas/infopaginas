@@ -1,6 +1,7 @@
 <?php
 namespace Oxa\Sonata\AdminBundle\Admin;
 
+use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
@@ -10,6 +11,7 @@ use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Validator\ErrorElement;
 
 class OxaAdmin extends BaseAdmin
 {
@@ -29,6 +31,19 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridBooleanTypeOptions = [
+        'choices' => [
+            1 => 'label_yes',
+            2 => 'label_no',
+        ],
+        'translation_domain' => 'SonataAdminBundle'
+    ];
+
+    /**
+     * Used to set default translations for filter boolean labels
+     *
+     * @var array
+     */
+    protected $defaultDatagridStatusTypeOptions = [
         'choices' => [
             1 => 'label_yes',
             2 => 'label_no',
@@ -167,5 +182,21 @@ class OxaAdmin extends BaseAdmin
                 ],
             ]
         ]);
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        if ($object instanceof DatetimePeriodStatusInterface && $object->getStartDate()) {
+            if ($object->getStartDate()->diff($object->getEndDate())->invert) {
+                $errorElement->with('endDate')
+                    ->addViolation('End Date must be later than Start Date')
+                    ->end()
+                ;
+            }
+        }
     }
 }

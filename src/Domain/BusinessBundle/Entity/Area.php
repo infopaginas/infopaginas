@@ -187,4 +187,28 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     {
         $this->translations->removeElement($translation);
     }
+
+    /**
+     * Set searchFts
+     *
+     * @param tsvector $searchFts
+     *
+     * @return Area
+     */
+    public function setSearchFts($searchFts)
+    {
+        $this->searchFts = $searchFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchFts
+     *
+     * @return tsvector
+     */
+    public function getSearchFts()
+    {
+        return $this->searchFts;
+    }
 }
