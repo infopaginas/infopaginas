@@ -1,5 +1,5 @@
-<div class="card-item premium" id="{{ item[0].id }}">
-    <div class="card-title">
+<div class="card-item premium" id="{{ item[0].id }}" data-id="{{ item[0].id }}">
+    <div class="col-xs-8 card-title">
         <label class="control-label card-label" for="card-check">
             <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
                 <span class="card-number">{# item[0].order #}.</span>
@@ -12,7 +12,7 @@
     </div>
     <div class="col-xs-8 schedule">
         <div class="address">
-            <span>{{ item[0].city }}, {{ item[0].state }} {{ item[0].zipCode }}</span>
+            <span><a class="map-address">{{ item[0].city }}, {{ item[0].state }} {{ item[0].zipCode }}</a></span>
             <a href="">Get Direction <span>&#187;</span></a>
         </div>
     </div>

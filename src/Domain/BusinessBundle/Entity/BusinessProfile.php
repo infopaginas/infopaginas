@@ -1680,4 +1680,22 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         return $this->searchNameFts;
     }
+
+    /*
+     * Get count of BusinessProfile reviews
+     * @return int
+     */
+    public function getBusinessReviewsCount()
+    {
+        return $this->getBusinessReviews()->count();
+    }
+
+    /**
+     * Single access point to get address
+     * @return string
+     */
+    public function getShortAddress()
+    {
+        return 'Puerto Rico, Ololoeva St 25, 00777';
+    }
 }
