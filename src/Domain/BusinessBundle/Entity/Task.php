@@ -145,7 +145,7 @@ class Task implements DefaultEntityInterface, TaskInterface
     }
 
     /**
-     * @return mixed
+     * @return BusinessProfile | null
      */
     public function getBusinessProfile()
     {

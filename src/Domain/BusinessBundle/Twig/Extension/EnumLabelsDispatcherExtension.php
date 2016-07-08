@@ -2,8 +2,6 @@
 
 namespace Domain\BusinessBundle\Twig\Extension;
 
-use AppBundle\DBAL\Types\OrderStatusType;
-use AppBundle\DBAL\Types\PaymentType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 

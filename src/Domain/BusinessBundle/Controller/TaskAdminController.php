@@ -4,9 +4,11 @@ namespace Domain\BusinessBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Repository\BusinessProfileRepository;
+use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,23 +42,6 @@ class TaskAdminController extends CRUDController
      */
     public function listAction()
     {
-        /*$em = $this->getDoctrine()->getEntityManager();
-
-        $repo = $em->getRepository(BusinessProfileRepository::SLUG);
-
-        $obj = $repo->find(24);
-
-        $entity = $em->find(BusinessProfile::class, 23);
-
-        $entity->injectValues($obj);
-
-        $uow = $em->getUnitOfWork();
-        $uow->computeChangeSets(); // do not compute changes if inside a listener
-        $changeset = $uow->getEntityChangeSet($entity);
-
-        var_dump($changeset);
-        die();*/
-
         if (false === $this->admin->isGranted('LIST')) {
             throw new AccessDeniedException();
         }

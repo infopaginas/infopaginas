@@ -1,0 +1,39 @@
+<div class="sonata-ba-view">
+    {{ sonata_block_render_event('sonata.admin.show.top', { 'admin': admin, 'object': object }) }}
+
+    {% set data = get_business_profiles_diff_array(business, business.getActualBusinessProfile()) %}
+
+    <table class="table table-bordered">
+        <thead>
+        <tr class="sonata-ba-view-title">
+            <th colspan="4">
+                {{ admin.trans('Business Profile Changes') }}
+            </th>
+        </tr>
+        <tr class="sonata-ba-view-title">
+            <th>
+                {{ admin.trans('Changed attribute') }}
+            </th>
+            <th>
+                {{ admin.trans('Change action') }}
+            </th>
+            <th>
+                {{ admin.trans('Old value') }}
+            </th>
+            <th>
+                {{ admin.trans('New value') }}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr class="sonata-ba-view-container">
+                <td>{{ row.field }}</td>
+                <td>{{ row.action }}</td>
+                <td>{{ row.oldValue }}</td>
+                <td>{{ row.newValue }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

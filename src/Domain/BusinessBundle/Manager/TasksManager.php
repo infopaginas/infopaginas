@@ -162,6 +162,11 @@ class TasksManager
     public function reject(Task $task) : array
     {
         $task->setStatus(TaskStatusType::TASK_STATUS_REJECTED);
+
+        if ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
+            $this->getBusinessProfileManager()->unlock($task->getBusinessProfile()->getActualBusinessProfile());
+        }
+
         return $this->save($task);
     }
 

@@ -125,21 +125,14 @@ class FreeBusinessProfileFormHandler
         if ($businessProfile->getActualBusinessProfile() === null) {
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
         } else {
+            //Pessimistic block strategy used - user can't update his business profile before Admin response
+            $this->getBusinessProfilesManager()->lock($businessProfile->getActualBusinessProfile());
+
+            //create 'Update Business Profile' Task for Admin / CM
             $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile);
         }
 
         $this->getBusinessProfilesManager()->saveProfile($businessProfile);
-    }
-
-    private function getValidationGroups(BusinessProfile $formData)
-    {
-        $groups = ['Default'];
-
-        if ($formData->getServiceAreasType() == 'area') {
-            array_push($groups, 'service_area_chosen');
-        }
-
-        return $groups;
     }
 
     /**

@@ -484,6 +484,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $actualBusinessProfile;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_locked", type="boolean", options={"default" : 0})
+     */
+    protected $locked;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -574,6 +581,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $this->locked = false;
     }
 
     /**
@@ -1941,35 +1950,21 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $this;
     }
 
-    public function getFieldsDataSet()
+    /**
+     * @return boolean
+     */
+    public function isLocked()
     {
-        $properties = get_object_vars($this);
-
-        $result = [];
-
-        foreach ($properties as $key => $value) {
-            if (!is_object($value)) {
-                $result[$key] = $value;
-            }
-        }
-
-        return $result;
+        return $this->locked;
     }
 
-    /*public function compareWith($businessProfile) {
-        var_dump($this->getFieldsDataSet());
-        var_dump($businessProfile->getFieldsDataSet());
-        var_dump(array_diff_assoc($this->getFieldsDataSet(), $businessProfile->getFieldsDataSet()));
-        die();
-       return array_diff_assoc($this->getFieldsDataSet(), $businessProfile->getFieldsDataSet());
-    }*/
-
-    public function injectValues(BusinessProfile $businessProfile)
+    /**
+     * @param boolean $locked
+     * @return BusinessProfile
+     */
+    public function setLocked($locked)
     {
-        foreach ($businessProfile->getFieldsDataSet() as $key => $value) {
-            if (!is_object($value)) {
-                $this->{$key} = $value;
-            }
-        }
+        $this->locked = $locked;
+        return $this;
     }
 }

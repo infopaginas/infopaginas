@@ -17,13 +17,22 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
-    #form types section
+    #twig extensions
     domain_business.twig_extension.enum_labels_dispatcher:
         class: Domain\BusinessBundle\Twig\Extension\EnumLabelsDispatcherExtension
         public: false
         tags:
             -  { name: twig.extension }
 
+    domain_business.twig_extension.business_profiles_diff:
+        class: Domain\BusinessBundle\Twig\Extension\BusinessProfilesDiffExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+        calls:
+            - [ setFormObject, [ '@domain_business.form.business_profile.free' ] ]
+
+    #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType
         arguments:

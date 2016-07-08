@@ -38,7 +38,9 @@ class BusinessProfileManager extends Manager
 
         $this->categoryManager = $categoryManager;
 
-        $this->currentUser = $tokenStorage->getToken()->getUser();
+        if ($tokenStorage->getToken() !== null) {
+            $this->currentUser = $tokenStorage->getToken()->getUser();
+        }
     }
 
     public function searchByPhraseAndLocation(string $phrase, string $location)
@@ -136,18 +138,38 @@ class BusinessProfileManager extends Manager
     /**
      * @param BusinessProfile $businessProfile
      */
+    public function lock(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setLocked(true);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function unlock(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setLocked(false);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
    public function publish(BusinessProfile $businessProfile)
    {
        $oldProfile = $businessProfile->getActualBusinessProfile();
        $oldProfile->setActualBusinessProfile($businessProfile);
        $oldProfile->setIsActive(false);
 
-       $this->commit($oldProfile);
+       $this->getEntityManager()->persist($oldProfile);
 
        $businessProfile->setActualBusinessProfile(null);
        $businessProfile->setIsActive(true);
 
-       $this->commit($businessProfile);
+       $this->getEntityManager()->persist($businessProfile);
+
+       $this->getEntityManager()->flush();
    }
 
     /**
@@ -159,12 +181,6 @@ class BusinessProfileManager extends Manager
     private function commit(BusinessProfile $businessProfile)
     {
         $this->getEntityManager()->persist($businessProfile);
-        $this->getEntityManager()->flush();
-    }
-
-    private function drop(BusinessProfile $businessProfile)
-    {
-        $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
     }
 

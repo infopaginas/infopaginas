@@ -171,13 +171,15 @@
                                             {% for business in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
-                                                            {% if business.getIsActive() %}
+                                                        {% if business.getIsActive() and not business.isLocked() %}
+                                                            <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
                                                                 {{ business.getName() }}
-                                                            {% else %}
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="#">
                                                                 {{ business.getName() }} ({% trans %}Pending{% endtrans %})
-                                                            {% endif %}
-                                                        </a>
+                                                            </a>
+                                                        {% endif %}
                                                     </span>
                                                 </div>
                                             {% endfor %}
