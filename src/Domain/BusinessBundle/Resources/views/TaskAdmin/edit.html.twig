@@ -1,62 +1,18 @@
 {% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
 
 {% block form %}
-    <div class="sonata-ba-view">
+    {% set business = object.businessProfile %}
 
-        {{ sonata_block_render_event('sonata.admin.show.top', { 'admin': admin, 'object': object }) }}
+    {% include 'DomainBusinessBundle:TaskAdmin/blocks:business.html.twig'
+        with { 'business' : business, 'admin': admin, 'title': 'Business'} %}
 
-        {% set business = object.businessProfile %}
+    {% if (business.getActualBusinessProfile()) %}
+        {% include 'DomainBusinessBundle:TaskAdmin/blocks:business.html.twig'
+        with { 'business' : business.getActualBusinessProfile(), 'admin': admin, 'title': 'Old business data'} %}
+    {% endif %}
 
-        <table class="table table-bordered">
-            <thead>
-            <tr class="sonata-ba-view-title">
-                <th colspan="2">
-                    {{ admin.trans('Business') }}
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="sonata-ba-view-container">
-                <td>{{ admin.trans('Name') }}</td>
-                <td>{{ business.name }}</td>
-            </tr>
-            <tr class="sonata-ba-view-container">
-                <td>{{ admin.trans('Phone') }}</td>
-                <td>{{ business.phone }}</td>
-            </tr>
-            <tr class="sonata-ba-view-container">
-                <td>{{ admin.trans('Address') }}</td>
-                <td>??</td>
-            </tr>
-            <tr class="sonata-ba-view-container">
-                <td>{{ admin.trans('Email') }}</td>
-                <td>{{ business.email }}</td>
-            </tr>
-            <tr class="sonata-ba-view-container">
-                <td>{{ admin.trans('Website') }}</td>
-                <td>{{ business.website }}</td>
-            </tr>
-            {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_CLOSE')) %}
-                <tr class="sonata-ba-view-container">
-                    <td>{{ admin.trans('Subscription') }}</td>
-                    <td>{{ business.subscription.name }}</td>
-                </tr>
-                <tr class="sonata-ba-view-container">
-                    <td>{{ admin.trans('Closure Reason') }}</td>
-                    <td>-</td>
-                </tr>
-            {% endif %}
-            <tr class="sonata-ba-view-container">
-                <td>{{ admin.trans('Profile') }}</td>
-                <td>
-                    <a href="{{ path('admin_domain_business_businessprofile_show', {'id': business.id}) }}">
-                        {{ admin.trans('View') }}
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    {% set data = business.compareWith(business.getActualBusinessProfile()) %}
+    {{ dump(data) }}
 
     <form
         {% if admin_pool.getOption('form_type') == 'horizontal' %}class="form-horizontal"{% endif %}

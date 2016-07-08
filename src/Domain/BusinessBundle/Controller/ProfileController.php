@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
 use Domain\BusinessBundle\Form\Handler\FreeBusinessProfileFormHandler;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\BusinessProfilesManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,12 +20,6 @@ class ProfileController extends Controller
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
 
     const INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
-
-    //add create action
-    //use form extending
-    //translatable entity
-    //remove media tab
-    //remove some checkboxes
 
     public function createAction()
     {
@@ -57,7 +52,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function saveAction()
+    public function saveAction(Request $request, int $id = null)
     {
         $formHandler = $this->getFreeBusinessProfileFormHandler();
 
@@ -72,14 +67,17 @@ class ProfileController extends Controller
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
-    private function getBusinessProfilesManager() : BusinessProfilesManager
+    private function getBusinessProfilesManager() : BusinessProfileManager
     {
-        return $this->get('domain_business.manager.business_profiles');
+        return $this->get('domain_business.manager.business_profile');
     }
 
     private function getFreeBusinessProfileForm() : FormInterface
     {
-        return $this->get('domain_business.form.business_profile.free');
+        $form = $this->get('domain_business.form.business_profile.free');
+        $form->setData($this->getBusinessProfilesManager()->createProfile());
+
+        return $form;
     }
 
     private function getFreeBusinessProfileFormHandler() : FreeBusinessProfileFormHandler

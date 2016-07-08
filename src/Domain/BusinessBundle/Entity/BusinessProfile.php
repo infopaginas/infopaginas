@@ -476,6 +476,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $phones;
 
     /**
+     * @var BusinessProfile
+     *
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile")
+     * @ORM\JoinColumn(name="actual_business_profile_id", nullable=true)
+     */
+    protected $actualBusinessProfile;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -1873,7 +1881,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @param string $milesOfMyBusiness
      * @return BusinessProfile
      */
-    public function setMilesFromMyBusiness($milesOfMyBusiness)
+    public function setMilesOfMyBusiness($milesOfMyBusiness)
     {
         $this->milesOfMyBusiness = $milesOfMyBusiness;
         return $this;
@@ -1913,5 +1921,55 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->phones = $phones;
         return $this;
+    }
+
+    /**
+     * @return BusinessProfile
+     */
+    public function getActualBusinessProfile()
+    {
+        return $this->actualBusinessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $actualBusinessProfile
+     * @return BusinessProfile
+     */
+    public function setActualBusinessProfile($actualBusinessProfile)
+    {
+        $this->actualBusinessProfile = $actualBusinessProfile;
+        return $this;
+    }
+
+    public function getFieldsDataSet()
+    {
+        $properties = get_object_vars($this);
+
+        $result = [];
+
+        foreach ($properties as $key => $value) {
+            if (!is_object($value)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /*public function compareWith($businessProfile) {
+        var_dump($this->getFieldsDataSet());
+        var_dump($businessProfile->getFieldsDataSet());
+        var_dump(array_diff_assoc($this->getFieldsDataSet(), $businessProfile->getFieldsDataSet()));
+        die();
+       return array_diff_assoc($this->getFieldsDataSet(), $businessProfile->getFieldsDataSet());
+    }*/
+
+    public function injectValues(BusinessProfile $businessProfile)
+    {
+        foreach ($businessProfile->getFieldsDataSet() as $key => $value) {
+            if (!is_object($value)) {
+                $this->{$key} = $value;
+            }
+        }
     }
 }

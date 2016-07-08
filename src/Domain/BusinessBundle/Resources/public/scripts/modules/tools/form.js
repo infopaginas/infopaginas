@@ -55,6 +55,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'tools/
         //no additional info required? - just serialize form
         if (typeof data === 'undefined') {
             data = this.getRequestData();
+        } else {
+            var formData = this.getRequestData();
+            formData.push(data);
+            data = formData;
         }
 
         $.ajax({

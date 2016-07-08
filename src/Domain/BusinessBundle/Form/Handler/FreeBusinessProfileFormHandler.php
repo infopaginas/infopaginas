@@ -9,7 +9,7 @@
 namespace Domain\BusinessBundle\Form\Handler;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Manager\BusinessProfilesManager;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -28,7 +28,7 @@ class FreeBusinessProfileFormHandler
     /** @var Request  */
     protected $request;
 
-    /** @var BusinessProfilesManager */
+    /** @var BusinessProfileManager */
     protected $manager;
 
     /** @var TasksManager */
@@ -41,13 +41,13 @@ class FreeBusinessProfileFormHandler
      * FreeBusinessProfileFormHandler constructor.
      * @param FormInterface $form
      * @param Request $request
-     * @param BusinessProfilesManager $manager
+     * @param BusinessProfileManager $manager
      * @param TasksManager $tasksManager
      */
     public function __construct(
         FormInterface $form,
         Request $request,
-        BusinessProfilesManager $manager,
+        BusinessProfileManager $manager,
         TasksManager $tasksManager,
         ValidatorInterface $validator
     ) {
@@ -63,19 +63,21 @@ class FreeBusinessProfileFormHandler
      */
     public function process()
     {
+        $businessProfileId = $this->request->get('businessProfileId', false);
+
+        if ($businessProfileId !== false) {
+            $actualBusinessProfile = $this->manager->find($businessProfileId);
+
+            $businessProfile = $this->manager->createProfile();
+            $businessProfile->setActualBusinessProfile($actualBusinessProfile);
+
+            $this->form->setData($businessProfile);
+        }
+
         if ($this->request->getMethod() == 'POST') {
             $this->form->handleRequest($this->request);
 
             $businessProfile = $this->form->getData();
-
-            //$validationGroups = $this->getValidationGroups($businessProfile);
-            //$validationErrors = $this->validator->validate($businessProfile, null, $validationGroups);
-
-            /** @var FormError $error */
-            /*foreach ($validationErrors as $error) {
-                var_dump($error->getMessage());
-            }
-            die();*/
 
             if ($this->form->isValid()) {
                 $this->onSuccess($businessProfile);
@@ -120,8 +122,13 @@ class FreeBusinessProfileFormHandler
      */
     private function onSuccess(BusinessProfile $businessProfile)
     {
+        if ($businessProfile->getActualBusinessProfile() === null) {
+            $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
+        } else {
+            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile);
+        }
+
         $this->getBusinessProfilesManager()->saveProfile($businessProfile);
-        $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
     }
 
     private function getValidationGroups(BusinessProfile $formData)
@@ -144,9 +151,9 @@ class FreeBusinessProfileFormHandler
     }
 
     /**
-     * @return BusinessProfilesManager
+     * @return BusinessProfileManager
      */
-    private function getBusinessProfilesManager() : BusinessProfilesManager
+    private function getBusinessProfilesManager() : BusinessProfileManager
     {
         return $this->manager;
     }

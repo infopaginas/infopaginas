@@ -33,17 +33,23 @@ class TasksManager
      */
     protected $em;
 
+    /** @var BusinessProfileManager */
+    protected $businessProfileManager;
+
     /**
      * TasksManager constructor.
      *
      * @access public
      * @param EntityManager $entityManager
+     * @param BusinessProfileManager $businessProfileManager
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, BusinessProfileManager $businessProfileManager)
     {
         $this->em = $entityManager;
 
         $this->repository = $this->em->getRepository(TaskRepository::SLUG);
+
+        $this->businessProfileManager = $businessProfileManager;
     }
 
     /**
@@ -169,6 +175,13 @@ class TasksManager
     public function approve(Task $task) : array
     {
         $task->setStatus(TaskStatusType::TASK_STATUS_CLOSED);
+
+        if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
+            $this->getBusinessProfileManager()->activate($task->getBusinessProfile());
+        } else {
+            $this->getBusinessProfileManager()->publish($task->getBusinessProfile());
+        }
+
         return $this->save($task);
     }
 
@@ -193,6 +206,17 @@ class TasksManager
         }
 
         return $this->buildResponseArray($success, $message);
+    }
+
+    /**
+     * Provide access to business profiles manager object
+     *
+     * @access private
+     * @return BusinessProfileManager
+     */
+    private function getBusinessProfileManager() : BusinessProfileManager
+    {
+        return $this->businessProfileManager;
     }
 
     /**

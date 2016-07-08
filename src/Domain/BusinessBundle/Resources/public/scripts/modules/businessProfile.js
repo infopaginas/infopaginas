@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/select', 'tools/phones'], function( $, bootstrap, alertify, FormHandler, Spin, select, phones ) {
+define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/select', 'tools/phones'], function( $, bootstrap, alertify, FormHandler, Spin, select ) {
     'use strict';
 
     //init businessProfile object variables
@@ -174,9 +174,19 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
 
     businessProfile.prototype.handleNewProfileRequest = function() {
         var that = this;
+        var data = {};
 
         $( document ).on( 'submit' , this.html.forms.newProfileRequestFormId , function( event ) {
-            that.newProfileRequestFormHandler.doRequest( that.urls.saveBusinessProfile );
+            var profileId = $( this ) .data( 'id' );
+
+            if (profileId.length !== 0) {
+                var data = {
+                    name: 'businessProfileId',
+                    value: profileId
+                };
+            }
+
+            that.newProfileRequestFormHandler.doRequest( that.urls.saveBusinessProfile, data );
             event.preventDefault();
         });
     };
