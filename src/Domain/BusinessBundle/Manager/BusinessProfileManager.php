@@ -72,13 +72,13 @@ class BusinessProfileManager extends Manager
 
         // TODO Move to filtering functionality
         $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->search($phrase, $location);
+        return $this->getRepository()->searchWithQueryBuilder($phrase, $location);
     }
 
     public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
     {
         $categories       = $this->categoryManager->searchAutosuggestByName($phrase);
-        $businessProfiles = $this->getRepository()->searchAutosuggest($phrase, $location);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($phrase);
 
         $result = array_merge($categories, $businessProfiles);
         return $result;
@@ -93,7 +93,7 @@ class BusinessProfileManager extends Manager
 
         // TODO Move to filtering functionality
         $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->search($phrase, $location);
+        return $this->getRepository()->searchWithQueryBuilder($phrase, $location);
     }
 
     public function getLocationMarkersFromProfileData(array $profilesList)

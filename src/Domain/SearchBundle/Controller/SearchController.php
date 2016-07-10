@@ -64,7 +64,6 @@ class SearchController extends Controller
         $query = $request->get('term', '');
         $location = $request->get('geo', '');
 
-
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
         $results = $businessProfilehManager->searchAutosuggestByPhraseAndLocation($query, $location);
 

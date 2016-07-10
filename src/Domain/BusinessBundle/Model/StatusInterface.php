@@ -9,15 +9,23 @@
 namespace Domain\BusinessBundle\Model;
 
 /**
- * Class SubscriptionInterface
+ * Class StatusInterface
  * @package Domain\BusinessBundle\Model
  */
 interface StatusInterface
 {
+    const PROPERTY_NAME_STATUS  = 'status';
+
     const STATUS_ACTIVE     = 1;
     const STATUS_EXPIRED    = 2;
     const STATUS_CANCELED   = 3;
 
+    /**
+     * @param integer $status
+     * @return $this
+     */
+    public function setStatus($status);
+    
     /**
      * @return mixed
      */
@@ -33,3 +41,4 @@ interface StatusInterface
      */
     public static function getStatuses();
 }
+

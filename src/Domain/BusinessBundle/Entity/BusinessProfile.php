@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
@@ -94,6 +95,20 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\OrderBy({"status" = "ASC"})
      */
     protected $discounts;
+
+    /**
+     * @var Campaign[] - Business Campaigns
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @ORM\OrderBy({"status" = "ASC"})
+     */
+    protected $campaigns;
 
     /**
      * @var Category[] - Business category
@@ -1862,6 +1877,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+<<<<<<< HEAD
      * @return string
      */
     public function getServiceAreasType()
@@ -1912,7 +1928,52 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setLocalities($localities)
     {
         $this->localities = $localities;
+    }
+
+     /**
+     * Set searchFts
+     *
+     * @param tsvector $searchFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchFts($searchFts)
+    {
+        $this->searchFts = $searchFts;
         return $this;
+    }
+
+    /*
+    * Get searchFts
+    *
+    * @return tsvector
+    */
+    public function getSearchFts()
+    {
+        return $this->searchFts;
+    }
+
+    /**
+     * Set searchNameFts
+     *
+     * @param tsvector $searchNameFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchNameFts($searchNameFts)
+    {
+        $this->searchNameFts = $searchNameFts;
+        return $this;
+    }
+
+    /**
+     * Get searchNameFts
+     *
+     * @return tsvector
+     */
+    public function getSearchNameFts()
+    {
+        return $this->searchNameFts;
     }
 
     /**
@@ -1948,7 +2009,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setActualBusinessProfile($actualBusinessProfile)
     {
         $this->actualBusinessProfile = $actualBusinessProfile;
-        return $this;
     }
 
     /**

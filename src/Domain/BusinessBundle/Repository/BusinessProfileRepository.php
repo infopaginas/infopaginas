@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Query\Expr\Join;
 use FOS\UserBundle\Model\UserInterface;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * BusinessProfileRepository
@@ -54,44 +55,45 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $businessProfiles;
     }
     
-    public function search($searchQuery, $location)
-    {
-        $searchQuery = $this->splitPhraseToPlain($searchQuery);
-        $location    = $this->splitPhraseToPlain($location);
-
-        $connection = $this->getEntityManager()->getConnection();
-        $statement = $connection->prepare($this->getSearchSQLQuery());
-
-        $statement->bindValue("searchQuery", $searchQuery);
-        $statement->bindValue("location", $location);
-        $statement->execute();
-        $results = $statement->fetchAll();
-
-        return $results;
-    }
-
-
-    public function searchAutosuggest($searchQuery)
+    public function searchAutosuggestWithBuilder($searchQuery, $limit = 5, $offset = 0)
     {
         $searchQuery    = $this->splitPhraseToPlain($searchQuery);
-        $searchSQL      = $this->getSearchByNameSQLQuery();
 
-        $connection = $this->getEntityManager()->getConnection();
-        $statement = $connection->prepare(
-            "SELECT
-                ts_headline(name, q) as data,
-                name
-            FROM
-            (
-                $searchSQL
-            ) as search
-            LIMIT 5
-            "
-        );
+        $queryBuilder = $this->getQueryBuilder()
+            ->addSelect('bp.name');
 
-        $statement->bindValue("searchQuery", $searchQuery);
-        $statement->execute();
-        $results = $statement->fetchAll();
+        $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
+        $this->addRankQueryBuilder($queryBuilder);
+        $this->addHeadlineToNameQueryBuilder($queryBuilder);
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+        $this->addOrderByRankQueryBuilder($queryBuilder);
+
+        $result = $queryBuilder->getQuery()->getResult();
+
+        return $result;
+    }
+
+    public function searchWithQueryBuilder($searchQuery, $location, $limit = 20, $offset = 0)
+    {
+        $searchQuery    = $this->splitPhraseToPlain($searchQuery);
+        $searchLocation = $this->splitPhraseToPlain($location);
+
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
+        $this->addRankQueryBuilder($queryBuilder);
+        $this->addCityRankQueryBuilder($queryBuilder);
+
+        $this->addCategoryRankQueryBuilder($queryBuilder);
+        $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
+
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+        $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
+        $this->addOrderByRankQueryBuilder($queryBuilder);
+        $this->addOrderByCityRankQueryBuilder($queryBuilder);
+        $this->addOrderByAreaRankQueryBuilder($queryBuilder);
+
+        $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
     }
@@ -110,76 +112,88 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $plain;
     }
 
-    private function getSearchSQLQuery()
+    protected function getQueryBuilder()
     {
-        return 'SELECT
-                    bp.id as id,
-                    bp.slug,
-                    bp.name,
-                    bp.description,
-                    bp.slogan,
-                    bp.city,
-                    bp.state,
-                    bp.zip_code,
-                    bp.website,
-                    bp.email,
-                    bp.latitude,
-                    bp.longitude,
-                    q,
-                    ts_rank(bp.search_fts, q) as rank,
-                    ts_rank(bp.search_city_fts, qa) as rank_city,
-                    max(ts_rank(c.search_fts, q)) as rank_c,
-                    max(ts_rank(a.search_fts,qa)) as rank_a,
-                    ROW_NUMBER() over (order by bp.id) as order
-                FROM
-                    business_profile bp,
-                    business_profile_categories bpc,
-                    category c,
-                    business_profile_areas bpa,
-                    area a,
-                    to_tsquery(:searchQuery) q,
-                    to_tsquery(:location) qa
-                WHERE
-                (
-                    bp.search_fts @@ q
-                OR
-                    c.search_fts @@ q
-                OR
-                    bp.search_city_fts @@ qa
-                OR
-                    a.search_fts @@ qa
-                )
-                AND 
-                    bp.id = bpc.business_profile_id
-                AND
-                    bpc.category_id = c.id
-                AND
-                    bp.id = bpa.business_profile_id
-                AND
-                    a.id = bpa.area_id
-                AND (
-                    bp.deleted_at IS NULL
-                )
-                GROUP BY bp.id, q, qa
-                ORDER BY rank_c DESC, rank DESC, rank_city DESC, rank_a DESC';
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('bp')
+        ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+        ->groupBy('bp.id');
+
+        return $queryBuilder;
     }
 
-    private function getSearchByNameSQLQuery()
+    protected function addFTSSearchQueryBuilder(QueryBuilder &$queryBuilder, $searchQuery)
     {
-        return '
-            SELECT 
-                bp.name,
-                q,
-                ts_rank(bp.search_name_fts, q) AS rank
-            FROM
-                business_profile bp,
-                to_tsquery(:searchQuery) q
-            WHERE
-                bp.search_name_fts @@ q
-            AND (
-                bp.deleted_at IS NULL
-            )
-            ORDER BY rank DESC
-        ';
+        return $queryBuilder
+            ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
+            ->setParameter('searchQuery', $searchQuery);
+    }
+
+
+    protected function addRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank');
+    }
+
+    protected function addCityRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addSelect('TSRANK(bp.searchCityFts, :searchQuery) as rank_city');
+    }
+
+    protected function addCategoryRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->join('bp.categories', 'c')
+            ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
+            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true');
+    }
+
+    protected function addAreaRankQueryBuilder(QueryBuilder &$queryBuilder, $location)
+    {
+        return $queryBuilder
+            ->join('bp.areas', 'a')
+            ->addSelect('MAX(TSRANK(a.searchFts, :searchLocation)) as rank_a')
+            ->orWhere('TSQUERY( a.searchFts, :searchLocation) = true')
+            ->setParameter('searchLocation', $location);
+    }
+
+    protected function addHeadlineToNameQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addSelect('TSHEADLINE(bp.name, :searchQuery ) as data');
+    }
+
+    protected function addLimitOffsetQueryBuilder(QueryBuilder &$queryBuilder, $limit, $offset)
+    {
+        return $queryBuilder
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+    }
+
+    protected function addOrderByRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addOrderBy('rank', 'DESC');
+    }
+
+    protected function addOrderByCategoryRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addOrderBy('rank_c', 'DESC');
+    }
+
+    protected function addOrderByCityRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addOrderBy('rank_city', 'DESC');
+    }
+
+    protected function addOrderByAreaRankQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addOrderBy('rank_a', 'DESC');
     }
 }
