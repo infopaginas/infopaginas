@@ -62,6 +62,7 @@ class TasksManager
     public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_CREATE, $businessProfile);
+        $task->setChangeSet($this->calculateBusinessProfileChanges($task));
         return $this->save($task);
     }
 
@@ -75,6 +76,7 @@ class TasksManager
     public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
+        $task->setChangeSet($this->calculateBusinessProfileChanges($task));
         return $this->save($task);
     }
 
@@ -181,13 +183,34 @@ class TasksManager
     {
         $task->setStatus(TaskStatusType::TASK_STATUS_CLOSED);
 
+        $businessProfile = $task->getBusinessProfile();
+
         if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
-            $this->getBusinessProfileManager()->activate($task->getBusinessProfile());
+            $this->getBusinessProfileManager()->activate($businessProfile);
         } else {
-            $this->getBusinessProfileManager()->publish($task->getBusinessProfile());
+            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $this->getTaskLocale($task));
         }
 
         return $this->save($task);
+    }
+
+    /**
+     * @param Task $task
+     * @return string
+     */
+    private function calculateBusinessProfileChanges(Task $task)
+    {
+        $locale = $this->getTaskLocale($task);
+        return $this->getBusinessProfileManager()->getSerializedProfileChanges($task->getBusinessProfile(), $locale);
+    }
+
+    /**
+     * @param Task $task
+     * @return mixed|string
+     */
+    private function getTaskLocale(Task $task)
+    {
+        return empty($task->getLocale()) ? BusinessProfile::DEFAULT_LOCALE : $task->getLocale();
     }
 
     /**

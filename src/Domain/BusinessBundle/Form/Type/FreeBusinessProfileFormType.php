@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Form\Type;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\PaymentMethod;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\BrandRepository;
 use Domain\BusinessBundle\Repository\CategoryRepository;
@@ -20,6 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Url;
@@ -345,6 +348,26 @@ class FreeBusinessProfileFormType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $businessProfile = $event->getData();
+            $form = $event->getForm();
+
+            if ($businessProfile !== null) {
+
+                if ($businessProfile->getSubscriptionPlan()->getCode() == SubscriptionPlanInterface::CODE_PRIORITY) {
+                    $form->add('isSetAd', CheckboxType::class, [
+                        'attr' => [
+                            'readonly' => 'readonly',
+                            'disabled' => 'disabled',
+                        ],
+                        'label' => 'yes',
+                        'required' => false,
+                        'read_only' => true,
+                    ]);
+                }
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)

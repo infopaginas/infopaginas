@@ -165,22 +165,27 @@
 
                     <div class="form-group card-item">
                         <div class="card-item-name">
-                            <span>Fullness</span>
+                            <span>
+                                {% trans %}Fullness{% endtrans %}:
+                            </span>
                         </div>
                         <div class="col-xs-6 form-col">
                             <div class="col-xs-4">
-                                <span>Description:</span>
+                                <span>
+                                    {% trans %}Description{% endtrans %}:
+                                </span>
                             </div>
                             <div class="col-xs-8">
                                 {{ custom_form_checkbox.widget(businessProfileForm.isSetDescription) }}
                             </div>
                             <div class="col-xs-4">
-                                <span>Map:</span>
+                                <span>
+                                    {% trans %}Map{% endtrans %}:
+                                </span>
                             </div>
                             <div class="col-xs-8">
                                 {{ custom_form_checkbox.widget(businessProfileForm.isSetMap) }}
                             </div>
-
                             {% if businessProfileForm.isSetAd is defined %}
                                 <div class="col-xs-4">
                                     <span>

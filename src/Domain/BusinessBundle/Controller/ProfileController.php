@@ -2,10 +2,10 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
 use Domain\BusinessBundle\Form\Handler\FreeBusinessProfileFormHandler;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\BusinessBundle\Manager\BusinessProfilesManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
@@ -52,16 +52,12 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function saveAction(Request $request, int $id = null)
+    public function saveAction()
     {
         $formHandler = $this->getFreeBusinessProfileFormHandler();
 
-        try {
-            if ($formHandler->process()) {
-                return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
-            }
-        } catch (\Exception $e) {
-            return $this->getFailureResponse($e->getMessage(), [], self::INTERNAL_SERVER_ERROR_STATUS_CODE);
+        if ($formHandler->process()) {
+            return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
         }
 
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());

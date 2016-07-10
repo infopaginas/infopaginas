@@ -35,6 +35,10 @@ abstract class TasksFactory extends Task
         $task->setType($type);
         $task->setBusinessProfile($businessProfile);
 
+        if ($businessProfile->getLocale() !== BusinessProfile::DEFAULT_LOCALE) {
+            $task->setLocale($businessProfile->getLocale());
+        }
+
         if ($businessReview !== null) {
             $task->setReview($businessReview);
         }

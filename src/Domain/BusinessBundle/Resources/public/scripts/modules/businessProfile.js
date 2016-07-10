@@ -174,19 +174,24 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
 
     businessProfile.prototype.handleNewProfileRequest = function() {
         var that = this;
-        var data = {};
 
         $( document ).on( 'submit' , this.html.forms.newProfileRequestFormId , function( event ) {
+            var data = [{
+                name: 'locale',
+                value: $( that.html.languageSelectorId + ' option:selected' ).val()
+            }];
+
             var profileId = $( this ) .data( 'id' );
 
             if (profileId.length !== 0) {
-                var data = {
+                data.push({
                     name: 'businessProfileId',
                     value: profileId
-                };
+                });
             }
 
             that.newProfileRequestFormHandler.doRequest( that.urls.saveBusinessProfile, data );
+
             event.preventDefault();
         });
     };

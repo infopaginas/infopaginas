@@ -1,7 +1,7 @@
 <div class="sonata-ba-view">
     {{ sonata_block_render_event('sonata.admin.show.top', { 'admin': admin, 'object': object }) }}
 
-    {% set data = get_business_profiles_diff_array(business, business.getActualBusinessProfile()) %}
+    {% set data = get_business_profiles_changeset_array(object.getChangeSet()) %}
 
     <table class="table table-bordered">
         <thead>

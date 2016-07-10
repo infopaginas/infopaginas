@@ -3,12 +3,13 @@
 {% block form %}
     {% set business = object.businessProfile %}
 
+
     {% include 'DomainBusinessBundle:TaskAdmin/blocks:business.html.twig'
         with { 'business' : business, 'admin': admin, 'title': 'Business'} %}
 
-    {% if (business.getActualBusinessProfile()) %}
+    {% if object.getType == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_PROFILE_UPDATE') %}
         {% include 'DomainBusinessBundle:TaskAdmin/blocks:changes.html.twig'
-        with { 'business' : business, 'admin': admin} %}
+        with { 'business' : business, 'admin': admin, 'object': object} %}
     {% endif %}
 
     <form

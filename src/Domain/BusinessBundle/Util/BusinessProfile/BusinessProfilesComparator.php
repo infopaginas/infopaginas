@@ -8,6 +8,7 @@
 
 namespace Domain\BusinessBundle\Util\BusinessProfile;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Form\FormInterface;
 
@@ -26,7 +27,6 @@ class BusinessProfilesComparator
         FormInterface $updatedBusinessProfileForm,
         FormInterface $currentBusinessProfileForm
     ) : array {
-
         $updatedProfileDataArray = self::mapFormDataAsAnArray($updatedBusinessProfileForm);
         $currentProfileDataArray = self::mapFormDataAsAnArray($currentBusinessProfileForm);
 
@@ -48,16 +48,21 @@ class BusinessProfilesComparator
                     'label' => $value->getConfig()->getOption('label'),
                     'value' => $value->getData(),
                 ];
-            } elseif (is_object($value->getData()) && ($value->getData() instanceof PersistentCollection)) {
-                $data[$value->getName()]['label'] = $value->getConfig()->getOption('label');
+            } elseif (is_object($value->getData())) {
+                $isObjectInstanceOfCollection = ($value->getData() instanceof ArrayCollection)
+                    || ($value->getData() instanceof PersistentCollection);
 
-                $collection = [];
+                if ($isObjectInstanceOfCollection) {
+                    $data[$value->getName()]['label'] = $value->getConfig()->getOption('label');
 
-                foreach ($value->getData() as $obj) {
-                    $collection[] = (string)$obj;
+                    $collection = [];
+
+                    foreach ($value->getData() as $obj) {
+                        $collection[] = (string)$obj;
+                    }
+
+                    $data[$value->getName()]['value'] = implode(', ', $collection);
                 }
-
-                $data[$value->getName()]['value'] = implode(', ', $collection);
             }
         }
 
@@ -76,7 +81,7 @@ class BusinessProfilesComparator
         $differences = [];
 
         foreach ($updatedProfileDataArray as $property => $data) {
-            if ($currentProfileDataArray[$property]['value'] !== $data['value']) {
+            if ((string)$currentProfileDataArray[$property]['value'] !== (string)$data['value']) {
                 $differences[$property] = [
                     'oldValue' => $currentProfileDataArray[$property]['value'],
                     'newValue' => $data['value'],

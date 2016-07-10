@@ -65,10 +65,20 @@ class FreeBusinessProfileFormHandler
     {
         $businessProfileId = $this->request->get('businessProfileId', false);
 
+        $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
+
         if ($businessProfileId !== false) {
+
+            /** @var BusinessProfile $actualBusinessProfile */
             $actualBusinessProfile = $this->manager->find($businessProfileId);
 
-            $businessProfile = $this->manager->createProfile();
+            if ($locale === BusinessProfile::DEFAULT_LOCALE) {
+                $businessProfile = $this->manager->createProfile();
+            } else {
+                $businessProfile = $this->manager->cloneProfile($actualBusinessProfile);
+                $businessProfile->setLocale($locale);
+            }
+
             $businessProfile->setActualBusinessProfile($actualBusinessProfile);
 
             $this->form->setData($businessProfile);

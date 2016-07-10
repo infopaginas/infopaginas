@@ -57,9 +57,13 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'tools/
             data = this.getRequestData();
         } else {
             var formData = this.getRequestData();
-            formData.push(data);
+            for (var i in data) {
+                formData.push(data[i]);
+            }
             data = formData;
         }
+
+        console.log(data);
 
         $.ajax({
             url: ajaxURL,

@@ -156,7 +156,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'longitude' => $longitude,
                     ])
                 ->end()
-                ->with('Gallery')
+                /*->with('Gallery')
                     ->add('images', 'sonata_type_collection', ['by_reference' => false], [
                         'edit' => 'inline',
                         'sortable'  => 'position',
@@ -167,7 +167,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         ]
                     ])
-                ->end()
+                ->end()*/
             ->end()
             ->tab('Categories')
                 ->with('Categories')

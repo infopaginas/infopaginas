@@ -16,7 +16,7 @@ use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 class BusinessProfileTranslation extends AbstractPersonalTranslation
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="translations")
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="translations", cascade={"persist"})
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $object;

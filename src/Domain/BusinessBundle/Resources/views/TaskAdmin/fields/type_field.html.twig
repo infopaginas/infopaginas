@@ -15,9 +15,16 @@
 
     {% set business = object.businessProfile %}
 
+    {% set changes = get_business_profiles_changeset_array(object.getChangeset()) %}
+
     <a href="{{ path('admin_domain_business_businessprofile_edit', {id: business.id}) }}">
         <span class="label {{ label_class }}">
             {{ dispatch_enum_value(object.type) }}
-        </span> &nbsp; {{ business.name }}
+        </span> &nbsp;
+        {% if changes.name.oldValue is defined and changes.name.oldValue is not empty %}
+            {{ changes.name.oldValue }}
+        {% else %}
+            {{ changes.name.newValue }}
+        {% endif %}
     </a>
 {% endblock %}

@@ -37,6 +37,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
+    const DEFAULT_LOCALE = 'en_US';
+
     /**
      * @var int
      *
@@ -391,7 +393,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @Gedmo\Translatable
      * @ORM\Column(name="custom_address", type="string", nullable=true)
      */
     protected $customAddress;
@@ -1966,5 +1967,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->locked = $locked;
         return $this;
+    }
+
+    function __clone()
+    {
+        $this->id = null;
     }
 }

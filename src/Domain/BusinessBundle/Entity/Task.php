@@ -12,6 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User as User;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
+use JMS\Serializer\Annotation\MaxDepth;
 
 /**
  * Task
@@ -52,20 +53,33 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $rejectReason;
 
     /**
+     * @ORM\Column(name="changeset", type="text", nullable=true)
+     */
+    protected $changeSet;
+
+    /**
+     * @ORM\Column(name="locale", type="string", length=20, nullable=true)
+     */
+    protected $locale;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
+     * @MaxDepth(0)
      */
     protected $businessProfile;
 
     /**
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", inversedBy="tasks")
      * @ORM\JoinColumn(name="reviewer_id", referencedColumnName="id")
+     * @MaxDepth(0)
      */
     protected $reviewer;
 
     /**
      * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview")
      * @ORM\JoinColumn(name="review_id", referencedColumnName="id", onDelete="CASCADE")
+     * @MaxDepth(0)
      */
     protected $review;
 
@@ -141,6 +155,42 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setRejectReason($rejectReason)
     {
         $this->rejectReason = $rejectReason;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChangeSet()
+    {
+        return $this->changeSet;
+    }
+
+    /**
+     * @param mixed $changeSet
+     * @return Task
+     */
+    public function setChangeSet($changeSet)
+    {
+        $this->changeSet = $changeSet;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param mixed $locale
+     * @return Task
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
         return $this;
     }
 
