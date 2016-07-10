@@ -54,10 +54,35 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
     protected function loadBusiness()
     {
         $data = [
-            'Panadería La Catalana'      => '78 Calle El Tren, Cataño, 00962, Puerto Rico',
-            'RST Puerto Rico'            => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
-            'Chinchorreando En Hato Rey' => '67 Cll Bolivia, San Juan, Puerto Rico',
-            'CASA DE LAS ARMADURAS INC.' => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
+            'Panadería La Catalana'                     => '78 Calle El Tren, Cataño, 00962, Puerto Rico',
+            'RST Puerto Rico'                           => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
+            'Chinchorreando En Hato Rey'                => 'Calle A Urbanización Santa Catalina, Guaynabo, 00966, Puerto Rico',
+            'CASA DE LAS ARMADURAS INC.'                => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
+            'Piola Pizzeria Artesanal & Rum Bar'        => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
+            'Pizzería Artesanal Don Bigote'             => 'Interstate PR2, San Juan, 00920, Puerto Rico',
+            'Pizzas Artesanales en Jamburguer Jil'      => 'Pajaro Carpintero, San Juan, 00920, Puerto Rico',
+            'Pizza Ranch II'                            => 'Ave. Lomas Verdes Bo. Minillas Bayamón, Puerto Rico 00961',
+            'El Jardín Burger'                          => '482 PR-845, San Juan, 00926, Puerto Rico',
+            'Burger House'                              => 'Sec. La Marina Carr. #19 Km. 0.8 Guaynabo, Puerto Rico 00966',
+            // 'Vaquero Burger'                            => 'PR-17, San Juan, 00917, Puerto Rico',
+            // 'Shakes & Burgers'                          => 'Calle Cremona, San Juan, 00920, Puerto Rico',
+            // 'Burger King'                               => 'Calle Juncos, San Juan, 00917, Puerto Rico',
+            // 'Burger Chef'                               => 'Calle Ortegon, Carolina, 00983, Puerto Rico',
+
+            // 'Laboratorio Clínico Colón'                 => '203-225 Cll Las Flores, San Juan, 00912, Puerto Rico',
+            // 'Servi-Lab'                                 => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
+            // 'Laboratorio Clinico Isla Verde'            => '67 Calle Bolivia, San Juan, Puerto Rico',
+            // 'Laboratorio Clínico Morse'                 => 'PR-26, Carolina, 00979, Puerto Rico',
+            // 'Laboratorio Clínico Oriental'              => 'Calle Irlanda, San Juan, 00917, Puerto Rico',
+            'Laboratorio Clínico Michelsan'             => 'Calle H, Guaynabo, 00966, Puerto Rico',
+            'Environmental Quality Laboratories, Inc.'  => 'Av. Diego Puerto Nuevo, San Juan, 00927, Puerto Rico',
+            'Héctor Electric & Plumbing Services'       => 'Calle Gallera, San Juan, 00923, Puerto Rico',
+            'Laboratorio Clinico Rodríguez - Arecibo'   => 'Cll Eloy Hernandez, Carolina, 00983, Puerto Rico',
+            'Bradford Master Plumbing Services'         => 'Sec. La Marina Carr. #19 Km. 0.8 Guaynabo, Puerto Rico 00966',
+            'Aguacentro Plumbing'                       => 'Calle Monseñor Torres, San Juan, 00925, Puerto Rico',
+            'Junito Fuji'                               => 'Calle Chardon Esquina Oliver San Juan, Puerto Rico',
+            'Destapes Caribe'                           => 'Cll Zurna, San Juan, 00924, Puerto Rico',
+            'Huertas Plumbing - 7 Días 24 Hrs'          => 'F5 Cll Ebano, Guaynabo, 00968, Puerto Rico',
         ];
 
         $addressManager = $this->container->get('domain_business.manager.address_manager');
@@ -66,7 +91,8 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $googleResponse = $addressManager->validateAddress($address);
 
             if ($googleResponse['error']) {
-                throw new \Exception('Invalid business address. Fixture');
+                // dump($googleResponse);
+                throw new \Exception(sprintf('Invalid business address: %s . Fixture', $address));
             }
 
             $object = new BusinessProfile();
@@ -86,6 +112,9 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
 
             $object->addBrand($this->getReference('brand.0'));
             $object->addBrand($this->getReference('brand.' . rand(1, 2)));
+
+            $object->setLatitude($this->getRandomLat());
+            $object->setLongitude($this->getRandomLng());
 
             $object->addCategory($this->getReference('category.' . rand(1, 4)));
             $object->addCategory($this->getReference('category.' . rand(5, 8)));
@@ -245,5 +274,15 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         $this->container = $container;
 
         return $this;
+    }
+
+    protected function getRandomLat()
+    {
+        return rand(17984133, 18465539) / 1000000;
+    }
+
+    protected function getRandomLng()
+    {
+        return -(rand(65652384, 67154070) / 1000000);
     }
 }
