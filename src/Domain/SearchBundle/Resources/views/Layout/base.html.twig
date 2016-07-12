@@ -10,11 +10,12 @@
 
                 <div class="dropdown category-drop">
                     <div class="select-container">
-                        <select class="form-control select-control">
-                            <option value="" disabled selected>Category</option>
+                        <select class="form-control select-control" id="category-select">
+                            <option data-route="{{ path(app.request.get('_route'), app.request.query.all|slice(0, 2)) }}" value="" selected>Category</option>
                             {% if categories is not empty %}
                                 {% for category in categories %}
-                                    <option value="{{ category.getName() }}">{{ category.getName() }}</option>
+
+                                    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'category': category.getName() })) }}" value="{{ category.getName() }}">{{ category.getName() }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>

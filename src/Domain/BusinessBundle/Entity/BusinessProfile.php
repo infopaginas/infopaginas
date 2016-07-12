@@ -1698,4 +1698,23 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         return 'Puerto Rico, Ololoeva St 25, 00777';
     }
+
+    /**
+     * Get avg mark of BusinessProfile reviews
+     * @return int
+     */
+    public function getBusinessReviewsAvgMark()
+    {
+        $raiting = 0;
+        $reviewsAmount = $this->getBusinessReviewsCount();
+
+        if ($reviewsAmount) {
+            foreach ($this->getBusinessReviews() as $review) {
+                $raiting += (int) $review->getRating();
+            }
+            return $raiting / $reviewsAmount;
+        }
+        
+        return 0;
+    }
 }

@@ -21,21 +21,22 @@ class SearchController extends Controller
     public function indexAction(Request $request)
     {
         $query = $request->get('q', '');
+        $categoryFilter = $request->get('category', null);
         $page     = $request->get('page', 1);
 
         $geolocationManager = $this->get('oxa_geolocation.manager');
         $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
 
         $total = 0;
-        $limit = 30;
+        $limit = 20;
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
         $categoryManager         = $this->get('domain_business.manager.category');
         $bannerFactory           = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
 
-        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue);
+        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue, $categoryFilter);
 
-        $categories    = $categoryManager->getCategoriesByProfiles($results);
+        $categories    = $categoryManager->getCategoriesByProfiles(array_column($results, 0));
         $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
 
         return $this->render('DomainSearchBundle:Search:index.html.twig', array(
@@ -77,12 +78,13 @@ class SearchController extends Controller
     {
         $query = $request->get('q', '');
         $location = $request->get('geo', 'San Juan');
+        $categoryFilter = $request->get('category', null);
         $page     = $request->get('page', 1);
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
         $categoryManager         = $this->get('domain_business.manager.category');
 
-        $results            = $businessProfilehManager->searchWithMapByPhraseAndLocation($query, $location);
+        $results            = $businessProfilehManager->searchWithMapByPhraseAndLocation($query, $location, $categoryFilter);
 
         $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($results);
         $categories         = $categoryManager->getCategoriesByProfiles($results);

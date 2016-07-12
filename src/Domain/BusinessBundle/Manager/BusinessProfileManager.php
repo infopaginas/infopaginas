@@ -29,7 +29,7 @@ class BusinessProfileManager extends Manager
         $this->categoryManager = $categoryManager;
     }
 
-    public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location)
+    public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
     {
         $locationName = $location->name;
         if (empty($locationName)) {
@@ -39,7 +39,7 @@ class BusinessProfileManager extends Manager
 
         // TODO Move to filtering functionality
         $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName);
+        return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
     public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
