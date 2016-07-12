@@ -5,7 +5,7 @@
         <li><a href="{{ path('domain_search_index', app.request.query.all) }}"><i class="fa fa-list" aria-hidden="true"></i><span>list</span></a>
         </li>
         <li class="active"><a href="{{ path('domain_search_map', app.request.query.all) }}"><i class="map-icon"></i><span>map</span></a></li>
-        <li><a href=""><i class="compare-icon"></i><span>compare</span></a></li>
+        <li><a href="{{ path('domain_search_compare', app.request.query.all) }}"><i class="compare-icon"></i><span>compare</span></a></li>
     </ul>
 {% endblock %}
 

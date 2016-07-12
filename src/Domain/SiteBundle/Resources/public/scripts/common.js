@@ -14,7 +14,7 @@ requirejs.config({
             deps: ['jquery']
         },
         'comparasion' : {
-            deps: ['jquery']
+            deps: ['$']
         },
         'modal' : {
             deps: ['jquery']

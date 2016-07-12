@@ -95,4 +95,38 @@ class SearchController extends Controller
             'categories' => $categories
         ));
     }
+
+    public function compareAction(Request $request)
+    {
+        $query = $request->get('q', '');
+        $categoryFilter = $request->get('category', null);
+        $page     = $request->get('page', 1);
+
+        $geolocationManager = $this->get('oxa_geolocation.manager');
+        $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
+
+        $total = 0;
+        $limit = 20;
+
+        $businessProfilehManager = $this->get('domain_business.manager.business_profile');
+        $categoryManager         = $this->get('domain_business.manager.category');
+        $bannerFactory           = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
+
+        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue, $categoryFilter);
+
+        $results       = array_column($results, 0);
+        $categories    = $categoryManager->getCategoriesByProfiles($results);
+        $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
+
+        return $this->render('DomainSearchBundle:Search:compare.html.twig', array(
+            'results'       => $results,
+            'query'         => $query,
+            'page'          => $page,
+            'total'         => $total,
+            'limit'         => $limit,
+            'location'      => $locationValue->name,
+            'banner'        => $banner,
+            'categories'    => $categories
+        ));
+    }
 }
