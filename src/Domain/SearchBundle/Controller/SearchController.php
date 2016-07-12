@@ -87,7 +87,7 @@ class SearchController extends Controller
         $results            = $businessProfilehManager->searchWithMapByPhraseAndLocation($query, $location, $categoryFilter);
 
         $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($results);
-        $categories         = $categoryManager->getCategoriesByProfiles($results);
+        $categories         = $categoryManager->getCategoriesByProfiles(array_column($results, 0));
 
         return $this->render('DomainSearchBundle:Search:map.html.twig', array(
             'results'    => $results,
