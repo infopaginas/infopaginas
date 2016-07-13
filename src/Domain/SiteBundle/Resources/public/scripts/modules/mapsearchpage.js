@@ -130,10 +130,13 @@ define(
 
     mapSearchPage.prototype.getInfoHTML = function (name, address, reviewsCount)
     {
-        return "<div>" +
-            "<div>" + name + "</div>" +
-            "<div>" + address + "</div>" +   
-            "<div>" + reviewsCount + " Reviews</div>" +
+      return "<div class='business-info'>" +
+        "<div>" + name + "</div>" +
+        "<div>" + address + "</div>" +   
+        "<div>" + reviewsCount + " Reviews</div>" +
+        "</div>" +
+        "<div class='business-logo'>" +
+        "<img src='http://placehold.it/60x60'>" +
         "</div>";
     }
 
