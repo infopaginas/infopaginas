@@ -8,7 +8,7 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class GeolocationManager extends Manager
 {
-    public function buildLocationValue(string $name, string $lat, string $lng)
+    public function buildLocationValue(string $name, $lat = null, $lng = null)
     {
         return new LocationValueObject($name, $lat, $lng);
     }
