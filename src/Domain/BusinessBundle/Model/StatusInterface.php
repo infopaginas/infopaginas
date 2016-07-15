@@ -25,7 +25,7 @@ interface StatusInterface
      * @return $this
      */
     public function setStatus($status);
-    
+
     /**
      * @return mixed
      */

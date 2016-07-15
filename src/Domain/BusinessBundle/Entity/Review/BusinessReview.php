@@ -16,7 +16,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
 

@@ -126,7 +126,11 @@ class SubscriptionReportAdmin extends OxaAdmin
             if ($datePeriodCode = $parameters['datePeriod']['value']) {
                 if (!in_array($datePeriodCode, $allowedDatePeriodCodes)) {
                     throw new \InvalidArgumentException(
-                        sprintf('"%s" is not allowed, must be one of: %s', $datePeriodCode, implode(', ', $allowedDatePeriodCodes))
+                        sprintf(
+                            '"%s" is not allowed, must be one of: %s',
+                            $datePeriodCode,
+                            implode(', ', $allowedDatePeriodCodes)
+                        )
                     );
                 }
 

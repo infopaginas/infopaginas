@@ -15,6 +15,12 @@ trait OxaPersonalTranslatable
 {
     use PersonalTranslatable;
 
+    /**
+     * Get translation, return original(english) version, if translation is empty
+     *
+     * @param $field
+     * @param $locale
+     */
     public function getTranslation($field, $locale)
     {
         foreach ($this->getTranslations() as $translation) {
@@ -23,13 +29,10 @@ trait OxaPersonalTranslatable
             }
         }
 
-        
         if (!isset($result)) {
             return $this->{'get'.ucfirst($field)};
         }
-        
+
         return;
     }
-
-
 }

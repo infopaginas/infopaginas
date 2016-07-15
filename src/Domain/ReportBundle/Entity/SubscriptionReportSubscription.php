@@ -46,7 +46,10 @@ class SubscriptionReportSubscription implements DefaultEntityInterface
      * @ORM\Column(name="quantity", type="integer", options={"default" : 0})
      */
     protected $quantity = 0;
-    
+
+    /**
+     * @return mixed
+     */
     public function __toString()
     {
         return sprintf('%s (%s)', $this->getSubscriptionPlan(), $this->getQuantity());

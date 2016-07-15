@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -35,7 +36,7 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
 
     /**
      * @var SubscriptionReportSubscription[] $subscriptionReportSubscriptions
-     * 
+     *
      * @ORM\OneToMany(
      *     targetEntity="Domain\ReportBundle\Entity\SubscriptionReportSubscription",
      *     mappedBy="subscriptionReport",
@@ -77,7 +78,7 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
 
         return $this;
     }
-    
+
     public function getTotal()
     {
         $sum = 0;
@@ -98,7 +99,7 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
     {
         return $this->date;
     }
-    
+
     /**
      * Constructor
      */
@@ -114,7 +115,7 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
      *
      * @return SubscriptionReport
      */
-    public function addSubscriptionReportSubscription(\Domain\ReportBundle\Entity\SubscriptionReportSubscription $subscriptionReportSubscription)
+    public function addSubscriptionReportSubscription(SubscriptionReportSubscription $subscriptionReportSubscription)
     {
         $this->subscriptionReportSubscriptions[] = $subscriptionReportSubscription;
 
@@ -128,7 +129,7 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
      *
      * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeSubscriptionReportSubscription(\Domain\ReportBundle\Entity\SubscriptionReportSubscription $subscriptionReportSubscription)
+    public function removeSubscriptionReportSubscription(SubscriptionReportSubscription $subscriptionReportSubscription)
     {
         return $this->subscriptionReportSubscriptions->removeElement($subscriptionReportSubscription);
     }

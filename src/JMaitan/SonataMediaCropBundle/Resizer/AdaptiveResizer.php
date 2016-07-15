@@ -45,7 +45,13 @@ class AdaptiveResizer implements ResizerInterface
     public function resize(MediaInterface $media, File $in, File $out, $format, array $settings)
     {
         if (!(isset($settings['width']) && $settings['width'])) {
-            throw new \RuntimeException(sprintf('Width parameter is missing in context "%s" for provider "%s"', $media->getContext(), $media->getProviderName()));
+            throw new \RuntimeException(
+                sprintf(
+                    'Width parameter is missing in context "%s" for provider "%s"',
+                    $media->getContext(),
+                    $media->getProviderName()
+                )
+            );
         }
 
         $targetSize = $this->getBox($media, $settings);
@@ -79,7 +85,14 @@ class AdaptiveResizer implements ResizerInterface
 
         // make sure our arguments are valid
         if ((!is_numeric($width) || $width  == 0) && (!is_numeric($height) || $height == 0)) {
-            throw new \RuntimeException(sprintf('Width/Height parameter is missing in context "%s" for provider "%s". Please add at least one parameter.', $media->getContext(), $media->getProviderName()));
+            throw new \RuntimeException(
+                sprintf(
+                    'Width/Height parameter is missing in context "%s" for provider "%s".
+                    Please add at least one parameter.',
+                    $media->getContext(),
+                    $media->getProviderName()
+                )
+            );
         }
 
         if (!is_numeric($width) || $width  == 0) {
@@ -90,6 +103,7 @@ class AdaptiveResizer implements ResizerInterface
             $height = intval(($width * $media->getBox()->getHeight()) / $media->getBox()->getWidth());
         }
 
+        // may be used in future, still in dev
         // make sure we're not exceeding our image size if we're not supposed to
         /*if ($settings['upscale'] === false) {
             $maxHeight = ($height > $media->getBox()->getHeight()) ? $media->getBox()->getHeight() : $height;

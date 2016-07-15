@@ -18,7 +18,7 @@ use Sonata\MediaBundle\Entity\BaseGalleryHasMedia;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
 

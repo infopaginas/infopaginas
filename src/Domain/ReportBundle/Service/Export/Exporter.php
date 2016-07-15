@@ -63,5 +63,4 @@ class Exporter
     {
         $this->container = $service;
     }
-
 }

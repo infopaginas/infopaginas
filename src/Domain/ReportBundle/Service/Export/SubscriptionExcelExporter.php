@@ -70,7 +70,10 @@ class SubscriptionExcelExporter extends ExcelExporterModel
 
         $phpExcelObject = $this->setData($phpExcelObject, $objects);
 
-        $phpExcelObject->getActiveSheet()->setTitle($this->translator->trans('export.title.active_sheet', [], 'AdminReportBundle'));
+        $phpExcelObject->getActiveSheet()
+            ->setTitle(
+                $this->translator->trans('export.title.active_sheet', [], 'AdminReportBundle')
+            );
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $phpExcelObject->setActiveSheetIndex(0);
 
@@ -104,7 +107,6 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             ->getSubscriptionsQuantities($objects);
 
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
-
 
         // start date period
         $activeSheet->setCellValue(
@@ -145,9 +147,10 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         );
 
         // for each subscription plan
+        ++$row;
         foreach ($subscriptionData['subscription_quantities'] as $subscription) {
             $activeSheet->setCellValue(
-                ++$row.$cell,
+                $row.$cell,
                 $subscription['name']
             );
 
@@ -157,8 +160,9 @@ class SubscriptionExcelExporter extends ExcelExporterModel
                 ->setWrapText(true);
         }
 
+        ++$row;
         $activeSheet->setCellValue(
-            ++$row.$cell,
+            $row.$cell,
             $this->translator->trans('list.label_total', [], 'AdminReportBundle')
         );
         // end header
@@ -168,18 +172,21 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             /** @var SubscriptionReport $object */
             $row = $initRow;
 
-            $activeSheet->setCellValue($row.++$cell, $object->getDate()->format('d.m.Y'));
+            ++$cell;
+            $activeSheet->setCellValue($row.$cell, $object->getDate()->format('d.m.Y'));
 
             // for each subscription plan
+            ++$row;
             foreach ($object->getSubscriptionReportSubscriptions() as $srSubscription) {
                 $activeSheet->setCellValue(
-                    ++$row.$cell,
+                    $row.$cell,
                     $srSubscription->getQuantity()
                 );
             }
 
+            ++$row;
             $activeSheet->setCellValue(
-                ++$row.$cell,
+                $row.$cell,
                 $object->getTotal()
             );
 
@@ -191,21 +198,24 @@ class SubscriptionExcelExporter extends ExcelExporterModel
 
         // start footer (total quantities)
         $row = $initRow;
+        ++$cell;
         $activeSheet->setCellValue(
-            $row.++$cell,
+            $row.$cell,
             $this->translator->trans('list.label_total', [], 'AdminReportBundle')
         );
 
         // for each subscription plan
+        ++$row;
         foreach ($subscriptionData['subscription_total_quantities'] as $subscription) {
             $activeSheet->setCellValue(
-                ++$row.$cell,
+                $row.$cell,
                 $subscription['quantity']
             );
         }
 
+        ++$row;
         $activeSheet->setCellValue(
-            ++$row.$cell,
+            $row.$cell,
             $subscriptionData['total_quantity']
         );
         // end footer (total quantities)
@@ -227,7 +237,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         $maxRow++;
         $cell++;
         // to main table
-        for ($r = $initRow; $r < $maxRow; $r++){
+        for ($r = $initRow; $r < $maxRow; $r++) {
             for ($c = $initCell; $c < $cell; $c++) {
                 $activeSheet
                     ->getColumnDimension($r)
@@ -266,7 +276,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             ->getStyle('B2')
             ->applyFromArray($fontStyleArray)
         ;
-        for ($r = 'B'; $r < 'D'; $r++){
+        for ($r = 'B'; $r < 'D'; $r++) {
             for ($c = 2; $c < 5; $c++) {
                 $activeSheet
                     ->getColumnDimension($r)
@@ -287,5 +297,4 @@ class SubscriptionExcelExporter extends ExcelExporterModel
 
         return $phpExcelObject;
     }
-
 }

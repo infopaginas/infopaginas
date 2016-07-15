@@ -20,6 +20,7 @@ class AdminHelper
     const DATE_RANGE_CODE_TODAY      = 'today';
     const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
     const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
+
     /**
      * @return array
      */
@@ -35,9 +36,10 @@ class AdminHelper
     }
 
     /**
+     * Get date period values for choice form type
      * @return array
      */
-    public static function getDataPeriodValues()
+    public static function getDatePeriodValues()
     {
         return [
             self::DATE_RANGE_CODE_TODAY      => 'filter.label.today',
@@ -47,6 +49,7 @@ class AdminHelper
     }
 
     /**
+     * Get date range for each date code
      * @return array
      */
     public static function getDataPeriodParameters()
@@ -54,7 +57,7 @@ class AdminHelper
         $datetimeDay = new \DateTime();
         $datetimeWeek = clone $datetimeDay;
         $datetimeMonth = clone $datetimeDay;
-        
+
         return [
             self::DATE_RANGE_CODE_TODAY => array(
                 'end'   => $datetimeDay->format('d-m-Y'),
@@ -81,10 +84,9 @@ class AdminHelper
             'field_options' => [
                 'mapped' => false,
                 'required'  => false,
-                'choices'   => self::getDataPeriodValues(),
+                'choices'   => self::getDatePeriodValues(),
                 'translation_domain' => 'SonataAdminBundle'
             ],
         ];
     }
-    
 }

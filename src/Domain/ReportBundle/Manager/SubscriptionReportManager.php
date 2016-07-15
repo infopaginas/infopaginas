@@ -51,10 +51,10 @@ class SubscriptionReportManager extends DefaultManager
                 $subscriptionName = $subscriptionReportSubscription
                     ->getSubscriptionPlan()
                     ->getTranslation('name', $request->getLocale());
-                
+
                 $result['subscription_quantities'][$code]['quantities'][] = $subscriptionQuantity;
                 $result['subscription_quantities'][$code]['name'] = $subscriptionName;
-                
+
                 if (isset($result['subscription_total_quantities'][$code])) {
                     $result['subscription_total_quantities'][$code]['quantity'] += $subscriptionQuantity;
                 } else {
@@ -68,5 +68,4 @@ class SubscriptionReportManager extends DefaultManager
 
         return $result;
     }
-
 }

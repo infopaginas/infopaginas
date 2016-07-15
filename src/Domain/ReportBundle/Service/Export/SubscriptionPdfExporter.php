@@ -25,7 +25,7 @@ class SubscriptionPdfExporter extends PdfExporterModel
      * @var SubscriptionReportManager $subscriptionReportManager
      */
     protected $subscriptionReportManager;
-    
+
     /**
      * @param SubscriptionReportManager $service
      */
@@ -52,16 +52,23 @@ class SubscriptionPdfExporter extends PdfExporterModel
         $subscriptionData = $this->subscriptionReportManager
             ->getSubscriptionsQuantities($objects);
 
-        $html = $this->templateEngine->render('DomainReportBundle:Admin/SubscriptionReport:report.html.twig', array(
-            'results' => $objects,
-            'subscriptionData' => $subscriptionData
-        ));
+        $html = $this->templateEngine->render(
+            'DomainReportBundle:Admin/SubscriptionReport:report.html.twig',
+            array(
+                'results' => $objects,
+                'subscriptionData' => $subscriptionData
+            )
+        );
 
         $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
 
-        return new Response($content, 200, array(
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
-        ));
+        return new Response(
+            $content,
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
+            )
+        );
     }
 }
