@@ -13,7 +13,7 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
 
     geolocation.prototype.init = function ( options ) {
         this.options = {
-            geoCodeApiURL : 'http://maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng=',
+            geoCodeApiURL : '//maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng=',
             googleAutoSuggestApiURL : '',
             autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
             autoCompleteMinLen : 2,
@@ -47,7 +47,7 @@ define(['jquery', 'underscore',  'abstract/view', 'jquery-ui'], function( $, _, 
     geolocation.prototype.getLocationsNameByLatLng = function ( lat, lng ) {
         var self = this;
         $.when(
-            $.get(this.options.geoCodeApiURL + (lat + ',' + lng))
+            $.get(window.location.protocol + this.options.geoCodeApiURL + (lat + ',' + lng))
         ).then(
             this.onGeoLocationSuccess.bind(self),
             this.onGeoLocationError.bind(self)
