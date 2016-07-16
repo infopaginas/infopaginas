@@ -83,10 +83,20 @@ file that was distributed with this source code.
                                 {% for name, format in sonata_media.pool.formatNamesByContext(object.context) %}
                                     <tr>
                                         <th>
-                                            <a href="{% path object, name %}" target="_blank">{{ name }}</a>
+                                            <a href="{% path object, name %}" target="_blank">
+                                                {{ name }}
+                                                <img src="{% path object, name %}" alt="{{ name }}">
+                                            </a>
                                         </th>
                                         <td>
-                                            <input type="text" class="form-control" onClick="this.select();" readonly="readonly" value="{% path object, name %}" />
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" onClick="this.select();" readonly="readonly" value="{% path object, name %}" />
+                                                    <div class="input-group-btn">
+                                                        <a href="{{ path('j_maitan_sonata_media_crop_index', {'id': object|sonata_urlsafeid, 'format': name, '_sonata_admin': app.request.get('_sonata_admin')}) }}" class="btn btn-default"><i class="fa fa-fw fa-crop"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 {% endfor %}

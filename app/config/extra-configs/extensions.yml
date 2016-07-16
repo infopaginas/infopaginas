@@ -7,3 +7,9 @@ stof_doctrine_extensions:
             translatable: true
             sluggable: true
             loggable: true
+
+sonata_admin:
+    extensions:
+        j_maitan_sonata_media_crop.crop.extension:
+            implements:
+                - Sonata\MediaBundle\Model\MediaInterface

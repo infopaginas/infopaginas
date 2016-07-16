@@ -1,0 +1,106 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends 'OxaSonataAdminBundle:CRUD:list.html.twig' %}
+
+{% set results = admin.datagrid.results %}
+
+{% block list_table %}
+    {% if admin.subscriptionData['dates']|length > 1 %}
+        <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
+                <div class="box box-primary">
+                    <canvas id="subscriptionReportChart" width="400" height="70"></canvas>
+                </div>
+        <script>
+            var ctx = document.getElementById("subscriptionReportChart");
+            var data = {
+                labels: {{ admin.subscriptionData['dates']|json_encode|raw }},
+                datasets: [
+                    {% for key, subscription in admin.subscriptionData['subscription_quantities'] %}
+                        {% set lineColor = admin.colors[key] %}
+                        {
+                            label: "{{ subscription['name'] }}",
+                            fill: false,
+                            lineTension: 0.1,
+                            backgroundColor: "{{ lineColor }}",
+                            borderColor: "{{ lineColor }}",
+                            borderCapStyle: 'butt',
+                            borderDashOffset: 0.0,
+                            borderJoinStyle: 'miter',
+                            pointBorderColor: "{{ lineColor }}",
+                            pointBackgroundColor: "#fff",
+                            pointBorderWidth: 1,
+                            pointHoverRadius: 3,
+                            pointHoverBackgroundColor: "{{ lineColor }}",
+                            pointHoverBorderColor: "{{ lineColor }}",
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 1,
+                            pointHitRadius: 10,
+                            data: {{ subscription['quantities']|json_encode|raw }},
+
+                        },
+                    {% endfor %}
+                ]
+            };
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: [{}]
+            });
+        </script>
+    {% endif %}
+
+{{ parent() }}
+{% endblock %}
+
+{% block table_header %}
+{% if admin.datagrid|length %}
+    {{ parent() }}
+{% else %}
+    {{ 'list.content_no_results'|trans({}, 'AdminReportBundle') }}
+{% endif %}
+{% endblock %}
+
+{% block table_body %}
+    <tbody>
+    {% for object in results %}
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ object.date|date('d.m.Y') }}
+            </td>
+            {% for subscriptionReportSubscription in object.subscriptionReportSubscriptions %}
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ subscriptionReportSubscription.quantity }}
+                </td>
+            {% endfor %}
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ object.total }}
+            </td>
+        </tr>
+    {% endfor %}
+    <tr class="list-subscription-report-total">
+
+        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+            {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}
+        </td>
+
+        {% for subscription in admin.subscriptionData['subscription_total_quantities'] %}
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ subscription['quantity'] }}
+            </td>
+        {% endfor %}
+        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+            {{ admin.subscriptionData['total_quantity'] }}
+        </td>
+    </tr>
+    </tbody>
+{% endblock %}
+

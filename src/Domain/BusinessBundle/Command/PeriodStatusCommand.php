@@ -22,6 +22,9 @@ class PeriodStatusCommand extends ContainerAwareCommand
         ;
     }
 
+    /**
+     * Used manage objects statuses
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $datetimePeriodService = $this->getContainer()->get('domain_business.service.datetime_period_status_service');

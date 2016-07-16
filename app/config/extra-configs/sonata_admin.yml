@@ -78,6 +78,12 @@ sonata_admin:
                 icon: <i class="fa fa-cogs"></i>
                 items:
                     - oxa_config.admin.config
+            domain.admin.group.report:
+                label: Reports
+                icon: <i class="fa fa-bar-chart-o"></i>
+                items:
+                    - domain_report.admin.subscription_report
+
 #            domain.admin.group.business.task:
 #                label: Tasks
 #                icon: <i class="fa fa-table"></i>

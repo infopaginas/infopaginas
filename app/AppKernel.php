@@ -48,7 +48,10 @@ class AppKernel extends Kernel
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Alsatian\PostgresSearchBundle\AlsatianPostgresSearchBundle(),
-
+            new \JMaitan\SonataMediaCropBundle\JMaitanSonataMediaCropBundle(),
+            new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
+            new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
@@ -62,6 +65,7 @@ class AppKernel extends Kernel
             new Domain\MenuBundle\DomainMenuBundle(),
             new Domain\ArticleBundle\DomainArticleBundle(),
             new Domain\SearchBundle\DomainSearchBundle(),
+            new Domain\ReportBundle\DomainReportBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
