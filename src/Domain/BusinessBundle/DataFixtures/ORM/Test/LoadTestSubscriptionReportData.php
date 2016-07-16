@@ -31,6 +31,9 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class LoadTestSubscriptionReportData extends OxaAbstractFixture
 {
+    /**
+     * @var int
+     */
     protected $order = 5;
 
     protected function loadData()
@@ -46,7 +49,7 @@ class LoadTestSubscriptionReportData extends OxaAbstractFixture
         $subscriptionPlans = $manager->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();
 
         // days ago number
-        $daysQuantity = 31;
+        $daysQuantity = 60;
 
         $date = new \DateTime('today');
         $date->modify(sprintf('-%s days', $daysQuantity));

@@ -335,9 +335,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="full_address", type="string", nullable=true)
+     * @ORM\Column(name="google_address", type="string", nullable=true)
      */
-    protected $fullAddress;
+    protected $googleAddress;
 
     /**
      * @var string
@@ -1679,5 +1679,89 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getSearchNameFts()
     {
         return $this->searchNameFts;
+    }
+
+    /**
+     * Set googleAddress
+     *
+     * @param string $googleAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setGoogleAddress($googleAddress)
+    {
+        $this->googleAddress = $googleAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get googleAddress
+     *
+     * @return string
+     */
+    public function getGoogleAddress()
+    {
+        return $this->googleAddress;
+    }
+
+    /**
+     * Set searchCityFts
+     *
+     * @param tsvector $searchCityFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchCityFts($searchCityFts)
+    {
+        $this->searchCityFts = $searchCityFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchCityFts
+     *
+     * @return tsvector
+     */
+    public function getSearchCityFts()
+    {
+        return $this->searchCityFts;
+    }
+
+    /**
+     * Add campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return BusinessProfile
+     */
+    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        $this->campaigns[] = $campaign;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        return $this->campaigns->removeElement($campaign);
+    }
+
+    /**
+     * Get campaigns
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaigns()
+    {
+        return $this->campaigns;
     }
 }
