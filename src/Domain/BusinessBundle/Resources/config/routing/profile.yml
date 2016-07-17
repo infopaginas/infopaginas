@@ -5,10 +5,6 @@ domain_business_profile_create:
 domain_business_profile_edit:
     path:     /edit/{id}
     defaults: { _controller: DomainBusinessBundle:Profile:edit }
-
-domain_business_profile_translate_form:
-    path:     /form/translate/{businessProfileId}/{locale}
-    defaults: { _controller: DomainBusinessBundle:Profile:translateBusinessForm }
     options:
         expose: true
 

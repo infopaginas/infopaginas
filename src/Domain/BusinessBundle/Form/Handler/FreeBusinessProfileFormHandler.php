@@ -9,6 +9,7 @@
 namespace Domain\BusinessBundle\Form\Handler;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Symfony\Component\Form\FormError;
@@ -72,10 +73,9 @@ class FreeBusinessProfileFormHandler
             /** @var BusinessProfile $actualBusinessProfile */
             $actualBusinessProfile = $this->manager->find($businessProfileId);
 
-            if ($locale === BusinessProfile::DEFAULT_LOCALE) {
-                $businessProfile = $this->manager->createProfile();
-            } else {
-                $businessProfile = $this->manager->cloneProfile($actualBusinessProfile);
+            $businessProfile = $this->manager->cloneProfile($actualBusinessProfile);
+
+            if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
                 $businessProfile->setLocale($locale);
             }
 
@@ -87,6 +87,7 @@ class FreeBusinessProfileFormHandler
         if ($this->request->getMethod() == 'POST') {
             $this->form->handleRequest($this->request);
 
+            /** @var BusinessProfile $businessProfile */
             $businessProfile = $this->form->getData();
 
             if ($this->form->isValid()) {

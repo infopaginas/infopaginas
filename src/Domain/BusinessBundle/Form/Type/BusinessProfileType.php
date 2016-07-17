@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
+use Sonata\CoreBundle\Form\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -299,6 +300,7 @@ class BusinessProfileType extends AbstractType
                 'label' => 'Youtube',
                 'required' => false,
             ])
+
         ;
     }
 

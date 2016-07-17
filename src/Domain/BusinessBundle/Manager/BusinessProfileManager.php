@@ -33,22 +33,28 @@ class BusinessProfileManager extends Manager
     /** @var FormFactory */
     private $formFactory;
 
+    /** @var BusinessGalleryManager */
+    private $businessGalleryManager;
+
     /**
      * Manager constructor.
      * Accepts only entityManager as main dependency.
      * Regargless hole container, need to keep it clear and work only with needed dependency
      *
-     * @access public
      * @param EntityManager $entityManager
      * @param CategoryManager $categoryManager
      * @param TokenStorageInterface $tokenStorage
+     * @param TranslatableListener $translatableListener
+     * @param FormFactory $formFactory
+     * @param BusinessGalleryManager $businessGalleryManager
      */
     public function __construct(
         EntityManager $entityManager,
         CategoryManager $categoryManager,
         TokenStorageInterface $tokenStorage,
         TranslatableListener $translatableListener,
-        FormFactory $formFactory
+        FormFactory $formFactory,
+        BusinessGalleryManager $businessGalleryManager
     ) {
         $this->em = $entityManager;
 
@@ -61,6 +67,8 @@ class BusinessProfileManager extends Manager
         $this->translatableListener = $translatableListener;
 
         $this->formFactory = $formFactory;
+
+        $this->businessGalleryManager = $businessGalleryManager;
     }
 
     public function searchByPhraseAndLocation(string $phrase, string $location)
@@ -120,9 +128,24 @@ class BusinessProfileManager extends Manager
         return $business;
     }
 
+    /**
+     * @param string $uid
+     * @return null|object
+     */
+    public function findByUid(string $uid)
+    {
+        $businessProfile = $this->getRepository()->findOneBy(['uid' => $uid]);
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return BusinessProfile
+     */
     public function cloneProfile(BusinessProfile $businessProfile) : BusinessProfile
     {
         $clonedProfile = clone $businessProfile;
+        $clonedProfile->setUid($businessProfile->getUid());
 
         $this->commit($clonedProfile);
 
@@ -157,6 +180,11 @@ class BusinessProfileManager extends Manager
 
         $businessProfile->setUser($this->currentUser);
 
+        foreach ($businessProfile->getImages() as $image) {
+            $image->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($image);
+        }
+
         $this->commit($businessProfile);
     }
 
@@ -184,7 +212,19 @@ class BusinessProfileManager extends Manager
     public function unlock(BusinessProfile $businessProfile)
     {
         $businessProfile->setLocked(false);
-        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function restore(BusinessProfile $businessProfile)
+    {
+        $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
+        $this->unlock($actualBusinessProfile);
+
+        $this->getBusinessGalleryManager()->restoreBusinessProfileImages($businessProfile);
+
+        $this->commit($actualBusinessProfile);
     }
 
     /**
@@ -213,7 +253,18 @@ class BusinessProfileManager extends Manager
            }
        }
 
-       $this->commit($businessProfile);
+       $subscription = $oldProfile->getSubscription();
+
+       if ($subscription !== null) {
+           $subscription->setBusinessProfile($businessProfile);
+           $this->getEntityManager()->persist($subscription);
+       }
+
+       $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
+
+       $this->getEntityManager()->persist($businessProfile);
+       $this->getEntityManager()->flush();
+
        $this->drop($oldProfile);
    }
 
@@ -223,10 +274,7 @@ class BusinessProfileManager extends Manager
      */
     public function getBusinessProfileAsForm(BusinessProfile $businessProfile)
     {
-        $form = $this->formFactory->createBuilder(FreeBusinessProfileFormType::class)->getForm();
-        $form->setData($businessProfile);
-
-        return $form;
+        return $this->formFactory->create(new FreeBusinessProfileFormType(), $businessProfile);
     }
 
     /**
@@ -278,6 +326,17 @@ class BusinessProfileManager extends Manager
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @return BusinessGalleryManager
+     */
+    private function getBusinessGalleryManager() : BusinessGalleryManager
+    {
+        return $this->businessGalleryManager;
+    }
+
+    /**
+     * @return TranslatableListener
+     */
     private function getTranslatableListener() : TranslatableListener
     {
         return $this->translatableListener;

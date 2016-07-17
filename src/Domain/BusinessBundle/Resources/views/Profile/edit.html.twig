@@ -1,38 +1,23 @@
 {% extends "DomainSiteBundle:Layout:base.html.twig" %}
 
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}"/>
+    <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
+    <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
+{% endblock %}
+
 {% block breakcrumbs %} {% endblock %}
 
 {% block header %}
-    {% include 'DomainBusinessBundle:Profile:blocks/navigation.html.twig' %}
+    {% include 'DomainBusinessBundle:Profile:blocks/profile_request_navigation.html.twig' %}
 {% endblock %}
+
 
 {% block main %}
-
-    <!-- ProfileManage -->
-    <div class="tab-content">
-        <div class="tab-pane active" id="general">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/general.html.twig'
-                with { 'businessProfileForm' : businessProfileForm} %}
-        </div>
-
-        <!-- Business Address tab -->
-        <div class="tab-pane" id="businessAddress">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/address.html.twig'
-                with { 'businessProfileForm' : businessProfileForm} %}
-        </div>
-
-        <!-- Media tab -->
-        <div class="tab-pane" id="media">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/media.html.twig' %}
-        </div>
-
-        <!-- Social Networks tab -->
-        <div class="tab-pane" id="socialNetworks">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/social.html.twig'
-                with { 'businessProfileForm' : businessProfileForm} %}
-        </div>
-    </div>
+    {% include 'DomainBusinessBundle:Profile:blocks/edit_form.html.twig' %}
 {% endblock %}
+
 {% block scripts %}
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>

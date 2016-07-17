@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseGalleryHasMedia;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,7 +27,7 @@ use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
  * BusinessGallery
  *
  * @ORM\Table(name="business_gallery")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessGalleryRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation")
@@ -97,6 +98,13 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     protected $translations;
 
     /**
+     * @var string - Slogan of a Business
+     *
+     * @ORM\Column(name="type", type="string", length=255, nullable=true)
+     */
+    protected $type;
+
+    /**
      * Get id
      *
      * @return integer
@@ -117,6 +125,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     public function __construct()
     {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->type = OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES;
     }
 
     /**
@@ -247,5 +256,23 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     public function removeTranslation(BusinessGalleryTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     * @return BusinessGallery
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use FOS\UserBundle\Model\UserInterface;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 
 /**
  * BusinessProfileRepository
@@ -16,6 +18,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 {
     const SLUG = 'DomainBusinessBundle:BusinessProfile';
 
+    /**
+     * @param int $id
+     * @param string $locale
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findWithLocale(int $id, string $locale)
     {
         $qb = $this->createQueryBuilder('bp');

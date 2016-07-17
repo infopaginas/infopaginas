@@ -10,6 +10,10 @@ namespace Domain\BusinessBundle\Util\BusinessProfile;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Form\Type\FreeBusinessProfileFormType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -27,10 +31,16 @@ class BusinessProfilesComparator
         FormInterface $updatedBusinessProfileForm,
         FormInterface $currentBusinessProfileForm
     ) : array {
+
         $updatedProfileDataArray = self::mapFormDataAsAnArray($updatedBusinessProfileForm);
         $currentProfileDataArray = self::mapFormDataAsAnArray($currentBusinessProfileForm);
 
-        return self::getProfilesDifferencesArray($updatedProfileDataArray, $currentProfileDataArray);
+        $fieldDifferences = self::getProfilesDifferencesArray($updatedProfileDataArray, $currentProfileDataArray);
+        $imageDifferences = self::getProfileImageDifferencesArray($updatedBusinessProfileForm, $currentBusinessProfileForm);
+
+        $differences = array_merge($fieldDifferences, $imageDifferences);
+
+        return $differences;
     }
 
     /**
@@ -43,12 +53,17 @@ class BusinessProfilesComparator
 
         /** @var FormInterface $value */
         foreach ($form->all() as $value) {
+            if ($value->getConfig()->getOption('read_only') == true) {
+                continue;
+            }
+
             if (!is_array($value->getData()) && !is_object($value->getData())) {
                 $data[$value->getName()] = [
                     'label' => $value->getConfig()->getOption('label'),
                     'value' => $value->getData(),
                 ];
-            } elseif (is_object($value->getData())) {
+            } elseif (is_object($value->getData()) && $value->getName() !== 'images') {
+
                 $isObjectInstanceOfCollection = ($value->getData() instanceof ArrayCollection)
                     || ($value->getData() instanceof PersistentCollection);
 
@@ -69,6 +84,54 @@ class BusinessProfilesComparator
         return $data;
     }
 
+    private static function getProfileImageDifferencesArray
+    (
+        FormInterface $updatedBusinessProfileForm,
+        FormInterface $currentBusinessProfileForm
+    ) {
+        $updatedBusinessProfileImagesArray = self::getProfileImagesArray($updatedBusinessProfileForm);
+        $currentBusinessProfileImagesArray = self::getProfileImagesArray($currentBusinessProfileForm);
+
+        $addedImages = array_diff_assoc($updatedBusinessProfileImagesArray, $currentBusinessProfileImagesArray);
+        $removedImages = array_diff_assoc($currentBusinessProfileImagesArray, $updatedBusinessProfileImagesArray);
+
+        $differences = [];
+
+        foreach ($addedImages as $mediaId => $mediaName) {
+            $differences['image_' . $mediaId] = [
+                'oldValue' => '-',
+                'newValue' => $mediaName,
+                'action' => 'Image Added',
+                'field' => 'Images',
+            ];
+        }
+
+        foreach ($removedImages as $mediaId => $mediaName) {
+            $differences['image_' . $mediaId] = [
+                'oldValue' => $mediaName,
+                'newValue' => '-',
+                'action' => 'Image Removed',
+                'field' => 'Images',
+            ];
+        }
+
+        return $differences;
+    }
+
+    private static function getProfileImagesArray(FormInterface $businessProfileForm)
+    {
+        $images = [];
+
+        $businessProfileGallery = $businessProfileForm->get('images')->getData();
+
+        /** @var BusinessGallery $image */
+        foreach ($businessProfileGallery as $image) {
+            $images[$image->getMedia()->getId()] = $image->getMedia()->getName();
+        }
+
+        return $images;
+    }
+
     /**
      * @param array $updatedProfileDataArray
      * @param array $currentProfileDataArray
@@ -83,8 +146,8 @@ class BusinessProfilesComparator
         foreach ($updatedProfileDataArray as $property => $data) {
             if ((string)$currentProfileDataArray[$property]['value'] !== (string)$data['value']) {
                 $differences[$property] = [
-                    'oldValue' => $currentProfileDataArray[$property]['value'],
-                    'newValue' => $data['value'],
+                    'oldValue' => (string)$currentProfileDataArray[$property]['value'],
+                    'newValue' => (string)$data['value'],
                     'action' => 'Field change',
                     'field' => $data['label'],
                 ];

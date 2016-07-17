@@ -2,9 +2,11 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\PaymentMethod;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\BrandRepository;
@@ -94,14 +96,6 @@ class FreeBusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'Email',
             ])
-            ->add('slogan', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Organize, store, plan, prioritize',
-                ],
-                'label' => 'Slogan',
-                'required' => false,
-            ])
             ->add('brands', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control select-control select-multiple',
@@ -119,7 +113,10 @@ class FreeBusinessProfileFormType extends AbstractType
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'At the time of study, all parents, teachers, students we welcome ideas that foster greater productivity and end of the day, produce better academic achievement.',
+                    'placeholder' => preg_replace("/\r|\n/", "", 'At the time of study, all parents,
+                        teachers, students we welcome ideas that foster
+                        greater productivity and end of the day, produce better academic achievement'
+                    ),
                     'rows' => 5,
                 ],
                 'label' => 'Description',
@@ -142,7 +139,9 @@ class FreeBusinessProfileFormType extends AbstractType
             ->add('product', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'The SONS system currently offers the SON\'S starter kit, notebooks, writing pads and labels.',
+                    'placeholder' => preg_replace("/\r|\n/", "", 'The SONS system currently offers the SON\'S starter
+                        kit, notebooks, writing pads and labels.'
+                    ),
                     'rows' => 3,
                 ],
                 'label' => 'Products',
@@ -170,24 +169,6 @@ class FreeBusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'Working hours',
                 'required' => false,
-            ])
-            ->add('isSetDescription', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
-            ])
-            ->add('isSetMap', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
             ])
             ->add('serviceAreasType', ChoiceType::class, [
                 'choices' => array(
@@ -350,29 +331,161 @@ class FreeBusinessProfileFormType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $businessProfile = $event->getData();
-            $form = $event->getForm();
+            /** @var BusinessProfile $businessProfile */
+            $businessProfile = $event->getData() !== null ? $event->getData() : new BusinessProfile();
 
-            if ($businessProfile !== null) {
+            $subscription = (new SubscriptionPlan())->setCode(SubscriptionPlanInterface::CODE_FREE);
 
-                if ($businessProfile->getSubscriptionPlan()->getCode() == SubscriptionPlanInterface::CODE_PRIORITY) {
-                    $form->add('isSetAd', CheckboxType::class, [
-                        'attr' => [
-                            'readonly' => 'readonly',
-                            'disabled' => 'disabled',
-                        ],
-                        'label' => 'yes',
-                        'required' => false,
-                        'read_only' => true,
-                    ]);
-                }
+            if ($businessProfile !== null && $businessProfile->getSubscriptionPlan() !== null) {
+                $subscription = $businessProfile->getSubscriptionPlan();
+            }
+
+            switch ($subscription->getCode()) {
+                case SubscriptionPlanInterface::CODE_PRIORITY:
+                    $this->setupPriorityPlanFormFields($businessProfile, $event->getForm());
+                    break;
+                case SubscriptionPlanInterface::CODE_PREMIUM_PLUS:
+                    $this->setupPremiumPlusPlanFormFields($businessProfile, $event->getForm());
+                    break;
+                case SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM:
+                    $this->setupPremiumPlatinumPlanFormFields($businessProfile, $event->getForm());
+                    break;
+                default:
+                    $this->setupFreePlanFormFields($businessProfile, $event->getForm());
             }
         });
+    }
+
+    private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
+
+        $form->add('isSetVideo', CheckboxType::class, [
+            'attr' => [
+                'readonly' => 'readonly',
+                'disabled' => 'disabled',
+            ],
+            'label' => 'yes',
+            'required' => false,
+            'read_only' => true,
+        ]);
+    }
+
+    private function setupPremiumGoldPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
+
+        $form
+            ->add('files', 'file', array(
+                'attr' => [
+                    'style' => 'display:none',
+                    'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
+                        image/bmp, image/x-windows-bmp',
+                ],
+                'data_class' => null,
+                'mapped' => false,
+                'multiple' => true,
+            ))
+            ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
+                'entry_type' => BusinessGalleryType::class,
+                'required' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'allow_extra_fields' => true,
+            ])
+        ;
+    }
+
+    private function setupPremiumPlusPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $this->setupPriorityPlanFormFields($businessProfile, $form);
+
+        $isSloganSet = !empty($businessProfile->getSlogan());
+
+        $isLogoSet = $businessProfile->getLogo() !== null;
+
+        $form
+            ->add('isSetLogo', CheckboxType::class, [
+                'attr' => [
+                    'readonly' => 'readonly',
+                    'disabled' => 'disabled',
+                ],
+                'label' => 'yes',
+                'required' => false,
+                'read_only' => true,
+                'data' => $isLogoSet
+            ])
+            ->add('isSetSlogan', CheckboxType::class, [
+                'attr' => [
+                    'readonly' => 'readonly',
+                    'disabled' => 'disabled',
+                ],
+                'label' => 'yes',
+                'required' => false,
+                'read_only' => true,
+                'data' => $isSloganSet,
+            ])
+            ->add('slogan', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Organize, store, plan, prioritize',
+                ],
+                'label' => 'Slogan',
+                'required' => false,
+            ])
+        ;
+    }
+
+    private function setupPriorityPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $this->setupFreePlanFormFields($businessProfile, $form);
+
+        $form
+            ->add('isSetAd', CheckboxType::class, [
+                'attr' => [
+                    'readonly' => 'readonly',
+                    'disabled' => 'disabled',
+                ],
+                'label' => 'yes',
+                'required' => false,
+                'read_only' => true,
+            ])
+        ;
+    }
+
+    private function setupFreePlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $isMapSet = !empty($businessProfile->getLatitude()) && !empty($businessProfile->getLongitude());
+        $isDescriptionSet = !empty($businessProfile->getDescription());
+
+        $form
+            ->add('isSetDescription', CheckboxType::class, [
+                'attr' => [
+                    'readonly' => 'readonly',
+                    'disabled' => 'disabled',
+                ],
+                'label' => 'yes',
+                'required' => false,
+                'read_only' => true,
+                'data' => $isDescriptionSet,
+            ])
+            ->add('isSetMap', CheckboxType::class, [
+                'attr' => [
+                    'readonly' => 'readonly',
+                    'disabled' => 'disabled',
+                ],
+                'label' => 'yes',
+                'required' => false,
+                'read_only' => true,
+                'data' => $isMapSet,
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+            'allow_extra_fields' => true,
             'data_class' => 'Domain\BusinessBundle\Entity\BusinessProfile',
             'validation_groups' => function(FormInterface $form) {
 
@@ -388,6 +501,9 @@ class FreeBusinessProfileFormType extends AbstractType
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'domain_business_bundle_free_business_profile_form_type';

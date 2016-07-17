@@ -21,10 +21,9 @@
         <span class="label {{ label_class }}">
             {{ dispatch_enum_value(object.type) }}
         </span> &nbsp;
-        {% if changes.name.oldValue is defined and changes.name.oldValue is not empty %}
-            {{ changes.name.oldValue }}
-        {% else %}
-            {{ changes.name.newValue }}
-        {% endif %}
+
+        {% set businessProfile = get_business_profile_by_uid(object.getBusinessProfileUid()) %}
+
+        {{ businessProfile.getName() }}
     </a>
 {% endblock %}

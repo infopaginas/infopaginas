@@ -10,18 +10,24 @@
 
     <div class="tab-content">
         <div class="tab-pane active" id="general">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/general.html.twig'
-            with { 'businessProfileForm' : businessProfileForm} %}
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/general.html.twig' %}
         </div>
         <!-- Business Address tab -->
         <div class="tab-pane" id="businessAddress">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/address.html.twig'
-            with { 'businessProfileForm' : businessProfileForm} %}
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/address.html.twig' %}
         </div>
+
+        {% if businessProfile is defined %}
+            {% if media_tab_allowed_for_business(businessProfile) %}
+                <div class="tab-pane" id="media">
+                    {% include 'DomainBusinessBundle:Profile:blocks/tabs/media.html.twig' %}
+                </div>
+            {% endif %}
+        {% endif %}
+
         <!-- Social Networks tab -->
         <div class="tab-pane" id="socialNetworks">
-            {% include 'DomainBusinessBundle:Profile:blocks/tabs/social.html.twig'
-            with { 'businessProfileForm' : businessProfileForm} %}
+            {% include 'DomainBusinessBundle:Profile:blocks/tabs/social.html.twig' %}
         </div>
     </div>
 </form>

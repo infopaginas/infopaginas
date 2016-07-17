@@ -45,20 +45,13 @@
                                 {{ form_widget(businessProfileForm.youtubeURL) }}
                             </div>
                         </div>
-                        {{ form_rest(businessProfileForm) }}
+                        <div style="display:none;">
+                            {{ form_rest(businessProfileForm) }}
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-footer col-xs-12">
-                <div class="form-btn">
-                    <button type="reset" class="btn btn-default grey-light-bk">
-                        <i class="fa fa-times-circle" aria-hidden="true"></i>Cancel
-                    </button>
-                    <button type="submit" class="btn green-btn">
-                        <i class="fa fa-floppy-o" aria-hidden="true"></i>Save
-                    </button>
-                </div>
-            </div>
+            {% include 'DomainBusinessBundle:Profile:blocks/form_footer.html.twig' %}
         </div>
     </div>
 </section>

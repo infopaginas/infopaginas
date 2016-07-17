@@ -166,7 +166,7 @@ class TasksManager
         $task->setStatus(TaskStatusType::TASK_STATUS_REJECTED);
 
         if ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
-            $this->getBusinessProfileManager()->unlock($task->getBusinessProfile()->getActualBusinessProfile());
+            $this->getBusinessProfileManager()->restore($task->getBusinessProfile());
         }
 
         return $this->save($task);

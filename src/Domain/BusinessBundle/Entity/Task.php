@@ -63,6 +63,11 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $locale;
 
     /**
+     * @ORM\Column(name="business_profile_uid", type="string")
+     */
+    protected $businessProfileUID;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      * @MaxDepth(0)
@@ -191,6 +196,24 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setLocale($locale)
     {
         $this->locale = $locale;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBusinessProfileUID()
+    {
+        return $this->businessProfileUID;
+    }
+
+    /**
+     * @param mixed $businessProfileUID
+     * @return Task
+     */
+    public function setBusinessProfileUID($businessProfileUID)
+    {
+        $this->businessProfileUID = $businessProfileUID;
         return $this;
     }
 

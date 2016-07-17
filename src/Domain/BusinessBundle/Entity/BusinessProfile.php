@@ -14,10 +14,12 @@ use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -295,7 +297,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $closureReason;
 
-    /*
+    /**
      * @var BusinessGallery[] - Media Images
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
      *     mappedBy="businessProfile",
@@ -507,6 +509,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $locked;
 
     /**
+     * @ORM\Column(name="uid", type="string")
+     */
+    protected $uid;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -599,6 +606,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->locked = false;
+
+        $this->uid = uniqid('', true);
     }
 
     /**
@@ -1295,6 +1304,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->images[] = $image;
         $image->setBusinessProfile($this);
+
+        if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+            $this->setLogo($image->getMedia());
+        }
 
         return $this;
     }
@@ -2026,6 +2039,24 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setLocked($locked)
     {
         $this->locked = $locked;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param mixed $uid
+     * @return BusinessProfile
+     */
+    public function setUid($uid)
+    {
+        $this->uid = $uid;
         return $this;
     }
 

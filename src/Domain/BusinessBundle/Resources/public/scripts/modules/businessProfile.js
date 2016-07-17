@@ -7,9 +7,6 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
             saveBusinessProfile: Routing.generate('domain_business_profile_save')
         };
 
-        this.modals = {
-        };
-
         this.serviceAreasAreaChoiceValue = 'area';
 
         this.freeProfileFormName = 'domain_business_bundle_free_business_profile_form_type';
@@ -172,7 +169,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
         });
     };
 
-    businessProfile.prototype.handleNewProfileRequest = function() {
+    businessProfile.prototype.handleProfileSave = function() {
         var that = this;
 
         $( document ).on( 'submit' , this.html.forms.newProfileRequestFormId , function( event ) {
@@ -183,7 +180,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
 
             var profileId = $( this ) .data( 'id' );
 
-            if (profileId.length !== 0) {
+            if( profileId.length !== 0 ) {
                 data.push({
                     name: 'businessProfileId',
                     value: profileId
@@ -201,22 +198,19 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
 
         $( this.html.languageSelectorId ).on( 'change' , function( event ) {
             var locale = $( that.html.languageSelectorId + ' option:selected' ).val();
-
             var businessProfileId = $( that.html.forms.newProfileRequestFormId ).data( 'id' );
 
             $.ajax({
-                url: Routing.generate('domain_business_profile_translate_form', {
-                    businessProfileId: businessProfileId,
-                    locale: locale
-                }),
+                url: Routing.generate( 'domain_business_profile_edit', {
+                    id: businessProfileId
+                } ),
                 method: 'POST',
+                data: { 'locale': locale },
                 beforeSend: function() {
                     that.spinner.show( that.html.newProfileRequestSpinnerContainerId );
                 },
                 success: function( response ) {
-                    var $form = $( response );
-
-                    $( that.html.forms.newProfileRequestFormId ).replaceWith( $form );
+                    $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
 
                     new select();
                 },
@@ -247,18 +241,41 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
         });
     };
 
+    businessProfile.prototype.getFormData = function() {
+        var $form = document.getElementById('businessProfileRequestForm');
+        var formData = new FormData($form);
+
+        var images = this.getUploadedFiles();
+
+        for (var i in images) {
+            formData.append('img', images[i]);
+        }
+
+        return formData;
+    };
+
+    businessProfile.prototype.getUploadedFiles = function() {
+        var $field = $('#domain_business_bundle_free_business_profile_form_type_files');
+
+        var images = new FormData;
+
+        var files = $field.prop('files');
+
+        return files;
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
-        this.handleNewProfileRequest();
+        this.handleProfileSave();
         this.handleLocaleChange();
         this.handleServiceAreaChange();
 
         var that = this;
 
-        $('a[href="#businessAddress"]').on('shown.bs.tab', function(){
+        $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
             that.initGoogleMap();
-        });
+        } );
 
         new select();
     };

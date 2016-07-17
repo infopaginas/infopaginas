@@ -34,6 +34,7 @@ abstract class TasksFactory extends Task
         $task = new Task();
         $task->setType($type);
         $task->setBusinessProfile($businessProfile);
+        $task->setBusinessProfileUID($businessProfile->getUid());
 
         if ($businessProfile->getLocale() !== BusinessProfile::DEFAULT_LOCALE) {
             $task->setLocale($businessProfile->getLocale());
