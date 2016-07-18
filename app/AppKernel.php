@@ -66,6 +66,7 @@ class AppKernel extends Kernel
             new Domain\ArticleBundle\DomainArticleBundle(),
             new Domain\SearchBundle\DomainSearchBundle(),
             new Domain\ReportBundle\DomainReportBundle(),
+            new Oxa\Sonata\DoctrineORMAdminBundle\OxaSonataDoctrineORMAdminBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
