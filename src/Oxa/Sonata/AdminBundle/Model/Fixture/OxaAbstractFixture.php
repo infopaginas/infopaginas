@@ -29,7 +29,7 @@ abstract class OxaAbstractFixture extends AbstractFixture implements ContainerAw
     /**
      * @var int
      */
-    protected $order = 0;
+    protected $order = 100;
     
     /**
      * @var ContainerInterface

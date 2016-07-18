@@ -335,9 +335,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="full_address", type="string", nullable=true)
+     * @ORM\Column(name="google_address", type="string", nullable=true)
      */
-    protected $fullAddress;
+    protected $googleAddress;
 
     /**
      * @var string
@@ -1226,30 +1226,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * Set fullAddress
-     *
-     * @param string $fullAddress
-     *
-     * @return BusinessProfile
-     */
-    public function setFullAddress($fullAddress)
-    {
-        $this->fullAddress = $fullAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get fullAddress
-     *
-     * @return string
-     */
-    public function getFullAddress()
-    {
-        return $this->fullAddress;
-    }
-
-    /**
      * Set state
      *
      * @param string $state
@@ -1668,5 +1644,134 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getSearchNameFts()
     {
         return $this->searchNameFts;
+    }
+
+    /**
+     * Set googleAddress
+     *
+     * @param string $googleAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setGoogleAddress($googleAddress)
+    {
+        $this->googleAddress = $googleAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get googleAddress
+     *
+     * @return string
+     */
+    public function getGoogleAddress()
+    {
+        return $this->googleAddress;
+    }
+
+    /**
+     * Set searchCityFts
+     *
+     * @param tsvector $searchCityFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchCityFts($searchCityFts)
+    {
+        $this->searchCityFts = $searchCityFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchCityFts
+     *
+     * @return tsvector
+     */
+    public function getSearchCityFts()
+    {
+        return $this->searchCityFts;
+    }
+
+    /**
+     * Add campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return BusinessProfile
+     */
+    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        $this->campaigns[] = $campaign;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        return $this->campaigns->removeElement($campaign);
+    }
+
+    /**
+     * Get campaigns
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaigns()
+    {
+        return $this->campaigns;
+    }
+
+    /**
+     * Get full address
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        $address = [];
+
+        if ($this->getCustomAddress()) {
+            return $this->getCustomAddress();
+        }
+
+        if ($this->getStreetNumber()) {
+            $address[] = $this->getStreetNumber();
+        }
+
+        if ($this->getStreetAddress()) {
+            $address[] = $this->getStreetAddress();
+        }
+
+        if ($this->getZipCode()) {
+            $address[] = $this->getZipCode();
+        }
+
+        if ($this->getCity()) {
+            $address[] = $this->getCity();
+        }
+
+        if ($this->getState()) {
+            $address[] = $this->getState();
+        }
+
+        if ($this->getCountry()) {
+            $address[] = $this->getCountry()->getName();
+        }
+
+        if ($address) {
+            $addressResult = implode(', ', $address);
+        } else {
+            $addressResult = $this->getGoogleAddress();
+        }
+
+        return $addressResult;
     }
 }

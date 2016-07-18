@@ -48,6 +48,32 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     }
 
     /**
+     * Sets createdAt.
+     *
+     * @param  \DateTime $createdAt
+     * @return $this
+     */
+    public function setCreatedAt(\DateTime $createdAt = null)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Sets updatedAt.
+     *
+     * @param  \DateTime $updatedAt
+     * @return $this
+     */
+    public function setUpdatedAt(\DateTime $updatedAt = null)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
      * Available contexts
      *
      * @return array

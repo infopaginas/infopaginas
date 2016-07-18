@@ -17,90 +17,146 @@ use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
 use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
 use Domain\BusinessBundle\Entity\Translation\TagTranslation;
+use Domain\MenuBundle\Model\MenuInterface;
+use Oxa\Sonata\AdminBundle\Model\Fixture\OxaAbstractFixture;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
-class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class LoadTestBusinessData extends OxaAbstractFixture
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    protected $order = 5;
 
     /**
-     * @var ObjectManager
+     * @var Tag[] $tags
      */
-    protected $manager;
+    private $tags = [];
 
     /**
-     * {@inheritDoc}
+     * @var Brand[] $brands
      */
-    public function load(ObjectManager $manager)
+    private $brands = [];
+
+    /**
+     * @var Area[] $areas
+     */
+    private $areas = [];
+
+    /**
+     * @var Category[] $categories
+     */
+    private $categories = [];
+
+    /**
+     * @var PaymentMethod[] $paymentMethods
+     */
+    private $paymentMethods = [];
+
+    protected function loadData()
     {
-        $this->manager = $manager;
-        $this->loadTags();
-        $this->loadArea();
-        $this->loadBrands();
-        $this->loadPaymentMethods();
-        $this->loadBusiness();
+        $categories = $this->manager
+            ->getRepository('DomainBusinessBundle:Category')
+            ->findAll();
 
-        $manager->flush();
+        foreach ($categories as $category) {
+            $this->categories[$category->getName()] = $category;
+        }
+
+        $this->loadBusiness();
     }
 
     protected function loadBusiness()
     {
-        $data = [
-            'Panadería La Catalana'      => '78 Calle El Tren, Cataño, 00962, Puerto Rico',
-            'RST Puerto Rico'            => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
-            'Chinchorreando En Hato Rey' => '67 Cll Bolivia, San Juan, Puerto Rico',
-            'CASA DE LAS ARMADURAS INC.' => 'Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico',
-        ];
+        // get data from yml file
+        try {
+            $data = Yaml::parse(file_get_contents(__DIR__ . '/Yml/businessData.yml'));
+        } catch (ParseException $e) {
+            throw new \Exception("Unable to parse the YML string: %s", $e->getMessage());
+        }
 
         $addressManager = $this->container->get('domain_business.manager.address_manager');
 
-        foreach ($data as $name => $address) {
-            $googleResponse = $addressManager->validateAddress($address);
+        foreach ($data['businesses'] as $business => $item) {
+            $googleResponse = $addressManager->validateAddress($item['google_address']);
 
             if ($googleResponse['error']) {
-                throw new \Exception('Invalid business address. Fixture');
+                throw new \Exception(
+                    'Invalid business address. %s - %s, %s',
+                    $business,
+                    $item['google_address'],
+                    $googleResponse['error']
+                );
             }
 
             $object = new BusinessProfile();
-            $object->setName($name);
-            $object->setEmail('test@test.com');
-            $object->setWebsite('www.google.com');
-            $object->setPhone('+375-29-1862356');
-            $object->setSlogan('Just do it');
-            $object->setProduct('Good product');
-            $object->setDescription('Some description');
+            $object->setName($item['name']);
+            $object->setEmail($item['email']);
+            $object->setWebsite($item['website']);
+            $object->setPhone($item['phone']);
+            $object->setSlogan($item['slogan']);
+            $object->setProduct($item['product']);
+            $object->setDescription($item['description']);
 
-            $object->setFullAddress($address);
+            $object->setGoogleAddress($item['google_address']);
             $addressManager->setGoogleAddress($googleResponse['result'], $object);
 
-            $object->addArea($this->getReference('area.0'));
-            $object->addArea($this->getReference('area.' . rand(1, 2)));
+            foreach ($item['tags'] as $value) {
+                $record = $this->loadTag($value);
+                $object->addTag($record);
+            }
 
-            $object->addBrand($this->getReference('brand.0'));
-            $object->addBrand($this->getReference('brand.' . rand(1, 2)));
+            foreach ($item['areas'] as $value) {
+                $record = $this->loadArea($value);
+                $object->addArea($record);
+            }
 
-            $object->addCategory($this->getReference('category.' . rand(1, 4)));
-            $object->addCategory($this->getReference('category.' . rand(5, 8)));
-            $object->addCategory($this->getReference('category.' . rand(9, 12)));
+            foreach ($item['brands'] as $value) {
+                $record = $this->loadBrand($value);
+                $object->addBrand($record);
+            }
 
-            $object->addPaymentMethod($this->getReference('payment_method.0'));
-            $object->addPaymentMethod($this->getReference('payment_method.' . rand(1, 2)));
+            foreach ($item['payment_methods'] as $value) {
+                $record = $this->loadPaymentMethod($value);
+                $object->addPaymentMethod($record);
+            }
 
+            foreach ($item['categories'] as $value) {
+                $record = $this->loadCategory($value);
+                $object->addCategory($record);
+            }
+            
             $object->setCountry($this->getReference('country.PR'));
-            $object->setUser($this->getReference('user.admin'));
+            $object->setUser($this->getReference('user.manager'));
 
-            $this->addTranslation(new BusinessProfileTranslation(), 'name', sprintf('Spain %s', $name), $object);
-            $this->addTranslation(new BusinessProfileTranslation(), 'slogan', 'Spain Slogan', $object);
-            $this->addTranslation(new BusinessProfileTranslation(), 'product', 'Spain Product', $object);
-            $this->addTranslation(new BusinessProfileTranslation(), 'description', 'Spain Description', $object);
+            $this->addTranslation(
+                new BusinessProfileTranslation(),
+                'name',
+                sprintf('Spain %s', $item['name']),
+                $object
+            );
+            $this->addTranslation(
+                new BusinessProfileTranslation(),
+                'slogan',
+                sprintf('Spain %s', $item['slogan']),
+                $object
+            );
+            $this->addTranslation(
+                new BusinessProfileTranslation(),
+                'product',
+                sprintf('Spain %s', $item['product']),
+                $object
+            );
+            $this->addTranslation(
+                new BusinessProfileTranslation(),
+                'description',
+                sprintf('Spain %s', $item['description']),
+                $object
+            );
 
             $this->manager->persist($object);
         }
@@ -122,15 +178,15 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
         $this->manager->persist($translation);
     }
 
-    protected function loadTags()
+    /**
+     * @param $value
+     * @return Tag
+     */
+    protected function loadTag($value)
     {
-        $data = [
-            'Jewelry',
-            'Cars',
-            'Food'
-        ];
-
-        foreach ($data as $key => $value) {
+        if (array_key_exists($value, $this->tags)) {
+            return $this->tags[$value];
+        } else {
             $object = new Tag();
             $object->setName($value);
 
@@ -143,20 +199,24 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $this->manager->persist($translation);
             $this->manager->persist($object);
 
+            $this->tags[$value] = $object;
+
             // set reference to find this
-            $this->addReference('tag.'.$key, $object);
+            $this->addReference('tag.'.$value, $object);
+
+            return $object;
         }
     }
 
-    protected function loadBrands()
+    /**
+     * @param $value
+     * @return Brand
+     */
+    protected function loadBrand($value)
     {
-        $data = [
-            'Audi',
-            'Aston Martin',
-            'BMW',
-        ];
-
-        foreach ($data as $key => $value) {
+        if (array_key_exists($value, $this->brands)) {
+            return $this->brands[$value];
+        } else {
             $object = new Brand();
             $object->setName($value);
 
@@ -169,46 +229,24 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $this->manager->persist($translation);
             $this->manager->persist($object);
 
+            $this->brands[$value] = $object;
+
             // set reference to find this
-            $this->addReference('brand.'.$key, $object);
+            $this->addReference('brand.'.$value, $object);
+
+            return $object;
         }
     }
 
-    protected function loadPaymentMethods()
+    /**
+     * @param $value
+     * @return Area
+     */
+    protected function loadArea($value)
     {
-        $data = [
-            'Visa',
-            'Master Cards',
-            'PayPal',
-        ];
-
-        foreach ($data as $key => $value) {
-            $object = new PaymentMethod();
-            $object->setName($value);
-
-            $translation = new PaymentMethodTranslation();
-            $translation->setContent(sprintf('Spain %s', $value));
-            $translation->setField('name');
-            $translation->setLocale('es');
-            $translation->setObject($object);
-
-            $this->manager->persist($translation);
-            $this->manager->persist($object);
-
-            // set reference to find this
-            $this->addReference('payment_method.'.$key, $object);
-        }
-    }
-
-    protected function loadArea()
-    {
-        $data = [
-            'West',
-            'North',
-            'East',
-        ];
-
-        foreach ($data as $key => $value) {
+        if (array_key_exists($value, $this->areas)) {
+            return $this->areas[$value];
+        } else {
             $object = new Area();
             $object->setName($value);
 
@@ -221,29 +259,72 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $this->manager->persist($translation);
             $this->manager->persist($object);
 
+            $this->areas[$value] = $object;
+
             // set reference to find this
-            $this->addReference('area.'.$key, $object);
+            $this->addReference('area.'.$value, $object);
+
+            return $object;
         }
     }
 
     /**
-     * Get the order of this fixture
-     *
-     * @return integer
+     * @param $value
+     * @return PaymentMethod
      */
-    public function getOrder()
+    protected function loadPaymentMethod($value)
     {
-        return 5;
+        if (array_key_exists($value, $this->paymentMethods)) {
+            return $this->paymentMethods[$value];
+        } else {
+            $object = new PaymentMethod();
+            $object->setName($value);
+
+            $translation = new PaymentMethodTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
+            $this->manager->persist($object);
+
+            $this->paymentMethods[$value] = $object;
+
+            // set reference to find this
+            $this->addReference('paymentMethod.'.$value, $object);
+
+            return $object;
+        }
     }
 
     /**
-     * @param ContainerInterface|null $container
-     * @return $this
+     * @param $value
+     * @return Category
      */
-    public function setContainer(ContainerInterface $container = null)
+    protected function loadCategory($value)
     {
-        $this->container = $container;
+        if (array_key_exists($value, $this->categories)) {
+            return $this->categories[$value];
+        } else {
+            $object = new Category();
+            $object->setName($value);
 
-        return $this;
+            $translation = new CategoryTranslation();
+            $translation->setContent(sprintf('Spain %s', $value));
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($object);
+
+            $this->manager->persist($translation);
+            $this->manager->persist($object);
+
+            $this->categories[$value] = $object;
+
+            // set reference to find this
+            $this->addReference('category.'.$value, $object);
+
+            return $object;
+        }
     }
 }
