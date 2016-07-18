@@ -81,7 +81,6 @@ doctrine:
             FOSUserBundle: ~
             OxaSonataMediaBundle: ~
             SonataMediaBundle: ~
-            SonataMediaBundle: ~
             gedmo_loggable:
                 type: annotation
                 prefix: Gedmo\Loggable\Entity

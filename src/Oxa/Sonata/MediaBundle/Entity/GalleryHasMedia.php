@@ -12,16 +12,23 @@
 namespace Oxa\Sonata\MediaBundle\Entity;
 
 use Sonata\MediaBundle\Entity\BaseGalleryHasMedia as BaseGalleryHasMedia;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @author <yourname> <youremail>
+ * @ORM\Table(name="media__gallery_media")
+ * @ORM\Entity()
  */
 class GalleryHasMedia extends BaseGalleryHasMedia
 {
     /**
-     * @var integer $id
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    private $id;
 
     /**
      * Get id

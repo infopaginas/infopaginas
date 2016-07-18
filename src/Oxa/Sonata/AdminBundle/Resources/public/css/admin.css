@@ -68,3 +68,12 @@ h4.filter_legend img {
 .list-preview-image{
     max-height: 150px; max-width: 150px; !important;
 }
+
+.media-list-context{
+    pointer-events: none;
+    cursor: default;
+}
+
+.media-list-deleted-image{
+    margin-right: 6px;
+}

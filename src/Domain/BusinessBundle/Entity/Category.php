@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -12,6 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 
 /**
  * Category
@@ -66,7 +68,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\OneToMany(
      *     targetEntity="Domain\ArticleBundle\Entity\Article",
      *     mappedBy="category",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      *     )
      */
     protected $articles;
@@ -74,18 +76,18 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     /**
      * @var string - Used to create human like url
      *
-     * @Gedmo\Slug(fields={"name"})
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
      * @ORM\Column(name="slug", type="string", length=100)
      */
     protected $slug;
 
     /**
-     * @var ArrayCollection
+     * @var CategoryTranslation[]
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Translation\CategoryTranslation",
      *     mappedBy="object",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      * )
      */
     protected $translations;
@@ -236,6 +238,19 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     {
         return $this->menu;
     }
+
+    /**
+     * @param AbstractPersonalTranslation $translation
+     *
+     * @return $this
+     */
+    public function addTranslation(AbstractPersonalTranslation $translation)
+    {
+        $this->translations[] = $this;
+
+        return $this;
+    }
+
 
     /**
      * Add article

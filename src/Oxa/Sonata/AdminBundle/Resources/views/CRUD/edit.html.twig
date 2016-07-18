@@ -88,6 +88,16 @@
             </a>
         {% endif %}
     </li>
+    {% if object.id %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('delete') and admin.isGranted('DELETE') %}
+            <a href="{{ admin.generateObjectUrl('delete', object) }}">
+                <i class="fa fa-trash-o"></i>
+                {{ 'action_delete'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    {% endif %}
     <li class="dropdown sonata-actions">
         {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
             <a href="{{ admin.generateUrl('list') }}">
