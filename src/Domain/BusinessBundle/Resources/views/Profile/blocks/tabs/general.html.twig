@@ -2,8 +2,7 @@
 {% import '::widgets/custom_form_label.html.twig' as custom_form_label %}
 
 {% macro phone_prototype(phoneField) %}
-    <br />
-    <div>
+    <div class="phone-add-wrap">
         {{ form_widget(phoneField) }}
         <span class="help-block"></span>
         <a class="pull-right remove-phone" href="#">X</a>
@@ -76,9 +75,9 @@
                                         </li>
                                     {% endfor %}
                                 </ul>
-                                <ul>
+                                <ul class="add-phone-block">
                                     <li>
-                                        <a href="#" id="add-another-phone">
+                                        <a href="#" id="add-another-phone" class="add-another-phonenumber green-btn">
                                             {% trans %}Add{% endtrans %}
                                         </a>
                                     </li>
