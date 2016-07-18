@@ -1,5 +1,5 @@
 <div class="card-item
-    {% if (hasSubs(item, 'CODE_PREMIUM_PLUS')) %}
+    {% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}
         premium
     {% endif %}
     ">
@@ -13,7 +13,7 @@
                 <span class="card-name">{{ item.name }}</span>
             </a>
                 &nbsp;
-            {% if (hasSubs(item, "CODE_PREMIUM_PLUS")) %}
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
                 <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
                     <span class="card-slogan"><q>{{ item.slogan }}</q></span>
                 </a>
@@ -57,13 +57,13 @@
     </div>
     <div class="col-xs-12 additional-info">
         <div class="icons">
-            {% if (hasSubs(item, "CODE_PREMIUM_GOLD")) %}
+            {% if (hasSubscription(item, "CODE_PREMIUM_GOLD")) %}
                 <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#photo"><i class="photo"></i></a>
             {% endif %}
-            {% if (hasSubs(item, "CODE_PREMIUM_PLATINUM")) %}
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLATINUM")) %}
                 <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#video"><i class="video"></i></a>
             {% endif %}
-            {% if (hasSubs(item, "CODE_PRIORITY")) %}
+            {% if (hasSubscription(item, "CODE_PRIORITY")) %}
                 <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#ad"><i class="ad"></i></a>
             {% endif %}
         </div>
@@ -81,7 +81,7 @@
             </a>
         </div>
     </div>
-    {% if (hasSubs(item, "CODE_PREMIUM_PLUS")) %}
+    {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
         <div class="company-logo"><img src="http://placehold.it/120x120"></div>
     {% endif %}
 </div>

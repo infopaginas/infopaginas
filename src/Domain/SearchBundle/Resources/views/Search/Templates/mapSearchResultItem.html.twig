@@ -33,7 +33,7 @@
             <span>{{ item.getBusinessReviewsCount }}  Reviews</span>
         </div>
     </div>
-    {% if (hasSubs(item, "CODE_PREMIUM_PLUS")) %}
+    {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
         <div class="company-logo"><img src="http://placehold.it/120x120"></div>
     {% endif %}
 </div>
