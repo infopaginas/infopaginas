@@ -31,4 +31,10 @@ class BusinessProfileUtil
             "longitude"     => $item[0]->getLongitude()
         );
     }
+
+
+    public static function extractBusinessProfiles(array $searchResults)
+    {
+        return array_column($searchResults, 0);
+    }
 }

@@ -128,16 +128,31 @@ define(
         });
     }
 
-    mapSearchPage.prototype.getInfoHTML = function (name, address, reviewsCount)
+    mapSearchPage.prototype.getInfoHTML = function (name, address, reviewsCount, avgMark, icon)
     {
-      return "<div class='business-info'>" +
-        "<div>" + name + "</div>" +
-        "<div>" + address + "</div>" +   
-        "<div>" + reviewsCount + " Reviews</div>" +
-        "</div>" +
-        "<div class='business-logo'>" +
-        "<img src='http://placehold.it/60x60'>" +
-        "</div>";
+        var template = "<div class='business-info'>" +
+            "<div>" + name + "</div>" +
+            "<div>" + address + "</div>" +
+                "<div class=\"reviews\">" +
+                    "<div class=\"star-rating\">" +
+                        "<span class=\"fa fa-star-o\" data-rating=\"1\"></span>" +
+                        "<span class=\"fa fa-star-o\" data-rating=\"2\"></span>" +
+                        "<span class=\"fa fa-star-o\" data-rating=\"3\"></span>" +
+                        "<span class=\"fa fa-star-o\" data-rating=\"4\"></span>" +
+                        "<span class=\"fa fa-star-o\" data-rating=\"5\"></span>" +
+                        "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
+                    "</div>" +
+                    "<span class=\"reviews-value\">" + reviewsCount + " Reviews</span>" +
+                "</div>" +
+            "</div>";
+
+            if ( !_.isUndefined(icon) && !_.isNull(icon) ) {
+                template += "<div class='business-logo'>" +
+                    "<img src='" + icon + "'>" +
+                "</div>";
+            }
+
+            return  template;
     }
 
     return mapSearchPage;

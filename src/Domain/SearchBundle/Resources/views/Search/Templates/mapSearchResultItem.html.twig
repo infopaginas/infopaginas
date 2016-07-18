@@ -30,8 +30,10 @@
                 <span class="fa fa-star-o" data-rating="5"></span>
                 <input type="hidden" name="whatever" class="rating-value" value="{{ item[0].getBusinessReviewsAvgMark }}">
             </div>
-            <span>16 Reviews</span>
+            <span>{{ item[0].getBusinessReviewsCount }}  Reviews</span>
         </div>
     </div>
-    <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+    {% if (hasSubs(item[0], "CODE_PREMIUM_PLUS")) %}
+        <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+    {% endif %}
 </div>

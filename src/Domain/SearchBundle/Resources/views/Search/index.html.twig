@@ -45,6 +45,9 @@
                     <img src="http://placehold.it/410x350">
                 </aside>
             </div>
+            {% block pagination %}
+                {% include 'DomainSiteBundle:Layout:Widgets/pagination.html.twig' with { 'page' : page, 'pageCount' : (total/limit) } %}
+            {% endblock %}
         </div>
     </section>
 {% endblock %}

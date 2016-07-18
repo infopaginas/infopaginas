@@ -7,6 +7,7 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\SearchBundle\Model\DataType\SearchDTO;
 
 class BusinessProfileManager extends Manager
 {
@@ -66,5 +67,10 @@ class BusinessProfileManager extends Manager
     public function getLocationMarkersFromProfileData(array $profilesList)
     {
         return BusinessProfileUtil::filterLocationMarkers($profilesList);
+    }
+
+    public function search(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->search($searchParams);
     }
 }

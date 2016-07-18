@@ -1,0 +1,30 @@
+<!-- Pagination -->
+<nav>
+{{ dump(app.request) }}
+  <ul class="pagination">
+    {% if pageCount > 1 %}
+        {% if page > 1 %}
+            <li>
+              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': (page - 1) })) }}" aria-label="Previous">
+                <span aria-hidden="true">&larr; &nbsp;prev</span>
+              </a>
+            </li>
+        {% endif %}
+        {% for pageItem in 1..(pageCount - 1) %}
+            <li 
+            {% if page == pageItem %}
+                class="active"
+            {% endif %}
+            ><a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': pageItem })) }}">{{ pageItem }}</a></li>
+        {% endfor %}
+        <li><a href="#">{{ pageCount }}</a></li>
+        {% if page < pageCount %}
+            <li>
+              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': (page + 1) })) }}" aria-label="Next">
+                <span aria-hidden="true">next&nbsp; &rarr;</span>
+              </a>
+            </li>
+        {% endif %}
+    {% endif %}
+  </ul>
+</nav>

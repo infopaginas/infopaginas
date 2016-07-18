@@ -20,14 +20,19 @@ class SearchController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $query = $request->get('q', '');
-        $categoryFilter = $request->get('category', null);
-        $page     = $request->get('page', 1);
+        $searchManager = $this->get('domain_search.manager.search');
 
-        $geolocationManager = $this->get('oxa_geolocation.manager');
-        $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
+        $searchDTO          = $searchManager->getSearchDTO($request);
+        $searchResultsDTO   = $searchManager->search($searchDTO);
 
-        $total = 0;
+        // $query = $request->get('q', '');
+        // $categoryFilter = $request->get('category', null);
+        // $page     = $request->get('page', 1);
+
+        // $geolocationManager = $this->get('oxa_geolocation.manager');
+        // $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
+
+        $total = 145;
         $limit = 20;
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
@@ -36,7 +41,7 @@ class SearchController extends Controller
 
         $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue, $categoryFilter);
 
-        $categories    = $categoryManager->getCategoriesByProfiles(array_column($results, 0));
+        $categories    = $categoryManager->getCategoriesByProfiles();
         $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
 
         return $this->render('DomainSearchBundle:Search:index.html.twig', array(
