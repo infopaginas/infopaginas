@@ -86,23 +86,26 @@ class TaskAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper
-            ->add('rejectReason')
-        ;
+        $formMapper->add('rejectReason');
 
-        $formMapper->add('businessProfile.businessReviews', 'sonata_type_collection', array(
-            'by_reference' => true,
-            'label' => 'Business Reviews',
-            'type_options' => array('delete' => false),
-            'cascade_validation' => true,
-            "required" => false,
-            'btn_add' => false,
-        ),
-            array(
+        $formMapper->add(
+            'businessProfile.businessReviews',
+            'sonata_type_collection',
+            [
+                'by_reference' => true,
+                'label' => 'Business Reviews',
+                'type_options' => [
+                    'delete' => false
+                ],
+                'cascade_validation' => true,
+                'required' => false,
+                'btn_add' => false,
+            ],
+            [
                 'edit' => 'inline',
                 'inline' => 'table',
-                'sortable' => 'position'
-            )
+                'sortable' => 'position',
+            ]
         );
     }
 

@@ -3,8 +3,8 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Form\Handler\FreeBusinessProfileFormHandler;
-use Domain\BusinessBundle\Form\Type\FreeBusinessProfileFormType;
+use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
+use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -92,11 +92,11 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return FreeBusinessProfileFormHandler
+     * @return BusinessProfileFormHandler
      */
-    private function getBusinessProfileFormHandler() : FreeBusinessProfileFormHandler
+    private function getBusinessProfileFormHandler() : BusinessProfileFormHandler
     {
-        return $this->get('domain_business.form.handler.business_profile.free');
+        return $this->get('domain_business.form.handler.business_profile');
     }
 
     /**
@@ -109,6 +109,6 @@ class ProfileController extends Controller
             $businessProfile = $this->getBusinessProfilesManager()->createProfile();
         }
 
-        return $this->createForm(new FreeBusinessProfileFormType(), $businessProfile);
+        return $this->createForm(new BusinessProfileFormType(), $businessProfile);
     }
 }

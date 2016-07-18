@@ -174,8 +174,7 @@ class AdminManager extends DefaultManager
         $metadata = $this->getEntityManager()->getClassMetadata(get_class($entity));
         $existDependentField = [];
         foreach ($metadata->getAssociationMappings() as $associationMapping) {
-            if (
-                $associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY ||
+            if ($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY ||
                 $associationMapping['type'] == ClassMetadataInfo::ONE_TO_ONE
             ) {
                 $methodGet = 'get' . ucfirst($associationMapping['fieldName']);

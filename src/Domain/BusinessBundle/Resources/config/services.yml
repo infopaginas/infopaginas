@@ -20,7 +20,7 @@ services:
 
     domain_business.manager.business_gallery:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@sonata.media.manager.media']
 
     domain_business.manager.address_manager:
         class: Domain\BusinessBundle\Manager\AddressManager
@@ -66,16 +66,10 @@ services:
             - [ setConfig, [ '@oxa_config' ] ]
 
     domain_business.form.type.business_profile:
-        class: Domain\BusinessBundle\Form\Type\BusinessProfileType
+        class: Domain\BusinessBundle\Form\Type\BusinessProfileFormType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_business_bundle_business_profile_type }
-
-    domain_business.form.type.business_profile.free:
-        class: Domain\BusinessBundle\Form\Type\FreeBusinessProfileFormType
-        arguments: [null]
-        tags:
-        - { name: form.type, alias: domain_business_bundle_free_business_profile_form_type }
+        - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
 
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
@@ -88,15 +82,9 @@ services:
         factory_method: createNamed
         factory_service: form.factory
         class: Symfony\Component\Form\Form
-        arguments: [domain_business_bundle_business_profile_type, domain_business_bundle_business_profile_type]
-
-    domain_business.form.business_profile.free:
-        factory_method: createNamed
-        factory_service: form.factory
-        class: Symfony\Component\Form\Form
         arguments:
-            - 'domain_business_bundle_free_business_profile_form_type'
-            - 'domain_business_bundle_free_business_profile_form_type'
+            - 'domain_business_bundle_business_profile_form_type'
+            - 'domain_business_bundle_business_profile_form_type'
 
     #form handlers section
     domain_business.form.handler.business_profile:
@@ -104,13 +92,6 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_profile'
-            - '@request'
-
-    domain_business.form.handler.business_profile.free:
-        class: Domain\BusinessBundle\Form\Handler\FreeBusinessProfileFormHandler
-        scope: request
-        arguments:
-            - '@domain_business.form.business_profile.free'
             - '@request'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'

@@ -31,11 +31,16 @@ class ArticleAdmin extends OxaAdmin
             ->add('description')
             ->add('isPublished', null, [], null, $choiceOptions)
             ->add('isOnHomepage', null, [], null, $choiceOptions)
-            ->add('updatedAt', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => 'dd-MM-y hh:mm:ss'
-            ]])
+            ->add(
+                'updatedAt',
+                'doctrine_orm_datetime_range',
+                [
+                    'field_type' => 'sonata_type_datetime_range_picker',
+                    'field_options' => [
+                        'format' => 'dd-MM-y hh:mm:ss'
+                    ]
+                ]
+            )
             ->add('updatedUser')
         ;
     }

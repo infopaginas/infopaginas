@@ -41,4 +41,3 @@ interface StatusInterface
      */
     public static function getStatuses();
 }
-

@@ -5,7 +5,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
     var images = function() {
         this.html = {
             buttons: {
-                fileInputId: 'domain_business_bundle_free_business_profile_form_type_files'
+                fileInputId: 'domain_business_bundle_business_profile_form_type_files'
             },
             imageContainerClassname: 'image-wrap',
             imageEditFormClassname: 'image-edit-form',

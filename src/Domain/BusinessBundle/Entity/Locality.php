@@ -91,4 +91,3 @@ class Locality
         return $this->name;
     }
 }
-

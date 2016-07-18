@@ -43,7 +43,6 @@ class DatetimePeriodStatusService
         $updatedRecordsCount = 0;
 
         foreach ($entityClassArray as $entityClass) {
-
             $entities = $this->em->getRepository($entityClass)->findBy([
                 DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS => DatetimePeriodStatusInterface::STATUS_ACTIVE
             ]);

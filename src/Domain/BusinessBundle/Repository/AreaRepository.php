@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Repository;
+
 use Doctrine\ORM\QueryBuilder;
 
 /**

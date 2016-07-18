@@ -2,17 +2,11 @@
 
 namespace Domain\BusinessBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NoResultException;
-use Domain\BusinessBundle\Entity\Media\BusinessGallery;
-use Domain\BusinessBundle\Form\Type\BusinessGalleryType;
-use Domain\BusinessBundle\Form\Type\FreeBusinessProfileFormType;
-use Domain\BusinessBundle\Repository\BusinessProfileRepository;
-use Oxa\Sonata\MediaBundle\Entity\Media;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Manager\BusinessGalleryManager;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,50 +17,50 @@ class ImagesController extends Controller
 {
     const BUSINESS_PROFILE_ID_PARAMNAME = 'businessProfileId';
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function uploadAction(Request $request)
     {
         $businessProfileId = (int)$request->get(self::BUSINESS_PROFILE_ID_PARAMNAME, 0);
 
         $business = $this->getBusinessProfilesManager()->find($businessProfileId);
 
-        if (!$business) {
-            throw new NoResultException('Business isnt found');
+        if ($business === null) {
+            $this->throwBusinessNotFoundException();
         }
 
-        $fileBag = $request->files;
+        $business = $this->getBusinessGalleryManager()->fillBusinessGallery($business, $request->files);
 
-        $manager = $this->get('sonata.media.manager.media');
-
-        $images = [];
-
-        /** @var UploadedFile $file */
-        foreach ($fileBag->get('files') as $file) {
-            $media = new Media();
-            $media->setBinaryContent($file);
-            $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
-            $media->setProviderName(OxaMediaInterface::PROVIDER_IMAGE);
-            $manager->save($media, false);
-
-            array_push($images, $media);
-        }
-
-        $this->getDoctrine()->getManager()->flush();
-
-        foreach ($images as $image) {
-            $businessGallery = new BusinessGallery();
-            $businessGallery->setMedia($image);
-
-            $business->addImage($businessGallery);
-        }
-
-        $form = $this->createForm(new FreeBusinessProfileFormType(), $business);
+        $form = $this->createForm(new BusinessProfileFormType(), $business);
 
         return $this->render('DomainBusinessBundle:Images/blocks:gallery.html.twig', [
             'images' => $form->get('images')->createView(),
         ]);
     }
 
-    private function getBusinessProfilesManager()
+    /**
+     * @access private
+     * @throws NoResultException
+     */
+    private function throwBusinessNotFoundException()
+    {
+        throw new NoResultException('Business not found');
+    }
+
+    /**
+     * @return BusinessGalleryManager
+     */
+    private function getBusinessGalleryManager() : BusinessGalleryManager
+    {
+        return $this->get('domain_business.manager.business_gallery');
+    }
+
+    /**
+     * @return \Domain\BusinessBundle\Manager\BusinessProfileManager
+     */
+    private function getBusinessProfilesManager() : BusinessProfileManager
     {
         return $this->get('domain_business.manager.business_profile');
     }

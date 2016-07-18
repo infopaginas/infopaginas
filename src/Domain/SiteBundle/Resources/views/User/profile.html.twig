@@ -1,25 +1,21 @@
 {% extends "DomainSiteBundle:Layout:base.html.twig" %}
 
-{% block styles %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
-    <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
-{% endblock %}
-
 {% block breakcrumbs %}
-    <div class="container">
-        <div class="row">
-            <div class="crumbs">
-                <a href="{{ path('domain_site_home_index') }}">
-                    {% trans %}Homepage{% endtrans %}
-                    <span>&nbsp; » &nbsp; </span>
-                </a>
-                <span>
-                    {% trans %}User profile{% endtrans %}
-                </span>
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="{{ path('domain_site_home_index') }}">
+                        {% trans %}Homepage{% endtrans %}
+                        <span>&nbsp; » &nbsp; </span>
+                    </a>
+                    <span>
+                        {% trans %}User profile{% endtrans %}
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 {% endblock %}
 
 {% block main %}

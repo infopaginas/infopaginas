@@ -8,7 +8,6 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
-
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
 use Symfony\Component\Form\AbstractType;

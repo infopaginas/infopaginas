@@ -37,7 +37,7 @@ trait JsonResponseBuilderTrait
     /**
      * @return TranslatorInterface
      */
-     function getTranslator() : TranslatorInterface
+    function getTranslator() : TranslatorInterface
     {
         return $this->get('translator');
     }

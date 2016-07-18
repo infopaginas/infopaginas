@@ -463,7 +463,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
-     * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "You must choose a valid Service Area.")
+     * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "You must choose a valid Service Area")
      */
     protected $serviceAreasType = 'area';
 
@@ -1890,7 +1890,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-<<<<<<< HEAD
      * @return string
      */
     public function getServiceAreasType()
@@ -2060,7 +2059,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $this;
     }
 
-    function __clone()
+    public function __clone()
     {
         $this->id = null;
     }

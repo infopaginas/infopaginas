@@ -7,7 +7,6 @@ use Domain\BannerBundle\Model\TypeInterface as BannerType;
 
 use Domain\BannerBundle\Entity\Banner;
 
-
 class BannerFactory extends Factory
 {
     public function get($type)
@@ -42,7 +41,9 @@ class BannerFactory extends Factory
     protected function getHomepageBanner()
     {
         //temporaty logic
-        $homapageBanners = $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_HOME);
+        $homapageBanners = $this->em->getRepository('DomainBannerBundle:Banner')
+            ->getBannerByTypeCode(BannerType::CODE_HOME);
+
         if (count($homapageBanners)) {
             return $homapageBanners[0];
         }
@@ -51,7 +52,9 @@ class BannerFactory extends Factory
 
     protected function getPortalBanner()
     {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_PORTAL);
+        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
+            ->getBannerByTypeCode(BannerType::CODE_PORTAL);
+
         if (count($portalBanners)) {
             return $portalBanners[0];
         }
@@ -61,10 +64,13 @@ class BannerFactory extends Factory
     protected function getLeaderboardBanner()
     {
         //temporaty logic
-        $leaderboardBanners = $this->em->getRepository('DomainBannerBundle:Banner')->getBannerByTypeCode(BannerType::CODE_PORTAL_LEADERBOARD);
+        $leaderboardBanners = $this->em->getRepository('DomainBannerBundle:Banner')
+            ->getBannerByTypeCode(BannerType::CODE_PORTAL_LEADERBOARD);
+
         if (count($leaderboardBanners)) {
             return $leaderboardBanners[0];
         }
+
         return null;
     }
 }

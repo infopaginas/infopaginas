@@ -55,6 +55,4 @@ class BusinessProfilePhone
         $this->phone = $phone;
         return $this;
     }
-
 }
-

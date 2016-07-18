@@ -3,20 +3,21 @@
 namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Form\Type\FreeBusinessProfileFormType;
-use Domain\BusinessBundle\Repository\BusinessProfileRepository;
+use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use JMS\Serializer\SerializerBuilder;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
-
 use Domain\BusinessBundle\Utils\BusinessProfileUtils;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * Class BusinessProfileManager
+ * @package Domain\BusinessBundle\Manager
+ */
 class BusinessProfileManager extends Manager
 {
     /**
@@ -239,34 +240,34 @@ class BusinessProfileManager extends Manager
      * @param BusinessProfile $businessProfile
      * @param string $locale
      */
-   public function publish(BusinessProfile $businessProfile, $locale = 'en_US')
-   {
-       $oldProfile = $businessProfile->getActualBusinessProfile();
+    public function publish(BusinessProfile $businessProfile, $locale = 'en_US')
+    {
+        $oldProfile = $businessProfile->getActualBusinessProfile();
 
-       $businessProfile->setActualBusinessProfile(null);
-       $businessProfile->setIsActive(true);
+        $businessProfile->setActualBusinessProfile(null);
+        $businessProfile->setIsActive(true);
 
-       //backup object translations
-       if ($locale === BusinessProfile::DEFAULT_LOCALE) {
-           foreach ($oldProfile->getTranslations() as $translation) {
-               $businessProfile->addTranslation($translation);
-           }
-       }
+        //backup object translations
+        if ($locale === BusinessProfile::DEFAULT_LOCALE) {
+            foreach ($oldProfile->getTranslations() as $translation) {
+                $businessProfile->addTranslation($translation);
+            }
+        }
 
-       $subscription = $oldProfile->getSubscription();
+        $subscription = $oldProfile->getSubscription();
 
-       if ($subscription !== null) {
-           $subscription->setBusinessProfile($businessProfile);
-           $this->getEntityManager()->persist($subscription);
-       }
+        if ($subscription !== null) {
+            $subscription->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($subscription);
+        }
 
-       $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
+        $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
 
-       $this->getEntityManager()->persist($businessProfile);
-       $this->getEntityManager()->flush();
+        $this->getEntityManager()->persist($businessProfile);
+        $this->getEntityManager()->flush();
 
-       $this->drop($oldProfile);
-   }
+        $this->drop($oldProfile);
+    }
 
     /**
      * @param BusinessProfile $businessProfile
@@ -274,7 +275,7 @@ class BusinessProfileManager extends Manager
      */
     public function getBusinessProfileAsForm(BusinessProfile $businessProfile)
     {
-        return $this->formFactory->create(new FreeBusinessProfileFormType(), $businessProfile);
+        return $this->formFactory->create(new BusinessProfileFormType(), $businessProfile);
     }
 
     /**

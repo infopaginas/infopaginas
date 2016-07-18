@@ -10,10 +10,7 @@ namespace Domain\BusinessBundle\Util\BusinessProfile;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
-use Domain\BusinessBundle\Form\Type\FreeBusinessProfileFormType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -36,7 +33,10 @@ class BusinessProfilesComparator
         $currentProfileDataArray = self::mapFormDataAsAnArray($currentBusinessProfileForm);
 
         $fieldDifferences = self::getProfilesDifferencesArray($updatedProfileDataArray, $currentProfileDataArray);
-        $imageDifferences = self::getProfileImageDifferencesArray($updatedBusinessProfileForm, $currentBusinessProfileForm);
+        $imageDifferences = self::getProfileImageDifferencesArray(
+            $updatedBusinessProfileForm,
+            $currentBusinessProfileForm
+        );
 
         $differences = array_merge($fieldDifferences, $imageDifferences);
 
@@ -63,7 +63,6 @@ class BusinessProfilesComparator
                     'value' => $value->getData(),
                 ];
             } elseif (is_object($value->getData()) && $value->getName() !== 'images') {
-
                 $isObjectInstanceOfCollection = ($value->getData() instanceof ArrayCollection)
                     || ($value->getData() instanceof PersistentCollection);
 
@@ -84,11 +83,15 @@ class BusinessProfilesComparator
         return $data;
     }
 
-    private static function getProfileImageDifferencesArray
-    (
+    /**
+     * @param FormInterface $updatedBusinessProfileForm
+     * @param FormInterface $currentBusinessProfileForm
+     * @return array
+     */
+    private static function getProfileImageDifferencesArray(
         FormInterface $updatedBusinessProfileForm,
         FormInterface $currentBusinessProfileForm
-    ) {
+    ) : array {
         $updatedBusinessProfileImagesArray = self::getProfileImagesArray($updatedBusinessProfileForm);
         $currentBusinessProfileImagesArray = self::getProfileImagesArray($currentBusinessProfileForm);
 
@@ -118,9 +121,18 @@ class BusinessProfilesComparator
         return $differences;
     }
 
-    private static function getProfileImagesArray(FormInterface $businessProfileForm)
+    /**
+     * @param FormInterface $businessProfileForm
+     * @return array
+     */
+    private static function getProfileImagesArray(FormInterface $businessProfileForm) : array
     {
         $images = [];
+
+        //some subscription plans doesn't support images
+        if (!$businessProfileForm->has('images')) {
+            return $images;
+        }
 
         $businessProfileGallery = $businessProfileForm->get('images')->getData();
 

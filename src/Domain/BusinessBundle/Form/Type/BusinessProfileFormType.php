@@ -2,9 +2,7 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -16,7 +14,6 @@ use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -28,9 +25,13 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-
-class FreeBusinessProfileFormType extends AbstractType
+/**
+ * Class BusinessProfileFormType
+ * @package Domain\BusinessBundle\Form\Type
+ */
+class BusinessProfileFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -72,7 +73,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\Category',
                 'label' => 'Categories',
                 'multiple' => true,
-                'query_builder' => function(CategoryRepository $repository) {
+                'query_builder' => function (CategoryRepository $repository) {
                     return $repository->getAvailableCategoriesQb();
                 }
             ])
@@ -85,7 +86,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\Area',
                 'label' => 'Areas',
                 'multiple' => true,
-                'query_builder' => function(AreaRepository $repository) {
+                'query_builder' => function (AreaRepository $repository) {
                     return $repository->getAvailableAreasQb();
                 }
             ])
@@ -105,7 +106,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\Brand',
                 'label' => 'Brands',
                 'multiple' => true,
-                'query_builder' => function(BrandRepository $repository) {
+                'query_builder' => function (BrandRepository $repository) {
                     return $repository->getAvailableBrandsQb();
                 },
                 'required' => false,
@@ -114,8 +115,8 @@ class FreeBusinessProfileFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => preg_replace("/\r|\n/", "", 'At the time of study, all parents,
-                        teachers, students we welcome ideas that foster
-                        greater productivity and end of the day, produce better academic achievement'
+                       teachers, students we welcome ideas that foster greater productivity and end of the day,
+                       produce better academic achievement'
                     ),
                     'rows' => 5,
                 ],
@@ -131,7 +132,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\Tag',
                 'label' => 'Tags',
                 'multiple' => true,
-                'query_builder' => function(TagRepository $repository) {
+                'query_builder' => function (TagRepository $repository) {
                     return $repository->getAvailableTagsQb();
                 },
                 'required' => false,
@@ -140,7 +141,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => preg_replace("/\r|\n/", "", 'The SONS system currently offers the SON\'S starter
-                        kit, notebooks, writing pads and labels.'
+                     kit, notebooks, writing pads and labels.'
                     ),
                     'rows' => 3,
                 ],
@@ -156,7 +157,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 'class' => 'Domain\BusinessBundle\Entity\PaymentMethod',
                 'label' => 'Payment methods',
                 'multiple' => true,
-                'query_builder' => function(PaymentMethodRepository $repository) {
+                'query_builder' => function (PaymentMethodRepository $repository) {
                     return $repository->getAvailablePaymentMethodsQb();
                 },
                 'required' => false,
@@ -178,30 +179,6 @@ class FreeBusinessProfileFormType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'required' => true,
-                'data'     => 'area'
-            ])
-            ->add('milesOfMyBusiness', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => '100',
-                ],
-                'label' => 'Within miles of my business',
-                'required' => false,
-            ])
-            ->add('localities', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control select-control',
-                    'data-placeholder' => 'Select Localities',
-                    'disabled' => 'disabled',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Locality',
-                'label' => 'Localities',
-                'multiple' => true,
-                'query_builder' => function(LocalityRepository $repository) {
-                    return $repository->getAvailableLocalitiesQb();
-                },
-                'required' => false,
             ])
             ->add('streetAddress', TextType::class, [
                 'attr' => [
@@ -236,7 +213,7 @@ class FreeBusinessProfileFormType extends AbstractType
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Address\Country',
                 'label' => 'Country',
-                'query_builder' => function(CountryRepository $repository) {
+                'query_builder' => function (CountryRepository $repository) {
                     return $repository->getAvailableCountriesQb();
                 }
             ])
@@ -340,6 +317,8 @@ class FreeBusinessProfileFormType extends AbstractType
                 $subscription = $businessProfile->getSubscriptionPlan();
             }
 
+            $this->setupServiceAreasFormFields($businessProfile, $event->getForm());
+
             switch ($subscription->getCode()) {
                 case SubscriptionPlanInterface::CODE_PRIORITY:
                     $this->setupPriorityPlanFormFields($businessProfile, $event->getForm());
@@ -354,6 +333,42 @@ class FreeBusinessProfileFormType extends AbstractType
                     $this->setupFreePlanFormFields($businessProfile, $event->getForm());
             }
         });
+    }
+
+    private function setupServiceAreasFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $milesOfMyBusinessFieldOptions = [
+            'attr' => [
+                'class' => 'form-control',
+                'placeholder' => '100',
+            ],
+            'label' => 'Within miles of my business',
+            'required' => false,
+        ];
+
+        $localitiesFieldOptions = [
+            'attr' => [
+                'class' => 'form-control select-control',
+                'data-placeholder' => 'Select Localities',
+                'multiple' => 'multiple',
+            ],
+            'class' => 'Domain\BusinessBundle\Entity\Locality',
+            'label' => 'Localities',
+            'multiple' => true,
+            'query_builder' => function (LocalityRepository $repository) {
+                return $repository->getAvailableLocalitiesQb();
+            },
+            'required' => false,
+        ];
+
+        if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
+            $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+        } else {
+            $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
+        }
+
+        $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('localities', EntityType::class, $localitiesFieldOptions);
     }
 
     private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
@@ -487,8 +502,7 @@ class FreeBusinessProfileFormType extends AbstractType
         $resolver->setDefaults([
             'allow_extra_fields' => true,
             'data_class' => 'Domain\BusinessBundle\Entity\BusinessProfile',
-            'validation_groups' => function(FormInterface $form) {
-
+            'validation_groups' => function (FormInterface $form) {
                 /** @var BusinessProfile $profile */
                 $profile = $form->getData();
 
@@ -506,6 +520,6 @@ class FreeBusinessProfileFormType extends AbstractType
      */
     public function getName()
     {
-        return 'domain_business_bundle_free_business_profile_form_type';
+        return 'domain_business_bundle_business_profile_form_type';
     }
 }

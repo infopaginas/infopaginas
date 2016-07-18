@@ -90,13 +90,10 @@ class DatetimePeriodStatusListener
 
         // manage status only if we try to set it as Active
         // to make sure it's only one for business
-        if (
-            isset($changeSet[DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS]) &&
+        if (isset($changeSet[DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS]) &&
             $entity->getStatus() == DatetimePeriodStatusInterface::STATUS_ACTIVE
         ) {
-
             if ($this->entityToSetStatusAsActive) {
-
                 // prevent to set active status for more than one entity
                 // set status as Canceled if there is a record with Active status in current update
                 $uow->scheduleExtraUpdate($entity, [

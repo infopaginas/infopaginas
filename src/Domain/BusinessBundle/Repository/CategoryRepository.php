@@ -85,7 +85,8 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
     public function getCategoryByBusinessesIds(array $businessIdList)
     {
-        $queryBuilder = $this->getEntityManager()->createQuery('SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)')
+        $query = 'SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)';
+        $queryBuilder = $this->getEntityManager()->createQuery($query)
             ->setParameter('ids', $businessIdList);
             
         $results = $queryBuilder->getResult();

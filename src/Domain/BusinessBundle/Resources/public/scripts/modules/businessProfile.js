@@ -9,7 +9,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
 
         this.serviceAreasAreaChoiceValue = 'area';
 
-        this.freeProfileFormName = 'domain_business_bundle_free_business_profile_form_type';
+        this.freeProfileFormName = 'domain_business_bundle_business_profile_form_type';
 
         this.html = {
             buttons: {
@@ -255,7 +255,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/form', 'tools/spin', 'tools/se
     };
 
     businessProfile.prototype.getUploadedFiles = function() {
-        var $field = $('#domain_business_bundle_free_business_profile_form_type_files');
+        var $field = $('#domain_business_bundle_business_profile_form_type_files');
 
         var images = new FormData;
 

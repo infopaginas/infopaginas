@@ -53,8 +53,8 @@ security:
                 resource_owners:
                     facebook:           "/login/check-facebook"
                     google:             "/login/check-google"
-                login_path:        /login
-                failure_path:      /login
+                login_path:        /
+                failure_path:      /
                 default_target_path: /
                 oauth_user_provider:
                     service: oxa.user.oauth_provider
@@ -78,6 +78,9 @@ security:
         - { path: ^/admin/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/login_check$, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
+        - { path: ^/user/profile$, role: ROLE_CONSUMER }
+        - { path: ^/business/profile/*, role: ROLE_CONSUMER }
+
         # Secured part of the site
         # This config requires being logged for the whole site and having the admin role for the admin part.
         # Change these rules to adapt them to your needs
@@ -85,3 +88,4 @@ security:
         - { path: ^/.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/efconnect, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
         - { path: ^/elfinder, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
+

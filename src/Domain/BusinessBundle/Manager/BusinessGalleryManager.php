@@ -12,7 +12,11 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Sonata\MediaBundle\Entity\MediaManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\FileBag;
 
 /**
  * Class BusinessGalleryManager
@@ -20,18 +24,52 @@ use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
  */
 class BusinessGalleryManager
 {
-    /**
-     * @var EntityManager
-     */
+    /** @var EntityManager */
     private $entityManager;
+
+    /** @var MediaManager */
+    private $mediaManager;
 
     /**
      * BusinessGalleryManager constructor.
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, MediaManager $mediaManager)
     {
         $this->entityManager = $entityManager;
+        $this->mediaManager  = $mediaManager;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FileBag $fileBag
+     * @return BusinessProfile
+     */
+    public function fillBusinessGallery(BusinessProfile $businessProfile, FileBag $fileBag)
+    {
+        $images = [];
+
+        /** @var UploadedFile $file */
+        foreach ($fileBag->get('files') as $file) {
+            $media = new Media();
+            $media->setBinaryContent($file);
+            $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
+            $media->setProviderName(OxaMediaInterface::PROVIDER_IMAGE);
+            $this->getSonataMediaManager()->save($media, false);
+
+            array_push($images, $media);
+        }
+
+        $this->getEntityManager()->flush();
+
+        foreach ($images as $image) {
+            $businessGallery = new BusinessGallery();
+            $businessGallery->setMedia($image);
+
+            $businessProfile->addImage($businessGallery);
+        }
+
+        return $businessProfile;
     }
 
     /**
@@ -73,6 +111,14 @@ class BusinessGalleryManager
                 $this->getEntityManager()->persist($businessProfile);
             }
         }
+    }
+
+    /**
+     * @return \Sonata\MediaBundle\Entity\MediaManager
+     */
+    private function getSonataMediaManager() : MediaManager
+    {
+        return $this->mediaManager;
     }
 
     /**

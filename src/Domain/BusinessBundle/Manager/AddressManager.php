@@ -121,8 +121,7 @@ class AddressManager extends DefaultManager
 
             // data bellow is required
             // street, city, country, zip_code
-            if (
-                !$result->getAddressComponents('route') ||
+            if (!$result->getAddressComponents('route') ||
                 !$result->getAddressComponents('locality') ||
                 !$result->getAddressComponents('country') ||
                 !$result->getAddressComponents('postal_code')
