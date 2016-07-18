@@ -46,25 +46,32 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
-    public function searchWithQueryBuilder($searchQuery, $location, $limit = 20, $offset = 0)
+    public function searchWithQueryBuilder($searchQuery, $location, $categoryFilter = null, $neighborhoodFilter = null, $limit = 20, $offset = 0)
     {
         $searchQuery    = $this->splitPhraseToPlain($searchQuery);
         $searchLocation = $this->splitPhraseToPlain($location);
 
         $queryBuilder = $this->getQueryBuilder();
 
-        $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
-        $this->addRankQueryBuilder($queryBuilder);
-        $this->addCityRankQueryBuilder($queryBuilder);
+        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
+        // $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
+        // $this->addCategoryRankQueryBuilder($queryBuilder);
 
-        $this->addCategoryRankQueryBuilder($queryBuilder);
         $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
+
+        $this->addCityRankQueryBuilder($queryBuilder);
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
         $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
         $this->addOrderByRankQueryBuilder($queryBuilder);
         $this->addOrderByCityRankQueryBuilder($queryBuilder);
         $this->addOrderByAreaRankQueryBuilder($queryBuilder);
+
+        if ($categoryFilter) {
+            $categoryFilter = $this->splitPhraseToPlain($categoryFilter);
+            $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
+        }
+        
 
         $results = $queryBuilder->getQuery()->getResult();
 
@@ -96,24 +103,33 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
+    protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(QueryBuilder &$queryBuilder, $searchQuery, $location)
+    {
+        return $queryBuilder
+            ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
+            ->join('bp.categories', 'c')
+            ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
+            ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
+            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true')
+            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
+            ->setParameter('searchQuery', $searchQuery)
+            ->setParameter('searchLocation', $location);
+    }
+
     protected function addFTSSearchQueryBuilder(QueryBuilder &$queryBuilder, $searchQuery)
     {
         return $queryBuilder
+            ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
+            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
             ->setParameter('searchQuery', $searchQuery);
-    }
-
-
-    protected function addRankQueryBuilder(QueryBuilder &$queryBuilder)
-    {
-        return $queryBuilder
-            ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank');
     }
 
     protected function addCityRankQueryBuilder(QueryBuilder &$queryBuilder)
     {
         return $queryBuilder
-            ->addSelect('TSRANK(bp.searchCityFts, :searchQuery) as rank_city');
+            ->addSelect('TSRANK(bp.searchCityFts, :searchLocation) as rank_city')
+            ->orWhere('TSQUERY( bp.searchCityFts, :searchLocation) = true');
     }
 
     protected function addCategoryRankQueryBuilder(QueryBuilder &$queryBuilder)
@@ -121,7 +137,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->join('bp.categories', 'c')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true');
+            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true')
+            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true');
     }
 
     protected function addAreaRankQueryBuilder(QueryBuilder &$queryBuilder, $location)
@@ -168,5 +185,12 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         return $queryBuilder
             ->addOrderBy('rank_a', 'DESC');
+    }
+
+    protected function addCategoryFilterToQueryBuilder(QueryBuilder &$queryBuilder, $category)
+    {
+        return $queryBuilder
+            ->andWhere('TSQUERY( c.searchFts, :categoryFilter) = true')
+            ->setParameter('categoryFilter', $category);
     }
 }

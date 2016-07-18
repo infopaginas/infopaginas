@@ -1,6 +1,6 @@
 <?php
 
-namespace Oxa\ManagerArchitectureBundle\Model\ValueObject;
+namespace Oxa\ManagerArchitectureBundle\Model\DataType;
 
 class AbstractValueObject
 {

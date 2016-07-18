@@ -1774,4 +1774,41 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
         return $addressResult;
     }
+
+    /**
+     * Single access point to get address
+     * @return string
+     */
+    public function getShortAddress()
+    {
+        return 'Puerto Rico, Ololoeva St 25, 00777';
+    }
+
+    /*
+     * Get count of BusinessProfile reviews
+     * @return int
+     */
+    public function getBusinessReviewsCount()
+    {
+        return $this->getBusinessReviews()->count();
+    }
+
+    /**
+     * Get avg mark of BusinessProfile reviews
+     * @return int
+     */
+    public function getBusinessReviewsAvgMark()
+    {
+        $raiting = 0;
+        $reviewsAmount = $this->getBusinessReviewsCount();
+
+        if ($reviewsAmount) {
+            foreach ($this->getBusinessReviews() as $review) {
+                $raiting += (int) $review->getRating();
+            }
+            return $raiting / $reviewsAmount;
+        }
+        
+        return 0;
+    }
 }

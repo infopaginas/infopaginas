@@ -1,9 +1,9 @@
 define(
-    ['jquery',  'abstract/view','bootstrap', 'select2', 'tools/select', 'tools/star-rating'], 
+    ['jquery',  'abstract/view','bootstrap', 'select2', 'tools/select', 'tools/star-rating', 'slick', 'tools/comparison'], 
     function ( $, view  ) {
     'use strict';
 
-    var searchpage = function ( options ) {
+    var comparepage = function ( options ) {
         options = options || {};
         options.selector = options.selector || 'body';
         this.events = {
@@ -18,18 +18,18 @@ define(
         return this;
     }
 
-    searchpage.prototype = new view;
+    comparepage.prototype = new view;
 
-    searchpage.prototype.init = function ( options ) {
+    comparepage.prototype.init = function ( options ) {
         this.options = {};
         $.extend( this.options, options );
     }
 
-    searchpage.prototype.selectCategory = function ( e ) {
+    comparepage.prototype.selectCategory = function ( e ) {
         var route = $(e.currentTarget).find('option:selected').data('route');
 
         window.location = route;
     }
    
-    return searchpage;
+    return comparepage;
 });

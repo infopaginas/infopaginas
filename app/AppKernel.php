@@ -57,6 +57,7 @@ class AppKernel extends Kernel
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
             new Oxa\ConfigBundle\OxaConfigBundle(),
+            new Oxa\GeolocationBundle\OxaGeolocationBundle(),
             new Domain\SiteBundle\DomainSiteBundle(),
             new Domain\BusinessBundle\DomainBusinessBundle(),
             new Domain\BannerBundle\DomainBannerBundle(),
@@ -74,6 +75,7 @@ class AppKernel extends Kernel
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
+            // $bundles[] = new Hautelook\AliceBundle\HautelookAliceBundle();
         }
 
         return $bundles;
