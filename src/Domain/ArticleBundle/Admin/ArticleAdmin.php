@@ -28,6 +28,7 @@ class ArticleAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('title')
+            ->add('category')
             ->add('description')
             ->add('isPublished', null, [], null, $choiceOptions)
             ->add('isOnHomepage', null, [], null, $choiceOptions)
@@ -53,6 +54,7 @@ class ArticleAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('title')
+            ->add('category')
             ->add('description')
             ->add('isPublished')
             ->add('isOnHomepage')

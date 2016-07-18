@@ -17,8 +17,11 @@ file that was distributed with this source code.
     <div class="box box-primary">
         <div class="box-body">
             <ul class="nav nav-pills">
-                <li><a href="javascript:;"
-                    ><strong>{{ "label.select_context"|trans({}, 'SonataMediaBundle') }}</strong></a></li>
+                <li>
+                    <a class="media-list-context" href="javascript:;">
+                        <strong>{{ "label.select_context"|trans({}, 'SonataMediaBundle') }}</strong>
+                    </a>
+                </li>
 
                 {% for name, context in media_pool.contexts %}
 
@@ -29,13 +32,13 @@ file that was distributed with this source code.
                     {% endif %}
 
                     {% if name == persistent_parameters.context %}
-                        <li class="active"><a href="
+                        <li class="active"><a
                         {% if admin.showOtherContexts == true %}
-                            {{ admin.generateUrl('list', urlParams) }}
+                             href="{{ admin.generateUrl('list', urlParams) }}"
                         {% else %}
-                            javascript:;
+                             href="javascript:;" class="media-list-context"
                         {% endif %}
-                        ">{{ name|trans({}, 'SonataMediaBundle') }}</a></li>
+                        >{{ name|trans({}, 'SonataMediaBundle') }}</a></li>
                     {% elseif admin.showOtherContexts == true %}
                         <li><a href="{{ admin.generateUrl('list', urlParams) }}">{{ name|trans({}, 'SonataMediaBundle') }}</a></li>
                     {% endif %}

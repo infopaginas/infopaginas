@@ -3,17 +3,16 @@
 namespace Oxa\Sonata\MediaBundle\Admin;
 
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\MediaBundle\Admin\ORM\MediaAdmin as  SonataMediaAdmin;
+use Sonata\MediaBundle\Admin\ORM\MediaAdmin as SonataMediaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 
 /**
  * Class MediaAdmin
  * @package Oxa\Sonata\MediaBundle\Admin
  */
-class MediaAdmin extends SonataMediaAdmin
+class MediaAdmin extends BaseMediaAdmin
 {
     /**
      * @param FormMapper $formMapper
@@ -75,14 +74,8 @@ class MediaAdmin extends SonataMediaAdmin
         if ($parentCode && $parentCode != $mediaCode) {
             $this->showOtherContexts = false;
         }
-    }
 
-    /**
-     * @return array
-     */
-    public function getBatchActions()
-    {
-        return [];
+        $this->addGridActions($listMapper);
     }
 
     /**
@@ -96,7 +89,7 @@ class MediaAdmin extends SonataMediaAdmin
 
         $collection
             ->remove('export')
-            ->remove('delete')
+            ->remove('show')
         ;
     }
 }
