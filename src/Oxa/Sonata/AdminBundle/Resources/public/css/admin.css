@@ -77,3 +77,15 @@ h4.filter_legend img {
 .media-list-deleted-image{
     margin-right: 6px;
 }
+
+.list-subscription-report-total{
+    font-weight: bold;
+}
+
+.box-pdf {
+    width: 99%;
+}
+
+.export-date-period {
+    text-align: center;
+}

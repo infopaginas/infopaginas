@@ -82,3 +82,4 @@ trait DatetimePeriodTrait
         return boolval($diff->invert);
     }
 }
+

@@ -1,3 +1,7 @@
+jmaitan_media:
+    resource: "@JMaitanSonataMediaCropBundle/Resources/config/routing.xml"
+    prefix:   /jmaitan_media
+
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
     prefix:   /article
