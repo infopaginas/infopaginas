@@ -70,7 +70,8 @@ class PageAdmin extends OxaAdmin
                         'link_parameters' => [
                         'context' => OxaMediaInterface::CONTEXT_PAGE,
                         'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                ]])
+                    ]
+                ])
                 ->add('template', 'sonata_type_model_list', [
                     'required' => false,
                     'btn_add' => false,

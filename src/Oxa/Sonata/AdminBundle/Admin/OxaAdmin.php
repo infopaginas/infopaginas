@@ -70,7 +70,8 @@ class OxaAdmin extends BaseAdmin
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
             'format' => self::FILTER_DATETIME_FORMAT
-    ]];
+        ]
+    ];
 
     /**
      * Used to set default datetime options

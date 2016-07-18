@@ -1,0 +1,280 @@
+{% import '::widgets/custom_form_checkbox.html.twig' as custom_form_checkbox %}
+{% import '::widgets/custom_form_label.html.twig' as custom_form_label %}
+
+{% macro phone_prototype(phoneField) %}
+    <div class="phone-add-wrap">
+        {{ form_widget(phoneField) }}
+        <span class="help-block"></span>
+        <a class="pull-right remove-phone" href="#">X</a>
+    </div>
+{% endmacro %}
+
+<section id="profile-manage-general" class="profile-manage profile-manage-general">
+    <div class="container general-manage">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="cards">
+                    <div class="form-group card-item">
+                        <div class="card-item-name">
+                            <span>General</span>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>name<i class="fa fa-asterisk" aria-hidden="true"></i>:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.name) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    {% trans %}Subscription:{% endtrans %}
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                <span>
+                                    {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
+                                        {{ businessProfile.getSubscriptionPlan().getName() }}
+                                    {% else %}
+                                        {% trans %}Free{% endtrans %}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    Categories
+                                    <i class="fa fa-asterisk" aria-hidden="true"></i>:
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.categories) }}
+                                    </div>
+                                </div>
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Areas<i class="fa fa-asterisk" aria-hidden="true"></i>:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.areas) }}
+                                    </div>
+                                </div>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>Website</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.website) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    {{ custom_form_label.widget(businessProfileForm.phones) }}
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                <ul id="phone-fields-list"
+                                    data-length="{{ businessProfileForm.phones|length }}"
+                                    data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
+                                    {% for phoneField in businessProfileForm.phones %}
+                                        <li>
+                                            {{ form_widget(phoneField) }}
+                                            <br>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <ul class="add-phone-block">
+                                    <li>
+                                        <a href="#" id="add-another-phone" class="add-another-phonenumber green-btn">
+                                            {% trans %}Add{% endtrans %}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Email:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.email) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    {% trans %}Date of registration{% endtrans %}:
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {% if businessProfile is defined %}
+                                    <span>{{ businessProfile.getCreatedAt() | date("Y-m-d") }}</span>
+                                {% else %}
+                                    <span>{{ "now"|date("Y-m-d") }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group card-item business-info">
+                        <div class="card-item-name">
+                            <span>Business Description</span>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            {% if businessProfileForm.slogan is defined %}
+                                <div class="col-xs-4">
+                                    <span>Slogan:</span>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{ form_widget(businessProfileForm.slogan) }}
+                                </div>
+                            {% endif %}
+                            <div class="col-xs-4">
+                                <span>Description:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.description) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Products:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.product) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Payment Methods:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.paymentMethods) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>Brands:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.brands) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Tags:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.tags) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <span>Working Hours:</span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ form_widget(businessProfileForm.workingHours) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group card-item">
+                        <div class="card-item-name">
+                            <span>
+                                {% trans %}Fullness{% endtrans %}:
+                            </span>
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            <div class="col-xs-4">
+                                <span>
+                                    {% trans %}Description{% endtrans %}:
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ custom_form_checkbox.widget(businessProfileForm.isSetDescription) }}
+                            </div>
+                            <div class="col-xs-4">
+                                <span>
+                                    {% trans %}Map{% endtrans %}:
+                                </span>
+                            </div>
+                            <div class="col-xs-8">
+                                {{ custom_form_checkbox.widget(businessProfileForm.isSetMap) }}
+                            </div>
+                            {% if businessProfileForm.isSetAd is defined %}
+                                <div class="col-xs-4">
+                                    <span>
+                                        {% trans %}Ad{% endtrans %}:
+                                    </span>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{ custom_form_checkbox.widget(businessProfileForm.isSetAd) }}
+                                </div>
+                            {% endif %}
+
+                            {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
+
+                                {% set subscription = businessProfile.getSubscriptionPlan() %}
+
+                                {% set isGoldPlan = subscription.getCode() == constant('Domain\\BusinessBundle\\Model\\SubscriptionPlanInterface::CODE_PREMIUM_GOLD') %}
+                                {% set isPlatinumPlan = subscription.getCode() == constant('Domain\\BusinessBundle\\Model\\SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM') %}
+
+                                {% if isGoldPlan or isPlatinumPlan %}
+                                    <div class="col-xs-4">
+                                        <span>
+                                            {% trans %}Images{% endtrans %}:
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <span>{{ businessProfileForm.images|length }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-6 form-col">
+                            {% if businessProfileForm.isSetSlogan is defined %}
+                                <div class="col-xs-4">
+                                    <span>
+                                        {% trans %}Logo{% endtrans %}:
+                                    </span>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{ custom_form_checkbox.widget(businessProfileForm.isSetLogo) }}
+                                </div>
+                            {% endif %}
+
+                            {% if businessProfileForm.isSetSlogan is defined %}
+                                <div class="col-xs-4">
+                                    <span>
+                                        {% trans %}Slogan{% endtrans %}:
+                                    </span>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{ custom_form_checkbox.widget(businessProfileForm.isSetSlogan) }}
+                                </div>
+                            {% endif %}
+
+                            {% if businessProfileForm.isSetVideo is defined %}
+                                <div class="col-xs-4">
+                                    <span>
+                                        {% trans %}Video{% endtrans %}:
+                                    </span>
+                                </div>
+                                <div class="col-xs-8">
+                                    {{ custom_form_checkbox.widget(businessProfileForm.isSetVideo) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'DomainBusinessBundle:Profile:blocks/form_footer.html.twig' %}
+        </div>
+    </div>
+</section>

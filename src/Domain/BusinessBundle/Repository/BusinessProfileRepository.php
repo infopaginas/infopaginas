@@ -2,9 +2,12 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Expr\Join;
 use FOS\UserBundle\Model\UserInterface;
 use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 
 /**
  * BusinessProfileRepository
@@ -17,6 +20,38 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     const SLUG = 'DomainBusinessBundle:BusinessProfile';
 
     /**
+     * @param int $id
+     * @param string $locale
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findWithLocale(int $id, string $locale)
+    {
+        $qb = $this->createQueryBuilder('bp');
+
+        $qb->select('bp')
+            ->where('bp.id = :id')
+            ->leftJoin('bp.categories', 'categories')
+            ->setParameter('id', $id);
+
+        $query = $qb->getQuery();
+
+        $query->setHint(
+            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+        );
+
+        // Force the locale
+        $query->setHint(
+            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+            $locale
+        );
+
+        return $query->getSingleResult();
+    }
+
+    /**
      * @param UserInterface $user
      * @return array
      */
@@ -24,6 +59,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $businessProfiles = $this->findBy([
             'user' => $user,
+            'actualBusinessProfile' => null,
         ]);
 
         return $businessProfiles;

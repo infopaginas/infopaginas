@@ -10,4 +10,11 @@ namespace Domain\BusinessBundle\Repository;
  */
 class PaymentMethodRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAvailablePaymentMethodsQb()
+    {
+        $qb = $this->createQueryBuilder('pm');
+        $qb->where('pm.isActive = TRUE');
+
+        return $qb;
+    }
 }

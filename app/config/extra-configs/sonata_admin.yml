@@ -31,6 +31,11 @@ sonata_admin:
                 icon: <i class="fa fa-users"></i>
                 items:
                     - sonata.user.admin.user
+            sonata.admin.group.task:
+                label: Tasks
+                icon: <i class="fa fa-tasks"></i>
+                items:
+                    - domain_business.admin.task
             domain.admin.group.business:
                 label: Businesses
                 icon: <i class="fa fa-briefcase"></i>
@@ -83,10 +88,3 @@ sonata_admin:
                 icon: <i class="fa fa-bar-chart-o"></i>
                 items:
                     - domain_report.admin.subscription_report
-
-#            domain.admin.group.business.task:
-#                label: Tasks
-#                icon: <i class="fa fa-table"></i>
-#                items:
-#                    - domain_business.admin.task
-#                    - domain_business.admin.review_task

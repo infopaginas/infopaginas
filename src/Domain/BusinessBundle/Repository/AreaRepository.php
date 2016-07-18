@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * AreaRepository
  *
@@ -10,4 +12,11 @@ namespace Domain\BusinessBundle\Repository;
  */
 class AreaRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAvailableAreasQb() : QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('a');
+        $qb->where('a.isActive = TRUE');
+
+        return $qb;
+    }
 }

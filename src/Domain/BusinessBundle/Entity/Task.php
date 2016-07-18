@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\BusinessBundle\Entity\Task;
+namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Model\Task\TaskInterface;
@@ -12,13 +12,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\UserBundle\Entity\User as User;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
+use JMS\Serializer\Annotation\MaxDepth;
 
 /**
  * Task
  *
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"task" = "Task", "reviewTask" = "ReviewTask"})
  * @ORM\Table(name="task")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TaskRepository")
  */
@@ -55,16 +53,40 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $rejectReason;
 
     /**
+     * @ORM\Column(name="changeset", type="text", nullable=true)
+     */
+    protected $changeSet;
+
+    /**
+     * @ORM\Column(name="locale", type="string", length=20, nullable=true)
+     */
+    protected $locale;
+
+    /**
+     * @ORM\Column(name="business_profile_uid", type="string")
+     */
+    protected $businessProfileUID;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")
-     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
+     * @MaxDepth(0)
      */
     protected $businessProfile;
 
     /**
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User", inversedBy="tasks")
      * @ORM\JoinColumn(name="reviewer_id", referencedColumnName="id")
+     * @MaxDepth(0)
      */
     protected $reviewer;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview")
+     * @ORM\JoinColumn(name="review_id", referencedColumnName="id", onDelete="CASCADE")
+     * @MaxDepth(0)
+     */
+    protected $review;
 
     /**
      * Task constructor.
@@ -144,6 +166,60 @@ class Task implements DefaultEntityInterface, TaskInterface
     /**
      * @return mixed
      */
+    public function getChangeSet()
+    {
+        return $this->changeSet;
+    }
+
+    /**
+     * @param mixed $changeSet
+     * @return Task
+     */
+    public function setChangeSet($changeSet)
+    {
+        $this->changeSet = $changeSet;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param mixed $locale
+     * @return Task
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBusinessProfileUID()
+    {
+        return $this->businessProfileUID;
+    }
+
+    /**
+     * @param mixed $businessProfileUID
+     * @return Task
+     */
+    public function setBusinessProfileUID($businessProfileUID)
+    {
+        $this->businessProfileUID = $businessProfileUID;
+        return $this;
+    }
+
+    /**
+     * @return BusinessProfile | null
+     */
     public function getBusinessProfile()
     {
         return $this->businessProfile;
@@ -209,5 +285,23 @@ class Task implements DefaultEntityInterface, TaskInterface
     {
         $types = $this->getTypes();
         return $types[$this->getType()];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReview()
+    {
+        return $this->review;
+    }
+
+    /**
+     * @param mixed $review
+     * @return Task
+     */
+    public function setReview($review)
+    {
+        $this->review = $review;
+        return $this;
     }
 }

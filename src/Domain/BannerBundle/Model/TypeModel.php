@@ -8,9 +8,7 @@
 
 namespace Domain\BannerBundle\Model;
 
-
 use Gedmo\Exception\InvalidArgumentException;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
 class TypeModel implements TypeInterface
 {

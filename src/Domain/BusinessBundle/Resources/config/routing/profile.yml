@@ -1,0 +1,15 @@
+domain_business_profile_create:
+    path:     /create
+    defaults: { _controller: DomainBusinessBundle:Profile:create }
+
+domain_business_profile_edit:
+    path:     /edit/{id}
+    defaults: { _controller: DomainBusinessBundle:Profile:edit }
+    options:
+        expose: true
+
+domain_business_profile_save:
+    path:     /save
+    defaults: { _controller: DomainBusinessBundle:Profile:save }
+    options:
+        expose: true

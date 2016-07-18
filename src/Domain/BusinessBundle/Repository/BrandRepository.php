@@ -10,4 +10,11 @@ namespace Domain\BusinessBundle\Repository;
  */
 class BrandRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAvailableBrandsQb()
+    {
+        $qb = $this->createQueryBuilder('b');
+        $qb->where('b.isActive = TRUE');
+
+        return $qb;
+    }
 }
