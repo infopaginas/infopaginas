@@ -1226,30 +1226,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * Set fullAddress
-     *
-     * @param string $fullAddress
-     *
-     * @return BusinessProfile
-     */
-    public function setFullAddress($fullAddress)
-    {
-        $this->fullAddress = $fullAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get fullAddress
-     *
-     * @return string
-     */
-    public function getFullAddress()
-    {
-        return $this->fullAddress;
-    }
-
-    /**
      * Set state
      *
      * @param string $state
@@ -1752,5 +1728,50 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getCampaigns()
     {
         return $this->campaigns;
+    }
+
+    /**
+     * Get full address
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        $address = [];
+
+        if ($this->getCustomAddress()) {
+            return $this->getCustomAddress();
+        }
+
+        if ($this->getStreetNumber()) {
+            $address[] = $this->getStreetNumber();
+        }
+
+        if ($this->getStreetAddress()) {
+            $address[] = $this->getStreetAddress();
+        }
+
+        if ($this->getZipCode()) {
+            $address[] = $this->getZipCode();
+        }
+
+        if ($this->getCity()) {
+            $address[] = $this->getCity();
+        }
+
+        if ($this->getState()) {
+            $address[] = $this->getState();
+        }
+
+        if ($this->getCountry()) {
+            $address[] = $this->getCountry()->getName();
+        }
+
+        if ($address) {
+            $addressResult = implode(', ', $address);
+        } else {
+            $addressResult = $this->getGoogleAddress();
+        }
+
+        return $addressResult;
     }
 }
