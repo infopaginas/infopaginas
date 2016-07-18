@@ -151,7 +151,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('useMapAddress', null, [
                         'label' => 'Update address using map coordinates'
                     ])
-                    ->add('fullAddress', 'google_map', [
+                    ->add('latitude', 'hidden')
+                    ->add('longitude', 'hidden')
+                    ->add('googleAddress', 'google_map', [
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])
@@ -308,10 +310,10 @@ class BusinessProfileAdmin extends OxaAdmin
     public function validate(ErrorElement $errorElement, $object)
     {
         if ($object->getUseMapAddress()) {
-            if (!$object->getFullAddress()) {
-                $errorElement->with('fullAddress')
+            if (!$object->getGoogleAddress()) {
+                $errorElement->with('googleAddress')
                     ->addViolation($this->getTranslator()->trans(
-                        'form.full_address.required',
+                        'form.google_address.required',
                         [],
                         $this->getTranslationDomain()
                     ))
@@ -324,12 +326,12 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->getContainer()
                 ->get('domain_business.manager.address_manager');
 
-            $addressResult = $addressManager->validateAddress($object->getFullAddress());
+            $addressResult = $addressManager->validateAddress($object->getGoogleAddress());
 
             if (!empty($addressResult['error'])) {
-                $errorElement->with('fullAddress')
+                $errorElement->with('googleAddress')
                     ->addViolation($this->getTranslator()->trans(
-                        'form.full_address.invalid',
+                        'form.google_address.invalid',
                         [],
                         $this->getTranslationDomain()
                     ))

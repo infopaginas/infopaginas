@@ -55,6 +55,7 @@ class BusinessGalleryManager
             $media->setBinaryContent($file);
             $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
             $media->setProviderName(OxaMediaInterface::PROVIDER_IMAGE);
+
             $this->getSonataMediaManager()->save($media, false);
 
             array_push($images, $media);

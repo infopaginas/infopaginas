@@ -48,6 +48,16 @@
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
+                            {% if (app.user) %}
+                                <li class="login-link mobile-menu">
+                                    <a href="">
+                                        <span class="welcome">Welcome, </span>
+                                        <span class="user-name">
+                                            {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li class="lang btn"><a href="">español</a></li>
                             <li class="lang btn"><a href="" class="active">english</a></li>
                             {% if (app.user) %}

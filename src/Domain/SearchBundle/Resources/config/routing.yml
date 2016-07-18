@@ -10,4 +10,6 @@ domain_search_category:
 domain_search_map:
     path:   /map
     defaults: { _controller: DomainSearchBundle:Search:map }
-
+domain_search_compare:
+    path:   /compare
+    defaults: { _controller: DomainSearchBundle:Search:compare }

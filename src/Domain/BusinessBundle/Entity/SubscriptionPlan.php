@@ -9,7 +9,7 @@ use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -84,6 +84,34 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
     public static function getCodes()
     {
         return [
+            self::CODE_FREE,
+            self::CODE_PRIORITY,
+            self::CODE_PREMIUM_PLUS,
+            self::CODE_PREMIUM_GOLD,
+            self::CODE_PREMIUM_PLATINUM
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCodeValues()
+    {
+        return [
+            self::CODE_FREE             => 'free',
+            self::CODE_PRIORITY         => 'priority',
+            self::CODE_PREMIUM_PLUS     => 'premium_plus',
+            self::CODE_PREMIUM_GOLD     => 'premium_gold',
+            self::CODE_PREMIUM_PLATINUM => 'premium_platinum'
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCodeNames()
+    {
+        return [
             self::CODE_FREE             => 'Free',
             self::CODE_PRIORITY         => 'Priority',
             self::CODE_PREMIUM_PLUS     => 'Premium Plus',
@@ -93,11 +121,11 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getCodeValue()
     {
-        $codes = self::getCodes();
+        $codes = self::getCodeValues();
 
         return $codes[$this->getCode()];
     }

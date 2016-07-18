@@ -4,6 +4,7 @@
 
     {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
     {%- set type = type|default('text') -%}
+
     <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
 
     <br>
@@ -23,9 +24,15 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div style="{{ attr.class }}" id="google-map"></div>
 
+    {#{{ dump(form.parent.vars.id) }}#}
+    {#{{ dump(form.parent.vars.id ~ '_longitude') }}#}
     <script>
         var addressInput = document.getElementById('{{ id }}');
+        var latitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_latitude' }}');
+        var longitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_longitude' }}');
 
+        console.log(latitudeInput);
+        console.log(longitudeInput);
         /**
          * Get address by coordinates
          */
@@ -38,7 +45,7 @@
                 }
                 var place = results.shift();
                 infowindow.setContent(place.formatted_address);
-                updateFieldValue(place.formatted_address);
+                updateFieldValue(place.formatted_address, latlng.lat, latlng.lng);
                 return results.shift();
             });
         }
@@ -67,7 +74,7 @@
                 };
 
                 geocodePlace(latlng, infowindow);
-                updateFieldValue(event.latLng.lat(), event.latLng.lng())
+                updateFieldValue(formattedAddress, latlng.lat, latlng.lng)
             });
 
             // show and hide mark description
@@ -81,8 +88,12 @@
         /**
          * Update input value with new address
          */
-        function updateFieldValue(formattedAddress) {
+        function updateFieldValue(formattedAddress, lat, lon) {
             addressInput.value = formattedAddress;
+            if (latitudeInput && longitudeInput) {
+                latitudeInput.value = lat;
+                longitudeInput.value = lon;
+            }
         }
 
         /**
@@ -91,6 +102,11 @@
         function initAutocomplete() {
             var myLatLng = new google.maps.LatLng({{ latitude }}, {{ longitude }});
             var infowindow = new google.maps.InfoWindow;
+
+            if (latitudeInput && longitudeInput) {
+                latitudeInput.value = {{ latitude }};
+                longitudeInput.value = {{ longitude }};
+            }
 
             var map = new google.maps.Map(document.getElementById('google-map'), {
                 center: {lat: {{ latitude }}, lng: {{ longitude }} },
@@ -126,8 +142,10 @@
 
                 var place = places.shift();
 
-                marker = addMarker(place.geometry.location, map, infowindow, place.formatted_address);
-                updateFieldValue(place.formatted_address);
+                var latlng = place.geometry.location;
+
+                marker = addMarker(latlng, map, infowindow, place.formatted_address);
+                updateFieldValue(place.formatted_address, latlng.lat, latlng.lng);
             });
         }
     </script>

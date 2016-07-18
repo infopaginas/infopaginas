@@ -52,7 +52,6 @@ class DatetimePeriodStatusListener
 
     /**
      * @param DatetimePeriodStatusInterface $entity
-     * @return bool
      */
     private function applyValidStatus(DatetimePeriodStatusInterface $entity)
     {
@@ -85,7 +84,7 @@ class DatetimePeriodStatusListener
                 DatetimePeriodStatusInterface::STATUS_EXPIRED
             );
 
-            return true;
+            return;
         }
 
         // manage status only if we try to set it as Active

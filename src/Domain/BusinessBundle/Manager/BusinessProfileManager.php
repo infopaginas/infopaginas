@@ -10,9 +10,10 @@ use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use JMS\Serializer\SerializerBuilder;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
-use Domain\BusinessBundle\Utils\BusinessProfileUtils;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 
 /**
  * Class BusinessProfileManager
@@ -72,16 +73,17 @@ class BusinessProfileManager extends Manager
         $this->businessGalleryManager = $businessGalleryManager;
     }
 
-    public function searchByPhraseAndLocation(string $phrase, string $location)
+    public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
     {
-        if (empty($location)) {
+        $locationName = $location->name;
+        if (empty($locationName)) {
             // TODO Move magic string this to config
-            $location = "San Juan";
+            $locationName = "San Juan";
         }
 
         // TODO Move to filtering functionality
         $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->searchWithQueryBuilder($phrase, $location);
+        return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
     public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
@@ -107,7 +109,7 @@ class BusinessProfileManager extends Manager
 
     public function getLocationMarkersFromProfileData(array $profilesList)
     {
-        return BusinessProfileUtils::filterLocationMarkers($profilesList);
+        return BusinessProfileUtil::filterLocationMarkers($profilesList);
     }
 
     /**

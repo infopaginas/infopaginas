@@ -69,6 +69,18 @@ h4.filter_legend img {
     max-height: 150px; max-width: 150px; !important;
 }
 
+.list-subscription-report-total{
+    font-weight: bold;
+}
+
+.box-pdf {
+    width: 99%;
+}
+
+.export-date-period {
+    text-align: center;
+}
+
 .media-list-context{
     pointer-events: none;
     cursor: default;
