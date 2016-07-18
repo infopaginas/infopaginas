@@ -80,3 +80,11 @@ h4.filter_legend img {
 .export-date-period {
     text-align: center;
 }
+.media-list-context{
+    pointer-events: none;
+    cursor: default;
+}
+
+.media-list-deleted-image{
+    margin-right: 6px;
+}

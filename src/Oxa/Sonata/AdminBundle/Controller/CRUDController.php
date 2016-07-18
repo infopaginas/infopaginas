@@ -107,13 +107,18 @@ class CRUDController extends SortableAdminController
     public function batchActionDeletePhysical(ProxyQuery $query)
     {
         $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $adminManager->physicalDeleteEntities($query->execute(), true);
 
-        $this->addFlash(
-            'sonata_flash_success',
-            $this->get('translator')
-                ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
-        );
+        try {
+            $adminManager->physicalDeleteEntities($query->execute(), true);
+            $this->addFlash(
+                'sonata_flash_success',
+                $this->get('translator')
+                    ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
+            );
+
+        } catch (\Exception $e) {
+            $this->addFlash('sonata_flash_error', $e->getMessage());
+        }
 
         return $this->saveFilterResponse();
     }

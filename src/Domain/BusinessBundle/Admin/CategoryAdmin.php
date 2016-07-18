@@ -48,7 +48,14 @@ class CategoryAdmin extends OxaAdmin
                 'multiple' => true,
                 'required' => false,
                 'by_reference' => false,
-            ]);
+            ])
+            ->add('articles', 'sonata_type_model', [
+                'btn_add' => false,
+                'multiple' => true,
+                'required' => false,
+                'by_reference' => false,
+            ])
+        ;
 
         // remove businessProfiles field if we create object on businessProfile edit page
         $parentCode = $this->getRequest()->get('pcode');

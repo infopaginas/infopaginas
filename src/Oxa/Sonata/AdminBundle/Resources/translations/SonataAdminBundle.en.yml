@@ -15,7 +15,8 @@ action_delete_physical: Physical delete
 flash_restore_action_success: Item has been restored
 flash_batch_copy_success: The copy has completed successfully
 copy_: copy_
-flash_delete_error_rel: Can not delete object which has dependencies relations: "%fields%"
+flash_delete_error_rel: Can not delete object which is used in: "%fields%"
+batch_delete_error_rel: Can not delete object with id: "record_id", which is used in: "%fields%"
 label_yes: Yes
 label_no: No
 title_crop: Crop

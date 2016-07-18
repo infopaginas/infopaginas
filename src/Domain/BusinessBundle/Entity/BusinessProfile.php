@@ -253,7 +253,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Used to create human like url
      *
-     * @Gedmo\Slug(fields={"name"})
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
      * @ORM\Column(name="slug", type="string", length=100)
      */
     protected $slug;
@@ -1554,16 +1554,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function getSubscription()
     {
-        $result = null;
-
-        foreach ($this->getSubscriptions() as $subscription) {
-            /** @var $subscription Subscription */
-            if ($subscription->getStatus() == StatusInterface::STATUS_ACTIVE) {
-                $result = $subscription;
+        $entitiesCollection = $this->getSubscriptions()->filter(
+            function (StatusInterface $object) {
+                return ($object->getStatus() == StatusInterface::STATUS_ACTIVE);
             }
-        }
+        );
 
-        return $result;
+        return $entitiesCollection->first() ?: null;
     }
 
     /**
@@ -1571,13 +1568,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function getSubscriptionPlan()
     {
-        $result = null;
-
-        if ($subscription = $this->getSubscription()) {
-            $result = $subscription->getSubscriptionPlan();
-        }
-
-        return $result;
+        return $this->getSubscription() ? $this->getSubscription()->getSubscriptionPlan() : null;
     }
 
     /**
@@ -1585,16 +1576,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function getDiscount()
     {
-        $result = null;
-
-        foreach ($this->getDiscounts() as $discount) {
-            /** @var $discount Discount */
-            if ($discount->getStatus() == StatusInterface::STATUS_ACTIVE) {
-                $result = $discount;
+        $entitiesCollection = $this->getDiscounts()->filter(
+            function (StatusInterface $object) {
+                return ($object->getStatus() == StatusInterface::STATUS_ACTIVE);
             }
-        }
+        );
 
-        return $result;
+        return $entitiesCollection->first() ?: null;
+
     }
 
     /**
