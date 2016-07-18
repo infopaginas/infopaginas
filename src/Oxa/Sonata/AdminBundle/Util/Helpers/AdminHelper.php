@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class AdminHelper
 {
+    const DATE_FORMAT = 'd.m.Y';
+    
     const DATE_RANGE_CODE_TODAY      = 'today';
     const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
     const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
