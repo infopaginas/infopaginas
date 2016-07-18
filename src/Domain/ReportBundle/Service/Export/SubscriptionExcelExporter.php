@@ -15,6 +15,7 @@ use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Model\ReportInterface;
 use Exporter\Source\SourceIteratorInterface;
 use Liuggio\ExcelBundle\Factory;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\CoreBundle\Exporter\Exporter as BaseExporter;
 use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
 use Symfony\Component\HttpFoundation\Response;
@@ -173,7 +174,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             $row = $initRow;
 
             ++$cell;
-            $activeSheet->setCellValue($row.$cell, $object->getDate()->format('d.m.Y'));
+            $activeSheet->setCellValue($row.$cell, $object->getDate()->format(AdminHelper::DATE_FORMAT));
 
             // for each subscription plan
             ++$row;

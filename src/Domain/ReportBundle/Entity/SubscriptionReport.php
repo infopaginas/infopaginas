@@ -46,6 +46,15 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
      */
     protected $subscriptionReportSubscriptions;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->subscriptionReportSubscriptions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+
     public static function getExportFormats()
     {
         return [
@@ -98,14 +107,6 @@ class SubscriptionReport implements DefaultEntityInterface, ReportInterface
     public function getDate()
     {
         return $this->date;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->subscriptionReportSubscriptions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

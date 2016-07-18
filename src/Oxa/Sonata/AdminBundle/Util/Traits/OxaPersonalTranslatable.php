@@ -30,7 +30,7 @@ trait OxaPersonalTranslatable
         }
 
         if (!isset($result)) {
-            return $this->{'get'.ucfirst($field)};
+            return $this->{'get'.ucfirst($field)}();
         }
 
         return;

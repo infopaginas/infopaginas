@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class SubscriptionReportManager extends DefaultManager
 {
@@ -41,7 +42,7 @@ class SubscriptionReportManager extends DefaultManager
 
         $request = $this->container->get('request');
         foreach ($subscriptionReports as $subscriptionReport) {
-            $date = $subscriptionReport->getDate()->format('d.m.Y');
+            $date = $subscriptionReport->getDate()->format(AdminHelper::DATE_FORMAT);
             $result['dates'][] = $date;
             foreach ($subscriptionReport->getSubscriptionReportSubscriptions() as $subscriptionReportSubscription) {
                 /** @var SubscriptionReportSubscription $subscriptionReportSubscription*/

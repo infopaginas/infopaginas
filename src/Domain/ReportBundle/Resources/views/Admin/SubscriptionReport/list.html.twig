@@ -74,7 +74,7 @@ file that was distributed with this source code.
     {% for object in results %}
         <tr>
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ object.date|date('d.m.Y') }}
+                {{ object.date|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATE_FORMAT')) }}
             </td>
             {% for subscriptionReportSubscription in object.subscriptionReportSubscriptions %}
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
