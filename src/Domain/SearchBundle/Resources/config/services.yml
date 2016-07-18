@@ -1,4 +1,4 @@
 services:
     domain_search.manager.search:
         class: Domain\SearchBundle\Model\Manager\SearchManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', "@oxa_config", '@domain_business.manager.business_profile', '@domain_business.manager.category', '@oxa_geolocation.manager']

@@ -20,34 +20,18 @@ class SearchController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $query = $request->get('q', '');
-        $categoryFilter = $request->get('category', null);
-        $page     = $request->get('page', 1);
+        $searchManager = $this->get('domain_search.manager.search');
 
-        $geolocationManager = $this->get('oxa_geolocation.manager');
-        $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
-
-        $total = 0;
-        $limit = 20;
-
-        $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $categoryManager         = $this->get('domain_business.manager.category');
-        $bannerFactory           = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
-
-        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue, $categoryFilter);
-
-        $categories    = $categoryManager->getCategoriesByProfiles(array_column($results, 0));
-        $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
+        $searchDTO          = $searchManager->getSearchDTO($request);
+        $searchResultsDTO   = $searchManager->search($searchDTO);
+        
+        $bannerFactory      = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
+        $banner             = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
 
         return $this->render('DomainSearchBundle:Search:index.html.twig', array(
-            'results'       => $results,
-            'query'         => $query,
-            'page'          => $page,
-            'total'         => $total,
-            'limit'         => $limit,
-            'location'      => $locationValue->name,
+            'search'        => $searchDTO,
+            'results'       => $searchResultsDTO,
             'banner'        => $banner,
-            'categories'    => $categories
         ));
     }
 
@@ -76,57 +60,33 @@ class SearchController extends Controller
 
     public function mapAction(Request $request)
     {
-        $query = $request->get('q', '');
-        $location = $request->get('geo', 'San Juan');
-        $categoryFilter = $request->get('category', null);
-        $page     = $request->get('page', 1);
+        $searchManager = $this->get('domain_search.manager.search');
+
+        $searchDTO          = $searchManager->getSearchDTO($request);
+        $searchResultsDTO   = $searchManager->search($searchDTO);
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $categoryManager         = $this->get('domain_business.manager.category');
-
-        $results            = $businessProfilehManager->searchWithMapByPhraseAndLocation($query, $location, $categoryFilter);
-
-        $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($results);
-        $categories         = $categoryManager->getCategoriesByProfiles(array_column($results, 0));
+        $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
         return $this->render('DomainSearchBundle:Search:map.html.twig', array(
-            'results'    => $results,
-            'markers'    => $locationMarkers,
-            'categories' => $categories
+            'results'    => $searchResultsDTO,
+            'markers'    => $locationMarkers
         ));
     }
 
     public function compareAction(Request $request)
     {
-        $query = $request->get('q', '');
-        $categoryFilter = $request->get('category', null);
-        $page     = $request->get('page', 1);
+        $searchManager = $this->get('domain_search.manager.search');
 
-        $geolocationManager = $this->get('oxa_geolocation.manager');
-        $locationValue      = $geolocationManager->buildLocationValueFromRequest($request);
+        $searchDTO          = $searchManager->getSearchDTO($request);
+        $searchResultsDTO   = $searchManager->search($searchDTO);
+        $bannerFactory      = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
 
-        $total = 0;
-        $limit = 20;
-
-        $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $categoryManager         = $this->get('domain_business.manager.category');
-        $bannerFactory           = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
-
-        $results       = $businessProfilehManager->searchByPhraseAndLocation($query, $locationValue, $categoryFilter);
-
-        $results       = array_column($results, 0);
-        $categories    = $categoryManager->getCategoriesByProfiles($results);
         $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
 
         return $this->render('DomainSearchBundle:Search:compare.html.twig', array(
-            'results'       => $results,
-            'query'         => $query,
-            'page'          => $page,
-            'total'         => $total,
-            'limit'         => $limit,
-            'location'      => $locationValue->name,
-            'banner'        => $banner,
-            'categories'    => $categories
+            'results'       => $searchResultsDTO,
+            'banner'        => $banner
         ));
     }
 }

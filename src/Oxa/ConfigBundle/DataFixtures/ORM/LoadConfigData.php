@@ -136,6 +136,18 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'value' => '-66.1185967',
                 'format' => 'text',
                 'description' => 'Used to show default map position',
+            ], [
+                'key' => ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE,
+                'title' => 'Default results page size',
+                'value' => 20,
+                'format' => 'text',
+                'description' => 'Defines how many results will be shown on (any) results page',
+            ], [
+                'key' => ConfigInterface::DEFAULT_SEARCH_CITY,
+                'title' => 'Default search city name',
+                'value' => 'San Juan',
+                'format' => 'text',
+                'description' => 'Defines how many results will be shown on (any) results page',
             ],
         ];
     }

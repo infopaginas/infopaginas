@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use FOS\UserBundle\Model\UserInterface;
 use Doctrine\ORM\QueryBuilder;
+use Domain\SearchBundle\Model\DataType\SearchDTO;
 
 /**
  * BusinessProfileRepository
@@ -28,6 +29,38 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $businessProfiles;
     }
     
+    public function search(SearchDTO $searchParams)
+    {
+        $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
+        $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
+
+        $limit  = $searchParams->limit;
+        $offset = ($searchParams->page - 1 ) * $limit;
+
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
+
+        $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
+
+        $this->addCityRankQueryBuilder($queryBuilder);
+
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+        $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
+        $this->addOrderByRankQueryBuilder($queryBuilder);
+        $this->addOrderByCityRankQueryBuilder($queryBuilder);
+        $this->addOrderByAreaRankQueryBuilder($queryBuilder);
+
+        if ($category = $searchParams->getCategory()) {
+            $categoryFilter = $this->splitPhraseToPlain($category);
+            $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
+        }
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return $results;
+    }
+
     public function searchAutosuggestWithBuilder($searchQuery, $limit = 5, $offset = 0)
     {
         $searchQuery    = $this->splitPhraseToPlain($searchQuery);
@@ -54,8 +87,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
-        // $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
-        // $this->addCategoryRankQueryBuilder($queryBuilder);
 
         $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
 
@@ -112,6 +143,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
             ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true')
             ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
+            ->orWhere('TSQUERY( bp.searchCityFts, :searchLocation) = true')
             ->setParameter('searchQuery', $searchQuery)
             ->setParameter('searchLocation', $location);
     }

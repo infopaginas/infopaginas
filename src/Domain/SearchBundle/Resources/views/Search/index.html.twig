@@ -11,14 +11,14 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <span class="search-title blue-c">{{ query }} in {{ location }}</span>
+                    <span class="search-title blue-c">{{ search.query }} in {{ search.locationValue.name }}</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-9 list-block">
                     <div class="list-info">
                         <div class="results-info">
-                            <span>{{ (page - 1) * limit }}-{{ page * limit }} of {{ total }} Results </span><span>for {{ query }} in {{ location }}</span>
+                            <span>{{ (results.page - 1) * search.limit }}-{{ results.page * search.limit }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in {{ search.locationValue.name }}</span>
                         </div>
                         <div class="sort-by">
                             <span>Sort by:</span>
@@ -34,8 +34,8 @@
                         </div>
                     </div>
                     <div class="cards">
-                    {% if results is defined and results is not null %}
-                        {% for item in results %}
+                    {% if results.resultSet is defined and results.resultSet is not null %}
+                        {% for item in results.resultSet %}
                             {% include 'DomainSearchBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
                         {% endfor %}
                     {% endif %}
@@ -45,6 +45,9 @@
                     <img src="http://placehold.it/410x350">
                 </aside>
             </div>
+            {% block pagination %}
+                {% include 'DomainSiteBundle:Layout:Widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+            {% endblock %}
         </div>
     </section>
 {% endblock %}

@@ -26,7 +26,7 @@ define(
     }
 
     comparepage.prototype.selectCategory = function ( e ) {
-        var route = $(e.currentTarget).find('option:selected').data('route');
+        var route = $( e.currentTarget ).find( 'option:selected' ).data( 'route' );
 
         window.location = route;
     }
