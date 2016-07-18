@@ -64,16 +64,6 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             'Pizza Ranch II'                            => 'Ave. Lomas Verdes Bo. Minillas Bayamón, Puerto Rico 00961',
             'El Jardín Burger'                          => '482 PR-845, San Juan, 00926, Puerto Rico',
             'Burger House'                              => 'Sec. La Marina Carr. #19 Km. 0.8 Guaynabo, Puerto Rico 00966',
-            // 'Vaquero Burger'                            => 'PR-17, San Juan, 00917, Puerto Rico',
-            // 'Shakes & Burgers'                          => 'Calle Cremona, San Juan, 00920, Puerto Rico',
-            // 'Burger King'                               => 'Calle Juncos, San Juan, 00917, Puerto Rico',
-            // 'Burger Chef'                               => 'Calle Ortegon, Carolina, 00983, Puerto Rico',
-
-            // 'Laboratorio Clínico Colón'                 => '203-225 Cll Las Flores, San Juan, 00912, Puerto Rico',
-            // 'Servi-Lab'                                 => '215 Cll Julian Pesante, San Juan, 00912, Puerto Rico',
-            // 'Laboratorio Clinico Isla Verde'            => '67 Calle Bolivia, San Juan, Puerto Rico',
-            // 'Laboratorio Clínico Morse'                 => 'PR-26, Carolina, 00979, Puerto Rico',
-            // 'Laboratorio Clínico Oriental'              => 'Calle Irlanda, San Juan, 00917, Puerto Rico',
             'Laboratorio Clínico Michelsan'             => 'Calle H, Guaynabo, 00966, Puerto Rico',
             'Environmental Quality Laboratories, Inc.'  => 'Av. Diego Puerto Nuevo, San Juan, 00927, Puerto Rico',
             'Héctor Electric & Plumbing Services'       => 'Calle Gallera, San Juan, 00923, Puerto Rico',
@@ -91,7 +81,6 @@ class LoadTestBusinessData extends AbstractFixture implements ContainerAwareInte
             $googleResponse = $addressManager->validateAddress($address);
 
             if ($googleResponse['error']) {
-                // dump($googleResponse);
                 throw new \Exception(sprintf('Invalid business address: %s . Fixture', $address));
             }
 

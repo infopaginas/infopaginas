@@ -22,7 +22,6 @@ define(['jquery', 'tools/slick'], function ($) {
             dots: false,
             accessibility: false,
             swipe: true,
-            // variableWidth: true,
             prevArrow: $( '.prevSlide' ),
             nextArrow: $( '.nextSlide' ),
         });

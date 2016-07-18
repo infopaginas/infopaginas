@@ -1,29 +1,29 @@
 <div class="card-item
-    {% if (hasSubs(item[0], 'CODE_PREMIUM_PLUS')) %}
+    {% if (hasSubs(item, 'CODE_PREMIUM_PLUS')) %}
         premium
     {% endif %}
     ">
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
-            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
                 <span class="card-number">{# item.order #}.</span>
             </a>
                 &nbsp;
-            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
-                <span class="card-name">{{ item[0].name }}</span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                <span class="card-name">{{ item.name }}</span>
             </a>
                 &nbsp;
-            {% if (hasSubs(item[0], "CODE_PREMIUM_PLUS")) %}
-                <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}">
-                    <span class="card-slogan"><q>{{ item[0].slogan }}</q></span>
+            {% if (hasSubs(item, "CODE_PREMIUM_PLUS")) %}
+                <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                    <span class="card-slogan"><q>{{ item.slogan }}</q></span>
                 </a>
             {% endif %}
         </label>
     </div>
     <div class="col-xs-5 schedule">
         <div class="address">
-            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#address" class="address-link">
-                <span class="address-info">{{ item[0].city}}, {{ item[0].state }} {{ item[0].zipCode }}</span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#address" class="address-link">
+                <span class="address-info">{{ item.city}}, {{ item.state }} {{ item.zipCode }}</span>
             </a>
             <a href="" class="direction">Get Direction <span>&#187;</span></a>
             <a href="" class="btn green-btn mobile-btn"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; Call<span></span></a>
@@ -36,10 +36,10 @@
     </div>
     <div class="col-xs-7 company-contact">
         <ul class="company-info">
-            <li><a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item[0].website }}</span></a>
+            <li><a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
             </li>
-            <li><a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#email"><i class="fa fa-envelope"
-                                                            aria-hidden="true"></i><span>{{ item[0].email }}</span></a>
+            <li><a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
+                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
             </li>
             <li>
                 <div class="dropdown filter-drop">
@@ -57,31 +57,31 @@
     </div>
     <div class="col-xs-12 additional-info">
         <div class="icons">
-            {% if (hasSubs(item[0], "CODE_PREMIUM_GOLD")) %}
-                <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#photo"><i class="photo"></i></a>
+            {% if (hasSubs(item, "CODE_PREMIUM_GOLD")) %}
+                <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#photo"><i class="photo"></i></a>
             {% endif %}
-            {% if (hasSubs(item[0], "CODE_PREMIUM_PLATINUM")) %}
-                <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#video"><i class="video"></i></a>
+            {% if (hasSubs(item, "CODE_PREMIUM_PLATINUM")) %}
+                <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#video"><i class="video"></i></a>
             {% endif %}
-            {% if (hasSubs(item[0], "CODE_PRIORITY")) %}
-                <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#ad"><i class="ad"></i></a>
+            {% if (hasSubs(item, "CODE_PRIORITY")) %}
+                <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#ad"><i class="ad"></i></a>
             {% endif %}
         </div>
         <div class="reviews">
-            <a href="{{ path('domain_business_default_view', { 'slug' : item[0].slug }) }}#reviews">
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#reviews">
                 <div class="star-rating">
                     <span class="fa fa-star-o" data-rating="1"></span>
                     <span class="fa fa-star-o" data-rating="2"></span>
                     <span class="fa fa-star-o" data-rating="3"></span>
                     <span class="fa fa-star-o" data-rating="4"></span>
                     <span class="fa fa-star-o" data-rating="5"></span>
-                    <input type="hidden" name="whatever" class="rating-value" value="{{ item[0].getBusinessReviewsAvgMark }}">
+                    <input type="hidden" name="whatever" class="rating-value" value="{{ item.getBusinessReviewsAvgMark }}">
                 </div>
-                <span>{{ item[0].getBusinessReviewsCount }} Reviews</span>
+                <span>{{ item.getBusinessReviewsCount }} Reviews</span>
             </a>
         </div>
     </div>
-    {% if (hasSubs(item[0], "CODE_PREMIUM_PLUS")) %}
+    {% if (hasSubs(item, "CODE_PREMIUM_PLUS")) %}
         <div class="company-logo"><img src="http://placehold.it/120x120"></div>
     {% endif %}
 </div>

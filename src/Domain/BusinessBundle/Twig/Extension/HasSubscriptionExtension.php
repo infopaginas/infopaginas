@@ -12,12 +12,18 @@ class HasSubscriptionExtension extends \Twig_Extension
 {
     public function getFunctions()
     {
-        return array('hasSubs' => new \Twig_Function_Method($this, 'isSubscribed', [
-            'needs_environment'=> true,
-            'is_safe' => [
-                'all'
-            ]
-        ]));
+        return array(
+            'hasSubscription' => new \Twig_Function_Method(
+                $this,
+                'isSubscribed',
+                [
+                    'needs_environment'=> true,
+                    'is_safe' => [
+                        'all'
+                    ]
+                ]
+            )
+        );
     }
 
     public function isSubscribed($env, BusinessProfile $profile, $subscriptionPlan)

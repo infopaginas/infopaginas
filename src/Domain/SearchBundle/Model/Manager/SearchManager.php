@@ -14,6 +14,7 @@ use Oxa\ConfigBundle\Service\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
@@ -74,9 +75,11 @@ class SearchManager extends Manager
     public function search(SearchDTO $searchParams) : SearchResultsDTO
     {
         $results            = $this->businessProfilehManager->search($searchParams);
+        //$totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
+        $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
+        $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
 
-        $businessProfiles   = SearchDataUtil::extractBusinessProfiles($results);
-        $categories         = $this->categoriesManager->getCategoriesByProfiles();
+        return SearchDataUtil::buildResponceDTO($businessProfiles, count($results), $searchParams->page, count($results)/$searchParams->limit, $categories, array());
     }
 
     public function getSearchDTO(Request $request) : SearchDTO

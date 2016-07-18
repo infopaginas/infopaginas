@@ -87,8 +87,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
-        // $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
-        // $this->addCategoryRankQueryBuilder($queryBuilder);
 
         $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
 

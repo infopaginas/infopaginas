@@ -36,7 +36,7 @@
 
                 <div class="comparison-block">
                     <div class="comparison-wrap carousel-property">
-                        {% for item in results %}
+                        {% for item in results.resultSet %}
                             {% include 'DomainSearchBundle:Search:Templates/compareCardItem.html.twig' with { 'item' : item } %}
                         {% endfor %}
                     </div>
