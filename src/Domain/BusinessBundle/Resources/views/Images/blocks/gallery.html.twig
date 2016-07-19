@@ -1,0 +1,24 @@
+<div class="col-xs-6 form-col">
+    <div class="col-xs-12">
+        <div class="carousel-property">
+            {% for image in images %}
+                <div class="image-wrap" data-id="{{ image.vars.data.media.id }}">
+                    {% thumbnail image.vars.data.media, 'preview' %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="col-xs-6">
+    <div id="images-spin-container"></div>
+    <div id="forms-container">
+        {% for image in images %}
+            <div style="display: none;" id="images-form-{{ image.vars.data.media.id }}" class="image-edit-form">
+                {%
+                include 'DomainBusinessBundle:Images/blocks:edit_image_form.html.twig'
+                with { 'image': image}
+                %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

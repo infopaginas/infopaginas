@@ -1,0 +1,17 @@
+{% extends 'OxaSonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    {% set task_status = object.status %}
+
+    {% if task_status == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_OPEN') %}
+        {% set label_class = 'label-warning' %}
+    {% elseif task_status == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_CLOSED') %}
+        {% set label_class = 'label-success' %}
+    {% else %}
+        {% set label_class = 'label-danger' %}
+    {% endif %}
+
+    <span class="label {{ label_class }}">
+        {{ dispatch_enum_value(object.status) }}
+    </span>
+{% endblock %}

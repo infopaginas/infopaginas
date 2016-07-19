@@ -47,8 +47,11 @@ class AddressManager extends DefaultManager
      */
     public function setGoogleAddress($googleAddress, BusinessProfile $businessProfile)
     {
-        $businessProfile->setLatitude($googleAddress->getGeometry()->getLocation()->getLatitude());
-        $businessProfile->setLongitude($googleAddress->getGeometry()->getLocation()->getLongitude());
+        // set lat and lon if it has'not been set automatically
+        if (!$businessProfile->getLatitude() || !$businessProfile->getLongitude()) {
+            $businessProfile->setLatitude($googleAddress->getGeometry()->getLocation()->getLatitude());
+            $businessProfile->setLongitude($googleAddress->getGeometry()->getLocation()->getLongitude());
+        }
 
         if ($object = current($googleAddress->getAddressComponents('country'))) {
             $country = $this->getEntityManager()
@@ -121,8 +124,7 @@ class AddressManager extends DefaultManager
 
             // data bellow is required
             // street, city, country, zip_code
-            if (
-                !$result->getAddressComponents('route') ||
+            if (!$result->getAddressComponents('route') ||
                 !$result->getAddressComponents('locality') ||
                 !$result->getAddressComponents('country') ||
                 !$result->getAddressComponents('postal_code')

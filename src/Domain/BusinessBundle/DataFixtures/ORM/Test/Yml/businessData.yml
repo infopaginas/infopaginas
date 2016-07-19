@@ -1,0 +1,117 @@
+businesses:
+    business_1:
+        name: Panadería La Catalana
+        google_address: 78 Calle El Tren, Cataño, 00962, Puerto Rico
+        email: test@test.com
+        phone: +375291862356
+        website: www.google.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
+        areas:
+            - Aguada
+            - Caguas
+            - Dorado
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
+            - Dentists
+    business_2:
+        name: RST Puerto Rico
+        google_address: 215 Cll Julian Pesante, San Juan, 00912, Puerto Rico
+        email: test@test.com
+        phone: +375291862356
+        website: www.google.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
+        areas:
+            - Toa Alta
+            - Utuado
+            - Villalba
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
+            - Dentists
+    business_3:
+        name: Chinchorreando En Hato Rey
+        google_address: Calle A Urbanización Santa Catalina, Guaynabo, 00966, Puerto Rico
+        email: test@test.com
+        phone: +375291862356
+        website: www.google.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
+        areas:
+            - Toa Alta
+            - Utuado
+            - Villalba
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
+            - Dentists
+    business_4:
+        name: CASA DE LAS ARMADURAS INC.
+        google_address: Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico
+        email: test@test.com
+        phone: +375291862356
+        website: www.google.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
+        areas:
+            - Toa Alta
+            - Utuado
+            - Villalba
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
+            - Dentists

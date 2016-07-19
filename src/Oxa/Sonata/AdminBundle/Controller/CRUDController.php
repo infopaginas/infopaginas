@@ -271,7 +271,6 @@ class CRUDController extends SortableAdminController
                 }
 
                 return $returnResult;
-
             } else {
                 $this->addFlash(
                     'sonata_flash_error',

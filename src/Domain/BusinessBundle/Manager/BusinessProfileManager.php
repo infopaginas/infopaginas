@@ -3,10 +3,23 @@
 namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
+use FOS\UserBundle\Model\UserInterface;
+use Gedmo\Translatable\TranslatableListener;
+use JMS\Serializer\SerializerBuilder;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\SearchBundle\Model\DataType\SearchDTO;
 
-use Domain\BusinessBundle\Utils\BusinessProfileUtils;
-
+/**
+ * Class BusinessProfileManager
+ * @package Domain\BusinessBundle\Manager
+ */
 class BusinessProfileManager extends Manager
 {
     /**
@@ -14,30 +27,64 @@ class BusinessProfileManager extends Manager
      */
     protected $categoryManager;
 
+    /** @var UserInterface */
+    private $currentUser = null;
+
+    /** @var  TranslatableListener */
+    private $translatableListener;
+
+    /** @var FormFactory */
+    private $formFactory;
+
+    /** @var BusinessGalleryManager */
+    private $businessGalleryManager;
+
     /**
      * Manager constructor.
      * Accepts only entityManager as main dependency.
      * Regargless hole container, need to keep it clear and work only with needed dependency
      *
-     * @access public
      * @param EntityManager $entityManager
+     * @param CategoryManager $categoryManager
+     * @param TokenStorageInterface $tokenStorage
+     * @param TranslatableListener $translatableListener
+     * @param FormFactory $formFactory
+     * @param BusinessGalleryManager $businessGalleryManager
      */
-    public function __construct(EntityManager $entityManager, CategoryManager $categoryManager)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        CategoryManager $categoryManager,
+        TokenStorageInterface $tokenStorage,
+        TranslatableListener $translatableListener,
+        FormFactory $formFactory,
+        BusinessGalleryManager $businessGalleryManager
+    ) {
         $this->em = $entityManager;
+
         $this->categoryManager = $categoryManager;
+
+        if ($tokenStorage->getToken() !== null) {
+            $this->currentUser = $tokenStorage->getToken()->getUser();
+        }
+
+        $this->translatableListener = $translatableListener;
+
+        $this->formFactory = $formFactory;
+
+        $this->businessGalleryManager = $businessGalleryManager;
     }
 
-    public function searchByPhraseAndLocation(string $phrase, string $location)
+    public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
     {
-        if (empty($location)) {
+        $locationName = $location->name;
+        if (empty($locationName)) {
             // TODO Move magic string this to config
-            $location = "San Juan";
+            $locationName = "San Juan";
         }
 
         // TODO Move to filtering functionality
         $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->searchWithQueryBuilder($phrase, $location);
+        return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
     public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
@@ -63,6 +110,252 @@ class BusinessProfileManager extends Manager
 
     public function getLocationMarkersFromProfileData(array $profilesList)
     {
-        return BusinessProfileUtils::filterLocationMarkers($profilesList);
+        return BusinessProfileUtil::filterLocationMarkers($profilesList);
+    }
+
+    public function search(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->search($searchParams);
+    }
+
+    /**
+     * @param int $id
+     * @param string $locale
+     * @return null|object
+     */
+    public function find(int $id, string $locale = 'en_US')
+    {
+        $business = $this->getRepository()->find($id);
+
+        if ($locale !== 'en_US') {
+            $this->getTranslatableListener()->setTranslatableLocale($locale);
+            $this->getTranslatableListener()->setTranslationFallback('');
+
+            $this->getEntityManager()->refresh($business);
+        }
+
+        return $business;
+    }
+
+    /**
+     * @param string $uid
+     * @return null|object
+     */
+    public function findByUid(string $uid)
+    {
+        $businessProfile = $this->getRepository()->findOneBy(['uid' => $uid]);
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return BusinessProfile
+     */
+    public function cloneProfile(BusinessProfile $businessProfile) : BusinessProfile
+    {
+        $clonedProfile = clone $businessProfile;
+        $clonedProfile->setUid($businessProfile->getUid());
+
+        $this->commit($clonedProfile);
+
+        return $clonedProfile;
+    }
+
+    /**
+     * @return BusinessProfile
+     */
+    public function createProfile() : BusinessProfile
+    {
+        $profile = new BusinessProfile();
+        $profile->setIsActive(false);
+
+        return $profile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $locale
+     */
+    public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en_US')
+    {
+        //todo: move to model
+        if (!$businessProfile->getId()) {
+            $businessProfile->setIsActive(false);
+        }
+
+        if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
+            $businessProfile->setLocale($locale);
+        }
+
+        $businessProfile->setUser($this->currentUser);
+
+        foreach ($businessProfile->getImages() as $image) {
+            $image->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($image);
+        }
+
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function activate(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setIsActive(true);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function lock(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setLocked(true);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function unlock(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setLocked(false);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function restore(BusinessProfile $businessProfile)
+    {
+        $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
+        $this->unlock($actualBusinessProfile);
+
+        $this->getBusinessGalleryManager()->restoreBusinessProfileImages($businessProfile);
+
+        $this->commit($actualBusinessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function remove(BusinessProfile $businessProfile)
+    {
+        $this->drop($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $locale
+     */
+    public function publish(BusinessProfile $businessProfile, $locale = 'en_US')
+    {
+        $oldProfile = $businessProfile->getActualBusinessProfile();
+
+        $businessProfile->setActualBusinessProfile(null);
+        $businessProfile->setIsActive(true);
+
+        //backup object translations
+        if ($locale === BusinessProfile::DEFAULT_LOCALE) {
+            foreach ($oldProfile->getTranslations() as $translation) {
+                $businessProfile->addTranslation($translation);
+            }
+        }
+
+        $subscription = $oldProfile->getSubscription();
+
+        if ($subscription !== null) {
+            $subscription->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($subscription);
+        }
+
+        $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
+
+        $this->getEntityManager()->persist($businessProfile);
+        $this->getEntityManager()->flush();
+
+        $this->drop($oldProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    public function getBusinessProfileAsForm(BusinessProfile $businessProfile)
+    {
+        return $this->formFactory->create(new BusinessProfileFormType(), $businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $locale
+     * @return string
+     */
+    public function getSerializedProfileChanges(BusinessProfile $businessProfile, $locale = 'en_US')
+    {
+        $actualBusinessProfile = $businessProfile->getActualBusinessProfile() ?
+            $businessProfile->getActualBusinessProfile() : new BusinessProfile();
+
+        if ($locale !== BusinessProfile::DEFAULT_LOCALE && !empty($locale)) {
+            $businessProfile->setLocale($locale);
+            $actualBusinessProfile->setLocale($locale);
+
+            $this->getEntityManager()->refresh($businessProfile);
+            $this->getEntityManager()->refresh($actualBusinessProfile);
+        }
+
+        $changes = BusinessProfilesComparator::compare(
+            $this->getBusinessProfileAsForm($businessProfile),
+            $this->getBusinessProfileAsForm($actualBusinessProfile)
+        );
+
+        $serializer = SerializerBuilder::create()->build();
+
+        return $serializer->serialize($changes, 'json');
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function drop(BusinessProfile $businessProfile)
+    {
+        $this->getEntityManager()->remove($businessProfile);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Persist & flush
+     *
+     * @access private
+     * @param BusinessProfile $businessProfile
+     */
+    private function commit(BusinessProfile $businessProfile)
+    {
+        $this->getEntityManager()->persist($businessProfile);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return BusinessGalleryManager
+     */
+    private function getBusinessGalleryManager() : BusinessGalleryManager
+    {
+        return $this->businessGalleryManager;
+    }
+
+    /**
+     * @return TranslatableListener
+     */
+    private function getTranslatableListener() : TranslatableListener
+    {
+        return $this->translatableListener;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    private function getEntityManager() : EntityManager
+    {
+        return $this->em;
     }
 }

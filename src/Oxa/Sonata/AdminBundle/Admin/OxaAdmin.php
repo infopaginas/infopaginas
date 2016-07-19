@@ -21,9 +21,19 @@ class OxaAdmin extends BaseAdmin
     const FORM_DATETIME_FORMAT = 'dd.MM.yyyy, HH:mm';
 
     /**
+     * Valid form date format
+     */
+    const FORM_DATE_FORMAT = 'dd.MM.yyyy';
+
+    /**
      * Valid filter datetime format
      */
     const FILTER_DATETIME_FORMAT = 'dd-MM-y hh:mm:ss';
+
+    /**
+     * Valid filter date format
+     */
+    const FILTER_DATE_FORMAT = 'dd-MM-y';
 
     /**
      * Used to set default translations for filter boolean labels
@@ -60,6 +70,18 @@ class OxaAdmin extends BaseAdmin
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
             'format' => self::FILTER_DATETIME_FORMAT
+        ]
+    ];
+
+    /**
+     * Used to set default datetime options
+     *
+     * @var array
+     */
+    protected $defaultDatagridDateTypeOptions = [
+        'field_type' => 'sonata_type_datetime_range_picker',
+        'field_options' => [
+            'format' => self::FILTER_DATE_FORMAT
     ]];
 
     /**
@@ -69,7 +91,7 @@ class OxaAdmin extends BaseAdmin
      */
     protected $datagridValues = array(
         '_page'       => 1,
-        '_per_page'   => 10,
+        '_per_page'   => 25,
         '_sort_by' => 'position',
     );
 

@@ -1,8 +1,8 @@
-<div class="card-item premium">
-    <div class="card-title">
+<div class="card-item premium" id="{{ item.id }}" data-id="{{ item.id }}">
+    <div class="col-xs-8 card-title">
         <label class="control-label card-label" for="card-check">
             <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
-                <span class="card-number">{{ item.order }}.</span>
+                <span class="card-number">{# item.order #}.</span>
             </a>
                 &nbsp;
             <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
@@ -12,7 +12,7 @@
     </div>
     <div class="col-xs-8 schedule">
         <div class="address">
-            <span>{{ item.city}}, {{ item.state }} {{ item.zip_code }}</span>
+            <span class="map-address">{{ item.city }}, {{ item.state }} {{ item.zipCode }}</span>
             <a href="">Get Direction <span>&#187;</span></a>
         </div>
     </div>
@@ -28,10 +28,12 @@
                 <span class="fa fa-star-o" data-rating="3"></span>
                 <span class="fa fa-star-o" data-rating="4"></span>
                 <span class="fa fa-star-o" data-rating="5"></span>
-                <input type="hidden" name="whatever" class="rating-value" value="3">
+                <input type="hidden" name="whatever" class="rating-value" value="{{ item.getBusinessReviewsAvgMark }}">
             </div>
-            <span>16 Reviews</span>
+            <span>{{ item.getBusinessReviewsCount }}  Reviews</span>
         </div>
     </div>
-    <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+    {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
+        <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+    {% endif %}
 </div>

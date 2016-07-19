@@ -11,7 +11,7 @@ use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 
@@ -107,6 +107,19 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $searchFts;
 
     /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     * and it is not necessary because globally locale can be set in listener
+     */
+    protected $locale;
+
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    /**
      * Get id
      *
      * @return int
@@ -115,6 +128,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     {
         return $this->id;
     }
+
     /**
      * Constructor
      */

@@ -1,7 +1,7 @@
 label_yes: Yes
 label_no: No
-form.full_address.required: Please, write valid address or drag marker if you use map
-form.full_address.invalid: Invalid Address
+form.google_address.required: Please, write valid address or drag marker if you use map
+form.google_address.invalid: Invalid Address
 
 
 

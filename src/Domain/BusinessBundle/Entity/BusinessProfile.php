@@ -8,16 +8,18 @@ use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
-use Domain\BusinessBundle\Entity\Task\Task;
+use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Symfony\Component\HttpFoundation\File\File;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -36,6 +38,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
+
+    const DEFAULT_LOCALE = 'en_US';
+
     /**
      * @var int
      *
@@ -50,6 +56,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -112,13 +119,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
+     * @Assert\Count(min = 1, minMessage = "At least 1 category should be selected")
      */
     protected $categories;
 
     /**
      * @var string - Website
      *
-     * @ORM\Column(name="website", type="string", length=30)
+     * @ORM\Column(name="website", type="string", length=30, nullable=true)
      */
     protected $website;
 
@@ -150,6 +158,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_areas")
+     * @Assert\Count(min = 1, minMessage = "At least 1 area should be selected")
      */
     protected $areas;
 
@@ -251,6 +260,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $isSetSlogan = false;
 
     /**
+     * @var string - Field is checked, if Video field of profile is set.
+     *
+     * @ORM\Column(name="is_set_video", type="boolean", options={"default" : 0})
+     */
+    protected $isSetVideo = false;
+
+    /**
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"}, updatable=false)
@@ -260,7 +276,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @var Task[]
-     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task\Task", mappedBy="businessProfile")
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="businessProfile")
      */
     protected $tasks;
 
@@ -273,6 +289,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *     )
      */
     protected $businessReviews;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="closure_reason", type="string", length=255, nullable=true)
+     */
+    protected $closureReason;
 
     /**
      * @var BusinessGallery[] - Media Images
@@ -315,6 +338,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
+     * @Assert\NotBlank()
      */
     protected $streetAddress;
 
@@ -335,9 +359,16 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="full_address", type="string", nullable=true)
+     * @ORM\Column(name="cross_street", type="string", length=50, nullable=true)
      */
-    protected $fullAddress;
+    protected $crossStreet;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="google_address", type="string", nullable=true)
+     */
+    protected $googleAddress;
 
     /**
      * @var string
@@ -350,6 +381,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="city", type="string", nullable=true)
+     * @Assert\NotBlank()
      */
     protected $city;
 
@@ -357,6 +389,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
+     * @Assert\NotBlank()
      */
     protected $zipCode;
 
@@ -377,7 +410,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @Gedmo\Translatable
      * @ORM\Column(name="custom_address", type="string", nullable=true)
      */
     protected $customAddress;
@@ -397,16 +429,99 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $hideAddress = false;
 
     /**
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     */
+    protected $twitterURL;
+
+    /**
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     */
+    protected $facebookURL;
+
+    /**
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     */
+    protected $googleURL;
+
+    /**
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     */
+    protected $youtubeURL;
+
+    /**
      * @var Country - Country, Business is located in
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Address\Country",
      *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank()
      */
     protected $country;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
+     * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "You must choose a valid Service Area")
+     */
+    protected $serviceAreasType = 'area';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="miles_of_my_business", type="string", length=50, nullable=true)
+     * @Assert\NotBlank(groups={"service_area_chosen"})
+     */
+    protected $milesOfMyBusiness;
+
+    /**
+     * @var Locality[] - Using this field a User may define Localities, business is related to.
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinTable(name="business_profile_localities")
+     */
+    protected $localities;
+
+    /**
+     * @ORM\Column(name="phones", type="array", nullable=true)
+     * @Assert\All({
+     *     @Assert\Length(max=10)
+     * })
+     */
+    protected $phones;
+
+    /**
+     * @var BusinessProfile
+     *
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile")
+     * @ORM\JoinColumn(name="actual_business_profile_id", nullable=true)
+     */
+    protected $actualBusinessProfile;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_locked", type="boolean", options={"default" : 0})
+     */
+    protected $locked;
+
+    /**
+     * @ORM\Column(name="uid", type="string")
+     */
+    protected $uid;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     * and it is not necessary because globally locale can be set in listener
+     */
+    protected $locale;
+
+     /**
      * @var string
      *
      * @ORM\Column(name="search_fts", type="tsvector", options={
@@ -449,6 +564,16 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $searchCityFts;
 
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -484,6 +609,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $this->locked = false;
+
+        $this->uid = uniqid('', true);
     }
 
     /**
@@ -823,6 +952,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getIsSetVideo()
+    {
+        return $this->isSetVideo;
+    }
+
+    /**
+     * @param string $isSetVideo
+     * @return BusinessProfile
+     */
+    public function setIsSetVideo($isSetVideo)
+    {
+        $this->isSetVideo = $isSetVideo;
+
+        return $this;
+    }
+
+    /**
      * Set slug
      *
      * @param string $slug
@@ -1042,11 +1190,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Add task
      *
-     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     * @param \Domain\BusinessBundle\Entity\Task $task
      *
      * @return BusinessProfile
      */
-    public function addTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    public function addTask(\Domain\BusinessBundle\Entity\Task $task)
     {
         $this->tasks[] = $task;
 
@@ -1056,9 +1204,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * Remove task
      *
-     * @param \Domain\BusinessBundle\Entity\Task\Task $task
+     * @param \Domain\BusinessBundle\Entity\Task $task
      */
-    public function removeTask(\Domain\BusinessBundle\Entity\Task\Task $task)
+    public function removeTask(\Domain\BusinessBundle\Entity\Task $task)
     {
         $this->tasks->removeElement($task);
     }
@@ -1109,6 +1257,24 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getClosureReason()
+    {
+        return $this->closureReason;
+    }
+
+    /**
+     * @param string $closureReason
+     * @return BusinessProfile
+     */
+    public function setClosureReason($closureReason)
+    {
+        $this->closureReason = $closureReason;
+        return $this;
+    }
+
+    /*
      * Set logo
      *
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $logo
@@ -1143,6 +1309,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->images[] = $image;
         $image->setBusinessProfile($this);
+
+        if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+            $this->setLogo($image->getMedia());
+        }
 
         return $this;
     }
@@ -1223,30 +1393,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getStreetAddress()
     {
         return $this->streetAddress;
-    }
-
-    /**
-     * Set fullAddress
-     *
-     * @param string $fullAddress
-     *
-     * @return BusinessProfile
-     */
-    public function setFullAddress($fullAddress)
-    {
-        $this->fullAddress = $fullAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get fullAddress
-     *
-     * @return string
-     */
-    public function getFullAddress()
-    {
-        return $this->fullAddress;
     }
 
     /**
@@ -1442,6 +1588,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCrossStreet()
+    {
+        return $this->crossStreet;
+    }
+
+    /**
+     * @param string $crossStreet
+     * @return BusinessProfile
+     */
+    public function setCrossStreet($crossStreet)
+    {
+        $this->crossStreet = $crossStreet;
+
+        return $this;
+    }
+
+    /**
      * Set country
      *
      * @param \Domain\BusinessBundle\Entity\Address\Country $country
@@ -1514,6 +1679,60 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return mixed
+     */
+    public function getTwitterURL()
+    {
+        return $this->twitterURL;
+    }
+
+    /**
+     * @param mixed $twitterURL
+     * @return User
+     */
+    public function setTwitterURL($twitterURL)
+    {
+        $this->twitterURL = $twitterURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookURL()
+    {
+        return $this->facebookURL;
+    }
+
+    /**
+     * @param mixed $facebookURL
+     * @return User
+     */
+    public function setFacebookURL($facebookURL)
+    {
+        $this->facebookURL = $facebookURL;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGoogleURL()
+    {
+        return $this->googleURL;
+    }
+
+    /**
+     * @param mixed $googleURL
+     * @return User
+     */
+    public function setGoogleURL($googleURL)
+    {
+        $this->googleURL = $googleURL;
+
+    }
+
+    /**
      * Add subscription
      *
      * @param \Domain\BusinessBundle\Entity\Subscription $subscription
@@ -1583,7 +1802,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         );
 
         return $entitiesCollection->first() ?: null;
-
     }
 
     /**
@@ -1603,6 +1821,24 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return mixed
+     */
+    public function getYoutubeURL()
+    {
+        return $this->youtubeURL;
+    }
+
+    /**
+     * @param mixed $youtubeURL
+     * @return User
+     */
+    public function setYoutubeURL($youtubeURL)
+    {
+        $this->youtubeURL = $youtubeURL;
+        return $this;
+    }
+
+     /**
      * Remove discount
      *
      * @param \Domain\BusinessBundle\Entity\Discount $discount
@@ -1623,6 +1859,59 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getServiceAreasType()
+    {
+        return $this->serviceAreasType;
+    }
+
+    /**
+     * @param string $serviceAreasType
+     * @return BusinessProfile
+     */
+    public function setServiceAreasType($serviceAreasType)
+    {
+        $this->serviceAreasType = $serviceAreasType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMilesOfMyBusiness()
+    {
+        return $this->milesOfMyBusiness;
+    }
+
+    /**
+     * @param string $milesOfMyBusiness
+     * @return BusinessProfile
+     */
+    public function setMilesOfMyBusiness($milesOfMyBusiness)
+    {
+        $this->milesOfMyBusiness = $milesOfMyBusiness;
+        return $this;
+    }
+
+    /**
+     * @return Locality[]
+     */
+    public function getLocalities()
+    {
+        return $this->localities;
+    }
+
+    /**
+     * @param Locality[] $localities
+     * @return BusinessProfile
+     */
+    public function setLocalities($localities)
+    {
+        $this->localities = $localities;
+    }
+
+     /**
      * Set searchFts
      *
      * @param tsvector $searchFts
@@ -1632,15 +1921,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setSearchFts($searchFts)
     {
         $this->searchFts = $searchFts;
-
         return $this;
     }
 
-    /**
-     * Get searchFts
-     *
-     * @return tsvector
-     */
+    /*
+    * Get searchFts
+    *
+    * @return tsvector
+    */
     public function getSearchFts()
     {
         return $this->searchFts;
@@ -1656,7 +1944,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setSearchNameFts($searchNameFts)
     {
         $this->searchNameFts = $searchNameFts;
-
         return $this;
     }
 
@@ -1668,5 +1955,245 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getSearchNameFts()
     {
         return $this->searchNameFts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhones()
+    {
+        return $this->phones;
+    }
+
+    /**
+     * @param mixed $phones
+     * @return BusinessProfile
+     */
+    public function setPhones($phones)
+    {
+        $this->phones = $phones;
+    }
+
+    /**
+     * Set googleAddress
+     *
+     * @param string $googleAddress
+     *
+     * @return BusinessProfile
+     */
+    public function setGoogleAddress($googleAddress)
+    {
+        $this->googleAddress = $googleAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get googleAddress
+     *
+     * @return string
+     */
+    public function getGoogleAddress()
+    {
+        return $this->googleAddress;
+    }
+
+    /**
+     * Set searchCityFts
+     *
+     * @param tsvector $searchCityFts
+     *
+     * @return BusinessProfile
+     */
+    public function setSearchCityFts($searchCityFts)
+    {
+        $this->searchCityFts = $searchCityFts;
+        return $this;
+    }
+
+    /**
+     * @return BusinessProfile
+     */
+    public function getActualBusinessProfile()
+    {
+        return $this->actualBusinessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $actualBusinessProfile
+     * @return BusinessProfile
+     */
+    public function setActualBusinessProfile($actualBusinessProfile)
+    {
+        $this->actualBusinessProfile = $actualBusinessProfile;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param boolean $locked
+     * @return BusinessProfile
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param mixed $uid
+     * @return BusinessProfile
+     */
+    public function setUid($uid)
+    {
+        $this->uid = $uid;
+        return $this;
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
+    /**
+     * Get searchCityFts
+     *
+     * @return tsvector
+     */
+    public function getSearchCityFts()
+    {
+        return $this->searchCityFts;
+    }
+
+    /**
+     * Add campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return BusinessProfile
+     */
+    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        $this->campaigns[] = $campaign;
+
+        return $this;
+    }
+
+    /**
+     * Remove campaign
+     *
+     * @param \Domain\BannerBundle\Entity\Campaign $campaign
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
+    {
+        return $this->campaigns->removeElement($campaign);
+    }
+
+    /**
+     * Get campaigns
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCampaigns()
+    {
+        return $this->campaigns;
+    }
+
+    /**
+     * Get full address
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        $address = [];
+
+        if ($this->getCustomAddress()) {
+            return $this->getCustomAddress();
+        }
+
+        if ($this->getStreetNumber()) {
+            $address[] = $this->getStreetNumber();
+        }
+
+        if ($this->getStreetAddress()) {
+            $address[] = $this->getStreetAddress();
+        }
+
+        if ($this->getZipCode()) {
+            $address[] = $this->getZipCode();
+        }
+
+        if ($this->getCity()) {
+            $address[] = $this->getCity();
+        }
+
+        if ($this->getState()) {
+            $address[] = $this->getState();
+        }
+
+        if ($this->getCountry()) {
+            $address[] = $this->getCountry()->getName();
+        }
+
+        if ($address) {
+            $addressResult = implode(', ', $address);
+        } else {
+            $addressResult = $this->getGoogleAddress();
+        }
+
+        return $addressResult;
+    }
+
+    /**
+     * Single access point to get address
+     * @return string
+     */
+    public function getShortAddress()
+    {
+        return 'Puerto Rico, Ololoeva St 25, 00777';
+    }
+
+    /*
+     * Get count of BusinessProfile reviews
+     * @return int
+     */
+    public function getBusinessReviewsCount()
+    {
+        return $this->getBusinessReviews()->count();
+    }
+
+    /**
+     * Get avg mark of BusinessProfile reviews
+     * @return int
+     */
+    public function getBusinessReviewsAvgMark()
+    {
+        $raiting = 0;
+        $reviewsAmount = $this->getBusinessReviewsCount();
+
+        if ($reviewsAmount) {
+            foreach ($this->getBusinessReviews() as $review) {
+                $raiting += (int) $review->getRating();
+            }
+            return $raiting / $reviewsAmount;
+        }
+        
+        return 0;
     }
 }

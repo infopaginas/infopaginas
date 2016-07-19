@@ -14,7 +14,12 @@ class CategoryManager extends Manager
     public function getCategoriesByProfiles(array $profileList)
     {
         return $this->getRepository()->getCategoryByBusinessesIds(
-            array_column($profileList, 'id')
+            array_map(
+                function ($item) {
+                    return $item->getId();
+                },
+                $profileList
+            )
         );
     }
 }
