@@ -13,6 +13,14 @@ define(
             '.map-address click' : 'showMarker'
         }
 
+        this.mapSize = {
+            mapWrapper: '#search-results-map',
+            mapImage: '#map-canvas',
+            mapTopMargin: 150,
+            mapLeftMargin: 515,
+            mapMediaWidth: 992
+        };
+
         this.init( options );
         this.bindEvents();
         return this;
@@ -37,22 +45,22 @@ define(
         this.initMap(this.options);
     }
 
+    mapSearchPage.prototype.resizeMap = function(){
+        var mapWrapperWidth = $( this.mapSize.mapWrapper ).width(),
+            mapWrapperHeight = $( this.mapSize.mapWrapper ).height();
+        if(mapWrapperWidth < this.mapSize.mapMediaWidth){
+            $( this.mapSize.mapImage ).width(mapWrapperWidth);
+            $( this.mapSize.mapImage ).height(mapWrapperHeight - this.mapSize.mapTopMargin);
+        } else{
+            $( this.mapSize.mapImage ).width(mapWrapperWidth - this.mapSize.mapLeftMargin);
+            $( this.mapSize.mapImage ).height(mapWrapperHeight - this.mapSize.mapTopMargin);
+        }
+    }
+
     mapSearchPage.prototype.initMap = function ( options ) {
         this.map = new google.maps.Map(document.getElementById(options.mapContainer), this.options.mapOptions);
 
-        function resizeMap() {
-            var parentWidth = $('#search-results-map').width();
-            var parentHeight = $('#search-results-map').height();
-            if(parentWidth < 992){
-                $('#map-canvas').width(parentWidth);
-                $('#map-canvas').height(parentHeight - 150);
-            } else{
-                $('#map-canvas').width(parentWidth - 515);
-                $('#map-canvas').height(parentHeight - 150);
-            }
-        }
-
-        $(window).resize(resizeMap);
+        $(window).resize(this.resizeMap.bind(this));
 
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers(this.options.markers);
