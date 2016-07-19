@@ -148,8 +148,9 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         );
 
         // for each subscription plan
-        ++$row;
+
         foreach ($subscriptionData['subscription_quantities'] as $subscription) {
+            ++$row;
             $activeSheet->setCellValue(
                 $row.$cell,
                 $subscription['name']
@@ -177,8 +178,8 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             $activeSheet->setCellValue($row.$cell, $object->getDate()->format(AdminHelper::DATE_FORMAT));
 
             // for each subscription plan
-            ++$row;
             foreach ($object->getSubscriptionReportSubscriptions() as $srSubscription) {
+                ++$row;
                 $activeSheet->setCellValue(
                     $row.$cell,
                     $srSubscription->getQuantity()
@@ -206,8 +207,8 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         );
 
         // for each subscription plan
-        ++$row;
         foreach ($subscriptionData['subscription_total_quantities'] as $subscription) {
+            ++$row;
             $activeSheet->setCellValue(
                 $row.$cell,
                 $subscription['quantity']
