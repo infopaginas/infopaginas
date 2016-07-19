@@ -148,7 +148,6 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         );
 
         // for each subscription plan
-
         foreach ($subscriptionData['subscription_quantities'] as $subscription) {
             ++$row;
             $activeSheet->setCellValue(
