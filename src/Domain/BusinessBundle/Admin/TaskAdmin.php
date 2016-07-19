@@ -72,13 +72,9 @@ class TaskAdmin extends OxaAdmin
             ->add('createdAt', 'datetime', ['label' => $this->trans('Date'),])
             ->add('status', 'string', ['template' => 'DomainBusinessBundle:TaskAdmin:fields/status_field.html.twig'])
             ->add('reviewer', '', ['label' => $this->trans('Approved/Rejected By')])
-            ->add('_action', 'actions', array(
-                'actions' => array(
-                    'show' => array(),
-                    'edit' => array(),
-                )
-            ))
         ;
+
+        $this->addGridActions($listMapper);
     }
 
     /**
@@ -126,6 +122,8 @@ class TaskAdmin extends OxaAdmin
 
     protected function configureRoutes(RouteCollection $collection)
     {
+        $collection->remove('remove');
+        $collection->remove('export');
         $collection->remove('create');
         $collection->remove('show');
     }
