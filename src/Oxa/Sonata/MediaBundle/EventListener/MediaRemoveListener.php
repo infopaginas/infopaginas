@@ -23,7 +23,6 @@ class MediaRemoveListener extends MediaEventSubscriber
         return array(
             Events::prePersist,
             Events::preUpdate,
-            Events::postUpdate,
             Events::postRemove,
             Events::postPersist,
         );
