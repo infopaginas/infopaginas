@@ -14,7 +14,7 @@ class ChartHelper
     public static function getColors()
     {
         return [
-            1 => '#8B0000', // Dark red
+            1 => '#8B0000', // DarkRed
             2 => '#D2B48C', // Tan
             3 => '#008080', // Teal
             4 => '#7B68EE', // MediumSlateBlue
