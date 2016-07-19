@@ -40,6 +40,20 @@ define(
     mapSearchPage.prototype.initMap = function ( options ) {
         this.map = new google.maps.Map(document.getElementById(options.mapContainer), this.options.mapOptions);
 
+        function resizeMap() {
+            var parentWidth = $('#search-results-map').width();
+            var parentHeight = $('#search-results-map').height();
+            if(parentWidth < 992){
+                $('#map-canvas').width(parentWidth);
+                $('#map-canvas').height(parentHeight - 150);
+            } else{
+                $('#map-canvas').width(parentWidth - 515);
+                $('#map-canvas').height(parentHeight - 150);
+            }
+        }
+
+        $(window).resize(resizeMap);
+
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers(this.options.markers);
         }
