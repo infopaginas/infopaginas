@@ -417,9 +417,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="use_map_address", type="boolean", options={"default" : 1})
+     * @ORM\Column(name="use_map_address", type="boolean", options={"default" : 0})
      */
-    protected $useMapAddress = true;
+    protected $useMapAddress = false;
 
     /**
      * @var string - If checkbox is checked, both address of Business and mark on map are not shown to Consumer.
