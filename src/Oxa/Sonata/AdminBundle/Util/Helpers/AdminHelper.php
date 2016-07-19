@@ -19,6 +19,7 @@ class AdminHelper
 {
     const DATE_FORMAT = 'd.m.Y';
     
+    const DATE_RANGE_CODE_CUSTOM     = 'custom';
     const DATE_RANGE_CODE_TODAY      = 'today';
     const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';
     const DATE_RANGE_CODE_LAST_MONTH = 'last_month';
@@ -47,6 +48,7 @@ class AdminHelper
             self::DATE_RANGE_CODE_TODAY      => 'filter.label.today',
             self::DATE_RANGE_CODE_LAST_WEEK  => 'filter.label.last_week',
             self::DATE_RANGE_CODE_LAST_MONTH => 'filter.label.last_month',
+            self::DATE_RANGE_CODE_CUSTOM     => 'filter.label.custom',
         ];
     }
 
@@ -85,7 +87,9 @@ class AdminHelper
             'field_type' => 'choice',
             'field_options' => [
                 'mapped' => false,
-                'required'  => false,
+                'required'  => true,
+                'empty_value'  => false,
+                'empty_data'  => self::DATE_RANGE_CODE_LAST_WEEK,
                 'choices'   => self::getDatePeriodValues(),
                 'translation_domain' => 'SonataAdminBundle'
             ],

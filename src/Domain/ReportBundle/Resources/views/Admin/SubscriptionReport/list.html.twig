@@ -45,7 +45,6 @@ file that was distributed with this source code.
                             pointRadius: 1,
                             pointHitRadius: 10,
                             data: {{ subscription['quantities']|json_encode|raw }},
-
                         },
                     {% endfor %}
                 ]
@@ -87,11 +86,9 @@ file that was distributed with this source code.
         </tr>
     {% endfor %}
     <tr class="list-subscription-report-total">
-
         <td class="sonata-ba-list-field sonata-ba-list-field-string">
             {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}
         </td>
-
         {% for subscription in admin.subscriptionData['subscription_total_quantities'] %}
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
                 {{ subscription['quantity'] }}

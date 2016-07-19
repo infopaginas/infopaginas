@@ -18,6 +18,19 @@ class SubscriptionReportAdmin extends OxaAdmin
     protected $translationDomain = 'AdminReportBundle';
 
     /**
+     * Default values to the datagrid.
+     *
+     * @var array
+     */
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_per_page'   => 25,
+        'datePeriod' => [
+            'value' => AdminHelper::DATE_RANGE_CODE_LAST_WEEK
+        ]
+    );
+
+    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -120,10 +133,14 @@ class SubscriptionReportAdmin extends OxaAdmin
         $allowedDatePeriodCodes = array_keys($datePeriodParams);
 
         if (isset($parameters['datePeriod'])) {
-
             // if datePeriod is set
             // apply it's data range in force way
-            if ($datePeriodCode = $parameters['datePeriod']['value']) {
+            if (isset($parameters['datePeriod']['value']) && $datePeriodCode = $parameters['datePeriod']['value']) {
+
+                if ($datePeriodCode == AdminHelper::DATE_RANGE_CODE_CUSTOM) {
+                    return $parameters;
+                }
+
                 if (!in_array($datePeriodCode, $allowedDatePeriodCodes)) {
                     throw new \InvalidArgumentException(
                         sprintf(
