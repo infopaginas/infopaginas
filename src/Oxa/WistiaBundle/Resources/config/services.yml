@@ -1,0 +1,80 @@
+parameters:
+    oxa.wistia.default_project_id: 2394117
+    oxa.wistia.use_project_id: true
+    oxa.wistia.api_password: 'ddd4273a9f4408e692633fea2bee70620d8982774ee82c44c9452263596e4d8c'
+
+services:
+
+    oxa.service.http_client:
+        class: GuzzleHttp\Client
+
+    oxa.service.wistia_data_api_client:
+        class: Oxa\WistiaBundle\Service\WistiaDataAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    oxa.service.wistia_upload_api_client:
+        class: Oxa\WistiaBundle\Service\WistiaUploadAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    oxa.service.wistia_embed_api_client:
+        class: Oxa\WistiaBundle\Service\WistiaEmbedAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    oxa.uploader.wistia_local_file_uploader:
+        class: Oxa\WistiaBundle\Uploader\WistiaLocalFileUploader
+        arguments:
+            - '@oxa.service.wistia_upload_api_client'
+            - %oxa.wistia.api_password%
+            - %oxa.wistia.default_project_id%
+            - %oxa.wistia.use_project_id%
+
+    oxa.uploader.wistia_remote_file_uploader:
+        class: Oxa\WistiaBundle\Uploader\WistiaRemoteFileUploader
+        arguments:
+            - '@oxa.service.wistia_upload_api_client'
+            - %oxa.wistia.api_password%
+            - %oxa.wistia.default_project_id%
+            - %oxa.wistia.use_project_id%
+
+    oxa.manager.wistia_api_projects:
+        class: Oxa\WistiaBundle\Manager\WistiaProjectAPIManager
+        arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
+
+    oxa.manager.wistia_api_medias:
+        class: Oxa\WistiaBundle\Manager\WistiaMediaAPIManager
+        arguments: ['@oxa.service.wistia_data_api_client', %oxa.wistia.api_password%]
+
+    oxa.manager.wistia_api_embed:
+        class: Oxa\WistiaBundle\Manager\WistiaEmbedAPIManager
+        arguments: ['@oxa.service.wistia_embed_api_client', %oxa.wistia.api_password%]
+
+    oxa.manager.wistia_media:
+        class: Oxa\WistiaBundle\Manager\WistiaMediaManager
+        arguments: ['@doctrine.orm.entity_manager']
+
+    oxa.manager.wistia_media_embed:
+        class: Oxa\WistiaBundle\Manager\WistiaMediaEmbedManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa.manager.wistia_api_embed']
+
+    oxa.manager.wistia:
+        class: Oxa\WistiaBundle\Manager\WistiaManager
+        arguments:
+            - '@oxa.manager.wistia_api_projects'
+            - '@oxa.manager.wistia_api_medias'
+            - '@oxa.uploader.wistia_local_file_uploader'
+            - '@oxa.uploader.wistia_remote_file_uploader'
+            - '@oxa.manager.wistia_media'
+            - '@oxa.manager.wistia_api_embed'
+
+    oxa.twig_extension.wistia_media_thumbnail:
+        class: Oxa\WistiaBundle\Twig\Extension\WistiaMediaThumbnailExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+
+    oxa.twig_extension.wistia_media_embed:
+        class: Oxa\WistiaBundle\Twig\Extension\WistiaMediaEmbedExtension
+        arguments: ['@oxa.manager.wistia_media_embed']
+        public: false
+        tags:
+            -  { name: twig.extension }
