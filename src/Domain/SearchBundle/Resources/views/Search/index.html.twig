@@ -9,45 +9,57 @@
                     {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <span class="search-title blue-c">{{ search.query }} in {{ search.locationValue.name }}</span>
+            {% if results.resultSet is defined and results.resultSet is not null and  results.resultSet is not empty %}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span class="search-title blue-c">{{ search.query }} in {{ search.locationValue.name }}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-9 list-block">
-                    <div class="list-info">
-                        <div class="results-info">
-                            <span>{{ (results.page - 1) * search.limit }}-{{ results.page * search.limit }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in {{ search.locationValue.name }}</span>
-                        </div>
-                        <div class="sort-by">
-                            <span>Sort by:</span>
+                <div class="row">
+                    <div class="col-md-9 list-block">
+                        <div class="list-info">
+                            <div class="results-info">
+                                {% set amount = results.page * search.limit %}
+                                {% if amount > results.resultCount %}
+                                {% set amount = results.resultCount %}
+                                {% endif %}
+                                <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in {{ search.locationValue.name }}</span>
+                            </div>
+                            <div class="sort-by">
+                                <span>Sort by:</span>
 
-                            <div class="dropdown filter-drop">
-                                <div class="select-container">
-                                    <select class="form-control select-control">
-                                        <option>Relevance</option>
-                                        <option>Distance</option>
-                                    </select>
+                                <div class="dropdown filter-drop">
+                                    <div class="select-container">
+                                        <select class="form-control select-control">
+                                            <option>Relevance</option>
+                                            <option>Distance</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="cards">
+                        {% if results.resultSet is defined and results.resultSet is not null %}
+                            {% for item in results.resultSet %}
+                                {% include 'DomainSearchBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
+                            {% endfor %}
+                        {% endif %}
+                        </div>
                     </div>
-                    <div class="cards">
-                    {% if results.resultSet is defined and results.resultSet is not null %}
-                        {% for item in results.resultSet %}
-                            {% include 'DomainSearchBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
-                        {% endfor %}
-                    {% endif %}
+                    <aside class="map col-md-3">
+                        <img src="http://placehold.it/410x350">
+                    </aside>
+                </div>
+                {% block pagination %}
+                    {% include 'DomainSiteBundle:Layout:Widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                {% endblock %}
+            {% else %}
+                <div class="row">
+                    <div class="col-md-9 list-block">
+                        Sorry, no results were found. Maybe you want to search this categories
                     </div>
                 </div>
-                <aside class="map col-md-3">
-                    <img src="http://placehold.it/410x350">
-                </aside>
-            </div>
-            {% block pagination %}
-                {% include 'DomainSiteBundle:Layout:Widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
-            {% endblock %}
+            {% endif %}
         </div>
     </section>
 {% endblock %}

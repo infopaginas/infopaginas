@@ -3,7 +3,9 @@
         <label class="control-label card-label" for="card-check2">
             <span class="card-number">1.33333333333</span>
             &nbsp;
-            <span class="card-name">{{ item.name }}</span>
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                <span class="card-name">{{ item.name }}</span>
+            </a>
         </label>
     </div>
     <div class="company-contact fields-item">
