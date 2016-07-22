@@ -118,6 +118,11 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->search($searchParams);
     }
 
+    public function searchNeighborhood(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->searchNeighborhood($searchParams);
+    }
+
     /**
      * @param int $id
      * @param string $locale

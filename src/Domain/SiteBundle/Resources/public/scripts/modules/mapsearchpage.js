@@ -37,12 +37,16 @@ define(
             mapOptions   : {
                 center: new google.maps.LatLng(18.2208, -66.5901),
                 zoom: 8
-            }
+            },
+            cards       : '.card-item'
         };
 
         $.extend( this.options, options );
 
         this.initMap(this.options);
+        this.setDefaultHeighForCards(
+            this.$(this.options.cards)
+        )
     }
 
     mapSearchPage.prototype.resizeMap = function(){
@@ -115,9 +119,11 @@ define(
 
     mapSearchPage.prototype.scrollTo = function ( elementId )
     {
+        var card = this.$('#' + elementId);
+        var offset = card.offset().top;
         this.$(this.options.itemsListScrollable).first()
             .animate({
-                scrollTop : this.$('#' + elementId).offset().top
+                scrollTop : offset
             }, 1500);
         this.highlightCard( elementId ); 
     }
@@ -175,6 +181,13 @@ define(
             }
 
             return  template;
+    }
+
+    mapSearchPage.prototype.setDefaultHeighForCards = function (cards)
+    {
+        _.each(cards, function (card) {
+            $(card).data('default-offset', $(card).offset().top)
+        })
     }
 
     return mapSearchPage;

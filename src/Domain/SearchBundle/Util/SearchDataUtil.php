@@ -28,4 +28,14 @@ class SearchDataUtil
     {
         return $request->get('page', 1);
     }
+
+    public static function getCategoryFromRequest(Request $request)
+    {
+        return $request->get('category', null);
+    }
+
+    public static function getNeighborhoodFromRequest(Request $request)
+    {
+        return $request->get('neighborhood', null);
+    }
 }
