@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Repository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use FOS\UserBundle\Model\UserInterface;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
@@ -77,15 +78,12 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
 
-        $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
-
-        $this->addCityRankQueryBuilder($queryBuilder);
-
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+
+        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder);
+
         $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
         $this->addOrderByRankQueryBuilder($queryBuilder);
-        $this->addOrderByCityRankQueryBuilder($queryBuilder);
-        $this->addOrderByAreaRankQueryBuilder($queryBuilder);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
@@ -95,6 +93,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
+    }
+
+    public function searchNeighborhood(SearchDTO $searchParams)
+    {
+        // TODO functionality
+
+        return $this->search($searchParams);
     }
 
     public function searchAutosuggestWithBuilder($searchQuery, $limit = 5, $offset = 0)
@@ -175,11 +180,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
+            ->join('bp.areas', 'a')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
-            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true')
-            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
-            ->orWhere('TSQUERY( bp.searchCityFts, :searchLocation) = true')
+            ->where('TSQUERY( c.searchFts, :searchQuery) = true')
+            ->orWhere('TSQUERY( bp.searchFts, :searchQuery) = true')
+
+            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true OR TSQUERY( bp.searchCityFts, :searchLocation) = true')
+
             ->setParameter('searchQuery', $searchQuery)
             ->setParameter('searchLocation', $location);
     }
@@ -260,5 +267,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->andWhere('TSQUERY( c.searchFts, :categoryFilter) = true')
             ->setParameter('categoryFilter', $category);
+    }
+
+    protected function addOrderBySubscriptionPlanQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addSelect('sp.rank as subscription')
+            ->leftJoin('bp.subscriptions', 's')
+            ->leftJoin('s.subscriptionPlan', 'sp')
+            ->andWhere('s.status = :subscriptionStatus')
+            ->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE)
+            ->addGroupBy('sp.rank')
+            ->addOrderBy('subscription', 'DESC');
     }
 }

@@ -76,7 +76,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
         try {
             $data = Yaml::parse(file_get_contents(__DIR__ . '/Yml/businessData.yml'));
         } catch (ParseException $e) {
-            throw new \Exception("Unable to parse the YML string: %s", $e->getMessage());
+            throw new \Exception(sprintf("Unable to parse the YML string: %s", $e->getMessage()));
         }
 
         $addressManager = $this->container->get('domain_business.manager.address_manager');
@@ -85,12 +85,12 @@ class LoadTestBusinessData extends OxaAbstractFixture
             $googleResponse = $addressManager->validateAddress($item['google_address']);
 
             if ($googleResponse['error']) {
-                throw new \Exception(
+                throw new \Exception(sprintf(
                     'Invalid business address. %s - %s, %s',
                     $business,
                     $item['google_address'],
                     $googleResponse['error']
-                );
+                ));
             }
 
             $object = new BusinessProfile();

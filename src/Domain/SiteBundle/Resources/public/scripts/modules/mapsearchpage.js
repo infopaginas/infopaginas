@@ -13,6 +13,14 @@ define(
             '.map-address click' : 'showMarker'
         }
 
+        this.mapSize = {
+            mapWrapper: '#search-results-map',
+            mapImage: '#map-canvas',
+            mapTopMargin: 150,
+            mapLeftMargin: 515,
+            mapMediaWidth: 992
+        };
+
         this.init( options );
         this.bindEvents();
         return this;
@@ -29,16 +37,34 @@ define(
             mapOptions   : {
                 center: new google.maps.LatLng(18.2208, -66.5901),
                 zoom: 8
-            }
+            },
+            cards       : '.card-item'
         };
 
         $.extend( this.options, options );
 
         this.initMap(this.options);
+        this.setDefaultHeighForCards(
+            this.$(this.options.cards)
+        )
+    }
+
+    mapSearchPage.prototype.resizeMap = function(){
+        var mapWrapperWidth = $( this.mapSize.mapWrapper ).width(),
+            mapWrapperHeight = $( this.mapSize.mapWrapper ).height();
+        if(mapWrapperWidth < this.mapSize.mapMediaWidth){
+            $( this.mapSize.mapImage ).width(mapWrapperWidth);
+            $( this.mapSize.mapImage ).height(mapWrapperHeight - this.mapSize.mapTopMargin);
+        } else{
+            $( this.mapSize.mapImage ).width(mapWrapperWidth - this.mapSize.mapLeftMargin);
+            $( this.mapSize.mapImage ).height(mapWrapperHeight - this.mapSize.mapTopMargin);
+        }
     }
 
     mapSearchPage.prototype.initMap = function ( options ) {
         this.map = new google.maps.Map(document.getElementById(options.mapContainer), this.options.mapOptions);
+
+        $(window).resize(this.resizeMap.bind(this));
 
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers(this.options.markers);
@@ -93,9 +119,11 @@ define(
 
     mapSearchPage.prototype.scrollTo = function ( elementId )
     {
+        var card = this.$('#' + elementId);
+        var offset = card.offset().top;
         this.$(this.options.itemsListScrollable).first()
             .animate({
-                scrollTop : this.$('#' + elementId).offset().top
+                scrollTop : offset
             }, 1500);
         this.highlightCard( elementId ); 
     }
@@ -153,6 +181,13 @@ define(
             }
 
             return  template;
+    }
+
+    mapSearchPage.prototype.setDefaultHeighForCards = function (cards)
+    {
+        _.each(cards, function (card) {
+            $(card).data('default-offset', $(card).offset().top)
+        })
     }
 
     return mapSearchPage;
