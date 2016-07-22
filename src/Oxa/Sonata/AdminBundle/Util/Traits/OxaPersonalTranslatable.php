@@ -20,6 +20,7 @@ trait OxaPersonalTranslatable
      *
      * @param $field
      * @param $locale
+     * @return string
      */
     public function getTranslation($field, $locale)
     {
@@ -30,9 +31,9 @@ trait OxaPersonalTranslatable
         }
 
         if (!isset($result)) {
-            return $this->{'get'.ucfirst($field)}();
+            $result = $this->{'get'.ucfirst($field)}();
         }
 
-        return;
+        return $result;
     }
 }

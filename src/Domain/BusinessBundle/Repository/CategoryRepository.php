@@ -93,4 +93,19 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
         return $results;
     }
+
+    /**
+     * Count all categories
+     * 
+     * @return mixed
+     */
+    public function getAllCategoriesCount()
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(c.id)')
+            ->from('DomainBusinessBundle:Category', 'c')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }

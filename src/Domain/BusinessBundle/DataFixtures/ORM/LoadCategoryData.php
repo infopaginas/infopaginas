@@ -55,8 +55,6 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
         $manager->flush();
     }
 
-
-
     /**
      * Get the order of this fixture
      *

@@ -67,8 +67,6 @@ class LoadCountryData extends AbstractFixture implements ContainerAwareInterface
         $manager->flush();
     }
 
-
-
     /**
      * Get the order of this fixture
      *

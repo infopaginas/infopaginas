@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class AdminHelper
 {
+    const PER_PAGE_ALL = 'all';
+    
     const DATE_FORMAT = 'd.m.Y';
     
     const DATE_RANGE_CODE_CUSTOM     = 'custom';
@@ -59,21 +61,25 @@ class AdminHelper
     public static function getDataPeriodParameters()
     {
         $datetimeDay = new \DateTime();
-        $datetimeWeek = clone $datetimeDay;
-        $datetimeMonth = clone $datetimeDay;
+        $datetimeWeek = new \DateTime();
+        $datetimeMonth = new \DateTime();
 
         return [
             self::DATE_RANGE_CODE_TODAY => array(
                 'end'   => $datetimeDay->format('d-m-Y'),
-                'start' => $datetimeDay->modify('-1 day')->format('d-m-Y'),
+                'start' => $datetimeDay->format('d-m-Y'),
             ),
             self::DATE_RANGE_CODE_LAST_WEEK  => [
                 'end'   => $datetimeWeek->format('d-m-Y'),
-                'start' => $datetimeWeek->modify('-1 week')->format('d-m-Y'),
+                'start' => $datetimeWeek->modify('-1 week')->modify('+1 day')->format('d-m-Y'),
             ],
             self::DATE_RANGE_CODE_LAST_MONTH => [
                 'end'   => $datetimeMonth->format('d-m-Y'),
-                'start' => $datetimeMonth->modify('-1 month')->format('d-m-Y'),
+                'start' => $datetimeMonth->modify('-1 month')->modify('+1 day')->format('d-m-Y'),
+            ],
+            self::DATE_RANGE_CODE_CUSTOM => [
+                'end'   => '',
+                'start' => '',
             ],
         ];
     }

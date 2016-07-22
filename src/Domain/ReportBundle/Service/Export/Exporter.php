@@ -42,6 +42,10 @@ class Exporter
                 $response = $this->container->get('domain_report.exporter.subscription_excel_exporter')
                     ->getResponse($code, $format, $admin->getDatagrid()->getResults());
                 break;
+            case ReportInterface::CODE_PDF_CATEGORY_REPORT:
+                $response = $this->container->get('domain_report.exporter.category_pdf_exporter')
+                    ->getResponse($code, $format, $admin->getFilterParameters());
+                break;
             default;
                 $filename = sprintf(
                     'export_%s_%s.%s',

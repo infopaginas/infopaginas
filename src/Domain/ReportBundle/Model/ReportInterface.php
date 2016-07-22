@@ -20,6 +20,9 @@ interface ReportInterface
     const CODE_PDF_SUBSCRIPTION_REPORT      = 'pdf_subscription_report';
     const CODE_EXCEL_SUBSCRIPTION_REPORT    = 'excel_subscription_report';
 
+    const CODE_PDF_CATEGORY_REPORT          = 'pdf_category_report';
+    const CODE_EXCEL_CATEGORY_REPORT        = 'excel_category_report';
+
     public static function getExportFormats();
 }
 
