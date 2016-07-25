@@ -29,9 +29,9 @@ services:
             - [ setTemplateEngine, [ '@templating' ]]
             - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
             - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
-#    domain_report.exporter.subscription_excel_exporter:
-#        class: Domain\ReportBundle\Service\Export\SubscriptionExcelExporter
-#        calls:
-#            - [ setPhpExcel, [ '@phpexcel' ]]
-#            - [ setSubscriptionReportManager, [ '@domain_report.manager.subscription_report_manager' ]]
-#            - [ setTranslator, [ '@translator.default' ]]
+    domain_report.exporter.category_excel_exporter:
+        class: Domain\ReportBundle\Service\Export\CategoryExcelExporter
+        calls:
+            - [ setPhpExcel, [ '@phpexcel' ]]
+            - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]

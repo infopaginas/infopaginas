@@ -65,7 +65,8 @@ class CategoryReportManager extends DefaultManager
         $result = [
             'results' => [],
             'categories' => [],
-            'visitors' => [],
+            'categoryVisitors' => [],
+            'resultsArray' => [],
             'datePeriod' => $categoryReportElements['datePeriod']
         ];
 
@@ -78,7 +79,7 @@ class CategoryReportManager extends DefaultManager
             $result['results'][$key]        = $element;
             $result['categories'][]         = $categoryName;
             $result['categoryVisitors'][]   = $element['categoryVisitors'];
-            $result['resultsArras'][$key]   = [
+            $result['resultsArray'][$key]   = [
                 'categoryName' => $categoryName,
                 'categoryVisitors' => $element['categoryVisitors']
             ];

@@ -32,7 +32,7 @@ class CategoryReportAdmin extends OxaAdmin
         parent::configure();
 
         $this->setPerPageOptions([
-            5, 10, 15, 20, 25
+            5, 10, 15, 20, 500
         ]);
 
         // custom delete page template
@@ -137,7 +137,7 @@ class CategoryReportAdmin extends OxaAdmin
         $datePeriodParams = AdminHelper::getDataPeriodParameters();
         $allowedDatePeriodCodes = array_keys($datePeriodParams);
         
-        if (isset($parameters['_per_page']) && $parameters['_per_page'] = AdminHelper::PER_PAGE_ALL) {
+        if (isset($parameters['_per_page']) && $parameters['_per_page'] == AdminHelper::PER_PAGE_ALL) {
             $perPageAll = $this->getConfigurationPool()
                 ->getContainer()
                 ->get('doctrine.orm.entity_manager')

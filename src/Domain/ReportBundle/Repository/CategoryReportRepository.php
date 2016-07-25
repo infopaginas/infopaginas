@@ -54,12 +54,10 @@ class CategoryReportRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('categoryVisitors', 'DESC')
         ;
 
-        if (isset($params['perPage'])) {
+        if (isset($params['perPage']) && isset($params['page'])) {
+            $first = ( $params['page'] - 1 ) * $params['perPage'];
             $query->setMaxResults($params['perPage']);
-        }
-
-        if (isset($params['page'])) {
-            $query->setFirstResult($params['page']);
+            $query->setFirstResult($first);
         }
 
         if (
