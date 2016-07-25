@@ -51,7 +51,7 @@ class CategoryReportAdmin extends OxaAdmin
             'value' => AdminHelper::DATE_RANGE_CODE_LAST_WEEK
         ]
     );
-    
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -62,7 +62,6 @@ class CategoryReportAdmin extends OxaAdmin
             ->remove('categoryReportCategories.date')
             ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
             ->add('categoryReportCategories.date','doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
-
         ;
     }
 
@@ -136,7 +135,7 @@ class CategoryReportAdmin extends OxaAdmin
 
         $datePeriodParams = AdminHelper::getDataPeriodParameters();
         $allowedDatePeriodCodes = array_keys($datePeriodParams);
-        
+
         if (isset($parameters['_per_page']) && $parameters['_per_page'] == AdminHelper::PER_PAGE_ALL) {
             $perPageAll = $this->getConfigurationPool()
                 ->getContainer()

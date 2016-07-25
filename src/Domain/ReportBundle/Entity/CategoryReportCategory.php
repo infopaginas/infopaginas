@@ -35,7 +35,7 @@ class CategoryReportCategory implements DefaultEntityInterface
      * @ORM\JoinColumn(name="category_report_id", referencedColumnName="id")
      */
     protected $categoryReport;
-    
+
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")

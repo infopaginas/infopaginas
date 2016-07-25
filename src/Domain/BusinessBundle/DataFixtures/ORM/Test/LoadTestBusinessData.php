@@ -129,7 +129,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
                 $record = $this->loadCategory($value);
                 $object->addCategory($record);
             }
-            
+
             $object->setCountry($this->getReference('country.PR'));
             $object->setUser($this->getReference('user.manager'));
 

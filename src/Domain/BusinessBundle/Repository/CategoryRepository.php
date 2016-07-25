@@ -88,7 +88,7 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
         $query = 'SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)';
         $queryBuilder = $this->getEntityManager()->createQuery($query)
             ->setParameter('ids', $businessIdList);
-            
+
         $results = $queryBuilder->getResult();
 
         return $results;
@@ -96,7 +96,7 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Count all categories
-     * 
+     *
      * @return mixed
      */
     public function getAllCategoriesCount()

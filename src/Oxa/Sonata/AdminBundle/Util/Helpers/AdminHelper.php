@@ -18,9 +18,9 @@ use Symfony\Component\Validator\Constraints\DateTime;
 class AdminHelper
 {
     const PER_PAGE_ALL = 'all';
-    
+
     const DATE_FORMAT = 'd.m.Y';
-    
+
     const DATE_RANGE_CODE_CUSTOM     = 'custom';
     const DATE_RANGE_CODE_TODAY      = 'today';
     const DATE_RANGE_CODE_LAST_WEEK  = 'last_week';

@@ -108,7 +108,7 @@ class OxaAdmin extends BaseAdmin
 
     /**
      * Allows to use such functionality in filter as: include or not include, between or not between, etc
-     * 
+     *
      * @var bool
      */
     public $advancedFilterMode = false;

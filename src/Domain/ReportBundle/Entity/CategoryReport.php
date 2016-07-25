@@ -8,6 +8,7 @@ use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Domain\ReportBundle\Entity\CategoryReportCategory;
 
 /**
  * CategoryReport
@@ -85,11 +86,11 @@ class CategoryReport implements DefaultEntityInterface, ReportInterface
     /**
      * Add categoryReportCategory
      *
-     * @param \Domain\ReportBundle\Entity\CategoryReportCategory $categoryReportCategory
+     * @param CategoryReportCategory $categoryReportCategory
      *
      * @return CategoryReport
      */
-    public function addCategoryReportCategory(\Domain\ReportBundle\Entity\CategoryReportCategory $categoryReportCategory)
+    public function addCategoryReportCategory(CategoryReportCategory $categoryReportCategory)
     {
         $this->categoryReportCategories[] = $categoryReportCategory;
 
@@ -99,9 +100,9 @@ class CategoryReport implements DefaultEntityInterface, ReportInterface
     /**
      * Remove categoryReportCategory
      *
-     * @param \Domain\ReportBundle\Entity\CategoryReportCategory $categoryReportCategory
+     * @param CategoryReportCategory $categoryReportCategory
      */
-    public function removeCategoryReportCategory(\Domain\ReportBundle\Entity\CategoryReportCategory $categoryReportCategory)
+    public function removeCategoryReportCategory(CategoryReportCategory $categoryReportCategory)
     {
         $this->categoryReportCategories->removeElement($categoryReportCategory);
     }

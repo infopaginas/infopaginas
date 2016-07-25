@@ -71,7 +71,6 @@ class CategoryReportManager extends DefaultManager
         ];
 
         $locale = $this->container->getParameter('locale');
-        
 
         foreach ($categoryReportElements['results'] as $key => $element) {
             $categoryName = $element['category']->getTranslation('name', $locale);
@@ -114,7 +113,7 @@ class CategoryReportManager extends DefaultManager
 
         $categoryReportCategory = new CategoryReportCategory();
         $categoryReportCategory->setCategoryReport($categoryReport);
-        
+
         if ($date) {
             $categoryReportCategory->setDate($date);
         }

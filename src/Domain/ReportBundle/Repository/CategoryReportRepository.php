@@ -1,8 +1,8 @@
 <?php
 
 namespace Domain\ReportBundle\Repository;
+
 use Domain\ReportBundle\Entity\CategoryReport;
-use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 /**
  * CategoryReportRepository
