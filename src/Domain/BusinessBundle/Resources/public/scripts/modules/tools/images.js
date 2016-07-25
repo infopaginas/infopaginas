@@ -144,6 +144,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
 
             that.doRequest( $this.parent().data( 'url' ) );
         });
+
+        $(document).on('click', '#' + this.html.buttons.fileInputId, function() {
+            $(this).val(null);
+        });
     };
 
     //on image click - show "active" border & show image-edit form

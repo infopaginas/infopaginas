@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'tools/formErrorsHandler', 'tools/images'],
-    function( $, bootstrap, alertify, Spin, select, FormErrorsHandler, ImagesUploader) {
+    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'tools/formErrorsHandler', 'tools/images', 'tools/videos'],
+    function( $, bootstrap, alertify, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
 
         'use strict';
 
@@ -18,6 +18,7 @@ define(
             this.userProfilePageURL = Routing.generate( 'domain_site_user_profile' );
 
             new ImagesUploader();
+            new VideosUploader();
         };
 
         //action before ajax send
