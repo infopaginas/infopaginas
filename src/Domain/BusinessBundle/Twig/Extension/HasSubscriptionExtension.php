@@ -34,7 +34,8 @@ class HasSubscriptionExtension extends \Twig_Extension
 
         try {
             // Suddenly, but SubscriptionPlanInterface::$subscriptionPlan does not works о_О
-            $plan = (new \ReflectionClass('Domain\BusinessBundle\Entity\SubscriptionPlan'))->getConstant($subscriptionPlan);
+            $plan = (new \ReflectionClass('Domain\BusinessBundle\Entity\SubscriptionPlan'))
+                ->getConstant($subscriptionPlan);
 
             return $profilePlan->getRank() >= $plan;
         } catch (Exception $e) {
@@ -42,7 +43,6 @@ class HasSubscriptionExtension extends \Twig_Extension
                 sprintf("Subscription plan '%s' does not exists", $subscriptionPlan),
                 1
             );
-            
         }
     }
 

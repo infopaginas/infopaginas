@@ -102,4 +102,3 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
         ];
     }
 }
-

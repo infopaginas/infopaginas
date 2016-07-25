@@ -115,7 +115,6 @@ class CRUDController extends SortableAdminController
                 $this->get('translator')
                     ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
             );
-
         } catch (\Exception $e) {
             $this->addFlash('sonata_flash_error', $e->getMessage());
         }

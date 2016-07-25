@@ -8,7 +8,6 @@
 
 namespace Domain\ReportBundle\Manager;
 
-
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\SubscriptionReportSubscription;

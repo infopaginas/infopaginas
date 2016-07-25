@@ -15,7 +15,6 @@
 
 namespace JMaitan\SonataMediaCropBundle\Admin;
 
-
 use Sonata\AdminBundle\Admin\AdminExtension;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Route\RouteCollection;

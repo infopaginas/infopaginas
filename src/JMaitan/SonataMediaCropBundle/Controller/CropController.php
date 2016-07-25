@@ -7,7 +7,6 @@ use Sonata\MediaBundle\Controller\MediaAdminController as BaseMediaAdminControll
 use Sonata\MediaBundle\Model\MediaInterface;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 
-
 class CropController extends BaseMediaAdminController
 {
     public function indexAction($id = null)

@@ -51,5 +51,4 @@ class CRUDController extends Controller
             $this->admin
         );
     }
-
 }
