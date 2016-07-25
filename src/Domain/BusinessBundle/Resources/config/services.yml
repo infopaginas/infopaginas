@@ -98,10 +98,14 @@ services:
             - '@validator'
 
     #event listeners section
-    domain_business.listener.subscription_listener:
+    domain_business.listener.datetime_period_status_listener:
         class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusListener
         tags:
             - {name: doctrine.event_listener, event: onFlush, priority: 2}
+    domain_business.listener.subscription_listener:
+        class: Domain\BusinessBundle\EventListener\SubscriptionListener
+        tags:
+            - {name: doctrine.event_listener, event: onFlush, priority: 10}
 
     #services section
     domain_business.service.datetime_period_status_service:
