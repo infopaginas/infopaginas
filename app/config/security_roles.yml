@@ -10,6 +10,8 @@ security:
 
         ROLE_ADMIN:
             - ROLE_SONATA_ADMIN
+            - ROLE_CONTENT_MANAGER
+            - ROLE_MERCHANT
 
         # project role
         ROLE_ADMINISTRATOR:
@@ -34,6 +36,7 @@ security:
 
         # project role
         ROLE_MERCHANT:
+            - ROLE_CONSUMER
 
         # project role
         ROLE_CONSUMER:

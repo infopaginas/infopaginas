@@ -6,20 +6,30 @@
  * Time: 17:34
  */
 
-namespace Oxa\WistiaBundle\Form;
+namespace Oxa\WistiaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Class UrlUploadType
+ * @package Oxa\WistiaBundle\Form\Type
+ */
 class UrlUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('url', TextType::class)
-            ->add('submit', SubmitType::class)
         ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'oxa_wistia_bundle_url_upload_form_type';
     }
 }

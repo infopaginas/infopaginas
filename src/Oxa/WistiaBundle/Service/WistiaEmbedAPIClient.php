@@ -23,7 +23,7 @@ class WistiaEmbedAPIClient implements WistiaApiClientInterface
 
     public function call(string $method, string $endpoint, array $data = []) : array
     {
-        $requestURL = $this->buildRequestURL($endpoint, $data);
+        $requestURL = $this->buildRequestURL($endpoint, $data); var_dump($requestURL);die();
 
         $response = $this->getHttpClient()->request($method, $requestURL);
 

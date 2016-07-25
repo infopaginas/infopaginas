@@ -6,20 +6,30 @@
  * Time: 16:19
  */
 
-namespace Oxa\WistiaBundle\Form;
+namespace Oxa\WistiaBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Class FileUploadType
+ * @package Oxa\WistiaBundle\Form\Type
+ */
 class FileUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('file', FileType::class)
-            ->add('submit', SubmitType::class)
         ;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'oxa_wistia_bundle_file_upload_form_type';
     }
 }

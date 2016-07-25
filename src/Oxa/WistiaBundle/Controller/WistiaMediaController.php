@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class WistiaMediaController extends Controller
 {
-    public function uploadLocalFileAction(Request $request)
+    /*public function uploadLocalFileAction(Request $request)
     {
         $form = $this->createForm(new FileUploadType());
 
@@ -69,5 +69,5 @@ class WistiaMediaController extends Controller
     private function getWistiaManager() : WistiaManager
     {
         return $this->get('oxa.manager.wistia');
-    }
+    }*/
 }
