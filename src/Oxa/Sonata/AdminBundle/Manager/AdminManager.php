@@ -178,10 +178,8 @@ class AdminManager extends DefaultManager
             if ($associationMapping['type'] == ClassMetadataInfo::ONE_TO_MANY ||
                 $associationMapping['type'] == ClassMetadataInfo::ONE_TO_ONE
             ) {
-
                 // ignore for translations
                 if ($associationMapping['fieldName'] == 'translations') {
-
                     // disable sonata event listener
                     // to prevent removing record translations
                     // while we softdelete record
@@ -265,8 +263,8 @@ class AdminManager extends DefaultManager
     public function physicalDeleteEntities(array $entityArray = [], $disableSoftdelete = false)
     {
         foreach ($entityArray as $entity) {
-
             $existDependentFields = $this->checkExistDependentEntity($entity);
+
             if ($existDependentFields) {
                 throw new \Exception($this->getContainer()->get('translator')->trans(
                     'batch_delete_error_rel',

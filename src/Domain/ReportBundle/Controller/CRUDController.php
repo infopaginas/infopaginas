@@ -44,12 +44,21 @@ class CRUDController extends Controller
                 )
             );
         }
+        
+        // get pager params from request to have them in export services
+        $parameters = array_merge(
+            $this->admin->getFilterParameters(),
+            [
+                '_page' => $this->getRequest()->get('_page'),
+                '_per_page' => $this->getRequest()->get('_per_page')
+            ]
+        );
 
         return $this->get('domain_report.exporter')->getResponse(
             $code,
             $format,
-            $this->admin
+            $this->admin,
+            $parameters
         );
     }
-
 }

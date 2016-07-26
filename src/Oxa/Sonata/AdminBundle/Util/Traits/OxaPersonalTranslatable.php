@@ -8,7 +8,6 @@
 
 namespace Oxa\Sonata\AdminBundle\Util\Traits;
 
-
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
 
 trait OxaPersonalTranslatable

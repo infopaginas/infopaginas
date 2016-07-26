@@ -121,8 +121,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
-    public function searchWithQueryBuilder($searchQuery, $location, $categoryFilter = null, $neighborhoodFilter = null, $limit = 20, $offset = 0)
-    {
+    public function searchWithQueryBuilder(
+        $searchQuery,
+        $location,
+        $categoryFilter = null,
+        $neighborhoodFilter = null,
+        $limit = 20,
+        $offset = 0
+    ) {
         $searchQuery    = $this->splitPhraseToPlain($searchQuery);
         $searchLocation = $this->splitPhraseToPlain($location);
 
@@ -176,8 +182,11 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(QueryBuilder &$queryBuilder, $searchQuery, $location)
-    {
+    protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(
+        QueryBuilder &$queryBuilder,
+        $searchQuery,
+        $location
+    ) {
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
@@ -185,9 +194,11 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
             ->where('TSQUERY( c.searchFts, :searchQuery) = true')
             ->orWhere('TSQUERY( bp.searchFts, :searchQuery) = true')
-
-            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true OR TSQUERY( bp.searchCityFts, :searchLocation) = true')
-
+            ->andWhere('
+                TSQUERY( a.searchFts, :searchLocation) = true
+                OR
+                TSQUERY( bp.searchCityFts, :searchLocation) = true
+            ')
             ->setParameter('searchQuery', $searchQuery)
             ->setParameter('searchLocation', $location);
     }

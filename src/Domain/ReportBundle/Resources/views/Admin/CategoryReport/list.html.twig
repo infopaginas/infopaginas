@@ -193,7 +193,12 @@ file that was distributed with this source code.
                                                         <ul class="dropdown-menu">
                                                             {% for code,format in admin.getExportFormats() %}
                                                             <li>
-                                                                <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : format, 'code': code}) }}">
+                                                                <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {
+                                                                    'format' : format,
+                                                                    'code': code,
+                                                                    '_page' : admin.getFilterParameters['_page'],
+                                                                    '_per_page' : admin.getFilterParameters['_per_page']
+                                                                }) }}">
                                                                     <i class="glyphicon glyphicon-download"></i>
                                                                     {{ code|trans({}, admin.getTranslationDomain) }}
                                                                 </a>

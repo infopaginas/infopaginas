@@ -84,7 +84,19 @@ class SearchManager extends Manager
         $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
         $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
 
-        return SearchDataUtil::buildResponceDTO($businessProfiles, count($results), $searchParams->page, count($results)/$searchParams->limit, $categories, array());
+        $totalResultsCount   = count($results);
+        $pagesCount          = $totalResultsCount/$searchParams->limit;
+
+        $response = SearchDataUtil::buildResponceDTO(
+            $businessProfiles,
+            $totalResultsCount,
+            $searchParams->page,
+            $pagesCount,
+            $categories,
+            array()
+        );
+
+        return $response;
     }
 
     public function getSearchDTO(Request $request) : SearchDTO

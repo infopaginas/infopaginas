@@ -107,7 +107,6 @@ services:
             - {name: doctrine.event_subscriber, connection: default, priority: 2}
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
-
     domain_business.listener.subscription_listener:
         class: Domain\BusinessBundle\EventListener\SubscriptionListener
         tags:

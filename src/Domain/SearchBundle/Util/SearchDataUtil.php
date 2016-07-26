@@ -9,8 +9,14 @@ use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
 class SearchDataUtil
 {
-    public static function buildResponceDTO($resutlSet, int $totalCount, int $page, int $pageCount, array $categories, array $neighborhoods) : SearchResultsDTO
-    {
+    public static function buildResponceDTO(
+        $resutlSet,
+        int $totalCount,
+        int $page,
+        int $pageCount,
+        array $categories,
+        array $neighborhoods
+    ) : SearchResultsDTO {
         return new SearchResultsDTO($resutlSet, $totalCount, $page, $pageCount, $categories, $neighborhoods);
     }
 
