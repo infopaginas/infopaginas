@@ -3,13 +3,16 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
+use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -1781,6 +1784,42 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
         return $entitiesCollection->first() ?: null;
     }
+
+//    /**
+//     * @ORM\PrePersist()
+//     * @ORM\PreUpdate()
+//     */
+//    public function setSubscription(LifecycleEventArgs $args)
+//    {
+//
+//        if (!$this->getSubscription()) {
+//            $em = $args->getEntityManager();
+//
+//            $startDate = new \DateTime();
+//            $endDate = new \DateTime();
+//            $endDate->modify('+1 year');
+//
+//            $freeSubscriptionPlan = $em
+//                ->getRepository('DomainBusinessBundle:SubscriptionPlan')
+//                ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
+//
+//            $subscription = new Subscription();
+//            $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+//            $subscription->setBusinessProfile($this);
+//            $subscription->setSubscriptionPlan($freeSubscriptionPlan);
+//            $subscription->setStartDate($startDate);
+//            $subscription->setEndDate($endDate);
+//
+////            $em->persist($subscription);
+//            $em->getUnitOfWork()
+//                ->scheduleForInsert(
+//                    $subscription
+//                )
+//            ;
+////            $em->flush($subscription);
+//        }
+//
+//    }
 
     /**
      * @return SubscriptionPlan|null

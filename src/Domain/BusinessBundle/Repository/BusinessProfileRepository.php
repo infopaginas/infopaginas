@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -65,7 +66,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $businessProfiles;
     }
-    
+
     public function search(SearchDTO $searchParams)
     {
         $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
@@ -143,7 +144,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $categoryFilter = $this->splitPhraseToPlain($categoryFilter);
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
-        
+
 
         $results = $queryBuilder->getQuery()->getResult();
 
@@ -169,8 +170,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
         $queryBuilder->select('bp')
-        ->from('DomainBusinessBundle:BusinessProfile', 'bp')
-        ->groupBy('bp.id');
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->groupBy('bp.id');
 
         return $queryBuilder;
     }
@@ -279,5 +280,32 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE)
             ->addGroupBy('sp.rank')
             ->addOrderBy('subscription', 'DESC');
+    }
+
+    /**
+     * Get business profiles which do not have active subscription
+     * @return BusinessProfile[]|null
+     */
+    public function getBusinessWithoutActiveSubscription()
+    {
+        $activeSubscriptionQb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('b')
+            ->from('DomainBusinessBundle:BusinessProfile', 'b')
+            ->leftJoin('b.subscriptions', 's')
+            ->andWhere('s.status = ' . StatusInterface::STATUS_ACTIVE)
+        ;
+
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        
+        $objects = $qb
+            ->select('bp')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->andWhere($qb->expr()->notIn('bp', $activeSubscriptionQb->getDQL()))
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $objects;
     }
 }
