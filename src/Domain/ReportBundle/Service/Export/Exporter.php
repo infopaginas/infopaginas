@@ -29,10 +29,13 @@ class Exporter
      * @param $code
      * @param $format
      * @param AdminInterface $admin
+     * @param array $parameters
      * @return Response|\Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function getResponse($code, $format, AdminInterface $admin)
+    public function getResponse($code, $format, AdminInterface $admin, $parameters = [])
     {
+        $params = array_merge($admin->getFilterParameters(), $parameters);
+
         switch ($code) {
             case ReportInterface::CODE_PDF_SUBSCRIPTION_REPORT:
                 $response = $this->container->get('domain_report.exporter.subscription_pdf_exporter')
@@ -41,6 +44,14 @@ class Exporter
             case ReportInterface::CODE_EXCEL_SUBSCRIPTION_REPORT:
                 $response = $this->container->get('domain_report.exporter.subscription_excel_exporter')
                     ->getResponse($code, $format, $admin->getDatagrid()->getResults());
+                break;
+            case ReportInterface::CODE_PDF_CATEGORY_REPORT:
+                $response = $this->container->get('domain_report.exporter.category_pdf_exporter')
+                    ->getResponse($code, $format, $params);
+                break;
+            case ReportInterface::CODE_EXCEL_CATEGORY_REPORT:
+                $response = $this->container->get('domain_report.exporter.category_excel_exporter')
+                    ->getResponse($code, $format, $params);
                 break;
             default:
                 $filename = sprintf(

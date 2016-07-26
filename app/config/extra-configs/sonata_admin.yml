@@ -88,3 +88,4 @@ sonata_admin:
                 icon: <i class="fa fa-bar-chart-o"></i>
                 items:
                     - domain_report.admin.subscription_report
+                    - domain_report.admin.category_report
