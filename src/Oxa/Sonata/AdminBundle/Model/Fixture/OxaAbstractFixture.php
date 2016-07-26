@@ -30,7 +30,7 @@ abstract class OxaAbstractFixture extends AbstractFixture implements ContainerAw
      * @var int
      */
     protected $order = 100;
-    
+
     /**
      * @var ContainerInterface
      */
@@ -47,9 +47,9 @@ abstract class OxaAbstractFixture extends AbstractFixture implements ContainerAw
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        
+
         $this->loadData();
-        
+
         $manager->flush();
     }
 

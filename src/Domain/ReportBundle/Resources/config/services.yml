@@ -1,13 +1,10 @@
 services:
-    domain_report.admin.subscription_report:
-        class: Domain\ReportBundle\Admin\SubscriptionReportAdmin
-        arguments: [~, Domain\ReportBundle\Entity\SubscriptionReport, DomainReportBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscription Reports}
-        calls:
-            - [ setTemplate, ['list', 'DomainReportBundle:Admin:SubscriptionReport\list.html.twig']]
     domain_report.manager.subscription_report_manager:
         class: Domain\ReportBundle\Manager\SubscriptionReportManager
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+    domain_report.manager.category_report_manager:
+        class: Domain\ReportBundle\Manager\CategoryReportManager
         calls:
             - [ setContainer, [ '@service_container' ] ]
     domain_report.exporter:
@@ -25,4 +22,16 @@ services:
         calls:
             - [ setPhpExcel, [ '@phpexcel' ]]
             - [ setSubscriptionReportManager, [ '@domain_report.manager.subscription_report_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+    domain_report.exporter.category_pdf_exporter:
+        class: Domain\ReportBundle\Service\Export\CategoryPdfExporter
+        calls:
+            - [ setTemplateEngine, [ '@templating' ]]
+            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
+    domain_report.exporter.category_excel_exporter:
+        class: Domain\ReportBundle\Service\Export\CategoryExcelExporter
+        calls:
+            - [ setPhpExcel, [ '@phpexcel' ]]
+            - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
             - [ setTranslator, [ '@translator.default' ]]

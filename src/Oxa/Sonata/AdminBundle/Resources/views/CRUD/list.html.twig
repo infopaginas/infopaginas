@@ -24,9 +24,14 @@
         {% form_theme form admin.getTemplate('filter') %}
         <div class="box box-primary" style="position: relative" id="filter-container">
             <div class="box-header">
-                <h4 class="box-title filter_legend {{ admin.datagrid.hasActiveFilters ? 'active' : 'inactive' }}">
-                    <img src="{{ asset('bundles/oxasonataadmin/img/admin/1450199299_Streamline-75.png') }}"
-                         width="14px">
+                <h4 class="box-title {{ admin.datagrid.hasActiveFilters ? 'active' : 'inactive' }}
+                {% if admin.advancedFilterMode is defined and admin.advancedFilterMode %}
+                    filter_legend
+                {% endif %}
+                ">
+                    {% if admin.advancedFilterMode is defined and admin.advancedFilterMode %}
+                        <img src="{{ asset('bundles/oxasonataadmin/img/admin/1450199299_Streamline-75.png') }}" width="14px">
+                    {% endif %}
                     {{ 'label_filters'|trans({}, 'SonataAdminBundle') }}
                 </h4>
             </div>
