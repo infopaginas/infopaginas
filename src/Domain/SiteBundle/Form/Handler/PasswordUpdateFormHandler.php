@@ -10,6 +10,8 @@ namespace Domain\SiteBundle\Form\Handler;
 
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
+use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +22,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Class PasswordUpdateFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class PasswordUpdateFormHandler
+class PasswordUpdateFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
     /** @var FormInterface  */
     protected $form;
@@ -69,35 +71,6 @@ class PasswordUpdateFormHandler
         }
 
         return false;
-    }
-
-    /**
-     * @param null $form
-     * @return array
-     */
-    public function getErrors($form = null) : array
-    {
-        $errors = [];
-
-        if ($form === null) {
-            $form = $this->form;
-        }
-
-        if ($form->count()) {
-            /** @var FormInterface $child */
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrors($child);
-                }
-            }
-        } else {
-            /** @var FormError $error */
-            foreach ($form->getErrors() as $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
     }
 
     /**

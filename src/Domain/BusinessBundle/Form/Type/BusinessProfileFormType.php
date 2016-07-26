@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -13,6 +14,7 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -469,6 +471,16 @@ class BusinessProfileFormType extends AbstractType
     {
         $this->setupFreePlanFormFields($businessProfile, $form);
 
+        $isAdSet = false;
+
+        /** @var BusinessGallery $image */
+        foreach ($businessProfile->getImages() as $image) {
+            if ($image->getType() == OxaMediaInterface::CONTEXT_BANNER) {
+                $isAdSet = true;
+                break;
+            }
+        }
+
         $form
             ->add('isSetAd', CheckboxType::class, [
                 'attr' => [
@@ -478,6 +490,7 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'yes',
                 'required' => false,
                 'read_only' => true,
+                'data' => $isAdSet,
             ])
         ;
     }

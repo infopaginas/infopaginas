@@ -9,10 +9,10 @@
 namespace Domain\BusinessBundle\Form\Handler;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
-use Symfony\Component\Form\FormError;
+use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -21,11 +21,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * Class BusinessProfileFormHandler
  * @package Domain\BusinessBundle\Form\Handler
  */
-class BusinessProfileFormHandler
+class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
-    /** @var FormInterface  */
-    protected $form;
-
     /** @var Request  */
     protected $request;
 
@@ -97,35 +94,6 @@ class BusinessProfileFormHandler
         }
 
         return false;
-    }
-
-    /**
-     * @param null $form
-     * @return array
-     */
-    public function getErrors($form = null) : array
-    {
-        $errors = [];
-
-        if ($form === null) {
-            $form = $this->form;
-        }
-
-        if ($form->count()) {
-            /** @var FormInterface $child */
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrors($child);
-                }
-            }
-        } else {
-            /** @var FormError $error */
-            foreach ($form->getErrors() as $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
     }
 
     /**

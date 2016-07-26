@@ -8,8 +8,9 @@
 
 namespace Oxa\WistiaBundle\Form\Handler;
 
+use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\WistiaBundle\Manager\WistiaManager;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class FileUploadFormHandler
  * @package Oxa\WistiaBundle\Form\Handler
  */
-class FileUploadFormHandler
+class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
     /** @var FormInterface */
     private $form;
@@ -58,35 +59,6 @@ class FileUploadFormHandler
         }
 
         return false;
-    }
-
-    /**
-     * @param FormInterface|null $form
-     * @return array
-     */
-    public function getErrors(FormInterface $form = null) : array
-    {
-        $errors = [];
-
-        if ($form === null) {
-            $form = $this->form;
-        }
-
-        if ($form->count()) {
-            /** @var FormInterface $child */
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrors($child);
-                }
-            }
-        } else {
-            /** @var FormError $error */
-            foreach ($form->getErrors() as $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
     }
 
     /**
