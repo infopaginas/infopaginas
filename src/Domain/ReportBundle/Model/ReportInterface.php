@@ -25,4 +25,3 @@ interface ReportInterface
 
     public static function getExportFormats();
 }
-

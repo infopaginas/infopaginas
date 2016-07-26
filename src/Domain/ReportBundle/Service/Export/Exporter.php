@@ -53,7 +53,7 @@ class Exporter
                 $response = $this->container->get('domain_report.exporter.category_excel_exporter')
                     ->getResponse($code, $format, $params);
                 break;
-            default;
+            default:
                 $filename = sprintf(
                     'export_%s_%s.%s',
                     strtolower(substr($admin->getClass(), strripos($admin->getClass(), '\\') + 1)),
@@ -62,6 +62,7 @@ class Exporter
                 );
                 $exporter = new CoreExporter();
                 $response = $exporter->getResponse($format, $filename, $admin->getDataSourceIterator());
+                break;
         }
 
         return $response;

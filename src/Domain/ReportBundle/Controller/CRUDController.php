@@ -61,5 +61,4 @@ class CRUDController extends Controller
             $parameters
         );
     }
-
 }

@@ -2,6 +2,10 @@ jmaitan_media:
     resource: "@JMaitanSonataMediaCropBundle/Resources/config/routing.xml"
     prefix:   /jmaitan_media
 
+oxa_wistia:
+    resource: "@OxaWistiaBundle/Resources/config/routing.yml"
+    prefix:   /
+
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
     prefix:   /article

@@ -35,7 +35,6 @@ class LoadTestSubscriptionReportData extends OxaAbstractFixture
         // generate random report number for each subscription plan for each day
         // start from $daysQuantity days ago
         for ($i = 0; $i < $daysQuantity; $i++) {
-
             $subscriptionDate = clone $date->modify('+1 day');
             $subscriptionReport = new SubscriptionReport();
             $subscriptionReport->setDate($subscriptionDate);
@@ -49,7 +48,6 @@ class LoadTestSubscriptionReportData extends OxaAbstractFixture
             }
 
             $manager->persist($subscriptionReport);
-
         }
     }
 }

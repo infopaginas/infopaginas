@@ -15,7 +15,6 @@
 
 namespace JMaitan\SonataMediaCropBundle\Cropper;
 
-
 use Sonata\MediaBundle\Model\MediaInterface;
 
 interface CropperInterface
