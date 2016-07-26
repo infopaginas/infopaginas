@@ -229,4 +229,30 @@ class OxaAdmin extends BaseAdmin
             }
         }
     }
+
+    public function getFilterParameters()
+    {
+        $parameters = parent::getFilterParameters();
+
+        $page = $this->getRequest()->query->get('filter')['_page'];
+        $perPage = $this->getRequest()->query->get('filter')['_per_page'];
+
+        if ($page === null) {
+            $page = 1;
+        }
+
+        if ($perPage === null) {
+            $perPage = $this->getMaxPerPage();
+        }
+
+        $parameters = $this->datagridValues = array_merge(
+            $parameters,
+            [
+                '_page' => $page,
+                '_per_page' => $perPage
+            ]
+        );
+
+        return $parameters;
+    }
 }

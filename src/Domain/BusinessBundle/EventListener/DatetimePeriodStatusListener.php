@@ -3,13 +3,7 @@
 namespace Domain\BusinessBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\PostFlushEventArgs;
-use Doctrine\ORM\UnitOfWork;
-use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Model\StatusInterface;
-use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
 /**
@@ -128,7 +122,7 @@ class DatetimePeriodStatusListener
 
                     $uow->propertyChanged(
                         $baseEntity,
-                        DatetimePeriodStatusInterface::PROPERTY_NAME_BUSINESS_PROFILE,
+                        DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS,
                         $baseEntity->getStatus(),
                         DatetimePeriodStatusInterface::STATUS_CANCELED
                     );
@@ -137,3 +131,4 @@ class DatetimePeriodStatusListener
         }
     }
 }
+
