@@ -27,6 +27,9 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
+    domain_business.manager.subscription_status_manager:
+        class: Domain\BusinessBundle\Manager\SubscriptionStatusManager
+
     domain_business.manager.category:
         class: Domain\BusinessBundle\Manager\CategoryManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -98,10 +101,19 @@ services:
             - '@validator'
 
     #event listeners section
-    domain_business.listener.datetime_period_status_listener:
-        class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusListener
+    domain_business.listener.datetime_period_status_subscriber:
+        class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusSubscriber
         tags:
-            - {name: doctrine.event_listener, event: onFlush, priority: 2}
+            - {name: doctrine.event_subscriber, connection: default, priority: 2}
+        calls:
+            - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
+    domain_business.listener.subscription_listener:
+        class: Domain\BusinessBundle\EventListener\SubscriptionListener
+        tags:
+            - {name: doctrine.event_listener, event: postFlush, priority: 10}
+        calls:
+            - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
+
     #services section
     domain_business.service.datetime_period_status_service:
         class: Domain\BusinessBundle\Service\DatetimePeriodStatusService
