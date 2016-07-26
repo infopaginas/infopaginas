@@ -1785,42 +1785,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $entitiesCollection->first() ?: null;
     }
 
-//    /**
-//     * @ORM\PrePersist()
-//     * @ORM\PreUpdate()
-//     */
-//    public function setSubscription(LifecycleEventArgs $args)
-//    {
-//
-//        if (!$this->getSubscription()) {
-//            $em = $args->getEntityManager();
-//
-//            $startDate = new \DateTime();
-//            $endDate = new \DateTime();
-//            $endDate->modify('+1 year');
-//
-//            $freeSubscriptionPlan = $em
-//                ->getRepository('DomainBusinessBundle:SubscriptionPlan')
-//                ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
-//
-//            $subscription = new Subscription();
-//            $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
-//            $subscription->setBusinessProfile($this);
-//            $subscription->setSubscriptionPlan($freeSubscriptionPlan);
-//            $subscription->setStartDate($startDate);
-//            $subscription->setEndDate($endDate);
-//
-////            $em->persist($subscription);
-//            $em->getUnitOfWork()
-//                ->scheduleForInsert(
-//                    $subscription
-//                )
-//            ;
-////            $em->flush($subscription);
-//        }
-//
-//    }
-
     /**
      * @return SubscriptionPlan|null
      */
