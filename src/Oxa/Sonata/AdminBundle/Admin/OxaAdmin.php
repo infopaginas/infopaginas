@@ -79,6 +79,7 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridDateTypeOptions = [
+        'label' => 'filter.label_date',
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
             'format' => self::FILTER_DATE_FORMAT
@@ -105,6 +106,13 @@ class OxaAdmin extends BaseAdmin
      * @var PositionHandler $positionService
      */
     public $positionService;
+
+    /**
+     * Allows to use such functionality in filter as: include or not include, between or not between, etc
+     *
+     * @var bool
+     */
+    public $advancedFilterMode = false;
 
     public function setPositionService(PositionHandler $positionHandler)
     {
@@ -221,5 +229,31 @@ class OxaAdmin extends BaseAdmin
                 ;
             }
         }
+    }
+
+    public function getFilterParameters()
+    {
+        $parameters = parent::getFilterParameters();
+
+        $page = $this->getRequest()->query->get('filter')['_page'];
+        $perPage = $this->getRequest()->query->get('filter')['_per_page'];
+
+        if ($page === null) {
+            $page = 1;
+        }
+
+        if ($perPage === null) {
+            $perPage = $this->getMaxPerPage();
+        }
+
+        $parameters = $this->datagridValues = array_merge(
+            $parameters,
+            [
+                '_page' => $page,
+                '_per_page' => $perPage
+            ]
+        );
+
+        return $parameters;
     }
 }

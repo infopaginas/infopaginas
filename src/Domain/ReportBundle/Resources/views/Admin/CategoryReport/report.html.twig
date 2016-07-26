@@ -1,0 +1,70 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/AdminLTE/css/AdminLTE.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
+</head>
+
+<div>
+    {{ 'export.title.category_report'|trans({}, 'AdminReportBundle') }}
+</div>
+
+<br>
+
+<div class="box box-primary box-pdf">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class="sonata-ba-list-field-header">
+                <th colspan="2" class="export-date-period">
+                    {{ 'export.date_period'|trans({}, 'AdminReportBundle') }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ 'export.start_date'|trans({}, 'AdminReportBundle') }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ 'export.end_date'|trans({}, 'AdminReportBundle') }}
+            </td>
+        </tr>
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ categoryData['datePeriod']['start'] }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ categoryData['datePeriod']['end'] }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="box box-primary box-pdf">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class="sonata-ba-list-field-header">
+                <th>
+                    {{ 'list.label_category'|trans({}, 'AdminReportBundle') }}
+                </th>
+                <th>
+                    {{ 'list.label_category_visitors'|trans({}, 'AdminReportBundle') }}
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for element in categoryData['resultsArray'] %}
+            <tr>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ element['categoryName'] }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ element['categoryVisitors'] }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
