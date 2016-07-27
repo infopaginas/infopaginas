@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Doctrine\ORM\QueryBuilder;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -331,5 +332,25 @@ class BusinessProfileAdmin extends OxaAdmin
                 $addressManager->setGoogleAddress($addressResult['result'], $object);
             }
         }
+    }
+
+    /**
+     * Modify list results
+     *
+     * @param string $context
+     * @return \Sonata\AdminBundle\Datagrid\ProxyQueryInterface
+     */
+    public function createQuery($context = 'list')
+    {
+        /** @var QueryBuilder $query */
+        $query = parent::createQuery($context);
+
+        // show only none locked records
+        $query->andWhere(
+            $query->expr()->eq($query->getRootAliases()[0] . '.locked', ':locked')
+        );
+        $query->setParameter('locked', false);
+
+        return $query;
     }
 }
