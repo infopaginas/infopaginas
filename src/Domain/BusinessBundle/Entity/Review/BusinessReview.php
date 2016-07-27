@@ -79,7 +79,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
      *     inversedBy="businessReviews",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="business_review_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
      */
     protected $businessProfile;
 
