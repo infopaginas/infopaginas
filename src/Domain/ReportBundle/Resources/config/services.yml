@@ -1,4 +1,5 @@
 services:
+    # managers
     domain_report.manager.subscription_report_manager:
         class: Domain\ReportBundle\Manager\SubscriptionReportManager
         calls:
@@ -7,6 +8,12 @@ services:
         class: Domain\ReportBundle\Manager\CategoryReportManager
         calls:
             - [ setContainer, [ '@service_container' ] ]
+    domain_report.manager.business_overview_report_manager:
+        class: Domain\ReportBundle\Manager\BusinessOverviewReportManager
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    # export services
     domain_report.exporter:
         class: Domain\ReportBundle\Service\Export\Exporter
         calls:
@@ -34,4 +41,16 @@ services:
         calls:
             - [ setPhpExcel, [ '@phpexcel' ]]
             - [ setCategoryReportManager, [ '@domain_report.manager.category_report_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+    domain_report.exporter.business_overview_pdf_exporter:
+        class: Domain\ReportBundle\Service\Export\BusinessOverviewPdfExporter
+        calls:
+            - [ setTemplateEngine, [ '@templating' ]]
+            - [ setPdfGenerator, [ '@spraed.pdf.generator' ]]
+            - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
+    domain_report.exporter.business_overview_excel_exporter:
+        class: Domain\ReportBundle\Service\Export\BusinessOverviewExcelExporter
+        calls:
+            - [ setPhpExcel, [ '@phpexcel' ]]
+            - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
             - [ setTranslator, [ '@translator.default' ]]

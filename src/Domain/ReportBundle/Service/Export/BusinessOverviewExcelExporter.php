@@ -8,6 +8,7 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
+use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\Exporter\ExcelExporterModel;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
- * Class CategoryExcelExporter
+ * Class BusinessOverviewExcelExporter
  * @package Domain\ReportBundle\Export
  */
-class CategoryExcelExporter extends ExcelExporterModel
+class BusinessOverviewExcelExporter extends ExcelExporterModel
 {
     /**
      * @var EngineInterface $templateEngine
@@ -26,16 +27,16 @@ class CategoryExcelExporter extends ExcelExporterModel
     protected $templateEngine;
 
     /**
-     * @var CategoryReportManager $categoryReportManager
+     * @var BusinessOverviewReportManager $businessOverviewReportManager
      */
-    protected $categoryReportManager;
+    protected $businessOverviewReportManager;
 
     /**
-     * @param CategoryReportManager $service
+     * @param BusinessOverviewReportManager $service
      */
-    public function setCategoryReportManager(CategoryReportManager $service)
+    public function setBusinessOverviewReportManager(BusinessOverviewReportManager $service)
     {
-        $this->categoryReportManager = $service;
+        $this->businessOverviewReportManager = $service;
     }
 
     /**
@@ -49,7 +50,7 @@ class CategoryExcelExporter extends ExcelExporterModel
     {
         $filename = sprintf(
             '%s_%s.%s',
-            'category_report',
+            'business_overview_report',
             date('Y_m_d_H_i_s', strtotime('now')),
             $format
         );
@@ -57,7 +58,7 @@ class CategoryExcelExporter extends ExcelExporterModel
         $phpExcelObject = $this->phpExcel->createPHPExcelObject();
 
         $phpExcelObject->getProperties()
-            ->setTitle($this->translator->trans('export.title.category_report', [], 'AdminReportBundle'))
+            ->setTitle($this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle'))
         ;
 
         $phpExcelObject = $this->setData($phpExcelObject, $filterParams);
@@ -95,65 +96,104 @@ class CategoryExcelExporter extends ExcelExporterModel
     public function setData(\PHPExcel $phpExcelObject, array $filterParams)
     {
         // count data
-        $categoryData = $this->categoryReportManager
-            ->getCategoryVisitorsQuantitiesByFilterParams($filterParams);
+        $data = $this->businessOverviewReportManager
+            ->getBusinessOverviewDataByFilterParams($filterParams);
 
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
 
-        // start date period
+        // title part
+        if (!empty($data['businessProfile'])) {
+            $business = $data['businessProfile'];
+        } else {
+            $business = $this->translator->trans('export.title.all_businesses', [], 'AdminReportBundle');
+        }
+
         $activeSheet->setCellValue(
             'B2',
-            $this->translator->trans('export.date_period', [], 'AdminReportBundle')
+            $this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle')
         );
-
-        $activeSheet->mergeCells('B2:C2');
 
         $activeSheet->setCellValue(
             'B3',
+            $business
+        );
+        // end title part
+
+        // start date period
+        $activeSheet->setCellValue(
+            'B5',
+            $this->translator->trans('export.date_period', [], 'AdminReportBundle')
+        );
+
+        // start date period
+        $activeSheet->setCellValue(
+            'B5',
+            $this->translator->trans('export.date_period', [], 'AdminReportBundle')
+        );
+
+        // merge cells to make them more friendly
+        $activeSheet->mergeCells('B2:C2');
+        $activeSheet->mergeCells('B3:C3');
+        $activeSheet->mergeCells('B5:C5');
+
+        $activeSheet->setCellValue(
+            'B6',
             $this->translator->trans('export.start_date', [], 'AdminReportBundle')
         );
         $activeSheet->setCellValue(
-            'C3',
+            'C6',
             $this->translator->trans('export.end_date', [], 'AdminReportBundle')
         );
 
         $activeSheet->setCellValue(
-            'B4',
-            $categoryData['datePeriod']['start']
+            'B7',
+            $data['datePeriod']['start']
         );
         $activeSheet->setCellValue(
-            'C4',
-            $categoryData['datePeriod']['end']
+            'C7',
+            $data['datePeriod']['end']
         );
         // end date period
 
-        $cell = $initCell = 6;
+        $cell = $initCell = 9;
         $row = $initRow = $maxRow = 'B';
 
         // start header
         $activeSheet->setCellValue(
             $row.$cell,
-            $this->translator->trans('list.label_category', [], 'AdminReportBundle')
+            $this->translator->trans('list.label_date', [], 'AdminReportBundle')
         );
 
         ++$row;
         $activeSheet->setCellValue(
             $row.$cell,
-            $this->translator->trans('list.label_category_visitors', [], 'AdminReportBundle')
+            $this->translator->trans('list.label_impressions', [], 'AdminReportBundle')
+        );
+
+        ++$row;
+        $activeSheet->setCellValue(
+            $row.$cell,
+            $this->translator->trans('list.label_views', [], 'AdminReportBundle')
         );
         // end header
 
         // start main data (categoryName and visitors)
-        foreach ($categoryData['resultsArray'] as $element) {
+        foreach ($data['results'] as $element) {
             $row = $initRow;
 
             ++$cell;
-            $activeSheet->setCellValue($row.$cell, $element['categoryName']);
+            $activeSheet->setCellValue($row.$cell, $element['date']);
 
             ++$row;
             $activeSheet->setCellValue(
                 $row.$cell,
-                $element['categoryVisitors']
+                $element['impressions']
+            );
+
+            ++$row;
+            $activeSheet->setCellValue(
+                $row.$cell,
+                $element['views']
             );
 
             if ($row > $maxRow) {
@@ -197,6 +237,7 @@ class CategoryExcelExporter extends ExcelExporterModel
                     ->setRowHeight(15)
                 ;
 
+
                 // set font weight as bold to the last line
                 if ($c == $initCell) {
                     $activeSheet
@@ -216,12 +257,40 @@ class CategoryExcelExporter extends ExcelExporterModel
 
         $styleArray = array_merge($styleArray, $textAlignStyleArray);
 
+        // make some headers text bolder
         $activeSheet
             ->getStyle('B2')
             ->applyFromArray($fontStyleArray)
         ;
+
+        $activeSheet
+            ->getStyle('B5')
+            ->applyFromArray($fontStyleArray)
+        ;
+
+        // apply styles for header
+        for ($r = 'B'; $r < 'C'; $r++) {
+            for ($c = 2; $c < 4; $c++) {
+                $activeSheet
+                    ->getColumnDimension($r)
+                    ->setAutoSize(true)
+                ;
+
+                $activeSheet
+                    ->getStyle($r.$c)
+                    ->applyFromArray($styleArray)
+                ;
+
+                $activeSheet
+                    ->getRowDimension($c)
+                    ->setRowHeight(15)
+                ;
+            }
+        }
+
+        // apply styles for date period block
         for ($r = 'B'; $r < 'D'; $r++) {
-            for ($c = 2; $c < 5; $c++) {
+            for ($c = 5; $c < 8; $c++) {
                 $activeSheet
                     ->getColumnDimension($r)
                     ->setAutoSize(true)

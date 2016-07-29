@@ -308,7 +308,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         $qb = $this->getEntityManager()->createQueryBuilder();
-        
+
         $objects = $qb
             ->select('bp')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp')
@@ -318,5 +318,23 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         return $objects;
+    }
+
+    /**
+     * Get business profiles ids array
+     * @return BusinessProfile[]|null
+     */
+    public function getIndexedBusinessProfileIds()
+    {
+        $result = $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('bp.id')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp', 'bp.id')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return array_keys($result);
     }
 }

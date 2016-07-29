@@ -52,7 +52,16 @@ file that was distributed with this source code.
             var myLineChart = new Chart(ctx, {
                 type: 'line',
                 data: data,
-                options: [{}]
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
             });
         </script>
     {% endif %}

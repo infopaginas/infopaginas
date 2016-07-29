@@ -1,0 +1,83 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/AdminLTE/css/AdminLTE.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
+</head>
+
+<div>
+    {{ 'export.title.business_overview_report'|trans({}, 'AdminReportBundle') }},
+
+    <b>
+        {% if data['businessProfile']|length %}
+            {{ data['businessProfile'] }}
+        {% else %}
+            {{ 'export.title.all_businesses'|trans({}, 'AdminReportBundle') }}
+        {% endif %}
+    </b>
+</div>
+
+<br>
+
+<div class="box box-primary box-pdf">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class="sonata-ba-list-field-header">
+                <th colspan="2" class="export-date-period">
+                    {{ 'export.date_period'|trans({}, 'AdminReportBundle') }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ 'export.start_date'|trans({}, 'AdminReportBundle') }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ 'export.end_date'|trans({}, 'AdminReportBundle') }}
+            </td>
+        </tr>
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ data['datePeriod']['start'] }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ data['datePeriod']['end'] }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="box box-primary box-pdf">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class="sonata-ba-list-field-header">
+                <th>
+                    {{ 'list.label_date'|trans({}, 'AdminReportBundle') }}
+                </th>
+                <th>
+                    {{ 'list.label_impressions'|trans({}, 'AdminReportBundle') }}
+                </th>
+                <th>
+                    {{ 'list.label_views'|trans({}, 'AdminReportBundle') }}
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for element in data['results'] %}
+            <tr>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ element['date'] }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ element['impressions'] }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ element['views'] }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

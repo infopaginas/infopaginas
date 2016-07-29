@@ -53,6 +53,14 @@ class Exporter
                 $response = $this->container->get('domain_report.exporter.category_excel_exporter')
                     ->getResponse($code, $format, $params);
                 break;
+            case ReportInterface::CODE_PDF_BUSINESS_OVERVIEW_REPORT:
+                $response = $this->container->get('domain_report.exporter.business_overview_pdf_exporter')
+                    ->getResponse($code, $format, $params);
+                break;
+            case ReportInterface::CODE_EXCEL_BUSINESS_OVERVIEW_REPORT:
+                $response = $this->container->get('domain_report.exporter.business_overview_excel_exporter')
+                    ->getResponse($code, $format, $params);
+                break;
             default:
                 $filename = sprintf(
                     'export_%s_%s.%s',

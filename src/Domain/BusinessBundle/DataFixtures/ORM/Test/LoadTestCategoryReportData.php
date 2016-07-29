@@ -10,7 +10,7 @@ class LoadTestCategoryReportData extends OxaAbstractFixture
     /**
      * @var int
      */
-    protected $order = 5;
+    protected $order = 10;
 
     protected function loadData()
     {
