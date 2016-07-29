@@ -44,8 +44,8 @@ class BusinessOverviewReportRepository extends \Doctrine\ORM\EntityRepository
         // filter by date
         if (
             isset($params['date']) &&
-            isset($params['date']['start']) &&
-            isset($params['date']['end'])
+            !empty($params['date']['start']) &&
+            !empty($params['date']['end'])
         ) {
             $startDate = new \DateTime($params['date']['start']);
             $endDate =  new \DateTime($params['date']['end']);
