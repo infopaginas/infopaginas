@@ -48,7 +48,7 @@ class CategoryReportAdmin extends ReportAdmin
      * @var array
      */
     protected $datagridValues = array(
-        '_page'       => 0,
+        '_page'       => 1,
         '_per_page'   => 5,
         'datePeriod' => [
             'value' => AdminHelper::DATE_RANGE_CODE_LAST_WEEK

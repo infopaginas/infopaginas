@@ -272,91 +272,91 @@ businesses:
             - Mechanics
             - Dentists
 
-#    business_18:
-#        name: Romano's Macaroni Grill
-#        google_address: 525 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
-#        email: rst@test.com
-#        phone: +17872810909
-#        website: macgrillpr.com
-#        slogan: Just do it
-#        product: Lorem ipsum dolor sit amet.
-#        description: The famous Italian corner in San Juan. Our wood stove (the star of the house), without any gas is lighted every day to prepare pizzas. More than 25 varieties, plus calzones. We can replace the milk with a base of mashed potatoes. We also have  whole wheat dough prepared here every day. The most sought pizzas - Di Gregorio (pesto, chorizo, bruschettas) The Mexican (ground, cheese and more cheese), vegetables (many vegetables), Pesto (slices of fresh tomato and pesto, of course), Burger (ground, cheese, onion and cheddar) ... among many others. We have a divine salad; mezclun, walnuts, cranberries, garlic croutons, gorgonzola and mozzarella with homemade dijon vinaigrette. We also have our famous soups/creams low in calories. The chorizos, "low carb", and of course pizza integrated in more than 20 choices of toppings. Sangria with the acclaimed açaí, strawberries or pineapple ingredients.
-#        areas:
-#            - Toa Alta
-#            - Utuado
-#            - Villalba
-#        tags:
-#            - Jewelry
-#            - Cars
-#            - Food
-#        brands:
-#            - Audi
-#            - Aston Martin
-#            - Tesla
-#        payment_methods:
-#            - Visa
-#            - Master Card
-#            - PayPal
-#        categories:
-#            - Solicitors
-#            - Mechanics
-#            - Dentists
-#
-#    business_19:
-#        name: Taberna Boricua
-#        google_address: 418 Cll Agueybana, San Juan, 00918, Puerto Rico
-#        email: Chinchorreando@test.com
-#        phone: +17877655000
-#        website: www.google.com
-#        slogan: Just do it
-#        product: Lorem ipsum dolor sit amet.
-#        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
-#        areas:
-#            - Toa Alta
-#            - Utuado
-#            - Villalba
-#        tags:
-#            - Jewelry
-#            - Cars
-#            - Food
-#        brands:
-#            - Audi
-#            - Aston Martin
-#            - Tesla
-#        payment_methods:
-#            - Visa
-#            - Master Card
-#            - PayPal
-#        categories:
-#            - Solicitors
-#            - Mechanics
-#            - Dentists
-#
-#    business_20:
-#        name: PF Chang's China Bistro
-#        google_address:  527 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
-#        email: test@test.com
-#        phone: +17877710255
-#        website: pfchangspr.com
-#        slogan: Just do it
-#        product: Lorem ipsum dolor sit amet.
-#        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
-#        areas:
-#            - Toa Alta
-#            - Utuado
-#            - Villalba
-#        tags:
-#            - Jewelry
-#            - Cars
-#            - Food
-#        brands:
-#            - Audi
-#            - Aston Martin
-#            - Tesla
-#        payment_methods:
-#            - Visa
-#            - Master Card
-#            - PayPal
-#        categories:
-#            - Solicitors
-#            - Mechanics
+    business_18:
+        name: Romano's Macaroni Grill
+        google_address: 525 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
+        email: rst@test.com
+        phone: +17872810909
+        website: macgrillpr.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: The famous Italian corner in San Juan. Our wood stove (the star of the house), without any gas is lighted every day to prepare pizzas. More than 25 varieties, plus calzones. We can replace the milk with a base of mashed potatoes. We also have  whole wheat dough prepared here every day. The most sought pizzas - Di Gregorio (pesto, chorizo, bruschettas) The Mexican (ground, cheese and more cheese), vegetables (many vegetables), Pesto (slices of fresh tomato and pesto, of course), Burger (ground, cheese, onion and cheddar) ... among many others. We have a divine salad; mezclun, walnuts, cranberries, garlic croutons, gorgonzola and mozzarella with homemade dijon vinaigrette. We also have our famous soups/creams low in calories. The chorizos, "low carb", and of course pizza integrated in more than 20 choices of toppings. Sangria with the acclaimed açaí, strawberries or pineapple ingredients.
+        areas:
+            - Toa Alta
+            - Utuado
+            - Villalba
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
+            - Dentists
+
+    business_19:
+        name: Taberna Boricua
+        google_address: 418 Cll Agueybana, San Juan, 00918, Puerto Rico
+        email: Chinchorreando@test.com
+        phone: +17877655000
+        website: www.google.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
+        areas:
+            - Toa Alta
+            - Utuado
+            - Villalba
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
+            - Dentists
+
+    business_20:
+        name: PF Chang's China Bistro
+        google_address:  527 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
+        email: test@test.com
+        phone: +17877710255
+        website: pfchangspr.com
+        slogan: Just do it
+        product: Lorem ipsum dolor sit amet.
+        description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
+        areas:
+            - Toa Alta
+            - Utuado
+            - Villalba
+        tags:
+            - Jewelry
+            - Cars
+            - Food
+        brands:
+            - Audi
+            - Aston Martin
+            - Tesla
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Solicitors
+            - Mechanics
