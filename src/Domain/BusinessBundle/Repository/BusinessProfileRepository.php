@@ -312,11 +312,29 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $objects = $qb
             ->select('bp')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp')
-            ->andWhere($qb->expr()->notIn('bp', $activeSubscriptionQb->getDQL()))
+            ->andWhere($qb->expr()->in('bp', $activeSubscriptionQb->getDQL()))
             ->getQuery()
             ->getResult()
         ;
 
         return $objects;
+    }
+
+    /**
+     * Get business profiles which do not have active subscription
+     * @return BusinessProfile[]|null
+     */
+    public function getIndexedBusinessProfileIds()
+    {
+        $result = $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('bp.id')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp', 'bp.id')
+            ->getQuery()
+            ->getResult()
+        ;
+        
+        return array_keys($result);
     }
 }

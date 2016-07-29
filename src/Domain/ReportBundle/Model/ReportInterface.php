@@ -23,8 +23,8 @@ interface ReportInterface
     const CODE_PDF_CATEGORY_REPORT                  = 'pdf_category_report';
     const CODE_EXCEL_CATEGORY_REPORT                = 'excel_category_report';
 
-    const CODE_PDF_BUSINESS_PROFILE_VIEW_REPORT     = 'pdf_business_profile_view_report';
-    const CODE_EXCEL_BUSINESS_PROFILE_VIEW_REPORT   = 'excel_business_profile_view_report';
+    const CODE_PDF_BUSINESS_OVERVIEW_REPORT         = 'pdf_business_overview_report';
+    const CODE_EXCEL_BUSINESS_OVERVIEW_REPORT       = 'excel_business_overview_report';
 
     public static function getExportFormats();
 }

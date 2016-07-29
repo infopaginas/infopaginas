@@ -53,7 +53,7 @@ class SubscriptionPdfExporter extends PdfExporterModel
             ->getSubscriptionsQuantities($objects);
 
         $html = $this->templateEngine->render(
-            'DomainReportBundle:Admin/SubscriptionReport:report.html.twig',
+            'DomainReportBundle:Admin/SubscriptionReport:pdf_report.html.twig',
             array(
                 'results' => $objects,
                 'subscriptionData' => $subscriptionData

@@ -40,7 +40,6 @@
     </table>
 </div>
 
-
 <div class="box box-primary box-pdf">
     <table class="table table-bordered table-striped">
         <thead>
@@ -67,18 +66,19 @@
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
                     {{ object.date|date('d.m.Y') }}
                 </td>
+
                 {% for subscriptionReportSubscription in object.subscriptionReportSubscriptions %}
                     <td class="sonata-ba-list-field sonata-ba-list-field-string">
                         {{ subscriptionReportSubscription.quantity }}
                     </td>
                 {% endfor %}
+
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
                     {{ object.total }}
                 </td>
             </tr>
         {% endfor %}
         <tr class="list-subscription-report-total">
-
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
                 {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}
             </td>
@@ -88,6 +88,7 @@
                     {{ subscription['quantity'] }}
                 </td>
             {% endfor %}
+
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
                 {{ subscriptionData['total_quantity'] }}
             </td>

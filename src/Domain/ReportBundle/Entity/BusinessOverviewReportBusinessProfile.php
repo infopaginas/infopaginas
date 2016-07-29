@@ -8,14 +8,17 @@
 
 namespace Domain\ReportBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Domain\ReportBundle\Model\BusinessOverviewReportTypeInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 
 /**
  * BusinessOverviewReportBusinessProfile
  *
- * @ORM\Table(name="business_overview_report")
+ * @ORM\Table(name="business_overview_report_business_profile")
  * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\BusinessOverviewReportBusinessProfileRepository")
  */
 class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, BusinessOverviewReportTypeInterface
@@ -33,16 +36,17 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="date", type="date")
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="datetime", type="datetime")
      */
-    protected $date;
+    protected $datetime;
 
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Domain\ReportBundle\Entity\BusinessOverviewReport",
-     *     inversedBy="businessOverviewReportBusinessProfile"
+     *     inversedBy="businessOverviewReportBusinessProfiles"
      * )
-     * @ORM\JoinColumn(name="business_overview_report_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_overview_report_id", referencedColumnName="id", nullable=false)
      */
     protected $businessOverviewReport;
 
@@ -50,7 +54,7 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false)
      */
     protected $businessProfile;
 
@@ -60,6 +64,11 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
      * @ORM\Column(name="type", type="integer", nullable=false)
      */
     protected $type;
+
+    public function __toString()
+    {
+        return $this->getBusinessProfile()->getName();
+    }
 
     /**
      * @return array
@@ -72,11 +81,15 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
         ];
     }
 
+    /**
+     * @return mixed
+     */
     public function getTypeValue()
     {
-//        $types = self::getTypes();
-    }
+        $types = self::getTypes();
 
+        return $types[$this->getType()];
+    }
 
     /**
      * Get id
@@ -88,4 +101,99 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
         return $this->id;
     }
 
+    /**
+     * Set type
+     *
+     * @param integer $type
+     *
+     * @return BusinessOverviewReportBusinessProfile
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return integer
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set businessOverviewReport
+     *
+     * @param BusinessOverviewReport $businessOverviewReport
+     *
+     * @return BusinessOverviewReportBusinessProfile
+     */
+    public function setBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport = null)
+    {
+        $this->businessOverviewReport = $businessOverviewReport;
+
+        return $this;
+    }
+
+    /**
+     * Get businessOverviewReport
+     *
+     * @return \Domain\ReportBundle\Entity\BusinessOverviewReport
+     */
+    public function getBusinessOverviewReport()
+    {
+        return $this->businessOverviewReport;
+    }
+
+    /**
+     * Set businessProfile
+     *
+     * @param BusinessProfile $businessProfile
+     *
+     * @return BusinessOverviewReportBusinessProfile
+     */
+    public function setBusinessProfile(BusinessProfile $businessProfile = null)
+    {
+        $this->businessProfile = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Get businessProfile
+     *
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function getBusinessProfile()
+    {
+        return $this->businessProfile;
+    }
+
+    /**
+     * Set datetime
+     *
+     * @param \DateTime $datetime
+     *
+     * @return BusinessOverviewReportBusinessProfile
+     */
+    public function setDatetime($datetime)
+    {
+        $this->datetime = $datetime;
+
+        return $this;
+    }
+
+    /**
+     * Get datetime
+     *
+     * @return \DateTime
+     */
+    public function getDatetime()
+    {
+        return $this->datetime;
+    }
 }

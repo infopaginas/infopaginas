@@ -8,30 +8,27 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
-use Domain\ReportBundle\Model\ExporterInterface;
-use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
- * Class CategoryPdfExporter
+ * Class BusinessOverviewPdfExporter
  * @package Domain\ReportBundle\Export
  */
-class CategoryPdfExporter extends PdfExporterModel
+class BusinessOverviewPdfExporter extends PdfExporterModel
 {
     /**
-     * @var CategoryReportManager $categoryReportManager
+     * @var BusinessOverviewReportManager $businessOverviewReportManager
      */
-    protected $categoryReportManager;
+    protected $businessOverviewReportManager;
 
     /**
-     * @param CategoryReportManager $service
+     * @param BusinessOverviewReportManager $service
      */
-    public function setCategoryReportManager(CategoryReportManager $service)
+    public function setBusinessOverviewReportManager(BusinessOverviewReportManager $service)
     {
-        $this->categoryReportManager = $service;
+        $this->businessOverviewReportManager = $service;
     }
 
     /**
@@ -44,19 +41,19 @@ class CategoryPdfExporter extends PdfExporterModel
     {
         $filename = sprintf(
             '%s_%s.%s',
-            'category_report',
+            'business_overview_report',
             date('Y_m_d_H_i_s', strtotime('now')),
             $format
         );
 
-        $categoryData = $this->categoryReportManager
-            ->getCategoryVisitorsQuantitiesByFilterParams($filterParams);
+        $businessOverviewData = $this->businessOverviewReportManager
+            ->getBusinessOverviewDataByFilterParams($filterParams);
 
         $html = $this->templateEngine->render(
-            'DomainReportBundle:Admin/CategoryReport:pdf_report.html.twig',
-            [
-                'categoryData' => $categoryData,
-            ]
+            'DomainReportBundle:Admin/BusinessOverviewReport:pdf_report.html.twig',
+            array(
+                'data' => $businessOverviewData
+            )
         );
 
         $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
