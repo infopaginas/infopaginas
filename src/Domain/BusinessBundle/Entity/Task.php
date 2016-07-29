@@ -304,4 +304,22 @@ class Task implements DefaultEntityInterface, TaskInterface
         $this->review = $review;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        if ($this->getId()) {
+            $result = sprintf(
+                '[%s] Task: %s',
+                TaskType::getChoices()[$this->getType()],
+                $this->getBusinessProfile()->getName()
+            );
+        } else {
+            $result = 'New Task';
+        }
+
+        return $result;
+    }
 }

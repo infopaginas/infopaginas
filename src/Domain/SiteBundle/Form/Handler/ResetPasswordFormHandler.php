@@ -10,6 +10,8 @@ namespace Domain\SiteBundle\Form\Handler;
 
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
+use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class ResetPasswordFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class ResetPasswordFormHandler
+class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
     const ERROR_EMPTY_TOKEN = 'Error: Empty token.';
 
@@ -80,35 +82,6 @@ class ResetPasswordFormHandler
         }
 
         return false;
-    }
-
-    /**
-     * @param null $form
-     * @return array
-     */
-    public function getErrors($form = null) : array
-    {
-        $errors = [];
-
-        if ($form === null) {
-            $form = $this->form;
-        }
-
-        if ($form->count()) {
-            /** @var FormInterface $child */
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrors($child);
-                }
-            }
-        } else {
-            /** @var FormError $error */
-            foreach ($form->getErrors() as $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
     }
 
     /**

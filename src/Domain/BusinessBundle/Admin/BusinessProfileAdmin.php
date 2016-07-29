@@ -2,21 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
-use Doctrine\Common\Collections\Collection;
-use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Review\BusinessReview;
-use Domain\BusinessBundle\Manager\SonataQueryManager;
-use Gedmo\Loggable\Entity\LogEntry;
-use Geocoder\HttpAdapter\CurlHttpAdapter;
-use Ivory\GoogleMap\Base\Coordinate;
-use Ivory\GoogleMap\Controls\ControlPosition;
-use Ivory\GoogleMap\Overlays\Animation;
-use Ivory\GoogleMap\Overlays\Marker;
-use Ivory\GoogleMap\Overlays\Polyline;
-use Ivory\GoogleMap\Places\AutocompleteComponentRestriction;
-use Ivory\GoogleMap\Places\AutocompleteType;
-use Ivory\GoogleMap\Services\Geocoding\Geocoder;
-use Ivory\GoogleMap\Services\Geocoding\GeocoderProvider;
+use Doctrine\ORM\QueryBuilder;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -25,8 +11,13 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
-use Sonata\DoctrineORMAdminBundle\Model\ModelManager;
+use Sonata\CoreBundle\Form\Type\BooleanType;
+use Sonata\CoreBundle\Form\Type\EqualType;
 
+/**
+ * Class BusinessProfileAdmin
+ * @package Domain\BusinessBundle\Admin
+ */
 class BusinessProfileAdmin extends OxaAdmin
 {
     /**
@@ -341,5 +332,25 @@ class BusinessProfileAdmin extends OxaAdmin
                 $addressManager->setGoogleAddress($addressResult['result'], $object);
             }
         }
+    }
+
+    /**
+     * Modify list results
+     *
+     * @param string $context
+     * @return \Sonata\AdminBundle\Datagrid\ProxyQueryInterface
+     */
+    public function createQuery($context = 'list')
+    {
+        /** @var QueryBuilder $query */
+        $query = parent::createQuery($context);
+
+        // show only none locked records
+        $query->andWhere(
+            $query->expr()->eq($query->getRootAliases()[0] . '.locked', ':locked')
+        );
+        $query->setParameter('locked', false);
+
+        return $query;
     }
 }
