@@ -64,7 +64,7 @@ class CategoryReportAdmin extends ReportAdmin
             ->remove('datePeriod')
             ->remove('categoryReportCategories.date')
             ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
-            ->add('categoryReportCategories.date','doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('categoryReportCategories.date', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
         ;
     }
 
@@ -78,7 +78,7 @@ class CategoryReportAdmin extends ReportAdmin
             ->getContainer()
             ->get('domain_report.manager.category_report_manager')
             ->getCategoryVisitorsQuantitiesByFilterParams($filterParam);
-        
+
         $this->colors = ChartHelper::getColors();
 
         $listMapper

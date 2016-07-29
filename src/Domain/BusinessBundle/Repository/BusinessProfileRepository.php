@@ -308,7 +308,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         $qb = $this->getEntityManager()->createQueryBuilder();
-        
+
         $objects = $qb
             ->select('bp')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp')
@@ -334,7 +334,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult()
         ;
-        
+
         return array_keys($result);
     }
 }
