@@ -4,6 +4,32 @@ define(['jquery', 'tools/slick'], function ($) {
     var comparison = function() {
     };
 
+    comparison.prototype.heightSetter = function(){
+        comparison.prototype.resetHeightSetter();
+        var listOfCardChildren= $(".card-item")[0].children;
+        var listOfTitles = $("#compare-block")[0].children;
+        for(var i=0; i<listOfCardChildren.length; i++){
+            var elements = document.getElementsByClassName(listOfCardChildren[i].className);
+            var maxHeight =  Math.max.apply(null, $.makeArray( elements ).map(function (el) {
+                return el.clientHeight;
+            }));
+            for(var j=0; j<elements.length; j++){
+                $(elements[j]).height(maxHeight);
+            }
+            $(listOfTitles[i]).height(maxHeight)
+        }
+    };
+
+    comparison.prototype.resetHeightSetter = function(){
+        var listOfCardChildren= $(".card-item")[0].children;
+        for(var i=0; i<listOfCardChildren.length; i++){
+            var elements = document.getElementsByClassName(listOfCardChildren[i].className);
+            for(var j=0; j<elements.length; j++){
+                $(elements[j])[0].style.height = "";
+            }
+        }
+    };
+
     comparison.prototype.comparisonCarousel = function() {
         var $carousel = $( '.carousel-property' ),
             nextButton = $( '.nextSlide' ),
@@ -32,6 +58,7 @@ define(['jquery', 'tools/slick'], function ($) {
         closeButton.on( 'click', function() {
             $( this ).closest( '.card-item' ).remove();
             sliderWrap.width( cardItemWidth * ( $( '.card-item').length - 1));
+            comparison.prototype.heightSetter();
         });
 
         $carousel.on( 'swipe', function(event, slick, direction){
@@ -57,6 +84,7 @@ define(['jquery', 'tools/slick'], function ($) {
 
     comparison.prototype.run = function() {
         this.comparisonCarousel();
+        this.heightSetter();
     };
 
     $(function () {
