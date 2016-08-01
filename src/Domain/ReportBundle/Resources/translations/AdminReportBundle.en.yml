@@ -1,13 +1,28 @@
 list.label_date: Date
+filter.label_date: Date
+filter.label_business_profile: Business Profile
 list.label_total: Total
 list.content_no_results: No results
-pdf_subscription_report: Export subscriptions to PDF
-excel_subscription_report: Export subscriptions to Excel
+pdf_subscription_report: Subscription report to PDF
+excel_subscription_report: Subscription report to Excel
+pdf_category_report: Category report to PDF
+excel_category_report: Category report to Excel
+pdf_business_overview_report: Business overview report to PDF
+excel_business_overview_report: Business overview report to Excel
 export.title.subscription_report: Subscription Report
+export.title.category_report: Category Report
+export.title.business_overview_report: Business Overview Report
+export.title.business_overview_report_for: Business Overview Report for
+export.title.all_businesses: All businesses
 export.title.active_sheet: Main
 export.date_period: Date period
 export.start_date: Start date
 export.end_date: End date
+list.label_category: Category
+list.label_category_visitors: Category visitors
+list.label_views: Views
+list.label_impressions: Impressions
+all: All
 
 
 

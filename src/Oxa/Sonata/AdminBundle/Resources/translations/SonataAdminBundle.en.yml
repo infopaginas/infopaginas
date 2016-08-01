@@ -25,9 +25,11 @@ export_xls: Export to Excel
 filter.label.today: Today
 filter.label.last_week: Last week
 filter.label.last_month: Last month
+filter.label.last_year: Last year
 filter.label.custom: Custom
-
-
+label_export_download: Export
+filter.label.period.daily: Daily
+filter.label.period.per_month: Per Month
 
 
 

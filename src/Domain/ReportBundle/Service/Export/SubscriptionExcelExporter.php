@@ -255,6 +255,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
                     ->setRowHeight(15)
                 ;
 
+                // set font weight as bold to the last line
                 if ($c == $initCell || $c == $cell - 1) {
                     $activeSheet
                         ->getStyle($r.$c)

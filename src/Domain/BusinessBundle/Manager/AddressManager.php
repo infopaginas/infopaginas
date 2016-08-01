@@ -8,13 +8,8 @@
 
 namespace Domain\BusinessBundle\Manager;
 
-use Doctrine\DBAL\Exception\InvalidArgumentException;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Ivory\GoogleMap\Exception\Exception;
-use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
 /**

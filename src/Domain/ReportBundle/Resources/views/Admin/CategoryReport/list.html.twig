@@ -1,0 +1,71 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends 'OxaSonataAdminBundle:CRUD:list.html.twig' %}
+
+{% block list_table %}
+
+    {% if admin.categoryData['categories']|length > 1 %}
+        <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
+        <div class="box box-primary">
+            <canvas id="subscriptionReportChart" width="400" height="70"></canvas>
+        </div>
+        <script>
+            var ctx = document.getElementById("subscriptionReportChart");
+            var data = {
+                labels: {{ admin.categoryData['categories']|reverse|json_encode|raw }},
+                datasets: [
+                    {% set lineColor = admin.colors|first %}
+                    {
+                        label: "Visitors",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "{{ lineColor }}",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.categoryData['categoryVisitors']|reverse|json_encode|raw }},
+                    }
+                ]
+            };
+            var myLineChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                bezierCurve: true,
+                scaleShowVerticalLines: true,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+
+    {{  parent() }}
+
+{% endblock %}
+

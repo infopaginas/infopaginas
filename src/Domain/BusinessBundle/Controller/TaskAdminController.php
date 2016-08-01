@@ -2,19 +2,18 @@
 
 namespace Domain\BusinessBundle\Controller;
 
-use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Repository\BusinessProfileRepository;
-use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * Class TaskAdminController
+ * @package Domain\BusinessBundle\Controller
+ */
 class TaskAdminController extends CRUDController
 {
     private $tasksManager;

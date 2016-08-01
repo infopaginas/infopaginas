@@ -52,7 +52,7 @@ class ProfileController extends Controller
 
         $businessProfileForm = $this->getBusinessProfileForm($businessProfile);
 
-        //return form only for AJAX requests
+        //return form-only for AJAX requests
         if (!$request->isXmlHttpRequest()) {
             $template = 'DomainBusinessBundle:Profile:edit.html.twig';
         } else {

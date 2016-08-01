@@ -78,8 +78,7 @@ trait DatetimePeriodTrait
     {
         $datetime = new \DateTime('now');
         $diff = $datetime->diff($this->getEndDate());
-        
+
         return boolval($diff->invert);
     }
 }
-

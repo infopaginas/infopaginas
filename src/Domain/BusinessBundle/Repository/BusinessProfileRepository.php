@@ -4,7 +4,9 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use FOS\UserBundle\Model\UserInterface;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
@@ -64,7 +66,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $businessProfiles;
     }
-    
+
     public function search(SearchDTO $searchParams)
     {
         $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
@@ -77,15 +79,12 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
 
-        $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
-
-        $this->addCityRankQueryBuilder($queryBuilder);
-
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+
+        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder);
+
         $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
         $this->addOrderByRankQueryBuilder($queryBuilder);
-        $this->addOrderByCityRankQueryBuilder($queryBuilder);
-        $this->addOrderByAreaRankQueryBuilder($queryBuilder);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
@@ -95,6 +94,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
+    }
+
+    public function searchNeighborhood(SearchDTO $searchParams)
+    {
+        // TODO functionality
+
+        return $this->search($searchParams);
     }
 
     public function searchAutosuggestWithBuilder($searchQuery, $limit = 5, $offset = 0)
@@ -115,8 +121,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
-    public function searchWithQueryBuilder($searchQuery, $location, $categoryFilter = null, $neighborhoodFilter = null, $limit = 20, $offset = 0)
-    {
+    public function searchWithQueryBuilder(
+        $searchQuery,
+        $location,
+        $categoryFilter = null,
+        $neighborhoodFilter = null,
+        $limit = 20,
+        $offset = 0
+    ) {
         $searchQuery    = $this->splitPhraseToPlain($searchQuery);
         $searchLocation = $this->splitPhraseToPlain($location);
 
@@ -138,7 +150,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $categoryFilter = $this->splitPhraseToPlain($categoryFilter);
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
-        
+
 
         $results = $queryBuilder->getQuery()->getResult();
 
@@ -164,22 +176,29 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
         $queryBuilder->select('bp')
-        ->from('DomainBusinessBundle:BusinessProfile', 'bp')
-        ->groupBy('bp.id');
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->groupBy('bp.id');
 
         return $queryBuilder;
     }
 
-    protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(QueryBuilder &$queryBuilder, $searchQuery, $location)
-    {
+    protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(
+        QueryBuilder &$queryBuilder,
+        $searchQuery,
+        $location
+    ) {
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
+            ->join('bp.areas', 'a')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
-            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true')
-            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
-            ->orWhere('TSQUERY( bp.searchCityFts, :searchLocation) = true')
+            ->where('TSQUERY( c.searchFts, :searchQuery) = true')
+            ->orWhere('TSQUERY( bp.searchFts, :searchQuery) = true')
+            ->andWhere('
+                TSQUERY( a.searchFts, :searchLocation) = true
+                OR
+                TSQUERY( bp.searchCityFts, :searchLocation) = true
+            ')
             ->setParameter('searchQuery', $searchQuery)
             ->setParameter('searchLocation', $location);
     }
@@ -260,5 +279,62 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->andWhere('TSQUERY( c.searchFts, :categoryFilter) = true')
             ->setParameter('categoryFilter', $category);
+    }
+
+    protected function addOrderBySubscriptionPlanQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder
+            ->addSelect('sp.rank as subscription')
+            ->leftJoin('bp.subscriptions', 's')
+            ->leftJoin('s.subscriptionPlan', 'sp')
+            ->andWhere('s.status = :subscriptionStatus')
+            ->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE)
+            ->addGroupBy('sp.rank')
+            ->addOrderBy('subscription', 'DESC');
+    }
+
+    /**
+     * Get business profiles which do not have active subscription
+     * @return BusinessProfile[]|null
+     */
+    public function getBusinessWithoutActiveSubscription()
+    {
+        $activeSubscriptionQb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('b')
+            ->from('DomainBusinessBundle:BusinessProfile', 'b')
+            ->leftJoin('b.subscriptions', 's')
+            ->andWhere('s.status = ' . StatusInterface::STATUS_ACTIVE)
+        ;
+
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $objects = $qb
+            ->select('bp')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->andWhere($qb->expr()->notIn('bp', $activeSubscriptionQb->getDQL()))
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $objects;
+    }
+
+    /**
+     * Get business profiles ids array
+     * @return BusinessProfile[]|null
+     */
+    public function getIndexedBusinessProfileIds()
+    {
+        $result = $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('bp.id')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp', 'bp.id')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return array_keys($result);
     }
 }

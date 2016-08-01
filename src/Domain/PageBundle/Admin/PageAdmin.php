@@ -63,19 +63,28 @@ class PageAdmin extends OxaAdmin
             ->with('General')
                 ->add('title')
                 ->add('description')
-                ->add('image', 'sonata_type_model_list', [
+                ->add(
+                    'image',
+                    'sonata_type_model_list',
+                    [
                         'required' => false,
                         'btn_delete' => true,
-                    ], [
+                    ],
+                    [
                         'link_parameters' => [
-                        'context' => OxaMediaInterface::CONTEXT_PAGE,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            'context' => OxaMediaInterface::CONTEXT_PAGE,
+                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                        ]
                     ]
-                ])
-                ->add('template', 'sonata_type_model_list', [
-                    'required' => false,
-                    'btn_add' => false,
-                ])
+                )
+                ->add(
+                    'template',
+                    'sonata_type_model_list',
+                    [
+                        'required' => false,
+                        'btn_add' => false,
+                    ]
+                )
             ->end()
             ->with('Status')
                 ->add('isPublished')

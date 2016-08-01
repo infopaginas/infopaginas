@@ -11,6 +11,8 @@ namespace Domain\SiteBundle\Form\Handler;
 use FOS\UserBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
+use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class ResetPasswordFormHandler
  * @package Domain\SiteBundle\Form\Handler
  */
-class ResetPasswordRequestFormHandler
+class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
     const ERROR_USER_NOT_FOUND = 'User %s doesn\'t exists';
 
@@ -76,35 +78,6 @@ class ResetPasswordRequestFormHandler
         }
 
         return false;
-    }
-
-    /**
-     * @param null $form
-     * @return array
-     */
-    public function getErrors($form = null) : array
-    {
-        $errors = [];
-
-        if ($form === null) {
-            $form = $this->form;
-        }
-
-        if ($form->count()) {
-            /** @var FormInterface $child */
-            foreach ($form as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrors($child);
-                }
-            }
-        } else {
-            /** @var FormError $error */
-            foreach ($form->getErrors() as $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
     }
 
     /**

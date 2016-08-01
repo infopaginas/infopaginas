@@ -74,12 +74,29 @@ class SearchManager extends Manager
 
     public function search(SearchDTO $searchParams) : SearchResultsDTO
     {
-        $results            = $this->businessProfilehManager->search($searchParams);
+        $results      = $this->businessProfilehManager->search($searchParams);
+
+        if (empty($results)) {
+            $results  = $this->businessProfilehManager->searchNeighborhood($searchParams);
+        }
+
         //$totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
         $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
         $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
 
-        return SearchDataUtil::buildResponceDTO($businessProfiles, count($results), $searchParams->page, count($results)/$searchParams->limit, $categories, array());
+        $totalResultsCount   = count($results);
+        $pagesCount          = $totalResultsCount/$searchParams->limit;
+
+        $response = SearchDataUtil::buildResponceDTO(
+            $businessProfiles,
+            $totalResultsCount,
+            $searchParams->page,
+            $pagesCount,
+            $categories,
+            array()
+        );
+
+        return $response;
     }
 
     public function getSearchDTO(Request $request) : SearchDTO
@@ -90,7 +107,16 @@ class SearchManager extends Manager
         $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
 
+        $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
 
-        return SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+        if ($category = SearchDataUtil::getCategoryFromRequest($request)) {
+            $searchDTO->setCategory($category);
+        }
+
+        if ($neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request)) {
+            $searchDTO->setNeighborhood($neighborhood);
+        }
+
+        return $searchDTO;
     }
 }
