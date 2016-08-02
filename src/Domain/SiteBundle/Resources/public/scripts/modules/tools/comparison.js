@@ -2,32 +2,36 @@ define(['jquery', 'tools/slick'], function ($) {
     'use strict';
 
     var comparison = function() {
+        this.$ = function( selector ) {
+            return $( '.compare-wrapper' ).find( selector );
+        }
     };
 
     comparison.prototype.heightSetter = function(){
         comparison.prototype.resetHeightSetter();
-        var listOfCardChildren= $(".card-item")[0].children;
-        var listOfTitles = $("#compare-block")[0].children;
-        for(var i=0; i<listOfCardChildren.length; i++){
-            var elements = document.getElementsByClassName(listOfCardChildren[i].className);
-            var maxHeight =  Math.max.apply(null, $.makeArray( elements ).map(function (el) {
-                return el.clientHeight;
-            }));
-            for(var j=0; j<elements.length; j++){
-                $(elements[j]).height(maxHeight);
-            }
-            $(listOfTitles[i]).height(maxHeight)
-        }
+        var listOfCardChildren= $(".card-item").first().children();
+        var listOfTitles = $("#compare-block").first().children();
+        listOfCardChildren.each(function(i, el){
+            var elementClass = el.className.split(' ').join('.');
+            var elements = $('.' + elementClass);
+            var maxHeight = Math.max.apply(null, elements.map(function ()
+            {
+                return $(this).height();
+            }).get());
+            elements.height(maxHeight);
+            $(listOfTitles[i]).height(maxHeight);
+        });
     };
 
     comparison.prototype.resetHeightSetter = function(){
-        var listOfCardChildren= $(".card-item")[0].children;
-        for(var i=0; i<listOfCardChildren.length; i++){
-            var elements = document.getElementsByClassName(listOfCardChildren[i].className);
-            for(var j=0; j<elements.length; j++){
-                $(elements[j])[0].style.height = "";
-            }
-        }
+        var listOfCardChildren= $(".card-item").first().children();
+        listOfCardChildren.each(function(i, el){
+            var elementClass = el.className.split(' ').join('.');
+            var elements = $('.' + elementClass);
+            elements.each(function(i, el){
+                el.style.height = "";
+            })
+        });
     };
 
     comparison.prototype.comparisonCarousel = function() {
