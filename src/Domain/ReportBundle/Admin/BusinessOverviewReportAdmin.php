@@ -42,12 +42,12 @@ class BusinessOverviewReportAdmin extends ReportAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $filterParam = $this->getDatagrid()->getValues();
-        
+
         $this->businessOverviewData = $this->getConfigurationPool()
             ->getContainer()
             ->get('domain_report.manager.business_overview_report_manager')
             ->getBusinessOverviewDataByFilterParams($filterParam);
-        
+
         $this->colors = ChartHelper::getColors();
 
         $listMapper
@@ -67,7 +67,7 @@ class BusinessOverviewReportAdmin extends ReportAdmin
 
     /**
      * Manage filter parameters
-     * 
+     *
      * @return array
      */
     public function getFilterParameters()

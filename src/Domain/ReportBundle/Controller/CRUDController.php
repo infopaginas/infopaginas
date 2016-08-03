@@ -14,7 +14,7 @@ class CRUDController extends Controller
 {
     /**
      * Customize export action
-     * 
+     *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\StreamedResponse
      */
@@ -50,7 +50,7 @@ class CRUDController extends Controller
                 )
             );
         }
-        
+
         // get pager params from request to have them in export services
         $parameters = array_merge(
             $this->admin->getFilterParameters(),

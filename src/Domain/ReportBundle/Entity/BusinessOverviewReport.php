@@ -79,7 +79,7 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     {
         $this->businessOverviewReportBusinessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     public function getViews(int $businessId = null)
     {
         $count = 0;

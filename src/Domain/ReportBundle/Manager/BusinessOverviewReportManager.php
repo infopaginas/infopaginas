@@ -96,7 +96,10 @@ class BusinessOverviewReportManager extends DefaultManager
             /** @var BusinessOverviewReport $object*/
 
             // define date format
-            if ( isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
+            if (
+                isset($params['periodOption']) &&
+                $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
+            ) {
                 $date = $object->getDate()->format(AdminHelper::DATE_MONTH_FORMAT);
             } else {
                 $date = $object->getDate()->format(AdminHelper::DATE_FORMAT);

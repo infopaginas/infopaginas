@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\ReportBundle\Repository;
+
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 /**
@@ -35,7 +36,7 @@ class BusinessOverviewReportRepository extends \Doctrine\ORM\EntityRepository
         if (!isset($params['periodOption']) || $params['periodOption'] != AdminHelper::PERIOD_OPTION_CODE_DAILY) {
             // manage pagination
             if (isset($params['perPage']) && isset($params['page'])) {
-                $first = ( $params['page'] - 1) * $params['perPage'];
+                $first = ($params['page'] - 1) * $params['perPage'];
                 $query->setMaxResults($params['perPage']);
                 $query->setFirstResult($first);
             }
