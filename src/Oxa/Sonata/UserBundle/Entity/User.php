@@ -203,7 +203,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      */
     public function setLastname($lastname)
     {
-        $this->lastname = trim($lastname);
+        $this->lastname = $lastname;
         return $this;
     }
 

@@ -147,7 +147,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Map')
                     ->add('useMapAddress', null, [
-//                        'mapped' => false,
                         'label' => 'Update address using map coordinates'
                     ])
                     ->add('latitude', null, [
@@ -160,7 +159,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])
-
             ->end()
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', ['by_reference' => false], [

@@ -231,30 +231,4 @@ class UserAdmin extends OxaAdmin
     {
         return $this->userManager;
     }
-
-    /**
-     * @param ErrorElement $errorElement
-     * @param mixed $object
-     * @return null
-     */
-    public function validate(ErrorElement $errorElement, $object)
-    {
-        $errorElement
-            ->with('first_name')
-                ->addViolation('fffff')
-                ->assertNotBlank()
-                ->assertNotNull()
-            ->end()
-            ->with('firstName')
-                ->addViolation('fffff')
-                ->assertNotBlank()
-                ->assertNotNull()
-            ->end()
-            ->with('firstname')
-                ->addViolation('fffff')
-                ->assertNotBlank()
-                ->assertNotNull()
-            ->end()
-        ;
-    }
 }
