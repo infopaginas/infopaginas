@@ -33,7 +33,7 @@ class BusinessOverviewReportRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         // do not use pagination for Per month filter option
-        if (!isset($params['periodOption']) || $params['periodOption'] != AdminHelper::PERIOD_OPTION_CODE_DAILY) {
+        if (!isset($params['periodOption']) || $params['periodOption'] != AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
             // manage pagination
             if (isset($params['perPage']) && isset($params['page'])) {
                 $first = ($params['page'] - 1) * $params['perPage'];
