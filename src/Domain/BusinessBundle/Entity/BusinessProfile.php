@@ -21,8 +21,13 @@ use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
+
+use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
+use Symfony\Component\Validator\Exception\ValidatorException;
+
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,10 +39,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
-class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
+class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, GeolocationInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use LocationTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
@@ -387,20 +393,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @Assert\NotBlank()
      */
     protected $zipCode;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="latitude", type="float", nullable=true)
-     */
-    protected $latitude;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="longitude", type="float", nullable=true)
-     */
-    protected $longitude;
 
     /**
      * @var string
@@ -1440,54 +1432,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getCity()
     {
         return $this->city;
-    }
-
-    /**
-     * Set latitude
-     *
-     * @param string $latitude
-     *
-     * @return BusinessProfile
-     */
-    public function setLatitude($latitude)
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    /**
-     * Get latitude
-     *
-     * @return string
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * Set longitude
-     *
-     * @param string $longitude
-     *
-     * @return BusinessProfile
-     */
-    public function setLongitude($longitude)
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    /**
-     * Get longitude
-     *
-     * @return string
-     */
-    public function getLongitude()
-    {
-        return $this->longitude;
     }
 
     /**

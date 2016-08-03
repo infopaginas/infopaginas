@@ -51,6 +51,7 @@ class AppKernel extends Kernel
             new \JMaitan\SonataMediaCropBundle\JMaitanSonataMediaCropBundle(),
             new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            new Spine\TrigonometricDQLBundle\SpineTrigonometricDQLBundle(),
             
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),

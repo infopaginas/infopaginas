@@ -9,7 +9,9 @@ use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * BusinessProfileRepository
@@ -78,18 +80,22 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
+        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
-        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder);
+        $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
+        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
-        $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
-        $this->addOrderByRankQueryBuilder($queryBuilder);
+        $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
+        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
+
+       
 
         $results = $queryBuilder->getQuery()->getResult();
 
@@ -250,28 +256,34 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->setFirstResult($offset);
     }
 
-    protected function addOrderByRankQueryBuilder(QueryBuilder &$queryBuilder)
+    protected function addOrderByRankQueryBuilder(QueryBuilder &$queryBuilder, $order)
     {
         return $queryBuilder
-            ->addOrderBy('rank', 'DESC');
+            ->addOrderBy('rank', $order);
     }
 
-    protected function addOrderByCategoryRankQueryBuilder(QueryBuilder &$queryBuilder)
+    protected function addOrderByCategoryRankQueryBuilder(QueryBuilder &$queryBuilder, $order)
     {
         return $queryBuilder
-            ->addOrderBy('rank_c', 'DESC');
+            ->addOrderBy('rank_c', $order);
     }
 
-    protected function addOrderByCityRankQueryBuilder(QueryBuilder &$queryBuilder)
+    protected function addOrderByCityRankQueryBuilder(QueryBuilder &$queryBuilder, $order)
     {
         return $queryBuilder
-            ->addOrderBy('rank_city', 'DESC');
+            ->addOrderBy('rank_city', $order);
     }
 
-    protected function addOrderByAreaRankQueryBuilder(QueryBuilder &$queryBuilder)
+    protected function addOrderByAreaRankQueryBuilder(QueryBuilder &$queryBuilder, $order)
     {
         return $queryBuilder
-            ->addOrderBy('rank_a', 'DESC');
+            ->addOrderBy('rank_a', $order);
+    }
+
+    protected function addOrderByDistanceQueryBuilder(QueryBuilder &$queryBuilder, $order)
+    {
+        return $queryBuilder
+            ->addOrderBy('distance', $order);
     }
 
     protected function addCategoryFilterToQueryBuilder(QueryBuilder &$queryBuilder, $category)
@@ -345,5 +357,27 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         return array_keys($result);
+    }
+
+    protected function addDistanceBetweenPointsQueryBuilder(QueryBuilder &$queryBuilder, LocationValueObject $location)
+    {
+        return $queryBuilder
+            ->addSelect('2 * 6371 * sin (
+                sqrt (
+                    ( 1 - cos ( 
+                        (bp.latitude - :userLatitude) * PI()/180
+                        )
+                    ) / 2
+                    +
+                    cos (:userLatitude * PI()/180) 
+                    *
+                    cos (bp.latitude * PI()/180)
+                    *
+                    ( 1 - cos( ( bp.longitude - :userLongitude ) * PI()/180 ) ) / 2 
+                
+                )
+            ) AS distance')
+            ->setParameter('userLatitude', $location->lat)
+            ->setParameter('userLongitude', $location->lng);
     }
 }

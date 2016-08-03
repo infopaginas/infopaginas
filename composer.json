@@ -39,7 +39,8 @@
         "gkovrey/postgres-search-bundle": "^0.1.0",
         "liuggio/excelbundle": "v2.1.0",
         "spraed/pdf-generator-bundle": "v1.0",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "gkovrey/spine-trigonometric-dql-bundle": "^0.1.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
