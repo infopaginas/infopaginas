@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Validator\ErrorElement;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserAdmin extends OxaAdmin
@@ -59,7 +60,6 @@ class UserAdmin extends OxaAdmin
     {
         $listMapper
             ->addIdentifier('id')
-            ->addIdentifier('username')
             ->addIdentifier('firstname')
             ->addIdentifier('lastname')
             ->add('email')
@@ -77,7 +77,6 @@ class UserAdmin extends OxaAdmin
     {
         $filterMapper
             ->add('id')
-            ->add('username')
             ->add('firstname')
             ->add('lastname')
             ->add('email')
@@ -105,7 +104,6 @@ class UserAdmin extends OxaAdmin
     {
         $showMapper
             ->with('General')
-                ->add('username')
                 ->add('email')
             ->end()
             ->with('Security')
@@ -118,10 +116,10 @@ class UserAdmin extends OxaAdmin
                 ->add('locale')
             ->end()
             ->with('Social')
-                ->add('facebookUid')
-                ->add('facebookName')
-                ->add('gplusUid')
-                ->add('gplusName')
+                ->add('facebookURL')
+                ->add('twitterURL')
+                ->add('googleURL')
+                ->add('youtubeURL')
             ->end()
         ;
     }
@@ -196,21 +194,24 @@ class UserAdmin extends OxaAdmin
 
         $formMapper
             ->with('General')
-                ->add('username')
                 ->add('email')
                 ->add('plainPassword', 'text', [
                     'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
                 ])
             ->end()
             ->with('Profile')
-                ->add('firstname')
-                ->add('lastname')
+                ->add('firstname', null, [
+                    'required' => true,
+                ])
+                ->add('lastname', null, [
+                    'required' => true
+                ])
             ->end()
             ->with('Social')
-                ->add('facebookUid')
-                ->add('facebookName')
-                ->add('gplusUid')
-                ->add('gplusName')
+                ->add('facebookURL')
+                ->add('twitterURL')
+                ->add('googleURL')
+                ->add('youtubeURL')
             ->end()
         ;
     }
@@ -229,5 +230,31 @@ class UserAdmin extends OxaAdmin
     public function getUserManager()
     {
         return $this->userManager;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     * @return null
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        $errorElement
+            ->with('first_name')
+                ->addViolation('fffff')
+                ->assertNotBlank()
+                ->assertNotNull()
+            ->end()
+            ->with('firstName')
+                ->addViolation('fffff')
+                ->assertNotBlank()
+                ->assertNotNull()
+            ->end()
+            ->with('firstname')
+                ->addViolation('fffff')
+                ->assertNotBlank()
+                ->assertNotNull()
+            ->end()
+        ;
     }
 }

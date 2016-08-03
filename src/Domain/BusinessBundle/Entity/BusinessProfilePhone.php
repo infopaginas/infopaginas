@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BusinessProfilePhone
@@ -25,6 +26,7 @@ class BusinessProfilePhone
      * @var string - Contact phone number
      *
      * @ORM\Column(name="phone", type="string", length=10)
+     * @Assert\NotBlank()
      */
     private $phone;
 

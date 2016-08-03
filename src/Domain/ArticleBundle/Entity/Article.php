@@ -5,12 +5,15 @@ namespace Domain\ArticleBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Article
@@ -24,6 +27,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+
     /**
      * @var int
      *
@@ -38,6 +42,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $title;
 
@@ -63,6 +68,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="body", type="text")
+     * @Assert\NotBlank()
      */
     protected $body;
 
@@ -110,6 +116,18 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     protected $category;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="activation_date", type="datetime")
+     */
+    protected $activationDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="expiration_date", type="datetime")
+     */
+    protected $expirationDate;
+
+    /**
      * Get id
      *
      * @return int
@@ -139,6 +157,17 @@ class Article implements DefaultEntityInterface, TranslatableInterface
                 $result = 'New article';
         }
         return $result;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExpired()
+    {
+        $datetime = new \DateTime('now');
+        $diff = $datetime->diff($this->getExpirationDate());
+
+        return boolval($diff->invert);
     }
 
     /**
@@ -341,5 +370,53 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     public function getIsOnHomepage()
     {
         return $this->isOnHomepage;
+    }
+
+    /**
+     * Set activationDate
+     *
+     * @param \DateTime $activationDate
+     *
+     * @return Article
+     */
+    public function setActivationDate($activationDate)
+    {
+        $this->activationDate = $activationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get activationDate
+     *
+     * @return \DateTime
+     */
+    public function getActivationDate()
+    {
+        return $this->activationDate;
+    }
+
+    /**
+     * Set expirationDate
+     *
+     * @param \DateTime $expirationDate
+     *
+     * @return Article
+     */
+    public function setExpirationDate($expirationDate)
+    {
+        $this->expirationDate = $expirationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get expirationDate
+     *
+     * @return \DateTime
+     */
+    public function getExpirationDate()
+    {
+        return $this->expirationDate;
     }
 }

@@ -131,24 +131,37 @@ class BusinessProfileAdmin extends OxaAdmin
                         'btn_add' => false,
                     ])
                     ->add('state')
-                    ->add('city')
-                    ->add('zipCode')
-                    ->add('streetAddress')
+                    ->add('city', null, [
+                        'required' => false
+                    ])
+                    ->add('zipCode', null, [
+                        'required' => false
+                    ])
+                    ->add('streetAddress', null, [
+                        'required' => false
+                    ])
                     ->add('extendedAddress')
+                    ->add('crossStreet')
                     ->add('streetNumber')
                     ->add('customAddress')
                 ->end()
                 ->with('Map')
                     ->add('useMapAddress', null, [
+//                        'mapped' => false,
                         'label' => 'Update address using map coordinates'
                     ])
-                    ->add('latitude', 'hidden')
-                    ->add('longitude', 'hidden')
+                    ->add('latitude', null, [
+                        'read_only' => true
+                    ])
+                    ->add('longitude', null, [
+                        'read_only' => true
+                    ])
                     ->add('googleAddress', 'google_map', [
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])
-                ->end()
+
+            ->end()
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', ['by_reference' => false], [
                         'edit' => 'inline',
@@ -164,7 +177,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
             ->tab('Categories')
                 ->with('Categories')
-                    ->add('areas', null, ['multiple' => true])
+                    ->add('areas', null, [
+                        'multiple' => true,
+                    ])
                     ->add('brands', null, ['multiple' => true])
                     ->add('tags', null, ['multiple' => true])
                     ->add('categories', null, ['multiple' => true])
@@ -199,6 +214,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
+                        'required' => false,
                         'type_options' => [
                             'delete' => true,
                             'delete_options' => [
@@ -213,6 +229,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Discounts')
                     ->add('discounts', 'sonata_type_collection', [
+                        'required' => false,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,
@@ -331,6 +348,17 @@ class BusinessProfileAdmin extends OxaAdmin
             } else {
                 $addressManager->setGoogleAddress($addressResult['result'], $object);
             }
+        } else {
+            $errorElement
+                ->with('country')
+                ->end()
+                ->with('streetAddress')
+                ->end()
+                ->with('city')
+                ->end()
+                ->with('zipCode')
+                ->end()
+            ;
         }
     }
 

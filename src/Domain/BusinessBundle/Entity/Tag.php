@@ -11,6 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Tag
@@ -40,6 +41,7 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 

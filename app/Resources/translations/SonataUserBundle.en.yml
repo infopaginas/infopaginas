@@ -38,9 +38,15 @@ groups: Roles
 
 user_block_profile: User Profile
 
+form.label_facebook_u_r_l: Facebook URL
+form.label_twitter_u_r_l: Twitter URL
+form.label_google_u_r_l: Google URL
+form.label_youtube_u_r_l: Youtube URL
 
-
-
+show.label_facebook_u_r_l: Facebook URL
+show.label_twitter_u_r_l: Twitter URL
+show.label_google_u_r_l: Google URL
+show.label_youtube_u_r_l: Youtube URL
 
 
 

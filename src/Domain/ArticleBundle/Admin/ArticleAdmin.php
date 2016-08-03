@@ -32,16 +32,9 @@ class ArticleAdmin extends OxaAdmin
             ->add('description')
             ->add('isPublished', null, [], null, $choiceOptions)
             ->add('isOnHomepage', null, [], null, $choiceOptions)
-            ->add(
-                'updatedAt',
-                'doctrine_orm_datetime_range',
-                [
-                    'field_type' => 'sonata_type_datetime_range_picker',
-                    'field_options' => [
-                        'format' => 'dd-MM-y hh:mm:ss'
-                    ]
-                ]
-            )
+            ->add('activationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('expirationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
     }
@@ -58,6 +51,8 @@ class ArticleAdmin extends OxaAdmin
             ->add('description')
             ->add('isPublished')
             ->add('isOnHomepage')
+            ->add('activationDate')
+            ->add('expirationDate')
             ->add('updatedAt')
             ->add('updatedUser')
         ;
@@ -87,6 +82,8 @@ class ArticleAdmin extends OxaAdmin
                 ->add('isPublished')
                 ->add('isOnHomepage')
                 ->add('slug', null, ['read_only' => true])
+                ->add('activationDate', 'sonata_type_datetime_picker')
+                ->add('expirationDate', 'sonata_type_datetime_picker')
                 ->add('updatedAt', 'sonata_type_datetime_picker', [
                     'required' => false,
                     'disabled' => true
@@ -103,7 +100,9 @@ class ArticleAdmin extends OxaAdmin
                         'rows' => 3,
                     ]
                 ])
-                ->add('body', 'ckeditor')
+                ->add('body', 'ckeditor', [
+                    'required' => true
+                ])
             ->end()
         ;
     }
@@ -116,6 +115,8 @@ class ArticleAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('title')
+            ->add('activationDate')
+            ->add('expirationDate')
             ->add('category')
             ->add('image', null, [
                 'template' => 'DomainArticleBundle:Admin:show_image.html.twig'

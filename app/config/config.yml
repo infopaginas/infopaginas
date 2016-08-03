@@ -85,12 +85,6 @@ doctrine:
             FOSUserBundle: ~
             OxaSonataMediaBundle: ~
             SonataMediaBundle: ~
-            gedmo_loggable:
-                type: annotation
-                prefix: Gedmo\Loggable\Entity
-                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
-                alias: GedmoLoggable
-                is_bundle: false
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

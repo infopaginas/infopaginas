@@ -9,6 +9,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Template
@@ -37,6 +38,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 
