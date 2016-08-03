@@ -18,6 +18,6 @@ interface BusinessOverviewReportTypeInterface
     const TYPE_CODE_VIEW         = 2;
 
     public static function getTypes();
-    
+
     public function getTypeValue();
 }

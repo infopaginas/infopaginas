@@ -11,6 +11,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * SubscriptionPlan
@@ -39,6 +40,7 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 

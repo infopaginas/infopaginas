@@ -89,7 +89,7 @@ class SubscriptionStatusManager
 
     /**
      * Set Free plan subscription for businesses without subscription
-     * 
+     *
      * @param EntityManager $em
      * @return \Domain\BusinessBundle\Entity\BusinessProfile[]|null
      */
@@ -98,26 +98,26 @@ class SubscriptionStatusManager
         $businessProfiles = $em
             ->getRepository('DomainBusinessBundle:BusinessProfile')
             ->getBusinessWithoutActiveSubscription();
-        
+
         foreach ($businessProfiles as $businessProfile) {
             $freeSubscriptionPlan = $em
                 ->getRepository('DomainBusinessBundle:SubscriptionPlan')
                 ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
-    
+
             $startDate = new \DateTime();
             $endDate = new \DateTime();
             $endDate->modify('+1 year');
-    
+
             $subscription = new Subscription();
             $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
             $subscription->setBusinessProfile($businessProfile);
             $subscription->setSubscriptionPlan($freeSubscriptionPlan);
             $subscription->setStartDate($startDate);
             $subscription->setEndDate($endDate);
-    
+
             $em->persist($subscription);
         }
-        
+
         return $businessProfiles;
     }
 }

@@ -22,7 +22,8 @@ class LoadTestBusinessOverviewReportData extends OxaAbstractFixture
         /** @var ObjectManager $manager */
         $manager = $this->manager;
 
-        $businessOverviewReportManager = $this->container->get('domain_report.manager.business_overview_report_manager');
+        $businessOverviewReportManager = $this->container
+            ->get('domain_report.manager.business_overview_report_manager');
 
         $businessProfileIds = $manager->getRepository('DomainBusinessBundle:BusinessProfile')
             ->getIndexedBusinessProfileIds();
@@ -40,12 +41,15 @@ class LoadTestBusinessOverviewReportData extends OxaAbstractFixture
 
             for ($j = 0; $j < rand(0,40); $j++) {
                 $businessProfileId = intval($businessProfileIds[array_rand($businessProfileIds)]);
-                $businessOverviewReportManager->registerBusinessImpression($businessProfileId, $businessOverviewReportDate);
+                $businessOverviewReportManager
+                    ->registerBusinessImpression($businessProfileId, $businessOverviewReportDate);
             }
             for ($j = 0; $j < rand(0,20); $j++) {
                 $businessProfileId = intval($businessProfileIds[array_rand($businessProfileIds)]);
-                $businessOverviewReportManager->registerBusinessImpression($businessProfileId, $businessOverviewReportDate);
-                $businessOverviewReportManager->registerBusinessView($businessProfileId, $businessOverviewReportDate);
+                $businessOverviewReportManager
+                    ->registerBusinessImpression($businessProfileId, $businessOverviewReportDate);
+                $businessOverviewReportManager
+                    ->registerBusinessView($businessProfileId, $businessOverviewReportDate);
             }
         }
     }

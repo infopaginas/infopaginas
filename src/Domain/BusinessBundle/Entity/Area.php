@@ -12,6 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Area
@@ -42,6 +43,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 

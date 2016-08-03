@@ -86,10 +86,10 @@ class AdminHelper
         $datetimeYear   = new \DateTime();
 
         return [
-            self::DATE_RANGE_CODE_TODAY => array(
+            self::DATE_RANGE_CODE_TODAY => [
                 'end'   => $datetimeDay->format(self::FILTER_DATE_FORMAT),
                 'start' => $datetimeDay->format(self::FILTER_DATE_FORMAT),
-            ),
+            ],
             self::DATE_RANGE_CODE_LAST_WEEK  => [
                 'end'   => $datetimeWeek->format(self::FILTER_DATE_FORMAT),
                 'start' => $datetimeWeek->modify('-1 week')->modify('+1 day')->format(self::FILTER_DATE_FORMAT),

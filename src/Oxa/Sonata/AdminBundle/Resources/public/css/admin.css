@@ -89,3 +89,15 @@ h4.filter_legend img {
 .media-list-deleted-image{
     margin-right: 6px;
 }
+
+#google-map{
+    width: 100%;
+    height: 500px;
+    border: 1px solid #ccc;
+}
+
+#pac-input{
+    margin-top: 10px;
+    height: 32px;
+    width: 75%;
+}

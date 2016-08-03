@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @UniqueEntity("username")
+ * @UniqueEntity("email")
  * */
 class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 {
@@ -36,11 +36,13 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Valid()
      */
     protected $firstname;
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Valid()
      */
     protected $lastname;
 

@@ -31,7 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_profile")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
