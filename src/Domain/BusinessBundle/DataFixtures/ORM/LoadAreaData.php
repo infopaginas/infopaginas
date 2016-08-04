@@ -23,14 +23,7 @@ class LoadAreaData extends AbstractFixture implements ContainerAwareInterface, O
      */
     protected $manager;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function load(ObjectManager $manager)
-    {
-        $this->manager = $manager;
-
-        $areaAndLocalities = [
+    private $areaAndLocalities = [
             [
                 'name' => 'Aguadilla',
                 'localities' => [
@@ -193,7 +186,16 @@ class LoadAreaData extends AbstractFixture implements ContainerAwareInterface, O
             ],
         ];
 
-        foreach ($areaAndLocalities as $areaItem) {
+    /**
+     * {@inheritDoc}
+     */
+    public function load(ObjectManager $manager)
+    {
+        $this->manager = $manager;
+
+        
+
+        foreach ($this->areaAndLocalities as $areaItem) {
             $area   = new Area();
             $area->setName($areaItem['name']);
 

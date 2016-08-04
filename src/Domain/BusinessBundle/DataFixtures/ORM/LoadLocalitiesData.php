@@ -21,14 +21,7 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
      */
     protected $manager;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function load(ObjectManager $manager)
-    {
-        $this->manager = $manager;
-
-        $localityData = [
+    private $localityData = [
             [
                 'name' => 'Aguadilla',
                 'area' => 'Aguadilla',
@@ -152,7 +145,16 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
 
         ];
 
-        foreach ($localityData as $item) {
+    /**
+     * {@inheritDoc}
+     */
+    public function load(ObjectManager $manager)
+    {
+        $this->manager = $manager;
+
+        
+
+        foreach ($this->localityData as $item) {
             $locObject = new Locality();
             $locObject->setName($item['name']);
             $locObject->setLatitude($item['latitude']);

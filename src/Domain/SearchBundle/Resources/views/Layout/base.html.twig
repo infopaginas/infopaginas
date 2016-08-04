@@ -28,7 +28,7 @@
                             {% if results.neighborhoods is not empty %}
                                 {% for neighborhood in results.neighborhoods %}
 
-                                    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'neighborhood': neighborhood.getName() })) }}" value="{{ neighborhood.getName() }}">{{ neighborhood.getName() }}</option>
+                                    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'geo': neighborhood.getName() })) }}" value="{{ neighborhood.getName() }}">{{ neighborhood.getName() }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>
