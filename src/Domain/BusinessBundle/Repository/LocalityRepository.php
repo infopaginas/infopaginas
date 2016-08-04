@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * LocalityRepository
  *
@@ -14,5 +16,64 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('l');
         return $qb;
+    }
+
+    public function getNeighborhoodToLocalityByName(string $name)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->getLatLngByNameQueryBuilder($queryBuilder, $name);
+
+        $results = $queryBuilder->getQuery()->getSingleResult();
+
+        $queryBuilderForList = $this->getQueryBuilder();
+
+        $this->getNeighborhoodLocalitiesWithDistanceByLatLng($queryBuilderForList, $results['lat'], $results['lng']);
+
+        $resultList = $queryBuilderForList->getQuery()->getResult();
+
+        return $resultList;
+    }
+
+    protected function getQueryBuilder()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('l')
+        ->from('DomainBusinessBundle:Locality', 'l');
+
+        return $queryBuilder;
+    }
+
+    protected function getLatLngByNameQueryBuilder(QueryBuilder &$queryBuilder, string $name)
+    {
+        return $queryBuilder
+            ->select('l.latitude lat, l.longitude lng')
+            ->where('l.name = :name')
+            ->setParameter('name', $name);
+    }
+
+    protected function getNeighborhoodLocalitiesWithDistanceByLatLng(QueryBuilder &$queryBuilder, $lat, $lng)
+    {
+        return $queryBuilder
+            ->addSelect('2 * 6371 * sin (
+                sqrt (
+                    ( 1 - cos (
+                        (l.latitude - :currentLat) * PI()/180
+                        )
+                    ) / 2
+                    +
+                    cos (:currentLat * PI()/180)
+                    *
+                    cos (l.latitude * PI()/180)
+                    *
+                    ( 1 - cos( ( l.longitude - :currentLng ) * PI()/180 ) ) / 2
+                )
+            ) AS distance')
+            ->setParameter('currentLat', $lat)
+            ->setParameter('currentLng', $lng)
+            ->orderBy('distance', 'ASC')
+            ->setMaxResults(10)
+            ->setFirstResult(1);
     }
 }

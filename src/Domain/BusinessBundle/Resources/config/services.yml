@@ -34,6 +34,10 @@ services:
         class: Domain\BusinessBundle\Manager\CategoryManager
         arguments: ['@doctrine.orm.entity_manager']
 
+    domain_business.manager.locality:
+        class: Domain\BusinessBundle\Manager\LocalityManager
+        arguments: ['@doctrine.orm.entity_manager']
+
     #twig extensions
     domain_business.twig_extension.enum_labels_dispatcher:
         class: Domain\BusinessBundle\Twig\Extension\EnumLabelsDispatcherExtension

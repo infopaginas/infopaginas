@@ -25,7 +25,12 @@
                     <div class="select-container">
                         <select class="form-control select-control" id="neighborhood-select">
                             <option>Neighborhoods</option>
-                            <option>NY</option>
+                            {% if results.neighborhoods is not empty %}
+                                {% for neighborhood in results.neighborhoods %}
+
+                                    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'neighborhood': neighborhood.getName() })) }}" value="{{ neighborhood.getName() }}">{{ neighborhood.getName() }}</option>
+                                {% endfor %}
+                            {% endif %}
                         </select>
                     </div>
                 </div>

@@ -45,9 +45,9 @@
                 <span class="fa fa-star-o" data-rating="3"></span>
                 <span class="fa fa-star-o" data-rating="4"></span>
                 <span class="fa fa-star-o" data-rating="5"></span>
-                <input type="hidden" name="whatever" class="rating-value" value="{{ item.getBusinessReviewsAvgMark }}">
+                <input type="hidden" name="whatever" class="rating-value" value="{# item.getBusinessReviewsAvgMark #}">
             </div>
-            <span class="reviews-value">{{ item.getBusinessReviewsCount }} Reviews</span>
+            <span class="reviews-value">{# item.getBusinessReviewsCount #} Reviews</span>
         </div>
     </div>
     <div class="schedule fields-item">
@@ -74,10 +74,6 @@
                     <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/paypal.png')}}"></a></li>
                 {% endif %}
             {% endfor%}
-            
-            
-            
-            
         </ul>
     </div>
     <div class="social fields-item">

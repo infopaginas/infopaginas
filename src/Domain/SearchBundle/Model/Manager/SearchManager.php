@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
+use Domain\BusinessBundle\Manager\LocalityManager;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager;
 use Oxa\ConfigBundle\Service\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -26,13 +27,15 @@ class SearchManager extends Manager
     protected $businessProfilehManager;
     protected $categoriesManager;
     protected $geolocationManager;
+    protected $localityManager;
 
     public function __construct(
         EntityManager $em,
         Config $configService,
         BusinessProfileManager $businessProfilehManager,
         CategoryManager $categoryManager,
-        GeolocationManager $geolocationManager
+        GeolocationManager $geolocationManager,
+        LocalityManager $localityManager
     ) {
         parent::__construct($em);
 
@@ -40,6 +43,7 @@ class SearchManager extends Manager
         $this->businessProfilehManager  = $businessProfilehManager;
         $this->categoriesManager        = $categoryManager;
         $this->geolocationManager       = $geolocationManager;
+        $this->localityManager          = $localityManager;
     }
 
     public function getAutocompleteDataByPhrase(string $phrase)
@@ -83,6 +87,8 @@ class SearchManager extends Manager
         //$totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
         $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
         $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
+        $neighborhoodsData  = $this->localityManager->getNeighborhoodLocationsByLocalityName($searchParams->locationValue->name);
+        $neighborhoods      = SearchDataUtil::extractNeigborhoods($neighborhoodsData);
 
         $totalResultsCount   = count($results);
         $pagesCount          = $totalResultsCount/$searchParams->limit;
@@ -93,7 +99,7 @@ class SearchManager extends Manager
             $searchParams->page,
             $pagesCount,
             $categories,
-            array()
+            $neighborhoods
         );
 
         return $response;
