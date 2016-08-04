@@ -6,7 +6,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         
         this.events[options.searchSelector + ' focus']  = 'onSearchBoxFocus';
         this.events[options.searchSelector + ' blur']   = 'onSearchBoxBlur';
-        
+
         this.options = {
             autoComplete : true,
             searchMenu : false,
@@ -15,10 +15,32 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             searchBaseUrl : '/search/'
         };
 
+        console.log(options.searchHeaderButton)
+
         $.extend( this.options, options );
 
         this.init( options );
         this.bindEvents();
+
+        $(options.searchHeaderButton).on('click', function(evt) {
+            if($(options.searchSelector).val() === ''){
+                evt.preventDefault();
+                $(options.searchSelector).css({"border-color": "red"})
+            }
+        });
+
+        $(options.submitSelector).on('click', function(evt) {
+            if($(options.searchSelector).val() === ''){
+                evt.preventDefault();
+                $(options.searchSelector).css({"border-color": "red"})
+            }
+        });
+
+        $(options.searchSelector).on('input', function() {
+            if($(options.searchSelector).val() !== ''){
+                $(options.searchSelector).css({"border-color": "#cadb53"})
+            }
+        });
 
         return this;
     }
@@ -26,6 +48,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype = new view();
 
     search.prototype.init = function ( options ) {
+
         this.parent = this.__proto__.__proto__;
 
         this.parent.init( options );
@@ -95,6 +118,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype.quickSearch = function ( searchQuery ) {
         this.searchBox.val( searchQuery );
         this.submitButton.first().click();
+
     }
 
     search.prototype.returnAutocompleteDataElement = function ( ul, item ) {
