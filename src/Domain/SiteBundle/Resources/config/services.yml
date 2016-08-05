@@ -121,3 +121,10 @@ services:
             - '@request'
             - '@fos_user.user_manager'
             - '@security.token_storage'
+
+    domain_site.contains_email:
+        class: Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator
+        arguments:
+            - @service_container
+        tags:
+            - { name: validator.constraint_validator }

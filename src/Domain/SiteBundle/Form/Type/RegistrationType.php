@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Domain\SiteBundle\Validator\Constraints\ContainsEmailExpanded;
 
 class RegistrationType extends AbstractType
 {
@@ -19,6 +20,7 @@ class RegistrationType extends AbstractType
                     'class'       => 'form-control',
                     'placeholder' => 'Email',
                 ],
+                'constraints' => new ContainsEmailExpanded(),
             ])
             ->add('firstname', TextType::class, [
                 'attr' => [
