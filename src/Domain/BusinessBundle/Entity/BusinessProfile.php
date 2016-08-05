@@ -465,7 +465,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
      * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Locality",
-     *     inversedBy="businessProfiles",
+     *     inversedBy="businessProfile",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_localities")

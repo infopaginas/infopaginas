@@ -71,4 +71,14 @@ trait LocationTrait
     {
         return $this->longitude;
     }
+
+    /**
+     * Get string of latitude longitude coordinates
+     *
+     * @return string
+     */
+    public function getLatLng()
+    {
+        return $this->getLatitude() . ',' .  $this->getLongitude();
+    }
 }

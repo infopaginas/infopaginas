@@ -13,7 +13,7 @@
     <div class="col-xs-8 schedule">
         <div class="address">
             <span class="map-address">{{ item.city }}, {{ item.state }} {{ item.zipCode }}</span>
-            <a href="">Get Direction <span>&#187;</span></a>
+            <a href="" class="get-dir" data-latlng="{{ item.getLatLng }}" >Get Direction <span>&#187;</span></a>
         </div>
     </div>
     <div class="col-xs-9 company-mail">
