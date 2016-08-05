@@ -118,8 +118,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('email', EmailType::class, [
                         'required' => false
                     ])
-//                    ->add('phone')
-                    ->add('phones','sonata_type_collection', [
+                    ->add('phones', 'sonata_type_collection', [
                             'by_reference' => false,
                         ], [
                             'edit' => 'inline',
@@ -295,7 +294,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('businessReviews')
             ->add('website')
             ->add('email')
-            ->add('phone')
+            ->add('phones')
             ->add('registrationDate')
             ->add('slogan')
             ->add('description', null, [

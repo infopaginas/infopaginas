@@ -140,13 +140,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $email;
 
     /**
-     * @var string - Contact phone number
-     *
-     * @ORM\Column(name="phone", type="string", length=15, nullable=true)
-     */
-    protected $phone;
-
-    /**
      * @var \DateTime - Date of registration in Infopaginas
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="registration_date", type="datetime")
@@ -487,14 +480,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $localities;
 
-//    /**
-//     * @ORM\Column(name="phones", type="array", nullable=true)
-//     * @Assert\All({
-//     *     @Assert\Length(max=10)
-//     * })
-//     */
-//    protected $phones;
-
     /**
      * @var Campaign[] - Business Profile Phones
      *
@@ -699,30 +684,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getEmail()
     {
         return $this->email;
-    }
-
-    /**
-     * Set phone
-     *
-     * @param string $phone
-     *
-     * @return BusinessProfile
-     */
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    /**
-     * Get phone
-     *
-     * @return string
-     */
-    public function getPhone()
-    {
-        return $this->phone;
     }
 
     /**
@@ -1977,15 +1938,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getPhones()
     {
         return $this->phones;
-    }
-
-    /**
-     * @param mixed $phones
-     * @return BusinessProfile
-     */
-    public function setPhones($phones)
-    {
-        $this->phones = $phones;
     }
 
     /**

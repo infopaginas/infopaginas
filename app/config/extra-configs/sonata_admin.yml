@@ -14,7 +14,7 @@ sonata_block:
 
 sonata_admin:
     title: Ingopaginas
-    title_logo: oxagile.png
+    title_logo: logo.png
     templates:
         layout: OxaSonataAdminBundle::layout.html.twig
         list:   OxaSonataAdminBundle:CRUD:list.html.twig
