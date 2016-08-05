@@ -2,7 +2,7 @@ businesses:
     business_1:
         name: Piola Pizzeria Artesanal & Rum Bar
         google_address: 78 Calle El Tren, Cataño, 00962, Puerto Rico
-        email: panadería@test.com
+        email: panadera@test.com
         phone: +12025550179
         website: infopaginas.com
         slogan: Pizza for everybody!
@@ -117,7 +117,7 @@ businesses:
     business_5:
         name: Iglesia ICM Cristo Sanador
         google_address: -67, 53 Calle Robles, San Juan, 00925, Puerto Rico
-        email: panadería@test.com
+        email: panadera@test.com
         phone: +19392725334
         website: infopaginas.com
         slogan: Pizza for everybody!
@@ -218,7 +218,7 @@ businesses:
     business_9:
         name: JF Montalvo
         google_address: Calle Padre Colón, San Juan, 00925, Puerto Rico
-        email: panadería@test.com
+        email: panadera@test.com
         phone: +12025550179
         website: infopaginas.com
         slogan: Pizza for everybody!

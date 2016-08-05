@@ -135,6 +135,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Email address
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
+     * @Assert\Email()
      */
     protected $email;
 
@@ -201,7 +202,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Operational Hours
      *
      * @Gedmo\Translatable
-     * @ORM\Column(name="working_hours", type="string", length=255, nullable=true)
+     * @ORM\Column(name="working_hours", type="text", nullable=true)
      */
     protected $workingHours;
 
@@ -381,7 +382,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", nullable=true)
+     * @ORM\Column(name="city", type="string", length=30, nullable=true)
      * @Assert\NotBlank()
      */
     protected $city;
@@ -411,7 +412,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="custom_address", type="string", nullable=true)
+     * @ORM\Column(name="custom_address", type="string", length=100, nullable=true)
      */
     protected $customAddress;
 
@@ -486,11 +487,23 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     protected $localities;
 
+//    /**
+//     * @ORM\Column(name="phones", type="array", nullable=true)
+//     * @Assert\All({
+//     *     @Assert\Length(max=10)
+//     * })
+//     */
+//    protected $phones;
+
     /**
-     * @ORM\Column(name="phones", type="array", nullable=true)
-     * @Assert\All({
-     *     @Assert\Length(max=10)
-     * })
+     * @var Campaign[] - Business Profile Phones
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePhone",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
      */
     protected $phones;
 
@@ -2196,5 +2209,65 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         }
         
         return 0;
+    }
+
+    /**
+     * Get locked
+     *
+     * @return boolean
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Add locality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $locality
+     *
+     * @return BusinessProfile
+     */
+    public function addLocality(\Domain\BusinessBundle\Entity\Locality $locality)
+    {
+        $this->localities[] = $locality;
+
+        return $this;
+    }
+
+    /**
+     * Remove locality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $locality
+     */
+    public function removeLocality(\Domain\BusinessBundle\Entity\Locality $locality)
+    {
+        $this->localities->removeElement($locality);
+    }
+
+    /**
+     * Add phone
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfilePhone $phone
+     *
+     * @return BusinessProfile
+     */
+    public function addPhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
+    {
+        $this->phones[] = $phone;
+
+        $phone->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove phone
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfilePhone $phone
+     */
+    public function removePhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
+    {
+        $this->phones->removeElement($phone);
     }
 }

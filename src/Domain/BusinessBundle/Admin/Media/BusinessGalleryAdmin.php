@@ -80,6 +80,11 @@ class BusinessGalleryAdmin extends OxaAdmin
             ]])
             ->add('isPrimary')
             ->add('isActive')
+            ->add('position', 'hidden', [
+                'attr' => [
+                    "hidden" => true
+                ]
+            ])
         ;
     }
 

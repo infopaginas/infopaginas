@@ -49,7 +49,6 @@ services:
         calls:
             - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
             - [setPositionService, ['@pix_sortable_behavior.position']]
-            - [ setTemplate, ['edit', 'DomainBusinessBundle:Admin:edit.html.twig']]
 
     domain_business.admin.task:
         class: Domain\BusinessBundle\Admin\TaskAdmin
@@ -92,3 +91,9 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\Coupon, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Coupons}
+
+    domain_business.admin.business_profile_phone:
+        class: Domain\BusinessBundle\Admin\BusinessProfilePhoneAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfilePhone, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Phones}
