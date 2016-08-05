@@ -2159,7 +2159,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
             }
             return $raiting / $reviewsAmount;
         }
-        
+
         return 0;
     }
 

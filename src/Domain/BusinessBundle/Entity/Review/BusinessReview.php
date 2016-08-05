@@ -33,7 +33,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
-    
+
     const RATING_MIN_VALUE = 1;
     const RATING_MAX_VALUE = 5;
 
@@ -122,13 +122,13 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
 
     /**
      * Get possible rating choices, from Min to Max
-     * 
+     *
      * @return mixed
      */
     public static function getRatingChoices()
     {
         $choices = [];
-        for ($i = self::RATING_MIN_VALUE; $i <= self::RATING_MAX_VALUE; $i++){
+        for ($i = self::RATING_MIN_VALUE; $i <= self::RATING_MAX_VALUE; $i++) {
             $choices[$i] = $i;
         }
 

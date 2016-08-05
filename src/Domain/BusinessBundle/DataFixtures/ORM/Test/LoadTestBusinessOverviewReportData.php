@@ -39,8 +39,8 @@ class LoadTestBusinessOverviewReportData extends OxaAbstractFixture
         for ($i = 0; $i < $daysQuantity; $i++) {
             $businessOverviewReportDate = clone $date->modify('+1 day');
 
-            $impressionsCount = rand(0,40);
-            $impressionsAndViewsCount = rand(0,20);
+            $impressionsCount = rand(0, 40);
+            $impressionsAndViewsCount = rand(0, 20);
 
             for ($j = 0; $j < $impressionsCount; $j++) {
                 $businessProfileId = intval($businessProfileIds[array_rand($businessProfileIds)]);
