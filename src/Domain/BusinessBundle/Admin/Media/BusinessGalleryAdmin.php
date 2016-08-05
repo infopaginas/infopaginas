@@ -82,7 +82,7 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('isActive')
             ->add('position', 'hidden', [
                 'attr' => [
-                    "hidden" => true
+                    'hidden' => true
                 ]
             ])
         ;
