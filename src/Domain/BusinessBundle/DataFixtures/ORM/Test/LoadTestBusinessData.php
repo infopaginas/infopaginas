@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\DataFixture\Test;
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Tag;
@@ -88,13 +89,17 @@ class LoadTestBusinessData extends OxaAbstractFixture
             $object->setName($item['name']);
             $object->setEmail($item['email']);
             $object->setWebsite($item['website']);
-            $object->setPhone($item['phone']);
             $object->setSlogan($item['slogan']);
             $object->setProduct($item['product']);
             $object->setDescription($item['description']);
 
             $object->setGoogleAddress($item['google_address']);
             $addressManager->setGoogleAddress($googleResponse['result'], $object);
+
+            foreach ($item['phones'] as $value) {
+                $record = $this->loadPhone($value);
+                $object->addPhone($record);
+            }
 
             foreach ($item['tags'] as $value) {
                 $record = $this->loadTag($value);
@@ -317,5 +322,19 @@ class LoadTestBusinessData extends OxaAbstractFixture
 
             return $object;
         }
+    }
+
+    /**
+     * @param $value
+     * @return BusinessProfilePhone
+     */
+    protected function loadPhone($value)
+    {
+        $object = new BusinessProfilePhone();
+        $object->setPhone($value);
+        
+        $this->manager->persist($object);
+
+        return $object;
     }
 }

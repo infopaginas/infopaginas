@@ -25,7 +25,7 @@ class BusinessProfilePhone
     /**
      * @var string - Contact phone number
      *
-     * @ORM\Column(name="phone", type="string", length=10)
+     * @ORM\Column(name="phone", type="string", length=15)
      * @Assert\NotBlank()
      */
     private $phone;
