@@ -20,7 +20,10 @@ class AreaAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name');
+            ->add('name')
+            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedUser')
+        ;
     }
 
     /**
@@ -30,7 +33,10 @@ class AreaAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name');
+            ->add('name')
+            ->add('updatedAt')
+            ->add('updatedUser')
+        ;
 
         $this->addGridActions($listMapper);
     }
@@ -42,24 +48,16 @@ class AreaAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('businessProfiles', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
+            ->add('updatedAt', 'sonata_type_datetime_picker', [
                 'required' => false,
-                'by_reference' => false,
-            ]);
-
-        // remove businessProfiles field if we create object on businessProfile edit page
-        $parentCode = $this->getRequest()->get('pcode');
-        $businessProfileCode = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('domain_business.admin.business_profile')
-            ->getCode();
-
-        if ($parentCode && $parentCode == $businessProfileCode) {
-            $formMapper->remove('businessProfiles');
-        }
-    }
+                'disabled' => true
+            ])
+            ->add('updatedUser', 'sonata_type_model', [
+                'required' => false,
+                'btn_add' => false,
+                'disabled' => true,
+            ])
+        ;}
 
     /**
      * @param ShowMapper $showMapper
@@ -69,6 +67,9 @@ class AreaAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
-            ->add('businessProfiles');
+            ->add('businessProfiles')
+            ->add('updatedAt')
+            ->add('updatedUser')
+        ;
     }
 }

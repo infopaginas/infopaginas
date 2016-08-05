@@ -92,4 +92,35 @@ class Locality
     {
         return $this->name;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->businessProfile = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Locality
+     */
+    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfile[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfile->removeElement($businessProfile);
+    }
 }

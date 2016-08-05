@@ -125,9 +125,17 @@
                             </li>
                         {% else %}
                             {% set menu_label = menu.label|replace({" - ":""}) %}
-                            <li class="active"><span>{% if menu.label|length==0 %}{{ menu.label }}{% else %}<a
-                                        href="javascript:return false;" style="cursor: default;padding: 0"
-                                        title="{{ menu_label }}">{{ menu_label|slice(0,15) }}</a>{% endif %}</span></li>
+                            <li class="active">
+                                <span>
+                                    {% if menu.label|length==0 %}
+                                        {{ menu.label }}
+                                    {% else %}
+                                        <a href="javascript:return false;" style="cursor: default; padding: 0" title="{{ menu_label }}">
+                                            {{ menu_label }}
+                                        </a>
+                                    {% endif %}
+                                </span>
+                            </li>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
