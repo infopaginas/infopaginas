@@ -83,6 +83,15 @@ class ProfileController extends Controller
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
+    public function showAction(Request $request, int $id)
+    {
+        $businessProfile = $this->getBusinessProfilesManager()->find($id);
+
+        return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
+            'businessProfile' => $businessProfile,
+        ]);
+    }
+
     /**
      * @return BusinessProfileManager
      */

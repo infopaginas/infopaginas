@@ -25,7 +25,9 @@
                 <div class="collapse navbar-collapse" id="navbar-buttons">
                     <ul class="nav navbar-nav navbar-left buttons-block">
                         <li>
-                            <a href="#" class="green-btn">
+                            <a href="{{ path('domain_business_profile_show', { id: businessProfile.getId() }) }}"
+                               class="green-btn"
+                               target="_blank">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 <span>{% trans %}View Profile{% endtrans %}</span>
                             </a>
