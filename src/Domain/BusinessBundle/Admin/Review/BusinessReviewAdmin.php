@@ -2,12 +2,15 @@
 
 namespace Domain\BusinessBundle\Admin\Review;
 
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Validator\ErrorElement;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 
 class BusinessReviewAdmin extends OxaAdmin
 {
@@ -21,10 +24,10 @@ class BusinessReviewAdmin extends OxaAdmin
             ->add('user')
             ->add('businessProfile')
             ->add('username')
-            ->add('rate', 'doctrine_orm_choice', [
+            ->add('rating', 'doctrine_orm_choice', [
                 'field_options' => [
                     'required' => false,
-                    'choices' => range(0, 5),
+                    'choices' => BusinessReview::getRatingChoices(),
                 ],
                 'field_type' => 'choice'
             ])
@@ -84,8 +87,7 @@ class BusinessReviewAdmin extends OxaAdmin
             ->with('Review')
                 ->add('username')
                 ->add('rating', 'choice', [
-                    'choices' => range(0, 5),
-                    'required' => false
+                    'choices' => BusinessReview::getRatingChoices(),
                 ])
                 ->add('content', null, [
                     'attr' => [
@@ -110,5 +112,18 @@ class BusinessReviewAdmin extends OxaAdmin
             ->add('content')
             ->add('isActive')
         ;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     * @return null
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+            $errorElement
+                ->with('rating')
+                ->end()
+            ;
     }
 }

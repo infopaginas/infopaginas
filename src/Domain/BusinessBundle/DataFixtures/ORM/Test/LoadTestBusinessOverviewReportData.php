@@ -26,10 +26,10 @@ class LoadTestBusinessOverviewReportData extends OxaAbstractFixture
             ->get('domain_report.manager.business_overview_report_manager');
 
         $businessProfileIds = $manager->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getIndexedBusinessProfileIds();
+            ->getIndexedBusinessProfileIds(10);
 
         // days ago number
-        $daysQuantity = 60;
+        $daysQuantity = 40;
 
         $date = new \DateTime('today');
         $date->modify(sprintf('-%s days', $daysQuantity));
@@ -39,12 +39,16 @@ class LoadTestBusinessOverviewReportData extends OxaAbstractFixture
         for ($i = 0; $i < $daysQuantity; $i++) {
             $businessOverviewReportDate = clone $date->modify('+1 day');
 
-            for ($j = 0; $j < rand(0,40); $j++) {
+            $impressionsCount = rand(0, 20);
+            $impressionsAndViewsCount = rand(0, 10);
+
+            for ($j = 0; $j < $impressionsCount; $j++) {
                 $businessProfileId = intval($businessProfileIds[array_rand($businessProfileIds)]);
                 $businessOverviewReportManager
                     ->registerBusinessImpression($businessProfileId, $businessOverviewReportDate);
             }
-            for ($j = 0; $j < rand(0,20); $j++) {
+
+            for ($j = 0; $j < $impressionsAndViewsCount; $j++) {
                 $businessProfileId = intval($businessProfileIds[array_rand($businessProfileIds)]);
                 $businessOverviewReportManager
                     ->registerBusinessImpression($businessProfileId, $businessOverviewReportDate);

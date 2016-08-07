@@ -9,7 +9,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class BrandAdmin extends OxaAdmin
+class BusinessProfilePhoneAdmin extends OxaAdmin
 {
     /**
      * @param DatagridMapper $datagridMapper
@@ -18,7 +18,7 @@ class BrandAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('phone')
         ;
     }
 
@@ -29,7 +29,7 @@ class BrandAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name')
+            ->add('phone')
         ;
 
         $this->addGridActions($listMapper);
@@ -41,7 +41,7 @@ class BrandAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
+            ->add('phone')
         ;
     }
 
@@ -52,8 +52,7 @@ class BrandAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('name')
-            ->add('businessProfiles')
+            ->add('phone')
         ;
     }
 }

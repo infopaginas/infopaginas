@@ -17,6 +17,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class UserAdmin extends OxaAdmin
 {
     /**
+     * Default values to the datagrid.
+     *
+     * @var array
+     */
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_per_page'   => 25,
+        '_sort_by' => 'email',
+    );
+
+    /**
      * @var UserManagerInterface
      */
     protected $userManager;

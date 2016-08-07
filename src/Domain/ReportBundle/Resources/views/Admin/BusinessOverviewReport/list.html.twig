@@ -107,6 +107,36 @@
     )
 %}
 
+{% block export %}
+    {% if admin.hasRoute('export') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-export"></i>
+                {{ "label_export_download"|trans({}, "SonataAdminBundle") }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for code,format in admin.getExportFormats() %}
+                <li>
+                    <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {
+                        'format' : format,
+                        'code': code,
+                        '_page' : admin.getFilterParameters['_page'],
+                        '_per_page' : admin.getFilterParameters['_per_page']
+                    }) }}">
+                        <i class="glyphicon glyphicon-download"></i>
+                        {{ code|trans({}, admin.getTranslationDomain) }}
+                    </a>
+                <li>
+                    {% endfor %}
+            </ul>
+        </div>
+        {% if showPagintaion %}
+            &nbsp;-&nbsp;
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
 {% block pager_results %}
     {% if showPagintaion %}
         {{ parent() }}

@@ -52,7 +52,7 @@ class DiscountAdmin extends OxaAdmin
         // to show record Id in sonata_type_collection form type
         if ($this->getRoot()->getClass() != $this->getClass()) {
             $formMapper
-                ->add('discountId', 'text', [
+                ->add('id', 'text', [
                     'read_only' => true,
                     'mapped' => false,
                     'disabled' => true,
