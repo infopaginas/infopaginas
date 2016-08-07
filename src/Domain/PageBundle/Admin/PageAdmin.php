@@ -68,7 +68,6 @@ class PageAdmin extends OxaAdmin
                     'sonata_type_model_list',
                     [
                         'required' => false,
-                        'btn_delete' => true,
                     ],
                     [
                         'link_parameters' => [
