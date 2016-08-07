@@ -11,6 +11,7 @@ namespace Oxa\WistiaBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Repository\WistiaMediaRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WistiaMediaManager
 {
@@ -36,6 +37,23 @@ class WistiaMediaManager
 
         $this->em->persist($wistiaMedia);
         $this->em->flush();
+
+        return $wistiaMedia;
+    }
+
+    public function updateNameAndDescriptionByWistiaID(WistiaMedia $media)
+    {
+        /** @var WistiaMedia $wistiaMedia */
+        $wistiaMedia = $this->getRepository()->findOneBy(['wistiaId' => $media->getWistiaId()]);
+
+        if (!$wistiaMedia) {
+            throw new NotFoundHttpException('Mediafile is not found');
+        }
+
+        $wistiaMedia->setName($media->getName());
+        $wistiaMedia->setDescription($media->getDescription());
+
+        $this->em->persist($wistiaMedia);
 
         return $wistiaMedia;
     }

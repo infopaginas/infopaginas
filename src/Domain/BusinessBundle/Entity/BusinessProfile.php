@@ -515,6 +515,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $uid;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Oxa\WistiaBundle\Entity\WistiaMedia", cascade={"persist"})
+     */
+    protected $video;
+
+    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -564,6 +569,24 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      */
     protected $searchCityFts;
+
+    /**
+     * @return mixed
+     */
+    public function getVideo()
+    {
+        return $this->video;
+    }
+
+    /**
+     * @param mixed $video
+     * @return BusinessProfile
+     */
+    public function setVideo($video)
+    {
+        $this->video = $video;
+        return $this;
+    }
 
     public function setLocale($locale)
     {

@@ -100,6 +100,7 @@ class SubscriptionStatusManager
             ->getBusinessWithoutActiveSubscription();
 
         foreach ($businessProfiles as $businessProfile) {
+
             $freeSubscriptionPlan = $em
                 ->getRepository('DomainBusinessBundle:SubscriptionPlan')
                 ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);

@@ -1,18 +1,24 @@
-define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap, alertify, Spin ) {
+define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], function( $, bootstrap, alertify, Spin, select ) {
     'use strict';
 
     //handle "media" business profile tab here
     var images = function() {
         this.html = {
             buttons: {
-                fileInputId: 'domain_business_bundle_business_profile_form_type_files'
+                fileInputId:                   'domain_business_bundle_business_profile_form_type_files',
+                startUploadRemoteFileButtonId: 'start-remote-image-upload'
             },
-            imageContainerClassname: 'image-wrap',
-            imageEditFormClassname: 'image-edit-form',
-            isPrimaryCheckboxClassname: 'is-primary',
-            formsContainerId: 'forms-container',
-            carouselContainerClassname: 'carousel-property',
-            removeImageClassname: 'remove-image-link'
+            imageContainerClassname:     'image-wrap',
+            imageEditFormClassname:      'image-edit-form',
+            isPrimaryCheckboxClassname:  'is-primary',
+            galleryContainerId:          'gallery',
+            imageRowClassName:           'image-row',
+            removeImageClassname:        'remove-image-link',
+            remoteImageURLInputId:       '#remote-image-url'
+        };
+
+        this.urls = {
+            uploadByURL: Routing.generate( 'domain_business_remote_images_upload' )
         };
 
         this.spinner = new Spin();
@@ -29,8 +35,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         this.handleClickOnImages();
         this.handleClickOnIsPrimaryCheckbox();
         this.handleClickOnRemoveLink();
+        this.handleRemoteImageUpload();
     };
 
+    //max allowed filesize: 10mb
     images.prototype.checkMaxAllowedFileSize = function( files ) {
         for( var i in files ) {
             var file = files[i];
@@ -44,6 +52,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         return true;
     };
 
+    //max allowed files count: 10
     images.prototype.checkMaxAllowedFilesCount = function( files ) {
         var filesSelected = files.length;
         var filesAlreadyAdded = $( document ).find( '.' + this.html.imageContainerClassname ).length;
@@ -58,36 +67,46 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         return true;
     };
 
+    //actions before ajax start: show loader / etc
     images.prototype.beforeRequestHandler = function () {
         $( document ).find( '.' + this.html.imageEditFormClassname ).hide();
         this.spinner.show( this.spinnerContainerId );
     };
 
+    //action on ajax compelete
     images.prototype.completeHandler = function() {
         this.spinner.hide();
+        $( this.html.remoteImageURLInputId ).val( '' );
+
+        var $galleryContainer = $( document ).find( '#' + this.html.galleryContainerId );
+
+        //hide table if no images exists
+        if( $galleryContainer.find( 'tr' ).length > 0 ) {
+            $galleryContainer.parent().show();
+        } else {
+            $galleryContainer.parent().hide();
+        }
     };
 
     //actions on ajax success
     images.prototype.onRequestSuccess = function( response ) {
-        var $response = $( $.parseHTML( response ) );
+        var $response = $( '<table>' + response + '</table>' );
 
-        var $imagesContainer = $( '.' + this.html.carouselContainerClassname );
-        var $formsContainer = $( '#' + this.html.formsContainerId );
+        var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
-        var $responseImages = $response.find( '.' + this.html.imageContainerClassname );
+        var $responseImages = $response.find( 'tr' );
 
         $responseImages.each(function() {
-            var $image = $(this);
+            var $imageRow = $(this);
 
-            var imageId = $image.data( 'id' );
+            var imageId = $imageRow.attr( 'id' );
 
-            var $form = $response.find( '#images-form-' + imageId );
-
-            if( !$(document).find( '[data-id="' + imageId + '"]' ).length > 0 ) {
-                $imagesContainer.append( $image );
-                $formsContainer.append( $form );
+            if( !$(document).find( '#' + imageId ).length > 0 ) {
+                $imagesContainer.append( $imageRow );
             }
         });
+
+        new select;
     };
 
     //ajax request
@@ -129,7 +148,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
 
         var that = this;
 
-        $(document).on('change', '#' + this.html.buttons.fileInputId, function() {
+        $(document).on( 'change', '#' + this.html.buttons.fileInputId, function() {
             var $this = $( this );
 
             var files = document.getElementById( that.html.buttons.fileInputId ).files;
@@ -143,11 +162,39 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
             }
 
             that.doRequest( $this.parent().data( 'url' ) );
-        });
+        } );
 
-        $(document).on('click', '#' + this.html.buttons.fileInputId, function() {
+        $(document).on( 'click', '#' + this.html.buttons.fileInputId, function() {
             $(this).val(null);
-        });
+        } );
+    };
+
+    //it should be possible to upload image from 3rd-party services by URL
+    images.prototype.handleRemoteImageUpload = function() {
+        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
+
+        var that = this;
+
+        $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
+            var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
+
+            var data = {
+                url: $remoteImageURLInput.val(),
+                businessProfileId: businessProfileId
+            };
+
+            $.ajax( {
+                url: that.urls.uploadByURL,
+                type: 'POST',
+                data: data,
+                beforeSend: $.proxy( that.beforeRequestHandler, that ),
+                complete: $.proxy( that.completeHandler, that ),
+                success: $.proxy( that.onRequestSuccess, that ),
+                error: $.proxy( that.errorHandler, that )
+            } );
+
+            event.preventDefault();
+        } );
     };
 
     //on image click - show "active" border & show image-edit form
@@ -155,7 +202,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         var $imageContainerClass = '.' + this.html.imageContainerClassname;
         var $imageFormContainerClass = '.' + this.html.imageEditFormClassname;
 
-        $(document).on('click', $imageContainerClass, function() {
+        $(document).on( 'click', $imageContainerClass, function() {
             var $self = $(this);
 
             $(document).find( $imageContainerClass ).removeClass( 'active' );
@@ -166,7 +213,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
             var imageId = $self.data( 'id' );
 
             $(document).find( '#images-form-' + imageId ).show();
-        });
+        } );
     };
 
     //only 1 image can be "primary" - remove is_primary from another

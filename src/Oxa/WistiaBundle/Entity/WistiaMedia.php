@@ -66,7 +66,7 @@ class WistiaMedia
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
@@ -102,21 +102,23 @@ class WistiaMedia
      */
     private $mediaEmbeds;
 
-    public function __construct(array $wistiaMediaData)
+    public function __construct(array $wistiaMediaData = [])
     {
-        $this->setWistiaId($wistiaMediaData['id']);
-        $this->setName($wistiaMediaData['name']);
-        $this->setType($wistiaMediaData['type']);
-        $this->setCreatedAt(new \DateTime($wistiaMediaData['created']));
-        $this->setUpdatedAt(new \DateTime($wistiaMediaData['updated']));
-        $this->setHashedId($wistiaMediaData['hashed_id']);
-        $this->setDescription($wistiaMediaData['description']);
-        $this->setProgress($wistiaMediaData['progress']);
-        $this->setStatus($wistiaMediaData['status']);
-        $this->setAccountId($wistiaMediaData['account_id']);
+        if (!empty($wistiaMediaData)) {
+            $this->setWistiaId($wistiaMediaData['id']);
+            $this->setName($wistiaMediaData['name']);
+            $this->setType($wistiaMediaData['type']);
+            $this->setCreatedAt(new \DateTime($wistiaMediaData['created']));
+            $this->setUpdatedAt(new \DateTime($wistiaMediaData['updated']));
+            $this->setHashedId($wistiaMediaData['hashed_id']);
+            $this->setDescription($wistiaMediaData['description']);
+            $this->setProgress($wistiaMediaData['progress']);
+            $this->setStatus($wistiaMediaData['status']);
+            $this->setAccountId($wistiaMediaData['account_id']);
 
-        $thumbnail = new WistiaMediaThumbnail($wistiaMediaData['thumbnail']);
-        $this->setThumbnail($thumbnail);
+            $thumbnail = new WistiaMediaThumbnail($wistiaMediaData['thumbnail']);
+            $this->setThumbnail($thumbnail);
+        }
 
         return $this;
     }

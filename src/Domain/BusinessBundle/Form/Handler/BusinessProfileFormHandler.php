@@ -49,11 +49,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         TasksManager $tasksManager,
         ValidatorInterface $validator
     ) {
-        $this->form         = $form;
-        $this->request      = $request;
-        $this->manager      = $manager;
-        $this->tasksManager = $tasksManager;
-        $this->validator    = $validator;
+        $this->form               = $form;
+        $this->request            = $request;
+        $this->manager            = $manager;
+        $this->tasksManager       = $tasksManager;
+        $this->validator          = $validator;
     }
 
     /**
@@ -87,6 +87,10 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             /** @var BusinessProfile $businessProfile */
             $businessProfile = $this->form->getData();
 
+            if (!isset($this->request->request->all()[$this->form->getName()]['video'])) {
+                $businessProfile->setVideo(null);
+            }
+
             if ($this->form->isValid()) {
                 $this->onSuccess($businessProfile);
                 return true;
@@ -104,6 +108,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         if ($businessProfile->getActualBusinessProfile() === null) {
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
         } else {
+            $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
+
             //Pessimistic block strategy used - user can't update his business profile before Admin response
             $this->getBusinessProfilesManager()->lock($businessProfile->getActualBusinessProfile());
 

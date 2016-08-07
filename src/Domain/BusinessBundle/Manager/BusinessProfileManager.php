@@ -10,6 +10,7 @@ use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use JMS\Serializer\SerializerBuilder;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\WistiaBundle\Manager\WistiaMediaManager;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
@@ -39,6 +40,9 @@ class BusinessProfileManager extends Manager
     /** @var BusinessGalleryManager */
     private $businessGalleryManager;
 
+    /** @var WistiaMediaManager */
+    private $wistiaMediaManager;
+
     /**
      * Manager constructor.
      * Accepts only entityManager as main dependency.
@@ -50,6 +54,7 @@ class BusinessProfileManager extends Manager
      * @param TranslatableListener $translatableListener
      * @param FormFactory $formFactory
      * @param BusinessGalleryManager $businessGalleryManager
+     * @param WistiaMediaManager $wistiaMediaManager
      */
     public function __construct(
         EntityManager $entityManager,
@@ -57,7 +62,8 @@ class BusinessProfileManager extends Manager
         TokenStorageInterface $tokenStorage,
         TranslatableListener $translatableListener,
         FormFactory $formFactory,
-        BusinessGalleryManager $businessGalleryManager
+        BusinessGalleryManager $businessGalleryManager,
+        WistiaMediaManager $wistiaMediaManager
     ) {
         $this->em = $entityManager;
 
@@ -72,6 +78,8 @@ class BusinessProfileManager extends Manager
         $this->formFactory = $formFactory;
 
         $this->businessGalleryManager = $businessGalleryManager;
+
+        $this->wistiaMediaManager = $wistiaMediaManager;
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
@@ -195,8 +203,9 @@ class BusinessProfileManager extends Manager
         $businessProfile->setUser($this->currentUser);
 
         foreach ($businessProfile->getImages() as $image) {
-            $image->setBusinessProfile($businessProfile);
-            $this->getEntityManager()->persist($image);
+            $clonedImage = clone $image;
+            $clonedImage->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($clonedImage);
         }
 
         $this->commit($businessProfile);
@@ -236,8 +245,6 @@ class BusinessProfileManager extends Manager
         $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
         $this->unlock($actualBusinessProfile);
 
-        $this->getBusinessGalleryManager()->restoreBusinessProfileImages($businessProfile);
-
         $this->commit($actualBusinessProfile);
     }
 
@@ -267,12 +274,15 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        $subscription = $oldProfile->getSubscription();
+        // ¯ \ _ (ツ) _ / ¯
+        $oldProfileSubscription = $oldProfile->getSubscription();
+        $newProfileSubscription = $businessProfile->getSubscription();
 
-        if ($subscription !== null) {
-            $subscription->setBusinessProfile($businessProfile);
-            $this->getEntityManager()->persist($subscription);
-        }
+        $oldProfileSubscription->setBusinessProfile($businessProfile);
+        $newProfileSubscription->setBusinessProfile($oldProfile);
+
+        $this->getEntityManager()->persist($oldProfileSubscription);
+        $this->getEntityManager()->persist($newProfileSubscription);
 
         $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
 
@@ -321,6 +331,20 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @return BusinessProfile
+     */
+    public function checkBusinessProfileVideo(BusinessProfile $businessProfile)
+    {
+        if ($businessProfile->getVideo()) {
+            $video = $this->getWistiaMediaManager()->updateNameAndDescriptionByWistiaID($businessProfile->getVideo());
+            $businessProfile->setVideo($video);
+        }
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
      */
     public function drop(BusinessProfile $businessProfile)
     {
@@ -338,6 +362,14 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->persist($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return WistiaMediaManager
+     */
+    private function getWistiaMediaManager() : WistiaMediaManager
+    {
+        return $this->wistiaMediaManager;
     }
 
     /**
@@ -363,4 +395,6 @@ class BusinessProfileManager extends Manager
     {
         return $this->em;
     }
+
+
 }

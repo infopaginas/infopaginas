@@ -49,13 +49,15 @@ class BusinessGalleryType extends AbstractType
                 'label' => 'Description',
             ])
             ->add('type', ChoiceType::class, [
-                'attr' => [],
+                'attr' => [
+                    'class' => 'form-control select-control',
+                ],
                 'choices' => [
                     OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO => 'Logo',
                     OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES => 'Photo',
                     OxaMediaInterface::CONTEXT_BANNER => 'Banner Ad',
                 ],
-                'expanded' => true,
+                'expanded' => false,
                 'label' => 'Type',
                 'multiple' => false,
             ])

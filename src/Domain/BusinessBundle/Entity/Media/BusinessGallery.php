@@ -275,4 +275,9 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
         $this->type = $type;
         return $this;
     }
+
+    function __clone()
+    {
+        $this->id = null;
+    }
 }
