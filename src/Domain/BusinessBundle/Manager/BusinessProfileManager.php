@@ -395,6 +395,4 @@ class BusinessProfileManager extends Manager
     {
         return $this->em;
     }
-
-
 }

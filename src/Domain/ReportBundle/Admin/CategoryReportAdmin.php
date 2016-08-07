@@ -124,7 +124,6 @@ class CategoryReportAdmin extends ReportAdmin
             // if datePeriod is set
             // apply it's data range in force way
             if (isset($parameters['datePeriod']['value']) && $datePeriodCode = $parameters['datePeriod']['value']) {
-
                 if ($datePeriodCode == AdminHelper::DATE_RANGE_CODE_CUSTOM) {
                     return $parameters;
                 }

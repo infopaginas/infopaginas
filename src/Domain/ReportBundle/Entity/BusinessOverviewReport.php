@@ -145,10 +145,8 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
      */
     public function addBusinessOverviewReportBusinessProfile(
         BusinessOverviewReportBusinessProfile $businessOverviewReportBusinessProfile
-    )
-    {
+    ) {
         $this->businessOverviewReportBusinessProfiles[] = $businessOverviewReportBusinessProfile;
-
         return $this;
     }
 
@@ -159,8 +157,7 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
      */
     public function removeBusinessOverviewReportBusinessProfile(
         BusinessOverviewReportBusinessProfile $businessOverviewReportBusinessProfile
-    )
-    {
+    ) {
         $this->businessOverviewReportBusinessProfiles->removeElement($businessOverviewReportBusinessProfile);
     }
 

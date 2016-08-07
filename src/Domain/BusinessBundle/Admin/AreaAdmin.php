@@ -57,7 +57,8 @@ class AreaAdmin extends OxaAdmin
                 'btn_add' => false,
                 'disabled' => true,
             ])
-        ;}
+        ;
+    }
 
     /**
      * @param ShowMapper $showMapper

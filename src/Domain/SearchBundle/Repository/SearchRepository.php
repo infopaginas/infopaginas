@@ -32,18 +32,8 @@ class SearchRepository extends EntityRepository
             ->join('bp.businessReviews', 'bp_r');
     }
 
-    protected function getSearchQueryBuilderWithCaterogy()
-    {
-    }
-
     protected function getSearchQuery()
     {
         $this->getEntityManager();
-        //$this->getDoctrine()->getManager();
-    }
-
-    public function searchByPhraseAndLocation(sting $phrase, LocationValueObject $locationName)
-    {
-
     }
 }

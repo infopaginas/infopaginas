@@ -47,8 +47,7 @@ class BusinessOverviewReportManager extends DefaultManager
         }
 
         $businessKey = 'businessOverviewReportBusinessProfiles__businessProfile';
-        if (
-            isset($filterParams[$businessKey]) &&
+        if (isset($filterParams[$businessKey]) &&
             $filterParams[$businessKey]['value'] != ''
         ) {
             $params['businessProfileId'] = $filterParams[$businessKey]['value'];
@@ -96,8 +95,7 @@ class BusinessOverviewReportManager extends DefaultManager
             /** @var BusinessOverviewReport $object*/
 
             // define date format
-            if (
-                isset($params['periodOption']) &&
+            if (isset($params['periodOption']) &&
                 $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
             ) {
                 $date = $object->getDate()->format(AdminHelper::DATE_MONTH_FORMAT);

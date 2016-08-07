@@ -1,0 +1,3 @@
+oxa_dirxion_default_index:
+   path:     /
+   defaults: { _controller: OxaDirxionBundle:Default:index }

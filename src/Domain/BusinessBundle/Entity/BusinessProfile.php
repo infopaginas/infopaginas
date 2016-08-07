@@ -1727,7 +1727,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setGoogleURL($googleURL)
     {
         $this->googleURL = $googleURL;
-
     }
 
     /**

@@ -34,7 +34,6 @@ class GoogleMapFrontType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
     }
 
     /**

@@ -99,7 +99,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function searchNeighborhood(SearchDTO $searchParams)
     {
         // TODO functionality
-
         return $this->search($searchParams);
     }
 
@@ -322,7 +321,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Get business profiles ids array
-     * 
+     *
      * @param int|null $limit
      * @return BusinessProfile[]|null
      */
