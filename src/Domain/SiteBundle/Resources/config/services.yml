@@ -125,6 +125,7 @@ services:
     domain_site.contains_email:
         class: Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator
         arguments:
-            - @service_container
+            - @translator
+            - @validator
         tags:
             - { name: validator.constraint_validator }

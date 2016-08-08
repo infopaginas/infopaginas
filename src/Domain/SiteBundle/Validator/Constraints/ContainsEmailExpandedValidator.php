@@ -1,27 +1,30 @@
 <?php
 namespace Domain\SiteBundle\Validator\Constraints;
 
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ContainsEmailExpandedValidator extends ConstraintValidator
 {
-    protected $container;
+    protected $translator;
+    protected $validator;
 
-    public function __construct($container)
+    public function __construct(TranslatorInterface $translator, ValidatorInterface $validator)
     {
-        $this->container = $container;
+        $this->translator = $translator;
+        $this->validator  = $validator;
     }
 
     public function validate($value, Constraint $constraint)
     {
-        $isCustomValid = $this->container->get('validator')->validateValue($value, new Email());
-        $symbolsAfterComa = strlen(substr($value, strripos($value, '.') + 1));
+        $isCustomValid = $this->validator->validateValue($value, new Email());
 
-        if (!count($isCustomValid) && !($symbolsAfterComa>= 2 && filter_var($value, FILTER_VALIDATE_EMAIL))) {
+        if (!count($isCustomValid) && !preg_match('/^.+\@\S+\.\S{2,}+$/', $value)) {
             $this->context
-                ->buildViolation($this->container->get('translator')->trans('fos_user.email.invalid'))
+                ->buildViolation($this->translator->trans('fos_user.email.invalid'))
                 ->addViolation();
         }
     }
