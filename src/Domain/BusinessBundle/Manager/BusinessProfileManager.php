@@ -156,7 +156,12 @@ class BusinessProfileManager extends Manager
      */
     public function findByUid(string $uid)
     {
-        $businessProfile = $this->getRepository()->findOneBy(['uid' => $uid]);
+        $businessProfile = $this->getRepository()->findOneBy([
+            'uid' => $uid,
+            'isActive' => true,
+            'locked' => false,
+            'actualBusinessProfile' => null,
+        ]);
         return $businessProfile;
     }
 

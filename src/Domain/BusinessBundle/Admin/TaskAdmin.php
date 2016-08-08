@@ -20,6 +20,17 @@ class TaskAdmin extends OxaAdmin
      */
     protected $tasksManager;
 
+    /**
+     * Default values to the datagrid.
+     *
+     * @var array
+     */
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_per_page'   => 25,
+        '_sort_by' => 'createdAt',
+    );
+
     public function postUpdate($task)
     {
         $reviewer = $this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
