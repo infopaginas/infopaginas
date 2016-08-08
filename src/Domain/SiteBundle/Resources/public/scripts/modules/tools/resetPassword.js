@@ -190,8 +190,15 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
 
     //check token existance in URL. If exists - show 'reset password' modal
     resetPassword.prototype.checkPasswordResetToken = function() {
+        var that = this;
+
         if( window.location.pathname.indexOf('password_reset') !== -1 ) {
-            $( this.modals.resetModalId ).modal( 'show' );
+            setTimeout(
+                function() {
+                    $( that.modals.resetModalId ).modal( 'show' );
+                },
+                100
+            );
         }
     };
 
