@@ -25,7 +25,7 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
 {
     const ERROR_EMPTY_TOKEN = 'Error: Empty token.';
 
-    const ERROR_USER_NOT_FOUND_BY_TOKEN = 'The user with "confirmation token" does not exist for value "%s"';
+    const ERROR_USER_NOT_FOUND_BY_TOKEN = 'You currently do not have valid link for update your password';
 
     /** @var FormInterface  */
     protected $form;
@@ -66,7 +66,7 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
         $user = $usersManager->findUserByConfirmationToken($token);
 
         if ($user === null) {
-            throw new NotFoundHttpException(sprintf(self::ERROR_USER_NOT_FOUND_BY_TOKEN, $token));
+            throw new NotFoundHttpException(self::ERROR_USER_NOT_FOUND_BY_TOKEN);
         }
 
         if ($this->request->getMethod() == 'POST') {
