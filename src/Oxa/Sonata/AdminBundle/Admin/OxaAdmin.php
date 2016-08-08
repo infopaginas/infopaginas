@@ -79,7 +79,6 @@ class OxaAdmin extends BaseAdmin
      * @var array
      */
     protected $defaultDatagridDateTypeOptions = [
-        'label' => 'filter.label_date',
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
             'format' => self::FILTER_DATE_FORMAT

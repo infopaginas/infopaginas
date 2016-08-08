@@ -11,6 +11,7 @@ use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Banner
@@ -39,6 +40,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $title;
 

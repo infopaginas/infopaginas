@@ -14,6 +14,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Category
@@ -43,6 +44,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $name;
 

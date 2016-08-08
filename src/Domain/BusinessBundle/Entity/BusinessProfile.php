@@ -31,7 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_profile")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
@@ -136,15 +135,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Email address
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
+     * @Assert\Email()
      */
     protected $email;
-
-    /**
-     * @var string - Contact phone number
-     *
-     * @ORM\Column(name="phone", type="string", length=15, nullable=true)
-     */
-    protected $phone;
 
     /**
      * @var \DateTime - Date of registration in Infopaginas
@@ -202,7 +195,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Operational Hours
      *
      * @Gedmo\Translatable
-     * @ORM\Column(name="working_hours", type="string", length=255, nullable=true)
+     * @ORM\Column(name="working_hours", type="text", nullable=true)
      */
     protected $workingHours;
 
@@ -382,7 +375,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", nullable=true)
+     * @ORM\Column(name="city", type="string", length=30, nullable=true)
      * @Assert\NotBlank()
      */
     protected $city;
@@ -412,7 +405,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="custom_address", type="string", nullable=true)
+     * @ORM\Column(name="custom_address", type="string", length=100, nullable=true)
      */
     protected $customAddress;
 
@@ -488,10 +481,14 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $localities;
 
     /**
-     * @ORM\Column(name="phones", type="array", nullable=true)
-     * @Assert\All({
-     *     @Assert\Length(max=10)
-     * })
+     * @var Campaign[] - Business Profile Phones
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePhone",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
      */
     protected $phones;
 
@@ -514,6 +511,11 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @ORM\Column(name="uid", type="string")
      */
     protected $uid;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Oxa\WistiaBundle\Entity\WistiaMedia", cascade={"persist"})
+     */
+    protected $video;
 
     /**
      * @Gedmo\Locale
@@ -565,6 +567,24 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      */
     protected $searchCityFts;
+
+    /**
+     * @return mixed
+     */
+    public function getVideo()
+    {
+        return $this->video;
+    }
+
+    /**
+     * @param mixed $video
+     * @return BusinessProfile
+     */
+    public function setVideo($video)
+    {
+        $this->video = $video;
+        return $this;
+    }
 
     public function setLocale($locale)
     {
@@ -687,30 +707,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function getEmail()
     {
         return $this->email;
-    }
-
-    /**
-     * Set phone
-     *
-     * @param string $phone
-     *
-     * @return BusinessProfile
-     */
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    /**
-     * Get phone
-     *
-     * @return string
-     */
-    public function getPhone()
-    {
-        return $this->phone;
     }
 
     /**
@@ -1731,7 +1727,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function setGoogleURL($googleURL)
     {
         $this->googleURL = $googleURL;
-
     }
 
     /**
@@ -1968,15 +1963,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * @param mixed $phones
-     * @return BusinessProfile
-     */
-    public function setPhones($phones)
-    {
-        $this->phones = $phones;
-    }
-
-    /**
      * Set googleAddress
      *
      * @param string $googleAddress
@@ -2195,7 +2181,67 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
             }
             return $raiting / $reviewsAmount;
         }
-        
+
         return 0;
+    }
+
+    /**
+     * Get locked
+     *
+     * @return boolean
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Add locality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $locality
+     *
+     * @return BusinessProfile
+     */
+    public function addLocality(\Domain\BusinessBundle\Entity\Locality $locality)
+    {
+        $this->localities[] = $locality;
+
+        return $this;
+    }
+
+    /**
+     * Remove locality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $locality
+     */
+    public function removeLocality(\Domain\BusinessBundle\Entity\Locality $locality)
+    {
+        $this->localities->removeElement($locality);
+    }
+
+    /**
+     * Add phone
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfilePhone $phone
+     *
+     * @return BusinessProfile
+     */
+    public function addPhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
+    {
+        $this->phones[] = $phone;
+
+        $phone->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove phone
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfilePhone $phone
+     */
+    public function removePhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
+    {
+        $this->phones->removeElement($phone);
     }
 }

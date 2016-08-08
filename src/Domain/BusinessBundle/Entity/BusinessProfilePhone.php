@@ -3,11 +3,12 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BusinessProfilePhone
  *
- * @ORM\Table(name="business_profile_phones")
+ * @ORM\Table(name="business_profile_phone")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfilePhoneRepository")
  */
 class BusinessProfilePhone
@@ -24,9 +25,25 @@ class BusinessProfilePhone
     /**
      * @var string - Contact phone number
      *
-     * @ORM\Column(name="phone", type="string", length=10)
+     * @ORM\Column(name="phone", type="string", length=15)
+     * @Assert\NotBlank()
      */
     private $phone;
+
+    /**
+     * @var BusinessProfile
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     cascade={"persist"},
+     *     inversedBy="phones"
+     * )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     */
+    protected $businessProfile;
+
+    public function __toString()
+    {
+        return ($this->getId()) ? $this->getPhone() : 'New phone';
+    }
 
     /**
      * Get id
@@ -54,5 +71,29 @@ class BusinessProfilePhone
     {
         $this->phone = $phone;
         return $this;
+    }
+
+    /**
+     * Set businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return BusinessProfilePhone
+     */
+    public function setBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile = null)
+    {
+        $this->businessProfile = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Get businessProfile
+     *
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function getBusinessProfile()
+    {
+        return $this->businessProfile;
     }
 }

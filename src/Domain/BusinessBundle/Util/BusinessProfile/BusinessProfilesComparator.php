@@ -11,6 +11,7 @@ namespace Domain\BusinessBundle\Util\BusinessProfile;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -38,7 +39,13 @@ class BusinessProfilesComparator
             $currentBusinessProfileForm
         );
 
+        $videoDifferences = self::getProfileVideoDifferencesArray(
+            $updatedBusinessProfileForm,
+            $currentBusinessProfileForm
+        );
+
         $differences = array_merge($fieldDifferences, $imageDifferences);
+        $differences = array_merge($differences, $videoDifferences);
 
         return $differences;
     }
@@ -57,12 +64,12 @@ class BusinessProfilesComparator
                 continue;
             }
 
-            if (!is_array($value->getData()) && !is_object($value->getData())) {
+            if (!is_array($value->getData()) && !is_object($value->getData()) && $value->getName() !== 'video') {
                 $data[$value->getName()] = [
                     'label' => $value->getConfig()->getOption('label'),
                     'value' => $value->getData(),
                 ];
-            } elseif (is_object($value->getData()) && $value->getName() !== 'images') {
+            } elseif (is_object($value->getData()) && !in_array($value->getName(), ['images', 'video'])) {
                 $isObjectInstanceOfCollection = ($value->getData() instanceof ArrayCollection)
                     || ($value->getData() instanceof PersistentCollection);
 
@@ -115,6 +122,57 @@ class BusinessProfilesComparator
                 'newValue' => '-',
                 'action' => 'Image Removed',
                 'field' => 'Images',
+            ];
+        }
+
+        return $differences;
+    }
+
+    private static function getProfileVideoDifferencesArray(
+        FormInterface $updatedBusinessProfileForm,
+        FormInterface $currentBusinessProfileForm
+    ) {
+        $differences = [];
+
+        if (!$updatedBusinessProfileForm->has('video')) {
+            return $differences;
+        }
+
+        /** @var WistiaMedia $video */
+        $video = $updatedBusinessProfileForm->get('video')->getData();
+
+        if ($currentBusinessProfileForm->has('video')) {
+            /** @var WistiaMedia $oldVideo */
+            $oldVideo = $currentBusinessProfileForm->get('video')->getData();
+        } else {
+            $oldVideo = null;
+        }
+
+        if ($video !== null) {
+            if ($oldVideo === null) {
+                //if videofile added
+                $differences['video'] = [
+                    'oldValue' => '-',
+                    'newValue' => $video->getName(),
+                    'action' => 'Video added',
+                    'field' => 'Video',
+                ];
+            } elseif ($oldVideo->getName() !== $video->getName()) {
+                $differences['video'] = [
+                    'oldValue' => $oldVideo->getName(),
+                    'newValue' => $video->getName(),
+                    'action' => 'Video changed',
+                    'field' => 'Video',
+                ];
+            }
+        }
+
+        if ($oldVideo !== null && $video === null) {
+            $differences['video'] = [
+                'oldValue' => $oldVideo->getName(),
+                'newValue' => '-',
+                'action' => 'Video removed',
+                'field' => 'Video',
             ];
         }
 

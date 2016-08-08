@@ -99,7 +99,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function searchNeighborhood(SearchDTO $searchParams)
     {
         // TODO functionality
-
         return $this->search($searchParams);
     }
 
@@ -322,15 +321,24 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Get business profiles ids array
+     *
+     * @param int|null $limit
      * @return BusinessProfile[]|null
      */
-    public function getIndexedBusinessProfileIds()
+    public function getIndexedBusinessProfileIds(int $limit = null)
     {
-        $result = $this
+        $query = $this
             ->getEntityManager()
             ->createQueryBuilder()
             ->select('bp.id')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp', 'bp.id')
+        ;
+        
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+        
+        $result = $query
             ->getQuery()
             ->getResult()
         ;

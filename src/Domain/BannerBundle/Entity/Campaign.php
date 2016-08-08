@@ -12,6 +12,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Campaign
@@ -40,6 +41,7 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface, Datetim
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=100)
+     * @Assert\NotBlank()
      */
     protected $title;
 

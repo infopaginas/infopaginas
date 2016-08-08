@@ -107,7 +107,7 @@ class WistiaMediaEmbed
     /**
      * @var float
      *
-     * @ORM\Column(name="duration", type="float")
+     * @ORM\Column(name="duration", type="float", nullable=true)
      */
     private $duration;
 

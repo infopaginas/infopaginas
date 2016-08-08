@@ -69,7 +69,7 @@ class SubscriptionAdmin extends OxaAdmin
         if ($this->getRoot()->getClass() != $this->getClass()) {
             $formMapper
                 ->with('General')
-                    ->add('subscriptionId', 'text', [
+                    ->add('id', 'text', [
                         'read_only' => true,
                         'mapped' => false,
                         'disabled' => true,

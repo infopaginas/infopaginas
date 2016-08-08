@@ -26,6 +26,7 @@ class BannerAdmin extends OxaAdmin
             ],
             'translation_domain' => $this->getTranslationDomain()
         ];
+
         $datagridMapper
             ->add('id')
             ->add('title')
@@ -33,7 +34,6 @@ class BannerAdmin extends OxaAdmin
             ->add('template')
             ->add('allowedForBusinesses', null, [], null, $choiceOptions)
         ;
-
     }
 
     /**

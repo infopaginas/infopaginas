@@ -5,22 +5,31 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
     var videos = function() {
         this.html = {
             buttons: {
-                fileInputId: 'domain_business_bundle_business_profile_form_type_video'
+                fileInputId: 'domain_business_bundle_business_profile_form_type_videoFile',
+                startUploadRemoteFileButtonId: 'start-remote-video-upload'
             },
-            videoContainerId: '#video'
+            videoContainerId: '#video',
+            removeVideoLinkId: '#remove-video',
+            remoteVideoURLInputId: '#remote-video-url'
+        };
+
+        this.urls = {
+            uploadByURL: Routing.generate('domain_business_remote_videos_upload')
         };
 
         this.spinner = new Spin();
 
-        this.spinnerContainerId = 'images-spin-container';
+        this.spinnerContainerId = 'videos-spin-container';
 
         //max business profile videos count - 1
         this.maxAllowedFilesCount = 1;
 
         this.handleFileUploadInput();
         this.handleClickOnRemoveLink();
+        this.handleRemoteVideosUpload();
     };
 
+    //only 1 video allowed
     videos.prototype.checkMaxAllowedFilesCount = function( files ) {
         var filesSelected = files.length;
         var filesAlreadyAdded = $( document ).find( '.' + this.html.imageContainerClassname ).length;
@@ -35,17 +44,28 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         return true;
     };
 
+    //show loader spinner
     videos.prototype.beforeRequestHandler = function () {
         this.spinner.show( this.spinnerContainerId );
     };
 
+    //hide loader spinner on complete
     videos.prototype.completeHandler = function() {
         this.spinner.hide();
+        $( this.html.remoteVideoURLInputId ).val( '' );
     };
 
     //actions on ajax success
     videos.prototype.onRequestSuccess = function( response ) {
-        $(this.html.videoContainerId).html(response);
+        if( response.success ) {
+            $( this.html.videoContainerId ).html( response.message );
+        } else {
+            alertify.error( response.message );
+        }
+    };
+
+    videos.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
+        alertify.error( errorThrown );
     };
 
     //ajax request
@@ -54,13 +74,15 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
             url: ajaxURL,
             type: 'POST',
             data: this.getRequestData(),
+            dataType: 'JSON',
             enctype: 'multipart/form-data',
             cache: false,
             processData: false,
             contentType: false,
             beforeSend: $.proxy( this.beforeRequestHandler, this ),
             complete: $.proxy( this.completeHandler, this ),
-            success: $.proxy( this.onRequestSuccess, this )
+            success: $.proxy( this.onRequestSuccess, this ),
+            error: $.proxy( this.errorHandler, this )
         });
     };
 
@@ -105,16 +127,43 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         });
     };
 
-    //remove image by click on "remove" link
-    videos.prototype.handleClickOnRemoveLink = function() {
-        /*$(document).on( 'click', '.' + this.html.removeImageClassname, function( event ) {
-            var imageId = $(this).data( 'id' );
+    //it should be possible to upload video from 3rd-party services
+    videos.prototype.handleRemoteVideosUpload = function() {
+        var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
 
-            $(document).find( '[data-id="' + imageId + '"]' ).remove();
-            $(document).find( '#images-form-' + imageId ).remove();
+        var that = this;
+
+        $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
+            var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
+
+            var data = {
+                url: $remoteVideoURLInput.val(),
+                businessProfileId: businessProfileId
+            };
+
+            $.ajax( {
+                url: that.urls.uploadByURL,
+                type: 'POST',
+                data: data,
+                dataType: 'JSON',
+                beforeSend: $.proxy( that.beforeRequestHandler, that ),
+                complete: $.proxy( that.completeHandler, that ),
+                success: $.proxy( that.onRequestSuccess, that ),
+                error: $.proxy( that.errorHandler, that )
+            } );
 
             event.preventDefault();
-        } );*/
+        } );
+    };
+
+    //remove image by click on "remove" link
+    videos.prototype.handleClickOnRemoveLink = function() {
+        var videoContainerId = this.html.videoContainerId;
+
+        $(document).on( 'click', this.html.removeVideoLinkId, function( event ) {
+            $( document ).find( videoContainerId ).html( '' );
+            event.preventDefault();
+        } );
     };
 
     return videos;
