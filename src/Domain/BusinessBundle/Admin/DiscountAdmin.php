@@ -38,7 +38,7 @@ class DiscountAdmin extends OxaAdmin
             ->add('coupon')
             ->add('statusValue', null, ['label' => 'Status'])
             ->add('value')
-            ->add('statusValue')
+            //->add('statusValue')
         ;
 
         $this->addGridActions($listMapper);
@@ -70,6 +70,8 @@ class DiscountAdmin extends OxaAdmin
             ->add('coupon')
             ->add('description')
             ->add('value')
+            ->add('startDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
+            ->add('endDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
         ;
     }
 
