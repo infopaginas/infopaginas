@@ -201,18 +201,39 @@
                         </div>
                         <div class="card-item">
                             <div class="col-xs-3 fields-item">
-                                <span>Discounts:</span>
+                                <span>{% trans %}Discounts & Coupons{% endtrans %}:</span>
                             </div>
-                            <div class="col-xs-9 fields-item">
+                            <div class="col-xs-9 fields-item"></div>
+                            {% for discount in discounts %}
+                                <div class="col-xs-3 fields-item"></div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>
+                                        {{ discount.getDescription() }}
+                                    </p>
+                                    {% if discount.getCoupon() %}
+                                        <p>
+                                            {% set media = discount.getCoupon().getImage() %}
+
+                                            <a onclick="printImage('{% path media, 'reference' %}');" href="#" class="green-btn btn print-btn">
+                                                <i class="fa fa-print" aria-hidden="true"></i>
+                                                <span>Print</span>
+                                            </a>
+                                        </p>
+                                    {% endif %}
+                                    <hr>
+                                </div>
+                            {% endfor %}
+                            {#<div class="col-xs-9 fields-item">
                                 <p>10% Off on Mondaday</p>
-                            </div>
-                            <div class="col-xs-3 fields-item">
+                            </div>#}
+
+                            {#<div class="col-xs-3 fields-item">
                                 <span>Coupons:</span>
-                            </div>
-                            <div class="col-xs-9 fields-item">
+                            </div>#}
+                            {#<div class="col-xs-9 fields-item">
                                 <p><a href="" class="green-btn btn print-btn"><i class="fa fa-print"
                                                                                  aria-hidden="true"></i><span>Print</span></a></p>
-                            </div>
+                            </div>#}
                         </div>
                         <div class="card-item">
                             <div class="col-xs-3 fields-item">
@@ -308,4 +329,23 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function printImage(imageSrc)
+        {
+            var popup;
+
+            function closePrint () {
+                if ( popup ) {
+                    popup.close();
+                }
+            }
+
+            popup = window.open( imageSrc );
+            popup.onbeforeunload = closePrint;
+            popup.onafterprint = closePrint;
+            popup.focus(); // Required for IE
+            popup.print();
+        }
+    </script>
 {% endblock %}
