@@ -10,6 +10,7 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
 
         this.modals = {
             resetModalId: '#resetPasswordModal',
+            resetRequesModalId: '#forgottenPasswordModal',
             loginModalId: '#loginModal'
         };
 
@@ -112,8 +113,13 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
             alertify.success( response.message );
 
             //if current form == reset password form
-            if ( '#' + this.getActiveModal().find('form').attr('id') == this.html.forms.resetPasswordFormId ) {
+            var activeModal = '#' + this.getActiveModal().find('form').attr('id');
+
+            if ( activeModal == this.html.forms.resetPasswordFormId ) {
                 $( this.modals.resetModalId ).modal( 'hide' );
+                $( this.modals.loginModalId ).modal( 'show' );
+            } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
+                $( this.modals.resetRequesModalId ).modal( 'hide' );
                 $( this.modals.loginModalId ).modal( 'show' );
             }
         } else {
