@@ -313,14 +313,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-item video-block">
-                            <div class="col-xs-3 fields-item">
-                                <span><i class="video-icon icon"></i>Video</span>
+
+                        {% if media_tab_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
+                            <div class="card-item video-block">
+                                <div class="col-xs-3 fields-item">
+                                    <span>
+                                        <i class="video-icon icon"></i>{% trans %}Video{% endtrans %}
+                                    </span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    {{ render_wistia_embed(businessProfile.getVideo(), {width: 320, height: 220}) | raw }}
+                                </div>
                             </div>
-                            <div class="col-xs-9 fields-item">
-                                <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <aside class="map col-md-3">
