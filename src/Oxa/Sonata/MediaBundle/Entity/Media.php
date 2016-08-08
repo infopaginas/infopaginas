@@ -85,7 +85,6 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
             self::CONTEXT_BUSINESS_PROFILE_IMAGES   => self::CONTEXT_BUSINESS_PROFILE_IMAGES,
             self::CONTEXT_BUSINESS_PROFILE_LOGO     => self::CONTEXT_BUSINESS_PROFILE_LOGO,
             self::CONTEXT_BANNER                    => self::CONTEXT_BANNER,
-            self::CONTEXT_PAGE                      => self::CONTEXT_PAGE,
         ];
     }
 
