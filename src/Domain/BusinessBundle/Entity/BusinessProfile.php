@@ -334,6 +334,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
 
@@ -348,6 +349,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="extended_address", type="string", length=50, nullable=true)
+     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
      */
     protected $extendedAddress;
 
@@ -355,6 +357,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="cross_street", type="string", length=50, nullable=true)
+     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
      */
     protected $crossStreet;
 
@@ -369,6 +372,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="state", type="string", length=30, nullable=true)
+     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $state;
 
@@ -377,6 +381,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="city", type="string", length=30, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $city;
 
@@ -385,6 +390,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
      * @Assert\NotBlank()
+     * @Assert\Length(max=10, maxMessage="business_profile.max_length")
      */
     protected $zipCode;
 
@@ -406,6 +412,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="custom_address", type="string", length=100, nullable=true)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
 
