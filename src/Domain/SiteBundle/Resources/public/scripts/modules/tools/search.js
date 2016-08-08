@@ -15,30 +15,25 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             searchBaseUrl : '/search/'
         };
 
-        console.log(options.searchHeaderButton)
-
         $.extend( this.options, options );
 
         this.init( options );
         this.bindEvents();
 
-        $(options.searchHeaderButton).on('click', function(evt) {
+        $(options.searchHeaderButton).add(options.submitSelector).on('click', function(evt) {
             if($(options.searchSelector).val() === ''){
                 evt.preventDefault();
-                $(options.searchSelector).css({"border-color": "red"})
-            }
-        });
-
-        $(options.submitSelector).on('click', function(evt) {
-            if($(options.searchSelector).val() === ''){
-                evt.preventDefault();
-                $(options.searchSelector).css({"border-color": "red"})
+                $(options.searchSelector).css({"border-color": "#FF3300"});
+                $(options.searchSelector).parent().addClass( "validation-error" );
+                $(options.searchSelector).attr("placeholder", "Please enter a search term");
             }
         });
 
         $(options.searchSelector).on('input', function() {
             if($(options.searchSelector).val() !== ''){
-                $(options.searchSelector).css({"border-color": "#cadb53"})
+                $(options.searchSelector).css({"border-color": "#cadb53"});
+                $(options.searchSelector).parent().removeClass( "validation-error" );
+                $(options.searchSelector).attr("placeholder", "What do you want to find?");
             }
         });
 

@@ -26,12 +26,13 @@ define(
 
     homepage.prototype.initSearch = function ( ) {
         var searchOptions = {
-            selector            : '.search-form',
-            searchSelector      : '#searchBox',
-            searchHintSelector  : '#searchHint',
+            selector              : '.search-form',
+            searchSelector        : '#searchBox',
+            searchHintSelector    : '#searchHint',
             searchResultsSelector : '#searchResultsAutosuggest',
-            locationsSelector   : '#searchLocation',
-            submitSelector      : '#searchButton'
+            locationsSelector     : '#searchLocation',
+            submitSelector        : '#searchButton',
+            searchHeaderButton    : '#searchHeaderButton'
         };
 
         searchOptions['geolocation'] = new Geolocation( { 
