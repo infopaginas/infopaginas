@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Domain\SiteBundle\Validator\Constraints\ContainsEmailExpanded;
+use Symfony\Component\Validator\Constraints\Length;
 
 class RegistrationType extends AbstractType
 {
@@ -19,6 +21,7 @@ class RegistrationType extends AbstractType
                     'class'       => 'form-control',
                     'placeholder' => 'Email',
                 ],
+                'constraints' => new ContainsEmailExpanded(),
             ])
             ->add('firstname', TextType::class, [
                 'attr' => [
@@ -46,6 +49,8 @@ class RegistrationType extends AbstractType
                         'placeholder' => 'Confirm Password',
                     ],
                 ],
+                'invalid_message' => 'fos_user.password.mismatch',
+                'constraints' => new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
             ])
             ->add('location', TextType::class, [
                 'attr' => [
