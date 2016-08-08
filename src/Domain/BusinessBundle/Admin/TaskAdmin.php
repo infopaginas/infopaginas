@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Manager\TasksManager;
@@ -81,7 +82,13 @@ class TaskAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper->add('rejectReason');
+        $formMapper->add(
+            'rejectReason',
+            TextareaType::class,
+            [
+                'required' => true,
+            ]
+        );
 
         $formMapper->add(
             'businessProfile.businessReviews',

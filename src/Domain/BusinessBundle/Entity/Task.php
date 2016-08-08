@@ -49,6 +49,7 @@ class Task implements DefaultEntityInterface, TaskInterface
 
     /**
      * @ORM\Column(name="reject_reason", type="text", nullable=true)
+     * @Assert\NotBlank()
      */
     protected $rejectReason;
 
