@@ -8,7 +8,11 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('DomainSiteBundle:Home:search.html.twig');
+        $params = [
+            'articles' => $this->get('domain_article.manager.article')->getArticles(),
+        ];
+
+        return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
     }
 
     public function viewAction()

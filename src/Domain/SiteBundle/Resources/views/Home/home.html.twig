@@ -63,9 +63,19 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 articles-section">
+                    <div class="section-title">
+                        <span class="blue-c">Articles</span>
+                        <hr>
+                        <a href="{{ path('domain_article_homepage') }}" class="btn">View more articles</a>
+                    </div>
                     {% include 'DomainSiteBundle:Home:Widgets/articlesWidget.html.twig' %}
                 </div>
                 <div class="col-md-6 videos-section">
+                    <div class="section-title">
+                        <span class="blue-c">Videos</span>
+                        <hr>
+                        <a href="#" class="btn">View more videos</a>
+                    </div>
                     {% include 'DomainSiteBundle:Home:Widgets/videosWidget.html.twig' %}
                 </div>
             </div>
