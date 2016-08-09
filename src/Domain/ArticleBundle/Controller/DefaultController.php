@@ -11,8 +11,16 @@ class DefaultController extends Controller
         return $this->render('DomainSiteBundle:Home:search.html.twig');
     }
 
-    public function viewAction()
+    /**
+     * @param string $slug
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewAction(string $slug)
     {
-        return $this->render('DomainSiteBundle:Home:search.html.twig');
+        $params = [
+            'article' => $this->get('domain_article.manager.article')->getRepository()->findOneBy(['slug' => $slug]),
+        ];
+
+        return $this->render('DomainArticleBundle:Default:view.html.twig', $params);
     }
 }
