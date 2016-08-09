@@ -25,7 +25,13 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
 
         $this->getLatLngByNameQueryBuilder($queryBuilder, $name);
 
-        $results = $queryBuilder->getQuery()->getSingleResult();
+        $results = $queryBuilder->getQuery()->getResult();
+        if (empty($results)) {
+            return array();
+        } else {
+            $results = $results[0];
+        }
+        
 
         $queryBuilderForList = $this->getQueryBuilder();
 
