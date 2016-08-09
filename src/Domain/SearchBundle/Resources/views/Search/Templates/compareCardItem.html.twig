@@ -74,24 +74,38 @@
                     <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/paypal.png')}}"></a></li>
                 {% endif %}
             {% endfor%}
-            
-            
-            
-            
         </ul>
     </div>
     <div class="social fields-item">
         <ul class="social-icons">
-            <li><a class="blue-c" href=""><i class="fa fa-facebook" aria-hidden="true"></i></a>
-            </li>
-            <li><a class="blue-c" href=""><i class="fa fa-twitter" aria-hidden="true"></i></a>
-            </li>
-            <li><a class="blue-c" href=""><i class="fa fa-google-plus"
-                                             aria-hidden="true"></i></a></li>
-            <li><a class="blue-c" href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-            </li>
-            <li><a class="blue-c" href=""><i class="fa fa-pinterest" aria-hidden="true"></i></a>
-            </li>
+            {% if businessProfile.getFacebookURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ businessProfile.getFacebookURL() }}">
+                        <i class="fa fa-facebook" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            {% if businessProfile.getTwitterURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ businessProfile.getTwitterURL() }}">
+                        <i class="fa fa-twitter" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            {% if businessProfile.getGoogleURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ businessProfile.getGoogleURL() }}">
+                        <i class="fa fa-google-plus" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            {% if businessProfile.getYoutubeURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ businessProfile.getYoutubeURL() }}">
+                        <i class="fa fa-youtube" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
     <div class="close-icon">
