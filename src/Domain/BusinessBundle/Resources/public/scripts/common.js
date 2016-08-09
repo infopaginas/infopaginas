@@ -9,6 +9,12 @@ requirejs.config({
         },
         'slick' : {
             deps: ['jquery']
+        },
+        'lightbox': {
+            deps: ['jquery']
+        },
+        'slider': {
+            deps: ['jquery']
         }
     },
     paths: {
@@ -24,6 +30,7 @@ requirejs.config({
         'spin'          : 'spin.min',
         'select2'       : 'select2.min',
         'slick'         : 'slick.min',
-        'lightbox'      : 'simple-lightbox.min'
+        'lightbox'      : 'simple-lightbox.min',
+        'slider'        : '../modules/tools/slider'
     }
 });
