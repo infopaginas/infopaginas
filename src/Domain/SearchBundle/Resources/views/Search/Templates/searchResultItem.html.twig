@@ -25,9 +25,10 @@
             <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}#address" class="address-link">
                 <span class="address-info">{{ item.city}}, {{ item.state }} {{ item.zipCode }}</span>
             </a>
-            <a href="" class="direction">Get Direction <span>&#187;</span></a>
+
+            <a class="get-dir direction" data-latlng="{{ item.getLatLng }}">Get Direction <span>&#187;</span></a>
             <a href="" class="btn green-btn mobile-btn"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; Call<span></span></a>
-            <a href="" class="get-direction mobile-btn btn">Get Direction<span></span></a>
+            <a class="get-dir get-direction mobile-btn btn"  data-latlng="{{ item.getLatLng }}">Get Direction<span></span></a>
         </div>
         <div class="shift">
             <span>Mon - Fri  9 a.m. - 7 p.m.</span>
@@ -75,9 +76,9 @@
                     <span class="fa fa-star-o" data-rating="3"></span>
                     <span class="fa fa-star-o" data-rating="4"></span>
                     <span class="fa fa-star-o" data-rating="5"></span>
-                    <input type="hidden" name="whatever" class="rating-value" value="{{ item.getBusinessReviewsAvgMark }}">
+                    <input type="hidden" name="whatever" class="rating-value" value="{# item.getBusinessReviewsAvgMark #}">
                 </div>
-                <span>{{ item.getBusinessReviewsCount }} Reviews</span>
+                <span>{# item.getBusinessReviewsCount #} Reviews</span>
             </a>
         </div>
     </div>
