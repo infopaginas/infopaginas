@@ -97,7 +97,7 @@ class TaskAdmin extends OxaAdmin
             'rejectReason',
             TextareaType::class,
             [
-                'required' => true,
+                //'required' => true,
             ]
         );
 
