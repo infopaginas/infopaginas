@@ -22,11 +22,11 @@ define(['jquery', 'abstract/view', 'js-cookie'],
     }
 
     directions.prototype.getDirections = function ( e ) {
-        var latlng = $( e.currentTarget ).data('latlng');
-        var userLatLng = cookie.get('lat') + ',' +cookie.get('lng');
+        var latlng = $( e.currentTarget ).data( 'latlng' );
+        var userLatLng = cookie.get( 'lat' ) + ',' +cookie.get( 'lng' );
 
-        var directionsLink = this.options.detDirectionsLink.replace('{companyLoc}', latlng).replace('{userLoc}', userLatLng);
-        window.open(directionsLink);
+        var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
+        window.open( directionsLink );
     }
 
     return directions;

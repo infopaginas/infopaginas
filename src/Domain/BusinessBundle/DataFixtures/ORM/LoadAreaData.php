@@ -193,10 +193,8 @@ class LoadAreaData extends AbstractFixture implements ContainerAwareInterface, O
     {
         $this->manager = $manager;
 
-        
-
         foreach ($this->areaAndLocalities as $areaItem) {
-            $area   = new Area();
+            $area = new Area();
             $area->setName($areaItem['name']);
 
             $translation = new AreaTranslation();

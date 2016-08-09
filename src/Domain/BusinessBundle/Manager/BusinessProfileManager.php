@@ -363,4 +363,9 @@ class BusinessProfileManager extends Manager
     {
         return $this->em;
     }
+
+    public function countSearchResults(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->countSearchResults($searchParams);
+    }
 }

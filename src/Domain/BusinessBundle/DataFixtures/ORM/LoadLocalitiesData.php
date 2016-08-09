@@ -152,8 +152,6 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
     {
         $this->manager = $manager;
 
-        
-
         foreach ($this->localityData as $item) {
             $locObject = new Locality();
             $locObject->setName($item['name']);
@@ -162,7 +160,7 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
             
             if (!empty($item['area'])) {
                 $area = $this->getReference('area.' . str_replace(' ', '', $item['area']));
-                    $locObject->setArea($area);
+                $locObject->setArea($area);
             }
 
 

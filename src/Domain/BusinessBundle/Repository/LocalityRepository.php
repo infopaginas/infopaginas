@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\QueryBuilder;
+use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
 /**
  * LocalityRepository
@@ -56,7 +57,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
     protected function getNeighborhoodLocalitiesWithDistanceByLatLng(QueryBuilder &$queryBuilder, $lat, $lng)
     {
         return $queryBuilder
-            ->addSelect('2 * 6371 * sin (
+            ->addSelect('(:earthDiameter * sin (
                 sqrt (
                     ( 1 - cos (
                         (l.latitude - :currentLat) * PI()/180
@@ -69,9 +70,10 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
                     *
                     ( 1 - cos( ( l.longitude - :currentLng ) * PI()/180 ) ) / 2
                 )
-            ) AS distance')
+            )) AS distance')
             ->setParameter('currentLat', $lat)
             ->setParameter('currentLng', $lng)
+            ->setParameter('earthDiameter', GeolocationUtils::getEarthDiameterKm())
             ->orderBy('distance', 'ASC')
             ->setMaxResults(10)
             ->setFirstResult(1);
