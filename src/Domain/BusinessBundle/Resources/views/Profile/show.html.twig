@@ -215,6 +215,7 @@
                                         <span>{% trans %}Coupons{% endtrans %}:</span>
                                     </div>
                                     <div class="col-xs-9 fields-item">
+                                        {% set media = discount.getCoupon().getImage() %}
                                         <p>
                                             <a onclick="printImage('{% path media, 'reference' %}');"
                                                href="#" class="green-btn btn print-btn">

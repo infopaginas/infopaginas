@@ -293,6 +293,15 @@ class BusinessProfileManager extends Manager
 
         $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
 
+        $discount = $oldProfile->getDiscount();
+
+        if ($discount !== null) {
+            $discount->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($discount);
+
+            $this->getEntityManager()->refresh($oldProfile);
+        }
+
         $this->getEntityManager()->persist($businessProfile);
         $this->getEntityManager()->flush();
 
