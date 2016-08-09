@@ -2,7 +2,7 @@ services:
     #services section:
     domain_site.mailer:
         class: Domain\SiteBundle\Mailer\Mailer
-        arguments: ['@mailer', '@oxa_config']
+        arguments: ['@mailer', '@oxa_config', '@router']
 
     #managers section
     domain_site.manager.search:
@@ -94,7 +94,7 @@ services:
             - '@request'
             - '@fos_user.user_manager'
             - '@fos_user.util.token_generator'
-            - '@fos_user.mailer'
+            - '@domain_site.mailer'
 
     domain_site.reset_password.form.handler:
         class: Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler
