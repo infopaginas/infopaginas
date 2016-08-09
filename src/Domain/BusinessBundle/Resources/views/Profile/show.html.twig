@@ -199,43 +199,36 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="card-item">
-                            <div class="col-xs-3 fields-item">
-                                <span>{% trans %}Discounts & Coupons{% endtrans %}:</span>
-                            </div>
-                            <div class="col-xs-9 fields-item"></div>
-                            {% for discount in discounts %}
-                                <div class="col-xs-3 fields-item"></div>
-                                <div class="col-xs-9 fields-item">
-                                    <p>
-                                        {{ discount.getDescription() }}
-                                    </p>
-                                    {% if discount.getCoupon() %}
-                                        <p>
-                                            {% set media = discount.getCoupon().getImage() %}
 
-                                            <a onclick="printImage('{% path media, 'reference' %}');" href="#" class="green-btn btn print-btn">
+                        {% set discount = businessProfile.getDiscount() %}
+
+                        {% if discount is not null %}
+                            <div class="card-item">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Discounts{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>{{ discount.getDescription() }}</p>
+                                </div>
+                                {% if discount.getCoupon() %}
+                                    <div class="col-xs-3 fields-item">
+                                        <span>{% trans %}Coupons{% endtrans %}:</span>
+                                    </div>
+                                    <div class="col-xs-9 fields-item">
+                                        {% set media = discount.getCoupon().getImage() %}
+                                        <p>
+                                            <a onclick="printImage('{% path media, 'reference' %}');"
+                                               href="#" class="green-btn btn print-btn">
                                                 <i class="fa fa-print" aria-hidden="true"></i>
-                                                <span>Print</span>
+                                                <span>{% trans %}Print{% endtrans %}</span>
                                             </a>
                                         </p>
-                                    {% endif %}
-                                    <hr>
-                                </div>
-                            {% endfor %}
-                            {#<div class="col-xs-9 fields-item">
-                                <p>10% Off on Mondaday</p>
-                            </div>#}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
 
-                            {#<div class="col-xs-3 fields-item">
-                                <span>Coupons:</span>
-                            </div>#}
-                            {#<div class="col-xs-9 fields-item">
-                                <p><a href="" class="green-btn btn print-btn"><i class="fa fa-print"
-                                                                                 aria-hidden="true"></i><span>Print</span></a></p>
-                            </div>#}
-                        </div>
-                        <div class="card-item">
+                        {#<div class="card-item">
                             <div class="col-xs-3 fields-item">
                                 <span>Reviews:</span>
                             </div>
@@ -279,40 +272,43 @@
                                     wedding coming up make sure you come see the girls.....they've got you covered!!</p>
                             </div>
                             <a href="" class="more-reviews blue-c">View more reviews</a>
-                        </div>
-                        <div class="card-item advertisement-block">
-                            <div class="col-xs-3 fields-item">
-                                <span><i class="ad-icon icon"></i>Advertisement</span>
-                            </div>
-                            <div class="col-xs-9 fields-item">
-                                <div class="carousel-property">
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
-                                    <div class="image-wrap"><img src="http://placehold.it/90x90"></div>
+                        </div>#}
+
+                        {% if advertisements | length > 0 %}
+                            <div class="card-item advertisement-block">
+                                <div class="col-xs-3 fields-item">
+                                    <span>
+                                        <i class="ad-icon icon"></i>{% trans %}Advertisement{% endtrans %}
+                                    </span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <div class="images-wrapper gallery carousel-property">
+                                        {% for ad in advertisements %}
+                                            <a href="{% path ad.getMedia(), 'reference' %}" class="image-wrap">
+                                                {% thumbnail ad.getMedia(), 'preview' %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-item photo-block">
-                            <div class="col-xs-3 fields-item">
-                                <span><i class="photo-icon icon"></i>Photos</span>
-                            </div>
-                            <div class="col-xs-9 fields-item">
-                                <div class="images-wrapper gallery carousel-property">
-                                    <a href="../assets/images/banner.png" class="image-wrap"><img
-                                                src="http://placehold.it/90x90"></a>
-                                    <a href="../assets/images/homepage/article2.png" class="image-wrap"><img
-                                                src="http://placehold.it/90x90"></a>
-                                    <a href="../assets/images/homepage/article1.png" class="image-wrap"><img
-                                                src="http://placehold.it/90x90"></a>
-                                    <a href="../assets/images/homepage/article3.png" class="image-wrap"><img
-                                                src="http://placehold.it/90x90"></a>
+                        {% endif %}
+
+                        {% if photos | length > 0 %}
+                            <div class="card-item photo-block">
+                                <div class="col-xs-3 fields-item">
+                                    <span><i class="photo-icon icon"></i>Photos</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <div class="images-wrapper gallery carousel-property">
+                                        {% for photo in photos %}
+                                            <a href="{% path photo.getMedia(), 'reference' %}" class="image-wrap">
+                                                {% thumbnail photo.getMedia(), 'preview' %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
 
                         {% if media_tab_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <div class="card-item video-block">
@@ -334,7 +330,6 @@
             </div>
         </div>
     </section>
-
     <script>
         function printImage(imageSrc)
         {
@@ -354,3 +349,16 @@
         }
     </script>
 {% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainbusiness/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'], function(businessProfileView) {
+                var businessProfileView = new businessProfileView();
+            })
+        })
+    </script>
+{% endblock%}
