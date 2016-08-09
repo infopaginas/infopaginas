@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -350,6 +352,40 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile)
+    {
+        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
+            $advertisements = $this->getBusinessGalleryRepository()
+                ->findBusinessProfileAdvertisementImages($businessProfile);
+
+            return $advertisements;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getBusinessProfilePhotoImages(BusinessProfile $businessProfile)
+    {
+        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
+            $photos = $this->getBusinessGalleryRepository()->findBusinessProfilePhotoImages($businessProfile);
+            return $photos;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
      */
     public function drop(BusinessProfile $businessProfile)
     {
@@ -367,6 +403,14 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->persist($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return BusinessGalleryRepository
+     */
+    private function getBusinessGalleryRepository() : BusinessGalleryRepository
+    {
+        return $this->getEntityManager()->getRepository(BusinessGalleryRepository::SLUG);
     }
 
     /**
