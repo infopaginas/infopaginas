@@ -9,14 +9,13 @@
               </a>
             </li>
         {% endif %}
-        {% for pageItem in 1..(pageCount - 1) %}
+        {% for pageItem in 1..pageCount %}
             <li 
             {% if page == pageItem %}
                 class="active"
             {% endif %}
             ><a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': pageItem })) }}">{{ pageItem }}</a></li>
         {% endfor %}
-        <li><a href="#">{{ pageCount }}</a></li>
         {% if page < pageCount %}
             <li>
               <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': (page + 1) })) }}" aria-label="Next">

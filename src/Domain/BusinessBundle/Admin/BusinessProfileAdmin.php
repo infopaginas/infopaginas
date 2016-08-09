@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -29,11 +30,18 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
-            ->add('user')
-            ->add('categories')
+            ->add('subscriptions.businessProfile', null, [
+                'label' => $this->trans('filter.label_name', [], $this->getTranslationDomain())
+            ])
+            ->add('city')
+            ->add('state')
+            ->add('country')
+            ->add('phones')
+            ->add('subscriptions.subscriptionPlan', null, [
+                'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
+            ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('createDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
@@ -45,18 +53,14 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('logo', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_image.html.twig'
-            ])
-            ->add('name')
-            ->add('user')
+            ->addIdentifier('name')
+            ->add('city')
+            ->add('state')
+            ->add('country')
+            ->add('phones')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])
-            ->add('discount', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_discount.html.twig'
-            ])
-            ->add('categories')
             ->add('registrationDate')
             ->add('isActive', null, ['editable' => true])
         ;
@@ -388,6 +392,25 @@ class BusinessProfileAdmin extends OxaAdmin
             $query->expr()->eq($query->getRootAliases()[0] . '.locked', ':locked')
         );
         $query->setParameter('locked', false);
+
+        $parameters = $this->getFilterParameters();
+
+        // search by active subscription of chosen subscriptionPlan
+        if (
+            isset($parameters['subscriptions__subscriptionPlan']) &&
+            !empty($parameters['subscriptions__subscriptionPlan']['value'])
+        ) {
+            $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
+
+            $query->leftJoin($query->getRootAliases()[0] . '.subscriptions', 's');
+            $query->leftJoin('s.subscriptionPlan', 'sp');
+
+            $query->andWhere('sp.id = :subscriptionPlanId');
+            $query->andWhere('s.status = :subscriptionStatus');
+
+            $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
+            $query->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
+        }
 
         return $query;
     }
