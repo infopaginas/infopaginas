@@ -20,6 +20,8 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.init( options );
         this.bindEvents();
 
+        console.log(options)
+
         return this;
     }
 
