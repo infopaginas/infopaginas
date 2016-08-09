@@ -6,6 +6,9 @@ requirejs.config({
         },
         "underscore": {
             exports: "_"
+        },
+        'slick' : {
+            deps: ['jquery']
         }
     },
     paths: {
