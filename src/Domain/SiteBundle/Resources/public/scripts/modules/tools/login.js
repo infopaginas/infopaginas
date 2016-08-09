@@ -71,15 +71,29 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         });
     };
 
+    login.prototype.submitLogin = function ( event ) {
+        var serializedData = this.getSerializedFormData();
+        this.doRequest( this.urls.login_check, serializedData );
+
+        event.preventDefault();
+    };
+
     login.prototype.handleLogin = function() {
         var $loginButton = $( '#loginButton' );
         var that = this;
 
-        $loginButton.on( 'click', function( event ) {
-            var serializedData = that.getSerializedFormData();
-            that.doRequest( that.urls.login_check, serializedData );
+        $( this.html.forms.loginFormId ).keypress( function ( event ) {
+            if ( (event.which && event.which == 13) || (event.keyCode && event.keyCode == 13) ) {
+                that.submitLogin( event );
 
-            event.preventDefault();
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        $loginButton.on( 'click', function( event ) {
+            that.submitLogin( event );
         } );
     };
 
