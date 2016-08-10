@@ -41,7 +41,7 @@ define(
 
         searchOptions['searchMenu'] = new SearchMenu;
 
-        var search = new Search(searchOptions);
+        var search = new Search( searchOptions );
         
     };
    

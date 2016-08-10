@@ -1,7 +1,7 @@
 define(
     ['jquery', 'abstract/view', 'tools/geolocation'],
     function( $, view, Geolocation ) {
-    'use strict'
+    'use strict';
 
     var searchMenu = function( options ) {
         this.options = {
@@ -16,7 +16,7 @@ define(
         this.$el = $( this.options.selector );
         this.bindEvents();
         return this;
-    }
+    };
 
     searchMenu.prototype = new view;
 
@@ -24,24 +24,24 @@ define(
         $.extend( this.options, options );
 
         this.callback = false;
-    }
+    };
 
     searchMenu.prototype.initQuickLinks = function ( callback ) {
         this.callback = callback;
-    }
+    };
 
     searchMenu.prototype.onLinkClick = function ( event ) {
-        var target = event.target
+        var target = event.target;
 
         if (target.tagName == "SPAN") {
-            target = this.$(target).parents('a').first();
+            target = this.$(target).parents( 'a' ).first();
         }
 
-        var searchString = this.$(target).data('search');
+        var searchString = this.$( target ).data( 'search' );
 
-        if (this.callback !== false)
-            this.callback(searchString);
-    }
+        if ( this.callback !== false )
+            this.callback( searchString );
+    };
 
     return searchMenu;
-})
+});
