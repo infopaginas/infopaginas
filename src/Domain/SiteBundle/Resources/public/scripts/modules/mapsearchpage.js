@@ -1,6 +1,6 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'bootstrap', 'select2', 'tools/select', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
-    function ( $, view, _, directions ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
+    function ( $, view, _, directions, select ) {
     'use strict';
 
     var mapSearchPage = function ( options ) {
@@ -43,6 +43,8 @@ define(
         };
 
         $.extend( this.options, options );
+
+        new select();
 
         this.initMap(this.options);
         this.setDefaultHeighForCards(

@@ -55,7 +55,7 @@ requirejs.config({
         'lightbox'      : 'domainsite/scripts/vendors/simple-lightbox.min',
         'select2'       : 'domainsite/scripts/vendors/select2.min',
 
-        businessModules : 'domainbusiness/scripts/modules',
-        businessTools   : 'domainbusiness/scripts/modules/tools'
+        'business/modules' : 'domainbusiness/scripts/modules',
+        'business/tools'   : 'domainbusiness/scripts/modules/tools'
     }
 });
