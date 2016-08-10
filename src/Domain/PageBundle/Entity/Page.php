@@ -46,14 +46,12 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $title;
 
     /**
-     * @var Media - Media
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
+     * @var integer - Page code
+     *
+     * @ORM\Column(name="code", type="integer")
      */
-    protected $image;
-
+    protected $code;
+    
     /**
      * @var string - Page description
      *
@@ -80,7 +78,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     /**
      * @var string - Used to create human like url
      *
-     * @Gedmo\Slug(fields={"title"})
+     * @Gedmo\Slug(fields={"title"}, updatable=false)
      * @ORM\Column(name="slug", type="string")
      */
     protected $slug;
@@ -95,12 +93,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
      */
     protected $template;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
 
     /**
      * @var ArrayCollection
@@ -133,7 +125,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
                 $result = sprintf('id(%s): not translated', $this->getId());
                 break;
             default:
-                $result = 'New banner';
+                $result = 'New page';
         }
         return $result;
     }
@@ -267,54 +259,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     }
 
     /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return Page
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
-     * Set image
-     *
-     * @param \Oxa\Sonata\MediaBundle\Entity\Media $image
-     *
-     * @return Page
-     */
-    public function setImage(\Oxa\Sonata\MediaBundle\Entity\Media $image = null)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return \Oxa\Sonata\MediaBundle\Entity\Media
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
      * Set template
      *
      * @param \Domain\PageBundle\Entity\Template $template
@@ -346,5 +290,29 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set code
+     *
+     * @param integer $code
+     *
+     * @return Page
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return integer
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

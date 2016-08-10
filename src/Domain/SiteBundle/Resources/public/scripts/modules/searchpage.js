@@ -1,13 +1,14 @@
 define(
-    ['jquery',  'abstract/view','bootstrap', 'select2', 'tools/select', 'tools/star-rating'], 
-    function ( $, view  ) {
+    ['jquery',  'abstract/view', 'tools/directions', 'bootstrap', 'select2', 'tools/select', 'tools/star-rating'], 
+    function ( $, view, directions) {
     'use strict';
 
     var searchpage = function ( options ) {
         options = options || {};
         options.selector = options.selector || 'body';
         this.events = {
-            "#category-select change" : "selectCategory"
+            "#category-select change" : "selectCategory",
+            "#neighborhood-select change" : "selectCategory"
         };
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
@@ -22,6 +23,7 @@ define(
 
     searchpage.prototype.init = function ( options ) {
         this.options = {};
+        this.directions = new directions;
         $.extend( this.options, options );
     }
 
