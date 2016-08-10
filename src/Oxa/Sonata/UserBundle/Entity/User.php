@@ -30,7 +30,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
