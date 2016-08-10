@@ -175,38 +175,41 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="card-item">
-                            <div class="col-xs-3 fields-item">
-                                <span>{% trans %}Payment Methods{% endtrans %}:</span>
+
+                        {% if businessProfile.getPaymentMethods() | length > 0 %}
+                            <div class="card-item">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Payment Methods{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <ul class="payment-methods">
+                                        {% for method in businessProfile.getPaymentMethods() %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::VISA_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/visa.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::MASTERCARD_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/mastercard.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::PAYPAL_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/paypal.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                            <div class="col-xs-9 fields-item">
-                                <ul class="payment-methods">
-                                    {% for method in businessProfile.getPaymentMethods() %}
-                                        {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::VISA_METHOD') %}
-                                            <li>
-                                                <a class="blue-c" href="javascript: void(0);">
-                                                    <img src="{{ asset('assets/images/visa.png') }}">
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::MASTERCARD_METHOD') %}
-                                            <li>
-                                                <a class="blue-c" href="javascript: void(0);">
-                                                    <img src="{{ asset('assets/images/mastercard.png') }}">
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::PAYPAL_METHOD') %}
-                                            <li>
-                                                <a class="blue-c" href="javascript: void(0);">
-                                                    <img src="{{ asset('assets/images/paypal.png') }}">
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+                        {% endif %}
 
                         {% set discount = businessProfile.getDiscount() %}
 
