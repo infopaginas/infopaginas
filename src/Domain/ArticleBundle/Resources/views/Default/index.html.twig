@@ -1,0 +1,33 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block breakcrumbs %}
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="/">
+                        {% trans %}Home{% endtrans %}
+                        <span>&nbsp; &raquo;</span>
+                    </a>
+                    &nbsp;
+                    <span>{% trans %}Articles{% endtrans %}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block main %}
+    <section id="articles">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class="search-title blue-c">{% trans %}Articles{% endtrans %}</span>
+                </div>
+            </div>
+            <div class="row">
+                {% include 'DomainSiteBundle:Home:Widgets/articlesWidget.html.twig' %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
