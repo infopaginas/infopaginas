@@ -12,7 +12,11 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             searchMenu : false,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
-            searchBaseUrl : '/search/'
+            searchBaseUrl : '/search/',
+            mediaWidth: 480,
+            mediaSearchSection: '.search-input.home',
+            mediaCloseSection: '.searchCloseSection'
+
         };
 
         $.extend( this.options, options );
@@ -37,6 +41,22 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             }
         });
 
+        $( window ).resize( function(){
+            if($( window ).width() > this.options.mediaWidth ) {
+                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
+            }
+        }.bind(this));
+
+        $( this.options.searchSelector ).focus( function(){
+            if($( window ).width() < this.options.mediaWidth ) {
+                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
+            }
+        }.bind(this));
+
+        $( this.options.mediaCloseSection ).click( function(){
+            $( this.options.mediaSearchSection ).css( {"display" : "none"} )
+        }.bind(this));
+
         return this;
     };
 
@@ -55,7 +75,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.submitButton       = this.$( this.options.submitSelector );
 
         if( _.isNull( this.options.geolocation ) || _.isUndefined( this.options.geolocation ) ) {
-            this.geolocation        = new Geolocation( { 'locationBox' : this.searchLocations } );
+            this.geolocation = new Geolocation( { 'locationBox' : this.searchLocations } );
         } else {
             this.geolocation = this.options.geolocation;
         }
