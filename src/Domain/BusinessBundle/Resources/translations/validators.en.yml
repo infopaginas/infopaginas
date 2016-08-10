@@ -1,0 +1,2 @@
+business_profile:
+  max_length: Please use max {{ limit }} symbols

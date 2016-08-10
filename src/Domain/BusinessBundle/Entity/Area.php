@@ -68,6 +68,17 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     protected $translations;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *      mappedBy="area",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $locality;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="search_fts", type="tsvector", options={
@@ -111,8 +122,9 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      */
     public function __construct()
     {
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
+        $this->translations     = new ArrayCollection();
+        $this->locality         = new ArrayCollection();
     }
 
     public function getMarkCopyPropertyName()
@@ -212,5 +224,41 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     public function getSearchFts()
     {
         return $this->searchFts;
+    }
+
+    /**
+     * Add Locality
+     *
+     * @param  Locality $locality
+     * @return this
+     */
+    public function addLocality(Locality $locality)
+    {
+        $this->locality->add($locality);
+
+        return $this;
+    }
+
+    /**
+     * Get Locality
+     *
+     * @return Locality[]
+     */
+    public function getLocalities()
+    {
+        return $this->locality;
+    }
+
+    /**
+     * Add Locality
+     *
+     * @param  Locality $locality
+     * @return this
+     */
+    public function removeLocality(Locality $locality)
+    {
+        $this->locality->remove($locality);
+
+        return $this;
     }
 }

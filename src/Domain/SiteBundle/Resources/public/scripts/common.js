@@ -53,7 +53,6 @@ requirejs.config({
         'slick'         : 'slick.min',
         'photo-gallery' : 'photo-gallery',
         'lightbox'      : 'simple-lightbox.min',
-        'select2'       : 'select2.min',
-
+        'select2'       : 'select2.min'
     }
 });

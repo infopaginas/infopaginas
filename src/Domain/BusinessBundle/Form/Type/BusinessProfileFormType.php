@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
@@ -58,13 +59,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('phones', CollectionType::class, [
                 'allow_add'    => true,
                 'allow_delete' => true,
-                'entry_type'   => TextType::class,
-                'entry_options'  => [
-                    'attr'  => [
-                        'class' => 'form-control',
-                        'placeholder' => '(787) 594-7273',
-                    ],
-                ],
+                'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
             ])
