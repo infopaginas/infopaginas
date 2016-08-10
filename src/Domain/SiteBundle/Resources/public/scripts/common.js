@@ -26,6 +26,9 @@ requirejs.config({
             deps: ['jquery']
         },
         'slider' : {
+            deps: ['$']
+        },
+        'lightbox': {
             deps: ['jquery']
         },
         'star-rating' : {
