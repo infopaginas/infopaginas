@@ -103,6 +103,7 @@ services:
             - '@domain_site.reset_password.form'
             - '@request'
             - '@fos_user.user_manager'
+            - '@translator.default'
 
     domain_site.user_profile.form.handler:
         class: Domain\SiteBundle\Form\Handler\UserProfileFormHandler

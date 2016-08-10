@@ -1,0 +1,5 @@
+user:
+  reset_password:
+    token:
+      invalid: You currently do not have valid link for update your password
+      empty: Error: Empty token.
