@@ -64,6 +64,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $name;
 
@@ -134,6 +135,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=30, nullable=true)
+     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $website;
 
@@ -142,6 +144,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
      * @Assert\Email()
+     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $email;
 
@@ -168,6 +171,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="slogan", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $slogan;
 
@@ -186,6 +190,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $description;
 
@@ -194,6 +199,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="product", type="text", length=1000, nullable=true)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $product;
 
@@ -348,6 +354,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="street_number", type="string", length=50, nullable=true)
+     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
      */
     protected $streetNumber;
 
@@ -424,21 +431,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     /**
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $twitterURL;
 
     /**
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $facebookURL;
 
     /**
      * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $googleURL;
 
     /**
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $youtubeURL;
 
@@ -466,6 +477,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="miles_of_my_business", type="string", length=50, nullable=true)
      * @Assert\NotBlank(groups={"service_area_chosen"})
+     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
      */
     protected $milesOfMyBusiness;
 
