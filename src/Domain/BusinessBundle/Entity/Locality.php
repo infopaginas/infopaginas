@@ -3,7 +3,13 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 use Symfony\Component\Validator\Constraints as Assert;
+
+use Domain\BusinessBundle\Entity\Area;
+use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
+use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
+
 
 /**
  * Locality
@@ -11,8 +17,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="localities")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityRepository")
  */
-class Locality
+class Locality implements GeolocationInterface
 {
+    use LocationTrait;
+ 
     /**
      * @var int
      *
@@ -38,6 +46,17 @@ class Locality
      * )
      */
     private $businessProfile;
+
+    /**
+     * @var Domain\BusinessBundle\Entity\Area
+     *
+     * @ORM\ManyToOne(
+     *      targetEntity="Domain\BusinessBundle\Entity\Area",
+     *      inversedBy="locality"
+     * )
+     * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
+     */
+    protected $area;
 
     /**
      * Get id
@@ -92,6 +111,7 @@ class Locality
     {
         return $this->name;
     }
+
     /**
      * Constructor
      */
@@ -110,9 +130,7 @@ class Locality
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfile[] = $businessProfile;
-
-        return $this;
-    }
+    }   
 
     /**
      * Remove businessProfile
@@ -122,5 +140,30 @@ class Locality
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfile->removeElement($businessProfile);
+
+        return $this;
+    }
+    
+    /**
+     *  Get owning area for this locality
+     *
+     * @return Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     *  Set owning area for this locality
+     *
+     * @param Area $area
+     * @return $this
+     */
+    public function setArea(Area $area)
+    {
+        $this->area = $area;
+
+        return $this;
     }
 }

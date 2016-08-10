@@ -44,4 +44,9 @@ class SearchDataUtil
     {
         return $request->get('neighborhood', null);
     }
+
+    public static function extractNeigborhoods($neighborhoods)
+    {
+        return array_column($neighborhoods, 0);
+    }
 }

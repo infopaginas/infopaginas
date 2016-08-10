@@ -1,6 +1,6 @@
 define(
-    ['jquery',  'abstract/view', 'underscore','bootstrap', 'select2', 'tools/select', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
-    function ( $, view, _ ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'bootstrap', 'select2', 'tools/select', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
+    function ( $, view, _, directions ) {
     'use strict';
 
     var mapSearchPage = function ( options ) {
@@ -38,7 +38,8 @@ define(
                 center: new google.maps.LatLng(18.2208, -66.5901),
                 zoom: 8
             },
-            cards       : '.card-item'
+            cards       : '.card-item',
+            directions: new directions
         };
 
         $.extend( this.options, options );
