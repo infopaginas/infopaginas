@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'tools/formErrorsHandler', 'tools/images', 'tools/videos'],
+    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'businessTools/formErrorsHandler', 'businessTools/images', 'businessTools/videos'],
     function( $, bootstrap, alertify, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
 
         'use strict';
