@@ -1,4 +1,4 @@
-define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slider'], function( $, bootstrap, select, slick, lightbox, slider ) {
+define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'slider'], function( $, bootstrap, select, slick, lightbox, slider ) {
     'use strict';
 
     var businessProfileView = function() {
