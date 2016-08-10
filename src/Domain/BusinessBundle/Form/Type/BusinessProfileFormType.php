@@ -60,12 +60,6 @@ class BusinessProfileFormType extends AbstractType
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'entry_type'   => BusinessProfilePhoneType::class,
-                /*'entry_options'  => [
-                    'attr'  => [
-                        'class' => 'form-control',
-                        'placeholder' => '(787) 594-7273',
-                    ],
-                ],*/
                 'label' => 'Phone number',
                 'required' => false,
             ])
