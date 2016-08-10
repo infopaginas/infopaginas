@@ -22,7 +22,7 @@
                         <span class="menu-label">{% trans %}Menu{% endtrans %}</span>
                     </button>
                 </div>
-                {% if businessProfile %}
+                {% if businessProfile is defined %}
                     <div class="collapse navbar-collapse" id="navbar-buttons">
                         <ul class="nav navbar-nav navbar-left buttons-block">
                             <li>
