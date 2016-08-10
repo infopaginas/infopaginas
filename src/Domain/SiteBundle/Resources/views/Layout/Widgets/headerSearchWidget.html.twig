@@ -11,7 +11,7 @@
         <span class="cross"></span>
 </div>
 <div class="col-xs-1 search-button">
-    <button type="submit" class="btn btn-primary green-btn search-btn"><i
+    <button type="submit" id="searchHeaderButton" class="btn btn-primary green-btn search-btn"><i
             class="fa fa-search"
             aria-hidden="true"></i>
     </button>
@@ -22,6 +22,7 @@
         requirejs(['tools/search'], function(Search) {
             var headerSearch = new Search({
                 'searchSelector' : '#headerSearch',
+                'searchHeaderButton' : '#searchHeaderButton',
                 'searchLocations': '#headerGeo'
             });
         })
