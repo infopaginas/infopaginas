@@ -21,4 +21,14 @@ class ArticleManager extends Manager
 
         return $homepageArticles;
     }
+
+    public function getPublishedArticles()
+    {
+        return $this->getRepository()->getPublishedArticles();
+    }
+
+    public function getArticleBySlug($slug)
+    {
+        return $this->getRepository()->findOneBy(['slug' => $slug]);
+    }
 }
