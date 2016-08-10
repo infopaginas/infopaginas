@@ -84,6 +84,29 @@ class ProfileController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showAction(Request $request, int $id)
+    {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfilesManager()->find($id);
+
+        $discounts      = $businessProfile->getDiscounts();
+
+        $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
+        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile);
+
+        return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
+            'businessProfile' => $businessProfile,
+            'discounts'       => $discounts,
+            'photos'          => $photos,
+            'advertisements'  => $advertisements,
+        ]);
+    }
+
+    /**
      * @return BusinessProfileManager
      */
     private function getBusinessProfilesManager() : BusinessProfileManager
