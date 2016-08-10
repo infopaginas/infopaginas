@@ -22,10 +22,13 @@ class ArticleManager extends Manager
         return $homepageArticles;
     }
 
-    public function getArticles()
+    public function getPublishedArticles()
     {
-        $articles = $this->getRepository()->findBy(['isPublished' => true], ['createdAt' => 'DESC']);
+        return $this->getRepository()->getPublishedArticles();
+    }
 
-        return $articles;
+    public function getArticleBySlug($slug)
+    {
+        return $this->getRepository()->findOneBy(['slug' => $slug]);
     }
 }
