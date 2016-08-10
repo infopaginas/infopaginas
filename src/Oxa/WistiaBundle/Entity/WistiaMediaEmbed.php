@@ -121,7 +121,7 @@ class WistiaMediaEmbed
     /**
      * @var WistiaMedia
      *
-     * @ORM\ManyToOne(targetEntity="WistiaMedia")
+     * @ORM\ManyToOne(targetEntity="WistiaMedia", inversedBy="mediaEmbeds")
      * @ORM\JoinColumn(name="wistia_media_id", referencedColumnName="id")
      */
     private $media;
