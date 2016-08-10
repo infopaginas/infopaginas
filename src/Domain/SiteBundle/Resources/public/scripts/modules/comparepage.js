@@ -1,6 +1,6 @@
 define(
-    ['jquery',  'abstract/view','bootstrap', 'select2', 'tools/select', 'tools/star-rating', 'slick', 'tools/comparison'], 
-    function ( $, view  ) {
+    ['jquery',  'abstract/view', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'slick', 'tools/comparison'], 
+    function ( $, view, select  ) {
     'use strict';
 
     var comparepage = function ( options ) {
@@ -23,6 +23,8 @@ define(
     comparepage.prototype.init = function ( options ) {
         this.options = {};
         $.extend( this.options, options );
+
+        new select();
     }
 
     comparepage.prototype.selectCategory = function ( e ) {
