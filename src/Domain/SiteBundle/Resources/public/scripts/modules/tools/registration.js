@@ -138,9 +138,9 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
                 that.submitRegistration( event );
 
                 return false;
-            } else {
-                return true;
             }
+
+            return true;
         });
 
         $registrationButton.on('click', function( event ) {

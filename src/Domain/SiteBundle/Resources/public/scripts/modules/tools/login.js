@@ -87,9 +87,9 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
                 that.submitLogin( event );
 
                 return false;
-            } else {
-                return true;
             }
+
+            return true;
         });
 
         $loginButton.on( 'click', function( event ) {
