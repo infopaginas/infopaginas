@@ -22,7 +22,7 @@ class ContainsEmailExpandedValidator extends ConstraintValidator
     {
         $isCustomValid = $this->validator->validateValue($value, new Email());
 
-        if (!count($isCustomValid) && !preg_match('/^.+\@\S+\.\S{2,}+$/', $value)) {
+        if (!count($isCustomValid) && !preg_match('/(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/', $value)) {
             $this->context
                 ->buildViolation($this->translator->trans('fos_user.email.invalid'))
                 ->addViolation();

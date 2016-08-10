@@ -205,7 +205,10 @@ class UserAdmin extends OxaAdmin
 
         $formMapper
             ->with('General')
-                ->add('email')
+                ->add('email', 'email', [
+                    'required' => true,
+                    'pattern' => '(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})',
+                ])
                 ->add('plainPassword', 'text', [
                     'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
                 ])
