@@ -21,4 +21,11 @@ class ArticleManager extends Manager
 
         return $homepageArticles;
     }
+
+    public function getArticles()
+    {
+        $articles = $this->getRepository()->findBy(['isPublished' => true], ['createdAt' => 'DESC']);
+
+        return $articles;
+    }
 }
