@@ -3,3 +3,6 @@ user:
     token:
       invalid: You currently do not have valid link for update your password
       empty: Error: Empty token.
+business_profile:
+  website:
+    invalid: The website is not valid
