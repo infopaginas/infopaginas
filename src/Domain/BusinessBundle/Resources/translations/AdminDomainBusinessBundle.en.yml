@@ -2,7 +2,9 @@ label_yes: Yes
 label_no: No
 form.google_address.required: Please, write valid address or drag marker if you use map
 form.google_address.invalid: Invalid Address
-
+form.label_useMapAddress: Update address using map coordinates
+filter.label_name: Name
+filter.label_subscription_plan: Subscription Plan
 
 
 

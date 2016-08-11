@@ -22,47 +22,51 @@
                         <span class="menu-label">{% trans %}Menu{% endtrans %}</span>
                     </button>
                 </div>
-                <div class="collapse navbar-collapse" id="navbar-buttons">
-                    <ul class="nav navbar-nav navbar-left buttons-block">
-                        <li>
-                            <a href="#" class="green-btn">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                <span>{% trans %}View Profile{% endtrans %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="green-btn">
-                                <i class="ad-icon" aria-hidden="true"></i>
-                                <span>{% trans %}Manage Ads{% endtrans %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="green-btn">
-                                <i class="fa fa-pie-chart" aria-hidden="true"></i>
-                                <span>{% trans %}Reports{% endtrans %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="green-btn">
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                                <span>{% trans %}Reviews{% endtrans %}</span></a>
-                        </li>
-                        {% if app.security.token and is_granted('ROLE_CONTENT_MANAGER') %}
+                {% if businessProfile is defined %}
+                    <div class="collapse navbar-collapse" id="navbar-buttons">
+                        <ul class="nav navbar-nav navbar-left buttons-block">
                             <li>
-                                <a href="#" class="green-btn">
-                                    <i class="fa fa-tag" aria-hidden="true"></i>
-                                    <span>{% trans %}Subscriptions{% endtrans %}</span>
+                                <a href="{{ path('domain_business_profile_view', { slug: businessProfile.getSlug() }) }}"
+                                   class="green-btn"
+                                   target="_blank">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                    <span>{% trans %}View Profile{% endtrans %}</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="green-btn">
-                                    <i class="fa fa-percent" aria-hidden="true"></i>
-                                    <span>{% trans %}Discounts{% endtrans %}</span>
+                                    <i class="ad-icon" aria-hidden="true"></i>
+                                    <span>{% trans %}Manage Ads{% endtrans %}</span>
                                 </a>
                             </li>
-                        {% endif %}
-                    </ul>
-                </div>
+                            <li>
+                                <a href="#" class="green-btn">
+                                    <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                    <span>{% trans %}Reports{% endtrans %}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="green-btn">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    <span>{% trans %}Reviews{% endtrans %}</span></a>
+                            </li>
+                            {% if app.security.token and is_granted('ROLE_CONTENT_MANAGER') %}
+                                <li>
+                                    <a href="#" class="green-btn">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>
+                                        <span>{% trans %}Subscriptions{% endtrans %}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="green-btn">
+                                        <i class="fa fa-percent" aria-hidden="true"></i>
+                                        <span>{% trans %}Discounts{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-xs-3 dropdown-col">
                 {% if businessProfile is defined %}
@@ -128,7 +132,7 @@
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainbusiness/scripts/common.js")}}'], function(common) {
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfile.js")}}'], function(businessProfile) {
                 var profile = new businessProfile();
             })

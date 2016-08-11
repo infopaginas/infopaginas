@@ -9,6 +9,7 @@
 namespace Oxa\Sonata\AdminBundle\Util\Traits;
 
 use Sonata\TranslationBundle\Traits\Gedmo\PersonalTranslatable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 trait OxaPersonalTranslatable
 {

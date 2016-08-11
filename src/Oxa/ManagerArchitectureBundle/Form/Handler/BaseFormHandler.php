@@ -1,6 +1,7 @@
 <?php
 
 namespace Oxa\ManagerArchitectureBundle\Form\Handler;
+
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;

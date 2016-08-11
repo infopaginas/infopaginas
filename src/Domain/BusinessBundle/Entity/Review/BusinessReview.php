@@ -34,6 +34,9 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const RATING_MIN_VALUE = 1;
+    const RATING_MAX_VALUE = 5;
+
     /**
      * @var int
      *
@@ -63,8 +66,9 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     /**
      * @var string - Profile Rating – 5 mandatory selectable stars
      *
-     * @Assert\Range(min = 0, max = 5)
-     * @ORM\Column(name="rating", type="integer", nullable=true)
+     * @Assert\Range(min = 1, max = 5)
+     * @ORM\Column(name="rating", type="integer", nullable=false)
+     * @Assert\NotBlank()
      */
     protected $rating;
 
@@ -114,6 +118,21 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
         } else {
             return 'New Business review';
         }
+    }
+
+    /**
+     * Get possible rating choices, from Min to Max
+     *
+     * @return mixed
+     */
+    public static function getRatingChoices()
+    {
+        $choices = [];
+        for ($i = self::RATING_MIN_VALUE; $i <= self::RATING_MAX_VALUE; $i++) {
+            $choices[$i] = $i;
+        }
+
+        return $choices;
     }
 
     /**

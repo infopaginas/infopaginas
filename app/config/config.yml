@@ -20,6 +20,7 @@ parameters:
     locale: en
     locales: [en, es]
     route_locales: en|es
+    videos_upload_path: %assetic.write_to%/uploads/videos
 
 framework:
     #esi:             ~

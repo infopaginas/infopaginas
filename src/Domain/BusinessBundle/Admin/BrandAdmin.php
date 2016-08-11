@@ -42,23 +42,7 @@ class BrandAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('businessProfiles', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
-                'required' => false,
-                'by_reference' => false,
-            ]);
-
-        // remove businessProfiles field if we create object on businessProfile edit page
-        $parentCode = $this->getRequest()->get('pcode');
-        $businessProfileCode = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('domain_business.admin.business_profile')
-            ->getCode();
-
-        if ($parentCode && $parentCode == $businessProfileCode) {
-            $formMapper->remove('businessProfiles');
-        }
+        ;
     }
 
     /**

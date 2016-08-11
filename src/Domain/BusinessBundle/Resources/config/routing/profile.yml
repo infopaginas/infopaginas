@@ -13,3 +13,7 @@ domain_business_profile_save:
     defaults: { _controller: DomainBusinessBundle:Profile:save }
     options:
         expose: true
+
+domain_business_profile_view:
+    path:     /view/{slug}
+    defaults: { _controller: DomainBusinessBundle:Profile:view }

@@ -24,6 +24,8 @@ use Symfony\Component\HttpFoundation\FileBag;
  */
 class BusinessGalleryManager
 {
+    const CANT_CREATE_TEMP_FILE_ERROR_MESSAGE = 'File can not be opened.';
+
     /** @var EntityManager */
     private $entityManager;
 
@@ -51,24 +53,74 @@ class BusinessGalleryManager
 
         /** @var UploadedFile $file */
         foreach ($fileBag->get('files') as $file) {
-            $media = new Media();
-            $media->setBinaryContent($file);
-            $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
-            $media->setProviderName(OxaMediaInterface::PROVIDER_IMAGE);
-
-            $this->getSonataMediaManager()->save($media, false);
-
+            $media = $this->createNewMediaEntryFromUploadedFile($file);
             array_push($images, $media);
         }
 
         $this->getEntityManager()->flush();
 
         foreach ($images as $image) {
-            $businessGallery = new BusinessGallery();
-            $businessGallery->setMedia($image);
-
-            $businessProfile->addImage($businessGallery);
+            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $image);
         }
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $url
+     * @return BusinessProfile
+     * @throws \Exception
+     */
+    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url) : BusinessProfile
+    {
+        $file = tmpfile();
+
+        if ($file === false) {
+            throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+        }
+
+        // Put content in this file
+        $path = stream_get_meta_data($file)['uri'];
+        file_put_contents($path, file_get_contents($url));
+
+        // the UploadedFile of the user image
+        // referencing the temp file (used for validation only)
+        $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+        $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile);
+
+        $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @return Media
+     */
+    public function createNewMediaEntryFromUploadedFile(UploadedFile $file) : Media
+    {
+        $media = new Media();
+        $media->setBinaryContent($file);
+        $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
+        $media->setProviderName(OxaMediaInterface::PROVIDER_IMAGE);
+
+        $this->getSonataMediaManager()->save($media, false);
+
+        return $media;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param Media $media
+     * @return BusinessProfile
+     */
+    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media) : BusinessProfile
+    {
+        $businessGallery = new BusinessGallery();
+        $businessGallery->setMedia($media);
+        $businessProfile->addImage($businessGallery);
 
         return $businessProfile;
     }

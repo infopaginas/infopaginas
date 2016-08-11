@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
@@ -15,6 +16,7 @@ use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -57,13 +59,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('phones', CollectionType::class, [
                 'allow_add'    => true,
                 'allow_delete' => true,
-                'entry_type'   => TextType::class,
-                'entry_options'  => [
-                    'attr'  => [
-                        'class' => 'form-control',
-                        'placeholder' => '(787) 594-7273',
-                    ],
-                ],
+                'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
             ])
@@ -381,6 +377,8 @@ class BusinessProfileFormType extends AbstractType
     {
         $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
 
+        $isVideoSet = $businessProfile->getVideo() !== null;
+
         $form->add('isSetVideo', CheckboxType::class, [
             'attr' => [
                 'readonly' => 'readonly',
@@ -389,9 +387,10 @@ class BusinessProfileFormType extends AbstractType
             'label' => 'yes',
             'required' => false,
             'read_only' => true,
+            'data' => $isVideoSet,
         ]);
 
-        $form->add('video', FileType::class, [
+        $form->add('videoFile', FileType::class, [
             'attr' => [
                 'style' => 'display:none',
                 'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo, video/avi,
@@ -399,6 +398,11 @@ class BusinessProfileFormType extends AbstractType
             ],
             'data_class' => null,
             'mapped' => false,
+        ]);
+
+        $form->add('video', WistiaMediaType::class, [
+            'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
+            'by_reference' => false,
         ]);
     }
 

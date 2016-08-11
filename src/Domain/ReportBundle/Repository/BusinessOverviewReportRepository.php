@@ -43,8 +43,7 @@ class BusinessOverviewReportRepository extends \Doctrine\ORM\EntityRepository
         }
 
         // filter by date
-        if (
-            isset($params['date']) &&
+        if (isset($params['date']) &&
             !empty($params['date']['start']) &&
             !empty($params['date']['end'])
         ) {

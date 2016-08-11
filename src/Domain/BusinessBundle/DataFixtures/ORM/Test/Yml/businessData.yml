@@ -2,8 +2,10 @@ businesses:
     business_1:
         name: Piola Pizzeria Artesanal & Rum Bar
         google_address: 78 Calle El Tren, Cataño, 00962, Puerto Rico
-        email: panadería@test.com
-        phone: +12025550179
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
         website: infopaginas.com
         slogan: Pizza for everybody!
         product: Pizza
@@ -11,7 +13,6 @@ businesses:
         areas:
             - San Juan
             - Caguas
-            - Dorado
         tags:
             - Restaurants
             - Food
@@ -30,7 +31,9 @@ businesses:
         name: RST Puerto Rico
         google_address: 215 Cll Julian Pesante, San Juan, 00912, Puerto Rico
         email: rst@test.com
-        phone: +12025550134
+        phones:
+            - +12025550134
+            - +12025550132
         website: infopaginas.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
@@ -38,7 +41,6 @@ businesses:
         areas:
             - San Juan
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -60,15 +62,15 @@ businesses:
         name: Chinchorreando En Hato Rey
         google_address: Calle A Urbanización Santa Catalina, Guaynabo, 00966, Puerto Rico
         email: Chinchorreando@test.com
-        phone: +12025550142
+        phones:
+            - +12025550142
         website: www.google.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
             - San Juan
-            - Villalba
+            - Toa Baja
         tags:
             - Jewelry
             - Cars
@@ -90,13 +92,14 @@ businesses:
         name: CASA DE LAS ARMADURAS INC.
         google_address: Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico
         email: armaduras@test.com
-        phone: +12025550145
+        phones:
+            - +12025550145
         website: infopaginas.com
         slogan: Best New York Style Pizza in P. R.
         product: Pizza
         description: Come Puttanesca Italian Trattoria, where no doubt we have the best New York Style pizza throughout the island and probably the world. Our sauce and dough recipe is originally from Brooklyn, NY and we characterized by its unique flavor. Here eating and drinking is a pleasure.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
             - San Juan
         tags:
@@ -117,8 +120,9 @@ businesses:
     business_5:
         name: Iglesia ICM Cristo Sanador
         google_address: -67, 53 Calle Robles, San Juan, 00925, Puerto Rico
-        email: panadería@test.com
-        phone: +19392725334
+        email: panadera@test.com
+        phones:
+            - +19392725334
         website: infopaginas.com
         slogan: Pizza for everybody!
         product: Pizza
@@ -126,7 +130,6 @@ businesses:
         areas:
             - San Juan
             - Caguas
-            - Dorado
         tags:
             - Restaurants
             - Food
@@ -143,7 +146,8 @@ businesses:
         name: Restaurante El Obrero
         google_address: 273 Calle Robles, San Juan, 00923, Puerto Rico
         email: rst@test.com
-        phone: +17877544795
+        phones:
+            - +17877544795
         website: infopaginas.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
@@ -169,7 +173,8 @@ businesses:
         name: Farmacia Capetillo
         google_address: 251 Calle Robles, San Juan, 00925, Puerto Rico
         email: Chinchorreando@test.com
-        phone: +12025550142
+        phones:
+            - +12025550142
         website: www.google.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
@@ -191,15 +196,15 @@ businesses:
         name: Siria's Cibercafe & Sportbar
         google_address: 1059 Calle Monseñor William Jones, San Juan, 00925, Puerto Rico
         email: test@test.com
-        phone: +375291862356
+        phones:
+            - +375291862356
         website: www.google.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -218,8 +223,9 @@ businesses:
     business_9:
         name: JF Montalvo
         google_address: Calle Padre Colón, San Juan, 00925, Puerto Rico
-        email: panadería@test.com
-        phone: +12025550179
+        email: panadera@test.com
+        phones:
+            - +12025550179
         website: infopaginas.com
         slogan: Pizza for everybody!
         product: Pizza
@@ -227,7 +233,6 @@ businesses:
         areas:
             - San Juan
             - Caguas
-            - Dorado
         tags:
             - Restaurants
             - Food
@@ -246,15 +251,15 @@ businesses:
         name: Clínica Dr. Merlos y Asociados
         google_address: 54 Calle Piñero, San Juan, 00925, Puerto Rico
         email: rst@test.com
-        phone: +12025550134
+        phones:
+            - +12025550134
         website: clinicadoctormerlos.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
         description: The famous Italian corner in San Juan. Our wood stove (the star of the house), without any gas is lighted every day to prepare pizzas. More than 25 varieties, plus calzones. We can replace the milk with a base of mashed potatoes. We also have  whole wheat dough prepared here every day. The most sought pizzas - Di Gregorio (pesto, chorizo, bruschettas) The Mexican (ground, cheese and more cheese), vegetables (many vegetables), Pesto (slices of fresh tomato and pesto, of course), Burger (ground, cheese, onion and cheddar) ... among many others. We have a divine salad; mezclun, walnuts, cranberries, garlic croutons, gorgonzola and mozzarella with homemade dijon vinaigrette. We also have our famous soups/creams low in calories. The chorizos, "low carb", and of course pizza integrated in more than 20 choices of toppings. Sangria with the acclaimed açaí, strawberries or pineapple ingredients.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -276,15 +281,15 @@ businesses:
         name: Romano's Macaroni Grill
         google_address: 525 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
         email: rst@test.com
-        phone: +17872810909
+        phones:
+            - +17872810909
         website: macgrillpr.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
         description: The famous Italian corner in San Juan. Our wood stove (the star of the house), without any gas is lighted every day to prepare pizzas. More than 25 varieties, plus calzones. We can replace the milk with a base of mashed potatoes. We also have  whole wheat dough prepared here every day. The most sought pizzas - Di Gregorio (pesto, chorizo, bruschettas) The Mexican (ground, cheese and more cheese), vegetables (many vegetables), Pesto (slices of fresh tomato and pesto, of course), Burger (ground, cheese, onion and cheddar) ... among many others. We have a divine salad; mezclun, walnuts, cranberries, garlic croutons, gorgonzola and mozzarella with homemade dijon vinaigrette. We also have our famous soups/creams low in calories. The chorizos, "low carb", and of course pizza integrated in more than 20 choices of toppings. Sangria with the acclaimed açaí, strawberries or pineapple ingredients.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -306,15 +311,15 @@ businesses:
         name: Taberna Boricua
         google_address: 418 Cll Agueybana, San Juan, 00918, Puerto Rico
         email: Chinchorreando@test.com
-        phone: +17877655000
+        phones:
+            - +17877655000
         website: www.google.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -336,15 +341,15 @@ businesses:
         name: PF Chang's China Bistro
         google_address:  527 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
         email: test@test.com
-        phone: +17877710255
+        phones:
+            - +17877710255
         website: pfchangspr.com
         slogan: Just do it
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
+            - Toa Baja          
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars

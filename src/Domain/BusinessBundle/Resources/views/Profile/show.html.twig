@@ -1,0 +1,378 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block breakcrumbs %}
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="#">
+                        {{ businessProfile.getCategories() | first }} in {{ businessProfile.getCity() }}
+                        <span>&nbsp; »</span>
+                    </a>
+                    &nbsp;
+                    <span>{{ businessProfile.getName() }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block main %}
+    <section id="profile" class="profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="cards">
+                        <div class="card-item">
+                            <div class="card-title">
+                                <label class="control-label card-label" for="card-check">
+                                    <span class="card-name">&nbsp;{{ businessProfile.getName() }}</span>
+                                    {% if (businessProfile.getSlogan()) %}
+                                        <span class="card-slogan">&nbsp;<q>{{ businessProfile.getSlogan() }}</q></span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            <div class="col-xs-3 schedule">
+                                {% if not businessProfile.getHideAddress() %}
+                                    <div class="address">
+                                        <span>
+                                            {% if businessProfile.getCustomAddress() %}
+                                                {{ businessProfile.getCustomAddress() }}
+                                            {% else %}
+                                                {{ businessProfile.getCity() }}, {{ businessProfile.getCountry() }}
+                                                {{ businessProfile.getZipCode() }}
+                                            {% endif %}
+                                        </span>
+                                        <a href="#" class="get-dir get-direction" data-latlng="{{ businessProfile.getLatLng() }}">
+                                            {% trans %}Get Direction{% endtrans %} <span>&#187;</span>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-xs-9 company-contact">
+                                <ul class="company-info">
+                                    {% if businessProfile.getWebsite() %}
+                                        <li>
+                                            <a target="_blank" href="{{ businessProfile.getWebsite() }}">
+                                                <i class="fa fa-home" aria-hidden="true"></i>
+                                                <span>{{ businessProfile.getWebsite() }}</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if businessProfile.getEmail() %}
+                                        <li>
+                                            <a href="mailto:{{ businessProfile.getEmail() }}">
+                                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                                <span>{{ businessProfile.getEmail() }}</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if businessProfile.getPhones() | length > 0 %}
+                                        <li>
+                                            <div class="dropdown filter-drop">
+                                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                                <div class="select-container">
+                                                    <select class="form-control select-control">
+                                                        {% for phone in businessProfile.getPhones() %}
+                                                            <option>{{ phone.getPhone() }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                            <div class="col-xs-12 additional-info">
+                                {% include ':blocks/business:business_profile_info_icons.html.twig'
+                                    with { 'business': businessProfile } %}
+                            </div>
+
+                            {% if businessProfile.getLogo() %}
+                                <div class="company-logo">
+                                    {% thumbnail businessProfile.getLogo(), 'preview' %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-item">
+                            {% if businessProfile.getDescription() %}
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Description{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>{{ businessProfile.getDescription() }}</p>
+                                </div>
+                            {% endif %}
+                            {% if businessProfile.getProduct() %}
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Products or Services{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>{{ businessProfile.getProduct() }}</p>
+                                </div>
+                            {% endif %}
+                            <div class="col-xs-3 fields-item">
+                                <span>{% trans %}Categories{% endtrans %}:</span>
+                            </div>
+                            <div class="col-xs-9 fields-item">
+                                <p>
+                                    {{ businessProfile.getCategories() | join(', ') }}.
+                                </p>
+                            </div>
+                            {% if businessProfile.getWorkingHours() %}
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Working hours{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p class="working-hours">
+                                        {{ businessProfile.getWorkingHours() }}
+                                    </p>
+                                </div>
+                            {% endif %}
+
+                            {% set socialLinksExists = businessProfile.getFacebookURL()
+                                or businessProfile.getGoogleURL()
+                                or businessProfile.getTwitterURL()
+                                or businessProfile.getYoutubeURL()
+                            %}
+
+                            {% if socialLinksExists %}
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}social networks{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <ul class="social-icons">
+                                        {% if businessProfile.getFacebookURL() %}
+                                            <li>
+                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getFacebookURL() }}">
+                                                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if businessProfile.getTwitterURL() %}
+                                            <li>
+                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getTwitterURL() }}">
+                                                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if businessProfile.getGoogleURL() %}
+                                            <li>
+                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getGoogleURL() }}">
+                                                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if businessProfile.getYoutubeURL() %}
+                                            <li>
+                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getYoutubeURL() }}">
+                                                    <i class="fa fa-youtube" aria-hidden="true"></i>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if businessProfile.getPaymentMethods() | length > 0 %}
+                            <div class="card-item">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Payment Methods{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <ul class="payment-methods">
+                                        {% for method in businessProfile.getPaymentMethods() %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::VISA_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/visa.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::MASTERCARD_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/mastercard.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::PAYPAL_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/paypal.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% set discount = businessProfile.getDiscount() %}
+
+                        {% if discount is not null %}
+                            <div class="card-item">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Discounts{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>{{ discount.getDescription() }}</p>
+                                </div>
+                                {% if discount.getCoupon() %}
+                                    <div class="col-xs-3 fields-item">
+                                        <span>{% trans %}Coupons{% endtrans %}:</span>
+                                    </div>
+                                    <div class="col-xs-9 fields-item">
+                                        {% set media = discount.getCoupon().getImage() %}
+                                        <p>
+                                            <a onclick="printImage('{% path media, 'reference' %}');"
+                                               href="#" class="green-btn btn print-btn">
+                                                <i class="fa fa-print" aria-hidden="true"></i>
+                                                <span>{% trans %}Print{% endtrans %}</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {#<div class="card-item">
+                            <div class="col-xs-3 fields-item">
+                                <span>Reviews:</span>
+                            </div>
+                            <div class="col-xs-9 fields-item">
+                                <div class="reviews block-title-reviews">
+                                    <div class="star-rating">
+                                        <span class="fa fa-star-o" data-rating="1"></span>
+                                        <span class="fa fa-star-o" data-rating="2"></span>
+                                        <span class="fa fa-star-o" data-rating="3"></span>
+                                        <span class="fa fa-star-o" data-rating="4"></span>
+                                        <span class="fa fa-star-o" data-rating="5"></span>
+                                        <input type="hidden" name="whatever" class="rating-value" value="3">
+                                    </div>
+                                    <span class="blue-c">16 Reviews</span>
+                                </div>
+                                <a href="" class="green-btn btn write-btn"><i class="fa fa-pencil"
+                                                                              aria-hidden="true"></i><span>Write a Review</span></a>
+                            </div>
+                            <div class="col-xs-3 fields-item review-col">
+                                <div class="account-photo"><i class="fa fa-user" aria-hidden="true"></i><img src="">
+                                </div>
+                                <span class="blue-c bold">Elyse M</span>
+
+                                <div class="reviews">
+                                    <div class="star-rating">
+                                        <span class="fa fa-star-o" data-rating="1"></span>
+                                        <span class="fa fa-star-o" data-rating="2"></span>
+                                        <span class="fa fa-star-o" data-rating="3"></span>
+                                        <span class="fa fa-star-o" data-rating="4"></span>
+                                        <span class="fa fa-star-o" data-rating="5"></span>
+                                        <input type="hidden" name="whatever" class="rating-value" value="3">
+                                    </div>
+                                </div>
+                                <span class="review-date">13 APR 2016</span>
+                            </div>
+                            <div class="col-xs-9 fields-item review-col">
+                                <p>The BEST salon in the Western suburbs! I've been coming here for 10 years and it just
+                                    keeps getting better. The staff are super fun, friendly and so talented! If your
+                                    just looking for your usual cut and colour or something a bit more creative make
+                                    sure you get to Aqua Lounge! Also if you have a special event like a engagement or
+                                    wedding coming up make sure you come see the girls.....they've got you covered!!</p>
+                            </div>
+                            <a href="" class="more-reviews blue-c">View more reviews</a>
+                        </div>#}
+
+                        {% if advertisements | length > 0 %}
+                            <div class="card-item advertisement-block" id="ad">
+                                <div class="col-xs-3 fields-item">
+                                    <span>
+                                        <i class="ad-icon icon"></i>{% trans %}Advertisement{% endtrans %}
+                                    </span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <div class="images-wrapper gallery carousel-property">
+                                        {% for ad in advertisements %}
+                                            <a href="{% path ad.getMedia(), 'reference' %}" class="image-wrap">
+                                                {% thumbnail ad.getMedia(), 'preview' %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if photos | length > 0 %}
+                            <div class="card-item photo-block" id="photo">
+                                <div class="col-xs-3 fields-item">
+                                    <span>
+                                        <i class="photo-icon icon"></i>
+                                        {% trans %}Photos{% endtrans %}
+                                    </span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <div class="images-wrapper gallery carousel-property">
+                                        {% for photo in photos %}
+                                            <a href="{% path photo.getMedia(), 'reference' %}" class="image-wrap">
+                                                {% thumbnail photo.getMedia(), 'preview' %}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if media_tab_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
+                            <div class="card-item video-block" id="video">
+                                <div class="col-xs-3 fields-item">
+                                    <span>
+                                        <i class="video-icon icon"></i>{% trans %}Video{% endtrans %}
+                                    </span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    {{ render_wistia_embed(businessProfile.getVideo(), {width: 320, height: 220}) | raw }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <aside class="map col-md-3">
+                    <img src="http://placehold.it/410x350">
+                </aside>
+            </div>
+        </div>
+    </section>
+    <script>
+        function printImage(imageSrc)
+        {
+            var popup;
+
+            function closePrint () {
+                if ( popup ) {
+                    popup.close();
+                }
+            }
+
+            popup = window.open( imageSrc );
+            popup.onbeforeunload = closePrint;
+            popup.onafterprint = closePrint;
+            popup.focus(); // Required for IE
+            popup.print();
+        }
+    </script>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'], function(businessProfileView) {
+                var businessProfileView = new businessProfileView();
+            })
+        })
+    </script>
+{% endblock%}

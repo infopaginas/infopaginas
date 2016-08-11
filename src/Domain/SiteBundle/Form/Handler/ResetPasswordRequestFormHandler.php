@@ -8,7 +8,7 @@
 
 namespace Domain\SiteBundle\Form\Handler;
 
-use FOS\UserBundle\Mailer\Mailer;
+use Domain\SiteBundle\Mailer\Mailer;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
@@ -99,7 +99,7 @@ class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHan
             $user->setConfirmationToken($this->getTokenGenerator()->generateToken());
         }
 
-        $this->getMailer()->sendResettingEmailMessage($user);
+        $this->getMailer()->sendResetPasswordEmailMessage($user);
 
         $user->setPasswordRequestedAt(new \DateTime());
 
