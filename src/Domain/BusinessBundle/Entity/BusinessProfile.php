@@ -465,7 +465,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
-     * @Assert\NotBlank(groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
      * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
      */
