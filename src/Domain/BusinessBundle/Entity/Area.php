@@ -261,4 +261,14 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
 
         return $this;
     }
+
+    /**
+     * Get locality
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLocality()
+    {
+        return $this->locality;
+    }
 }

@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
@@ -16,6 +18,7 @@ use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Validator\Constraints\EmailValidator;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class BusinessProfileAdmin
@@ -191,10 +194,11 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', [
                         'by_reference' => false,
-                        'required' => false
+                        'required' => true,
+                        'mapped' => true,
                     ], [
                         'edit' => 'inline',
-                        'delete_empty' => true,
+//                        'delete_empty' => true,
                         'inline' => 'table',
                         'sortable' => 'position',
                         'link_parameters' => [
@@ -227,7 +231,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
-                        'required' => false,
+                        'required' => true,
                         'type_options' => [
                             'delete' => true,
                             'delete_options' => [
@@ -331,6 +335,8 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function validate(ErrorElement $errorElement, $object)
     {
+        /** @var BusinessProfile $object */
+
         if ($object->getUseMapAddress()) {
             if (!$object->getGoogleAddress()) {
                 $errorElement->with('googleAddress')
@@ -374,7 +380,36 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
         }
-    }
+
+        // check if user try to upload images more, that allowed
+        if (count($object->getImages()) > BusinessGallery::MAX_IMAGES_PER_BUSINESS) {
+            $errorElement->with('images')
+                ->addViolation($this->getTranslator()->trans(
+                    'form.business.max_images',
+                    [
+                        'max_images_per_business' => BusinessGallery::MAX_IMAGES_PER_BUSINESS
+                    ],
+                    $this->getTranslationDomain()
+                ))
+                ->end()
+            ;
+        }
+
+        // check if gallery records have not empty Media field
+        foreach ($object->getImages() as $image) {
+            if (!$image->getMedia()) {
+                $errorElement->with('images')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.business.empty_images',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+                break;
+            }
+        }
+   }
 
     /**
      * Modify list results
