@@ -45,17 +45,17 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             if($( window ).width() > this.options.mediaWidth ) {
                 $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
             }
-        }.bind(this));
+        }.bind( this ));
 
         $( this.options.searchSelector ).focus( function(){
             if($( window ).width() < this.options.mediaWidth ) {
                 $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
             }
-        }.bind(this));
+        }.bind( this ));
 
         $( this.options.mediaCloseSection ).click( function(){
             $( this.options.mediaSearchSection ).css( {"display" : "none"} )
-        }.bind(this));
+        }.bind( this ));
 
         return this;
     };
