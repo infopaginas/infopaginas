@@ -47,6 +47,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         this.spinner = new Spin();
 
+        this.isDirty = false;
+        this.formSubmitting = false;
+
+        this.currentLocale = $( this.html.languageSelectorId + ' option:selected' ).val();
+
         this.run();
     };
 
@@ -173,6 +178,8 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         var that = this;
 
         $( document ).on( 'submit' , this.html.forms.newProfileRequestFormId , function( event ) {
+            that.formSubmitting = true;
+
             var data = [{
                 name: 'locale',
                 value: $( that.html.languageSelectorId + ' option:selected' ).val()
@@ -198,26 +205,37 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         $( this.html.languageSelectorId ).on( 'change' , function( event ) {
             var locale = $( that.html.languageSelectorId + ' option:selected' ).val();
-            var businessProfileId = $( that.html.forms.newProfileRequestFormId ).data( 'id' );
+            var isLeave = that.beforeUnload();
 
-            $.ajax({
-                url: Routing.generate( 'domain_business_profile_edit', {
-                    id: businessProfileId
-                } ),
-                method: 'POST',
-                data: { 'locale': locale },
-                beforeSend: function() {
-                    that.spinner.show( that.html.newProfileRequestSpinnerContainerId );
-                },
-                success: function( response ) {
-                    $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
+            if ( isLeave || isLeave === undefined ) {
+                that.isDirty = false;
+                that.formSubmitting = false;
+                that.currentLocale = locale;
 
-                    new select();
-                },
-                error: function( jqXHR, textStatus, errorThrown ) {
-                    alertify.error( errorThrown );
-                }
-            });
+                var businessProfileId = $( that.html.forms.newProfileRequestFormId ).data( 'id' );
+
+                $.ajax({
+                    url: Routing.generate( 'domain_business_profile_edit', {
+                        id: businessProfileId
+                    } ),
+                    method: 'POST',
+                    data: { 'locale': locale },
+                    beforeSend: function() {
+                        that.spinner.show( that.html.newProfileRequestSpinnerContainerId );
+                    },
+                    success: function( response ) {
+                        $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
+
+                        new select();
+                    },
+                    error: function( jqXHR, textStatus, errorThrown ) {
+                        alertify.error( errorThrown );
+                    }
+                });
+            } else {
+                $( that.html.languageSelectorId + ' option[value="' + that.currentLocale + '"]' ).attr('selected', true);
+                new select();
+            }
         });
     };
 
@@ -264,12 +282,31 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         return files;
     };
 
+    businessProfile.prototype.handleFormChange = function () {
+        var self = this;
+
+        $( document ).on( 'change' , '#businessProfileRequestForm', function() {
+            self.isDirty = true;
+        });
+    };
+
+    businessProfile.prototype.beforeUnload = function ( e ) {
+        if (this.formSubmitting || !this.isDirty) {
+            return undefined;
+        }
+
+        var confirmationMessage = 'Changes that you made may not be saved.';
+
+        return confirm( confirmationMessage );
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
         this.handleProfileSave();
         this.handleLocaleChange();
         this.handleServiceAreaChange();
+        this.handleFormChange();
 
         var that = this;
 
