@@ -1,6 +1,6 @@
 define(
-    ['jquery',  'abstract/view', 'tools/directions', 'bootstrap', 'select2', 'tools/select', 'tools/star-rating'], 
-    function ( $, view, directions) {
+    ['jquery',  'abstract/view', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating'], 
+    function ( $, view, directions, select) {
     'use strict';
 
     var searchpage = function ( options ) {
@@ -25,6 +25,8 @@ define(
         this.options = {};
         this.directions = new directions;
         $.extend( this.options, options );
+
+        new select();
     }
 
     searchpage.prototype.selectCategory = function ( e ) {

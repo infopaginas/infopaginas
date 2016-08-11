@@ -164,6 +164,23 @@ class BusinessProfileManager extends Manager
             'locked' => false,
             'actualBusinessProfile' => null,
         ]);
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param string $slug
+     * @return null|object
+     */
+    public function findBySlug(string $slug)
+    {
+        $businessProfile = $this->getRepository()->findOneBy([
+            'slug' => $slug,
+            'isActive' => true,
+            'locked' => false,
+            'actualBusinessProfile' => null,
+        ]);
+
         return $businessProfile;
     }
 

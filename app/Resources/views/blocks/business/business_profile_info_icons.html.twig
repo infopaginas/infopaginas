@@ -1,0 +1,38 @@
+<div class="icons">
+    {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and business.getImages() | length > 0  %}
+        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#photo">
+            <i class="photo"></i>
+        </a>
+    {% endif %}
+
+    {% if hasSubscription(business, "CODE_PREMIUM_PLATINUM") and business.getVideo() is not null %}
+        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#video">
+            <i class="video"></i>
+        </a>
+    {% endif %}
+
+    {% if hasSubscription(business, "CODE_PRIORITY") and business.getImages() | length > 0 %}
+        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#ad">
+            <i class="ad"></i>
+        </a>
+    {% endif %}
+</div>
+
+{% set businessProfileReviewsCount = business.getBusinessReviews() | length %}
+
+{% if businessProfileReviewsCount > 0 %}
+    <div class="reviews">
+        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#reviews">
+            <div class="star-rating">
+                <span class="fa fa-star-o" data-rating="1"></span>
+                <span class="fa fa-star-o" data-rating="2"></span>
+                <span class="fa fa-star-o" data-rating="3"></span>
+                <span class="fa fa-star-o" data-rating="4"></span>
+                <span class="fa fa-star-o" data-rating="5"></span>
+                <input type="hidden" name="whatever" class="rating-value" value="{# item.getBusinessReviewsAvgMark #}">
+            </div>
+            <span>{{ businessProfileReviewsCount }} Reviews</span>
+        </a>
+    </div>
+{% endif %}
+

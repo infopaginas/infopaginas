@@ -1,6 +1,3 @@
-<div class="section-title"><span class="blue-c">Videos</span>
-    <hr>
-    <a href="#" class="btn">View more videos</a></div>
 <div class="articles videos">
     <!-- TEMP for construction for render first 2 articles -->
     {% for video in videos %}
@@ -8,7 +5,7 @@
             <div class="article-pic"><a href="{{ path('domain_article_view', { 'slug' : video.getSlug() }) }}"><img src="{% path video.getImage(), 'homepage' %}"></a>
             </div>
             <div class="article-info">
-            <!-- temp link to articles page -->
+                <!-- temp link to articles page -->
                 <a href="{{ path('domain_article_view', { 'slug' : video.getSlug() }) }}" class="article-title blue-c">
                     {{ video.getTitle() }}
                 </a>
