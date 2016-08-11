@@ -85,13 +85,13 @@ class ProfileController extends Controller
 
     /**
      * @param Request $request
-     * @param int $id
+     * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction(Request $request, int $id)
+    public function viewAction(Request $request, string $slug)
     {
         /** @var BusinessProfile $businessProfile */
-        $businessProfile = $this->getBusinessProfilesManager()->find($id);
+        $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
         $discounts      = $businessProfile->getDiscounts();
 

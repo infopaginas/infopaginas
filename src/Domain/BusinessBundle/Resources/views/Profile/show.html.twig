@@ -43,7 +43,9 @@
                                                 {{ businessProfile.getZipCode() }}
                                             {% endif %}
                                         </span>
-                                        <a href="#">{% trans %}Get Direction{% endtrans %} <span>&#187;</span></a>
+                                        <a href="#" class="get-dir get-direction" data-latlng="{{ businessProfile.getLatLng() }}">
+                                            {% trans %}Get Direction{% endtrans %} <span>&#187;</span>
+                                        </a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -81,6 +83,12 @@
                                     {% endif %}
                                 </ul>
                             </div>
+
+                            <div class="col-xs-12 additional-info">
+                                {% include ':blocks/business:business_profile_info_icons.html.twig'
+                                    with { 'business': businessProfile } %}
+                            </div>
+
                             {% if businessProfile.getLogo() %}
                                 <div class="company-logo">
                                     {% thumbnail businessProfile.getLogo(), 'preview' %}
@@ -167,38 +175,41 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="card-item">
-                            <div class="col-xs-3 fields-item">
-                                <span>{% trans %}Payment Methods{% endtrans %}:</span>
+
+                        {% if businessProfile.getPaymentMethods() | length > 0 %}
+                            <div class="card-item">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Payment Methods{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <ul class="payment-methods">
+                                        {% for method in businessProfile.getPaymentMethods() %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::VISA_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/visa.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::MASTERCARD_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/mastercard.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::PAYPAL_METHOD') %}
+                                                <li>
+                                                    <a class="blue-c" href="javascript: void(0);">
+                                                        <img src="{{ asset('assets/images/paypal.png') }}">
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                            <div class="col-xs-9 fields-item">
-                                <ul class="payment-methods">
-                                    {% for method in businessProfile.getPaymentMethods() %}
-                                        {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::VISA_METHOD') %}
-                                            <li>
-                                                <a class="blue-c" href="javascript: void(0);">
-                                                    <img src="{{ asset('assets/images/visa.png') }}">
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::MASTERCARD_METHOD') %}
-                                            <li>
-                                                <a class="blue-c" href="javascript: void(0);">
-                                                    <img src="{{ asset('assets/images/mastercard.png') }}">
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::PAYPAL_METHOD') %}
-                                            <li>
-                                                <a class="blue-c" href="javascript: void(0);">
-                                                    <img src="{{ asset('assets/images/paypal.png') }}">
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+                        {% endif %}
 
                         {% set discount = businessProfile.getDiscount() %}
 
@@ -275,7 +286,7 @@
                         </div>#}
 
                         {% if advertisements | length > 0 %}
-                            <div class="card-item advertisement-block">
+                            <div class="card-item advertisement-block" id="ad">
                                 <div class="col-xs-3 fields-item">
                                     <span>
                                         <i class="ad-icon icon"></i>{% trans %}Advertisement{% endtrans %}
@@ -294,9 +305,12 @@
                         {% endif %}
 
                         {% if photos | length > 0 %}
-                            <div class="card-item photo-block">
+                            <div class="card-item photo-block" id="photo">
                                 <div class="col-xs-3 fields-item">
-                                    <span><i class="photo-icon icon"></i>Photos</span>
+                                    <span>
+                                        <i class="photo-icon icon"></i>
+                                        {% trans %}Photos{% endtrans %}
+                                    </span>
                                 </div>
                                 <div class="col-xs-9 fields-item">
                                     <div class="images-wrapper gallery carousel-property">
@@ -311,7 +325,7 @@
                         {% endif %}
 
                         {% if media_tab_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
-                            <div class="card-item video-block">
+                            <div class="card-item video-block" id="video">
                                 <div class="col-xs-3 fields-item">
                                     <span>
                                         <i class="video-icon icon"></i>{% trans %}Video{% endtrans %}
@@ -355,7 +369,7 @@
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainbusiness/scripts/common.js")}}'], function(common) {
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'], function(businessProfileView) {
                 var businessProfileView = new businessProfileView();
             })

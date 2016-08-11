@@ -1,4 +1,4 @@
-define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'slider'], function( $, bootstrap, select, slick, lightbox, slider ) {
+define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions'], function( $, bootstrap, select, slick, lightbox, slider, directions ) {
     'use strict';
 
     var businessProfileView = function() {
@@ -8,6 +8,7 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'slider'], 
     //setup required "listeners"
     businessProfileView.prototype.run = function() {
         new select();
+        new directions();
     };
 
     return businessProfileView;
