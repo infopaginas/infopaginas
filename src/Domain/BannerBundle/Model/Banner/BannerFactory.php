@@ -69,7 +69,6 @@ class BannerFactory extends Factory
 
     public function retrieve($type)
     {
-        dump($this->bannersCollection);
         if ($this->bannersCollection->containsKey($type)) {
             return $this->bannersCollection->get($type);
         } else {
