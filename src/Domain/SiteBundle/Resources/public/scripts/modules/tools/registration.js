@@ -95,6 +95,7 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         if ( response.success ) {
             alertify.success( response.message );
             $( this.modals.registrationModalId ).modal( 'hide' );
+            $( this.html.forms.registrationFormId )[0].reset();
             $( this.modals.loginModalId ).modal( 'show' );
         } else {
             this.enableFieldsHighlight( response.errors );
