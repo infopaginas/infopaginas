@@ -105,4 +105,6 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         var controller = new login();
         controller.run();
     });
+
+    return login;
 });

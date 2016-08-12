@@ -1,4 +1,4 @@
-define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
+define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertify, Spin, Login ) {
     'use strict';
 
     //init registration object variables
@@ -95,7 +95,14 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         if ( response.success ) {
             alertify.success( response.message );
             $( this.modals.registrationModalId ).modal( 'hide' );
-            $( this.modals.loginModalId ).modal( 'show' );
+
+            var email = this.getUriItem(this.registerData, 'email');
+            var password = this.getUriItem(this.registerData, 'plainPassword');
+            var token = this.getUriItem(this.registerData, '_token');
+            var loginData = '_username=' + email + '&_password=' + password + '&_token=' + token;
+
+            var login = new Login();
+            login.doRequest( login.urls.login_check, loginData );
         } else {
             this.enableFieldsHighlight( response.errors );
             alertify.error( response.message );
@@ -107,8 +114,24 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         alertify.error( errorThrown );
     };
 
+    registration.prototype.getUriComponents = function ( data ) {
+        return decodeURIComponent( data ).split( '&' );
+    };
+
+    registration.prototype.getUriItem = function ( data, search ) {
+        var uriComponents = this.getUriComponents( data );
+        var uriItemArray = _.filter( uriComponents, function ( item ) {
+            var regexp = new RegExp(search, 'gi');
+            return item.match(regexp)
+        });
+
+        return uriItemArray[0].split('=')[1];
+    };
+
     //ajax request
     registration.prototype.doRequest = function ( ajaxURL, data ) {
+        this.registerData = data;
+
         $.ajax({
             url: ajaxURL,
             type: 'POST',
