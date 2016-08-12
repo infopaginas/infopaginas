@@ -2,18 +2,15 @@
 
 namespace Oxa\Sonata\MediaBundle\Admin;
 
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Validator\ErrorElement;
-use Sonata\CoreBundle\Form\Type\EqualType;
-use Sonata\MediaBundle\Admin\ORM\MediaAdmin as SonataMediaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\MediaBundle\Provider\Pool;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Url;
 
 /**
  * Class MediaAdmin
@@ -35,9 +32,11 @@ class MediaAdmin extends BaseMediaAdmin
             ->remove('copyright')
             ->add('binaryContent', FileType::class, [
                 'required' => false,
+                'constraints' => new File(AdminHelper::getFormImageFileConstrain())
             ])
             ->add('url', UrlType::class, [
                 'required' => false,
+                'constraints' => new Url()
             ])
         ;
     }
