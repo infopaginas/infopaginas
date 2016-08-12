@@ -89,10 +89,10 @@
                                 </div>
                             </div>
                         </div>
+                        {% do businessProfileForm.video.setRendered %}
                     {% endif %}
                 </div>
             </div>
-            {% do businessProfileForm.video.setRendered %}
 
             {% include 'DomainBusinessBundle:Profile:blocks/form_footer.html.twig' %}
         </div>

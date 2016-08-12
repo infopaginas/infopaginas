@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -36,6 +37,7 @@ class ResetPasswordType extends AbstractType
             ],
             'constraints' => [
                 new NotBlank(),
+                new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
             ],
         ])
         ;
