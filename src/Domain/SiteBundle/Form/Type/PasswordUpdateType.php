@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -47,6 +48,7 @@ class PasswordUpdateType extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank(),
+                    new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
                 ],
             ]);
     }
