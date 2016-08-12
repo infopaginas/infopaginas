@@ -102,7 +102,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
-        dump($queryBuilder->getQuery()->getSql()); die;
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
