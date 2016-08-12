@@ -89,7 +89,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var string - Used to create human like url
      *
-     * @Gedmo\Slug(fields={"title"})
+     * @Gedmo\Slug(fields={"title"}, updatable=false)
      * @ORM\Column(name="slug", type="string")
      */
     protected $slug;
