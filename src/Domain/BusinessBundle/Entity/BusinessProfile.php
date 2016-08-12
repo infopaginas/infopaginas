@@ -326,6 +326,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
@@ -1291,7 +1292,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $this;
     }
 
-    /*
+    /**
      * Set logo
      *
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $logo

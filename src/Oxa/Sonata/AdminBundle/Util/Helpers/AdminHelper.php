@@ -144,4 +144,19 @@ class AdminHelper
             ],
         ];
     }
+
+    /**
+     * @return array
+     */
+    public static function getFormImageFileConstrain()
+    {
+        return [
+            'maxSize' => '10M',
+            'mimeTypes' => [
+                "image/png",
+                "image/jpeg",
+                "image/jpg",
+                "image/gif",
+        ]];
+    }
 }

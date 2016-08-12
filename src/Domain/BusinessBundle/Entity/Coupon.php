@@ -67,6 +67,7 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     /**
      * @var Media - Media Image
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="coupons",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
