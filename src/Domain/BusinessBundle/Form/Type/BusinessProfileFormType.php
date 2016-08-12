@@ -30,6 +30,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
@@ -235,7 +236,10 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'label' => 'Zip code',
-                'required' => false,
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->add('extendedAddress', TextType::class, [
                 'attr' => [
