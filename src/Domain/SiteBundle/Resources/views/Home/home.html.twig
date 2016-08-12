@@ -1,5 +1,11 @@
 {% extends "DomainSiteBundle:Layout:homepage.html.twig" %}
 
+{% block doubleClickHeader %}
+    {% if bannerFactory is not null %}
+        {% include 'DomainBannerBundle:Default:doubleClickHeaderTemplate.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
+    {% endif %}
+{% endblock %}
+
 {% block homapageHeaderHexagonDesc %}
     {% include 'DomainSiteBundle:Home:Widgets/hexagonMenuWidget.html.twig' %}
 {% endblock %}
@@ -47,11 +53,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
-                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD')) }
+                        %}
+                    {% endif %}
                 </div>
                 <div class="col-xs-12 mobile-banner">
-                    <img src="http://placehold.it/300x250">
-                    <img src="http://placehold.it/300x250">
+
                 </div>
             </div>
         </div>
@@ -89,10 +98,18 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEFT'))  }
+                            %}
+                        {% endif %}
                     </div>
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_RIGHT'))  }
+                            %}
+                        {% endif %}
                     </div>
                 </div>
             </div>

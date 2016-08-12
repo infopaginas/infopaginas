@@ -55,6 +55,11 @@ class TemplateAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
+            ->add('templateHeader', 'text', [
+                'attr' => [
+                    'rows' => 3,
+                ]
+            ])
             ->add('body', null, [
                 'attr' => [
                     'rows' => 20,
