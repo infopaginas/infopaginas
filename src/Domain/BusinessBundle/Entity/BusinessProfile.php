@@ -430,26 +430,26 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $hideAddress = false;
 
     /**
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $twitterURL;
 
     /**
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $facebookURL;
 
     /**
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $googleURL;
 
     /**
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $youtubeURL;
 
