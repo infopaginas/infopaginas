@@ -85,7 +85,8 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Status', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
                 ->with('Subscriptions')->end()
-                ->with('Discounts')->end()
+                ->with('Coupons', array('class' => 'col-md-6'))->end()
+                ->with('Discount', array('class' => 'col-md-6'))->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
@@ -122,10 +123,18 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('email', EmailType::class, [
                         'required' => false
                     ])
-                    ->add(
-                        'phones',
-                        'sonata_type_collection',
-                        [
+                    ->add('slug', null, ['read_only' => true, 'required' => false])
+                ->end()
+                ->with('Description')
+                    ->add('slogan')
+                    ->add('product')
+                    ->add('description', null, [
+                        'attr' => [
+                            'rows' => 5,
+                        ],
+                    ])
+                    ->add('workingHours')
+                    ->add('phones', 'sonata_type_collection', [
                             'by_reference' => false,
                         ],
                         [
@@ -134,21 +143,6 @@ class BusinessProfileAdmin extends OxaAdmin
                             'inline' => 'table',
                         ]
                     )
-                    ->add('slug', null, ['read_only' => true, 'required' => false])
-                ->end()
-                ->with('Description')
-                    ->add('slogan')
-                    ->add('product')
-                    ->add('description', null, [
-                        'attr' => [
-                            'rows' => 10,
-                        ],
-                    ])
-                    ->add('workingHours', null, [
-                        'attr' => [
-                            'rows' => 10,
-                        ],
-                    ])
                 ->end()
                 ->with('Address')
                     ->add('country', 'sonata_type_model_list', [
@@ -248,9 +242,10 @@ class BusinessProfileAdmin extends OxaAdmin
                         'allow_delete' => false,
                     ])
                 ->end()
-                ->with('Discounts')
-                    ->add('discounts', 'sonata_type_collection', [
-                        'required' => false,
+                ->with('Coupons')
+                    ->add('coupons', 'sonata_type_collection', [
+                        'by_reference' => false,
+                        'required' => true,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,
@@ -263,6 +258,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         'inline' => 'table',
                         'allow_delete' => false,
                     ])
+                ->end()
+                ->with('Discount')
+                    ->add('discount', 'ckeditor')
                 ->end()
             ->end()
             ->tab('Reviews')
@@ -301,7 +299,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('subscription')
             ->add('subscriptions')
             ->add('discount')
-            ->add('discounts')
+            ->add('coupons')
             ->add('categories')
             ->add('areas')
             ->add('brands')

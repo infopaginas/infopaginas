@@ -93,18 +93,26 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $subscriptions;
 
     /**
-     * @var Discount[] - Business Discounts
+     * @var string
+     *
+     * @Gedmo\Translatable
+     * @ORM\Column(name="discount", type="text", length=1000, nullable=true)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     */
+    protected $discount;
+
+    /**
+     * @var Coupon[] - Business Discounts
      *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\Discount",
+     *     targetEntity="Domain\BusinessBundle\Entity\Coupon",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
-     * @ORM\OrderBy({"status" = "ASC"})
      */
-    protected $discounts;
+    protected $coupons;
 
     /**
      * @var Campaign[] - Business Campaigns
@@ -1751,36 +1759,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * @return Discount|null
-     */
-    public function getDiscount()
-    {
-        $entitiesCollection = $this->getDiscounts()->filter(
-            function (StatusInterface $object) {
-                return ($object->getStatus() == StatusInterface::STATUS_ACTIVE);
-            }
-        );
-
-        return $entitiesCollection->first() ?: null;
-    }
-
-    /**
-     * Add discount
-     *
-     * @param \Domain\BusinessBundle\Entity\Discount $discount
-     *
-     * @return BusinessProfile
-     */
-    public function addDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
-    {
-        $this->discounts[] = $discount;
-
-        $discount->setBusinessProfile($this);
-
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getYoutubeURL()
@@ -1796,26 +1774,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->youtubeURL = $youtubeURL;
         return $this;
-    }
-
-     /**
-     * Remove discount
-     *
-     * @param \Domain\BusinessBundle\Entity\Discount $discount
-     */
-    public function removeDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
-    {
-        $this->discounts->removeElement($discount);
-    }
-
-    /**
-     * Get discounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDiscounts()
-    {
-        return $this->discounts;
     }
 
     /**
@@ -2206,5 +2164,65 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function removePhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
     {
         $this->phones->removeElement($phone);
+    }
+
+    /**
+     * Set discount
+     *
+     * @param string $discount
+     *
+     * @return BusinessProfile
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Add coupon
+     *
+     * @param \Domain\BusinessBundle\Entity\Coupon $coupon
+     *
+     * @return BusinessProfile
+     */
+    public function addCoupon(\Domain\BusinessBundle\Entity\Coupon $coupon)
+    {
+        $this->coupons[] = $coupon;
+
+        $coupon->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove coupon
+     *
+     * @param \Domain\BusinessBundle\Entity\Coupon $coupon
+     */
+    public function removeCoupon(\Domain\BusinessBundle\Entity\Coupon $coupon)
+    {
+        $this->coupons->removeElement($coupon);
+    }
+
+    /**
+     * Get coupons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoupons()
+    {
+        return $this->coupons;
+    }
+
+    /**
+     * Get discount
+     *
+     * @return string
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
     }
 }
