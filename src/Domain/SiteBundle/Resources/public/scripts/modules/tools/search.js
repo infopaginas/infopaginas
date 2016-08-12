@@ -44,6 +44,8 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         $( window ).resize( function(){
             if($( window ).width() > this.options.mediaWidth ) {
                 $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
+            } else {
+                $( this.options.mediaSearchSection ).css( {"display": "none"} );
             }
         }.bind( this ));
 
