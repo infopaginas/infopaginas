@@ -29,7 +29,7 @@ use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Domain\SiteBundle\Validator\Constraints as AcmeAssert;
+use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 
 /**
  * BusinessProfile
@@ -136,7 +136,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=30, nullable=true)
-     * @AcmeAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded()
      * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $website;
@@ -146,7 +146,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
      * @Assert\Email()
-     * @AcmeAssert\ContainsEmailExpanded()
+     * @DomainAssert\ContainsEmailExpanded()
      * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $email;

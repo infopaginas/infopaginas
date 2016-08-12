@@ -8,6 +8,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class ConstraintUrlExpandedValidator extends ConstraintValidator
 {
+    const URL_REGEXP_PATTERN = '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$';
+    const TRANSLATION_DOMAIN = 'DomainSiteBundle';
+
     /**
      * @var TranslatorInterface
      */
@@ -27,9 +30,9 @@ class ConstraintUrlExpandedValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!preg_match('/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/', $value)) {
+        if ($value && !preg_match('/' . self::URL_REGEXP_PATTERN . '/', $value)) {
             $this->context
-                ->buildViolation($this->translator->trans('business_profile.website.invalid'))
+                ->buildViolation($this->translator->trans('business_profile.url.invalid', [], self::TRANSLATION_DOMAIN))
                 ->addViolation();
         }
     }

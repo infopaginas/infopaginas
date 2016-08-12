@@ -15,6 +15,7 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
+use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -29,7 +30,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
@@ -38,8 +38,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
  */
 class BusinessProfileFormType extends AbstractType
 {
-    const URL_REGEX_PATTERN = '/(?:https?:\/\/)?(?:[\w]+\.)([a-zA-Z\.]{2,6})([\/\w\.-]*)*\/?/';
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -269,7 +267,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://twitter.com/user',
                 ],
                 'constraints' => [
-                    new Regex(self::URL_REGEX_PATTERN),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Twitter',
                 'required' => false,
@@ -280,7 +278,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://www.facebook.com/user',
                 ],
                 'constraints' => [
-                    new Regex(self::URL_REGEX_PATTERN),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Facebook',
                 'required' => false,
@@ -291,7 +289,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://plus.google.com/user',
                 ],
                 'constraints' => [
-                    new Regex(self::URL_REGEX_PATTERN),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Google Plus',
                 'required' => false,
@@ -301,7 +299,7 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Regex(self::URL_REGEX_PATTERN),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Youtube',
                 'required' => false,
