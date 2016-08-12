@@ -24,14 +24,17 @@ class SearchController extends Controller
 
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
-        
-        $bannerFactory      = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
-        $banner             = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
+
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL_LEADERBOARD,
+            TypeInterface::CODE_PORTAL,
+        ));
 
         return $this->render('DomainSearchBundle:Search:index.html.twig', array(
             'search'        => $searchDTO,
             'results'       => $searchResultsDTO,
-            'banner'        => $banner,
+            'bannerFactory' => $bannerFactory,
         ));
     }
 
@@ -68,9 +71,16 @@ class SearchController extends Controller
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
         $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL
+        ));
+
+
         return $this->render('DomainSearchBundle:Search:map.html.twig', array(
             'results'    => $searchResultsDTO,
-            'markers'    => $locationMarkers
+            'markers'    => $locationMarkers,
+            'bannerFactory' => $bannerFactory,
         ));
     }
 
@@ -80,13 +90,15 @@ class SearchController extends Controller
 
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
-        $bannerFactory      = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
 
-        $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL
+        ));
 
         return $this->render('DomainSearchBundle:Search:compare.html.twig', array(
             'results'       => $searchResultsDTO,
-            'banner'        => $banner
+            'bannerFactory' => $bannerFactory,
         ));
     }
 }
