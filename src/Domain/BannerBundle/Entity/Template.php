@@ -43,6 +43,13 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     protected $name;
 
     /**
+     * @var string - Script template header code
+     *
+     * @ORM\Column(name="header", type="text")
+     */
+    protected $templateHeader;
+
+    /**
      * @var string - Script template body
      *
      * @ORM\Column(name="body", type="text")
@@ -125,6 +132,30 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set Header
+     *
+     * @param string $Header
+     *
+     * @return Template
+     */
+    public function setTemplateHeader($templateHeader)
+    {
+        $this->templateHeader = $templateHeader;
+
+        return $this;
+    }
+
+    /**
+     * Get Header
+     *
+     * @return string
+     */
+    public function getTemplateHeader()
+    {
+        return $this->templateHeader;
     }
 
     /**

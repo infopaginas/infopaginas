@@ -12,6 +12,8 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+use Domain\BannerBundle\Model\TypeInterface;
+
 /**
  * Class ProfileController
  * @package Domain\BusinessBundle\Controller
@@ -98,11 +100,18 @@ class ProfileController extends Controller
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
         $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile);
 
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL,
+        ));
+
+
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile' => $businessProfile,
             'discounts'       => $discounts,
             'photos'          => $photos,
             'advertisements'  => $advertisements,
+            'bannerFactory'   => $bannerFactory,
         ]);
     }
 

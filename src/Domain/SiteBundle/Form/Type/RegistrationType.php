@@ -50,7 +50,9 @@ class RegistrationType extends AbstractType
                     ],
                 ],
                 'invalid_message' => 'fos_user.password.mismatch',
-                'constraints' => new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
+                'constraints' => [
+                    new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
+                ],
             ])
             ->add('location', TextType::class, [
                 'attr' => [

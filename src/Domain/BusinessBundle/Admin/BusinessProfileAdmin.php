@@ -139,8 +139,16 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Description')
                     ->add('slogan')
                     ->add('product')
-                    ->add('description', 'ckeditor')
-                    ->add('workingHours', 'ckeditor')
+                    ->add('description', null, [
+                        'attr' => [
+                            'rows' => 10,
+                        ],
+                    ])
+                    ->add('workingHours', null, [
+                        'attr' => [
+                            'rows' => 10,
+                        ],
+                    ])
                 ->end()
                 ->with('Address')
                     ->add('country', 'sonata_type_model_list', [
