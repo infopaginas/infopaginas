@@ -1,6 +1,7 @@
 <?php
 namespace Oxa\Sonata\UserBundle\Admin;
 
+use Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -207,7 +208,7 @@ class UserAdmin extends OxaAdmin
             ->with('General')
                 ->add('email', 'email', [
                     'required' => true,
-                    'pattern' => '(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})',
+                    'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
                 ])
                 ->add('plainPassword', 'text', [
                     'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))

@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ContainsEmailExpandedValidator extends ConstraintValidator
 {
+    const EMAIL_REGEX_PATTERN = '(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})';
+
     protected $translator;
     protected $validator;
 
@@ -22,7 +24,7 @@ class ContainsEmailExpandedValidator extends ConstraintValidator
     {
         $isCustomValid = $this->validator->validateValue($value, new Email());
 
-        if (!count($isCustomValid) && !preg_match('/(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/', $value)) {
+        if (!count($isCustomValid) && !preg_match('/' . self::EMAIL_REGEX_PATTERN . '/', $value)) {
             $this->context
                 ->buildViolation($this->translator->trans('fos_user.email.invalid'))
                 ->addViolation();
