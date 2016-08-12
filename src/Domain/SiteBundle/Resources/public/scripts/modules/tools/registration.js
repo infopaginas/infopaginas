@@ -121,16 +121,30 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         });
     };
 
+    registration.prototype.submitRegistration = function ( event ) {
+        var serializedData = this.getSerializedFormData();
+        this.doRequest( this.urls.registration, serializedData );
+
+        event.preventDefault();
+    };
+
     //registration handling
     registration.prototype.handleRegistration = function() {
         var $registrationButton = $( this.html.buttons.registrationButtonId );
         var that = this;
 
-        $registrationButton.on('click', function( event ) {
-            var serializedData = that.getSerializedFormData();
-            that.doRequest( that.urls.registration, serializedData );
+        $( this.html.forms.registrationFormId ).keypress( function ( event ) {
+            if ( (event.which && event.which == 13) || (event.keyCode && event.keyCode == 13) ) {
+                that.submitRegistration( event );
 
-            event.preventDefault();
+                return false;
+            }
+
+            return true;
+        });
+
+        $registrationButton.on('click', function( event ) {
+            that.submitRegistration( event );
         });
     };
 
