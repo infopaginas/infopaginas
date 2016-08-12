@@ -26,7 +26,7 @@
                     <div class="collapse navbar-collapse" id="navbar-buttons">
                         <ul class="nav navbar-nav navbar-left buttons-block">
                             <li>
-                                <a href="{{ path('domain_business_profile_show', { id: businessProfile.getId() }) }}"
+                                <a href="{{ path('domain_business_profile_view', { slug: businessProfile.getSlug() }) }}"
                                    class="green-btn"
                                    target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
@@ -132,7 +132,7 @@
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainbusiness/scripts/common.js")}}'], function(common) {
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfile.js")}}'], function(businessProfile) {
                 var profile = new businessProfile();
             })

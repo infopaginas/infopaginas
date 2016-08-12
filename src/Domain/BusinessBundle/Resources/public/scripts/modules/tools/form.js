@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'tools/formErrorsHandler', 'tools/images', 'tools/videos'],
+    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'business/tools/formErrorsHandler', 'business/tools/images', 'business/tools/videos'],
     function( $, bootstrap, alertify, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
 
         'use strict';
@@ -17,6 +17,7 @@ define(
 
             this.userProfilePageURL = Routing.generate( 'domain_site_user_profile' );
 
+            new select();
             new ImagesUploader();
             new VideosUploader();
         };
