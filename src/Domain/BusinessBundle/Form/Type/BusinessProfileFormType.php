@@ -29,7 +29,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
@@ -38,6 +38,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
  */
 class BusinessProfileFormType extends AbstractType
 {
+    const URL_REGEX_PATTERN = '/(?:https?:\/\/)?(?:[\w]+\.)([a-zA-Z\.]{2,6})([\/\w\.-]*)*\/?/';
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -267,7 +269,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://twitter.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new Regex(self::URL_REGEX_PATTERN),
                 ],
                 'label' => 'Twitter',
                 'required' => false,
@@ -278,7 +280,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://www.facebook.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new Regex(self::URL_REGEX_PATTERN),
                 ],
                 'label' => 'Facebook',
                 'required' => false,
@@ -289,7 +291,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://plus.google.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new Regex(self::URL_REGEX_PATTERN),
                 ],
                 'label' => 'Google Plus',
                 'required' => false,
@@ -299,7 +301,7 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new Regex(self::URL_REGEX_PATTERN),
                 ],
                 'label' => 'Youtube',
                 'required' => false,
