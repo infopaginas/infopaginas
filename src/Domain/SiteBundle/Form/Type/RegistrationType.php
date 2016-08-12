@@ -21,7 +21,9 @@ class RegistrationType extends AbstractType
                     'class'       => 'form-control',
                     'placeholder' => 'Email',
                 ],
-                'constraints' => new ContainsEmailExpanded(),
+                'constraints' => [
+                    new ContainsEmailExpanded(),
+                ],
             ])
             ->add('firstname', TextType::class, [
                 'attr' => [
