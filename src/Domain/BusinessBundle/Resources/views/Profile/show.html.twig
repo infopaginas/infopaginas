@@ -1,5 +1,11 @@
 {% extends "DomainSiteBundle:Layout:base.html.twig" %}
 
+{% block doubleClickHeader %}
+    {% if bannerFactory is not null %}
+        {% include 'DomainBannerBundle:Default:doubleClickHeaderTemplate.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
+    {% endif %}
+{% endblock %}
+
 {% block breakcrumbs %}
     <section id="breadcrumbs" class="breadcrumbs">
         <div class="container">
@@ -331,7 +337,11 @@
                     </div>
                 </div>
                 <aside class="map col-md-3">
-                    <img src="http://placehold.it/410x350">
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL'))  }
+                        %}
+                    {% endif %}
                 </aside>
             </div>
         </div>

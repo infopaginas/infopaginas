@@ -25,7 +25,6 @@ class HomeController extends Controller
         $locale         = $request->getLocale();
 
         $menuManager    = $this->get('domain_menu.manager.menu');
-        $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
         $articleManager = $this->get('domain_article.manager.article');
         //temporary call for article manger instead of video manager
         $videoManager   = $this->get('domain_article.manager.article');
@@ -34,8 +33,13 @@ class HomeController extends Controller
         $videos         = $videoManager->fetchHomepageArticles();
 
         $menuItems      = $menuManager->fetchAll();
-        $banner         = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
-        $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
+
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL_LEADERBOARD,
+            TypeInterface::CODE_PORTAL_LEFT,
+            TypeInterface::CODE_PORTAL_RIGHT,
+        ));
 
         $loginForm                = $this->createForm(new LoginType());
         $registrationForm         = $this->createForm(new RegistrationType());
@@ -46,8 +50,7 @@ class HomeController extends Controller
             'DomainSiteBundle:Home:home.html.twig',
             array(
                 'menuItems'                => $menuItems,
-                'banner'                   => $banner,
-                'bannerBottom'             => $bannerBottom,
+                'bannerFactory'            => $bannerFactory,
                 'articles'                 => $articles,
                 'videos'                   => $videos,
                 'locale'                   => $locale,

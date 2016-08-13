@@ -78,30 +78,30 @@
     </div>
     <div class="social fields-item">
         <ul class="social-icons">
-            {% if businessProfile.getFacebookURL() %}
+            {% if item.getFacebookURL() %}
                 <li>
-                    <a class="blue-c" target="_blank" href="{{ businessProfile.getFacebookURL() }}">
+                    <a class="blue-c" target="_blank" href="{{ item.getFacebookURL() }}">
                         <i class="fa fa-facebook" aria-hidden="true"></i>
                     </a>
                 </li>
             {% endif %}
-            {% if businessProfile.getTwitterURL() %}
+            {% if item.getTwitterURL() %}
                 <li>
-                    <a class="blue-c" target="_blank" href="{{ businessProfile.getTwitterURL() }}">
+                    <a class="blue-c" target="_blank" href="{{ item.getTwitterURL() }}">
                         <i class="fa fa-twitter" aria-hidden="true"></i>
                     </a>
                 </li>
             {% endif %}
-            {% if businessProfile.getGoogleURL() %}
+            {% if item.getGoogleURL() %}
                 <li>
-                    <a class="blue-c" target="_blank" href="{{ businessProfile.getGoogleURL() }}">
+                    <a class="blue-c" target="_blank" href="{{ item.getGoogleURL() }}">
                         <i class="fa fa-google-plus" aria-hidden="true"></i>
                     </a>
                 </li>
             {% endif %}
-            {% if businessProfile.getYoutubeURL() %}
+            {% if item.getYoutubeURL() %}
                 <li>
-                    <a class="blue-c" target="_blank" href="{{ businessProfile.getYoutubeURL() }}">
+                    <a class="blue-c" target="_blank" href="{{ item.getYoutubeURL() }}">
                         <i class="fa fa-youtube" aria-hidden="true"></i>
                     </a>
                 </li>

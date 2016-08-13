@@ -15,6 +15,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use Domain\BannerBundle\Model\TypeInterface;
+
 /**
  * Class ProfileController
  * @package Domain\BusinessBundle\Controller
@@ -102,6 +104,11 @@ class ProfileController extends Controller
         $lastReview = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
 
         $reviewForm = $this->getBusinessReviewForm();
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL,
+        ));
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile' => $businessProfile,
@@ -110,6 +117,7 @@ class ProfileController extends Controller
             'advertisements'  => $advertisements,
             'lastReview'      => $lastReview,
             'reviewForm'      => $reviewForm->createView(),
+            'bannerFactory'   => $bannerFactory,
         ]);
     }
 

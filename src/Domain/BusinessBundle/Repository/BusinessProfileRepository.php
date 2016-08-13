@@ -233,13 +233,16 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->join('bp.categories', 'c')
             ->join('bp.areas', 'a')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->where('TSQUERY( c.searchFts, :searchQuery) = true')
-            ->orWhere('TSQUERY( bp.searchFts, :searchQuery) = true')
-            ->andWhere('
+            ->where('(
+                TSQUERY( c.searchFts, :searchQuery) = true
+                OR
+                TSQUERY( bp.searchFts, :searchQuery) = true
+            )')
+            ->andWhere('(
                 TSQUERY( a.searchFts, :searchLocation) = true
                 OR
                 TSQUERY( bp.searchCityFts, :searchLocation) = true
-            ')
+            )')
             ->setParameter('searchQuery', $searchQuery)
             ->setParameter('searchLocation', $location)
         ;
@@ -254,13 +257,16 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->select('count(bp.id) as rows')
             ->join('bp.categories', 'c')
             ->join('bp.areas', 'a')
-            ->where('TSQUERY( c.searchFts, :searchQuery) = true')
-            ->orWhere('TSQUERY( bp.searchFts, :searchQuery) = true')
-            ->andWhere('
+            ->where('(
+                TSQUERY( c.searchFts, :searchQuery) = true
+                OR
+                TSQUERY( bp.searchFts, :searchQuery) = true
+            )')
+            ->andWhere('(
                 TSQUERY( a.searchFts, :searchLocation) = true
                 OR
                 TSQUERY( bp.searchCityFts, :searchLocation) = true
-            ')
+            )')
             ->setParameter('searchQuery', $searchQuery)
             ->setParameter('searchLocation', $location)
         ;
