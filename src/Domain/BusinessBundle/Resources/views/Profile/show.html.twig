@@ -239,51 +239,43 @@
                             </div>
                         {% endif %}
 
-                        {#<div class="card-item">
-                            <div class="col-xs-3 fields-item">
-                                <span>Reviews:</span>
-                            </div>
-                            <div class="col-xs-9 fields-item">
-                                <div class="reviews block-title-reviews">
-                                    <div class="star-rating">
-                                        <span class="fa fa-star-o" data-rating="1"></span>
-                                        <span class="fa fa-star-o" data-rating="2"></span>
-                                        <span class="fa fa-star-o" data-rating="3"></span>
-                                        <span class="fa fa-star-o" data-rating="4"></span>
-                                        <span class="fa fa-star-o" data-rating="5"></span>
-                                        <input type="hidden" name="whatever" class="rating-value" value="3">
+                        {% if lastReview is not null %}
+                            <div class="card-item">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Reviews{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <div class="reviews block-title-reviews">
+                                        {% include ':blocks/business:review_rating_stars.html.twig'
+                                            with { 'rating': businessProfile.getBusinessReviewsAvgMark() } %}
+                                        <span class="blue-c">
+                                            {{ businessProfile.getBusinessReviewsCount() }} {% trans %}Reviews{% endtrans %}
+                                        </span>
                                     </div>
-                                    <span class="blue-c">16 Reviews</span>
+                                    <a href="#" class="green-btn btn write-btn" data-toggle="modal" data-target="#writeReviewModal">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        <span>{% trans %}Write a Review{% endtrans %}</span>
+                                    </a>
                                 </div>
-                                <a href="" class="green-btn btn write-btn"><i class="fa fa-pencil"
-                                                                              aria-hidden="true"></i><span>Write a Review</span></a>
-                            </div>
-                            <div class="col-xs-3 fields-item review-col">
-                                <div class="account-photo"><i class="fa fa-user" aria-hidden="true"></i><img src="">
-                                </div>
-                                <span class="blue-c bold">Elyse M</span>
-
-                                <div class="reviews">
-                                    <div class="star-rating">
-                                        <span class="fa fa-star-o" data-rating="1"></span>
-                                        <span class="fa fa-star-o" data-rating="2"></span>
-                                        <span class="fa fa-star-o" data-rating="3"></span>
-                                        <span class="fa fa-star-o" data-rating="4"></span>
-                                        <span class="fa fa-star-o" data-rating="5"></span>
-                                        <input type="hidden" name="whatever" class="rating-value" value="3">
+                                <div class="col-xs-3 fields-item review-col">
+                                    <div class="account-photo">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
                                     </div>
+                                    <span class="blue-c bold">{{ lastReview.getUsername() }}</span>
+                                    <div class="reviews">
+                                        {% include ':blocks/business:review_rating_stars.html.twig'
+                                            with { 'rating': lastReview.getRating() } %}
+                                    </div>
+                                    <span class="review-date">{{ lastReview.getCreatedAt() | date('d M Y') }}</span>
                                 </div>
-                                <span class="review-date">13 APR 2016</span>
+                                <div class="col-xs-9 fields-item review-col">
+                                    <p>{{ lastReview.getContent() }}</p>
+                                </div>
+                                <a href="#" class="more-reviews blue-c">
+                                    {% trans %}View more reviews{% endtrans %}
+                                </a>
                             </div>
-                            <div class="col-xs-9 fields-item review-col">
-                                <p>The BEST salon in the Western suburbs! I've been coming here for 10 years and it just
-                                    keeps getting better. The staff are super fun, friendly and so talented! If your
-                                    just looking for your usual cut and colour or something a bit more creative make
-                                    sure you get to Aqua Lounge! Also if you have a special event like a engagement or
-                                    wedding coming up make sure you come see the girls.....they've got you covered!!</p>
-                            </div>
-                            <a href="" class="more-reviews blue-c">View more reviews</a>
-                        </div>#}
+                        {% endif %}
 
                         {% if advertisements | length > 0 %}
                             <div class="card-item advertisement-block" id="ad">
@@ -362,6 +354,9 @@
             popup.print();
         }
     </script>
+    <div class="card-item">
+        {% include 'DomainBusinessBundle:Profile/modals:write_review.html.twig' with { 'reviewForm': reviewForm } %}
+    </div>
 {% endblock %}
 
 {% block scripts %}

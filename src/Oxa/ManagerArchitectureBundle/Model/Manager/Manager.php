@@ -55,4 +55,9 @@ abstract class Manager implements ManagerInterface
     {
         return explode('\\', get_called_class());
     }
+
+    protected function getEntityManager()
+    {
+        return $this->em;
+    }
 }

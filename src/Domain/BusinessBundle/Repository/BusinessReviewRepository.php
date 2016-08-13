@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use FOS\UserBundle\Model\UserInterface;
 
 /**
@@ -22,8 +23,21 @@ class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
     {
         $reviews = $this->findBy([
             'user' => $user,
+            'isActive' => true,
         ]);
 
         return $reviews;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return null|object
+     */
+    public function findBusinessProfileLastReview(BusinessProfile $businessProfile)
+    {
+        $criteria = ['businessProfile' => $businessProfile];
+        $order    = ['id' => 'DESC'];
+
+        return $this->findOneBy($criteria, $order);
     }
 }

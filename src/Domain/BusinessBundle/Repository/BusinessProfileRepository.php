@@ -429,7 +429,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return array_keys($result);
     }
 
-
     /**
      * Adding distance value between points
      *

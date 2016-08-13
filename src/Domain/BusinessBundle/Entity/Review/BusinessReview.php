@@ -66,8 +66,8 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     /**
      * @var string - Profile Rating – 5 mandatory selectable stars
      *
-     * @Assert\Range(min = 1, max = 5)
      * @ORM\Column(name="rating", type="integer", nullable=false)
+     * @Assert\Range(min = 1, max = 5)
      * @Assert\NotBlank()
      */
     protected $rating;
@@ -75,6 +75,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
     /**
      * @var string - Mandatory review text area
      * @ORM\Column(name="content", type="text", length=2000)
+     * @Assert\NotBlank()
      */
     protected $content;
 
@@ -103,6 +104,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
      */
     public function __construct()
     {
+        $this->isActive = false;
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
