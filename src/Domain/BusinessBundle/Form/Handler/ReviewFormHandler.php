@@ -76,7 +76,6 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
 
     private function onSuccess(BusinessReview $review)
     {
-        $review->setUser($this->getCurrentUser());
 
         $businessProfileId = $this->getRequest()->request->get('businessProfileId', false);
 
@@ -90,6 +89,7 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
             throw new \Exception(self::BUSINESS_NOT_FOUND_ERROR_MESSAGE);
         }
 
+        $review->setUser($this->getCurrentUser());
         $review->setBusinessProfile($businessProfile);
 
         $username = $this->getBusinessReviewManager()->computeReviewerUsername($review);

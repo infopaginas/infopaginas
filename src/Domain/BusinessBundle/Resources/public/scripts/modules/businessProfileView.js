@@ -103,6 +103,7 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                     if( response.success ) {
                         $( self.html.modals.createReviewModalId ).modal('hide');
                         alertify.success( response.message );
+                        $( self.html.forms.createReviewFormId )[0].reset();
                     } else {
                         alertify.error( response.message );
                         self.enableFieldsHighlight( response.errors )
@@ -114,7 +115,6 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                 complete: function() {
                     self.disableFieldsHighlight();
                     self.spinner.hide();
-                    $( self.html.forms.createReviewFormId ).reset();
                 }
             } );
 

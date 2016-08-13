@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Form\Type\BusinessReviewType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Manager\BusinessReviewManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -104,6 +105,11 @@ class ProfileController extends Controller
         $lastReview = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
 
         $reviewForm = $this->getBusinessReviewForm();
+
+        $reviewsCount = $this->getBusinessReviewManager()->getReviewsCountForBusinessProfile($businessProfile);
+        $reviewsAvgRating = $this->getBusinessReviewManager()
+            ->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
         $bannerFactory->prepearBanners(array(
@@ -111,13 +117,15 @@ class ProfileController extends Controller
         ));
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
-            'businessProfile' => $businessProfile,
-            'discounts'       => $discounts,
-            'photos'          => $photos,
-            'advertisements'  => $advertisements,
-            'lastReview'      => $lastReview,
-            'reviewForm'      => $reviewForm->createView(),
-            'bannerFactory'   => $bannerFactory,
+            'businessProfile'  => $businessProfile,
+            'discounts'        => $discounts,
+            'photos'           => $photos,
+            'advertisements'   => $advertisements,
+            'lastReview'       => $lastReview,
+            'reviewForm'       => $reviewForm->createView(),
+            'reviewsCount'     => $reviewsCount,
+            'reviewsAvgRating' => $reviewsAvgRating,
+            'bannerFactory'    => $bannerFactory,
         ]);
     }
 
@@ -127,6 +135,11 @@ class ProfileController extends Controller
     private function getBusinessReviewForm()
     {
         return $this->createForm(new BusinessReviewType());
+    }
+
+    private function getBusinessReviewManager() : BusinessReviewManager
+    {
+        return $this->get('domain_business.manager.review');
     }
 
     /**
