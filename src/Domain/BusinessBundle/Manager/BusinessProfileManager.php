@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -410,6 +411,12 @@ class BusinessProfileManager extends Manager
         return [];
     }
 
+    public function getLastReviewForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $lastReview = $this->getBusinessProfileReviewsRepository()->findBusinessProfileLastReview($businessProfile);
+        return $lastReview;
+    }
+
     /**
      * @param BusinessProfile $businessProfile
      */
@@ -417,6 +424,11 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    public function countSearchResults(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->countSearchResults($searchParams);
     }
 
     /**
@@ -464,15 +476,18 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @return EntityManager
+     * @return BusinessReviewRepository
      */
-    private function getEntityManager() : EntityManager
+    private function getBusinessProfileReviewsRepository()
     {
-        return $this->em;
+        return $this->getEntityManager()->getRepository(BusinessReviewRepository::SLUG);
     }
 
-    public function countSearchResults(SearchDTO $searchParams)
+    /**
+     * @return EntityManager
+     */
+    protected function getEntityManager() : EntityManager
     {
-        return $this->getRepository()->countSearchResults($searchParams);
+        return $this->em;
     }
 }

@@ -20,6 +20,16 @@
         novalidate="novalidate">
 
         {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_REVIEW_APPROVE')) %}
+            <hr>
+            <div class="form-group" id="sonata-ba-field-container-s57af15dda91b9_businessProfile__businessReviews">
+                <label class=" control-label">
+                    {% trans %}Review text{% endtrans %}:
+                </label>
+                <div class="sonata-ba-field sonata-ba-field-inline-table">
+                    {{ object.review.getContent() }}
+                </div>
+            </div>
+            <hr>
             {{ form_row(form.businessProfile__businessReviews) }}
         {% endif %}
 

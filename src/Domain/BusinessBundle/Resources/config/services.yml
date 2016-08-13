@@ -17,7 +17,10 @@ services:
 
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
-        arguments: ['@doctrine.orm.entity_manager', '@domain_business.manager.business_profile']
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@domain_business.manager.business_profile'
+            - '@domain_business.manager.review'
 
     domain_business.manager.business_gallery:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
@@ -37,6 +40,10 @@ services:
 
     domain_business.manager.locality:
         class: Domain\BusinessBundle\Manager\LocalityManager
+        arguments: ['@doctrine.orm.entity_manager']
+
+    domain_business.manager.review:
+        class: Domain\BusinessBundle\Manager\BusinessReviewManager
         arguments: ['@doctrine.orm.entity_manager']
 
     #twig extensions
@@ -77,13 +84,19 @@ services:
         class: Domain\BusinessBundle\Form\Type\BusinessProfileFormType
         arguments: [null]
         tags:
-        - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
+            - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
 
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
        arguments: ["@doctrine.orm.entity_manager"]
        tags:
             - { name: form.type }
+
+    domain_business.form.type.review:
+        class: Domain\BusinessBundle\Form\Type\BusinessReviewType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_review_type }
 
     #forms section
     domain_business.form.business_profile:
@@ -93,6 +106,14 @@ services:
         arguments:
             - 'domain_business_bundle_business_profile_form_type'
             - 'domain_business_bundle_business_profile_form_type'
+
+    domain_business.form.review:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_business_review_type'
+            - 'domain_business_bundle_business_review_type'
 
     #form handlers section
     domain_business.form.handler.business_profile:
@@ -104,6 +125,17 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@validator'
+
+    domain_business.form.handler.review:
+        class: Domain\BusinessBundle\Form\Handler\ReviewFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.review'
+            - '@request'
+            - '@domain_business.manager.review'
+            - '@domain_business.manager.business_profile'
+            - '@domain_business.manager.tasks'
+            - '@security.token_storage'
 
     #event listeners section
     domain_business.listener.datetime_period_status_subscriber:
