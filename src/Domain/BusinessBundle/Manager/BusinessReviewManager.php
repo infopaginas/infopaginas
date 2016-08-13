@@ -2,7 +2,9 @@
 
 namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 
 /**
  * Created by PhpStorm.
@@ -35,6 +37,30 @@ class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager
         return $username;
     }
 
+    public function getReviewsCountForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        return $this->getRepository()->getReviewsCountForBusinessProfile($businessProfile);
+    }
+
+    public function calculateReviewsAvgRatingForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $rating = 0;
+
+        $reviewsAmount = $this->getReviewsCountForBusinessProfile($businessProfile);
+
+        $reviews = $this->getRepository()->findReviewsByBusinessProfile($businessProfile);
+
+        if ($reviewsAmount) {
+            foreach ($reviews as $review) {
+                $rating += (int) $review->getRating();
+            }
+
+            return $rating / $reviewsAmount;
+        }
+
+        return 0;
+    }
+
     /**
      * @param BusinessReview $review
      */
@@ -50,6 +76,11 @@ class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager
     public function save(BusinessReview $review)
     {
         $this->commit($review);
+    }
+
+    public function getRepository()
+    {
+        return $this->em->getRepository(BusinessReviewRepository::SLUG);
     }
 
     /**

@@ -38,7 +38,7 @@ class BusinessReviewType extends AbstractType
             ])
             ->add('content', TextareaType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-control review',
                     'placeholder' => 'Review text',
                 ]
             ])

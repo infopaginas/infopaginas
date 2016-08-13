@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use FOS\UserBundle\Model\UserInterface;
 
 /**
@@ -31,11 +32,42 @@ class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param BusinessProfile $businessProfile
+     * @return int
+     */
+    public function getReviewsCountForBusinessProfile(BusinessProfile $businessProfile) : int
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select($qb->expr()->count('review.id'))
+            ->from(self::SLUG, 'review')
+            ->where('review.businessProfile = :businessProfile')
+            ->andWhere('review.isActive = true')
+            ->setParameter('businessProfile', $businessProfile);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function findReviewsByBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $reviews = $this->findBy([
+            'businessProfile' => $businessProfile,
+            'isActive' => true,
+        ]);
+
+        return $reviews;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
      * @return null|object
      */
     public function findBusinessProfileLastReview(BusinessProfile $businessProfile)
     {
-        $criteria = ['businessProfile' => $businessProfile];
+        $criteria = ['businessProfile' => $businessProfile, 'isActive' => true];
         $order    = ['id' => 'DESC'];
 
         return $this->findOneBy($criteria, $order);

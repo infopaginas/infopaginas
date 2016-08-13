@@ -31,21 +31,6 @@ class ReviewsController extends Controller
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
-    public function editAction(Request $request, int $id)
-    {
-
-    }
-
-    public function viewAction(Request $request, int $id)
-    {
-
-    }
-
-    public function deleteAction(Request $request, int $id)
-    {
-
-    }
-
     /**
      * @return ReviewFormHandler
      */
