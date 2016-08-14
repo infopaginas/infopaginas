@@ -35,6 +35,7 @@ class MediaRemoveListener extends MediaEventSubscriber
     /**
      * @param EventArgs $args
      * @return bool
+     * @param \Doctrine\Common\EventArgs $args
      */
     public function postUpdate(EventArgs $args)
     {

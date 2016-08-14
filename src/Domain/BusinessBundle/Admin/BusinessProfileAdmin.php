@@ -170,6 +170,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('crossStreet')
                     ->add('streetNumber')
                     ->add('customAddress')
+                    ->add('hideAddress')
                 ->end()
                 ->with('Map')
                     ->add('useMapAddress', null, [
@@ -320,6 +321,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('workingHours', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig'
             ])
+            ->add('hideAddress')
             ->add('isSetDescription')
             ->add('isSetMap')
             ->add('isSetAd')
