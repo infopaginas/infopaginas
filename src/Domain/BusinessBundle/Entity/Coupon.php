@@ -45,14 +45,13 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     protected $title;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\Discount",
-     *     mappedBy="coupon",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     inversedBy="coupons",
+     *     cascade={"persist"}
      *     )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false)
      */
-    protected $discounts;
+    protected $businessProfile;
 
     /**
      * @var ArrayCollection
@@ -71,7 +70,8 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
      *     inversedBy="coupons",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
+     * @Assert\NotBlank()
      */
     protected $image;
 
@@ -110,7 +110,6 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
      */
     public function __construct()
     {
-        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -136,40 +135,6 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     public function getTitle()
     {
         return $this->title;
-    }
-
-    /**
-     * Add discount
-     *
-     * @param \Domain\BusinessBundle\Entity\Discount $discount
-     *
-     * @return Coupon
-     */
-    public function addDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
-    {
-        $this->discounts[] = $discount;
-
-        return $this;
-    }
-
-    /**
-     * Remove discount
-     *
-     * @param \Domain\BusinessBundle\Entity\Discount $discount
-     */
-    public function removeDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
-    {
-        $this->discounts->removeElement($discount);
-    }
-
-    /**
-     * Get discounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDiscounts()
-    {
-        return $this->discounts;
     }
 
     /**
@@ -204,5 +169,29 @@ class Coupon implements DefaultEntityInterface, CopyableEntityInterface, Transla
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Set businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Coupon
+     */
+    public function setBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfile = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Get businessProfile
+     *
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function getBusinessProfile()
+    {
+        return $this->businessProfile;
     }
 }
