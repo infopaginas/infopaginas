@@ -3,7 +3,6 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
@@ -15,6 +14,7 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
+use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -31,7 +31,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
@@ -272,7 +271,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://twitter.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Twitter',
                 'required' => false,
@@ -283,7 +282,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://www.facebook.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Facebook',
                 'required' => false,
@@ -294,7 +293,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://plus.google.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Google Plus',
                 'required' => false,
@@ -304,7 +303,7 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Youtube',
                 'required' => false,

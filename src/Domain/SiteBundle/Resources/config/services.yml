@@ -130,3 +130,10 @@ services:
             - @validator
         tags:
             - { name: validator.constraint_validator }
+
+    domain_site.constraint_url:
+        class: Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpandedValidator
+        arguments:
+            - @translator
+        tags:
+            - { name: validator.constraint_validator }
