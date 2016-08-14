@@ -41,7 +41,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     /**
      * @var string - Area name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -104,17 +104,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New area';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     /**

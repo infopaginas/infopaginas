@@ -191,7 +191,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
 
     public function __toString()
     {
-        return $this->title ?: '';
+        return $this->getTitle() ?: '';
     }
 
     /**

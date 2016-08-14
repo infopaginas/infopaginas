@@ -52,7 +52,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var string - Description of Image
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      */
     protected $description;
@@ -122,7 +122,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 
     public function __toString()
     {
-        return ($this->getId()) ? strval($this->getId()) : 'New BusinessMedia';
+        return $this->getId() ? sprintf('%s: %s', $this->getId(), $this->getBusinessProfile()->__toString()) : '';
     }
 
     /**

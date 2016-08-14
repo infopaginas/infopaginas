@@ -43,7 +43,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     /**
      * @var string - Payment method name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -89,17 +89,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New payment method';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     public function getMarkCopyPropertyName()

@@ -96,7 +96,7 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
                 $this->getEndDate()->format('d/M/Y, H:m')
             );
         } else {
-            $result = 'New Subscription';
+            $result = '';
         }
 
         return $result;

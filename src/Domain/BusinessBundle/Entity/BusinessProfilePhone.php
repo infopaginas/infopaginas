@@ -42,7 +42,7 @@ class BusinessProfilePhone
 
     public function __toString()
     {
-        return ($this->getId()) ? $this->getPhone() : 'New phone';
+        return $this->getPhone() ?: '';
     }
 
     /**

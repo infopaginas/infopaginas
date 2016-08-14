@@ -57,7 +57,7 @@ class Menu extends MenuModel implements DefaultEntityInterface
      */
     public function __toString()
     {
-        return ($this->getCategory()) ? $this->getCategory()->getName() : 'New menu';
+        return $this->getCategory() ? $this->getCategory()->__toString() : '';
     }
 
     /**
