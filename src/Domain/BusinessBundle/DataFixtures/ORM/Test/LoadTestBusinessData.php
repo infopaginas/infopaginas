@@ -318,7 +318,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
     {
         $object = new BusinessProfilePhone();
         $object->setPhone($value);
-        
+
         $this->manager->persist($object);
 
         return $object;
