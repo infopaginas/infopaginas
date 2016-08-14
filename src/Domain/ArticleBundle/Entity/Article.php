@@ -49,6 +49,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var Media - Media
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="articles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)

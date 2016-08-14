@@ -76,9 +76,13 @@ trait DatetimePeriodTrait
      */
     public function isExpired()
     {
-        $datetime = new \DateTime('now');
-        $diff = $datetime->diff($this->getEndDate());
+        if ($this->getEndDate() instanceof \DateTime) {
+            $datetime = new \DateTime('now');
+            $diff = $datetime->diff($this->getEndDate());
 
-        return boolval($diff->invert);
+            return boolval($diff->invert);
+        }
+
+        return true;
     }
 }

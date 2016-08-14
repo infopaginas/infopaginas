@@ -22,6 +22,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BusinessGallery
@@ -36,6 +37,8 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+
+    const MAX_IMAGES_PER_BUSINESS = 10;
 
     /**
      * @var integer
@@ -80,9 +83,12 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var \Oxa\Sonata\MediaBundle\Entity\Media
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="businessGallery",
      *     cascade={"persist"}
      * )
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=false)
+     * @Assert\valid()
+     * @Assert\NotBlank()
      */
     protected $media;
 

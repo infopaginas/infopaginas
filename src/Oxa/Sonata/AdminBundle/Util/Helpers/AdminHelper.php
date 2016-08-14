@@ -38,6 +38,8 @@ class AdminHelper
     const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
     const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
 
+    const MAX_IMAGE_FILESIZE = '10M';
+
     /**
      * @return array
      */
@@ -169,5 +171,20 @@ class AdminHelper
                 ]
             ]
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getFormImageFileConstrain()
+    {
+        return [
+            'maxSize' => self::MAX_IMAGE_FILESIZE,
+            'mimeTypes' => [
+                "image/png",
+                "image/jpeg",
+                "image/jpg",
+                "image/gif",
+        ]];
     }
 }

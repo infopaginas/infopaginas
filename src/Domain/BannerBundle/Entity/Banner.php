@@ -47,6 +47,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     /**
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="banners",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=false)

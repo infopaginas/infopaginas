@@ -11,6 +11,10 @@
 
 namespace Oxa\Sonata\MediaBundle\Entity;
 
+use Domain\BannerBundle\Entity\Banner;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Coupon;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -47,6 +51,51 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      * @Assert\Valid()
      */
     protected $url;
+
+    /**
+     * @var BusinessGallery[] - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
+     *     mappedBy="media",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $businessGallery;
+
+    /**
+     * @var BusinessProfile[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     mappedBy="logo",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $businessProfiles;
+
+    /**
+     * @var Coupon[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Coupon",
+     *     mappedBy="image",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $coupons;
+
+    /**
+     * @var Banner[]
+     * @ORM\OneToMany(targetEntity="Domain\BannerBundle\Entity\Banner",
+     *     mappedBy="image",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $banners;
+
+    /**
+     * @var Banner[]
+     * @ORM\OneToMany(targetEntity="Domain\ArticleBundle\Entity\Article",
+     *     mappedBy="image",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $articles;
 
     /**
      * Get id
@@ -171,5 +220,198 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
                 $this->setBinaryContent($fullFilePath);
             }
         }
+    }
+
+    /**
+     * Add businessGallery
+     *
+     * @param BusinessGallery $businessGallery
+     * @return $this
+     */
+    public function addBusinessGallery(\Domain\BusinessBundle\Entity\Media\BusinessGallery $businessGallery)
+    {
+        $this->businessGallery[] = $businessGallery;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessGallery
+     *
+     * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $businessGallery
+     */
+    public function removeBusinessGallery(\Domain\BusinessBundle\Entity\Media\BusinessGallery $businessGallery)
+    {
+        $this->businessGallery->removeElement($businessGallery);
+    }
+
+    /**
+     * Get businessGallery
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessGallery()
+    {
+        return $this->businessGallery;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Media
+     */
+    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles->removeElement($businessProfile);
+    }
+
+    /**
+     * Get businessProfiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
+    }
+
+    /**
+     * Add coupon
+     *
+     * @param \Domain\BusinessBundle\Entity\Coupon $coupon
+     *
+     * @return Media
+     */
+    public function addCoupon(\Domain\BusinessBundle\Entity\Coupon $coupon)
+    {
+        $this->coupons[] = $coupon;
+
+        return $this;
+    }
+
+    /**
+     * Remove coupon
+     *
+     * @param \Domain\BusinessBundle\Entity\Coupon $coupon
+     */
+    public function removeCoupon(\Domain\BusinessBundle\Entity\Coupon $coupon)
+    {
+        $this->coupons->removeElement($coupon);
+    }
+
+    /**
+     * Get coupons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoupons()
+    {
+        return $this->coupons;
+    }
+
+    /**
+     * Add banner
+     *
+     * @param \Domain\BannerBundle\Entity\Banner $banner
+     *
+     * @return Media
+     */
+    public function addBanner(\Domain\BannerBundle\Entity\Banner $banner)
+    {
+        $this->banners[] = $banner;
+
+        return $this;
+    }
+
+    /**
+     * Remove banner
+     *
+     * @param \Domain\BannerBundle\Entity\Banner $banner
+     */
+    public function removeBanner(\Domain\BannerBundle\Entity\Banner $banner)
+    {
+        $this->banners->removeElement($banner);
+    }
+
+    /**
+     * Get banners
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBanners()
+    {
+        return $this->banners;
+    }
+
+    /**
+     * Add article
+     *
+     * @param \Domain\ArticleBundle\Entity\Article $article
+     *
+     * @return Media
+     */
+    public function addArticle(\Domain\ArticleBundle\Entity\Article $article)
+    {
+        $this->articles[] = $article;
+
+        return $this;
+    }
+
+    /**
+     * Remove article
+     *
+     * @param \Domain\ArticleBundle\Entity\Article $article
+     */
+    public function removeArticle(\Domain\ArticleBundle\Entity\Article $article)
+    {
+        $this->articles->removeElement($article);
+    }
+
+    /**
+     * Get articles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArticles()
+    {
+        return $this->articles;
+    }
+
+    /**
+     * Add galleryHasMedia
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia
+     *
+     * @return Media
+     */
+    public function addGalleryHasMedia(\Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia)
+    {
+        $this->galleryHasMedias[] = $galleryHasMedia;
+
+        return $this;
+    }
+
+    /**
+     * Remove galleryHasMedia
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia
+     */
+    public function removeGalleryHasMedia(\Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia)
+    {
+        $this->galleryHasMedias->removeElement($galleryHasMedia);
     }
 }

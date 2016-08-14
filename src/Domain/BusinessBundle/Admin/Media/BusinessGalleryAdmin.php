@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin\Media;
 
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -9,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Validator\ErrorElement;
 
 class BusinessGalleryAdmin extends OxaAdmin
 {
@@ -17,20 +19,12 @@ class BusinessGalleryAdmin extends OxaAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $boolChoiceOptions = [
-            'choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
-            ],
-            'translation_domain' => 'AdminDomainBusinessBundle'
-        ];
-
         $datagridMapper
             ->add('id')
             ->add('media.name')
             ->add('businessProfile')
-            ->add('isPrimary', null, [], null, $boolChoiceOptions)
-            ->add('isActive', null, [], null, $boolChoiceOptions)
+            ->add('isPrimary', null, [], null, $this->defaultDatagridBooleanTypeOptions)
+            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
 
@@ -68,7 +62,8 @@ class BusinessGalleryAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->add('media', 'sonata_type_model_list', ['required' => false], ['link_parameters' => [
+            ->add('media', 'sonata_type_model_list', ['required' => true], ['link_parameters' => [
+                'required' => true,
                 'context' => 'business_profile_images',
                 'provider' => 'sonata.media.provider.image',
                 'allow_switch_context' => false
@@ -104,5 +99,30 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('isPrimary')
             ->add('isActive')
         ;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     * @return null
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        /** @var BusinessGallery $object */
+
+        if (count($object->getBusinessProfile()->getImages()) > BusinessGallery::MAX_IMAGES_PER_BUSINESS) {
+
+            $errorElement->with('businessProfile')
+                ->addViolation($this->getTranslator()->trans(
+                    'form.business_gallery.max_images',
+                    [
+                        'business_profile' => $object->getBusinessProfile()->getTranslation('name', $this->getRequest()->getLocale()),
+                        'max_images_per_business' => BusinessGallery::MAX_IMAGES_PER_BUSINESS
+                    ],
+                    'AdminDomainBusinessBundle'
+                ))
+                ->end()
+            ;
+        }
     }
 }
