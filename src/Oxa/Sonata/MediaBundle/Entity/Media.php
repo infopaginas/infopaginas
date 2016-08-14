@@ -17,6 +17,7 @@ use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseMedia as BaseMedia;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="media__media")
@@ -28,14 +29,24 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
 {
     use DefaultEntityTrait;
 
+    const UPLOADS_DIR_NAME = 'uploads';
+
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", nullable=true)
+     * @Assert\Valid()
+     */
+    protected $url;
 
     /**
      * Get id
@@ -99,5 +110,66 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
             self::PROVIDER_IMAGE    => self::PROVIDER_IMAGE,
             self::PROVIDER_FILE     => self::PROVIDER_FILE,
         ];
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->galleryHasMedias = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return Media
+     */
+    public function setUrl($url)
+    {
+        try {
+            $this->downloadRemoteFile($url);
+        } catch (\Exception $e) {
+            //ignore
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Dirty code in entity. Method used to avoid problems with Sonata bundle
+     *
+     * @access private
+     * @param string $url
+     * @return void
+     */
+    private function downloadRemoteFile(string $url)
+    {
+        $file = file_get_contents($url);
+
+        if ($file) {
+            $urlParts = explode('/', $url);
+            $fileName = array_pop($urlParts);
+
+            if (!empty($fileName)) {
+                $fullFilePath = self::UPLOADS_DIR_NAME . DIRECTORY_SEPARATOR . $fileName;
+
+                file_put_contents($fullFilePath, $file);
+
+                $this->setBinaryContent($fullFilePath);
+            }
+        }
     }
 }
