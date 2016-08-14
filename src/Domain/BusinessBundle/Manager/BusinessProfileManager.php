@@ -161,9 +161,7 @@ class BusinessProfileManager extends Manager
     {
         $businessProfile = $this->getRepository()->findOneBy([
             'uid' => $uid,
-            'isActive' => true,
             'locked' => false,
-            'actualBusinessProfile' => null,
         ]);
 
         return $businessProfile;
