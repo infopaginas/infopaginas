@@ -421,7 +421,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->select('bp.id')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp', 'bp.id')
         ;
-        
+
         if ($limit) {
             $query->setMaxResults($limit);
         }
@@ -447,17 +447,16 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->addSelect('(:earthDiameter * sin (
                 sqrt (
-                    ( 1 - cos ( 
+                    ( 1 - cos (
                         (bp.latitude - :userLatitude) * PI()/180
                         )
                     ) / 2
                     +
-                    cos (:userLatitude * PI()/180) 
+                    cos (:userLatitude * PI()/180)
                     *
                     cos (bp.latitude * PI()/180)
                     *
-                    ( 1 - cos( ( bp.longitude - :userLongitude ) * PI()/180 ) ) / 2 
-                
+                    ( 1 - cos( ( bp.longitude - :userLongitude ) * PI()/180 ) ) / 2
                 )
             )) AS distance')
             ->setParameter('userLatitude', $location->lat)

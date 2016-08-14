@@ -45,16 +45,14 @@ class MediaRemoveListener extends MediaEventSubscriber
 
         $media = $this->getMedia($args);
 
-        if (!$media->getBinaryContent() instanceof \SplFileInfo) {
+        if (!$media->getBinaryContent() instanceof \SplFileInfo
+            || $media->getBinaryContent() === null
+        ) {
             return false;
         }
 
         $oldMedia = clone $media;
         $oldMedia->setProviderReference($media->getPreviousProviderReference());
-
-        if ($media->getBinaryContent() === null) {
-            return false;
-        }
 
         // if the binary content is a filename => convert to a valid File
         if (!$media->getBinaryContent() instanceof File) {
