@@ -118,6 +118,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
     userProfile.prototype.successHandler = function( response ) {
         if ( response.success ) {
             alertify.success( response.message );
+            $( this.html.forms.passwordUpdateFormId )[0].reset();
         } else {
             this.enableFieldsHighlight( response.errors );
             alertify.error( response.message );

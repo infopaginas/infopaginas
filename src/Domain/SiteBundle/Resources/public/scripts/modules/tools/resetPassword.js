@@ -1,4 +1,4 @@
-define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
+define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify, Spin ) {
     'use strict';
 
     //init resetPassword object variables
@@ -33,6 +33,7 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         };
 
         this.spinner = new Spin();
+        this.run();
     };
 
     //build form field id
@@ -202,9 +203,5 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         this.checkPasswordResetToken();
     };
 
-    //self-run
-    $( function () {
-        var controller = new resetPassword();
-        controller.run();
-    });
+    return resetPassword;
 });
