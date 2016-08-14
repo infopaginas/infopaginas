@@ -26,6 +26,8 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
  */
 class BusinessProfileManager extends Manager
 {
+    const DEFAULT_LOCALE_NAME = 'San Juan';
+
     /**
      * @var CategoryManager
      */
@@ -89,8 +91,7 @@ class BusinessProfileManager extends Manager
     {
         $locationName = $location->name;
         if (empty($locationName)) {
-            // TODO Move magic string this to config
-            $locationName = "San Juan";
+            $locationName = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -110,8 +111,7 @@ class BusinessProfileManager extends Manager
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
         if (empty($location)) {
-            // TODO Move magic string this to config
-            $location = "San Juan";
+            $location = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -214,7 +214,6 @@ class BusinessProfileManager extends Manager
      */
     public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en_US')
     {
-        //todo: move to model
         if (!$businessProfile->getId()) {
             $businessProfile->setIsActive(false);
         }

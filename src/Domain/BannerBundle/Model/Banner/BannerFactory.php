@@ -12,6 +12,8 @@ use Domain\BannerBundle\Entity\Banner;
 
 class BannerFactory extends Factory
 {
+    const UNDEFINED_BANNER_TYPE_ERROR = 'Undefined banner type!';
+
     protected $bannersCollection;
 
     public function __construct(EntityManager $entityManager)
@@ -60,8 +62,7 @@ class BannerFactory extends Factory
             case BannerType::CODE_SERP_MOBILE_TOP:
                 break;
             default:
-                // TODO: proper exception type/message
-                throw new \Exception('Undefined type');
+                throw new \Exception(self::UNDEFINED_BANNER_TYPE_ERROR);
         }
 
         return $banner;

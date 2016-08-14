@@ -421,16 +421,20 @@ class BusinessProfileFormType extends AbstractType
         $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
 
         $form
-            ->add('files', 'file', array(
-                'attr' => [
-                    'style' => 'display:none',
-                    'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
-                        image/bmp, image/x-windows-bmp',
-                ],
-                'data_class' => null,
-                'mapped' => false,
-                'multiple' => true,
-            ))
+            ->add(
+                'files',
+                'file',
+                [
+                    'attr' => [
+                        'style' => 'display:none',
+                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
+                            image/bmp, image/x-windows-bmp',
+                    ],
+                    'data_class' => null,
+                    'mapped' => false,
+                    'multiple' => true,
+                ]
+            )
             ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
                 'entry_type' => BusinessGalleryType::class,
                 'required' => false,
