@@ -156,7 +156,6 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
             $locObject->setName($item['name']);
             $locObject->setLatitude($item['latitude']);
             $locObject->setLongitude($item['longitude']);
-            
             if (!empty($item['area'])) {
                 $area = $this->getReference('area.' . str_replace(' ', '', $item['area']));
                 $locObject->setArea($area);
