@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Manager;
+
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;

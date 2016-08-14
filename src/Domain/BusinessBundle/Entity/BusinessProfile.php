@@ -40,7 +40,11 @@ use Domain\SiteBundle\Validator\Constraints as DomainAssert;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
-class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, GeolocationInterface
+class BusinessProfile implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    TranslatableInterface,
+    GeolocationInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;

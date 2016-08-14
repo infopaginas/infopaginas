@@ -75,5 +75,4 @@ class LoadPageData extends OxaAbstractFixture
 
         return $object;
     }
-
 }

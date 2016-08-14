@@ -114,9 +114,12 @@ class BusinessProfileFormType extends AbstractType
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => preg_replace("/\r|\n/", "", 'At the time of study, all parents,
-                       teachers, students we welcome ideas that foster greater productivity and end of the day,
-                       produce better academic achievement'
+                    'placeholder' => preg_replace(
+                        "/\r|\n/",
+                        "",
+                        'At the time of study, all parents,
+                        teachers, students we welcome ideas that foster greater productivity and end of the day,
+                        produce better academic achievement'
                     ),
                     'rows' => 5,
                 ],
@@ -140,8 +143,11 @@ class BusinessProfileFormType extends AbstractType
             ->add('product', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => preg_replace("/\r|\n/", "", 'The SONS system currently offers the SON\'S starter
-                     kit, notebooks, writing pads and labels.'
+                    'placeholder' => preg_replace(
+                        "/\r|\n/",
+                        "",
+                        'The SONS system currently offers the SON\'S starter
+                        kit, notebooks, writing pads and labels.'
                     ),
                     'rows' => 3,
                 ],
