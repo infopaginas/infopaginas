@@ -97,16 +97,12 @@ class ProfileController extends Controller
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
-        $discounts      = $businessProfile->getDiscounts();
-
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
         $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile);
 
-        $lastReview = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
-
-        $reviewForm = $this->getBusinessReviewForm();
-
-        $reviewsCount = $this->getBusinessReviewManager()->getReviewsCountForBusinessProfile($businessProfile);
+        $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
+        $reviewForm       = $this->getBusinessReviewForm();
+        $reviewsCount     = $this->getBusinessReviewManager()->getReviewsCountForBusinessProfile($businessProfile);
         $reviewsAvgRating = $this->getBusinessReviewManager()
             ->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
 
@@ -118,7 +114,6 @@ class ProfileController extends Controller
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile'  => $businessProfile,
-            'discounts'        => $discounts,
             'photos'           => $photos,
             'advertisements'   => $advertisements,
             'lastReview'       => $lastReview,

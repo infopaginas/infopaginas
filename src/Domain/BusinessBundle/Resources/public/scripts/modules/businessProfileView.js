@@ -1,10 +1,12 @@
-define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'alertify', 'tools/spin'], function( $, bootstrap, select, slick, lightbox, slider, directions, rating, alertify, Spin ) {
+define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'alertify', 'tools/spin', 'tools/resetPassword',
+    'tools/login', 'tools/registration'], function( $, bootstrap, select, slick, lightbox, slider, directions, rating, alertify, Spin ) {
     'use strict';
 
     var businessProfileView = function() {
         this.html = {
             buttons: {
-                createReviewButtonId: '#createReviewButton'
+                createReviewButtonId: '#createReviewButton',
+                couponsClass: '.coupon'
             },
             forms: {
                 createReviewFormId: '#createReviewForm',
@@ -31,6 +33,7 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
         new directions();
 
         this.handleReviewCreation();
+        this.handlePrintableCoupons();
     };
 
     //build form field id
@@ -120,6 +123,27 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
 
             event.preventDefault();
         });
+    };
+
+    //print coupon by click on "print" link
+    businessProfileView.prototype.handlePrintableCoupons = function() {
+        $( document ).on( 'click', this.html.buttons.couponsClass, function( event ) {
+            var imageURL = $( this ).attr( 'href' );
+            var popup = window.open( imageURL );
+
+            var closePrint = function() {
+                if ( popup ) {
+                    popup.close();
+                }
+            };
+
+            popup.onbeforeunload = closePrint;
+            popup.onafterprint = closePrint;
+            popup.focus(); // Required for IE
+            popup.print();
+
+            event.preventDefault();
+        } );
     };
 
     return businessProfileView;
