@@ -18,7 +18,6 @@ use Sonata\MediaBundle\Entity\BaseMedia as BaseMedia;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(name="media__media")
@@ -29,6 +28,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface
 {
     use DefaultEntityTrait;
+
+    const UPLOADS_DIR_NAME = 'uploads';
 
     /**
      * @var int
@@ -129,21 +130,9 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function setUrl($url)
     {
         try {
-            $file = file_get_contents($url);
-
-            if ($file) {
-                $urlParts = explode('/', $url);
-                $fileName = array_pop($urlParts);
-
-                if (!empty($fileName)) {
-                    $fullFilePath = 'uploads/' . $fileName;
-
-                    file_put_contents($fullFilePath, $file);
-
-                    $this->setBinaryContent($fullFilePath);
-                }
-            }
+            $this->downloadRemoteFile($url);
         } catch (\Exception $e) {
+            //ignore
         }
 
         return $this;
@@ -157,5 +146,30 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * Dirty code in entity. Method used to avoid problems with Sonata bundle
+     *
+     * @access private
+     * @param string $url
+     * @return void
+     */
+    private function downloadRemoteFile(string $url)
+    {
+        $file = file_get_contents($url);
+
+        if ($file) {
+            $urlParts = explode('/', $url);
+            $fileName = array_pop($urlParts);
+
+            if (!empty($fileName)) {
+                $fullFilePath = self::UPLOADS_DIR_NAME . DIRECTORY_SEPARATOR . $fileName;
+
+                file_put_contents($fullFilePath, $file);
+
+                $this->setBinaryContent($fullFilePath);
+            }
+        }
     }
 }

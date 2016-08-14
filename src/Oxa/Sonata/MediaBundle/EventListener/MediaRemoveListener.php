@@ -33,25 +33,26 @@ class MediaRemoveListener extends MediaEventSubscriber
     }
 
     /**
-     * @param \Doctrine\Common\EventArgs $args
+     * @param EventArgs $args
+     * @return bool
      */
     public function postUpdate(EventArgs $args)
     {
         if (!($provider = $this->getProvider($args))) {
-            return;
+            return false;
         }
 
         $media = $this->getMedia($args);
 
         if (!$media->getBinaryContent() instanceof \SplFileInfo) {
-            return;
+            return false;
         }
 
         $oldMedia = clone $media;
         $oldMedia->setProviderReference($media->getPreviousProviderReference());
 
         if ($media->getBinaryContent() === null) {
-            return;
+            return false;
         }
 
         // if the binary content is a filename => convert to a valid File
@@ -65,12 +66,15 @@ class MediaRemoveListener extends MediaEventSubscriber
             $media->setBinaryContent($binaryContent);
         }
 
-        $file = $provider->getFilesystem()->get(sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference()), true);
+        $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
+        $file = $provider->getFilesystem()->get($filepath, true);
 
         $contents = $media->getBinaryContent()->getRealPath();
 
         $file->setContent(file_get_contents($contents));
 
         $provider->generateThumbnails($media);
+
+        return true;
     }
 }
