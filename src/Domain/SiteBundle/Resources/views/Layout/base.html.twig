@@ -101,18 +101,6 @@
     {% endblock %}
 </main>
 
-<!-- Modal -->
-<div class="modal fade" id="photoGallery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-{% block modal %}
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body"> </div>
-    </div>
-  </div>
-{% endblock %}
-</div>
-
-
 <!-- Footer -->
 <footer class="blue-bk">
     {% block footer %}
@@ -167,6 +155,8 @@
     </div>
     {% endblock %}
 </footer>
+
+{% block modals %} {% endblock %}
 
 <!-- Scripts -->
 {% block scripts %}
