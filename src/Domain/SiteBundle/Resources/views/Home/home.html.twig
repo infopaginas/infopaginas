@@ -117,10 +117,7 @@
 {% endblock %}
 
 {% block homeModals %}
-    {% include 'DomainSiteBundle:Home:Modals/login.html.twig' with { 'loginForm' : loginForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' with { 'registrationForm' : registrationForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/forgotten_password.html.twig' with { 'resetPasswordRequestForm' : resetPasswordRequestForm} %}
-    {% include 'DomainSiteBundle:Home:Modals/reset_password.html.twig' with { 'resetPasswordForm' : resetPasswordForm} %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
 {% endblock %}
 
 {% block scripts %}
