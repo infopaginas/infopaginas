@@ -78,8 +78,8 @@ class GeolocationManager extends Manager
         $this->initCurl();
 
         $url = $this->getPlacesUrl($lang);
-        
         $url = $url . urlencode($term);
+
         curl_setopt($this->ch, CURLOPT_URL, $url);
 
         $results = $this->getPlacesData();
@@ -94,8 +94,6 @@ class GeolocationManager extends Manager
     public function getPlacesData()
     {
         $result = curl_exec($this->ch);
-        $info = curl_getinfo($this->ch);
-
         return json_decode($result, true);
     }
 

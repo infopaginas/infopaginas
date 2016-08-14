@@ -82,7 +82,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
 
         $limit  = $searchParams->limit;
-        $offset = ($searchParams->page - 1 ) * $limit;
+        $offset = ($searchParams->page - 1) * $limit;
 
         $queryBuilder = $this->getQueryBuilder();
 
@@ -134,7 +134,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     public function searchNeighborhood(SearchDTO $searchParams)
     {
-        // TODO functionality
         return $this->search($searchParams);
     }
 

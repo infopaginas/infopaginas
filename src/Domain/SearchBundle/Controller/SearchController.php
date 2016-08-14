@@ -31,11 +31,14 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL,
         ));
 
-        return $this->render('DomainSearchBundle:Search:index.html.twig', array(
-            'search'        => $searchDTO,
-            'results'       => $searchResultsDTO,
-            'bannerFactory' => $bannerFactory,
-        ));
+        return $this->render(
+            'DomainSearchBundle:Search:index.html.twig',
+            [
+                'search'        => $searchDTO,
+                'results'       => $searchResultsDTO,
+                'bannerFactory' => $bannerFactory,
+            ]
+        );
     }
 
     /**
@@ -77,11 +80,14 @@ class SearchController extends Controller
         ));
 
 
-        return $this->render('DomainSearchBundle:Search:map.html.twig', array(
-            'results'    => $searchResultsDTO,
-            'markers'    => $locationMarkers,
-            'bannerFactory' => $bannerFactory,
-        ));
+        return $this->render(
+            'DomainSearchBundle:Search:map.html.twig',
+            [
+                'results'    => $searchResultsDTO,
+                'markers'    => $locationMarkers,
+                'bannerFactory' => $bannerFactory,
+            ]
+        );
     }
 
     public function compareAction(Request $request)
@@ -96,9 +102,12 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
-        return $this->render('DomainSearchBundle:Search:compare.html.twig', array(
-            'results'       => $searchResultsDTO,
-            'bannerFactory' => $bannerFactory,
-        ));
+        return $this->render(
+            'DomainSearchBundle:Search:compare.html.twig',
+            [
+                'results'       => $searchResultsDTO,
+                'bannerFactory' => $bannerFactory,
+            ]
+        );
     }
 }
