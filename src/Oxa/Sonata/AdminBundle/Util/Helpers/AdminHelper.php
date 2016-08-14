@@ -33,6 +33,8 @@ class AdminHelper
     const PERIOD_OPTION_CODE_DAILY      = 'daily';
     const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
 
+    const MAX_IMAGE_FILESIZE = '10M';
+
     /**
      * @return array
      */
@@ -151,7 +153,7 @@ class AdminHelper
     public static function getFormImageFileConstrain()
     {
         return [
-            'maxSize' => '10M',
+            'maxSize' => self::MAX_IMAGE_FILESIZE,
             'mimeTypes' => [
                 "image/png",
                 "image/jpeg",

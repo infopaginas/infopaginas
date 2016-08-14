@@ -198,7 +198,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'mapped' => true,
                     ], [
                         'edit' => 'inline',
-//                        'delete_empty' => true,
                         'inline' => 'table',
                         'sortable' => 'position',
                         'link_parameters' => [
