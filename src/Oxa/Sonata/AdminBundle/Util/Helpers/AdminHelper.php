@@ -185,6 +185,7 @@ class AdminHelper
                 "image/jpeg",
                 "image/jpg",
                 "image/gif",
-        ]];
+            ]
+        ];
     }
 }

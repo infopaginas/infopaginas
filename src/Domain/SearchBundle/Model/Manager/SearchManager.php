@@ -82,7 +82,10 @@ class SearchManager extends Manager
         $totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
         $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
         $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
-        $neighborhoodsData  = $this->localityManager->getNeighborhoodLocationsByLocalityName($searchParams->locationValue->name);
+
+        $neighborhoodsData  = $this->localityManager
+            ->getNeighborhoodLocationsByLocalityName($searchParams->locationValue->name);
+
         $neighborhoods      = SearchDataUtil::extractNeigborhoods($neighborhoodsData);
 
         $pagesCount          = ceil($totalResults/$searchParams->limit);

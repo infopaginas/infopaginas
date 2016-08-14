@@ -109,14 +109,17 @@ class BusinessGalleryAdmin extends OxaAdmin
     public function validate(ErrorElement $errorElement, $object)
     {
         /** @var BusinessGallery $object */
+        $imagesCount = count($object->getBusinessProfile()->getImages());
 
-        if (count($object->getBusinessProfile()->getImages()) > BusinessGallery::MAX_IMAGES_PER_BUSINESS) {
+        if ($imagesCount > BusinessGallery::MAX_IMAGES_PER_BUSINESS) {
+            $businessProfileName = $object->getBusinessProfile()
+                ->getTranslation('name', $this->getRequest()->getLocale());
 
             $errorElement->with('businessProfile')
                 ->addViolation($this->getTranslator()->trans(
                     'form.business_gallery.max_images',
                     [
-                        'business_profile' => $object->getBusinessProfile()->getTranslation('name', $this->getRequest()->getLocale()),
+                        'business_profile' => $businessProfileName,
                         'max_images_per_business' => BusinessGallery::MAX_IMAGES_PER_BUSINESS
                     ],
                     'AdminDomainBusinessBundle'

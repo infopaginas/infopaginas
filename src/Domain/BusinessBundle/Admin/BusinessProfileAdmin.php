@@ -137,7 +137,10 @@ class BusinessProfileAdmin extends OxaAdmin
                         ],
                     ])
                     ->add('workingHours')
-                    ->add('phones', 'sonata_type_collection', [
+                    ->add(
+                        'phones',
+                        'sonata_type_collection',
+                        [
                             'by_reference' => false,
                         ],
                         [
@@ -416,7 +419,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 break;
             }
         }
-   }
+    }
 
     /**
      * Modify list results
@@ -438,8 +441,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $parameters = $this->getFilterParameters();
 
         // search by active subscription of chosen subscriptionPlan
-        if (
-            isset($parameters['subscriptions__subscriptionPlan']) &&
+        if (isset($parameters['subscriptions__subscriptionPlan']) &&
             !empty($parameters['subscriptions__subscriptionPlan']['value'])
         ) {
             $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];

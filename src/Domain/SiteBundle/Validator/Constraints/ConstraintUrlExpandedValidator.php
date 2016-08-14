@@ -1,4 +1,5 @@
 <?php
+
 namespace Domain\SiteBundle\Validator\Constraints;
 
 use Symfony\Component\Translation\TranslatorInterface;
