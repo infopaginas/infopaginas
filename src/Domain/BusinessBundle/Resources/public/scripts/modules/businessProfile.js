@@ -4,7 +4,8 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
     //init businessProfile object variables
     var businessProfile = function() {
         this.urls = {
-            saveBusinessProfile: Routing.generate('domain_business_profile_save')
+            saveBusinessProfile: Routing.generate('domain_business_profile_save'),
+            closeBusinessProfileURL: Routing.generate('domain_business_profile_close')
         };
 
         this.serviceAreasAreaChoiceValue = 'area';
@@ -14,10 +15,13 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.html = {
             buttons: {
                 geocodeButtonId: '#geocodeButton',
-                newProfileSaveButtonId: '#newProfileRequestButton'
+                newProfileSaveButtonId: '#newProfileRequestButton',
+                closeBusinessProfileButtonId: '#closeBusinessProfileButton'
             },
             forms: {
-                newProfileRequestFormId: '#businessProfileRequestForm'
+                newProfileRequestFormId: '#businessProfileRequestForm',
+                closeBusinessProfileFormId: '#closeBusinessProfileForm',
+                closeBusinessProfileFormPrefix: 'domain_business_bundle_business_close_request_type'
             },
             fields: {
                 countrySelectId: '#' + this.freeProfileFormName + '_country',
@@ -31,7 +35,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
                 serviceAreaRadioName: '[serviceAreasType]'
             },
-
+            modals: {
+                closeBusinessProfileModalId: '#closeBusinessProfileModal'
+            },
+            closeBusinessProfileLoadingSpinnerContainerId: 'close-business-profile-spinner-container',
             loadingSpinnerContainerClass: '.spinner-container',
             mapContainerId: 'google-map',
             newProfileRequestSpinnerContainerId: 'new-profile-loading-spinner-container-id',
@@ -300,6 +307,93 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         return confirm( confirmationMessage );
     };
 
+    //build form field id
+    businessProfile.prototype.getFormFieldId = function( prefix, field ) {
+        return prefix + '_' + field;
+    };
+
+    //remove "error" highlighting
+    businessProfile.prototype.disableFieldsHighlight = function( formId ) {
+        var $form = $( formId );
+        $form.find( 'input' ).removeClass('error');
+        $form.find( '.form-group' ).removeClass('has-error');
+        $form.find( '.help-block' ).html('');
+    };
+
+    //"error" fields highlighting
+    businessProfile.prototype.enableFieldsHighlight = function( formId, errors, prefix ) {
+        var $form = $( formId );
+        var $formGroupElement = $form.find( '.form-group' );
+
+        if (!$formGroupElement.hasClass('has-error')) {
+            $formGroupElement.addClass('has-error');
+        }
+
+        if ( typeof prefix === 'undefined' ) {
+            prefix =  '#' + this.html.forms.closeBusinessProfileFormPrefix;
+        }
+
+        if ( typeof errors !== 'undefined' ) {
+            for (var field in errors) {
+                //check for "repeated" fields or embed forms
+                if (Array.isArray( errors[field]) ) {
+                    var $field = $( this.getFormFieldId( prefix, field ) );
+                    $field.addClass( 'error' );
+
+                    var $errorSection = $field.next( '.help-block' );
+
+                    for (var key in errors[field]) {
+                        $errorSection.append( errors[field][key] );
+                    }
+                } else {
+                    this.enableFieldsHighlight( errors[field], this.getFormFieldId( prefix, field ) );
+                }
+            }
+        }
+    };
+
+    businessProfile.prototype.handleBusinessProfileClose = function () {
+        var self = this;
+
+        $( document ).on( 'click', this.html.buttons.closeBusinessProfileButtonId, function( event ) {
+
+            var data = $( self.html.forms.closeBusinessProfileFormId ).serializeArray();
+            data.push({
+                'name': 'businessProfileId',
+                'value': $(this).data('business-profile-id')
+            });
+
+            $.ajax({
+                url: self.urls.closeBusinessProfileURL,
+                method: 'POST',
+                data: data,
+                dataType: 'JSON',
+                beforeSend: function() {
+                    self.disableFieldsHighlight( self.html.forms.closeBusinessProfileFormId );
+                    self.spinner.show( self.html.closeBusinessProfileLoadingSpinnerContainerId );
+                },
+                success: function( response ) {
+                    if( response.success ) {
+                        $( self.html.modals.closeBusinessProfileModalId ).modal('hide');
+                        alertify.success( response.message );
+                        $( self.html.forms.closeBusinessProfileFormId )[0].reset();
+                    } else {
+                        alertify.error( response.message );
+                        self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors )
+                    }
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    alertify.error( errorThrown );
+                },
+                complete: function() {
+                    self.spinner.hide();
+                }
+            });
+
+            event.preventDefault();
+        });
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
@@ -307,6 +401,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.handleLocaleChange();
         this.handleServiceAreaChange();
         this.handleFormChange();
+        this.handleBusinessProfileClose();
 
         var that = this;
 
