@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BusinessProfilePhone
 {
+    const REGEX_PHONE_PATTERN = '/^\d([-]*\d){0,10}$/';
+
     /**
      * @var int
      *
