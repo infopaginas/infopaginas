@@ -74,7 +74,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
         $addressManager = $this->container->get('domain_business.manager.address_manager');
 
         foreach ($data['businesses'] as $business => $item) {
-            $googleResponse = $addressManager->validateAddress($item['google_address']);
+            $googleResponse = $addressManager->validateCoordinates($item['latitude'], $item['longitude']);
 
             if ($googleResponse['error']) {
                 throw new \Exception(sprintf(
@@ -93,7 +93,12 @@ class LoadTestBusinessData extends OxaAbstractFixture
             $object->setProduct($item['product']);
             $object->setDescription($item['description']);
 
-            $object->setGoogleAddress($item['google_address']);
+            // better to set google address manually,
+            // cuz google finds not exact address by coordinates
+            if (isset($item['google_address'])) {
+                $object->setGoogleAddress($item['google_address']);
+            }
+
             $addressManager->setGoogleAddress($googleResponse['result'], $object);
 
             foreach ($item['phones'] as $value) {

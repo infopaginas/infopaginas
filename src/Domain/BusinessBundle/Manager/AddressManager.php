@@ -37,6 +37,18 @@ class AddressManager extends DefaultManager
     }
 
     /**
+     * @param $latitude
+     * @param $longitude
+     * @return mixed
+     */
+    public function getGoogleAddressesByCoordinates($latitude, $longitude)
+    {
+        $response = $this->getGeocoder()->reverse($latitude, $longitude);
+
+        return $response->getResults();
+    }
+
+    /**
      * @param $googleAddress
      * @param BusinessProfile $businessProfile
      */
@@ -46,6 +58,11 @@ class AddressManager extends DefaultManager
         if (!$businessProfile->getLatitude() || !$businessProfile->getLongitude()) {
             $businessProfile->setLatitude($googleAddress->getGeometry()->getLocation()->getLatitude());
             $businessProfile->setLongitude($googleAddress->getGeometry()->getLocation()->getLongitude());
+        }
+
+        // set google address if it has'not been set automatically
+        if (!$businessProfile->getGoogleAddress()) {
+            $businessProfile->setGoogleAddress($googleAddress->getFormattedAddress());
         }
 
         if ($object = current($googleAddress->getAddressComponents('country'))) {
@@ -110,6 +127,46 @@ class AddressManager extends DefaultManager
             return $response['error'] = $e->getMessage();
         }
 
+        $response = array_merge(
+            $response,
+            $this->checkGoogleResults($results)
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param $latitude
+     * @param $longitude
+     * @return array|string
+     */
+    public function validateCoordinates($latitude, $longitude)
+    {
+        $response = [
+            'result' => null,
+            'error' => ''
+        ];
+
+        try {
+            $results = $this->getGoogleAddressesByCoordinates($latitude, $longitude);
+        } catch (Exception $e) {
+            return $response['error'] = $e->getMessage();
+        }
+
+        $response = array_merge(
+            $response,
+            $this->checkGoogleResults($results)
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param $results
+     * @return mixed
+     */
+    private function checkGoogleResults($results)
+    {
         if ($results) {
             // get first address result
             // usually google returns list of addresses
@@ -143,7 +200,7 @@ class AddressManager extends DefaultManager
             // return first address result to use it next
             $response['result'] = $result;
         } else {
-            $response['error'] = 'Invalid address';
+            $response['error'] = 'Invalid address, no results';
         }
 
         return $response;

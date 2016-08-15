@@ -408,10 +408,37 @@ class BusinessProfileManager extends Manager
         return [];
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return null|object
+     */
     public function getLastReviewForBusinessProfile(BusinessProfile $businessProfile)
     {
         $lastReview = $this->getBusinessProfileReviewsRepository()->findBusinessProfileLastReview($businessProfile);
         return $lastReview;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return float|int
+     */
+    public function calculateReviewsAvgRatingForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $rating = 0;
+
+        $reviewsAmount = $this->getReviewsCountForBusinessProfile($businessProfile);
+
+        $reviews = $this->getBusinessProfileReviewsRepository()->findReviewsByBusinessProfile($businessProfile);
+
+        if ($reviewsAmount) {
+            foreach ($reviews as $review) {
+                $rating += (int) $review->getRating();
+            }
+
+            return $rating / $reviewsAmount;
+        }
+
+        return 0;
     }
 
     /**
@@ -426,6 +453,11 @@ class BusinessProfileManager extends Manager
     public function countSearchResults(SearchDTO $searchParams)
     {
         return $this->getRepository()->countSearchResults($searchParams);
+    }
+
+    public function getReviewsCountForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        return $this->getBusinessProfileReviewsRepository()->getReviewsCountForBusinessProfile($businessProfile);
     }
 
     /**

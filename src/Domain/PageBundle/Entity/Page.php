@@ -51,7 +51,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @ORM\Column(name="code", type="integer")
      */
     protected $code;
-    
+
     /**
      * @var string - Page description
      *
