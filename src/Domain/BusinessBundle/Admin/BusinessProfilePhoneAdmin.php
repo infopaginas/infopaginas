@@ -2,12 +2,14 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class BusinessProfilePhoneAdmin extends OxaAdmin
 {
@@ -41,7 +43,14 @@ class BusinessProfilePhoneAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('phone')
+            ->add('phone', null, [
+                'constraints' => [
+                    new Regex([
+                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
+                        'message' => 'business_profile.phone.invalid',
+                    ]),
+                ],
+            ])
         ;
     }
 
