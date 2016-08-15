@@ -127,41 +127,10 @@ class AddressManager extends DefaultManager
             return $response['error'] = $e->getMessage();
         }
 
-        if ($results) {
-            // get first address result
-            // usually google returns list of addresses
-            // even searching by specific address or coordinates
-            // but the first one the best one (more correct)
-            $result = array_shift($results);
-
-            // data bellow is required
-            // street, city, country, zip_code
-            if (!$result->getAddressComponents('route') ||
-                !$result->getAddressComponents('locality') ||
-                !$result->getAddressComponents('country') ||
-                !$result->getAddressComponents('postal_code')
-            ) {
-                $response['error'] = 'Invalid address. Please, be more specific';
-            } else {
-                // check if we get address from allowed country list
-                $countries = $this->getEntityManager()
-                    ->getRepository('DomainBusinessBundle:Address\Country')
-                    ->getCountriesShortNames();
-
-                $country = current($result->getAddressComponents('country'));
-                if (!array_key_exists($country->getShortName(), $countries)) {
-                    $response['error'] = sprintf(
-                        'Country "%s" is not allowed. Must be one of: %s',
-                        $country->getLongName(),
-                        implode(', ', $countries)
-                    );
-                }
-            }
-            // return first address result to use it next
-            $response['result'] = $result;
-        } else {
-            $response['error'] = 'Invalid address, no results';
-        }
+        $response = array_merge(
+            $response,
+            $this->checkGoogleResults($results)
+        );
 
         return $response;
     }
@@ -184,6 +153,20 @@ class AddressManager extends DefaultManager
             return $response['error'] = $e->getMessage();
         }
 
+        $response = array_merge(
+            $response,
+            $this->checkGoogleResults($results)
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param $results
+     * @return mixed
+     */
+    private function checkGoogleResults($results)
+    {
         if ($results) {
             // get first address result
             // usually google returns list of addresses
