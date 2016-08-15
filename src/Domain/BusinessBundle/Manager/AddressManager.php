@@ -37,6 +37,18 @@ class AddressManager extends DefaultManager
     }
 
     /**
+     * @param $latitude
+     * @param $longitude
+     * @return mixed
+     */
+    public function getGoogleAddressesByCoordinates($latitude, $longitude)
+    {
+        $response = $this->getGeocoder()->reverse($latitude, $longitude);
+
+        return $response->getResults();
+    }
+
+    /**
      * @param $googleAddress
      * @param BusinessProfile $businessProfile
      */
@@ -46,6 +58,11 @@ class AddressManager extends DefaultManager
         if (!$businessProfile->getLatitude() || !$businessProfile->getLongitude()) {
             $businessProfile->setLatitude($googleAddress->getGeometry()->getLocation()->getLatitude());
             $businessProfile->setLongitude($googleAddress->getGeometry()->getLocation()->getLongitude());
+        }
+
+        // set google address if it has'not been set automatically
+        if (!$businessProfile->getGoogleAddress()) {
+            $businessProfile->setGoogleAddress($googleAddress->getFormattedAddress());
         }
 
         if ($object = current($googleAddress->getAddressComponents('country'))) {
@@ -143,7 +160,64 @@ class AddressManager extends DefaultManager
             // return first address result to use it next
             $response['result'] = $result;
         } else {
-            $response['error'] = 'Invalid address';
+            $response['error'] = 'Invalid address, no results';
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param $latitude
+     * @param $longitude
+     * @return array|string
+     */
+    public function validateCoordinates($latitude, $longitude)
+    {
+        $response = [
+            'result' => null,
+            'error' => ''
+        ];
+
+        try {
+            $results = $this->getGoogleAddressesByCoordinates($latitude, $longitude);
+        } catch (Exception $e) {
+            return $response['error'] = $e->getMessage();
+        }
+
+        if ($results) {
+            // get first address result
+            // usually google returns list of addresses
+            // even searching by specific address or coordinates
+            // but the first one the best one (more correct)
+            $result = array_shift($results);
+
+            // data bellow is required
+            // street, city, country, zip_code
+            if (!$result->getAddressComponents('route') ||
+                !$result->getAddressComponents('locality') ||
+                !$result->getAddressComponents('country') ||
+                !$result->getAddressComponents('postal_code')
+            ) {
+                $response['error'] = 'Invalid address. Please, be more specific';
+            } else {
+                // check if we get address from allowed country list
+                $countries = $this->getEntityManager()
+                    ->getRepository('DomainBusinessBundle:Address\Country')
+                    ->getCountriesShortNames();
+
+                $country = current($result->getAddressComponents('country'));
+                if (!array_key_exists($country->getShortName(), $countries)) {
+                    $response['error'] = sprintf(
+                        'Country "%s" is not allowed. Must be one of: %s',
+                        $country->getLongName(),
+                        implode(', ', $countries)
+                    );
+                }
+            }
+            // return first address result to use it next
+            $response['result'] = $result;
+        } else {
+            $response['error'] = 'Invalid address, no results';
         }
 
         return $response;
