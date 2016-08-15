@@ -39,7 +39,33 @@ class BusinessProfileExtension extends \Twig_Extension
             'get_business_profiles_changeset_array' => new \Twig_Function_Method($this, 'deserializeChangeSet'),
             'media_tab_allowed_for_business' => new \Twig_Function_Method($this, 'mediaTabAllowedForBusiness'),
             'get_business_profile_by_uid' => new \Twig_Function_Method($this, 'getBusinessProfileByUid'),
+            'get_business_profile_reviews_count' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileActualReviewsCount'
+            ),
+            'get_business_profile_reviews_avg_rating' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileActualReviewsAvgRating'
+            ),
         ];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return int
+     */
+    public function getBusinessProfileActualReviewsCount(BusinessProfile $businessProfile)
+    {
+        return $this->getBusinessProfileManager()->getReviewsCountForBusinessProfile($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return float|int
+     */
+    public function getBusinessProfileActualReviewsAvgRating(BusinessProfile $businessProfile)
+    {
+        return $this->getBusinessProfileManager()->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
     }
 
     /**
@@ -82,7 +108,7 @@ class BusinessProfileExtension extends \Twig_Extension
      */
     public function getBusinessProfileByUid(string $uid) : BusinessProfile
     {
-        $businessProfile = $this->businessProfileManager->findByUid($uid);
+        $businessProfile = $this->getBusinessProfileManager()->findByUid($uid);
         return $businessProfile !== null ? $businessProfile : new BusinessProfile();
     }
 

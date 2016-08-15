@@ -39,7 +39,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface, Translat
     /**
      * @var string - Brand name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -84,17 +84,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface, Translat
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New brand';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     public function getMarkCopyPropertyName()

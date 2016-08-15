@@ -72,7 +72,7 @@ class Group extends BaseGroup implements DefaultEntityInterface, TranslatableInt
     protected $code;
 
     /**
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;

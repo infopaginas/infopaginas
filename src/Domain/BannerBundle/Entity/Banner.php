@@ -38,7 +38,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     /**
      * @var string - Banner title
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -57,7 +57,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     /**
      * @var string - Banner description
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=100)
      */
     protected $description;
@@ -143,17 +143,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getTitle():
-                $result = $this->getTitle();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New banner';
-        }
-        return $result;
+        return $this->getTitle() ?: '';
     }
 
     /**

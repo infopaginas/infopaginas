@@ -66,7 +66,7 @@ class BusinessProfile implements
     /**
      * @var string - Business name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      * @Assert\Length(max=100, maxMessage="business_profile.max_length")
@@ -100,7 +100,7 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="discount", type="text", length=1000, nullable=true)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
@@ -184,7 +184,7 @@ class BusinessProfile implements
     /**
      * @var string - Slogan of a Business
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="slogan", type="string", length=255, nullable=true)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
@@ -203,7 +203,7 @@ class BusinessProfile implements
     /**
      * @var string - Description of Business
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
@@ -212,7 +212,7 @@ class BusinessProfile implements
     /**
      * @var string - Products of Business
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="product", type="text", length=1000, nullable=true)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
@@ -221,7 +221,7 @@ class BusinessProfile implements
     /**
      * @var string - Operational Hours
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="working_hours", type="text", nullable=true)
      */
     protected $workingHours;
@@ -630,7 +630,7 @@ class BusinessProfile implements
 
     public function __toString()
     {
-        return ($this->getName()) ?: 'New business';
+        return $this->getName() ?: '';
     }
 
     /**
@@ -648,7 +648,7 @@ class BusinessProfile implements
      */
     public function __construct()
     {
-        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->coupons = new \Doctrine\Common\Collections\ArrayCollection();
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
