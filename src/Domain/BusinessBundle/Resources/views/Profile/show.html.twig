@@ -45,8 +45,8 @@
                                             {% if businessProfile.getCustomAddress() %}
                                                 {{ businessProfile.getCustomAddress() }}
                                             {% else %}
-                                                {{ businessProfile.getCity() }}, {{ businessProfile.getCountry() }}
-                                                {{ businessProfile.getZipCode() }}
+                                                {{ businessProfile.getCountry() }}, {{ businessProfile.getCity() }},
+                                                {{ businessProfile.getStreetAddress() }} {{ businessProfile.getZipCode() }}
                                             {% endif %}
                                         </span>
                                         <a href="#" class="get-dir get-direction" data-latlng="{{ businessProfile.getLatLng() }}">
