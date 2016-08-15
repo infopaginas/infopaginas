@@ -115,11 +115,7 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
 
     public function __toString()
     {
-        if ($this->getId()) {
-            return sprintf('%s: %s', $this->getId(), $this->getBusinessProfile()->__toString());
-        } else {
-            return 'New Business review';
-        }
+        return $this->getId() ? sprintf('%s: %s', $this->getId(), $this->getBusinessProfile()->__toString()) : '';
     }
 
     /**

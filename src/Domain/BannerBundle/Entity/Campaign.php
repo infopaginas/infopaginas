@@ -39,7 +39,7 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface, Datetim
     /**
      * @var string - Campaign title
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -95,17 +95,7 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface, Datetim
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getTitle():
-                $result = $this->getTitle();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New Campaign';
-        }
-        return $result;
+        return $this->getTitle() ?: '';
     }
 
     /**

@@ -162,6 +162,6 @@ class Locality implements GeolocationInterface
      */
     public function __toString()
     {
-        return $this->name;
+        return $this->getName() ?: '';
     }
 }

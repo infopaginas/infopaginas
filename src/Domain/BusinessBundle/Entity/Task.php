@@ -317,7 +317,7 @@ class Task implements DefaultEntityInterface, TaskInterface
                 $this->getBusinessProfile()->getName()
             );
         } else {
-            $result = 'New Task';
+            $result = '';
         }
 
         return $result;

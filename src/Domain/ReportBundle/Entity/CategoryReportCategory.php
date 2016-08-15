@@ -55,7 +55,7 @@ class CategoryReportCategory implements DefaultEntityInterface
 
     public function __toString()
     {
-        return $this->getId() ? $this->getDate()->format(AdminHelper::DATE_FORMAT) : 'new report category';
+        return $this->getDate() ? $this->getDate()->format(AdminHelper::DATE_FORMAT) : '';
     }
 
     /**

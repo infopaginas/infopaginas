@@ -67,7 +67,7 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
 
     public function __toString()
     {
-        return $this->getBusinessProfile()->getName();
+        return $this->getBusinessProfile() ? $this->getBusinessProfile()->__toString() : '';
     }
 
     /**
