@@ -26,7 +26,7 @@
         <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#reviews">
             {% include ':blocks/business:review_rating_stars.html.twig'
                 with { 'rating': reviewsAvgRating } %}
-            <span>{{ reviewsCount }} Reviews</span>
+            <span>{{ businessReviewsCount }} Reviews</span>
         </a>
     </div>
 {% endif %}

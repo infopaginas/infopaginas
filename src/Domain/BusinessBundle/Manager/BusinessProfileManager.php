@@ -435,7 +435,7 @@ class BusinessProfileManager extends Manager
                 $rating += (int) $review->getRating();
             }
 
-            return $rating / $reviewsAmount;
+            return round($rating / $reviewsAmount);
         }
 
         return 0;
