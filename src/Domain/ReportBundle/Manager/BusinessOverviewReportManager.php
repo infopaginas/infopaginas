@@ -17,10 +17,10 @@ use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Domain\ReportBundle\Model\BusinessOverviewReportTypeInterface;
 use Ivory\CKEditorBundle\Exception\Exception;
-use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Domain\ReportBundle\Manager\BaseReportManager;
 
-class BusinessOverviewReportManager extends DefaultManager
+class BusinessOverviewReportManager extends BaseReportManager
 {
     /**
      * @param array $filterParams
