@@ -132,6 +132,8 @@ services:
         arguments:
             - @translator
             - @validator
+            - '@doctrine.orm.default_entity_manager'
+            - '@oxa.manager.users'
         tags:
             - { name: validator.constraint_validator }
 
