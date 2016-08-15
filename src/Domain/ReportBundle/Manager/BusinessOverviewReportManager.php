@@ -200,4 +200,29 @@ class BusinessOverviewReportManager extends DefaultManager
 
         $em->flush();
     }
+
+    /**
+     * @param array $filterParams
+     * @param string $format
+     * @return mixed
+     */
+    public function getBusinessOveriviewReportDataAndName(array $filterParams, string $format) : array
+    {
+        $businessOverviewData = $this->getBusinessOverviewDataByFilterParams($filterParams);
+
+        if ($businessOverviewData['businessProfile']) {
+            $reportName = str_replace(' ', '_', $businessOverviewData['businessProfile']);
+        } else {
+            $reportName = 'business_overview_report';
+        }
+
+        $filename = sprintf(
+            '%s_%s.%s',
+            $reportName,
+            date('Ymd_His', strtotime('now')),
+            $format
+        );
+
+        return [$businessOverviewData, $filename];
+    }
 }

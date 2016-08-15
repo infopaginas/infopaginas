@@ -48,21 +48,8 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      */
     public function getResponse(string $code, string $format, array $filterParams) : Response
     {
-        $businessOverviewData = $this->businessOverviewReportManager
-            ->getBusinessOverviewDataByFilterParams($filterParams);
-
-        if ($businessOverviewData['businessProfile']) {
-            $reportName = str_replace(' ', '_', $businessOverviewData['businessProfile']);
-        } else {
-            $reportName = 'business_overview_report';
-        }
-
-        $filename = sprintf(
-            '%s_%s.%s',
-            $reportName,
-            date('Ymd_His', strtotime('now')),
-            $format
-        );
+        list($businessOverviewData, $filename) =
+            $this->businessOverviewReportManager->getBusinessOveriviewReportDataAndName($filterParams, $format);
 
         $phpExcelObject = $this->phpExcel->createPHPExcelObject();
 

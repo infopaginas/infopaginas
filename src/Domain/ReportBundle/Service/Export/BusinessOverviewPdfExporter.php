@@ -39,21 +39,8 @@ class BusinessOverviewPdfExporter extends PdfExporterModel
      */
     public function getResponse(string $code, string $format, array $filterParams) : Response
     {
-        $businessOverviewData = $this->businessOverviewReportManager
-            ->getBusinessOverviewDataByFilterParams($filterParams);
-
-        if ($businessOverviewData['businessProfile']) {
-            $reportName = str_replace(' ', '_', $businessOverviewData['businessProfile']);
-        } else {
-            $reportName = 'business_overview_report';
-        }
-
-        $filename = sprintf(
-            '%s_%s.%s',
-            $reportName,
-            date('Ymd_His', strtotime('now')),
-            $format
-        );
+        list($businessOverviewData, $filename) =
+            $this->businessOverviewReportManager->getBusinessOveriviewReportDataAndName($filterParams, $format);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/BusinessOverviewReport:pdf_report.html.twig',
