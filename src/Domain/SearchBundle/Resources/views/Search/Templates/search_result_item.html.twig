@@ -23,7 +23,13 @@
     <div class="col-xs-5 schedule">
         <div class="address">
             <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}#address" class="address-link">
-                <span class="address-info">{{ item.city}}, {{ item.state }} {{ item.zipCode }}</span>
+                <span class="address-info">
+                    {% if item.getCustomAddress() %}
+                        {{ item.getCustomAddress() }}
+                    {% else %}
+                        {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                    {% endif %}
+                </span>
             </a>
 
             <a class="get-dir direction" data-latlng="{{ item.getLatLng }}">Get Direction <span>&#187;</span></a>
