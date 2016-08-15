@@ -1,0 +1,33 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block breakcrumbs %}
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="/">
+                        {% trans %}Home{% endtrans %}
+                        <span>&nbsp; &raquo;</span>
+                    </a>
+                    &nbsp;
+                    <span>{% trans %}Videos{% endtrans %}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block main %}
+    <section id="articles">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class="search-title blue-c">{% trans %}Videos{% endtrans %}</span>
+                </div>
+            </div>
+            <div class="row">
+                {% include 'DomainSiteBundle:Home:Widgets/videosWidget.html.twig' with {'width': 640, 'height': 480} %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

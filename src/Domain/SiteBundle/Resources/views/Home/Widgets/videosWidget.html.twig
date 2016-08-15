@@ -2,15 +2,12 @@
     <!-- TEMP for construction for render first 2 articles -->
     {% for video in videos %}
         <div class="col-xs-6 article">
-            <div class="article-pic"><a href="{{ path('domain_article_view', { 'slug' : video.getSlug() }) }}"><img src="{% path video.getImage(), 'homepage' %}"></a>
+            <div class="article-pic">
+                {{ render_wistia_embed(video, {width: width, height: height}) | raw }}
             </div>
             <div class="article-info">
-                <!-- temp link to articles page -->
-                <a href="{{ path('domain_article_view', { 'slug' : video.getSlug() }) }}" class="article-title blue-c">
-                    {{ video.getTitle() }}
-                </a>
+                {{ video.getName() }}
 
-                <div class="article-area green-c">{{ video.getCategory().getName() }}</div>
                 <div class="article-text">
                     {{ video.getDescription() }}
                 </div>

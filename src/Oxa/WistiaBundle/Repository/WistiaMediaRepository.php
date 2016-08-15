@@ -1,6 +1,8 @@
 <?php
 
 namespace Oxa\WistiaBundle\Repository;
+use Domain\BusinessBundle\Repository\BusinessProfileRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * WistiaMediaRepository
@@ -11,4 +13,37 @@ namespace Oxa\WistiaBundle\Repository;
 class WistiaMediaRepository extends \Doctrine\ORM\EntityRepository
 {
     const SLUG = 'OxaWistiaBundle:WistiaMedia';
+
+    public function getHomepageVideos($limit)
+    {
+        $qb = $this->getVideosQuery()->setMaxResults($limit);
+
+        $results = new Paginator($qb, $fetchJoin = true);
+
+        return $results;
+    }
+
+    public function getVideos()
+    {
+        $qb = $this->getVideosQuery();
+
+        $results = new Paginator($qb, $fetchJoin = true);
+
+        return $results;
+    }
+
+    private function getVideosQuery()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('v')
+            ->from(self::SLUG, 'v')
+            ->leftJoin(BusinessProfileRepository::SLUG, 'bp')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bp.actualBusinessProfile IS NULL')
+            ->andWhere('bp.locked = FALSE')
+            ->orderBy('v.createdAt', 'DESC')
+        ;
+
+        return $qb;
+    }
 }
