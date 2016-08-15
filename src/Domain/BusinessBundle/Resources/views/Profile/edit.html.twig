@@ -64,6 +64,12 @@
                                     </a>
                                 </li>
                             {% endif %}
+                            <li>
+                                <a href="#" class="green-btn" data-toggle="modal" data-target="#closeBusinessProfileModal">
+                                    <i class="fa fa-close" aria-hidden="true"></i>
+                                    <span>{% trans %}Close Profile{% endtrans %}</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 {% endif %}
@@ -120,11 +126,15 @@
             </div>
         </div>
     </div>
-{% endblock %}
 
+{% endblock %}
 
 {% block main %}
     {% include 'DomainBusinessBundle:Profile:blocks/edit_form.html.twig' %}
+{% endblock %}
+
+{% block modals %}
+    {% include 'DomainBusinessBundle:Profile/modals:close_business_profile.html.twig' %}
 {% endblock %}
 
 {% block scripts %}

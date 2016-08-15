@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Controller;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
+use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Form\Type\BusinessReviewType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
@@ -27,6 +28,7 @@ class ProfileController extends Controller
     use JsonResponseBuilderTrait;
 
     const SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE = 'Business Profile Request send. Please wait for approval';
+    const SUCCESS_PROFILE_CLOSE_REQUEST_CREATED_MESSAGE = 'Close Profile Request send. Please wait for approval';
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
 
@@ -63,9 +65,12 @@ class ProfileController extends Controller
             $template = 'DomainBusinessBundle:Profile/blocks:edit_form.html.twig';
         }
 
+        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+
         return $this->render($template, [
             'businessProfileForm' => $businessProfileForm->createView(),
             'businessProfile'     => $businessProfile,
+            'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
         ]);
     }
 
@@ -124,6 +129,21 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function closeAction(Request $request)
+    {
+        $formHandler = $this->getBusinessProfileCloseRequestFormHandler();
+
+        try {
+            if ($formHandler->process()) {
+                return $this->getSuccessResponse(self::SUCCESS_PROFILE_CLOSE_REQUEST_CREATED_MESSAGE);
+            }
+        } catch (Exception $e) {
+            return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
+    }
+
     /**
      * @return \Symfony\Component\Form\Form
      */
@@ -138,6 +158,11 @@ class ProfileController extends Controller
     private function getBusinessProfilesManager() : BusinessProfileManager
     {
         return $this->get('domain_business.manager.business_profile');
+    }
+
+    private function getBusinessProfileCloseRequestFormHandler()
+    {
+        return $this->get('domain_business.form.handler.business_close_request');
     }
 
     /**

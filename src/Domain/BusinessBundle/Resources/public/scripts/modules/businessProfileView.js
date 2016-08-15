@@ -42,8 +42,8 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
     };
 
     //"error" fields highlighting
-    businessProfileView.prototype.enableFieldsHighlight = function( errors, prefix ) {
-        var $form = $( this.html.forms.createReviewFormId );
+    businessProfileView.prototype.enableFieldsHighlight = function( formId, errors, prefix ) {
+        var $form = $( formId );
         var $formGroupElement = $form.find( '.form-group' );
 
         if (!$formGroupElement.hasClass('has-error')) {
@@ -74,8 +74,8 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
     };
 
     //remove "error" highlighting
-    businessProfileView.prototype.disableFieldsHighlight = function() {
-        var $form = $( this.html.forms.registrationFormId );
+    businessProfileView.prototype.disableFieldsHighlight = function( formId ) {
+        var $form = $( formId );
         $form.find( 'input' ).removeClass('error');
         $form.find( '.form-group' ).removeClass('has-error');
         $form.find( '.help-block' ).html('');
@@ -99,7 +99,7 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                 data: data,
                 dataType: 'JSON',
                 beforeSend: function() {
-                    self.disableFieldsHighlight();
+                    self.disableFieldsHighlight( self.html.forms.createReviewFormId );
                     self.spinner.show( self.html.loadingSpinnerContainerId );
                 },
                 success: function( response ) {
@@ -109,14 +109,14 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                         $( self.html.forms.createReviewFormId )[0].reset();
                     } else {
                         alertify.error( response.message );
-                        self.enableFieldsHighlight( response.errors )
+                        self.enableFieldsHighlight( self.html.forms.createReviewFormId, response.errors )
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     alertify.error( errorThrown );
                 },
                 complete: function() {
-                    self.disableFieldsHighlight();
+                    self.disableFieldsHighlight( self.html.forms.createReviewFormId );
                     self.spinner.hide();
                 }
             } );

@@ -29,8 +29,8 @@ class ConstraintEmailUniqueValidator extends ConstraintValidator
 
     /**
      * @param TranslatorInterface $translator
-     * @param EntityManager $entityManager
-     * @param UsersManager $usersManager
+     * @param EntityManager       $entityManager
+     * @param UsersManager        $usersManager
      */
     public function __construct(
         TranslatorInterface $translator,

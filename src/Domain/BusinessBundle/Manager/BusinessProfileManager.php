@@ -245,6 +245,15 @@ class BusinessProfileManager extends Manager
     /**
      * @param BusinessProfile $businessProfile
      */
+    public function deactivate(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setIsActive(false);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
     public function lock(BusinessProfile $businessProfile)
     {
         $businessProfile->setLocked(true);
