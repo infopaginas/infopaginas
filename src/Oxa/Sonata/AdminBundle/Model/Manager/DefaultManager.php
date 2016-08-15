@@ -14,6 +14,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DefaultManager implements ContainerAwareInterface
 {
+    const REPORT_NAME_DATE_FORMAT = 'Ymd_His';
+
     /**
      * @var ContainerInterface
      */

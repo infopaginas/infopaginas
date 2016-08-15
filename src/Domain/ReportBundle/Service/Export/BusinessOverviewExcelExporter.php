@@ -48,12 +48,8 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      */
     public function getResponse(string $code, string $format, array $filterParams) : Response
     {
-        $filename = sprintf(
-            '%s_%s.%s',
-            'business_overview_report',
-            date('Y_m_d_H_i_s', strtotime('now')),
-            $format
-        );
+        list($businessOverviewData, $filename) =
+            $this->businessOverviewReportManager->getBusinessOverviewReportDataAndName($filterParams, $format);
 
         $phpExcelObject = $this->phpExcel->createPHPExcelObject();
 
@@ -61,7 +57,7 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
             ->setTitle($this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle'))
         ;
 
-        $phpExcelObject = $this->setData($phpExcelObject, $filterParams);
+        $phpExcelObject = $this->setData($phpExcelObject, $filterParams, $businessOverviewData);
 
         $phpExcelObject->getActiveSheet()
             ->setTitle(
@@ -93,12 +89,8 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      * @return \PHPExcel
      * @throws \PHPExcel_Exception
      */
-    public function setData(\PHPExcel $phpExcelObject, array $filterParams)
+    public function setData(\PHPExcel $phpExcelObject, array $filterParams, array $data)
     {
-        // count data
-        $data = $this->businessOverviewReportManager
-            ->getBusinessOverviewDataByFilterParams($filterParams);
-
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
 
         // title part
