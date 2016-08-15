@@ -135,6 +135,15 @@ services:
         tags:
             - { name: validator.constraint_validator }
 
+    domain_site.constraint_email_unique:
+        class: Domain\SiteBundle\Validator\Constraints\ConstraintEmailUniqueValidator
+        arguments:
+            - @translator
+            - '@doctrine.orm.default_entity_manager'
+            - '@oxa.manager.users'
+        tags:
+            - { name: validator.constraint_validator }
+
     domain_site.constraint_url:
         class: Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpandedValidator
         arguments:

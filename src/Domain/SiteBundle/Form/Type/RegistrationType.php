@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Form\Type;
 
+use Domain\SiteBundle\Validator\Constraints\ConstraintEmailUnique;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -23,6 +24,7 @@ class RegistrationType extends AbstractType
                 ],
                 'constraints' => [
                     new ContainsEmailExpanded(),
+                    new ConstraintEmailUnique(),
                 ],
             ])
             ->add('firstname', TextType::class, [

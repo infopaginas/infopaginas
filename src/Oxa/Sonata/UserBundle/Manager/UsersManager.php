@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Repository\BusinessProfileRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use FOS\UserBundle\Model\UserInterface;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class UsersManager
@@ -51,6 +52,17 @@ class UsersManager
     {
         $businessProfiles = $this->getBusinessProfileRepository()->findUserBusinessProfiles($user);
         return $businessProfiles;
+    }
+
+    /**
+     * @param string $email
+     * @return User | null
+     */
+    public function getUserByEmail(string $email)
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        return $user;
     }
 
     /**
