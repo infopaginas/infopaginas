@@ -34,7 +34,7 @@ class AdminHelper
 
     const PERIOD_OPTION_CODE_DAILY      = 'daily';
     const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
-    
+
     const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
     const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
 
