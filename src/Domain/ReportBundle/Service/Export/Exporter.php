@@ -62,12 +62,11 @@ class Exporter
                     ->getResponse($code, $format, $params);
                 break;
             default:
-                $filename = sprintf(
-                    'export_%s_%s.%s',
-                    strtolower(substr($admin->getClass(), strripos($admin->getClass(), '\\') + 1)),
-                    date('Y_m_d_H_i_s', strtotime('now')),
-                    $format
+                $filename = $this->container->get('domain_report.manager.category_report_manager')->generateReportName(
+                    $format,
+                    strtolower(substr($admin->getClass(), strripos($admin->getClass(), '\\') + 1))
                 );
+
                 $exporter = new CoreExporter();
                 $response = $exporter->getResponse($format, $filename, $admin->getDataSourceIterator());
                 break;

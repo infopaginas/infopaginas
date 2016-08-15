@@ -206,7 +206,7 @@ class BusinessOverviewReportManager extends DefaultManager
      * @param string $format
      * @return mixed
      */
-    public function getBusinessOveriviewReportDataAndName(array $filterParams, string $format) : array
+    public function getBusinessOverviewReportDataAndName(array $filterParams, string $format) : array
     {
         $businessOverviewData = $this->getBusinessOverviewDataByFilterParams($filterParams);
 
@@ -216,12 +216,7 @@ class BusinessOverviewReportManager extends DefaultManager
             $reportName = 'business_overview_report';
         }
 
-        $filename = sprintf(
-            '%s_%s.%s',
-            $reportName,
-            date('Ymd_His', strtotime('now')),
-            $format
-        );
+        $filename = $this->generateReportName($format, $reportName);
 
         return [$businessOverviewData, $filename];
     }

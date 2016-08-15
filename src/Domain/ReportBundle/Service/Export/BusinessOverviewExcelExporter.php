@@ -49,7 +49,7 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
     public function getResponse(string $code, string $format, array $filterParams) : Response
     {
         list($businessOverviewData, $filename) =
-            $this->businessOverviewReportManager->getBusinessOveriviewReportDataAndName($filterParams, $format);
+            $this->businessOverviewReportManager->getBusinessOverviewReportDataAndName($filterParams, $format);
 
         $phpExcelObject = $this->phpExcel->createPHPExcelObject();
 

@@ -42,12 +42,7 @@ class SubscriptionPdfExporter extends PdfExporterModel
      */
     public function getResponse(string $code, string $format, array $objects) : Response
     {
-        $filename = sprintf(
-            '%s_%s.%s',
-            'subscription_report',
-            date('Y_m_d_H_i_s', strtotime('now')),
-            $format
-        );
+        $filename = $this->subscriptionReportManager->generateReportName($format, 'subscription_report');
 
         $subscriptionData = $this->subscriptionReportManager
             ->getSubscriptionsQuantities($objects);
