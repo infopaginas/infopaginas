@@ -64,7 +64,16 @@ class CategoryReportAdmin extends ReportAdmin
             ->remove('datePeriod')
             ->remove('categoryReportCategories.date')
             ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
-            ->add('categoryReportCategories.date', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add(
+                'categoryReportCategories.date',
+                'doctrine_orm_datetime_range',
+                array_merge(
+                    AdminHelper::getDatagridDateTypeOptions(),
+                    [
+                        'label' => $this->trans('filter.label_date', [], $this->translationDomain)
+                    ]
+                )
+            )
         ;
     }
 

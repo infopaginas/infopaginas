@@ -59,7 +59,6 @@ class LoadPageData extends OxaAbstractFixture
     protected function loadPage(array $data)
     {
         $object = new Page();
-        
         $object->setTitle($data['title']);
         $object->setCode($data['code']);
         $object->setDescription($data['description']);
@@ -75,5 +74,4 @@ class LoadPageData extends OxaAbstractFixture
 
         return $object;
     }
-
 }

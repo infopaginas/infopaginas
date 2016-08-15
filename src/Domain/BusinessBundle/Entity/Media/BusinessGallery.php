@@ -22,6 +22,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BusinessGallery
@@ -37,19 +38,21 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const MAX_IMAGES_PER_BUSINESS = 10;
+
     /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string - Description of Image
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
      */
     protected $description;
@@ -80,9 +83,12 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var \Oxa\Sonata\MediaBundle\Entity\Media
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="businessGallery",
      *     cascade={"persist"}
      * )
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=false)
+     * @Assert\valid()
+     * @Assert\NotBlank()
      */
     protected $media;
 
@@ -116,7 +122,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 
     public function __toString()
     {
-        return ($this->getId()) ? strval($this->getId()) : 'New BusinessMedia';
+        return $this->getId() ? sprintf('%s: %s', $this->getId(), $this->getBusinessProfile()->__toString()) : '';
     }
 
     /**

@@ -31,7 +31,6 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         } else {
             $results = $results[0];
         }
-        
 
         $queryBuilderForList = $this->getQueryBuilder();
 

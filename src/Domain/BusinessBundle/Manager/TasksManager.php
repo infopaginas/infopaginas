@@ -36,6 +36,9 @@ class TasksManager
     /** @var BusinessProfileManager */
     protected $businessProfileManager;
 
+    /** @var BusinessReviewManager $businessReviewManager */
+    protected $businessReviewManager;
+
     /**
      * TasksManager constructor.
      *
@@ -43,13 +46,17 @@ class TasksManager
      * @param EntityManager $entityManager
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function __construct(EntityManager $entityManager, BusinessProfileManager $businessProfileManager)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        BusinessProfileManager $businessProfileManager,
+        BusinessReviewManager $businessReviewManager
+    ) {
         $this->em = $entityManager;
 
         $this->repository = $this->em->getRepository(TaskRepository::SLUG);
 
         $this->businessProfileManager = $businessProfileManager;
+        $this->businessReviewManager  = $businessReviewManager;
     }
 
     /**
@@ -187,8 +194,10 @@ class TasksManager
 
         if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
             $this->getBusinessProfileManager()->activate($businessProfile);
-        } else {
+        } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
             $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $this->getTaskLocale($task));
+        } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
+            $this->getBusinessReviewsManager()->publish($task->getReview());
         }
 
         return $this->save($task);
@@ -245,6 +254,11 @@ class TasksManager
     private function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
+    }
+
+    private function getBusinessReviewsManager() : BusinessReviewManager
+    {
+        return $this->businessReviewManager;
     }
 
     /**

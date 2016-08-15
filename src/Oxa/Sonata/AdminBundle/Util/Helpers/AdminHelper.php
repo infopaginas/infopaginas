@@ -19,6 +19,8 @@ class AdminHelper
 {
     const FILTER_DATE_FORMAT = 'd-m-Y';
 
+    const FILTER_DATE_RANGE_FORMAT = 'dd-MM-y';
+
     const PER_PAGE_ALL = 'all';
 
     const DATE_FORMAT = 'd.m.Y';
@@ -32,6 +34,11 @@ class AdminHelper
 
     const PERIOD_OPTION_CODE_DAILY      = 'daily';
     const PERIOD_OPTION_CODE_PER_MONTH  = 'per_month';
+    
+    const FILTER_DATE_RANGE_CLASS   = 'oxa_filter_date_range';
+    const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
+
+    const MAX_IMAGE_FILESIZE = '10M';
 
     /**
      * @return array
@@ -122,7 +129,10 @@ class AdminHelper
                 'empty_value'  => false,
                 'empty_data'  => self::DATE_RANGE_CODE_LAST_WEEK,
                 'choices'   => self::getDatePeriodValues(),
-                'translation_domain' => 'SonataAdminBundle'
+                'translation_domain' => 'SonataAdminBundle',
+                'attr' => [
+                    'class' => self::FILTER_DATE_PERIOD_CLASS
+                ]
             ],
         ];
     }
@@ -142,6 +152,40 @@ class AdminHelper
                 'choices'   => self::getPeriodOptionValues(),
                 'translation_domain' => 'SonataAdminBundle'
             ],
+        ];
+    }
+
+    /**
+     * Used to set default datetime options
+     *
+     * @return array
+     */
+    public static function getDatagridDateTypeOptions()
+    {
+        return [
+            'field_type' => 'sonata_type_datetime_range_picker',
+            'field_options' => [
+                'format' => self::FILTER_DATE_RANGE_FORMAT,
+                'attr' => [
+                    'class' => self::FILTER_DATE_RANGE_CLASS
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getFormImageFileConstrain()
+    {
+        return [
+            'maxSize' => self::MAX_IMAGE_FILESIZE,
+            'mimeTypes' => [
+                "image/png",
+                "image/jpeg",
+                "image/jpg",
+                "image/gif",
+            ]
         ];
     }
 }

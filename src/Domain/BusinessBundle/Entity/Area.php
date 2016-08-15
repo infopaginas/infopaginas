@@ -34,14 +34,14 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
     /**
      * @var string - Area name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -104,17 +104,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New area';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     /**
@@ -260,5 +250,15 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
         $this->locality->remove($locality);
 
         return $this;
+    }
+
+    /**
+     * Get locality
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLocality()
+    {
+        return $this->locality;
     }
 }

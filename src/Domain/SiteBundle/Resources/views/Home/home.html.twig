@@ -2,7 +2,7 @@
 
 {% block doubleClickHeader %}
     {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:doubleClickHeaderTemplate.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
+        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
     {% endif %}
 {% endblock %}
 
@@ -33,7 +33,7 @@
                 </a>
             </li>
              {% else %}
-            <li class="login-link desc-menu btn">
+            <li class="login-link desc-menu not-logged-home">
                 <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
                     login
                 </a>
@@ -54,7 +54,7 @@
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
                     {% if bannerFactory is not null %}
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                        {% include 'DomainSiteBundle:Layout:Widgets/banner_double_click_widget.html.twig' with { 'banner' :
                             bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD')) }
                         %}
                     {% endif %}
@@ -99,14 +99,14 @@
                 <div class="row">
                     <div class="col-xs-6 banner-small">
                         {% if bannerFactory is not null %}
-                            {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                            {% include 'DomainSiteBundle:Layout:Widgets/banner_double_click_widget.html.twig' with { 'banner' :
                                 bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEFT'))  }
                             %}
                         {% endif %}
                     </div>
                     <div class="col-xs-6 banner-small">
                         {% if bannerFactory is not null %}
-                            {% include 'DomainSiteBundle:Layout:Widgets/bannerDoubleClickWidget.html.twig' with { 'banner' :
+                            {% include 'DomainSiteBundle:Layout:Widgets/banner_double_click_widget.html.twig' with { 'banner' :
                                 bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_RIGHT'))  }
                             %}
                         {% endif %}
@@ -117,10 +117,7 @@
 {% endblock %}
 
 {% block homeModals %}
-    {% include 'DomainSiteBundle:Home:Modals/login.html.twig' with { 'loginForm' : loginForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' with { 'registrationForm' : registrationForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/forgotten_password.html.twig' with { 'resetPasswordRequestForm' : resetPasswordRequestForm} %}
-    {% include 'DomainSiteBundle:Home:Modals/reset_password.html.twig' with { 'resetPasswordForm' : resetPasswordForm} %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
 {% endblock %}
 
 {% block scripts %}

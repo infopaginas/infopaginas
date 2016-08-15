@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -25,6 +26,8 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
  */
 class BusinessProfileManager extends Manager
 {
+    const DEFAULT_LOCALE_NAME = 'San Juan';
+
     /**
      * @var CategoryManager
      */
@@ -88,8 +91,7 @@ class BusinessProfileManager extends Manager
     {
         $locationName = $location->name;
         if (empty($locationName)) {
-            // TODO Move magic string this to config
-            $locationName = "San Juan";
+            $locationName = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -109,8 +111,7 @@ class BusinessProfileManager extends Manager
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
         if (empty($location)) {
-            // TODO Move magic string this to config
-            $location = "San Juan";
+            $location = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -160,9 +161,7 @@ class BusinessProfileManager extends Manager
     {
         $businessProfile = $this->getRepository()->findOneBy([
             'uid' => $uid,
-            'isActive' => true,
             'locked' => false,
-            'actualBusinessProfile' => null,
         ]);
 
         return $businessProfile;
@@ -215,7 +214,6 @@ class BusinessProfileManager extends Manager
      */
     public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en_US')
     {
-        //todo: move to model
         if (!$businessProfile->getId()) {
             $businessProfile->setIsActive(false);
         }
@@ -410,6 +408,12 @@ class BusinessProfileManager extends Manager
         return [];
     }
 
+    public function getLastReviewForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $lastReview = $this->getBusinessProfileReviewsRepository()->findBusinessProfileLastReview($businessProfile);
+        return $lastReview;
+    }
+
     /**
      * @param BusinessProfile $businessProfile
      */
@@ -417,6 +421,11 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    public function countSearchResults(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->countSearchResults($searchParams);
     }
 
     /**
@@ -464,15 +473,18 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @return EntityManager
+     * @return BusinessReviewRepository
      */
-    private function getEntityManager() : EntityManager
+    private function getBusinessProfileReviewsRepository()
     {
-        return $this->em;
+        return $this->getEntityManager()->getRepository(BusinessReviewRepository::SLUG);
     }
 
-    public function countSearchResults(SearchDTO $searchParams)
+    /**
+     * @return EntityManager
+     */
+    protected function getEntityManager() : EntityManager
     {
-        return $this->getRepository()->countSearchResults($searchParams);
+        return $this->em;
     }
 }

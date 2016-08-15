@@ -10,7 +10,6 @@ use Domain\BusinessBundle\Entity\Area;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 
-
 /**
  * Locality
  *
@@ -26,7 +25,7 @@ class Locality implements GeolocationInterface
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -57,6 +56,14 @@ class Locality implements GeolocationInterface
      * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
      */
     protected $area;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->businessProfile = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -105,22 +112,6 @@ class Locality implements GeolocationInterface
     }
 
     /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->businessProfile = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
      * Add businessProfile
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
@@ -130,12 +121,11 @@ class Locality implements GeolocationInterface
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfile[] = $businessProfile;
-    }   
+    }
 
     /**
-     * Remove businessProfile
-     *
-     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     * @param BusinessProfile $businessProfile
+     * @return $this
      */
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
@@ -165,5 +155,13 @@ class Locality implements GeolocationInterface
         $this->area = $area;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName() ?: '';
     }
 }

@@ -1,0 +1,41 @@
+{% extends 'OxaSonataAdminBundle:CRUD:list.html.twig' %}
+
+{% block list_filters %}
+    {{  parent() }}
+
+    <script>
+        // manage date range filter (display or not)
+        $(document).ready(function () {
+            var dateRangeFilterClass   = '{{constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::FILTER_DATE_RANGE_CLASS')}}';
+            var datePeriodFilterClass  = '{{constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::FILTER_DATE_PERIOD_CLASS')}}';
+            var datePeriodFilterCustom = '{{constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATE_RANGE_CODE_CUSTOM')}}';
+
+            var dateRangeFilterInputs   = $('.' + dateRangeFilterClass);
+            var dataPeriodSelect        = $('select.' + datePeriodFilterClass);
+
+            if (dateRangeFilterInputs.length && dataPeriodSelect.length) {
+                var dateRangeFormBox = dateRangeFilterInputs.parents('div.form-group');
+
+                // check, when we change date period value
+                dataPeriodSelect.change(function () {
+                    manageDateRangeBox(this.value);
+                });
+
+                // check, when we open page
+                manageDateRangeBox(dataPeriodSelect.val());
+
+                /**
+                 * Show date range filter if we choose date period as Custom
+                 * @param datePeriodValue
+                 */
+                function manageDateRangeBox(datePeriodValue) {
+                    if (datePeriodValue == datePeriodFilterCustom) {
+                        dateRangeFormBox.css('display', 'block');
+                    } else {
+                        dateRangeFormBox.css('display', 'none');
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

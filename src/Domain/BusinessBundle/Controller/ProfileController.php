@@ -3,14 +3,18 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Form\Type\BusinessReviewType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Manager\BusinessReviewManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 use Domain\BannerBundle\Model\TypeInterface;
 
@@ -25,8 +29,6 @@ class ProfileController extends Controller
     const SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE = 'Business Profile Request send. Please wait for approval';
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
-
-    const INTERNAL_SERVER_ERROR_STATUS_CODE = 500;
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -79,7 +81,7 @@ class ProfileController extends Controller
                 return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
             }
         } catch (Exception $e) {
-            return $this->getFailureResponse($e->getMessage(), [], 500);
+            return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
@@ -95,24 +97,44 @@ class ProfileController extends Controller
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
-        $discounts      = $businessProfile->getDiscounts();
-
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
         $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile);
 
+        $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
+        $reviewForm       = $this->getBusinessReviewForm();
+        $reviewsCount     = $this->getBusinessReviewManager()->getReviewsCountForBusinessProfile($businessProfile);
+        $reviewsAvgRating = $this->getBusinessReviewManager()
+            ->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
+
         $bannerFactory->prepearBanners(array(
             TypeInterface::CODE_PORTAL,
         ));
 
-
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
-            'businessProfile' => $businessProfile,
-            'discounts'       => $discounts,
-            'photos'          => $photos,
-            'advertisements'  => $advertisements,
-            'bannerFactory'   => $bannerFactory,
+            'businessProfile'  => $businessProfile,
+            'photos'           => $photos,
+            'advertisements'   => $advertisements,
+            'lastReview'       => $lastReview,
+            'reviewForm'       => $reviewForm->createView(),
+            'reviewsCount'     => $reviewsCount,
+            'reviewsAvgRating' => $reviewsAvgRating,
+            'bannerFactory'    => $bannerFactory,
         ]);
+    }
+
+    /**
+     * @return \Symfony\Component\Form\Form
+     */
+    private function getBusinessReviewForm()
+    {
+        return $this->createForm(new BusinessReviewType());
+    }
+
+    private function getBusinessReviewManager() : BusinessReviewManager
+    {
+        return $this->get('domain_business.manager.review');
     }
 
     /**

@@ -27,7 +27,6 @@ class SearchResultsDTO extends AbstractDTO
         $this->resultCount      = $resultCount;
         $this->page             = $page;
         $this->pageCount        = $pageCount;
-        
         $this->categories       = $categories;
         $this->neighborhoods    = $neighborhoods;
     }

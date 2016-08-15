@@ -1,3 +1,7 @@
+parameters:
+    google_places_url: "https://maps.googleapis.com/maps/api/place/autocomplete/json?&types=(cities)&components=country:pr&language=locale&region=pr&key=google_api_key&input="
+    google_api_key: "AIzaSyBBl4CQTYhUmdK4zs9EVcPmPjLBiIWez3w"
+
 services:
     #services section:
     domain_site.mailer:
@@ -11,7 +15,7 @@ services:
 
     domain_site.manager.geolocation:
         class: Domain\SiteBundle\Manager\GeolocationManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '%google_places_url%', '%google_api_key%']
 
     #form types section
     domain_site.registration.form.type:
@@ -128,5 +132,12 @@ services:
         arguments:
             - @translator
             - @validator
+        tags:
+            - { name: validator.constraint_validator }
+
+    domain_site.constraint_url:
+        class: Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpandedValidator
+        arguments:
+            - @translator
         tags:
             - { name: validator.constraint_validator }

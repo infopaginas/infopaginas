@@ -54,8 +54,7 @@ define(
             this.errorHandler.enableFieldsHighlight();
             if ( this.errorHandler.tabSwitchRequired() ) {
                 var $tab = $( this.formId ).find( '.error' ).parents( '.tabs-block li.active' );
-                var href = $tab.find('a').attr('href');
-                console.log(href);
+                var href = $tab.find( 'a' ).attr( 'href' );
             }
             alertify.error( errorThrown );
         };
@@ -63,7 +62,7 @@ define(
         //ajax request
         form.prototype.doRequest = function ( ajaxURL, data ) {
             //no additional info required? - just serialize form
-            if (typeof data === 'undefined') {
+            if( typeof data === 'undefined' ) {
                 data = this.getRequestData();
             } else {
                 var formData = this.getRequestData();

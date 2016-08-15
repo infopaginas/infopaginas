@@ -103,6 +103,8 @@ define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertif
 
             var login = new Login();
             login.doRequest( login.urls.login_check, loginData );
+
+            $( this.html.forms.registrationFormId )[0].reset();
         } else {
             this.enableFieldsHighlight( response.errors );
             alertify.error( response.message );

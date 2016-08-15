@@ -41,24 +41,36 @@ class HomeController extends Controller
             TypeInterface::CODE_PORTAL_RIGHT,
         ));
 
+        return $this->render(
+            'DomainSiteBundle:Home:home.html.twig',
+            [
+                'menuItems'                => $menuItems,
+                'bannerFactory'            => $bannerFactory,
+                'articles'                 => $articles,
+                'videos'                   => $videos,
+                'locale'                   => $locale,
+            ]
+        );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function authModalAction()
+    {
         $loginForm                = $this->createForm(new LoginType());
         $registrationForm         = $this->createForm(new RegistrationType());
         $resetPasswordRequestForm = $this->createForm(new ResetPasswordRequestType());
         $resetPasswordForm        = $this->createForm(new ResetPasswordType());
 
         return $this->render(
-            'DomainSiteBundle:Home:home.html.twig',
-            array(
-                'menuItems'                => $menuItems,
-                'bannerFactory'            => $bannerFactory,
-                'articles'                 => $articles,
-                'videos'                   => $videos,
-                'locale'                   => $locale,
+            'DomainSiteBundle:Home:auth_modal.html.twig',
+            [
                 'loginForm'                => $loginForm->createView(),
                 'registrationForm'         => $registrationForm->createView(),
                 'resetPasswordRequestForm' => $resetPasswordRequestForm->createView(),
                 'resetPasswordForm'        => $resetPasswordForm->createView(),
-            )
+            ]
         );
     }
 }
