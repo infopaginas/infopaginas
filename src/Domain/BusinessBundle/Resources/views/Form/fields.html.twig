@@ -17,122 +17,15 @@
         var latitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_latitude' }}');
         var longitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_longitude' }}');
 
-        /**
-         * Get address by coordinates
-         */
-        function geocodePlace(latlng, infowindow){
-            var geocoder = new google.maps.Geocoder();
+        var MAP_LAT = {{ latitude }};
+        var MAP_LNG = {{ longitude }};
+        var MAP_ZOOM = {{ zoom }};
 
-            geocoder.geocode({'location': latlng}, function(results, status) {
-                if (results.length == 0) {
-                    return;
-                }
-                var place = results.shift();
-                infowindow.setContent(place.formatted_address);
-                updateFieldValue(place.formatted_address, latlng.lat, latlng.lng);
-                return results.shift();
-            });
-        }
-
-        /**
-         * Create marker
-         */
-        function addMarker(latlng,map,infowindow,formattedAddress) {
-            var marker = new google.maps.Marker({
-                position: latlng,
-                map: map,
-                draggable: true,
-                title: formattedAddress
-            });
-
-            if(formattedAddress.length > 0){
-                infowindow.open(map, marker);
-            }
-            infowindow.setContent(formattedAddress);
-
-            // change address value when marker is dragged
-            marker.addListener('dragend',function(event) {
-                var latlng = {
-                    lat: event.latLng.lat(),
-                    lng: event.latLng.lng()
-                };
-
-                geocodePlace(latlng, infowindow);
-                updateFieldValue(formattedAddress, latlng.lat, latlng.lng)
-            });
-
-            // show and hide mark description
-            marker.addListener('click',function(event) {
-                infowindow.open(map, marker);
-            });
-
-            return marker;
-        }
-
-        /**
-         * Update input value with new address
-         */
-        function updateFieldValue(formattedAddress, lat, lon) {
-            addressInput.value = formattedAddress;
-            if (latitudeInput && longitudeInput) {
-                latitudeInput.value = lat;
-                longitudeInput.value = lon;
-            }
-        }
-
-        /**
-         * Init map with search box
-         */
-        function initAutocomplete() {
-            var myLatLng = new google.maps.LatLng({{ latitude }}, {{ longitude }});
-            var infowindow = new google.maps.InfoWindow;
-
-            if (latitudeInput && longitudeInput) {
-                latitudeInput.value = {{ latitude }};
-                longitudeInput.value = {{ longitude }};
-            }
-
-            var map = new google.maps.Map(document.getElementById('google-map'), {
-                center: {lat: {{ latitude }}, lng: {{ longitude }} },
-                zoom: {{ zoom }},
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
-
-            google.maps.event.trigger(map, 'resize');
-
-            var marker = addMarker(myLatLng, map, infowindow, '{{ value }}');
-
-            // Create the search box and link it to the UI element.
-            var input = document.getElementById('pac-input');
-            var searchBox = new google.maps.places.SearchBox(input);
-
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-            // Bias the SearchBox results towards current map's viewport.
-            map.addListener('bounds_changed', function() {
-                searchBox.setBounds(map.getBounds());
-            });
-
-            // Listen for the event fired when the user selects a prediction and retrieve
-            // more details for that place.
-            searchBox.addListener('places_changed', function() {
-                var places = searchBox.getPlaces();
-
-                if (places.length == 0) {
-                    return;
-                }
-
-                marker.setMap(null);
-
-                var place = places.shift();
-
-                var latlng = place.geometry.location;
-
-                marker = addMarker(latlng, map, infowindow, place.formatted_address);
-                updateFieldValue(place.formatted_address, latlng.lat, latlng.lng);
-            });
-        }
+        var MARKER_VALUE = '{{ value }}';
     </script>
+
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/google_map_admin.js') }}"></script>
+
     <script src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places&callback=initAutocomplete&language={{ language }}"
             async defer
     ></script>

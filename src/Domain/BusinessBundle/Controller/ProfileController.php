@@ -102,8 +102,8 @@ class ProfileController extends Controller
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
-        $reviewsCount     = $this->getBusinessReviewManager()->getReviewsCountForBusinessProfile($businessProfile);
-        $reviewsAvgRating = $this->getBusinessReviewManager()
+        $reviewsCount     = $this->getBusinessProfilesManager()->getReviewsCountForBusinessProfile($businessProfile);
+        $reviewsAvgRating = $this->getBusinessProfilesManager()
             ->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
@@ -130,11 +130,6 @@ class ProfileController extends Controller
     private function getBusinessReviewForm()
     {
         return $this->createForm(new BusinessReviewType());
-    }
-
-    private function getBusinessReviewManager() : BusinessReviewManager
-    {
-        return $this->get('domain_business.manager.review');
     }
 
     /**
