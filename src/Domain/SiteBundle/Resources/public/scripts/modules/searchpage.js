@@ -7,8 +7,8 @@ define(
         options = options || {};
         options.selector = options.selector || 'body';
         this.events = {
-            "#category-select change" : "selectCategory",
-            "#neighborhood-select change" : "selectCategory"
+            ".category-select change" : "selectCategory",
+            ".neighborhood-select change" : "selectCategory"
         };
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
