@@ -176,12 +176,8 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('useMapAddress', null, [
                         'label' => $this->trans('form.label_useMapAddress', [], $this->getTranslationDomain())
                     ])
-                    ->add('latitude', null, [
-                        'read_only' => true
-                    ])
-                    ->add('longitude', null, [
-                        'read_only' => true
-                    ])
+                    ->add('latitude')
+                    ->add('longitude')
                     ->add('googleAddress', 'google_map', [
                         'latitude' => $latitude,
                         'longitude' => $longitude,
@@ -364,15 +360,21 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->getContainer()
                 ->get('domain_business.manager.address_manager');
 
-            $addressResult = $addressManager->validateAddress($object->getGoogleAddress());
+            $addressResult = $addressManager->validateCoordinates($object->getLatitude(), $object->getLongitude());
 
             if (!empty($addressResult['error'])) {
-                $errorElement->with('googleAddress')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.google_address.invalid',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
+                $errorMessage = $this->getTranslator()->trans(
+                    'form.google_address.invalid',
+                    [],
+                    $this->getTranslationDomain()
+                );
+
+                $errorElement
+                    ->with('latitude')
+                        ->addViolation($errorMessage)
+                    ->end()
+                    ->with('longitude')
+                        ->addViolation($errorMessage)
                     ->end()
                 ;
             } else {
