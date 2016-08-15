@@ -137,18 +137,18 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $this->search($searchParams);
     }
 
-    public function searchAutosuggestWithBuilder($searchQuery, $limit = 5, $offset = 0)
+    public function searchAutosuggestWithBuilder(SearchDTO $searchParams, $limit = 5, $offset = 0)
     {
-        $searchQuery    = $this->splitPhraseToPlain($searchQuery);
+        $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
+        $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
 
         $queryBuilder = $this->getQueryBuilder()
             ->addSelect('bp.name');
 
-        $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
-        $this->addRankQueryBuilder($queryBuilder);
+        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
         $this->addHeadlineToNameQueryBuilder($queryBuilder);
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
-        $this->addOrderByRankQueryBuilder($queryBuilder);
+        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
 
         $result = $queryBuilder->getQuery()->getResult();
 

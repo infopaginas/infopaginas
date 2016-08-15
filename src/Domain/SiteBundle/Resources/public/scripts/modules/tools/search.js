@@ -102,7 +102,9 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         url = url || this.options.autoCompleteUrl;
         var self = this;
         this.searchBox.autocomplete({
-            'source': url,
+            'source': function( term, callback ) {
+                $.getJSON( url, { q : term.term }, callback );
+            } ,
             minLength: this.options.autoCompleteMinLen,
             create: function() {
                 $( this ).data( 'ui-autocomplete' )._renderItem = self.returnAutocompleteDataElement;
