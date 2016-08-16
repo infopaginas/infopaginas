@@ -248,6 +248,7 @@ class BusinessProfileManager extends Manager
     public function deactivate(BusinessProfile $businessProfile)
     {
         $businessProfile->setIsActive(false);
+        $businessProfile->setIsClosed(true);
         $this->commit($businessProfile);
     }
 

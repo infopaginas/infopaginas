@@ -552,6 +552,13 @@ class BusinessProfile implements
      */
     protected $locale;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_closed", type="boolean", options={"default" : 0})
+     */
+    protected $isClosed;
+
      /**
      * @var string
      *
@@ -660,6 +667,7 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->locked = false;
+        $this->isClosed = false;
 
         $this->uid = uniqid('', true);
     }
@@ -2232,5 +2240,23 @@ class BusinessProfile implements
     public function getDiscount()
     {
         return $this->discount;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsClosed()
+    {
+        return $this->isClosed;
+    }
+
+    /**
+     * @param boolean $isClosed
+     * @return BusinessProfile
+     */
+    public function setIsClosed($isClosed)
+    {
+        $this->isClosed = $isClosed;
+        return $this;
     }
 }
