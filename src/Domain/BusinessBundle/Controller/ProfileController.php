@@ -160,6 +160,9 @@ class ProfileController extends Controller
         return $this->get('domain_business.manager.business_profile');
     }
 
+    /**
+     * @return \Domain\BusinessBundle\Form\Handler\BusinessCloseRequestFormHandler
+     */
     private function getBusinessProfileCloseRequestFormHandler()
     {
         return $this->get('domain_business.form.handler.business_close_request');

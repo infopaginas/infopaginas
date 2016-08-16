@@ -42,15 +42,6 @@ class SearchController extends Controller
     }
 
     /**
-     * Search by category
-     */
-    public function categoryAction(Request $request)
-    {
-        return $this->render('DomainSearchBundle:Home:search.html.twig');
-    }
-
-
-    /**
      * Source endpoint for jQuery UI Autocomplete plugin in search widget
      */
     public function autocompleteAction(Request $request)

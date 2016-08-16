@@ -21,13 +21,10 @@
 {% set businessReviewsCount = get_business_profile_reviews_count(business) %}
 {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(business) %}
 
-{% if businessReviewsCount > 0 %}
-    <div class="reviews">
-        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#reviews">
-            {% include ':blocks/business:review_rating_stars.html.twig'
-                with { 'rating': reviewsAvgRating } %}
-            <span>{{ businessReviewsCount }} Reviews</span>
-        </a>
-    </div>
-{% endif %}
-
+<div class="reviews">
+    <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#reviews">
+        {% include ':blocks/business:review_rating_stars.html.twig'
+        with { 'rating': reviewsAvgRating } %}
+        <span>{{ businessReviewsCount }} Reviews</span>
+    </a>
+</div>

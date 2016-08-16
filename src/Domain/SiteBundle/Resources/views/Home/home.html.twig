@@ -7,20 +7,20 @@
 {% endblock %}
 
 {% block homapageHeaderHexagonDesc %}
-    {% include 'DomainSiteBundle:Home:Widgets/hexagon_menu_widget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_widget.html.twig' %}
 {% endblock %}
 
 {% block  homapageHeaderHexagonMobile %}
-    {% include 'DomainSiteBundle:Home:Widgets/hexagon_menu_mobile_widget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_mobile_widget.html.twig' %}
 {% endblock %}
 
 {% block  homapageHeaderSearchBlock %}
-    {% include 'DomainSiteBundle:Home:Widgets/search_widget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/search_widget.html.twig' %}
 {% endblock %}
 
 {% block homepageHeaderTopBarNavigation %}
     <ul class="nav navbar-nav navbar-right">
-        {% include 'DomainSiteBundle:Home:Widgets/language_widget.html.twig' %}
+        {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
         {% if (app.user) %}
             <li class="login-link desc-menu logged">
                 <a href="{{ path('domain_site_user_profile') }}" class="login-button">
@@ -54,7 +54,7 @@
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
                     {% if bannerFactory is not null %}
-                        {% include 'DomainSiteBundle:Layout:Widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
                             bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD')) }
                         %}
                     {% endif %}
@@ -77,7 +77,7 @@
                         <hr>
                         <a href="{{ path('domain_article_homepage') }}" class="btn">{% trans %}View more articles{% endtrans %}</a>
                     </div>
-                    {% include 'DomainSiteBundle:Home:Widgets/articles_widget.html.twig' %}
+                    {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' %}
                 </div>
                 <div class="col-md-6 videos-section">
                     <div class="section-title">
@@ -85,7 +85,7 @@
                         <hr>
                         <a href="#" class="btn">{% trans %}View more videos{% endtrans %}</a>
                     </div>
-                    {% include 'DomainSiteBundle:Home:Widgets/videos_widget.html.twig' %}
+                    {% include 'DomainSiteBundle:Home:widgets/videos_widget.html.twig' %}
                 </div>
             </div>
         </div>
@@ -99,14 +99,14 @@
                 <div class="row">
                     <div class="col-xs-6 banner-small">
                         {% if bannerFactory is not null %}
-                            {% include 'DomainSiteBundle:Layout:Widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
                                 bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEFT'))  }
                             %}
                         {% endif %}
                     </div>
                     <div class="col-xs-6 banner-small">
                         {% if bannerFactory is not null %}
-                            {% include 'DomainSiteBundle:Layout:Widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
                                 bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_RIGHT'))  }
                             %}
                         {% endif %}
