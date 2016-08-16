@@ -3,3 +3,7 @@ domain_business_review_save:
     defaults: { _controller: DomainBusinessBundle:Reviews:save }
     options:
         expose: true
+
+domain_business_reviews_list:
+    path: /list/{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Reviews:list }

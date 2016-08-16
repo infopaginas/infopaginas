@@ -1,0 +1,45 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block breakcrumbs %}
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="#">Bookstores in San Juan <span>&nbsp; &#187; &nbsp; </span></a>
+                    <span>{{ businessProfile.getName() }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block main %}
+    <!-- Profile -->
+    <section id="profile" class="profile">
+        <div class="container">
+            <div class="row">
+                {% for review in reviews %}
+                    <div class="col-md-12">
+                        <div class="cards">
+                            <div class="card-item reviews-page">
+                                <div class="col-xs-3 fields-item review-col reviews-page">
+                                    <div class="account-photo"><i class="fa fa-user" aria-hidden="true"></i>
+                                    </div>
+                                    <span class="blue-c bold">{{ review.getUsername() }}</span>
+                                    <div class="reviews">
+                                        {% include ':blocks/business:review_rating_stars.html.twig'
+                                        with { 'rating': review.getRating() } %}
+                                    </div>
+                                    <span class="review-date">{{ review.getCreatedAt() | date('d M Y') }}</span>
+                                </div>
+                                <div class="col-xs-9 fields-item review-col reviews-page">
+                                    <p>{{ review.getContent() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -55,6 +55,18 @@ class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager
         $this->commit($review);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getReviewsForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        return $this->getRepository()->findReviewsByBusinessProfile($businessProfile);
+    }
+
+    /**
+     * @return BusinessReviewRepository
+     */
     public function getRepository()
     {
         return $this->em->getRepository(BusinessReviewRepository::SLUG);
