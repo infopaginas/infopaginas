@@ -5,8 +5,10 @@
         <div class="container">
             <div class="row">
                 <div class="crumbs">
-                    <a href="#">Bookstores in San Juan <span>&nbsp; &#187; &nbsp; </span></a>
-                    <span>{{ businessProfile.getName() }}</span>
+                    <a href="{{ path('domain_business_profile_view', { slug: businessProfile.getSlug() }) }}">
+                        {{ businessProfile.getName() }} <span>&nbsp; &#187; &nbsp; </span>
+                    </a>
+                    <span>{% trans %}Reviews{% endtrans %}</span>
                 </div>
             </div>
         </div>
@@ -18,6 +20,7 @@
     <section id="profile" class="profile">
         <div class="container">
             <div class="row">
+                {% set reviews = reviewsResultDTO.resultSet %}
                 {% for review in reviews %}
                     <div class="col-md-12">
                         <div class="cards">
@@ -40,6 +43,7 @@
                     </div>
                 {% endfor %}
             </div>
+            {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : reviewsResultDTO.page, 'pageCount' : reviewsResultDTO.pageCount } %}
         </div>
     </section>
 {% endblock %}

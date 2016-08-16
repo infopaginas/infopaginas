@@ -219,7 +219,7 @@
 
 {% block footer %}
     {{ parent() }}
-    {% include 'DomainSiteBundle:User:Modals/password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
+    {% include 'DomainSiteBundle:User:modals/password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
 {% endblock %}
 
 {% block scripts %}

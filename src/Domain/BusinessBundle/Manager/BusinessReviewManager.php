@@ -5,7 +5,9 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
+use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
  * Created by PhpStorm.
@@ -62,6 +64,22 @@ class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager
     public function getReviewsForBusinessProfile(BusinessProfile $businessProfile)
     {
         return $this->getRepository()->findReviewsByBusinessProfile($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param AbstractDTO $paramsDTO
+     * @return ReviewsResultsDTO
+     */
+    public function getBusinessProfileReviewsResultDTO(BusinessProfile $businessProfile, AbstractDTO $paramsDTO)
+    {
+        $results = $this->getRepository()->findPaginatedReviewsByBusinessProfile($businessProfile, $paramsDTO);
+
+        $totalResults = $this->getRepository()->findBusinessProfileReviewsTotalCount($businessProfile);
+
+        $pagesCount = ceil($totalResults/$paramsDTO->limit);
+
+        return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
 
     /**
