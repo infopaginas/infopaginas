@@ -22,7 +22,7 @@
         {% endif %}
 
         {% if dcDataDTO.categories is not empty %}
-            googletag.pubads().setTargeting("categories", {{ dcDataDTO.categories|json_encode }})
+            googletag.pubads().setTargeting("categories", {{ dcDataDTO.categories|json_encode|raw }})
         {% endif %}
     {% endif %}
     googletag.pubads().enableSingleRequest();
