@@ -37,4 +37,14 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getPublishedArticlesByCategory($category)
+    {
+        return $this->getArticlesQueryBuilder()
+            ->leftJoin('a.category', 'c')
+            ->andWhere('c.slug = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getResult();
+    }
 }

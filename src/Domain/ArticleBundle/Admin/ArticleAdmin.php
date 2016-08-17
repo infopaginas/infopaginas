@@ -29,7 +29,6 @@ class ArticleAdmin extends OxaAdmin
             ->add('id')
             ->add('title')
             ->add('category')
-            ->add('description')
             ->add('isPublished', null, [], null, $choiceOptions)
             ->add('isOnHomepage', null, [], null, $choiceOptions)
             ->add('activationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
@@ -48,7 +47,6 @@ class ArticleAdmin extends OxaAdmin
             ->add('id')
             ->add('title')
             ->add('category')
-            ->add('description')
             ->add('isPublished')
             ->add('isOnHomepage')
             ->add('activationDate')
@@ -95,11 +93,6 @@ class ArticleAdmin extends OxaAdmin
                 ])
             ->end()
             ->with('Content')
-                ->add('description', null, [
-                    'attr' => [
-                        'rows' => 3,
-                    ]
-                ])
                 ->add('body', 'ckeditor', [
                     'required' => true
                 ])
@@ -121,7 +114,6 @@ class ArticleAdmin extends OxaAdmin
             ->add('image', null, [
                 'template' => 'DomainArticleBundle:Admin:show_image.html.twig'
             ])
-            ->add('description')
             ->add('body', null, [
                 'template' => 'DomainArticleBundle:Admin:show_body.html.twig'
             ])

@@ -8,7 +8,7 @@ oxa_wistia:
 
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
-    prefix:   /article
+    prefix:   /articles
 
 domain_menu:
     resource: "@DomainMenuBundle/Resources/config/routing.yml"

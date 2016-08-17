@@ -31,4 +31,9 @@ class ArticleManager extends Manager
     {
         return $this->getRepository()->findOneBy(['slug' => $slug]);
     }
+
+    public function getPublishedArticlesByCategory($category)
+    {
+        return $this->getRepository()->getPublishedArticlesByCategory($category);
+    }
 }
