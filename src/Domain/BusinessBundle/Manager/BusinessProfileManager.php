@@ -470,6 +470,18 @@ class BusinessProfileManager extends Manager
         return $this->getBusinessProfileReviewsRepository()->getReviewsCountForBusinessProfile($businessProfile);
     }
 
+    public function removeItemWithHiddenAddress($searchResultsDTO)
+    {
+        foreach ($searchResultsDTO->resultSet as $key => $item)
+        {
+            if ($item->getHideAddress()) {
+                unset($searchResultsDTO->resultSet[$key]);
+            }
+        }
+
+        return $searchResultsDTO;
+    }
+
     /**
      * Persist & flush
      *
