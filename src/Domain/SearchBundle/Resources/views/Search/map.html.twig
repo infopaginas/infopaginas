@@ -1,11 +1,5 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
-{% endblock %}
-
 {% block tabMenu %}
     <ul class="tab-btn">
         <li><a href="{{ path('domain_search_index', app.request.query.all) }}"><i class="fa fa-list" aria-hidden="true"></i><span>list</span></a>

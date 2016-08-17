@@ -1,11 +1,5 @@
 {% extends "DomainSiteBundle:Layout:base.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
-{% endblock %}
-
 {%block main %}
 <!-- Profile -->
     {% block profile %}

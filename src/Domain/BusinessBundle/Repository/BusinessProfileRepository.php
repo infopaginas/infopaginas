@@ -198,7 +198,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             },
             $words
         );
-        $plain = implode(' & ', $wordParts);
+        $plain = implode(' | ', $wordParts);
 
         return $plain;
     }
