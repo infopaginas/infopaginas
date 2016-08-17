@@ -42,7 +42,7 @@ class UsersManager
      */
     public function getUserReviews(UserInterface $user) : array
     {
-        $userReviews = $this->getReviewsRepository()->findUserReviews($user);
+        $userReviews = $this->getBusinessProfileRepository()->findBusinessProfilesReviewedByUser($user);
         return $userReviews;
     }
 

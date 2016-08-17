@@ -69,6 +69,24 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * @param UserInterface $user
+     * @return array
+     */
+    public function findBusinessProfilesReviewedByUser(UserInterface $user)
+    {
+        $queryBuilder = $this->createQueryBuilder('bp')
+            ->select('DISTINCT(bp.name) name, bp.slug')
+            ->join('bp.businessReviews', 'br')
+            ->where('br.user = :user')
+            ->andWhere('bp.isActive = TRUE')
+            ->andWhere('bp.locked = FALSE')
+            ->setParameter('user', $user)
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
      * Main search functionality
      *
      * @param SearchDTO $searchParams
