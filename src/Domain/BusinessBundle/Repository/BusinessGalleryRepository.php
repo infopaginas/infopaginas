@@ -17,8 +17,6 @@ use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
  */
 class BusinessGalleryRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainBusinessBundle:Media\BusinessGallery';
-
     /**
      * @param BusinessProfile $businessProfile
      * @return array

@@ -10,5 +10,4 @@ namespace Oxa\WistiaBundle\Repository;
  */
 class WistiaMediaRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'OxaWistiaBundle:WistiaMedia';
 }

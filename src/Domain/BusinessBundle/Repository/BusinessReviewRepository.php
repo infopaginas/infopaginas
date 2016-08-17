@@ -16,8 +16,6 @@ use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
  */
 class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainBusinessBundle:Review\BusinessReview';
-
     /**
      * @param UserInterface $user
      * @return array
@@ -41,7 +39,7 @@ class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
             ->select($qb->expr()->count('review.id'))
-            ->from(self::SLUG, 'review')
+            ->from(BusinessReview::class, 'review')
             ->where('review.businessProfile = :businessProfile')
             ->andWhere('review.isActive = true')
             ->setParameter('businessProfile', $businessProfile);
