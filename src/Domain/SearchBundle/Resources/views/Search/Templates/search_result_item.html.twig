@@ -37,8 +37,7 @@
             <a class="get-dir get-direction mobile-btn btn"  data-latlng="{{ item.getLatLng }}">Get Direction<span></span></a>
         </div>
         <div class="shift">
-            <span>Mon - Fri  9 a.m. - 7 p.m.</span>
-            <span>Sat 9:00 am-2:00pm</span>
+            {{ item.getWorkingHours() }}
         </div>
     </div>
     <div class="col-xs-7 company-contact">
