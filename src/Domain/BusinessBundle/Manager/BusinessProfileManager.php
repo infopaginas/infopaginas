@@ -308,7 +308,7 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        // ¯ \ _ (ツ) _ / ¯
+        //todo: solve problems with duplicated subscriptions (listener)
         $oldProfileSubscription = $oldProfile->getSubscription();
         $newProfileSubscription = $businessProfile->getSubscription();
 
