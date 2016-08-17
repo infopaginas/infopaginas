@@ -10,6 +10,6 @@ domain_business_remote_videos_upload:
     options:
         expose: true
 
-video_list:
-    path:     /video
+domain_business_video_list:
+    path:     /
     defaults: { _controller: DomainBusinessBundle:Videos:index}

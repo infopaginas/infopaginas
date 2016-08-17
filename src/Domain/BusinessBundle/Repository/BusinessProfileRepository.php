@@ -12,7 +12,7 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
-use Oxa\WistiaBundle\Repository\WistiaMediaRepository;
+use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
 
@@ -487,8 +487,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('v')
-            ->from(WistiaMediaRepository::SLUG, 'v')
-            ->leftJoin(self::SLUG, 'bp')
+            ->from(WistiaMedia::class, 'v')
+            ->leftJoin(BusinessProfile::class, 'bp')
             ->where('bp.isActive = TRUE')
             ->andWhere('bp.actualBusinessProfile IS NULL')
             ->andWhere('bp.locked = FALSE')

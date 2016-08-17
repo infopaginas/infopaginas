@@ -3,7 +3,7 @@
 namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Domain\BusinessBundle\Repository\BusinessProfileRepository;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 
 /**
  * Class VideoManager
@@ -22,7 +22,7 @@ class VideoManager
     {
         $this->em = $entityManager;
 
-        $this->repository = $entityManager->getRepository(BusinessProfileRepository::SLUG);
+        $this->repository = $entityManager->getRepository(BusinessProfile::class);
     }
 
     public function fetchHomepageVideos()
