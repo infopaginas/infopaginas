@@ -13,7 +13,9 @@
         {% else %}
             {{ 'export.title.all_businesses'|trans({}, 'AdminReportBundle') }}
         {% endif %}
-    </b>
+    </b>,
+
+    {{ "now"|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATETIME_FORMAT')) }}
 </div>
 
 <br>
