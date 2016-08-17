@@ -98,6 +98,12 @@ services:
         tags:
             - { name: form.type, alias: domain_business_bundle_business_review_type }
 
+    domain_business.form.type.business_close_request:
+        class: Domain\BusinessBundle\Form\Type\BusinessCloseRequestType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_close_request_type }
+
     #forms section
     domain_business.form.business_profile:
         factory_method: createNamed
@@ -114,6 +120,14 @@ services:
         arguments:
             - 'domain_business_bundle_business_review_type'
             - 'domain_business_bundle_business_review_type'
+
+    domain_business.form.business_close_request:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_business_close_request_type'
+            - 'domain_business_bundle_business_close_request_type'
 
     #form handlers section
     domain_business.form.handler.business_profile:
@@ -136,6 +150,15 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@security.token_storage'
+
+    domain_business.form.handler.business_close_request:
+        class: Domain\BusinessBundle\Form\Handler\BusinessCloseRequestFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.business_close_request'
+            - '@request'
+            - '@domain_business.manager.business_profile'
+            - '@domain_business.manager.tasks'
 
     #event listeners section
     domain_business.listener.datetime_period_status_subscriber:
@@ -161,3 +184,7 @@ services:
         class: Domain\BusinessBundle\Twig\Extension\HasSubscriptionExtension
         tags:
             - { name: twig.extension }
+
+    domain_business.video:
+        class: Domain\BusinessBundle\Manager\VideoManager
+        arguments: ['@doctrine.orm.entity_manager']

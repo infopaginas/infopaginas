@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -11,6 +12,7 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
+use Oxa\WistiaBundle\Repository\WistiaMediaRepository;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
 
@@ -137,18 +139,18 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $this->search($searchParams);
     }
 
-    public function searchAutosuggestWithBuilder($searchQuery, $limit = 5, $offset = 0)
+    public function searchAutosuggestWithBuilder(SearchDTO $searchParams, $limit = 5, $offset = 0)
     {
-        $searchQuery    = $this->splitPhraseToPlain($searchQuery);
+        $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
+        $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
 
         $queryBuilder = $this->getQueryBuilder()
             ->addSelect('bp.name');
 
-        $this->addFTSSearchQueryBuilder($queryBuilder, $searchQuery);
-        $this->addRankQueryBuilder($queryBuilder);
+        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
         $this->addHeadlineToNameQueryBuilder($queryBuilder);
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
-        $this->addOrderByRankQueryBuilder($queryBuilder);
+        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
 
         $result = $queryBuilder->getQuery()->getResult();
 
@@ -463,5 +465,38 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('userLongitude', $location->lng)
             ->setParameter('earthDiameter', GeolocationUtils::getEarthDiameterKm())
         ;
+    }
+
+    public function getHomepageVideos($limit)
+    {
+        $qb = $this->getVideosQuery()->setMaxResults($limit);
+
+        $results = new Paginator($qb, $fetchJoin = true);
+
+        return $results;
+    }
+
+    public function getVideos()
+    {
+        $qb = $this->getVideosQuery();
+
+        $results = new Paginator($qb, $fetchJoin = true);
+
+        return $results;
+    }
+
+    private function getVideosQuery()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('v')
+            ->from(WistiaMediaRepository::SLUG, 'v')
+            ->leftJoin(self::SLUG, 'bp')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bp.actualBusinessProfile IS NULL')
+            ->andWhere('bp.locked = FALSE')
+            ->orderBy('v.createdAt', 'DESC')
+        ;
+
+        return $qb;
     }
 }

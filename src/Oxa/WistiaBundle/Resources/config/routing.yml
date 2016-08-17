@@ -1,3 +1,0 @@
-video_list:
-    path:     /video
-    defaults: { _controller: OxaWistiaBundle:Default:index}

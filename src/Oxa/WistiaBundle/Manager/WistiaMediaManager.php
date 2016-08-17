@@ -15,8 +15,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WistiaMediaManager
 {
-    const VIDEOS_HOMEPAGE_LIMIT = 2;
-
     private $em;
 
     private $repository;
@@ -58,20 +56,6 @@ class WistiaMediaManager
         $this->em->persist($wistiaMedia);
 
         return $wistiaMedia;
-    }
-
-    public function fetchHomepageVideos()
-    {
-        $videos = $this->getRepository()->getHomepageVideos(self::VIDEOS_HOMEPAGE_LIMIT);
-
-        return $videos;
-    }
-
-    public function getActiveVideos()
-    {
-        $videos = $this->getRepository()->getVideos();
-
-        return $videos;
     }
 
     private function getRepository()

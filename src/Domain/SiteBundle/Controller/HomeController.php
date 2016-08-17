@@ -26,7 +26,7 @@ class HomeController extends Controller
 
         $menuManager    = $this->get('domain_menu.manager.menu');
         $articleManager = $this->get('domain_article.manager.article');
-        $videoManager   = $this->get('oxa.manager.wistia_media');
+        $videoManager   = $this->get('domain_business.video');
 
         $articles       = $articleManager->fetchHomepageArticles();
         $videos         = $videoManager->fetchHomepageVideos();

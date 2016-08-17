@@ -14,7 +14,6 @@ class SearchResultsDTO extends AbstractDTO
     public $categories;    // list of related categories
     public $neighborhoods; // list of related neighborhoods
 
-
     public function __construct(
         array $resultSet,
         int $resultCount,

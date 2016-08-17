@@ -99,10 +99,10 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
-    public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
+    public function searchAutosuggestByPhraseAndLocation(SearchDTO $searchParams)
     {
-        $categories       = $this->categoryManager->searchAutosuggestByName($phrase);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($phrase);
+        $categories       = $this->categoryManager->searchAutosuggestByName($searchParams->query);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($searchParams);
 
         $result = array_merge($categories, $businessProfiles);
         return $result;
@@ -239,6 +239,16 @@ class BusinessProfileManager extends Manager
     public function activate(BusinessProfile $businessProfile)
     {
         $businessProfile->setIsActive(true);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function deactivate(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setIsActive(false);
+        $businessProfile->setIsClosed(true);
         $this->commit($businessProfile);
     }
 

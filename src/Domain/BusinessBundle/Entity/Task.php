@@ -53,6 +53,11 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $rejectReason;
 
     /**
+     * @ORM\Column(name="closure_reason", type="text", nullable=true)
+     */
+    protected $closureReason;
+
+    /**
      * @ORM\Column(name="changeset", type="text", nullable=true)
      */
     protected $changeSet;
@@ -160,6 +165,24 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setRejectReason($rejectReason)
     {
         $this->rejectReason = $rejectReason;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClosureReason()
+    {
+        return $this->closureReason;
+    }
+
+    /**
+     * @param mixed $closureReason
+     * @return Task
+     */
+    public function setClosureReason($closureReason)
+    {
+        $this->closureReason = $closureReason;
         return $this;
     }
 

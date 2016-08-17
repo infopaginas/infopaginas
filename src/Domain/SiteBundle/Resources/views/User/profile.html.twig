@@ -172,9 +172,11 @@
                                                                 {{ business.getName() }}
                                                             </a>
                                                         {% else %}
-                                                            <a href="#">
-                                                                {{ business.getName() }} ({% trans %}Pending{% endtrans %})
-                                                            </a>
+                                                            {% if not business.getIsClosed() %}
+                                                                <a href="#">
+                                                                    {{ business.getName() }} ({% trans %}Pending{% endtrans %})
+                                                                </a>
+                                                            {% endif %}
                                                         {% endif %}
                                                     </span>
                                                 </div>
@@ -217,7 +219,7 @@
 
 {% block footer %}
     {{ parent() }}
-    {% include 'DomainSiteBundle:User:Modals/password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
+    {% include 'DomainSiteBundle:User:modals/password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
 {% endblock %}
 
 {% block scripts %}

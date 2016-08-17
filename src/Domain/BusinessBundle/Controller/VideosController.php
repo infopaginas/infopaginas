@@ -6,6 +6,7 @@ use Doctrine\ORM\NoResultException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Manager\VideoManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
@@ -94,6 +95,23 @@ class VideosController extends Controller
         ]);
 
         return $this->getSuccessResponse($response);
+    }
+
+    public function indexAction()
+    {
+        $params = [
+            'videos' => $this->getVideoManager()->getActiveVideos(),
+        ];
+
+        return $this->render('DomainBusinessBundle:Videos:list.html.twig', $params);
+    }
+
+    /**
+     * @return VideoManager
+     */
+    private function getVideoManager() : VideoManager
+    {
+        return $this->get('domain_business.video');
     }
 
     /**

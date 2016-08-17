@@ -92,11 +92,13 @@ class TasksManager
      *
      * @access public
      * @param BusinessProfile $businessProfile
+     * @param string $closeReason
      * @return array
      */
-    public function createCloseProfileConfirmationRequest(BusinessProfile $businessProfile) : array
+    public function createCloseProfileConfirmationRequest(BusinessProfile $businessProfile, string $closeReason) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_CLOSE, $businessProfile);
+        $task->setClosureReason($closeReason);
         return $this->save($task);
     }
 
@@ -198,6 +200,8 @@ class TasksManager
             $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $this->getTaskLocale($task));
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
             $this->getBusinessReviewsManager()->publish($task->getReview());
+        } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
+            $this->getBusinessProfileManager()->deactivate($task->getBusinessProfile());
         }
 
         return $this->save($task);

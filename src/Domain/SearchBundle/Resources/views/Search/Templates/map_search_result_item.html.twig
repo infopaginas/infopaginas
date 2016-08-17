@@ -17,8 +17,10 @@
         </div>
     </div>
     <div class="col-xs-9 company-mail">
-        <a href="//{{ item.website }}"><i class="fa fa-home"
-                      aria-hidden="true"></i><span>{{ item.website }}</span></a>
+        <a href="//{{ item.website }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            <span>{{ item.website }}</span>
+        </a>
     </div>
     <div class="col-xs-12 additional-info">
         <div class="reviews">
@@ -34,6 +36,8 @@
         </div>
     </div>
     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
-        <div class="company-logo"><img src="http://placehold.it/120x120"></div>
+        <div class="company-logo">
+            {% thumbnail item.getLogo(), 'preview' %}
+        </div>
     {% endif %}
 </div>
