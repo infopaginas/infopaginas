@@ -26,11 +26,10 @@ class HomeController extends Controller
 
         $menuManager    = $this->get('domain_menu.manager.menu');
         $articleManager = $this->get('domain_article.manager.article');
-        //temporary call for article manger instead of video manager
-        $videoManager   = $this->get('domain_article.manager.article');
+        $videoManager   = $this->get('domain_business.video');
 
         $articles       = $articleManager->fetchHomepageArticles();
-        $videos         = $videoManager->fetchHomepageArticles();
+        $videos         = $videoManager->fetchHomepageVideos();
 
         $menuItems      = $menuManager->fetchAll();
 
