@@ -19,7 +19,7 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
         };
 
         this.urls = {
-            createReviewURL: Routing.generate('domain_business_review_save')
+            createReviewURL: Routing.generate( 'domain_business_review_save' )
         };
 
         this.spinner = new Spin();
@@ -46,8 +46,8 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
         var $form = $( formId );
         var $formGroupElement = $form.find( '.form-group' );
 
-        if (!$formGroupElement.hasClass('has-error')) {
-            $formGroupElement.addClass('has-error');
+        if (!$formGroupElement.hasClass( 'has-error' )) {
+            $formGroupElement.addClass( 'has-error' );
         }
 
         if ( typeof prefix === 'undefined' ) {
@@ -62,7 +62,6 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                     $field.addClass( 'error' );
 
                     var $errorSection = $field.next( '.help-block' );
-
                     for (var key in errors[field]) {
                         $errorSection.append( errors[field][key] );
                     }
@@ -76,11 +75,11 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
     //remove "error" highlighting
     businessProfileView.prototype.disableFieldsHighlight = function( formId ) {
         var $form = $( formId );
-        $form.find( 'input' ).removeClass('error');
-        $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+        $form.find( 'input' ).removeClass( 'error' );
+        $form.find( '.form-group' ).removeClass( 'has-error' );
+        $form.find( '.help-block' ).html( '' );
+        $form.find( '.error' ).removeClass( 'error' );
     };
-
 
     businessProfileView.prototype.handleReviewCreation = function() {
         var self = this;
@@ -104,7 +103,7 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                 },
                 success: function( response ) {
                     if( response.success ) {
-                        $( self.html.modals.createReviewModalId ).modal('hide');
+                        $( self.html.modals.createReviewModalId ).modal( 'hide' );
                         alertify.success( response.message );
                         $( self.html.forms.createReviewFormId )[0].reset();
                     } else {
@@ -116,7 +115,6 @@ define( ['jquery', 'bootstrap', 'tools/select', 'slick', 'lightbox', 'tools/slid
                     alertify.error( errorThrown );
                 },
                 complete: function() {
-                    self.disableFieldsHighlight( self.html.forms.createReviewFormId );
                     self.spinner.hide();
                 }
             } );

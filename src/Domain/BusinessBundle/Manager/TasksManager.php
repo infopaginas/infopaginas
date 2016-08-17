@@ -15,7 +15,6 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
-use Domain\BusinessBundle\Repository\TaskRepository;
 use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
@@ -53,7 +52,7 @@ class TasksManager
     ) {
         $this->em = $entityManager;
 
-        $this->repository = $this->em->getRepository(TaskRepository::SLUG);
+        $this->repository = $this->em->getRepository(Task::class);
 
         $this->businessProfileManager = $businessProfileManager;
         $this->businessReviewManager  = $businessReviewManager;

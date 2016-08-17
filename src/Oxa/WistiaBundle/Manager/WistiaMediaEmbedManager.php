@@ -44,7 +44,7 @@ class WistiaMediaEmbedManager
         $this->em = $entityManager;
         $this->wistiaEmbedAPIManager = $wistiaEmbedAPIManager;
 
-        $this->repository = $entityManager->getRepository(WistiaMediaEmbedRepository::SLUG);
+        $this->repository = $entityManager->getRepository(WistiaMediaEmbed::class);
     }
 
     /**

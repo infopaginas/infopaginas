@@ -31,11 +31,19 @@
     </div>
     <div class="schedule fields-item">
         <div class="address">
-            <span>{{ item.city}}, {{ item.state }} {{ item.zipCode }}</span>
+            {% if not item.getHideAddress() %}
+                {% if item.getCustomAddress() %}
+                    {{ item.getCustomAddress() }}
+                {% else %}
+                    {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                {% endif %}
+            {% endif %}
         </div>
     </div>
     <div class="distance fields-item">
-        <span>1,5 km</span>
+        {% if not item.getHideAddress() %}
+            <span>1,5 km</span>
+        {% endif %}
     </div>
     <div class="additional-info fields-item">
         <div class="reviews">

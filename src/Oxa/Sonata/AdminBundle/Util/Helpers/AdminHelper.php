@@ -25,6 +25,7 @@ class AdminHelper
 
     const DATE_FORMAT = 'd.m.Y';
     const DATE_MONTH_FORMAT = 'm.Y';
+    const DATETIME_FORMAT = 'd.m.Y H:i:s';
 
     const DATE_RANGE_CODE_CUSTOM     = 'custom';
     const DATE_RANGE_CODE_TODAY      = 'today';

@@ -24,8 +24,6 @@ use Doctrine\Common\Collections\Criteria;
  */
 class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainBusinessBundle:BusinessProfile';
-
     /**
      * @param int $id
      * @param string $locale

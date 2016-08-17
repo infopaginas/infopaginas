@@ -87,7 +87,7 @@ class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager
      */
     public function getRepository()
     {
-        return $this->em->getRepository(BusinessReviewRepository::SLUG);
+        return $this->em->getRepository(BusinessReview::class);
     }
 
     /**

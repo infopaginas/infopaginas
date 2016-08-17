@@ -63,8 +63,9 @@ class SearchController extends Controller
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
 
-        $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $searchResultsDTO   = $businessProfileManager->removeItemWithHiddenAddress($searchResultsDTO);
+        $locationMarkers    = $businessProfileManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
