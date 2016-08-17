@@ -17,10 +17,10 @@ use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Domain\ReportBundle\Model\BusinessOverviewReportTypeInterface;
 use Ivory\CKEditorBundle\Exception\Exception;
-use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Domain\ReportBundle\Manager\BaseReportManager;
 
-class BusinessOverviewReportManager extends DefaultManager
+class BusinessOverviewReportManager extends BaseReportManager
 {
     /**
      * @param array $filterParams
@@ -199,5 +199,25 @@ class BusinessOverviewReportManager extends DefaultManager
         $em->persist($businessOverviewReportBusinessProfile);
 
         $em->flush();
+    }
+
+    /**
+     * @param array $filterParams
+     * @param string $format
+     * @return mixed
+     */
+    public function getBusinessOverviewReportDataAndName(array $filterParams, string $format) : array
+    {
+        $businessOverviewData = $this->getBusinessOverviewDataByFilterParams($filterParams);
+
+        if ($businessOverviewData['businessProfile']) {
+            $reportName = str_replace(' ', '_', $businessOverviewData['businessProfile']);
+        } else {
+            $reportName = 'business_overview_report';
+        }
+
+        $filename = $this->generateReportName($format, $reportName);
+
+        return [$businessOverviewData, $filename];
     }
 }

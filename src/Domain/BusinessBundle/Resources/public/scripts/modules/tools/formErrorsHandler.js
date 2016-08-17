@@ -17,11 +17,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
     };
 
     formErrorsHandler.prototype.enableFieldsHighlight = function( errors, prefix ) {
-        var $formGroupElement = this.form.find( '.form-group' );
-
-        if (!$formGroupElement.hasClass('has-error')) {
-            $formGroupElement.addClass('has-error');
-        }
+        var $formGroupElement;
 
         if (typeof prefix === 'undefined') {
             prefix =  '#' + this.form.attr('name');
@@ -39,6 +35,12 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                     }
 
                     var $field = $( fieldId );
+
+                    $formGroupElement = $field.closest( '.form-group' );
+
+                    if (!$formGroupElement.hasClass('has-error')) {
+                        $formGroupElement.addClass('has-error');
+                    }
 
                     if ($field.is(':visible')) {
                         this.visibleErrorsExists = true;

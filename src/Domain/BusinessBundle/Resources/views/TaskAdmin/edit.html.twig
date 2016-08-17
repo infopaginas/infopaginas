@@ -17,9 +17,19 @@
         role="form"
         action="{{ admin.generateUrl('edit', {'id': admin.id(object), 'uniqid': admin.uniqid, 'subclass': app.request.get('subclass')}) }}" {{ form_enctype(form) }}
         method="POST"
-        {% if not admin_pool.getOption('html5_validate') %}novalidate="novalidate"{% endif %}>
+        novalidate="novalidate">
 
         {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_REVIEW_APPROVE')) %}
+            <hr>
+            <div class="form-group" id="sonata-ba-field-container-s57af15dda91b9_businessProfile__businessReviews">
+                <label class=" control-label">
+                    {% trans %}Review text{% endtrans %}:
+                </label>
+                <div class="sonata-ba-field sonata-ba-field-inline-table">
+                    {{ object.review.getContent() }}
+                </div>
+            </div>
+            <hr>
             {{ form_row(form.businessProfile__businessReviews) }}
         {% endif %}
 

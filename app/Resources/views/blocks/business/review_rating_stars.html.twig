@@ -1,0 +1,20 @@
+{% set selectable = false %}
+
+{% if isSelectable is defined and isSelectable %}
+    {% set selectable = true %}
+{% endif %}
+
+<div class="star-rating {% if selectable %}selectable{% endif %}">
+    <span class="fa fa-star-o fa-star{% if rating >= 1 %}-selected{% endif %}" data-rating="1"></span>
+    <span class="fa fa-star-o fa-star{% if rating >= 2 %}-selected{% endif %}" data-rating="2"></span>
+    <span class="fa fa-star-o fa-star{% if rating >= 3 %}-selected{% endif %}" data-rating="3"></span>
+    <span class="fa fa-star-o fa-star{% if rating >= 4 %}-selected{% endif %}" data-rating="4"></span>
+    <span class="fa fa-star-o fa-star{% if rating >= 5 %}-selected{% endif %}" data-rating="5"></span>
+
+    {% if input is defined %}
+        {{ form_widget(input) }}
+    {% else %}
+        <input type="hidden" name="whatever" class="rating-value" value="{{ rating }}">
+    {% endif %}
+    <span class="help-block"></span>
+</div>

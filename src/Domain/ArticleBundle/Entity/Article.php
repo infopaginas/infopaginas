@@ -33,14 +33,14 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string - Article title
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -49,6 +49,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var Media - Media
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="articles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=true)
@@ -58,7 +59,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var string - Article description
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=100, nullable=true)
      */
     protected $description;
@@ -66,7 +67,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var string - Body
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="body", type="text")
      * @Assert\NotBlank()
      */
@@ -89,7 +90,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     /**
      * @var string - Used to create human like url
      *
-     * @Gedmo\Slug(fields={"title"})
+     * @Gedmo\Slug(fields={"title"}, updatable=false)
      * @ORM\Column(name="slug", type="string")
      */
     protected $slug;
@@ -146,17 +147,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getTitle():
-                $result = $this->getTitle();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New article';
-        }
-        return $result;
+        return $this->getTitle() ?: '';
     }
 
     /**

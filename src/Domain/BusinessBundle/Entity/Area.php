@@ -34,14 +34,14 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
     /**
      * @var string - Area name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -66,6 +66,17 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      * )
      */
     protected $translations;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *      mappedBy="area",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $locality;
 
     /**
      * @var string
@@ -93,17 +104,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New area';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     /**
@@ -111,8 +112,9 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      */
     public function __construct()
     {
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
+        $this->translations     = new ArrayCollection();
+        $this->locality         = new ArrayCollection();
     }
 
     public function getMarkCopyPropertyName()
@@ -212,5 +214,51 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     public function getSearchFts()
     {
         return $this->searchFts;
+    }
+
+    /**
+     * Add Locality
+     *
+     * @param  Locality $locality
+     * @return this
+     */
+    public function addLocality(Locality $locality)
+    {
+        $this->locality->add($locality);
+
+        return $this;
+    }
+
+    /**
+     * Get Locality
+     *
+     * @return Locality[]
+     */
+    public function getLocalities()
+    {
+        return $this->locality;
+    }
+
+    /**
+     * Add Locality
+     *
+     * @param  Locality $locality
+     * @return this
+     */
+    public function removeLocality(Locality $locality)
+    {
+        $this->locality->remove($locality);
+
+        return $this;
+    }
+
+    /**
+     * Get locality
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLocality()
+    {
+        return $this->locality;
     }
 }

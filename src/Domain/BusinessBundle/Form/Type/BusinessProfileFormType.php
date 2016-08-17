@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
+use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -21,6 +22,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,7 +30,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
@@ -58,13 +60,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('phones', CollectionType::class, [
                 'allow_add'    => true,
                 'allow_delete' => true,
-                'entry_type'   => TextType::class,
-                'entry_options'  => [
-                    'attr'  => [
-                        'class' => 'form-control',
-                        'placeholder' => '(787) 594-7273',
-                    ],
-                ],
+                'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
             ])
@@ -118,9 +114,12 @@ class BusinessProfileFormType extends AbstractType
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => preg_replace("/\r|\n/", "", 'At the time of study, all parents,
-                       teachers, students we welcome ideas that foster greater productivity and end of the day,
-                       produce better academic achievement'
+                    'placeholder' => preg_replace(
+                        "/\r|\n/",
+                        "",
+                        'At the time of study, all parents,
+                        teachers, students we welcome ideas that foster greater productivity and end of the day,
+                        produce better academic achievement'
                     ),
                     'rows' => 5,
                 ],
@@ -144,8 +143,11 @@ class BusinessProfileFormType extends AbstractType
             ->add('product', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => preg_replace("/\r|\n/", "", 'The SONS system currently offers the SON\'S starter
-                     kit, notebooks, writing pads and labels.'
+                    'placeholder' => preg_replace(
+                        "/\r|\n/",
+                        "",
+                        'The SONS system currently offers the SON\'S starter
+                        kit, notebooks, writing pads and labels.'
                     ),
                     'rows' => 3,
                 ],
@@ -239,7 +241,10 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'label' => 'Zip code',
-                'required' => false,
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->add('extendedAddress', TextType::class, [
                 'attr' => [
@@ -272,7 +277,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://twitter.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Twitter',
                 'required' => false,
@@ -283,7 +288,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://www.facebook.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Facebook',
                 'required' => false,
@@ -294,7 +299,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'https://plus.google.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Google Plus',
                 'required' => false,
@@ -304,7 +309,7 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                 ],
                 'label' => 'Youtube',
                 'required' => false,
@@ -374,7 +379,7 @@ class BusinessProfileFormType extends AbstractType
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
         }
 
-        $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('milesOfMyBusiness', IntegerType::class, $milesOfMyBusinessFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
     }
 
@@ -416,16 +421,20 @@ class BusinessProfileFormType extends AbstractType
         $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
 
         $form
-            ->add('files', 'file', array(
-                'attr' => [
-                    'style' => 'display:none',
-                    'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
-                        image/bmp, image/x-windows-bmp',
-                ],
-                'data_class' => null,
-                'mapped' => false,
-                'multiple' => true,
-            ))
+            ->add(
+                'files',
+                'file',
+                [
+                    'attr' => [
+                        'style' => 'display:none',
+                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
+                            image/bmp, image/x-windows-bmp',
+                    ],
+                    'data_class' => null,
+                    'mapped' => false,
+                    'multiple' => true,
+                ]
+            )
             ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
                 'entry_type' => BusinessGalleryType::class,
                 'required' => false,

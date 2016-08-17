@@ -1,17 +1,17 @@
 define(
-    ['jquery',  'abstract/view', 'underscore','bootstrap', 'select2', 'tools/select', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
-    function ( $, view, _ ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
+    function ( $, view, _, directions, select ) {
     'use strict';
 
     var mapSearchPage = function ( options ) {
         options.selector = options.selector || 'body';
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
-        }
+        };
 
         this.events = {
             '.map-address click' : 'showMarker'
-        }
+        };
 
         this.mapSize = {
             mapWrapper: '#search-results-map',
@@ -23,8 +23,13 @@ define(
 
         this.init( options );
         this.bindEvents();
+
+        $( document ).ready( function(){
+            this.resizeMap()
+        }.bind( this ) );
+
         return this;
-    }
+    };
 
     mapSearchPage.prototype = new view;
 
@@ -38,59 +43,62 @@ define(
                 center: new google.maps.LatLng(18.2208, -66.5901),
                 zoom: 8
             },
-            cards       : '.card-item'
+            cards       : '.card-item',
+            directions: new directions
         };
 
         $.extend( this.options, options );
 
+        new select();
+
         this.initMap(this.options);
         this.setDefaultHeighForCards(
-            this.$(this.options.cards)
+            this.$( this.options.cards )
         )
-    }
+    };
 
     mapSearchPage.prototype.resizeMap = function(){
         var mapWrapperWidth = $( this.mapSize.mapWrapper ).width(),
             mapWrapperHeight = $( this.mapSize.mapWrapper ).height();
-        if(mapWrapperWidth < this.mapSize.mapMediaWidth){
-            $( this.mapSize.mapImage ).width(mapWrapperWidth);
-            $( this.mapSize.mapImage ).height(mapWrapperHeight - this.mapSize.mapTopMargin);
+        if( mapWrapperWidth < this.mapSize.mapMediaWidth ){
+            $( this.mapSize.mapImage ).width( mapWrapperWidth );
+            $( this.mapSize.mapImage ).height( mapWrapperHeight - this.mapSize.mapTopMargin );
         } else{
-            $( this.mapSize.mapImage ).width(mapWrapperWidth - this.mapSize.mapLeftMargin);
-            $( this.mapSize.mapImage ).height(mapWrapperHeight - this.mapSize.mapTopMargin);
+            $( this.mapSize.mapImage ).width( mapWrapperWidth - this.mapSize.mapLeftMargin );
+            $( this.mapSize.mapImage ).height( mapWrapperHeight - this.mapSize.mapTopMargin );
         }
-    }
+    };
 
     mapSearchPage.prototype.initMap = function ( options ) {
-        this.map = new google.maps.Map(document.getElementById(options.mapContainer), this.options.mapOptions);
+        this.map = new google.maps.Map( document.getElementById( options.mapContainer ), this.options.mapOptions );
 
-        $(window).resize(this.resizeMap.bind(this));
+        $( window ).resize(this.resizeMap.bind( this ));
 
         if (!_.isEmpty(this.options.markers)) {
-            this.addMarkers(this.options.markers);
+            this.addMarkers( this.options.markers );
         }
 
         var bounds = new google.maps.LatLngBounds();
 
         _.each(this.markers, function ( markerItem ) {
             bounds.extend( markerItem.marker.getPosition());
-        })
+        });
 
-        this.map.fitBounds(bounds);
-    }
+        this.map.fitBounds( bounds );
+    };
 
     mapSearchPage.prototype.addMarkers = function ( markers )
     {
-        _.each(markers, this.addMarker.bind(this));
-    }
+        _.each( markers, this.addMarker.bind( this ) );
+    };
 
     mapSearchPage.prototype.addMarker = function ( markerData )
     {
         var self = this;
         var marker = new google.maps.Marker({
             position: {
-                lat: parseFloat(markerData.latitude),
-                lng: parseFloat(markerData.longitude)
+                lat: parseFloat( markerData.latitude ),
+                lng: parseFloat( markerData.longitude )
             },
             map: this.map,
             title: markerData.name,
@@ -101,10 +109,10 @@ define(
         });
 
         var infoWindow = new google.maps.InfoWindow({
-            content: this.getInfoHTML(markerData.name, markerData.address, markerData.reviewsCount)
+            content: this.getInfoHTML( markerData.name, markerData.address, markerData.reviewsCount )
         });
 
-        marker.addListener('click', function(event) {
+        marker.addListener( 'click', function( event ) {
             self.closeAllLables();
             self.scrollTo(markerData.id);
             infoWindow.open(self.map, marker);
@@ -121,7 +129,7 @@ define(
     {
         var card = this.$('#' + elementId);
         var offset = card.offset().top;
-        this.$(this.options.itemsListScrollable).first()
+        this.$( this.options.itemsListScrollable).first()
             .animate({
                 scrollTop : offset
             }, 1500);

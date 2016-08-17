@@ -1,0 +1,4 @@
+business_profile:
+  max_length: Please use max {{ limit }} symbols
+  phone:
+    invalid: Max number of digits is 10. Only digits and dash are allowed

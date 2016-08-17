@@ -1,8 +1,8 @@
 define(
     [
-        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/login', 'tools/registration',
-        'tools/resetPassword'
-    ], function ( $, bootstrap, Search, Geolocation, SearchMenu ) {
+        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/resetPassword',
+        'tools/login', 'tools/registration'
+    ], function ( $, bootstrap, Search, Geolocation, SearchMenu, ResetPassword ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -26,12 +26,13 @@ define(
 
     homepage.prototype.initSearch = function ( ) {
         var searchOptions = {
-            selector            : '.search-form',
-            searchSelector      : '#searchBox',
-            searchHintSelector  : '#searchHint',
+            selector              : '.search-form',
+            searchSelector        : '#searchBox',
+            searchHintSelector    : '#searchHint',
             searchResultsSelector : '#searchResultsAutosuggest',
-            locationsSelector   : '#searchLocation',
-            submitSelector      : '#searchButton'
+            locationsSelector     : '#searchLocation',
+            submitSelector        : '#searchButton',
+            searchHeaderButton    : '#searchHeaderButton'
         };
 
         searchOptions['geolocation'] = new Geolocation( { 
@@ -40,8 +41,8 @@ define(
 
         searchOptions['searchMenu'] = new SearchMenu;
 
-        var search = new Search(searchOptions);
-        
+        var search = new Search( searchOptions );
+        this.resetPassword = new ResetPassword();
     };
    
     return homepage;

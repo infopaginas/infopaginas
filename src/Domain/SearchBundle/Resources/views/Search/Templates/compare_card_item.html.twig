@@ -1,0 +1,122 @@
+<div class="card-item">
+    <div class="card-title fields-item">
+        <label class="control-label card-label" for="card-check2">
+            <span class="card-number">1</span>
+            &nbsp;
+            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+                <span class="card-name">{{ item.name }}</span>
+            </a>
+        </label>
+    </div>
+    <div class="company-contact fields-item">
+        <ul class="company-info">
+            <li><a href=""><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+            </li>
+            <li><a href="mailto:sonsnotebooks@yahoo.com"><i class="fa fa-envelope"
+                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
+            </li>
+            <li>
+                <div class="dropdown filter-drop">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+
+                    <div class="select-container">
+                        <select class="form-control select-control">
+                            <option>phone number</option>
+                            <option>NY</option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="schedule fields-item">
+        <div class="address">
+            {% if not item.getHideAddress() %}
+                {% if item.getCustomAddress() %}
+                    {{ item.getCustomAddress() }}
+                {% else %}
+                    {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="distance fields-item">
+        {% if not item.getHideAddress() %}
+            <span>1,5 km</span>
+        {% endif %}
+    </div>
+    <div class="additional-info fields-item">
+        <div class="reviews">
+            <div class="star-rating">
+                <span class="fa fa-star-o" data-rating="1"></span>
+                <span class="fa fa-star-o" data-rating="2"></span>
+                <span class="fa fa-star-o" data-rating="3"></span>
+                <span class="fa fa-star-o" data-rating="4"></span>
+                <span class="fa fa-star-o" data-rating="5"></span>
+                <input type="hidden" name="whatever" class="rating-value" value="{# item.getBusinessReviewsAvgMark #}">
+            </div>
+            <span class="reviews-value">{# item.getBusinessReviewsCount #} Reviews</span>
+        </div>
+    </div>
+    <div class="schedule fields-item">
+        <div class="shift">
+            {{ item.workingHours }}
+        </div>
+    </div>
+    <div class="payment-method fields-item">
+        <ul class="payment-methods">
+            {% for method in item.paymentMethods %}
+                {% if method.name == 'Cash' %}
+                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/cash.png')}}"></a></li>
+                {% endif %}
+
+                {% if method.name == 'Visa' %}
+                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/visa.png')}}"></a></li>
+                {% endif %}
+
+                {% if method.name == 'Master Card' %}
+                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/mastercard.png')}}"></a></li>
+                {% endif %}
+
+                {% if method.name == 'PayPal' %}
+                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/paypal.png')}}"></a></li>
+                {% endif %}
+            {% endfor%}
+        </ul>
+    </div>
+    <div class="social fields-item">
+        <ul class="social-icons">
+            {% if item.getFacebookURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ item.getFacebookURL() }}">
+                        <i class="fa fa-facebook" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            {% if item.getTwitterURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ item.getTwitterURL() }}">
+                        <i class="fa fa-twitter" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            {% if item.getGoogleURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ item.getGoogleURL() }}">
+                        <i class="fa fa-google-plus" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+            {% if item.getYoutubeURL() %}
+                <li>
+                    <a class="blue-c" target="_blank" href="{{ item.getYoutubeURL() }}">
+                        <i class="fa fa-youtube" aria-hidden="true"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="close-icon">
+        <span class="times">&#10005;</span>
+    </div>
+</div>

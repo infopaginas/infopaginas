@@ -5,27 +5,22 @@
     <div class="container">
         <div class="row filters">
             <div class="col-md-8 filter-block">
-                <a href="" data-toggle="modal"
-                       data-target="#filterModal" class="filter-by"><i class="fa fa-filter" aria-hidden="true"></i><span>Filter by</span></a>
+                <a href="#" data-toggle="modal" data-target="#filterModal" class="filter-by">
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    <span>{% trans %}Filter by{% endtrans %}</span>
+                </a>
 
                 <div class="dropdown category-drop">
                     <div class="select-container">
-                        <select class="form-control select-control" id="category-select">
-                            <option data-route="{{ path(app.request.get('_route'), app.request.query.all|slice(0, 2)) }}" value="" selected>Category</option>
-                            {% if results.categories is not empty %}
-                                {% for category in results.categories %}
-
-                                    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'category': category.getName() })) }}" value="{{ category.getName() }}">{{ category.getName() }}</option>
-                                {% endfor %}
-                            {% endif %}
+                        <select class="form-control select-control category-select">
+                            {% include 'DomainSearchBundle:Layout/widgets:categories_select_options.html.twig' %}
                         </select>
                     </div>
                 </div>
                 <div class="dropdown category-drop">
                     <div class="select-container">
-                        <select class="form-control select-control" id="neighborhood-select">
-                            <option>Neighborhoods</option>
-                            <option>NY</option>
+                        <select class="form-control select-control neighborhood-select">
+                            {% include 'DomainSearchBundle:Layout/widgets:neighborhood_locations_select_options.html.twig' %}
                         </select>
                     </div>
                 </div>
@@ -42,4 +37,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block modals %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
+    {% include 'DomainSearchBundle:Layout/modals:filter_mobile.html.twig'%}
 {% endblock %}

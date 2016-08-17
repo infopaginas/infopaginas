@@ -4,7 +4,12 @@ namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -23,6 +28,8 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
  */
 class BusinessProfileManager extends Manager
 {
+    const DEFAULT_LOCALE_NAME = 'San Juan';
+
     /**
      * @var CategoryManager
      */
@@ -86,8 +93,7 @@ class BusinessProfileManager extends Manager
     {
         $locationName = $location->name;
         if (empty($locationName)) {
-            // TODO Move magic string this to config
-            $locationName = "San Juan";
+            $locationName = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -95,10 +101,10 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
-    public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
+    public function searchAutosuggestByPhraseAndLocation(SearchDTO $searchParams)
     {
-        $categories       = $this->categoryManager->searchAutosuggestByName($phrase);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($phrase);
+        $categories       = $this->categoryManager->searchAutosuggestByName($searchParams->query);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($searchParams);
 
         $result = array_merge($categories, $businessProfiles);
         return $result;
@@ -107,8 +113,7 @@ class BusinessProfileManager extends Manager
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
         if (empty($location)) {
-            // TODO Move magic string this to config
-            $location = "San Juan";
+            $location = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -158,10 +163,25 @@ class BusinessProfileManager extends Manager
     {
         $businessProfile = $this->getRepository()->findOneBy([
             'uid' => $uid,
+            'locked' => false,
+        ]);
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param string $slug
+     * @return null|object
+     */
+    public function findBySlug(string $slug)
+    {
+        $businessProfile = $this->getRepository()->findOneBy([
+            'slug' => $slug,
             'isActive' => true,
             'locked' => false,
             'actualBusinessProfile' => null,
         ]);
+
         return $businessProfile;
     }
 
@@ -196,7 +216,6 @@ class BusinessProfileManager extends Manager
      */
     public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en_US')
     {
-        //todo: move to model
         if (!$businessProfile->getId()) {
             $businessProfile->setIsActive(false);
         }
@@ -222,6 +241,16 @@ class BusinessProfileManager extends Manager
     public function activate(BusinessProfile $businessProfile)
     {
         $businessProfile->setIsActive(true);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    public function deactivate(BusinessProfile $businessProfile)
+    {
+        $businessProfile->setIsActive(false);
+        $businessProfile->setIsClosed(true);
         $this->commit($businessProfile);
     }
 
@@ -279,7 +308,7 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        // ¯ \ _ (ツ) _ / ¯
+        //todo: solve problems with duplicated subscriptions (listener)
         $oldProfileSubscription = $oldProfile->getSubscription();
         $newProfileSubscription = $businessProfile->getSubscription();
 
@@ -290,6 +319,15 @@ class BusinessProfileManager extends Manager
         $this->getEntityManager()->persist($newProfileSubscription);
 
         $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
+
+        $discount = $oldProfile->getDiscount();
+
+        if ($discount !== null) {
+            $discount->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($discount);
+
+            $this->getEntityManager()->refresh($oldProfile);
+        }
 
         $this->getEntityManager()->persist($businessProfile);
         $this->getEntityManager()->flush();
@@ -350,11 +388,100 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile)
+    {
+        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
+            $advertisements = $this->getBusinessGalleryRepository()
+                ->findBusinessProfileAdvertisementImages($businessProfile);
+
+            return $advertisements;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getBusinessProfilePhotoImages(BusinessProfile $businessProfile)
+    {
+        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
+            $photos = $this->getBusinessGalleryRepository()->findBusinessProfilePhotoImages($businessProfile);
+            return $photos;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return null|object
+     */
+    public function getLastReviewForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $lastReview = $this->getBusinessProfileReviewsRepository()->findBusinessProfileLastReview($businessProfile);
+        return $lastReview;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return float|int
+     */
+    public function calculateReviewsAvgRatingForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $rating = 0;
+
+        $reviewsAmount = $this->getReviewsCountForBusinessProfile($businessProfile);
+
+        $reviews = $this->getBusinessProfileReviewsRepository()->findReviewsByBusinessProfile($businessProfile);
+
+        if ($reviewsAmount) {
+            foreach ($reviews as $review) {
+                $rating += (int) $review->getRating();
+            }
+
+            return round($rating / $reviewsAmount);
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
      */
     public function drop(BusinessProfile $businessProfile)
     {
         $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    public function countSearchResults(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->countSearchResults($searchParams);
+    }
+
+    public function getReviewsCountForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        return $this->getBusinessProfileReviewsRepository()->getReviewsCountForBusinessProfile($businessProfile);
+    }
+
+    public function removeItemWithHiddenAddress($searchResultsDTO)
+    {
+        foreach ($searchResultsDTO->resultSet as $key => $item)
+        {
+            if ($item->getHideAddress()) {
+                unset($searchResultsDTO->resultSet[$key]);
+            }
+        }
+
+        return $searchResultsDTO;
     }
 
     /**
@@ -367,6 +494,14 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->persist($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return BusinessGalleryRepository
+     */
+    private function getBusinessGalleryRepository() : BusinessGalleryRepository
+    {
+        return $this->getEntityManager()->getRepository(BusinessGallery::class);
     }
 
     /**
@@ -394,9 +529,17 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @return BusinessReviewRepository
+     */
+    private function getBusinessProfileReviewsRepository()
+    {
+        return $this->getEntityManager()->getRepository(BusinessReview::class);
+    }
+
+    /**
      * @return EntityManager
      */
-    private function getEntityManager() : EntityManager
+    protected function getEntityManager() : EntityManager
     {
         return $this->em;
     }

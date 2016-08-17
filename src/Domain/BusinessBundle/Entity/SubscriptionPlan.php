@@ -31,14 +31,14 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
     /**
      * @var string - Subscription name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -152,17 +152,7 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New subscription plan';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     /**

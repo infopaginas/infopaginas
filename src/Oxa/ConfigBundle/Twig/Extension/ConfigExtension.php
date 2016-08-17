@@ -29,7 +29,9 @@ class ConfigExtension extends \Twig_Extension
 
     public function getSetting($env, $key)
     {
-        if ($setting = $this->config->getSetting($key)) {
+        $setting = $this->config->getSetting($key);
+
+        if ($setting) {
             $value = $setting->getValue();
 
             if ($setting->getFormat() == 'text') {

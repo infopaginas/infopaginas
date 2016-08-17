@@ -1,12 +1,22 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
+{% block doubleClickHeader %}
+    {% if bannerFactory is not null %}
+        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
+    {% endif %}
+{% endblock %}
+
 {% block main %}
  <!-- Search Results -->
     <section id="search-results" class="search-results">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
-                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD'))  }
+                        %}
+                    {% endif %}
                 </div>
             </div>
             {% if results.resultSet is defined and results.resultSet is not null and  results.resultSet is not empty %}
@@ -41,17 +51,21 @@
                         <div class="cards">
                         {% if results.resultSet is defined and results.resultSet is not null %}
                             {% for item in results.resultSet %}
-                                {% include 'DomainSearchBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
+                                {% include 'DomainSearchBundle:Search:Templates/search_result_item.html.twig' with { 'item' : item } %}
                             {% endfor %}
                         {% endif %}
                         </div>
                     </div>
                     <aside class="map col-md-3">
-                        <img src="http://placehold.it/410x350">
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL'))  }
+                            %}
+                        {% endif %}
                     </aside>
                 </div>
                 {% block pagination %}
-                    {% include 'DomainSiteBundle:Layout:Widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                    {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
                 {% endblock %}
             {% else %}
                 <div class="row">

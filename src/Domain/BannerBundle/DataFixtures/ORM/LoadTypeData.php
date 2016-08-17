@@ -52,6 +52,16 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
                 'placement' => 'Home page',
                 'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
             ], [
+                'code' => TypeInterface::CODE_PORTAL_LEFT,
+                'name' => 'portal-300x250-left',
+                'placement' => 'Home page',
+                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
+            ], [
+                'code' => TypeInterface::CODE_PORTAL_RIGHT,
+                'name' => 'portal-300x250-right',
+                'placement' => 'Home page',
+                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
+            ], [
                 'code' => TypeInterface::CODE_PORTAL_LEADERBOARD,
                 'name' => 'portal-leaderboard',
                 'placement' => 'Home page',

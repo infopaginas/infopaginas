@@ -30,4 +30,11 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getPublishedArticles()
+    {
+        return $this->getArticlesQueryBuilder()
+            ->getQuery()
+            ->getResult();
+    }
 }

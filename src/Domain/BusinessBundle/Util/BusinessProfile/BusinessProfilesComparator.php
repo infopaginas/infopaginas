@@ -60,7 +60,7 @@ class BusinessProfilesComparator
 
         /** @var FormInterface $value */
         foreach ($form->all() as $value) {
-            if ($value->getConfig()->getOption('read_only') == true) {
+            if ($value->getConfig()->getOption('read_only')) {
                 continue;
             }
 

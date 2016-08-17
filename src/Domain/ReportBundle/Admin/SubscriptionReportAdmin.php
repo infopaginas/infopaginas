@@ -29,7 +29,7 @@ class SubscriptionReportAdmin extends ReportAdmin
             ->remove('date')
             ->remove('datePeriod')
             ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
-            ->add('date', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getDatagridDateTypeOptions())
         ;
     }
 

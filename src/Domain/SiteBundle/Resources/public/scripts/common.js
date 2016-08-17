@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: '/bundles/domainsite/scripts/vendors',
+    baseUrl: '/bundles/',
     shim: {
         bootstrap : {
             deps: ['jquery'],
@@ -26,6 +26,9 @@ requirejs.config({
             deps: ['jquery']
         },
         'slider' : {
+            deps: ['$']
+        },
+        'lightbox': {
             deps: ['jquery']
         },
         'star-rating' : {
@@ -36,24 +39,26 @@ requirejs.config({
         }
     },
     paths: {
-        modules         : '../modules',
-        tools           : '../modules/tools',
-        abstract        : '../abstract',
-        async           : 'require/async',
-        goog            : 'require/goog',
-        propertyParser  : 'require/propertyParser',
-        'jquery'        : 'jquery.min',
-        'jquery-ui'     : 'jquery-ui.min',
-        'jquery-mobile' : 'jquery.mobile.custom.min',
-        'js-cookie'     : 'js.cookie.min',
-        'bootstrap'     : 'bootstrap.min',
-        'underscore'    : 'underscore-min',
-        'alertify'      : 'alertify.min',
-        'spin'          : 'spin.min',
-        'slick'         : 'slick.min',
-        'photo-gallery' : 'photo-gallery',
-        'lightbox'      : 'simple-lightbox.min',
-        'select2'       : 'select2.min',
+        modules         : 'domainsite/scripts/modules',
+        tools           : 'domainsite/scripts/modules/tools',
+        abstract        : 'domainsite/scripts/abstract',
+        async           : 'domainsite/scripts/vendors/require/async',
+        goog            : 'domainsite/scripts/vendors/require/goog',
+        propertyParser  : 'domainsite/scripts/vendors/require/propertyParser',
+        'jquery'        : 'domainsite/scripts/vendors/jquery.min',
+        'jquery-ui'     : 'domainsite/scripts/vendors/jquery-ui.min',
+        'jquery-mobile' : 'domainsite/scripts/vendors/jquery.mobile.custom.min',
+        'js-cookie'     : 'domainsite/scripts/vendors/js.cookie.min',
+        'bootstrap'     : 'domainsite/scripts/vendors/bootstrap.min',
+        'underscore'    : 'domainsite/scripts/vendors/underscore-min',
+        'alertify'      : 'domainsite/scripts/vendors/alertify.min',
+        'spin'          : 'domainsite/scripts/vendors/spin.min',
+        'slick'         : 'domainsite/scripts/vendors/slick.min',
+        'photo-gallery' : 'domainsite/scripts/vendors/photo-gallery',
+        'lightbox'      : 'domainsite/scripts/vendors/simple-lightbox.min',
+        'select2'       : 'domainsite/scripts/vendors/select2.min',
 
+        'business/modules' : 'domainbusiness/scripts/modules',
+        'business/tools'   : 'domainbusiness/scripts/modules/tools'
     }
 });

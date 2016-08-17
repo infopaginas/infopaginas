@@ -2,13 +2,13 @@
 namespace Domain\BusinessBundle\DataFixture\Test;
 
 use Domain\BusinessBundle\Entity\Area;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Tag;
-use Domain\BusinessBundle\Entity\Translation\AreaTranslation;
 use Domain\BusinessBundle\Entity\Translation\BrandTranslation;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
@@ -22,7 +22,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class LoadTestBusinessData extends OxaAbstractFixture
 {
-    protected $order = 5;
+    protected $order = 11;
 
     /**
      * @var Tag[] $tags
@@ -74,7 +74,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
         $addressManager = $this->container->get('domain_business.manager.address_manager');
 
         foreach ($data['businesses'] as $business => $item) {
-            $googleResponse = $addressManager->validateAddress($item['google_address']);
+            $googleResponse = $addressManager->validateCoordinates($item['latitude'], $item['longitude']);
 
             if ($googleResponse['error']) {
                 throw new \Exception(sprintf(
@@ -93,7 +93,12 @@ class LoadTestBusinessData extends OxaAbstractFixture
             $object->setProduct($item['product']);
             $object->setDescription($item['description']);
 
-            $object->setGoogleAddress($item['google_address']);
+            // better to set google address manually,
+            // cuz google finds not exact address by coordinates
+            if (isset($item['google_address'])) {
+                $object->setGoogleAddress($item['google_address']);
+            }
+
             $addressManager->setGoogleAddress($googleResponse['result'], $object);
 
             foreach ($item['phones'] as $value) {
@@ -243,23 +248,9 @@ class LoadTestBusinessData extends OxaAbstractFixture
         if (array_key_exists($value, $this->areas)) {
             return $this->areas[$value];
         } else {
-            $object = new Area();
-            $object->setName($value);
-
-            $translation = new AreaTranslation();
-            $translation->setContent(sprintf('Spain %s', $value));
-            $translation->setField('name');
-            $translation->setLocale('es');
-            $translation->setObject($object);
-
-            $this->manager->persist($translation);
-            $this->manager->persist($object);
+            $object = $this->getReference('area.' . str_replace(' ', '', $value));
 
             $this->areas[$value] = $object;
-
-            // set reference to find this
-            $this->addReference('area.'.$value, $object);
-
             return $object;
         }
     }
@@ -332,7 +323,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
     {
         $object = new BusinessProfilePhone();
         $object->setPhone($value);
-        
+
         $this->manager->persist($object);
 
         return $object;

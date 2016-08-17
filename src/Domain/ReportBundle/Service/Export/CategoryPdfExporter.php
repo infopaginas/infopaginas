@@ -42,12 +42,7 @@ class CategoryPdfExporter extends PdfExporterModel
      */
     public function getResponse(string $code, string $format, array $filterParams) : Response
     {
-        $filename = sprintf(
-            '%s_%s.%s',
-            'category_report',
-            date('Y_m_d_H_i_s', strtotime('now')),
-            $format
-        );
+        $filename = $this->categoryReportManager->generateReportName($format, 'category_report');
 
         $categoryData = $this->categoryReportManager
             ->getCategoryVisitorsQuantitiesByFilterParams($filterParams);

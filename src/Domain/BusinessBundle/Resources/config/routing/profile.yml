@@ -14,6 +14,12 @@ domain_business_profile_save:
     options:
         expose: true
 
-domain_business_profile_show:
-    path:     /show/{id}
-    defaults: { _controller: DomainBusinessBundle:Profile:show }
+domain_business_profile_view:
+    path:     /view/{slug}
+    defaults: { _controller: DomainBusinessBundle:Profile:view }
+
+domain_business_profile_close:
+    path:     /close
+    defaults: { _controller: DomainBusinessBundle:Profile:close }
+    options:
+        expose: true

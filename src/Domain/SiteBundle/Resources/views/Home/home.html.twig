@@ -1,20 +1,26 @@
 {% extends "DomainSiteBundle:Layout:homepage.html.twig" %}
 
+{% block doubleClickHeader %}
+    {% if bannerFactory is not null %}
+        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
+    {% endif %}
+{% endblock %}
+
 {% block homapageHeaderHexagonDesc %}
-    {% include 'DomainSiteBundle:Home:Widgets/hexagonMenuWidget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_widget.html.twig' %}
 {% endblock %}
 
 {% block  homapageHeaderHexagonMobile %}
-    {% include 'DomainSiteBundle:Home:Widgets/hexagonMenuMobileWidget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_mobile_widget.html.twig' %}
 {% endblock %}
 
 {% block  homapageHeaderSearchBlock %}
-    {% include 'DomainSiteBundle:Home:Widgets/searchWidget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/search_widget.html.twig' %}
 {% endblock %}
 
 {% block homepageHeaderTopBarNavigation %}
     <ul class="nav navbar-nav navbar-right">
-        {% include 'DomainSiteBundle:Home:Widgets/languageWidget.html.twig' %}
+        {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
         {% if (app.user) %}
             <li class="login-link desc-menu logged">
                 <a href="{{ path('domain_site_user_profile') }}" class="login-button">
@@ -27,7 +33,7 @@
                 </a>
             </li>
              {% else %}
-            <li class="login-link desc-menu btn">
+            <li class="login-link desc-menu not-logged-home">
                 <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
                     login
                 </a>
@@ -47,11 +53,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
-                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD')) }
+                        %}
+                    {% endif %}
                 </div>
                 <div class="col-xs-12 mobile-banner">
-                    <img src="http://placehold.it/300x250">
-                    <img src="http://placehold.it/300x250">
+
                 </div>
             </div>
         </div>
@@ -64,19 +73,19 @@
             <div class="row">
                 <div class="col-md-6 articles-section">
                     <div class="section-title">
-                        <span class="blue-c">Articles</span>
+                        <span class="blue-c">{% trans %}Articles{% endtrans %}</span>
                         <hr>
-                        <a href="{{ path('domain_article_homepage') }}" class="btn">View more articles</a>
+                        <a href="{{ path('domain_article_homepage') }}" class="btn">{% trans %}View more articles{% endtrans %}</a>
                     </div>
-                    {% include 'DomainSiteBundle:Home:Widgets/articlesWidget.html.twig' %}
+                    {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' %}
                 </div>
                 <div class="col-md-6 videos-section">
                     <div class="section-title">
-                        <span class="blue-c">Videos</span>
+                        <span class="blue-c">{% trans %}Videos{% endtrans %}</span>
                         <hr>
-                        <a href="#" class="btn">View more videos</a>
+                        <a href="#" class="btn">{% trans %}View more videos{% endtrans %}</a>
                     </div>
-                    {% include 'DomainSiteBundle:Home:Widgets/videosWidget.html.twig' %}
+                    {% include 'DomainSiteBundle:Home:widgets/videos_widget.html.twig' %}
                 </div>
             </div>
         </div>
@@ -89,10 +98,18 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEFT'))  }
+                            %}
+                        {% endif %}
                     </div>
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_RIGHT'))  }
+                            %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -100,10 +117,7 @@
 {% endblock %}
 
 {% block homeModals %}
-    {% include 'DomainSiteBundle:Home:Modals/login.html.twig' with { 'loginForm' : loginForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' with { 'registrationForm' : registrationForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/forgotten_password.html.twig' with { 'resetPasswordRequestForm' : resetPasswordRequestForm} %}
-    {% include 'DomainSiteBundle:Home:Modals/reset_password.html.twig' with { 'resetPasswordForm' : resetPasswordForm} %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
 {% endblock %}
 
 {% block scripts %}
