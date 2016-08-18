@@ -142,6 +142,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'sonata_type_collection',
                         [
                             'by_reference' => false,
+                            'required' => false,
                         ],
                         [
                             'edit' => 'inline',
@@ -196,7 +197,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', [
                         'by_reference' => false,
-                        'required' => true,
+                        'required' => false,
                         'mapped' => true,
                     ], [
                         'edit' => 'inline',
@@ -248,7 +249,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Coupons')
                     ->add('coupons', 'sonata_type_collection', [
                         'by_reference' => false,
-                        'required' => true,
+                        'required' => false,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,
@@ -263,7 +264,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
                 ->with('Discount')
-                    ->add('discount', 'ckeditor')
+                    ->add('discount', 'ckeditor', [
+                        'required' => false,
+                    ])
                 ->end()
             ->end()
             ->tab('Reviews')
