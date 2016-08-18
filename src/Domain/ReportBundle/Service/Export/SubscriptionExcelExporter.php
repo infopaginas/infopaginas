@@ -104,36 +104,50 @@ class SubscriptionExcelExporter extends ExcelExporterModel
 
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
 
-        // start date period
+        // generated date
         $activeSheet->setCellValue(
             'B2',
-            $this->translator->trans('export.date_period', [], 'AdminReportBundle')
+            $this->translator->trans('export.generated_date', [], 'AdminReportBundle')
+        );
+
+        $activeSheet->setCellValue(
+            'B3',
+            new \DateTime()
         );
 
         $activeSheet->mergeCells('B2:C2');
+        $activeSheet->mergeCells('B3:C3');
+
+        // start date period
+        $activeSheet->setCellValue(
+            'B5',
+            $this->translator->trans('export.date_period', [], 'AdminReportBundle')
+        );
+
+        $activeSheet->mergeCells('B5:C5');
 
         $dates = (array) $subscriptionData['dates'];
 
         $activeSheet->setCellValue(
-            'B3',
+            'B6',
             $this->translator->trans('export.start_date', [], 'AdminReportBundle')
         );
         $activeSheet->setCellValue(
-            'C3',
+            'C6',
             $this->translator->trans('export.end_date', [], 'AdminReportBundle')
         );
 
         $activeSheet->setCellValue(
-            'B4',
+            'B7',
             current($dates)
         );
         $activeSheet->setCellValue(
-            'C4',
+            'C7',
             end($dates)
         );
         // end date period
 
-        $cell = $initCell = 6;
+        $cell = $initCell = 9;
         $row = $initRow = $maxRow = 'B';
 
         // start header
@@ -273,8 +287,33 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             ->getStyle('B2')
             ->applyFromArray($fontStyleArray)
         ;
+
+        $activeSheet
+            ->getStyle('B5')
+            ->applyFromArray($fontStyleArray)
+        ;
+
         for ($r = 'B'; $r < 'D'; $r++) {
-            for ($c = 2; $c < 5; $c++) {
+            for ($c = 2; $c < 4; $c++) {
+                $activeSheet
+                    ->getColumnDimension($r)
+                    ->setAutoSize(true)
+                ;
+
+                $activeSheet
+                    ->getStyle($r.$c)
+                    ->applyFromArray($styleArray)
+                ;
+
+                $activeSheet
+                    ->getRowDimension($c)
+                    ->setRowHeight(15)
+                ;
+            }
+        }
+
+        for ($r = 'B'; $r < 'D'; $r++) {
+            for ($c = 5; $c < 8; $c++) {
                 $activeSheet
                     ->getColumnDimension($r)
                     ->setAutoSize(true)

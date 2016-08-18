@@ -10,5 +10,4 @@ namespace Domain\SiteBundle\Repository;
  */
 class SearchRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainSiteBundle:Search';
 }

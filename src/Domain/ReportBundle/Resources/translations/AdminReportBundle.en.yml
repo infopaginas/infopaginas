@@ -15,6 +15,7 @@ export.title.business_overview_report: Business Overview Report
 export.title.business_overview_report_for: Business Overview Report for
 export.title.all_businesses: All businesses
 export.title.active_sheet: Main
+export.generated_date: Report generated
 export.date_period: Date period
 export.start_date: Start date
 export.end_date: End date

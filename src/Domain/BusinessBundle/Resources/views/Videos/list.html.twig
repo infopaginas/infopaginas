@@ -10,7 +10,7 @@
                         <span>&nbsp; &raquo;</span>
                     </a>
                     &nbsp;
-                    <span>{% trans %}Articles{% endtrans %}</span>
+                    <span>{% trans %}Videos{% endtrans %}</span>
                 </div>
             </div>
         </div>
@@ -22,11 +22,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <span class="search-title blue-c">{% trans %}Articles{% endtrans %}</span>
+                    <span class="search-title blue-c">{% trans %}Videos{% endtrans %}</span>
                 </div>
             </div>
             <div class="row">
-                {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' %}
+                {% include 'DomainSiteBundle:Home:widgets/videos_widget.html.twig' with {'width': 640, 'height': 480} %}
             </div>
         </div>
     </section>

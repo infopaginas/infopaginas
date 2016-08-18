@@ -184,3 +184,7 @@ services:
         class: Domain\BusinessBundle\Twig\Extension\HasSubscriptionExtension
         tags:
             - { name: twig.extension }
+
+    domain_business.video:
+        class: Domain\BusinessBundle\Manager\VideoManager
+        arguments: ['@doctrine.orm.entity_manager']

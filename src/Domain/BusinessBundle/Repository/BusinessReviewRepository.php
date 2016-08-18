@@ -2,9 +2,13 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use FOS\UserBundle\Model\UserInterface;
+use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
+use Sonata\UserBundle\Model\User;
 
 /**
  * BusinessReviewRepository
@@ -14,22 +18,6 @@ use FOS\UserBundle\Model\UserInterface;
  */
 class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainBusinessBundle:Review\BusinessReview';
-
-    /**
-     * @param UserInterface $user
-     * @return array
-     */
-    public function findUserReviews(UserInterface $user)
-    {
-        $reviews = $this->findBy([
-            'user' => $user,
-            'isActive' => true,
-        ]);
-
-        return $reviews;
-    }
-
     /**
      * @param BusinessProfile $businessProfile
      * @return int
@@ -39,7 +27,7 @@ class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
             ->select($qb->expr()->count('review.id'))
-            ->from(self::SLUG, 'review')
+            ->from(BusinessReview::class, 'review')
             ->where('review.businessProfile = :businessProfile')
             ->andWhere('review.isActive = true')
             ->setParameter('businessProfile', $businessProfile);
@@ -63,6 +51,36 @@ class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param BusinessProfile $businessProfile
+     * @param AbstractDTO $paramsDTO
+     * @return array
+     */
+    public function findPaginatedReviewsByBusinessProfile(BusinessProfile $businessProfile, AbstractDTO $paramsDTO)
+    {
+        $limit  = $paramsDTO->limit;
+        $offset = ($paramsDTO->page - 1) * $limit;
+
+        $queryBuilder = $this->getQueryBuilder();
+        $this->addFilterByBusinessProfileQueryBuilder($queryBuilder, $businessProfile);
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+        $this->addOrderByCreatedDateQueryBuilder($queryBuilder);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return mixed
+     */
+    public function findBusinessProfileReviewsTotalCount(BusinessProfile $businessProfile)
+    {
+        $queryBuilder = $this->getSelectCountQueryBuilder();
+        $this->addFilterByBusinessProfileQueryBuilder($queryBuilder, $businessProfile);
+
+        return $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
      * @return null|object
      */
     public function findBusinessProfileLastReview(BusinessProfile $businessProfile)
@@ -71,5 +89,71 @@ class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
         $order    = ['id' => 'DESC'];
 
         return $this->findOneBy($criteria, $order);
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder('brp');
+
+        $queryBuilder->select('brp')
+            ->from('DomainBusinessBundle:Review\BusinessReview', 'brp')
+            ->where('brp.isActive = true')
+        ;
+
+        return $queryBuilder;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    protected function getSelectCountQueryBuilder()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder('brp');
+
+        $queryBuilder->select('COUNT(brp.id)')
+            ->from('DomainBusinessBundle:Review\BusinessReview', 'brp')
+            ->where('brp.isActive = true')
+        ;
+
+        return $queryBuilder;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param BusinessProfile $businessProfile
+     * @return QueryBuilder
+     */
+    protected function addFilterByBusinessProfileQueryBuilder(
+        QueryBuilder &$queryBuilder,
+        BusinessProfile $businessProfile
+    ) {
+        return $queryBuilder->andWhere('brp.businessProfile = :businessProfile')
+            ->setParameter('businessProfile', $businessProfile);
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param $limit
+     * @param $offset
+     * @return QueryBuilder
+     */
+    protected function addLimitOffsetQueryBuilder(QueryBuilder &$queryBuilder, $limit, $offset)
+    {
+        return $queryBuilder
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+        ;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return QueryBuilder
+     */
+    protected function addOrderByCreatedDateQueryBuilder(QueryBuilder &$queryBuilder)
+    {
+        return $queryBuilder->orderBy('brp.createdAt', 'DESC');
     }
 }

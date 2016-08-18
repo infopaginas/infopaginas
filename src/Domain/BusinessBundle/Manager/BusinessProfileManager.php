@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
@@ -248,6 +250,7 @@ class BusinessProfileManager extends Manager
     public function deactivate(BusinessProfile $businessProfile)
     {
         $businessProfile->setIsActive(false);
+        $businessProfile->setIsClosed(true);
         $this->commit($businessProfile);
     }
 
@@ -305,7 +308,7 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        // ¯ \ _ (ツ) _ / ¯
+        //todo: solve problems with duplicated subscriptions (listener)
         $oldProfileSubscription = $oldProfile->getSubscription();
         $newProfileSubscription = $businessProfile->getSubscription();
 
@@ -469,6 +472,18 @@ class BusinessProfileManager extends Manager
         return $this->getBusinessProfileReviewsRepository()->getReviewsCountForBusinessProfile($businessProfile);
     }
 
+    public function removeItemWithHiddenAddress($searchResultsDTO)
+    {
+        foreach ($searchResultsDTO->resultSet as $key => $item)
+        {
+            if ($item->getHideAddress()) {
+                unset($searchResultsDTO->resultSet[$key]);
+            }
+        }
+
+        return $searchResultsDTO;
+    }
+
     /**
      * Persist & flush
      *
@@ -486,7 +501,7 @@ class BusinessProfileManager extends Manager
      */
     private function getBusinessGalleryRepository() : BusinessGalleryRepository
     {
-        return $this->getEntityManager()->getRepository(BusinessGalleryRepository::SLUG);
+        return $this->getEntityManager()->getRepository(BusinessGallery::class);
     }
 
     /**
@@ -518,7 +533,7 @@ class BusinessProfileManager extends Manager
      */
     private function getBusinessProfileReviewsRepository()
     {
-        return $this->getEntityManager()->getRepository(BusinessReviewRepository::SLUG);
+        return $this->getEntityManager()->getRepository(BusinessReview::class);
     }
 
     /**

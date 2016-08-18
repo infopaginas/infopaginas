@@ -65,7 +65,9 @@ class AddressManager extends DefaultManager
             $businessProfile->setGoogleAddress($googleAddress->getFormattedAddress());
         }
 
-        if ($object = current($googleAddress->getAddressComponents('country'))) {
+        $object = current($googleAddress->getAddressComponents('country'));
+
+        if ($object) {
             $country = $this->getEntityManager()
                 ->getRepository('DomainBusinessBundle:Address\Country')
                 ->findOneBy(['shortName' => $object->getShortName()]);
@@ -73,35 +75,47 @@ class AddressManager extends DefaultManager
             $businessProfile->setCountry($country);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('locality'))) {
+        $object = current($googleAddress->getAddressComponents('locality'));
+
+        if ($object) {
             $businessProfile->setCity($object->getLongName());
         }
 
-        if ($object = current($googleAddress->getAddressComponents('administrative_area_level_1'))) {
+        $object = current($googleAddress->getAddressComponents('administrative_area_level_1'));
+
+        if ($object) {
             $businessProfile->setState($object->getLongName());
         } else {
             $businessProfile->setState(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('administrative_area_level_2'))) {
+        $object = current($googleAddress->getAddressComponents('administrative_area_level_2'));
+
+        if ($object) {
             $businessProfile->setExtendedAddress($object->getLongName());
         } else {
             $businessProfile->setExtendedAddress(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('postal_code'))) {
+        $object = current($googleAddress->getAddressComponents('postal_code'));
+
+        if ($object) {
             $businessProfile->setZipCode($object->getShortName());
         } else {
             $businessProfile->setZipCode(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('route'))) {
+        $object = current($googleAddress->getAddressComponents('route'));
+
+        if ($object) {
             $businessProfile->setStreetAddress($object->getLongName());
         } else {
             $businessProfile->setStreetAddress(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('street_number'))) {
+        $object = current($googleAddress->getAddressComponents('street_number'));
+
+        if ($object) {
             $businessProfile->setStreetNumber($object->getLongName());
         } else {
             $businessProfile->setStreetNumber(null);

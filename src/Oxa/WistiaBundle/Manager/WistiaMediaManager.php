@@ -23,7 +23,7 @@ class WistiaMediaManager
     {
         $this->em = $entityManager;
 
-        $this->repository = $entityManager->getRepository(WistiaMediaRepository::SLUG);
+        $this->repository = $entityManager->getRepository(WistiaMedia::class);
     }
 
     public function find(int $id)

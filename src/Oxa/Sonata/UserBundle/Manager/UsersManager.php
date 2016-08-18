@@ -9,6 +9,8 @@
 namespace Oxa\Sonata\UserBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Repository\BusinessProfileRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use FOS\UserBundle\Model\UserInterface;
@@ -40,7 +42,7 @@ class UsersManager
      */
     public function getUserReviews(UserInterface $user) : array
     {
-        $userReviews = $this->getReviewsRepository()->findUserReviews($user);
+        $userReviews = $this->getBusinessProfileRepository()->findBusinessProfilesReviewedByUser($user);
         return $userReviews;
     }
 
@@ -70,7 +72,7 @@ class UsersManager
      */
     private function getReviewsRepository() : BusinessReviewRepository
     {
-        return $this->entityManager->getRepository(BusinessReviewRepository::SLUG);
+        return $this->entityManager->getRepository(BusinessReview::class);
     }
 
     /**
@@ -78,6 +80,6 @@ class UsersManager
      */
     private function getBusinessProfileRepository() : BusinessProfileRepository
     {
-        return $this->entityManager->getRepository(BusinessProfileRepository::SLUG);
+        return $this->entityManager->getRepository(BusinessProfile::class);
     }
 }

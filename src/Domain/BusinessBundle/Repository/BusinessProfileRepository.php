@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -11,6 +12,7 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
+use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
 
@@ -22,8 +24,6 @@ use Doctrine\Common\Collections\Criteria;
  */
 class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainBusinessBundle:BusinessProfile';
-
     /**
      * @param int $id
      * @param string $locale
@@ -68,6 +68,24 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ]);
 
         return $businessProfiles;
+    }
+
+    /**
+     * @param UserInterface $user
+     * @return array
+     */
+    public function findBusinessProfilesReviewedByUser(UserInterface $user)
+    {
+        $queryBuilder = $this->createQueryBuilder('bp')
+            ->select('DISTINCT(bp.name) name, bp.slug')
+            ->join('bp.businessReviews', 'br')
+            ->where('br.user = :user')
+            ->andWhere('bp.isActive = TRUE')
+            ->andWhere('bp.locked = FALSE')
+            ->setParameter('user', $user)
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
@@ -463,5 +481,38 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('userLongitude', $location->lng)
             ->setParameter('earthDiameter', GeolocationUtils::getEarthDiameterKm())
         ;
+    }
+
+    public function getHomepageVideos($limit)
+    {
+        $qb = $this->getVideosQuery()->setMaxResults($limit);
+
+        $results = new Paginator($qb, $fetchJoin = true);
+
+        return $results;
+    }
+
+    public function getVideos()
+    {
+        $qb = $this->getVideosQuery();
+
+        $results = new Paginator($qb, $fetchJoin = true);
+
+        return $results;
+    }
+
+    private function getVideosQuery()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('v')
+            ->from(WistiaMedia::class, 'v')
+            ->leftJoin(BusinessProfile::class, 'bp')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bp.actualBusinessProfile IS NULL')
+            ->andWhere('bp.locked = FALSE')
+            ->orderBy('v.createdAt', 'DESC')
+        ;
+
+        return $qb;
     }
 }
