@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\ArticleBundle\Repository;
+use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
  * ArticleRepository
@@ -23,6 +24,20 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->addOrderBy('a.createdAt', "DESC");
     }
 
+    protected function getPublishedArticlesQueryBuilder(string $category = '')
+    {
+        $qb = $this->getArticlesQueryBuilder();
+
+        if ($category) {
+            $qb = $qb
+                ->leftJoin('a.category', 'c')
+                ->andWhere('c.slug = :category')
+                ->setParameter('category', $category);
+        }
+
+        return $qb;
+    }
+
     public function getArticlesForHomepage($limit)
     {
         return $this->getArticlesForHomepageQueryBuilder()
@@ -31,20 +46,26 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getPublishedArticles()
+    public function getPublishedArticles(string $category)
     {
-        return $this->getArticlesQueryBuilder()
-            ->getQuery()
-            ->getResult();
+        return $this->getPublishedArticlesQueryBuilder($category)->getQuery()->getResult();
     }
 
-    public function getPublishedArticlesByCategory($category)
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param AbstractDTO $paramsDTO
+     * @return array
+     */
+    public function findPaginatedPublishedArticles(AbstractDTO $paramsDTO, string $category)
     {
-        return $this->getArticlesQueryBuilder()
-            ->leftJoin('a.category', 'c')
-            ->andWhere('c.slug = :category')
-            ->setParameter('category', $category)
-            ->getQuery()
-            ->getResult();
+        $limit  = $paramsDTO->limit;
+        $offset = ($paramsDTO->page - 1) * $limit;
+
+        $queryBuilder = $this->getPublishedArticlesQueryBuilder($category);
+        $queryBuilder = $queryBuilder
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

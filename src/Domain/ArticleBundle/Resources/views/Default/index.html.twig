@@ -27,7 +27,6 @@
 {% endblock %}
 
 {% block main %}
-
     <!-- Articles-->
     <section id="articles-videos" class="articles-videos view-all">
         <div class="container">
@@ -38,10 +37,10 @@
                     </div>
                 </div>
             </div>
-            {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' with {'isList': true} %}
+            {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' with {articles: articlesResultDTO.resultSet, isList: true} %}
 
             <!-- Pagination -->
-            {#{% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : articlesResultDTO.page, 'pageCount' : articlesResultDTO.pageCount } %}#}
+            {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : articlesResultDTO.page, 'pageCount' : articlesResultDTO.pageCount } %}
         </div>
     </section>
 {% endblock %}

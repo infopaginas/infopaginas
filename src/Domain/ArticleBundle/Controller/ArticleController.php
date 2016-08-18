@@ -4,14 +4,24 @@ namespace Domain\ArticleBundle\Controller;
 
 use Domain\ArticleBundle\Model\Manager\ArticleManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
+use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
+use Domain\SearchBundle\Util\SearchDataUtil;
+use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class ArticleController extends Controller
 {
-    public function indexAction()
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction(Request $request)
     {
+        $paramsDTO = $this->getArticleListQueryParamsDTO($request);
+
         $params = [
-            'articles' => $this->getArticlesManager()->getPublishedArticles(),
+            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO),
         ];
 
         return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
@@ -31,17 +41,32 @@ class ArticleController extends Controller
     }
 
     /**
+     * @param Request $request
      * @param string $category
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function categoryAction(string $category)
+    public function categoryAction(Request $request, string $category)
     {
+        $paramsDTO = $this->getArticleListQueryParamsDTO($request);
+
         $params = [
-            'articles' => $this->getArticlesManager()->getPublishedArticlesByCategory($category),
+            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO, $category),
             'category' => $this->getCategoryManager()->getCategoryBySlug($category),
         ];
 
         return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
+    }
+
+    /**
+     * @param Request $request
+     * @return ReviewsListQueryParamsDTO
+     */
+    private function getArticleListQueryParamsDTO(Request $request) : ReviewsListQueryParamsDTO
+    {
+        $limit = (int)$this->get('oxa_config')->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+        $page = SearchDataUtil::getPageFromRequest($request);
+
+        return new ReviewsListQueryParamsDTO($limit, $page);
     }
 
     /**
