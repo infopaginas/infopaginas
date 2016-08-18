@@ -25,6 +25,8 @@ class SearchController extends Controller
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
 
+        $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
             TypeInterface::CODE_PORTAL_LEADERBOARD,
@@ -37,6 +39,7 @@ class SearchController extends Controller
                 'search'        => $searchDTO,
                 'results'       => $searchResultsDTO,
                 'bannerFactory' => $bannerFactory,
+                'dcDataDTO'     => $dcDataDTO
             ]
         );
     }
