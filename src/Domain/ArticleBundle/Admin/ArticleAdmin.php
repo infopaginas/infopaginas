@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ArticleAdmin extends OxaAdmin
 {
@@ -75,7 +76,9 @@ class ArticleAdmin extends OxaAdmin
             ->with('General')
                 ->add('title')
                 ->add('category')
-                ->add('image', 'sonata_type_model_list', [], ['link_parameters' => [
+                ->add('image', 'sonata_type_model_list', [
+                    'constraints' => [new NotBlank()]
+                ], ['link_parameters' => [
                     'context' => OxaMediaInterface::CONTEXT_ARTICLE,
                     'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                 ]])
