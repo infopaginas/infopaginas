@@ -35,7 +35,7 @@
                             </li>
                             <li>
                                 <a href="#" class="green-btn">
-                                    <i class="ad-icon" aria-hidden="true"></i>
+                                    <i class="fa fa-newspaper-o" aria-hidden="true"></i>
                                     <span>{% trans %}Manage Ads{% endtrans %}</span>
                                 </a>
                             </li>
@@ -76,18 +76,10 @@
             </div>
             <div class="col-xs-3 dropdown-col">
                 {% if businessProfile is defined %}
-                    <span class="dropdown-label">Language:</span>
-                    <div class="dropdown">
-                        <div class="select-container">
-                            <select id="language-selector" class="form-control select-control">
-                                <option value="en_US">
-                                    {% trans %}English{% endtrans %}
-                                </option>
-                                <option value="es">
-                                    {% trans %}Spain (PR){% endtrans %}
-                                </option>
-                            </select>
-                        </div>
+                    <span class="language-content-label">Content:</span>
+                    <div class="language-content">
+                        <span><a href="">Eng</a></span>
+                        <span><a href="">Esp</a></span>
                     </div>
                 {% endif %}
             </div>
