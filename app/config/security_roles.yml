@@ -57,6 +57,8 @@ security:
         ROLE_SALES_MANAGER:
             - ROLE_MERCHANT
 
+            - ROLE_SONATA_USER_ADMIN_USER__VIEW
+
         # PROJECT ROLE
         ROLE_MERCHANT:
             - ROLE_CONSUMER
