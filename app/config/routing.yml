@@ -16,7 +16,7 @@ domain_menu:
 
 domain_page:
     resource: "@DomainPageBundle/Resources/config/routing.yml"
-    prefix:   /page
+    prefix:   /
 
 domain_business:
     resource: "@DomainBusinessBundle/Resources/config/routing.yml"

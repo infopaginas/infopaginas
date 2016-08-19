@@ -96,7 +96,6 @@
 
 <main>
     {% block main %}
-    
     {% endblock %}
 </main>
 
@@ -122,12 +121,12 @@
 
             <div class="col-xs-6 footer-menu">
                 <ul class="footer-links green-c">
-                    <li><a class="green-c" href="">About Us</a></li>
-                    <li><a class="green-c" href="">Contact Us</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_about') }}">About Us</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">Contact Us</a></li>
                 </ul>
                 <ul class="footer-links column">
-                    <li><a class="green-c" href="">Privacy Statement</a></li>
-                    <li><a class="green-c" href="">Terms of Use</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">Privacy Statement</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">Terms of Use</a></li>
                 </ul>
                 <ul class="social-icons">
                     <li><a class="white-c" href=""><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -160,6 +159,6 @@
 <!-- Scripts -->
 {% block scripts %}
     <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
-{% endblock %} 
+{% endblock %}
 </body>
 </html>
