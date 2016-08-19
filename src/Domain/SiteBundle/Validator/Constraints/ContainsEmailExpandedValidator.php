@@ -41,7 +41,7 @@ class ContainsEmailExpandedValidator extends ConstraintValidator
     {
         $isCustomValid = $this->validator->validateValue($value, new Email());
 
-        if (count($isCustomValid) > 0 && !preg_match('/' . self::EMAIL_REGEX_PATTERN . '/', $value)) {
+        if (count($isCustomValid) == 0 && !preg_match('/' . self::EMAIL_REGEX_PATTERN . '/', $value)) {
             $this->context
                 ->buildViolation($this->translator->trans('fos_user.email.invalid'))
                 ->addViolation();
