@@ -6,7 +6,7 @@
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
             <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}">
-                <span class="card-number">{# item.order #}.</span>
+                <span class="card-number">{{ iterator }}.</span>
             </a>
                 &nbsp;
             <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}">

@@ -109,11 +109,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
+        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
+        $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
+
         $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
         $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
-        $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
-        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
+
+
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
