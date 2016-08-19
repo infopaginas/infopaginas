@@ -19,6 +19,7 @@ use Domain\BusinessBundle\Util\BusinessProfileUtil;
 
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 
 class SearchManager extends Manager
 {
@@ -121,5 +122,14 @@ class SearchManager extends Manager
         }
 
         return $searchDTO;
+    }
+
+    public function getDoubleClickData(SearchDTO $searchDTO) : DCDataDTO
+    {
+        return new DCDataDTO(
+            explode(' ', $searchDTO->query),
+            $searchDTO->locationValue->name,
+            $searchDTO->getCategory()
+        );
     }
 }

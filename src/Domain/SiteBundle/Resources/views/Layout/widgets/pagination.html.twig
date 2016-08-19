@@ -2,23 +2,36 @@
 <nav>
   <ul class="pagination">
     {% if pageCount > 1 %}
+        {% set routeParams = app.request.attributes %}
         {% if page > 1 %}
+            {% if routeParams is defined %}
+                {% set routeParams = routeParams|merge({'page': (page - 1) }) %}
+            {% endif %}
+
             <li>
-              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': (page - 1) })) }}" aria-label="Previous">
+              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}" aria-label="Previous">
                 <span aria-hidden="true">&larr; &nbsp;prev</span>
               </a>
             </li>
         {% endif %}
         {% for pageItem in 1..pageCount %}
+            {% if routeParams is defined %}
+                {% set routeParams = routeParams|merge({'page': (pageItem) }) %}
+            {% endif %}
+
             <li 
             {% if page == pageItem %}
                 class="active"
             {% endif %}
-            ><a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': pageItem })) }}">{{ pageItem }}</a></li>
+            ><a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}">{{ pageItem }}</a></li>
         {% endfor %}
         {% if page < pageCount %}
+            {% if routeParams is defined %}
+                {% set routeParams = routeParams|merge({'page': (page + 1) }) %}
+            {% endif %}
+
             <li>
-              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge({'page': (page + 1) })) }}" aria-label="Next">
+              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}" aria-label="Next">
                 <span aria-hidden="true">next&nbsp; &rarr;</span>
               </a>
             </li>

@@ -126,6 +126,6 @@ function initAutocomplete() {
         var latlng = place.geometry.location;
 
         marker = addMarker( latlng, map, infowindow, place.formatted_address );
-        updateFieldValue( place.formatted_address, latlng.lat, latlng.lng );
+        updateFieldValue( place.formatted_address, latlng.lat(), latlng.lng() );
     } );
 }

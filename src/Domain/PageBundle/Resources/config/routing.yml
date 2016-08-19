@@ -1,0 +1,15 @@
+domain_page_view_contact:
+    path:     /contact-us
+    defaults: { _controller: DomainPageBundle:Default:viewContact }
+
+domain_page_view_about:
+    path:     /about-us
+    defaults: { _controller: DomainPageBundle:Default:viewAbout }
+
+domain_page_view_terms:
+    path:     /terms
+    defaults: { _controller: DomainPageBundle:Default:viewTerms }
+
+domain_page_view_privacy:
+    path:     /privacy
+    defaults: { _controller: DomainPageBundle:Default:viewPrivacy }

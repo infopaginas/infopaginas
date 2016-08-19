@@ -1,4 +1,4 @@
 services:
-#    domain_page.example:
-#        class: Domain\PageBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
+    domain_page.manager.page:
+        class: Domain\PageBundle\Model\Manager\PageManager
+        arguments: ['@doctrine.orm.entity_manager']
