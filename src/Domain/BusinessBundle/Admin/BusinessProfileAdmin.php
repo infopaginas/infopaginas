@@ -125,7 +125,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ]])
                     ->add('website')
                     ->add('email', EmailType::class, [
-                        'required' => false
+                        'required' => false,
                     ])
                     ->add('slug', null, ['read_only' => true, 'required' => false])
                 ->end()
