@@ -203,7 +203,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
-
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
@@ -234,6 +233,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $queryBuilder->select('bp')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->andWhere('bp.isActive = TRUE')
             ->groupBy('bp.id')
         ;
 
@@ -250,7 +250,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->join('bp.categories', 'c')
             ->join('bp.areas', 'a')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->where('(
+            ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
                 OR
                 TSQUERY( bp.searchFts, :searchQuery) = true
@@ -274,7 +274,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->select('count(bp.id) as rows')
             ->join('bp.categories', 'c')
             ->join('bp.areas', 'a')
-            ->where('(
+            ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
                 OR
                 TSQUERY( bp.searchFts, :searchQuery) = true
@@ -293,7 +293,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
-            ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
+            ->andWhere('TSQUERY( bp.searchFts, :searchQuery) = true')
             ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
             ->setParameter('searchQuery', $searchQuery)
         ;
