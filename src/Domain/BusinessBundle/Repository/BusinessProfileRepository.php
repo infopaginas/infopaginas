@@ -120,8 +120,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
-        $queryBuilder = $queryBuilder->andWhere('bp.isActive = TRUE');
-
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
@@ -147,8 +145,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
-        $queryBuilder = $queryBuilder->andWhere('bp.isActive = TRUE');
-
         $results = $queryBuilder->getQuery()->getResult();
 
         return count($results);
@@ -171,8 +167,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $this->addHeadlineToNameQueryBuilder($queryBuilder);
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
         $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
-
-        $queryBuilder = $queryBuilder->andWhere('bp.isActive = TRUE');
 
         $result = $queryBuilder->getQuery()->getResult();
 
@@ -209,8 +203,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
-        $queryBuilder = $queryBuilder->andWhere('bp.isActive = TRUE');
-
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
@@ -241,6 +233,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $queryBuilder->select('bp')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->andWhere('bp.isActive = TRUE')
             ->groupBy('bp.id')
         ;
 
