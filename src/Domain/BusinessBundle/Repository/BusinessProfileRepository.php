@@ -115,9 +115,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
         $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
-
-
-
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
