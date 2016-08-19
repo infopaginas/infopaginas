@@ -42,16 +42,16 @@ class ArticleController extends Controller
 
     /**
      * @param Request $request
-     * @param string $category
+     * @param string $categorySlug
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function categoryAction(Request $request, string $category)
+    public function categoryAction(Request $request, string $categorySlug)
     {
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO, $category),
-            'category' => $this->getCategoryManager()->getCategoryBySlug($category),
+            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO, $categorySlug),
+            'category' => $this->getCategoryManager()->getCategoryBySlug($categorySlug),
         ];
 
         return $this->render('DomainArticleBundle:Default:index.html.twig', $params);

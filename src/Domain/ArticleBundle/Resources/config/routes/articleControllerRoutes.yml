@@ -7,5 +7,5 @@ domain_article_view:
     defaults: { _controller: DomainArticleBundle:Article:view }
 
 domain_article_category:
-    path:     /category/{category}
+    path:     /category/{categorySlug}
     defaults: { _controller: DomainArticleBundle:Article:category }

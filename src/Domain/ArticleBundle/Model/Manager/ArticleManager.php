@@ -26,14 +26,14 @@ class ArticleManager extends Manager
 
     /**
      * @param AbstractDTO $paramsDTO
-     * @param string $category
+     * @param string $categorySlug
      * @return ReviewsResultsDTO
      */
-    public function getArticlesResultDTO(AbstractDTO $paramsDTO, string $category = '')
+    public function getArticlesResultDTO(AbstractDTO $paramsDTO, string $categorySlug = '')
     {
-        $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $category);
+        $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $categorySlug);
 
-        $totalResults = count($this->getRepository()->getPublishedArticles($category));
+        $totalResults = count($this->getRepository()->getPublishedArticles($categorySlug));
 
         $pagesCount = ceil($totalResults/$paramsDTO->limit);
 

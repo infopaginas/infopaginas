@@ -11,12 +11,18 @@ use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
  */
 class ArticleRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     protected function getArticlesQueryBuilder()
     {
         return $this->createQueryBuilder('a')
             ->where('a.isPublished = true');
     }
 
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     protected function getArticlesForHomepageQueryBuilder()
     {
         return $this->getArticlesQueryBuilder()
@@ -24,21 +30,29 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->addOrderBy('a.createdAt', "DESC");
     }
 
-    protected function getPublishedArticlesQueryBuilder(string $category = '')
+    /**
+     * @param string $categorySlug
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getPublishedArticlesQueryBuilder(string $categorySlug = '')
     {
         $qb = $this->getArticlesQueryBuilder();
 
-        if ($category) {
+        if ($categorySlug) {
             $qb = $qb
                 ->leftJoin('a.category', 'c')
-                ->andWhere('c.slug = :category')
-                ->setParameter('category', $category);
+                ->andWhere('c.slug = :categorySlug')
+                ->setParameter('categorySlug', $categorySlug);
         }
 
         return $qb;
     }
 
-    public function getArticlesForHomepage($limit)
+    /**
+     * @param int $limit
+     * @return array
+     */
+    public function getArticlesForHomepage(int $limit)
     {
         return $this->getArticlesForHomepageQueryBuilder()
             ->setMaxResults($limit)
@@ -46,22 +60,25 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getPublishedArticles(string $category)
+    /**
+     * @param string $categorySlug
+     * @return array
+     */
+    public function getPublishedArticles(string $categorySlug)
     {
-        return $this->getPublishedArticlesQueryBuilder($category)->getQuery()->getResult();
+        return $this->getPublishedArticlesQueryBuilder($categorySlug)->getQuery()->getResult();
     }
 
     /**
-     * @param BusinessProfile $businessProfile
      * @param AbstractDTO $paramsDTO
      * @return array
      */
-    public function findPaginatedPublishedArticles(AbstractDTO $paramsDTO, string $category)
+    public function findPaginatedPublishedArticles(AbstractDTO $paramsDTO, string $categorySlug)
     {
         $limit  = $paramsDTO->limit;
         $offset = ($paramsDTO->page - 1) * $limit;
 
-        $queryBuilder = $this->getPublishedArticlesQueryBuilder($category);
+        $queryBuilder = $this->getPublishedArticlesQueryBuilder($categorySlug);
         $queryBuilder = $queryBuilder
             ->setMaxResults($limit)
             ->setFirstResult($offset);
