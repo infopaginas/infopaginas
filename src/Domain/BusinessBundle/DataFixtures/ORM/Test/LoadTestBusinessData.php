@@ -77,12 +77,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
             $googleResponse = $addressManager->validateAddress($item['google_address']);
 
             if ($googleResponse['error']) {
-                throw new \Exception(sprintf(
-                    'Invalid business address. %s - %s, %s',
-                    $business,
-                    $item['google_address'],
-                    $googleResponse['error']
-                ));
+                continue;
             }
 
             $object = new BusinessProfile();
