@@ -237,6 +237,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('isSetAd')
                     ->add('isSetLogo')
                     ->add('isSetSlogan')
+                    ->add('isSetVideo', null, [
+                        'disabled' => true,
+                    ])
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
