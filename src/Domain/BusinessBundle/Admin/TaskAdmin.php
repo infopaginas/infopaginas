@@ -30,6 +30,7 @@ class TaskAdmin extends OxaAdmin
         '_page'       => 1,
         '_per_page'   => 25,
         '_sort_by' => 'createdAt',
+        '_sort_order' => 'DESC',
     );
 
     public function postUpdate($task)
