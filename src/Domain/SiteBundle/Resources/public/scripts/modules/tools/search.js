@@ -3,7 +3,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
     var search = function( options ) {
         this.events = {};
-        
+
         this.events[options.searchSelector + ' focus']  = 'onSearchBoxFocus';
         this.events[options.searchSelector + ' blur']   = 'onSearchBoxBlur';
 
@@ -12,11 +12,10 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             searchMenu : false,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
-            searchBaseUrl : '/search/',
+            searchBaseUrl : '/businesses',
             mediaWidth: 480,
             mediaSearchSection: '.search-input.home',
             mediaCloseSection: '.searchCloseSection'
-
         };
 
         $.extend( this.options, options );
@@ -79,7 +78,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         } else {
             this.geolocation = this.options.geolocation;
         }
-        
+
 
         if ( this.options.autoComplete ) {
             this.initAutocomplete( this.options.autoCompleteUrl );
@@ -131,7 +130,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype.setLocation = function ( data ) {
         this.searchLocations.val( data );
     };
-    
+
     search.prototype.quickSearch = function ( searchQuery ) {
         this.searchBox.val( searchQuery );
         this.submitButton.first().click();

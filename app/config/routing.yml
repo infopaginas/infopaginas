@@ -20,7 +20,7 @@ domain_page:
 
 domain_business:
     resource: "@DomainBusinessBundle/Resources/config/routing.yml"
-    prefix:   /business
+    prefix:   /
 
 oxa_config:
     resource: "@OxaConfigBundle/Resources/config/routing.yml"
@@ -32,7 +32,7 @@ domain_site:
 
 domain_search:
     resource: "@DomainSearchBundle/Resources/config/routing.yml"
-    prefix:   /search
+    prefix:   /
 
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
