@@ -5,13 +5,18 @@
         <div class="container">
             <div class="row">
                 <div class="crumbs">
-                    <a href="/">
+                    <a href="{{ path('domain_site_home_index') }}">
                         Home
                         <span>&nbsp; &raquo;</span>
                     </a>
                     &nbsp;
                     <a href="{{ path('domain_article_homepage') }}">
                         Articles
+                        <span>&nbsp; &raquo;</span>
+                    </a>
+                    &nbsp;
+                    <a href="{{ path('domain_article_category', {'categorySlug': article.getCategory().getSlug()}) }}">
+                        {{ article.getCategory().getName() }}
                         <span>&nbsp; &raquo;</span>
                     </a>
                     &nbsp;

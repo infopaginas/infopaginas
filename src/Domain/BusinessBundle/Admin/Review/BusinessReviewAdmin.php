@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin\Review;
 
+use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
@@ -125,5 +126,26 @@ class BusinessReviewAdmin extends OxaAdmin
                 ->with('rating')
                 ->end()
             ;
+    }
+
+    /**
+     * Modify list results
+     *
+     * @param string $context
+     * @return \Sonata\AdminBundle\Datagrid\ProxyQueryInterface
+     */
+    public function createQuery($context = 'list')
+    {
+        /** @var QueryBuilder $query */
+        $query = parent::createQuery($context);
+
+        // show only none locked records
+        $query->leftJoin($query->getRootAliases()[0] . '.businessProfile', 'bp');
+        $query->andWhere(
+            $query->expr()->eq('bp.locked', ':locked')
+        );
+        $query->setParameter('locked', false);
+
+        return $query;
     }
 }
