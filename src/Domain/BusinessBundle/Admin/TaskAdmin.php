@@ -113,6 +113,7 @@ class TaskAdmin extends OxaAdmin
                 'cascade_validation' => true,
                 'required' => false,
                 'btn_add' => false,
+                'disabled' => true,
             ],
             [
                 'edit' => 'inline',
