@@ -178,7 +178,8 @@
                                                         {% else %}
                                                             {% if not business.getIsClosed() %}
                                                                 <a href="#">
-                                                                    {{ business.getName() }} ({% trans %}Pending{% endtrans %})
+                                                                    {{ business.getName() }} 
+                                                                    ({% if business.isLocked() %}{% trans %}Pending{% endtrans %}{% else %}{% trans %}Rejected{% endtrans %}{% endif %})
                                                                 </a>
                                                             {% endif %}
                                                         {% endif %}
