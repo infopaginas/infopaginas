@@ -14,12 +14,12 @@ domain_business_profile_save:
     options:
         expose: true
 
-domain_business_profile_view:
-    path:     /{citySlug}/{slug}
-    defaults: { _controller: DomainBusinessBundle:Profile:view }
-
 domain_business_profile_close:
     path:     /business/close
     defaults: { _controller: DomainBusinessBundle:Profile:close }
     options:
         expose: true
+
+domain_business_profile_view:
+    path:     /{citySlug}/{slug}
+    defaults: { _controller: DomainBusinessBundle:Profile:view }
