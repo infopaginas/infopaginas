@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row">
                 <div class="crumbs">
-                    <a href="{{ path('domain_business_profile_view', { slug: businessProfile.getSlug() }) }}">
+                    <a href="{{ path('domain_business_profile_view', { 'citySlug' : businessProfile.citySlug, slug: businessProfile.getSlug() }) }}">
                         {{ businessProfile.getName() }} <span>&nbsp; &#187; &nbsp; </span>
                     </a>
                     <span>{% trans %}Reviews{% endtrans %}</span>

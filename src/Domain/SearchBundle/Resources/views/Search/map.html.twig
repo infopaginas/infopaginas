@@ -28,7 +28,7 @@
                             <div class="select-container">
                                 <select class="form-control select-control">
                                     <option>Relevance</option>
-                                    <option>NY</option>
+                                    <option>Distance</option>
                                 </select>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                     <div class="cards">
                     {% if results.resultSet is defined and results.resultSet is not null %}
                         {% for item in results.resultSet %}
-                            {% include 'DomainSearchBundle:Search:Templates/map_search_result_item.html.twig' with { 'item' : item } %}
+                            {% include 'DomainSearchBundle:Search:Templates/map_search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index  } %}
                         {% endfor %}
                     {% endif %}
                     </div>

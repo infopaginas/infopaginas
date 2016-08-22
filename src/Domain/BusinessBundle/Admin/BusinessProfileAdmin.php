@@ -157,19 +157,19 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Address')
                     ->add('country', 'sonata_type_model_list', [
-                        'required' => false,
+                        'required' => true,
                         'btn_delete' => false,
                         'btn_add' => false,
                     ])
                     ->add('state')
                     ->add('city', null, [
-                        'required' => false
+                        'required' => true
                     ])
                     ->add('zipCode', null, [
-                        'required' => false
+                        'required' => true
                     ])
                     ->add('streetAddress', null, [
-                        'required' => false
+                        'required' => true
                     ])
                     ->add('extendedAddress')
                     ->add('crossStreet')
@@ -195,8 +195,14 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('youtubeURL')
                 ->end()
                 ->with('Categories')
-                    ->add('categories', null, ['multiple' => true])
-                    ->add('areas', null, ['multiple' => true])
+                    ->add('categories', null, [
+                        'multiple' => true,
+                        'required' => true,
+                    ])
+                    ->add('areas', null, [
+                        'multiple' => true,
+                        'required' => true,
+                    ])
                     ->add('brands', null, ['multiple' => true])
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
