@@ -387,8 +387,6 @@ class BusinessProfileFormType extends AbstractType
     {
         $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
 
-        $isVideoSet = $businessProfile->getVideo() !== null;
-
         $form->add('isSetVideo', CheckboxType::class, [
             'attr' => [
                 'readonly' => 'readonly',
@@ -397,7 +395,6 @@ class BusinessProfileFormType extends AbstractType
             'label' => 'yes',
             'required' => false,
             'read_only' => true,
-            'data' => $isVideoSet,
         ]);
 
         $form->add('videoFile', FileType::class, [

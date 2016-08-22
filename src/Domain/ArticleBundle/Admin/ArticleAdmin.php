@@ -83,8 +83,8 @@ class ArticleAdmin extends OxaAdmin
                 ->add('isPublished')
                 ->add('isOnHomepage')
                 ->add('slug', null, ['read_only' => true])
-                ->add('activationDate', 'sonata_type_datetime_picker')
-                ->add('expirationDate', 'sonata_type_datetime_picker')
+                ->add('activationDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
+                ->add('expirationDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
                 ->add('updatedAt', 'sonata_type_datetime_picker', [
                     'required' => false,
                     'disabled' => true
