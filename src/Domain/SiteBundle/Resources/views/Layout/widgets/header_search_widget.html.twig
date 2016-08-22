@@ -29,6 +29,10 @@
                 'searchHeaderButton' : '#searchHeaderButton',
                 'searchLocations': '#headerGeo'
             });
+        }),
+
+        require(['{{asset("/bundles/domainsite/scripts/modules/searchpage.js")}}'], function(searchpage){
+            var searchPage = new searchpage;
         })
     })
 </script>
