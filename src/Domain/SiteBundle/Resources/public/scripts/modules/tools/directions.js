@@ -16,7 +16,7 @@ define(['jquery', 'abstract/view', 'js-cookie'],
 
     directions.prototype.init = function ( options ) {
         this.options = {
-            detDirectionsLink : 'https://www.google.by/maps/dir/{companyLoc}/{userLoc}'
+            detDirectionsLink : 'https://www.google.by/maps/dir/{userLoc}/{companyLoc}'
         };
         $.extend( this.options, options );
     }
