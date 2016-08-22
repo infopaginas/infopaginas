@@ -57,7 +57,7 @@ define(
         )
     };
 
-    mapSearchPage.prototype.resizeMap = function(){
+    mapSearchPage.prototype.resizeMap = function () {
         var mapWrapperWidth = $( this.mapSize.mapWrapper ).width(),
             mapWrapperHeight = $( this.mapSize.mapWrapper ).height();
         if( mapWrapperWidth < this.mapSize.mapMediaWidth ){
@@ -194,7 +194,7 @@ define(
     mapSearchPage.prototype.setDefaultHeighForCards = function (cards)
     {
         _.each(cards, function (card) {
-            $(card).data('default-offset', $(card).offset().top)
+            $(card).data( 'default-offset', $(card).offset().top )
         })
     }
 
