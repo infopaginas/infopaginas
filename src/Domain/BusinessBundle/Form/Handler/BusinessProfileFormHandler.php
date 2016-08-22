@@ -89,6 +89,12 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             if (!isset($this->request->request->all()[$this->form->getName()]['video'])) {
                 $businessProfile->setVideo(null);
+
+                if ($businessProfile->getIsSetVideo()) {
+                    $businessProfile->setIsSetVideo(false);
+                }
+            } else {
+                $businessProfile->setIsSetVideo(true);
             }
 
             if ($this->form->isValid()) {

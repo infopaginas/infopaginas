@@ -8,7 +8,7 @@ oxa_wistia:
 
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
-    prefix:   /article
+    prefix:   /articles
 
 domain_menu:
     resource: "@DomainMenuBundle/Resources/config/routing.yml"
@@ -50,7 +50,7 @@ sonata_user_security:
     resource: "@SonataUserBundle/Resources/config/routing/sonata_security_1.xml"
 
 sonata_user_admin_resetting:
-    resource: '@SonataUserBundle/Resources/config/routing/sonata_resetting_1.xml'
+    resource: '@OxaSonataUserBundle/Resources/config/sonata_resetting_1.xml'
     prefix: /resetting
 
 sonata_user_admin_security:
@@ -58,7 +58,7 @@ sonata_user_admin_security:
     prefix: /admin
 
 sonata_user_resetting:
-    resource: '@SonataUserBundle/Resources/config/routing/sonata_resetting_1.xml'
+    resource: '@OxaSonataUserBundle/Resources/config/sonata_resetting_1.xml'
     prefix: /resetting
 
 sonata_user_profile:

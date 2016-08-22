@@ -57,14 +57,6 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     protected $image;
 
     /**
-     * @var string - Article description
-     *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="description", type="text", length=100, nullable=true)
-     */
-    protected $description;
-
-    /**
      * @var string - Body
      *
      * @Gedmo\Translatable(fallback=true)
@@ -183,30 +175,6 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     public function getTitle()
     {
         return $this->title;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Article
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**

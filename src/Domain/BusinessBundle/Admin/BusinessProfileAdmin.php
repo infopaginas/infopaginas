@@ -83,7 +83,8 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Description', array('class' => 'col-md-8'))->end()
                 ->with('Address', array('class' => 'col-md-4'))->end()
                 ->with('Map', array('class' => 'col-md-8'))->end()
-                ->with('Categories')->end()
+                ->with('Categories', array('class' => 'col-md-6'))->end()
+                ->with('Social Networks', array('class' => 'col-md-6'))->end()
                 ->with('Gallery')->end()
                 ->with('Status', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
@@ -124,7 +125,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ]])
                     ->add('website')
                     ->add('email', EmailType::class, [
-                        'required' => false
+                        'required' => false,
                     ])
                     ->add('slug', null, ['read_only' => true, 'required' => false])
                 ->end()
@@ -142,6 +143,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'sonata_type_collection',
                         [
                             'by_reference' => false,
+                            'required' => false,
                         ],
                         [
                             'edit' => 'inline',
@@ -152,19 +154,19 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Address')
                     ->add('country', 'sonata_type_model_list', [
-                        'required' => false,
+                        'required' => true,
                         'btn_delete' => false,
                         'btn_add' => false,
                     ])
                     ->add('state')
                     ->add('city', null, [
-                        'required' => false
+                        'required' => true
                     ])
                     ->add('zipCode', null, [
-                        'required' => false
+                        'required' => true
                     ])
                     ->add('streetAddress', null, [
-                        'required' => false
+                        'required' => true
                     ])
                     ->add('extendedAddress')
                     ->add('crossStreet')
@@ -182,10 +184,22 @@ class BusinessProfileAdmin extends OxaAdmin
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])
-            ->end()
+                ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                ->end()
                 ->with('Categories')
-                    ->add('categories', null, ['multiple' => true])
-                    ->add('areas', null, ['multiple' => true])
+                    ->add('categories', null, [
+                        'multiple' => true,
+                        'required' => true,
+                    ])
+                    ->add('areas', null, [
+                        'multiple' => true,
+                        'required' => true,
+                    ])
                     ->add('brands', null, ['multiple' => true])
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
@@ -196,7 +210,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', [
                         'by_reference' => false,
-                        'required' => true,
+                        'required' => false,
                         'mapped' => true,
                     ], [
                         'edit' => 'inline',
@@ -229,6 +243,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('isSetAd')
                     ->add('isSetLogo')
                     ->add('isSetSlogan')
+                    ->add('isSetVideo', null, [
+                        'disabled' => true,
+                    ])
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
@@ -248,7 +265,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Coupons')
                     ->add('coupons', 'sonata_type_collection', [
                         'by_reference' => false,
-                        'required' => true,
+                        'required' => false,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,
@@ -263,7 +280,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
                 ->with('Discount')
-                    ->add('discount', 'ckeditor')
+                    ->add('discount', 'ckeditor', [
+                        'required' => false,
+                    ])
                 ->end()
             ->end()
             ->tab('Reviews')

@@ -1,11 +1,5 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
-{% endblock %}
-
 {% block tabMenu %}
     <ul class="tab-btn">
         <li><a href="{{ path('domain_search_index', app.request.query.all) }}"><i class="fa fa-list" aria-hidden="true"></i><span>list</span></a>
@@ -34,7 +28,7 @@
                             <div class="select-container">
                                 <select class="form-control select-control">
                                     <option>Relevance</option>
-                                    <option>NY</option>
+                                    <option>Distance</option>
                                 </select>
                             </div>
                         </div>
@@ -42,7 +36,7 @@
                     <div class="cards">
                     {% if results.resultSet is defined and results.resultSet is not null %}
                         {% for item in results.resultSet %}
-                            {% include 'DomainSearchBundle:Search:Templates/map_search_result_item.html.twig' with { 'item' : item } %}
+                            {% include 'DomainSearchBundle:Search:Templates/map_search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index  } %}
                         {% endfor %}
                     {% endif %}
                     </div>

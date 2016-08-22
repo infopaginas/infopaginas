@@ -104,16 +104,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $queryBuilder = $this->getQueryBuilder();
 
-        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
+        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
+        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
         $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
+        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
+        $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
+
         $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
         $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
-
-        $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
-        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
@@ -138,7 +139,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $queryBuilder = $this->getQueryBuilder();
 
-        $this->addCountToSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
+        $this->addCountToSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
+        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
@@ -203,7 +205,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
-
         $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
@@ -212,13 +213,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     protected function splitPhraseToPlain(string $phrase)
     {
         $words = explode(' ', $phrase);
+        $words = array_filter($words);
         $wordParts = array_map(
             function ($item) {
                 return $item . ":*";
             },
             $words
         );
-        $plain = implode(' & ', $wordParts);
+        $plain = implode(' | ', $wordParts);
 
         return $plain;
     }
@@ -234,6 +236,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $queryBuilder->select('bp')
             ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->andWhere('bp.isActive = TRUE')
             ->groupBy('bp.id')
         ;
 
@@ -242,61 +245,59 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(
         QueryBuilder &$queryBuilder,
-        $searchQuery,
-        $location
+        $searchQuery
     ) {
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
             ->join('bp.areas', 'a')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->where('(
+            ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
                 OR
                 TSQUERY( bp.searchFts, :searchQuery) = true
             )')
-            ->andWhere('(
-                TSQUERY( a.searchFts, :searchLocation) = true
-                OR
-                TSQUERY( bp.searchCityFts, :searchLocation) = true
-            )')
             ->setParameter('searchQuery', $searchQuery)
-            ->setParameter('searchLocation', $location)
         ;
     }
 
     protected function addCountToSearchbByCategoryAndNameWithingAreaQueryBuilder(
         QueryBuilder &$queryBuilder,
-        $searchQuery,
-        $location
+        $searchQuery
     ) {
         return $queryBuilder
             ->select('count(bp.id) as rows')
             ->join('bp.categories', 'c')
             ->join('bp.areas', 'a')
-            ->where('(
+            ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
                 OR
                 TSQUERY( bp.searchFts, :searchQuery) = true
             )')
-            ->andWhere('(
-                TSQUERY( a.searchFts, :searchLocation) = true
-                OR
-                TSQUERY( bp.searchCityFts, :searchLocation) = true
-            )')
             ->setParameter('searchQuery', $searchQuery)
-            ->setParameter('searchLocation', $location)
         ;
     }
 
-    protected function addFTSSearchQueryBuilder(QueryBuilder &$queryBuilder, $searchQuery)
+    protected function addSearchByLocationQueryBuilder(QueryBuilder &$queryBuilder, $location, $zip = null)
     {
+        $searchString = '(
+                TSQUERY( a.searchFts, :searchLocation) = true
+                OR
+                TSQUERY( bp.searchCityFts, :searchLocation) = true
+            )';
+
+        if ($zip) {
+            $searchString = '(
+                bp.zipCode = :zip
+            )';
+            $queryBuilder->setParameter('zip', $zip);
+        } else {
+            $queryBuilder->setParameter('searchLocation', $location);
+        }
+
         return $queryBuilder
-            ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
-            ->where('TSQUERY( bp.searchFts, :searchQuery) = true')
-            ->andWhere('TSQUERY( a.searchFts, :searchLocation) = true')
-            ->setParameter('searchQuery', $searchQuery)
-        ;
+            ->andWhere($searchString)
+            ;
     }
 
     protected function addCityRankQueryBuilder(QueryBuilder &$queryBuilder)

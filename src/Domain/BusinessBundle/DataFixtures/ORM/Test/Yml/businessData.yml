@@ -391,3 +391,255 @@ businesses:
         categories:
             - Solicitors
             - Mechanics
+
+
+
+    business_101:
+        name: This is target Pizzeria in San Juan. Best pizza in Puerto Rico
+        google_address: 78 Calle El Tren, San Juan, 00962, Puerto Rico
+        latitude: 18.4500853
+        longitude: -66.1209558
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Old San Juan. A lot lot lot Pizzas in the San Juan. Big Pizza, Small Pizza, Kids Pizza, Spicy Pizza, pizza! pizza!
+        areas:
+            - San Juan
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_102:
+        name: This is target Pizzeria in Aguadilla. Best pizza in Puerto Rico
+        google_address: 27 Calle José de Diego, Aguadilla, 00603, Puerto Rico
+        latitude: 18.24540
+        longitude: -67.09202
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Aguadilla. Big Pizza, Small Pizza, Kids Pizza, Spicy Pizza.
+        areas:
+            - Aguadilla
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_103:
+        name: This is target Pizzeria in Mayagüez. Best pizza in Puerto Rico
+        google_address: 87 Calle Dr. Jiménez Mayagüez, 00682, Puerto Rico
+        latitude: 18.202573
+        longitude: -67.146299
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Mayagüez. Big Pizza, Small Pizza, Kids Pizza, Spicy Pizza.
+        areas:
+            - Mayagüez
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+
+
+    business_104:
+        name: This is target Pizzeria in San Juan. Best pizza with cheez in Puerto Rico
+        google_address: 78 Calle El Tren, San Juan, 00962, Puerto Rico
+        latitude: 18.3992031
+        longitude: -66.0455204
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza with cheez for everybody!
+        product: Pizza
+        description: Pizza with cheez. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Old San Juan. A lot lot lot Pizzas  with cheez in the San Juan. Big Pizza  with cheez, Small Pizza  with cheez, Kids Pizza  with cheez, Spicy Pizza  with cheez.  pizza with cheez
+        areas:
+            - San Juan
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+    business_105:
+        name: This is target Pizzeria in Aguadilla. Best pizza with cheez in Puerto Rico
+        google_address: 27 Calle José de Diego, Aguadilla, 00603, Puerto Rico
+        latitude: 18.413736
+        longitude: -67.154251
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Aguadilla. Big Pizza with cheez , Small Pizza with cheez , Kids Pizza with cheez, Spicy Pizza with cheez.
+        areas:
+            - Aguadilla
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_106:
+        name: This is target Pizzeria in Mayagüez. Best pizza with cheez in Puerto Rico
+        google_address: 87 Calle Dr. Jiménez Mayagüez, 00682, Puerto Rico
+        latitude: 18.203963
+        longitude: -67.149363
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Mayagüez. Big Pizza with cheez, Small Pizza with cheez, Kids Pizza with cheez, Spicy Pizza with cheez.
+        areas:
+            - Mayagüez
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+
+    business_107:
+        name: This is target Pizzeria in San Juan. Best pizza hut with cheez in Puerto Rico
+        google_address: 78 Calle El Tren, San Juan, 00962, Puerto Rico
+        latitude: 18.4188723
+        longitude: -66.0572132
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza hut with cheez for everybody!
+        product: Pizza
+        description: Pizza with cheez. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Old San Juan. A lot lot lot Pizzas hut with cheez in the San Juan. Big Pizza hut with cheez, Small Pizza hut  with cheez, Kids Pizza hut  with cheez, Spicy Pizza hut  with cheez.
+        areas:
+            - San Juan
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+    business_108 :
+        name: This is target Pizzeria in Aguadilla. Best pizza hut with cheez in Puerto Rico
+        google_address: 27 Calle José de Diego, Aguadilla, 00603, Puerto Rico
+        latitude: 18.426031
+        longitude: -67.154134
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza hut with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Aguadilla. Big Pizza hut with cheez , Small Pizza hut with cheez , Kids Pizza hut with cheez, Spicy Pizza hut with cheez.
+        areas:
+            - Aguadilla
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_109:
+        name: This is target Pizzeria in Mayagüez. Best pizza hut with cheez in Puerto Rico
+        google_address: 87 Calle Dr. Jiménez Mayagüez, 00682, Puerto Rico
+        latitude: 18.205631
+        longitude: -67.147227
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizzahut hut  with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Mayagüez. Big Pizza hut with cheez, Small Pizza hut with cheez, Kids Pizza hut with cheez, Spicy Pizza hut with cheez.
+        areas:
+            - Mayagüez
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants

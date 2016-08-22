@@ -1,11 +1,5 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
-{% endblock %}
-
 {% block main %}
  <!-- Search Results -->
     <section id="search-results" class="search-results">
@@ -51,7 +45,7 @@
                         <div class="cards">
                         {% if results.resultSet is defined and results.resultSet is not null %}
                             {% for item in results.resultSet %}
-                                {% include 'DomainSearchBundle:Search:Templates/search_result_item.html.twig' with { 'item' : item } %}
+                                {% include 'DomainSearchBundle:Search:Templates/search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
                             {% endfor %}
                         {% endif %}
                         </div>

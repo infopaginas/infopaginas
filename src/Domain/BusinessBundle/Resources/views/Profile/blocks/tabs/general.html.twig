@@ -34,7 +34,8 @@
                             <div class="col-xs-8">
                                 <span>
                                     {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
-                                        {{ businessProfile.getSubscriptionPlan().getName() }}
+                                        {{ businessProfile.getSubscriptionPlan().getName() }},
+                                        {{ businessProfile.getSubscriptions()|first.getStartDate()|date("Y-m-d") }} - {{ businessProfile.getSubscriptions()|first.getEndDate()|date("Y-m-d") }}
                                     {% else %}
                                         {% trans %}Free{% endtrans %}
                                     {% endif %}
