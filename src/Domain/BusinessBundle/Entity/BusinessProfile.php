@@ -2259,4 +2259,16 @@ class BusinessProfile implements
         $this->isClosed = $isClosed;
         return $this;
     }
+
+    /**
+     * @return boolean
+     */
+    public function getCitySlug()
+    {
+        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+
+        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
+
+        return $citySlug;
+    }
 }

@@ -3,7 +3,7 @@
         <label class="control-label card-label" for="card-check2">
             <span class="card-number">1</span>
             &nbsp;
-            <a href="{{ path('domain_business_default_view', { 'slug' : item.slug }) }}">
+            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
                 <span class="card-name">{{ item.name }}</span>
             </a>
         </label>

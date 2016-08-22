@@ -52,7 +52,7 @@
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Profile') }}</td>
             <td>
-                <a target="_blank" href="{{ path('domain_business_profile_view', { slug: business.getSlug() }) }}">
+                <a target="_blank" href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, slug: business.slug }) }}">
                     {{ admin.trans('View') }}
                 </a>
             </td>
