@@ -49,6 +49,7 @@ services:
         calls:
             - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
             - [setPositionService, ['@pix_sortable_behavior.position']]
+            - [ setTemplate, ['edit', 'DomainBusinessBundle:Admin:edit.html.twig']]
 
     domain_business.admin.task:
         class: Domain\BusinessBundle\Admin\TaskAdmin

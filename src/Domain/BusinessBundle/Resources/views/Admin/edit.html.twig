@@ -11,4 +11,6 @@ file that was distributed with this source code.
 
 {% extends 'SonataAdminBundle:CRUD:base_edit.html.twig' %}
 
-
+{% block form %}
+    {{ parent() }}
+{% endblock %}

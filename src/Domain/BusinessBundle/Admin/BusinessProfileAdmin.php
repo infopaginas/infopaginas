@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -17,6 +18,7 @@ use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\EmailValidator;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -86,6 +88,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Categories', array('class' => 'col-md-6'))->end()
                 ->with('Social Networks', array('class' => 'col-md-6'))->end()
                 ->with('Gallery')->end()
+                ->with('Video')->end()
                 ->with('Status', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
                 ->with('Subscriptions')->end()
@@ -214,6 +217,21 @@ class BusinessProfileAdmin extends OxaAdmin
                             'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         ]
+                    ])
+                ->end()
+                ->with('Video')
+                    ->add('videoFile', FileType::class, [
+                        'attr' => [
+                            'style' => 'display:none',
+                            'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo,
+                            video/avi, video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
+                        ],
+                        'data_class' => null,
+                        'mapped' => false,
+                    ])
+                    ->add('video', WistiaMediaType::class, [
+                        'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
+                        'by_reference' => false,
                     ])
                 ->end()
                 ->with('Status')
