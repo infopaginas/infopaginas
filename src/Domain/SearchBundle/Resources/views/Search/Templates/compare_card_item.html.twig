@@ -46,17 +46,7 @@
         {% endif %}
     </div>
     <div class="additional-info fields-item">
-        <div class="reviews">
-            <div class="star-rating">
-                <span class="fa fa-star-o" data-rating="1"></span>
-                <span class="fa fa-star-o" data-rating="2"></span>
-                <span class="fa fa-star-o" data-rating="3"></span>
-                <span class="fa fa-star-o" data-rating="4"></span>
-                <span class="fa fa-star-o" data-rating="5"></span>
-                <input type="hidden" name="whatever" class="rating-value" value="{# item.getBusinessReviewsAvgMark #}">
-            </div>
-            <span class="reviews-value">{# item.getBusinessReviewsCount #} Reviews</span>
-        </div>
+        {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}
     </div>
     <div class="schedule fields-item">
         <div class="shift">
