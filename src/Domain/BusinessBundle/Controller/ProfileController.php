@@ -107,9 +107,6 @@ class ProfileController extends Controller
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
-        $reviewsCount     = $this->getBusinessProfilesManager()->getReviewsCountForBusinessProfile($businessProfile);
-        $reviewsAvgRating = $this->getBusinessProfilesManager()
-            ->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
@@ -123,8 +120,6 @@ class ProfileController extends Controller
             'advertisements'   => $advertisements,
             'lastReview'       => $lastReview,
             'reviewForm'       => $reviewForm->createView(),
-            'reviewsCount'     => $reviewsCount,
-            'reviewsAvgRating' => $reviewsAvgRating,
             'bannerFactory'    => $bannerFactory,
         ]);
     }

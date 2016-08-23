@@ -23,17 +23,7 @@
         </a>
     </div>
     <div class="col-xs-12 additional-info">
-        <div class="reviews">
-            <div class="star-rating">
-                <span class="fa fa-star-o" data-rating="1"></span>
-                <span class="fa fa-star-o" data-rating="2"></span>
-                <span class="fa fa-star-o" data-rating="3"></span>
-                <span class="fa fa-star-o" data-rating="4"></span>
-                <span class="fa fa-star-o" data-rating="5"></span>
-                <input type="hidden" name="whatever" class="rating-value" value="{{ item.getBusinessReviewsAvgMark }}">
-            </div>
-            <span>{{ item.getBusinessReviewsCount }} Reviews</span>
-        </div>
+        {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}
     </div>
     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
         <div class="company-logo">

@@ -245,13 +245,7 @@
                                 <span>{% trans %}Reviews{% endtrans %}:</span>
                             </div>
                             <div class="col-xs-9 fields-item">
-                                <div class="reviews block-title-reviews">
-                                    {% include ':blocks/business:review_rating_stars.html.twig'
-                                        with { 'rating': reviewsAvgRating } %}
-                                    <span class="blue-c">
-                                        {{ reviewsCount }} {% trans %}Reviews{% endtrans %}
-                                    </span>
-                                </div>
+                                {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': businessProfile} %}
 
                                 {% if (app.user) %}
                                     <a href="#" class="green-btn btn write-btn" data-toggle="modal" data-target="#writeReviewModal">
