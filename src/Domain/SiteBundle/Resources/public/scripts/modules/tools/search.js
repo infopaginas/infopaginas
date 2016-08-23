@@ -20,7 +20,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
         $.extend( this.options, options );
 
-        this.init( options );
+        this.init( this.options );
         this.bindEvents();
 
         $(options.searchHeaderButton).add( options.submitSelector ).on( 'click', function( evt ) {
