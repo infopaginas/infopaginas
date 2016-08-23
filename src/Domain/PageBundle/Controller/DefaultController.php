@@ -48,8 +48,11 @@ class DefaultController extends Controller
 
     private function renderPageByCode($slug)
     {
+        $page = $this->get('domain_page.manager.page')->getPageByCode($slug);
+
         $params = [
-            'page' => $this->get('domain_page.manager.page')->getPageByCode($slug),
+            'page'      => $page,
+            'seoData'   => $page,
         ];
 
         return $this->render('DomainPageBundle:Default:view.html.twig', $params);

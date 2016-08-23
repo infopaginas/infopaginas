@@ -53,6 +53,7 @@ class PageAdmin extends OxaAdmin
             ->with('General', array('class' => 'col-md-6'))->end()
             ->with('Status', array('class' => 'col-md-6'))->end()
             ->with('Body', array('class' => 'col-md-12'))->end()
+            ->with('SEO', array('class' => 'col-md-12'))->end()
         ;
 
         $formMapper
@@ -65,7 +66,6 @@ class PageAdmin extends OxaAdmin
                 ])
             ->end()
             ->with('Status')
-                ->add('isPublished')
                 ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                 ->add('updatedUser', 'sonata_type_model', [
                     'required' => false,
@@ -87,6 +87,11 @@ class PageAdmin extends OxaAdmin
             ->with('Body')
                 ->add('body', 'ckeditor')
             ->end()
+            ->with('SEO')
+                ->add('seoTitle')
+                ->add('seoDescription')
+                ->add('seoKeywords')
+            ->end()
         ;
     }
 
@@ -100,8 +105,10 @@ class PageAdmin extends OxaAdmin
             ->add('title')
             ->add('description')
             ->add('body', null, array('template' => 'DomainPageBundle:Admin:show__body.html.twig'))
-            ->add('isPublished')
             ->add('slug')
+            ->add('seoTitle')
+            ->add('seoDescription')
+            ->add('seoKeywords')
         ;
     }
 
