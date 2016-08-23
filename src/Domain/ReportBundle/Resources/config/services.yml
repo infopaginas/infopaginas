@@ -54,3 +54,8 @@ services:
             - [ setPhpExcel, [ '@phpexcel' ]]
             - [ setBusinessOverviewReportManager, [ '@domain_report.manager.business_overview_report_manager' ]]
             - [ setTranslator, [ '@translator.default' ]]
+
+    domain_report.google_analytics.data_fetcher:
+        class: Domain\ReportBundle\Google\Analytics\DataFetcher
+        parent: happyr.google_analytics.data_fetcher
+        #public: false

@@ -117,6 +117,8 @@ class ProfileController extends Controller
             TypeInterface::CODE_PORTAL,
         ));
 
+        //$this->get('google.analytics')->get
+
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile'  => $businessProfile,
             'photos'           => $photos,

@@ -106,3 +106,7 @@ fos_js_routing:
 fos_user_resetting_reset:
     path:     /password_reset/{token}
     defaults: { _controller: DomainSiteBundle:Home:index }
+
+happyr_google_site_authenticator:
+    resource: "@HappyrGoogleSiteAuthenticatorBundle/Resources/config/routing.yml"
+    prefix:   /admin

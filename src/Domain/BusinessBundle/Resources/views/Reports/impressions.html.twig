@@ -1,0 +1,45 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block main %}
+    //test
+{% endblock %}
+
+{% block scripts %}
+    {#<script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics_debug.js','ga');
+
+        window.ga_debug = {trace: true};
+
+        ga('create', 'UA-82638375-1', 'auto');
+        ga('require', 'ec');
+
+        ga('ec:addProduct', {
+            'id': 'P12345',                   // Product ID (string).
+            'name': 'Android Warhol T-Shirt', // Product name (string).
+            'category': 'Apparel',            // Product category (string).
+            'brand': 'Google',                // Product brand (string).
+            'variant': 'Black',               // Product variant (string).
+            'position': 1                    // Product position (number).
+        });
+
+        // The impression from the Related Products section.
+        ga('ec:addImpression', {
+            'id': 'P12345',                   // Product ID (string).
+            'name': 'Android Warhol T-Shirt', // Product name (string).
+            'category': 'Apparel/T-Shirts',   // Product category (string).
+            'brand': 'Google',                // Product brand (string).
+            'variant': 'Black',               // Product variant (string).
+            'list': 'Related Products',       // Product list (string).
+            'position': 1                    // Product position (number).
+        });
+
+        ga('ec:setAction', 'detail');       // Detail action.
+        ga('send', 'pageview');
+    </script>#}
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+
+{% endblock %}

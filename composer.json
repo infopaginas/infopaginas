@@ -5,7 +5,7 @@
     "description": "Infopaginas project",
     "autoload": {
         "psr-4": { "": "src/" },
-        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php", "vendor/google/" ]
     },
     "require": {
         "php": ">=7.0.0",
@@ -40,7 +40,9 @@
         "liuggio/excelbundle": "v2.1.0",
         "spraed/pdf-generator-bundle": "v1.0",
         "guzzlehttp/guzzle": "^6.2",
-        "gkovrey/spine-trigonometric-dql-bundle": "^0.1.5"
+        "gkovrey/spine-trigonometric-dql-bundle": "^0.1.5",
+        "antimattr/google-bundle": "^2.0",
+        "happyr/google-analytics-bundle": "^4.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
