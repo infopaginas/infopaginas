@@ -7,7 +7,7 @@ use Sonata\AdminBundle\Form\Type\Filter\DateType;
 use Sonata\AdminBundle\Form\Type\Filter\DateRangeType;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
-class OxaAbstractDateFilter extends AbstractDateFilter
+abstract class OxaAbstractDateFilter extends AbstractDateFilter
 {
     /**
      * {@inheritdoc}
