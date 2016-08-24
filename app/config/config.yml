@@ -19,6 +19,13 @@ imports:
 parameters:
     locale: en
     locales: [en, es]
+    locale_data:
+        es:
+            domain: ''
+            title: 'Espa&ntilde;ol'
+        en:
+            domain: 'en'
+            title: 'English'
     route_locales: en|es
     videos_upload_path: %assetic.write_to%/uploads/videos
 
