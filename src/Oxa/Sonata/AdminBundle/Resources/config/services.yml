@@ -40,3 +40,8 @@ services:
         class: Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter
         tags:
             - { name: sonata.admin.filter.type, alias: doctrine_orm_string }
+
+    oxa.sonata.admin.orm.filter.type.date_expanded:
+        class: Oxa\Sonata\AdminBundle\Filter\DateTimeRangeFilter
+        tags:
+            - { name: sonata.admin.filter.type, alias: doctrine_orm_datetime_range }

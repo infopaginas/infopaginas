@@ -44,7 +44,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
             ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
