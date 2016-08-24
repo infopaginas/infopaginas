@@ -33,7 +33,7 @@
                                         {% include ':blocks/business:review_rating_stars.html.twig'
                                         with { 'rating': review.getRating() } %}
                                     </div>
-                                    <span class="review-date">{{ review.getCreatedAt() | date('d M Y') }}</span>
+                                    <span class="review-date">{{ review.getCreatedAt() | date('d M Y H:i') }}</span>
                                 </div>
                                 <div class="col-xs-9 fields-item review-col reviews-page">
                                     <p>{{ review.getContent() }}</p>
