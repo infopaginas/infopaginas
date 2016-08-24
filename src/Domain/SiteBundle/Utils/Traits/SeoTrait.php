@@ -13,7 +13,7 @@ trait SeoTrait
      * @var string
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="seo_title", label="SEO Title1",  type="string", length=100, nullable=true)
+     * @ORM\Column(name="seo_title", type="string", length=100, nullable=true)
      */
     protected $seoTitle;
 
