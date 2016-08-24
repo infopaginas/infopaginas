@@ -134,6 +134,7 @@
 {% endblock %}
 
 {% block modals %}
+    {{ parent() }}
     {% if closeBusinessProfileForm is defined %}
         {% include 'DomainBusinessBundle:Profile/modals:close_business_profile.html.twig' %}
     {% endif %}
