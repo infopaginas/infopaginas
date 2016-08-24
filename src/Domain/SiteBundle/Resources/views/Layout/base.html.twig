@@ -48,12 +48,24 @@
                             </form>
                         </div>
                         <ul class="menu-nav">
-                            <li class="ad desc-menu"><a href="#">Advertise with us</a></li>
+                            <li class="ad desc-menu"><a href="">Advertise with us</a></li>
                         </ul>
                     </div>
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
+                            <li class="lang btn base-page"><a href="">Español</a></li>
+                            <li class="lang btn base-page"><a href="" class="active">English</a></li>
+                            <li class="lang-dropdown">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        <select class="form-control select-control language-select" tabindex="-1" aria-hidden="true">
+                                            <option value="en_US">English</option>
+                                            <option value="es">Español</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
                             {% if (app.user) %}
                                  <li class="login-link desc-menu logged-home">
                                     <a href="{{ path('domain_site_user_profile') }}" class="login-button">
@@ -66,7 +78,7 @@
                             {% else %}
                                 <li class="login-link desc-menu home">
                                     <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
-                                        login
+                                        Login
                                     </a>
                                 </li>
                             {% endif %}
