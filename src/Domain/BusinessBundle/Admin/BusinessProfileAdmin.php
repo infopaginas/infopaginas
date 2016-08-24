@@ -249,6 +249,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
+                        'by_reference' => false,
                         'required' => true,
                         'type_options' => [
                             'delete' => true,
@@ -266,7 +267,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('coupons', 'sonata_type_collection', [
                         'by_reference' => false,
                         'required' => false,
-                        'mapped' => true,
                         'type_options' => [
                             'delete' => true,
                             'delete_options' => [
@@ -288,6 +288,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Reviews')
                 ->with('User Reviews')
                     ->add('businessReviews', 'sonata_type_collection', [
+                        'by_reference' => false,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,
