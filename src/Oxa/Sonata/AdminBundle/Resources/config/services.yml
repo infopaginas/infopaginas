@@ -35,3 +35,8 @@ services:
         arguments: [@doctrine.orm.entity_manager]
         tags:
             - {name: twig.extension, alias: admin_extension}
+
+    oxa.sonata.admin.orm.filter.type.insensitive_string:
+        class: Oxa\Sonata\AdminBundle\Filter\CaseInsensitiveStringFilter
+        tags:
+            - { name: sonata.admin.filter.type, alias: doctrine_orm_string }
