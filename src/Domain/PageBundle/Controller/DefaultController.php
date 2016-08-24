@@ -46,6 +46,16 @@ class DefaultController extends Controller
         return $this->renderPageByCode($code);
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewAdvertiseAction()
+    {
+        $code = $this->get('domain_page.manager.page')->getPage()::CODE_ADVERTISE;
+
+        return $this->renderPageByCode($code);
+    }
+
     private function renderPageByCode($slug)
     {
         $page = $this->get('domain_page.manager.page')->getPageByCode($slug);

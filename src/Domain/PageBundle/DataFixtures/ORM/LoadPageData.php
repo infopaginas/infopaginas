@@ -45,6 +45,14 @@ class LoadPageData extends OxaAbstractFixture
                 'isPublished'   => true,
                 'slug'          => 'terms',
             ],
+            [
+                'title'         => 'Advertise with Us',
+                'code'          => PageInterface::CODE_ADVERTISE,
+                'description'   => 'Advertise with Us Description',
+                'body'          => 'Advertise with Us  - <a href="/b/business/create">Get Your Free Listing</a>',
+                'isPublished'   => true,
+                'slug'          => 'advertise',
+            ],
         ];
 
         foreach ($dataArray as $data) {

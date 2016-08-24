@@ -13,3 +13,7 @@ domain_page_view_terms:
 domain_page_view_privacy:
     path:     /privacy
     defaults: { _controller: DomainPageBundle:Default:viewPrivacy }
+
+domain_page_view_advertise:
+    path:     /advertise
+    defaults: { _controller: DomainPageBundle:Default:viewAdvertise }

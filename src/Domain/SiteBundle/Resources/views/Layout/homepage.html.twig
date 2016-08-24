@@ -33,7 +33,7 @@
                                 </button>
                                 <a href="" class="logo-header"></a>
                                 <ul class="menu-nav">
-                                    <li class="ad desc-menu"><a href="#">Advertise with us</a></li>
+                                    <li class="ad desc-menu"><a href="{{ path('domain_page_view_advertise') }}">Advertise with us</a></li>
                                     {% if not app.user %}
                                         <li class="login-link mobile-menu btn">
                                             <a href="#" data-toggle="modal" data-target="#loginModal">login</a>
