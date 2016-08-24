@@ -102,7 +102,7 @@ define(
             },
             map: this.map,
             title: markerData.name,
-            labelContent: "Ololoshenki",
+            labelContent: "",
             labelInBackground: false,
             labelAnchor: new google.maps.Point(3, 30),
             labelClass: "labels" // the CSS class for the label
