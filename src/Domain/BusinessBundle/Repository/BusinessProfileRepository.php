@@ -77,7 +77,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function findBusinessProfilesReviewedByUser(UserInterface $user)
     {
         $queryBuilder = $this->createQueryBuilder('bp')
-            ->select('DISTINCT(bp.name) name, bp.slug')
+            ->select('bp business, bp.slug')
             ->join('bp.businessReviews', 'br')
             ->where('br.user = :user')
             ->andWhere('bp.isActive = TRUE')
