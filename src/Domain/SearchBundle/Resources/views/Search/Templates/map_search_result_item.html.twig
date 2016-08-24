@@ -1,12 +1,9 @@
 <div class="card-item premium" id="{{ item.id }}" data-id="{{ item.id }}">
     <div class="col-xs-8 card-title">
         <label class="control-label card-label" for="card-check">
+                <span class="card-number">{{ iterator }}.</span>&nbsp;
             <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-number">{{ iterator }}.</span>
-            </a>
-                &nbsp;
-            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
+                <h1 class="card-name">{{ item.name }}</h1>
             </a>
         </label>
     </div>
@@ -23,17 +20,7 @@
         </a>
     </div>
     <div class="col-xs-12 additional-info">
-        <div class="reviews">
-            <div class="star-rating">
-                <span class="fa fa-star-o" data-rating="1"></span>
-                <span class="fa fa-star-o" data-rating="2"></span>
-                <span class="fa fa-star-o" data-rating="3"></span>
-                <span class="fa fa-star-o" data-rating="4"></span>
-                <span class="fa fa-star-o" data-rating="5"></span>
-                <input type="hidden" name="whatever" class="rating-value" value="{{ item.getBusinessReviewsAvgMark }}">
-            </div>
-            <span>{{ item.getBusinessReviewsCount }} Reviews</span>
-        </div>
+        {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}
     </div>
     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
         <div class="company-logo">

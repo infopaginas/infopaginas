@@ -1,5 +1,3 @@
 {% for language in languages %}
     <li class="lang btn"><a href="{{ language.url }}" class="{% if language.active %}active{% endif %}">{{ language.title|raw }}</a></li>
 {% endfor %}
-
-

@@ -1,10 +1,9 @@
 <div class="card-item">
     <div class="card-title fields-item">
         <label class="control-label card-label" for="card-check2">
-            <span class="card-number">{{ iterator }}</span>
-            &nbsp;
+            <span class="card-number">{{ iterator }}.</span> &nbsp;
             <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
+                <h1 class="card-name">{{ item.name }}</h1>
             </a>
         </label>
     </div>
@@ -46,17 +45,7 @@
         {% endif %}
     </div>
     <div class="additional-info fields-item">
-        <div class="reviews">
-            <div class="star-rating">
-                <span class="fa fa-star-o" data-rating="1"></span>
-                <span class="fa fa-star-o" data-rating="2"></span>
-                <span class="fa fa-star-o" data-rating="3"></span>
-                <span class="fa fa-star-o" data-rating="4"></span>
-                <span class="fa fa-star-o" data-rating="5"></span>
-                <input type="hidden" name="whatever" class="rating-value" value="{# item.getBusinessReviewsAvgMark #}">
-            </div>
-            <span class="reviews-value">{# item.getBusinessReviewsCount #} Reviews</span>
-        </div>
+        {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}
     </div>
     <div class="schedule fields-item">
         <div class="shift">

@@ -5,15 +5,12 @@
     ">
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
+            <span class="card-number">{{ iterator }}.</span>
             <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-number">{{ iterator }}.</span>
+                <h1 class="card-name">{{ item.name }}</h1>
             </a>
                 &nbsp;
-            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
-            </a>
-                &nbsp;
-            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                 <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
                     <span class="card-slogan"><q>{{ item.slogan }}</q></span>
                 </a>

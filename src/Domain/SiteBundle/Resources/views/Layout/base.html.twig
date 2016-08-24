@@ -38,7 +38,7 @@
                         <a href="{{ path('domain_site_home_index')}}" class="logo-header"></a>
 
                         <div class="header-form">
-                            <form class="form-horizontal search-form">
+                            <form class="form-horizontal search-form" action="{{ path('domain_search_index')}}">
 
                                 <div class="form-group row">
                                     {% block headerSearch %}
@@ -48,12 +48,24 @@
                             </form>
                         </div>
                         <ul class="menu-nav">
-                            <li class="ad desc-menu"><a href="#">Advertise with us</a></li>
+                            <li class="ad desc-menu"><a href="">Advertise with us</a></li>
                         </ul>
                     </div>
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
+                            <li class="lang btn base-page"><a href="">Español</a></li>
+                            <li class="lang btn base-page"><a href="" class="active">English</a></li>
+                            <li class="lang-dropdown">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        <select class="form-control select-control language-select" tabindex="-1" aria-hidden="true">
+                                            <option value="en_US">English</option>
+                                            <option value="es">Español</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
                             {% if (app.user) %}
                                  <li class="login-link desc-menu logged-home">
                                     <a href="{{ path('domain_site_user_profile') }}" class="login-button">
@@ -66,7 +78,7 @@
                             {% else %}
                                 <li class="login-link desc-menu home">
                                     <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
-                                        login
+                                        Login
                                     </a>
                                 </li>
                             {% endif %}
@@ -158,11 +170,22 @@
     {% endblock %}
 </footer>
 
-{% block modals %} {% endblock %}
+{% block modals %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
+{% endblock %}
 
 <!-- Scripts -->
 {% block scripts %}
     <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+                var siteHomepage = new Homepage();
+            })
+        })
+    </script>
 {% endblock %}
 </body>
 </html>

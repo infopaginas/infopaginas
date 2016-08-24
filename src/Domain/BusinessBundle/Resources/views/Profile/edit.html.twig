@@ -10,7 +10,7 @@
                 <div class="notice-block blue-c">Please note: changes will be applied after approval
                 </div>
             </div>
-            <div class="col-xs-9 menu-collapsed">
+            <div class="menu-collapsed">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#navbar-buttons" aria-expanded="false">
@@ -30,12 +30,12 @@
                                    class="green-btn"
                                    target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
-                                    <span>{% trans %}View Profile{% endtrans %}</span>
+                                    <span>{% trans %}Profile{% endtrans %}</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="green-btn">
-                                    <i class="ad-icon" aria-hidden="true"></i>
+                                    <i class="fa fa-newspaper-o" aria-hidden="true"></i>
                                     <span>{% trans %}Manage Ads{% endtrans %}</span>
                                 </a>
                             </li>
@@ -74,20 +74,16 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="col-xs-3 dropdown-col">
+            <div class="dropdown-col">
                 {% if businessProfile is defined %}
-                    <span class="dropdown-label">Language:</span>
-                    <div class="dropdown">
-                        <div class="select-container">
-                            <select id="language-selector" class="form-control select-control">
-                                <option value="en_US">
-                                    {% trans %}English{% endtrans %}
-                                </option>
-                                <option value="es">
-                                    {% trans %}Spain (PR){% endtrans %}
-                                </option>
-                            </select>
-                        </div>
+                    <span class="language-content-label">Content:</span>
+                    <div class="language-content">
+                        <span>
+                            <a href="#" class="language-selector" data-locale="en_US">{% trans %}Eng{% endtrans %}</a>
+                        </span>
+                        <span>
+                            <a href="#" class="language-selector" data-locale="es">{% trans %}Esp{% endtrans %}</a>
+                        </span>
                     </div>
                 {% endif %}
             </div>
@@ -134,6 +130,7 @@
 {% endblock %}
 
 {% block modals %}
+    {{ parent() }}
     {% if closeBusinessProfileForm is defined %}
         {% include 'DomainBusinessBundle:Profile/modals:close_business_profile.html.twig' %}
     {% endif %}

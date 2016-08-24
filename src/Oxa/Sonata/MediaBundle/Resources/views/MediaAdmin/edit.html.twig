@@ -12,15 +12,6 @@ file that was distributed with this source code.
 {#{% extends 'SonataAdminBundle:CRUD:base_edit.html.twig' %}#}
 {% extends '@OxaSonataAdmin/CRUD/edit.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        button.btn.btn-sm.btn-default.pixlr-link {
-            margin-bottom: 0;
-        }
-    </style>
-{% endblock %}
-
 {% block sonata_admin_content %}
 
     <div class="row">

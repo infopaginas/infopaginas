@@ -40,6 +40,6 @@
 {% endblock %}
 
 {% block modals %}
-    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
+    {{ parent() }}
     {% include 'DomainSearchBundle:Layout/modals:filter_mobile.html.twig'%}
 {% endblock %}
