@@ -144,8 +144,6 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
     //check allowed filesize/count. Start upload process
     images.prototype.handleFileUploadInput = function() {
-        var maxFilesCount = 10;
-
         var that = this;
 
         $(document).on( 'change', '#' + this.html.buttons.fileInputId, function() {
@@ -176,6 +174,14 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         var that = this;
 
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
+            if ( !$remoteImageURLInput.val() ) {
+                $remoteImageURLInput.addClass( 'error' );
+                alertify.error( 'Error: URL field should not be empty.' );
+                return false;
+            } else if ( $remoteImageURLInput.hasClass( 'error' ) ) {
+                $remoteImageURLInput.removeClass( 'error' );
+            }
+
             var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
 
             var data = {
@@ -231,7 +237,6 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         $(document).on( 'click', '.' + this.html.removeImageClassname, function( event ) {
             var imageId = $(this).data( 'id' );
 
-            $(document).find( '[data-id="' + imageId + '"]' ).remove();
             $(document).find( '#images-form-' + imageId ).remove();
 
             event.preventDefault();
