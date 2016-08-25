@@ -19,7 +19,17 @@ imports:
 parameters:
     locale: en
     locales: [en, es]
+    locale_data:
+        es:
+            domain: ''
+            title: 'Espa&ntilde;ol'
+        en:
+            domain: 'en'
+            title: 'English'
     route_locales: en|es
+    locale_admin:
+        url_part: 'admin'
+        locale: 'en'
     videos_upload_path: %assetic.write_to%/uploads/videos
 
 framework:
@@ -43,6 +53,8 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
+        storage_id: dynamicDomainSessionStorage
+        name: SFSESSID
     fragments:       ~
     http_method_override: true
 

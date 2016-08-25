@@ -15,7 +15,6 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
-use Domain\BusinessBundle\Repository\TaskRepository;
 use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
@@ -36,6 +35,9 @@ class TasksManager
     /** @var BusinessProfileManager */
     protected $businessProfileManager;
 
+    /** @var BusinessReviewManager $businessReviewManager */
+    protected $businessReviewManager;
+
     /**
      * TasksManager constructor.
      *
@@ -43,13 +45,17 @@ class TasksManager
      * @param EntityManager $entityManager
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function __construct(EntityManager $entityManager, BusinessProfileManager $businessProfileManager)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        BusinessProfileManager $businessProfileManager,
+        BusinessReviewManager $businessReviewManager
+    ) {
         $this->em = $entityManager;
 
-        $this->repository = $this->em->getRepository(TaskRepository::SLUG);
+        $this->repository = $this->em->getRepository(Task::class);
 
         $this->businessProfileManager = $businessProfileManager;
+        $this->businessReviewManager  = $businessReviewManager;
     }
 
     /**
@@ -85,11 +91,13 @@ class TasksManager
      *
      * @access public
      * @param BusinessProfile $businessProfile
+     * @param string $closeReason
      * @return array
      */
-    public function createCloseProfileConfirmationRequest(BusinessProfile $businessProfile) : array
+    public function createCloseProfileConfirmationRequest(BusinessProfile $businessProfile, string $closeReason) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_CLOSE, $businessProfile);
+        $task->setClosureReason($closeReason);
         return $this->save($task);
     }
 
@@ -187,8 +195,12 @@ class TasksManager
 
         if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
             $this->getBusinessProfileManager()->activate($businessProfile);
-        } else {
+        } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
             $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $this->getTaskLocale($task));
+        } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
+            $this->getBusinessReviewsManager()->publish($task->getReview());
+        } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
+            $this->getBusinessProfileManager()->deactivate($task->getBusinessProfile());
         }
 
         return $this->save($task);
@@ -245,6 +257,11 @@ class TasksManager
     private function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
+    }
+
+    private function getBusinessReviewsManager() : BusinessReviewManager
+    {
+        return $this->businessReviewManager;
     }
 
     /**

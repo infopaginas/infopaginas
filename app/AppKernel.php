@@ -51,11 +51,13 @@ class AppKernel extends Kernel
             new \JMaitan\SonataMediaCropBundle\JMaitanSonataMediaCropBundle(),
             new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            new Spine\TrigonometricDQLBundle\SpineTrigonometricDQLBundle(),
             
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
+            new Oxa\Sonata\TranslationBundle\OxaSonataTranslationBundle(),
             new Oxa\ConfigBundle\OxaConfigBundle(),
             new Oxa\GeolocationBundle\OxaGeolocationBundle(),
             new Domain\SiteBundle\DomainSiteBundle(),

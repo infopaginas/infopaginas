@@ -103,16 +103,6 @@ class AdaptiveResizer implements ResizerInterface
             $height = intval(($width * $media->getBox()->getHeight()) / $media->getBox()->getWidth());
         }
 
-        // may be used in future, still in dev
-        // make sure we're not exceeding our image size if we're not supposed to
-        /*if ($settings['upscale'] === false) {
-            $maxHeight = ($height > $media->getBox()->getHeight()) ? $media->getBox()->getHeight() : $height;
-            $maxWidth  = ($width > $media->getBox()->getWidth()) ? $media->getBox()->getWidth() : $width;
-        } else {
-            $maxHeight = $height;
-            $maxWidth  = $width;
-        }*/
-
         return new Box($width, $height);
     }
 }

@@ -1,0 +1,21 @@
+<div class="icons">
+    {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and business.getImages() | length > 0  %}
+        <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#photo">
+            <i class="photo"></i>
+        </a>
+    {% endif %}
+
+    {% if hasSubscription(business, "CODE_PREMIUM_PLATINUM") and business.getVideo() is not null %}
+        <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#video">
+            <i class="video"></i>
+        </a>
+    {% endif %}
+
+    {% if hasSubscription(business, "CODE_PRIORITY") and business.getImages() | length > 0 %}
+        <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#ad">
+            <i class="ad"></i>
+        </a>
+    {% endif %}
+</div>
+
+{% include ':blocks/business:business_profile_reviews.html.twig' with {'business': business, 'withLink': true} %}

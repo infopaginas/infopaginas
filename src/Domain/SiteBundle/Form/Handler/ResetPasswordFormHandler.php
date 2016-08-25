@@ -15,6 +15,7 @@ use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -23,9 +24,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
-    const ERROR_EMPTY_TOKEN = 'Error: Empty token.';
-
-    const ERROR_USER_NOT_FOUND_BY_TOKEN = 'The user with "confirmation token" does not exist for value "%s"';
+    protected $translationDomain = 'DomainSiteBundle';
 
     /** @var FormInterface  */
     protected $form;
@@ -36,17 +35,26 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
     /** @var UserManagerInterface */
     protected $userManager;
 
+    /** @var Translator */
+    protected $translator;
+
     /**
      * ResetPasswordFormHandler constructor.
      * @param FormInterface $form
      * @param Request $request
      * @param UserManagerInterface $userManager
+     * @param Translator $translator
      */
-    public function __construct(FormInterface $form, Request $request, UserManagerInterface $userManager)
-    {
+    public function __construct(
+        FormInterface $form,
+        Request $request,
+        UserManagerInterface $userManager,
+        Translator $translator
+    ) {
         $this->form           = $form;
         $this->request        = $request;
         $this->userManager    = $userManager;
+        $this->translator     = $translator;
     }
 
     /**
@@ -58,7 +66,9 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
         $token = $this->request->request->get('token', null);
 
         if ($token === null) {
-            throw new \Exception(self::ERROR_EMPTY_TOKEN);
+            throw new \Exception(
+                $this->translator->trans('user.reset_password.token.empty', [], $this->translationDomain)
+            );
         }
 
         $usersManager = $this->getUsersManager();
@@ -66,7 +76,9 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
         $user = $usersManager->findUserByConfirmationToken($token);
 
         if ($user === null) {
-            throw new NotFoundHttpException(sprintf(self::ERROR_USER_NOT_FOUND_BY_TOKEN, $token));
+            throw new NotFoundHttpException(
+                $this->translator->trans('user.reset_password.token.invalid', [], $this->translationDomain)
+            );
         }
 
         if ($this->request->getMethod() == 'POST') {

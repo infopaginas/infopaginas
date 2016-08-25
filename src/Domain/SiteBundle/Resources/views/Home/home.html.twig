@@ -1,20 +1,20 @@
 {% extends "DomainSiteBundle:Layout:homepage.html.twig" %}
 
 {% block homapageHeaderHexagonDesc %}
-    {% include 'DomainSiteBundle:Home:Widgets/hexagonMenuWidget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_widget.html.twig' %}
 {% endblock %}
 
 {% block  homapageHeaderHexagonMobile %}
-    {% include 'DomainSiteBundle:Home:Widgets/hexagonMenuMobileWidget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_mobile_widget.html.twig' %}
 {% endblock %}
 
 {% block  homapageHeaderSearchBlock %}
-    {% include 'DomainSiteBundle:Home:Widgets/searchWidget.html.twig' %}
+    {% include 'DomainSiteBundle:Home:widgets/search_widget.html.twig' %}
 {% endblock %}
 
 {% block homepageHeaderTopBarNavigation %}
     <ul class="nav navbar-nav navbar-right">
-        {% include 'DomainSiteBundle:Home:Widgets/languageWidget.html.twig' %}
+        {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
         {% if (app.user) %}
             <li class="login-link desc-menu logged">
                 <a href="{{ path('domain_site_user_profile') }}" class="login-button">
@@ -27,17 +27,15 @@
                 </a>
             </li>
              {% else %}
-            <li class="login-link desc-menu btn">
+            <li class="login-link desc-menu not-logged-home">
                 <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
-                    login
+                    Login
                 </a>
             </li>
         {% endif %}
 
         <li class="ad mobile-menu">
-            <a href="">
-                Advertise with us
-            </a>
+            <a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a>
         </li>
     </ul>
 {% endblock %}
@@ -47,11 +45,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
-                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD')) }
+                        %}
+                    {% endif %}
                 </div>
                 <div class="col-xs-12 mobile-banner">
-                    <img src="http://placehold.it/300x250">
-                    <img src="http://placehold.it/300x250">
+
                 </div>
             </div>
         </div>
@@ -63,10 +64,20 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 articles-section">
-                    {% include 'DomainSiteBundle:Home:Widgets/articlesWidget.html.twig' %}
+                    <div class="section-title">
+                        <h1 class="blue-c">{% trans %}Articles{% endtrans %}</h1>
+                        <hr>
+                        <a href="{{ path('domain_article_homepage') }}" class="btn">{% trans %}View more articles{% endtrans %}</a>
+                    </div>
+                    {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' %}
                 </div>
                 <div class="col-md-6 videos-section">
-                    {% include 'DomainSiteBundle:Home:Widgets/videosWidget.html.twig' %}
+                    <div class="section-title">
+                        <h1 class="blue-c">{% trans %}Videos{% endtrans %}</h1>
+                        <hr>
+                        <a href="{{ path('domain_business_video_list') }}" class="btn">{% trans %}View more videos{% endtrans %}</a>
+                    </div>
+                    {% include 'DomainSiteBundle:Home:widgets/videos_widget.html.twig' with {'width': 320, 'height': 220} %}
                 </div>
             </div>
         </div>
@@ -79,10 +90,18 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEFT'))  }
+                            %}
+                        {% endif %}
                     </div>
                     <div class="col-xs-6 banner-small">
-                        {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : bannerBottom, 'crop' : 'portal'  } %}
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_RIGHT'))  }
+                            %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -90,10 +109,7 @@
 {% endblock %}
 
 {% block homeModals %}
-    {% include 'DomainSiteBundle:Home:Modals/login.html.twig' with { 'loginForm' : loginForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/registration.html.twig' with { 'registrationForm' : registrationForm } %}
-    {% include 'DomainSiteBundle:Home:Modals/forgotten_password.html.twig' with { 'resetPasswordRequestForm' : resetPasswordRequestForm} %}
-    {% include 'DomainSiteBundle:Home:Modals/reset_password.html.twig' with { 'resetPasswordForm' : resetPasswordForm} %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
 {% endblock %}
 
 {% block scripts %}

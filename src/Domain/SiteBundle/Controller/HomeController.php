@@ -25,37 +25,51 @@ class HomeController extends Controller
         $locale         = $request->getLocale();
 
         $menuManager    = $this->get('domain_menu.manager.menu');
-        $bannerFactory  = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
         $articleManager = $this->get('domain_article.manager.article');
-        //temporary call for article manger instead of video manager
-        $videoManager   = $this->get('domain_article.manager.article');
+        $videoManager   = $this->get('domain_business.video');
 
         $articles       = $articleManager->fetchHomepageArticles();
-        $videos         = $videoManager->fetchHomepageArticles();
+        $videos         = $videoManager->fetchHomepageVideos();
 
         $menuItems      = $menuManager->fetchAll();
-        $banner         = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
-        $bannerBottom   = $bannerFactory->get(TypeInterface::CODE_PORTAL);
 
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL_LEADERBOARD,
+            TypeInterface::CODE_PORTAL_LEFT,
+            TypeInterface::CODE_PORTAL_RIGHT,
+        ));
+
+        return $this->render(
+            'DomainSiteBundle:Home:home.html.twig',
+            [
+                'menuItems'                => $menuItems,
+                'bannerFactory'            => $bannerFactory,
+                'articles'                 => $articles,
+                'videos'                   => $videos,
+                'locale'                   => $locale,
+            ]
+        );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function authModalAction()
+    {
         $loginForm                = $this->createForm(new LoginType());
         $registrationForm         = $this->createForm(new RegistrationType());
         $resetPasswordRequestForm = $this->createForm(new ResetPasswordRequestType());
         $resetPasswordForm        = $this->createForm(new ResetPasswordType());
 
         return $this->render(
-            'DomainSiteBundle:Home:home.html.twig',
-            array(
-                'menuItems'                => $menuItems,
-                'banner'                   => $banner,
-                'bannerBottom'             => $bannerBottom,
-                'articles'                 => $articles,
-                'videos'                   => $videos,
-                'locale'                   => $locale,
+            'DomainSiteBundle:Home:auth_modal.html.twig',
+            [
                 'loginForm'                => $loginForm->createView(),
                 'registrationForm'         => $registrationForm->createView(),
                 'resetPasswordRequestForm' => $resetPasswordRequestForm->createView(),
                 'resetPasswordForm'        => $resetPasswordForm->createView(),
-            )
+            ]
         );
     }
 }

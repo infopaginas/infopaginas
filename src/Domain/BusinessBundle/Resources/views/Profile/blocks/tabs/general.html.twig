@@ -12,7 +12,7 @@
 <section id="profile-manage-general" class="profile-manage profile-manage-general">
     <div class="container general-manage">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 business-container">
                 <div class="cards">
                     <div class="form-group card-item">
                         <div class="card-item-name">
@@ -34,7 +34,8 @@
                             <div class="col-xs-8">
                                 <span>
                                     {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
-                                        {{ businessProfile.getSubscriptionPlan().getName() }}
+                                        {{ businessProfile.getSubscriptionPlan().getName() }},
+                                        {{ businessProfile.getSubscriptions()|first.getStartDate()|date("Y-m-d") }} - {{ businessProfile.getSubscriptions()|first.getEndDate()|date("Y-m-d") }}
                                     {% else %}
                                         {% trans %}Free{% endtrans %}
                                     {% endif %}
@@ -72,6 +73,7 @@
                             </div>
                             <div class="col-xs-8">
                                 {{ form_widget(businessProfileForm.website) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>
@@ -87,6 +89,7 @@
                                             {{ form_widget(phoneField) }}
                                             <br>
                                         </li>
+                                        <span class="help-block"></span>
                                     {% endfor %}
                                 </ul>
                                 <ul class="add-phone-block">
@@ -102,6 +105,7 @@
                             </div>
                             <div class="col-xs-8">
                                 {{ form_widget(businessProfileForm.email) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>
@@ -129,6 +133,7 @@
                                 </div>
                                 <div class="col-xs-8">
                                     {{ form_widget(businessProfileForm.slogan) }}
+                                    <span class="help-block"></span>
                                 </div>
                             {% endif %}
                             <div class="col-xs-4">
@@ -136,12 +141,14 @@
                             </div>
                             <div class="col-xs-8">
                                 {{ form_widget(businessProfileForm.description) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>Products:</span>
                             </div>
                             <div class="col-xs-8">
                                 {{ form_widget(businessProfileForm.product) }}
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>Payment Methods:</span>
@@ -152,6 +159,7 @@
                                         {{ form_widget(businessProfileForm.paymentMethods) }}
                                     </div>
                                 </div>
+                                <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="col-xs-6 form-col">
@@ -164,6 +172,7 @@
                                         {{ form_widget(businessProfileForm.brands) }}
                                     </div>
                                 </div>
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>Tags:</span>
@@ -174,12 +183,14 @@
                                         {{ form_widget(businessProfileForm.tags) }}
                                     </div>
                                 </div>
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>Working Hours:</span>
                             </div>
                             <div class="col-xs-8">
                                 {{ form_widget(businessProfileForm.workingHours) }}
+                                <span class="help-block"></span>
                             </div>
                         </div>
                     </div>

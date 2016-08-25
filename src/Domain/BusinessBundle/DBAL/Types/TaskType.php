@@ -27,6 +27,6 @@ final class TaskType extends AbstractEnumType
         self::TASK_PROFILE_CREATE => 'Create Profile',
         self::TASK_PROFILE_UPDATE => 'Update Profile',
         self::TASK_PROFILE_CLOSE  => 'Close Profile',
-        self::TASK_REVIEW_APPROVE => 'Approve Review',
+        self::TASK_REVIEW_APPROVE => 'Business Review',
     ];
 }

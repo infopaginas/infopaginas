@@ -31,7 +31,7 @@ class BusinessOverviewReportAdmin extends ReportAdmin
                 'mapped' => false,
             ])
             ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
-            ->add('date', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getDatagridDateTypeOptions())
             ->add('periodOption', 'doctrine_orm_choice', AdminHelper::getDatagridPeriodOptionOptions())
         ;
     }

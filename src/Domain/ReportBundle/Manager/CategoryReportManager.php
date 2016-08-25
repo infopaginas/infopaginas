@@ -17,7 +17,7 @@ use Ivory\CKEditorBundle\Exception\Exception;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
-class CategoryReportManager extends DefaultManager
+class CategoryReportManager extends BaseReportManager
 {
     /**
      * @return array|\Domain\BusinessBundle\Entity\Category[]

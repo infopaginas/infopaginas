@@ -24,36 +24,37 @@ class SearchController extends Controller
 
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
-        
-        $bannerFactory      = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
-        $banner             = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
 
-        return $this->render('DomainSearchBundle:Search:index.html.twig', array(
-            'search'        => $searchDTO,
-            'results'       => $searchResultsDTO,
-            'banner'        => $banner,
+        $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
+
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL_LEADERBOARD,
+            TypeInterface::CODE_PORTAL,
         ));
-    }
 
-    /**
-     * Search by category
-     */
-    public function categoryAction(Request $request)
-    {
-        return $this->render('DomainSearchBundle:Home:search.html.twig');
+        return $this->render(
+            'DomainSearchBundle:Search:index.html.twig',
+            [
+                'search'        => $searchDTO,
+                'results'       => $searchResultsDTO,
+                'bannerFactory' => $bannerFactory,
+                'dcDataDTO'     => $dcDataDTO
+            ]
+        );
     }
-
 
     /**
      * Source endpoint for jQuery UI Autocomplete plugin in search widget
      */
     public function autocompleteAction(Request $request)
     {
-        $query = $request->get('term', '');
-        $location = $request->get('geo', '');
+        $searchManager = $this->get('domain_search.manager.search');
+
+        $searchDTO     = $searchManager->getSearchDTO($request);
 
         $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfilehManager->searchAutosuggestByPhraseAndLocation($query, $location);
+        $results = $businessProfilehManager->searchAutosuggestByPhraseAndLocation($searchDTO);
 
         return (new JsonResponse)->setData($results);
     }
@@ -65,13 +66,24 @@ class SearchController extends Controller
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
 
-        $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $locationMarkers    = $businessProfilehManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $searchResultsDTO   = $businessProfileManager->removeItemWithHiddenAddress($searchResultsDTO);
+        $locationMarkers    = $businessProfileManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
-        return $this->render('DomainSearchBundle:Search:map.html.twig', array(
-            'results'    => $searchResultsDTO,
-            'markers'    => $locationMarkers
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL
         ));
+
+
+        return $this->render(
+            'DomainSearchBundle:Search:map.html.twig',
+            [
+                'results'    => $searchResultsDTO,
+                'markers'    => $locationMarkers,
+                'bannerFactory' => $bannerFactory,
+            ]
+        );
     }
 
     public function compareAction(Request $request)
@@ -80,13 +92,18 @@ class SearchController extends Controller
 
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
-        $bannerFactory      = $this->get('domain_banner.factory.banner'); // Maybe need to load via factory, not manager
 
-        $banner        = $bannerFactory->get(TypeInterface::CODE_PORTAL_LEADERBOARD);
-
-        return $this->render('DomainSearchBundle:Search:compare.html.twig', array(
-            'results'       => $searchResultsDTO,
-            'banner'        => $banner
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(array(
+            TypeInterface::CODE_PORTAL
         ));
+
+        return $this->render(
+            'DomainSearchBundle:Search:compare.html.twig',
+            [
+                'results'       => $searchResultsDTO,
+                'bannerFactory' => $bannerFactory,
+            ]
+        );
     }
 }

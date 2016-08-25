@@ -1,4 +1,4 @@
-define(['jquery'], function ($) {
+define(['jquery', 'lightbox', 'slick'], function ($) {
     'use strict';
 
     var slider = function() {

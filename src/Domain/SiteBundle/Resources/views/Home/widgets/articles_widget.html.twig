@@ -1,0 +1,22 @@
+<div class="articles">
+    {% for row in articles|batch(4) %}
+        <div class="row articles-block">
+            {% for article in row %}
+                <div class="{% if isList is defined and isList %}col-md-3{% else %}col-xs-6{% endif %} article">
+                    <div class="article-pic"><a href="{{ path('domain_article_view', { 'slug' : article.getSlug() }) }}"><img src="{% path article.getImage(), 'homepage' %}"></a>
+                    </div>
+                    <div class="article-info">
+                        <a href="{{ path('domain_article_view', { 'slug' : article.getSlug() }) }}" class="article-title blue-c">
+                            {{ article.getTitle() }}
+                        </a>
+
+                        <div class="article-area green-c">{{ article.getCategory().getName() }}</div>
+                        <div class="article-text">
+                            {{ cut_body_extension(article.getBody()) }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>

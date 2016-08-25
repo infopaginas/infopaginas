@@ -29,7 +29,7 @@ class Task implements DefaultEntityInterface, TaskInterface
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
@@ -51,6 +51,11 @@ class Task implements DefaultEntityInterface, TaskInterface
      * @ORM\Column(name="reject_reason", type="text", nullable=true)
      */
     protected $rejectReason;
+
+    /**
+     * @ORM\Column(name="closure_reason", type="text", nullable=true)
+     */
+    protected $closureReason;
 
     /**
      * @ORM\Column(name="changeset", type="text", nullable=true)
@@ -160,6 +165,24 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setRejectReason($rejectReason)
     {
         $this->rejectReason = $rejectReason;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClosureReason()
+    {
+        return $this->closureReason;
+    }
+
+    /**
+     * @param mixed $closureReason
+     * @return Task
+     */
+    public function setClosureReason($closureReason)
+    {
+        $this->closureReason = $closureReason;
         return $this;
     }
 
@@ -317,7 +340,7 @@ class Task implements DefaultEntityInterface, TaskInterface
                 $this->getBusinessProfile()->getName()
             );
         } else {
-            $result = 'New Task';
+            $result = '';
         }
 
         return $result;

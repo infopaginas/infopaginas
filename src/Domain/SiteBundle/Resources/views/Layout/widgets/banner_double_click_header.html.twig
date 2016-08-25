@@ -1,0 +1,14 @@
+{% if bannerFactory is defined and bannerFactory is not null %}
+    {% if dcDataDTO is defined and dcDataDTO is not null %}
+    {%      set dcData = dcDataDTO %}
+    {%  else %}
+    {%      set dcData = null %}
+    {%  endif %}
+    {%
+        include 'DomainBannerBundle:Default:double_click_header_template.html.twig'
+            with {
+                'bannerHeaders' : bannerFactory.getItemsHeaders,
+                'dcDataDTO'     : dcData
+            }
+    %}
+{% endif %}

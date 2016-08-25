@@ -12,8 +12,6 @@ use Oxa\WistiaBundle\Entity\WistiaMedia;
  */
 class WistiaMediaEmbedRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'OxaWistiaBundle:WistiaMediaEmbed';
-
     /**
      * @param WistiaMedia $wistiaMedia
      * @return null|object

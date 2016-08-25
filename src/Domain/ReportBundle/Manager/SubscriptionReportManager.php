@@ -14,7 +14,7 @@ use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
-class SubscriptionReportManager extends DefaultManager
+class SubscriptionReportManager extends BaseReportManager
 {
     /**
      * @return array|\Domain\BusinessBundle\Entity\SubscriptionPlan[]

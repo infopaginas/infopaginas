@@ -29,18 +29,25 @@ class Template implements DefaultEntityInterface, TranslatableInterface
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string - Script template name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
     protected $name;
+
+    /**
+     * @var string - Script template header code
+     *
+     * @ORM\Column(name="header", type="text")
+     */
+    protected $templateHeader;
 
     /**
      * @var string - Script template body
@@ -90,17 +97,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New template';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     /**
@@ -125,6 +122,30 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set Header
+     *
+     * @param string $Header
+     *
+     * @return Template
+     */
+    public function setTemplateHeader($templateHeader)
+    {
+        $this->templateHeader = $templateHeader;
+
+        return $this;
+    }
+
+    /**
+     * Get Header
+     *
+     * @return string
+     */
+    public function getTemplateHeader()
+    {
+        return $this->templateHeader;
     }
 
     /**

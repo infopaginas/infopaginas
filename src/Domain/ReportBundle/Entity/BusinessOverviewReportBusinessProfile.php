@@ -30,7 +30,7 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -67,7 +67,7 @@ class BusinessOverviewReportBusinessProfile implements DefaultEntityInterface, B
 
     public function __toString()
     {
-        return $this->getBusinessProfile()->getName();
+        return $this->getBusinessProfile() ? $this->getBusinessProfile()->__toString() : '';
     }
 
     /**

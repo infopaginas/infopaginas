@@ -13,12 +13,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BusinessProfilePhone
 {
+    const REGEX_PHONE_PATTERN = '/^\d([-]*\d){0,10}$/';
+
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -42,7 +44,7 @@ class BusinessProfilePhone
 
     public function __toString()
     {
-        return ($this->getId()) ? $this->getPhone() : 'New phone';
+        return $this->getPhone() ?: '';
     }
 
     /**

@@ -36,7 +36,6 @@ class DatetimePeriodStatusService
     {
         $entityClassArray = [
             Subscription::class,
-            Discount::class,
             Campaign::class
         ];
 

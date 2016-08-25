@@ -2,6 +2,8 @@ businesses:
     business_1:
         name: Piola Pizzeria Artesanal & Rum Bar
         google_address: 78 Calle El Tren, Cataño, 00962, Puerto Rico
+        latitude: 18.4400853
+        longitude: -66.1209558
         email: panadera@test.com
         phones:
             - +12025550179
@@ -13,7 +15,6 @@ businesses:
         areas:
             - San Juan
             - Caguas
-            - Dorado
         tags:
             - Restaurants
             - Food
@@ -31,6 +32,8 @@ businesses:
     business_2:
         name: RST Puerto Rico
         google_address: 215 Cll Julian Pesante, San Juan, 00912, Puerto Rico
+        latitude: 18.4473429
+        longitude: -66.0598171
         email: rst@test.com
         phones:
             - +12025550134
@@ -42,7 +45,6 @@ businesses:
         areas:
             - San Juan
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -63,6 +65,8 @@ businesses:
     business_3:
         name: Chinchorreando En Hato Rey
         google_address: Calle A Urbanización Santa Catalina, Guaynabo, 00966, Puerto Rico
+        latitude: 18.4021858
+        longitude: -66.1089585
         email: Chinchorreando@test.com
         phones:
             - +12025550142
@@ -71,9 +75,8 @@ businesses:
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
             - San Juan
-            - Villalba
+            - Toa Baja
         tags:
             - Jewelry
             - Cars
@@ -94,6 +97,8 @@ businesses:
     business_4:
         name: CASA DE LAS ARMADURAS INC.
         google_address: Ave. Andalucía no. 407,, Puerto Nuevo, 00920, Puerto Rico
+        latitude: 18.4140171
+        longitude: -66.0788858
         email: armaduras@test.com
         phones:
             - +12025550145
@@ -102,7 +107,7 @@ businesses:
         product: Pizza
         description: Come Puttanesca Italian Trattoria, where no doubt we have the best New York Style pizza throughout the island and probably the world. Our sauce and dough recipe is originally from Brooklyn, NY and we characterized by its unique flavor. Here eating and drinking is a pleasure.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
             - San Juan
         tags:
@@ -122,7 +127,9 @@ businesses:
 
     business_5:
         name: Iglesia ICM Cristo Sanador
-        google_address: -67, 53 Calle Robles, San Juan, 00925, Puerto Rico
+        google_address: 53 Calle Robles, San Juan, 00925, Puerto Rico
+        latitude: 18.3997676
+        longitude: -66.0496918
         email: panadera@test.com
         phones:
             - +19392725334
@@ -133,7 +140,6 @@ businesses:
         areas:
             - San Juan
             - Caguas
-            - Dorado
         tags:
             - Restaurants
             - Food
@@ -149,6 +155,8 @@ businesses:
     business_6:
         name: Restaurante El Obrero
         google_address: 273 Calle Robles, San Juan, 00923, Puerto Rico
+        latitude: 18.4002293
+        longitude: -66.0430567
         email: rst@test.com
         phones:
             - +17877544795
@@ -176,6 +184,8 @@ businesses:
     business_7:
         name: Farmacia Capetillo
         google_address: 251 Calle Robles, San Juan, 00925, Puerto Rico
+        latitude: 18.4002509
+        longitude: -66.0445264
         email: Chinchorreando@test.com
         phones:
             - +12025550142
@@ -199,6 +209,8 @@ businesses:
     business_8:
         name: Siria's Cibercafe & Sportbar
         google_address: 1059 Calle Monseñor William Jones, San Juan, 00925, Puerto Rico
+        latitude: 18.399758
+        longitude: -66.045972
         email: test@test.com
         phones:
             - +375291862356
@@ -207,9 +219,8 @@ businesses:
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -228,6 +239,8 @@ businesses:
     business_9:
         name: JF Montalvo
         google_address: Calle Padre Colón, San Juan, 00925, Puerto Rico
+        latitude: 18.3992031
+        longitude: -66.0455204
         email: panadera@test.com
         phones:
             - +12025550179
@@ -238,7 +251,6 @@ businesses:
         areas:
             - San Juan
             - Caguas
-            - Dorado
         tags:
             - Restaurants
             - Food
@@ -256,6 +268,8 @@ businesses:
     business_10:
         name: Clínica Dr. Merlos y Asociados
         google_address: 54 Calle Piñero, San Juan, 00925, Puerto Rico
+        latitude: 18.3967358
+        longitude: -66.0515763
         email: rst@test.com
         phones:
             - +12025550134
@@ -264,9 +278,8 @@ businesses:
         product: Lorem ipsum dolor sit amet.
         description: The famous Italian corner in San Juan. Our wood stove (the star of the house), without any gas is lighted every day to prepare pizzas. More than 25 varieties, plus calzones. We can replace the milk with a base of mashed potatoes. We also have  whole wheat dough prepared here every day. The most sought pizzas - Di Gregorio (pesto, chorizo, bruschettas) The Mexican (ground, cheese and more cheese), vegetables (many vegetables), Pesto (slices of fresh tomato and pesto, of course), Burger (ground, cheese, onion and cheddar) ... among many others. We have a divine salad; mezclun, walnuts, cranberries, garlic croutons, gorgonzola and mozzarella with homemade dijon vinaigrette. We also have our famous soups/creams low in calories. The chorizos, "low carb", and of course pizza integrated in more than 20 choices of toppings. Sangria with the acclaimed açaí, strawberries or pineapple ingredients.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -287,6 +300,8 @@ businesses:
     business_18:
         name: Romano's Macaroni Grill
         google_address: 525 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
+        latitude: 18.4220898
+        longitude: -66.0744151
         email: rst@test.com
         phones:
             - +17872810909
@@ -295,9 +310,8 @@ businesses:
         product: Lorem ipsum dolor sit amet.
         description: The famous Italian corner in San Juan. Our wood stove (the star of the house), without any gas is lighted every day to prepare pizzas. More than 25 varieties, plus calzones. We can replace the milk with a base of mashed potatoes. We also have  whole wheat dough prepared here every day. The most sought pizzas - Di Gregorio (pesto, chorizo, bruschettas) The Mexican (ground, cheese and more cheese), vegetables (many vegetables), Pesto (slices of fresh tomato and pesto, of course), Burger (ground, cheese, onion and cheddar) ... among many others. We have a divine salad; mezclun, walnuts, cranberries, garlic croutons, gorgonzola and mozzarella with homemade dijon vinaigrette. We also have our famous soups/creams low in calories. The chorizos, "low carb", and of course pizza integrated in more than 20 choices of toppings. Sangria with the acclaimed açaí, strawberries or pineapple ingredients.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -318,6 +332,8 @@ businesses:
     business_19:
         name: Taberna Boricua
         google_address: 418 Cll Agueybana, San Juan, 00918, Puerto Rico
+        latitude: 18.4188723
+        longitude: -66.0572132
         email: Chinchorreando@test.com
         phones:
             - +17877655000
@@ -326,9 +342,8 @@ businesses:
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
+            - Toa Baja
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -349,6 +364,8 @@ businesses:
     business_20:
         name: PF Chang's China Bistro
         google_address:  527 Ave Franklin Delano Roosevelt, San Juan, 00918, Puerto Rico
+        latitude: 18.4191641
+        longitude: -66.0726592
         email: test@test.com
         phones:
             - +17877710255
@@ -357,9 +374,8 @@ businesses:
         product: Lorem ipsum dolor sit amet.
         description: Cras pretium libero semper gravida cursus. In vitae enim sed sapien consequat mollis.
         areas:
-            - Toa Alta
+            - Toa Baja          
             - Utuado
-            - Villalba
         tags:
             - Jewelry
             - Cars
@@ -375,3 +391,255 @@ businesses:
         categories:
             - Solicitors
             - Mechanics
+
+
+
+    business_101:
+        name: This is target Pizzeria in San Juan. Best pizza in Puerto Rico
+        google_address: 78 Calle El Tren, San Juan, 00962, Puerto Rico
+        latitude: 18.4500853
+        longitude: -66.1209558
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Old San Juan. A lot lot lot Pizzas in the San Juan. Big Pizza, Small Pizza, Kids Pizza, Spicy Pizza, pizza! pizza!
+        areas:
+            - San Juan
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_102:
+        name: This is target Pizzeria in Aguadilla. Best pizza in Puerto Rico
+        google_address: 27 Calle José de Diego, Aguadilla, 00603, Puerto Rico
+        latitude: 18.24540
+        longitude: -67.09202
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Aguadilla. Big Pizza, Small Pizza, Kids Pizza, Spicy Pizza.
+        areas:
+            - Aguadilla
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_103:
+        name: This is target Pizzeria in Mayagüez. Best pizza in Puerto Rico
+        google_address: 87 Calle Dr. Jiménez Mayagüez, 00682, Puerto Rico
+        latitude: 18.202573
+        longitude: -67.146299
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Mayagüez. Big Pizza, Small Pizza, Kids Pizza, Spicy Pizza.
+        areas:
+            - Mayagüez
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+
+
+    business_104:
+        name: This is target Pizzeria in San Juan. Best pizza with cheez in Puerto Rico
+        google_address: 78 Calle El Tren, San Juan, 00962, Puerto Rico
+        latitude: 18.3992031
+        longitude: -66.0455204
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza with cheez for everybody!
+        product: Pizza
+        description: Pizza with cheez. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Old San Juan. A lot lot lot Pizzas  with cheez in the San Juan. Big Pizza  with cheez, Small Pizza  with cheez, Kids Pizza  with cheez, Spicy Pizza  with cheez.  pizza with cheez
+        areas:
+            - San Juan
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+    business_105:
+        name: This is target Pizzeria in Aguadilla. Best pizza with cheez in Puerto Rico
+        google_address: 27 Calle José de Diego, Aguadilla, 00603, Puerto Rico
+        latitude: 18.413736
+        longitude: -67.154251
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Aguadilla. Big Pizza with cheez , Small Pizza with cheez , Kids Pizza with cheez, Spicy Pizza with cheez.
+        areas:
+            - Aguadilla
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_106:
+        name: This is target Pizzeria in Mayagüez. Best pizza with cheez in Puerto Rico
+        google_address: 87 Calle Dr. Jiménez Mayagüez, 00682, Puerto Rico
+        latitude: 18.203963
+        longitude: -67.149363
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Mayagüez. Big Pizza with cheez, Small Pizza with cheez, Kids Pizza with cheez, Spicy Pizza with cheez.
+        areas:
+            - Mayagüez
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+
+    business_107:
+        name: This is target Pizzeria in San Juan. Best pizza hut with cheez in Puerto Rico
+        google_address: 78 Calle El Tren, San Juan, 00962, Puerto Rico
+        latitude: 18.4188723
+        longitude: -66.0572132
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza hut with cheez for everybody!
+        product: Pizza
+        description: Pizza with cheez. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Old San Juan. A lot lot lot Pizzas hut with cheez in the San Juan. Big Pizza hut with cheez, Small Pizza hut  with cheez, Kids Pizza hut  with cheez, Spicy Pizza hut  with cheez.
+        areas:
+            - San Juan
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+
+    business_108 :
+        name: This is target Pizzeria in Aguadilla. Best pizza hut with cheez in Puerto Rico
+        google_address: 27 Calle José de Diego, Aguadilla, 00603, Puerto Rico
+        latitude: 18.426031
+        longitude: -67.154134
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizza hut with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Aguadilla. Big Pizza hut with cheez , Small Pizza hut with cheez , Kids Pizza hut with cheez, Spicy Pizza hut with cheez.
+        areas:
+            - Aguadilla
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
+
+    business_109:
+        name: This is target Pizzeria in Mayagüez. Best pizza hut with cheez in Puerto Rico
+        google_address: 87 Calle Dr. Jiménez Mayagüez, 00682, Puerto Rico
+        latitude: 18.205631
+        longitude: -67.147227
+        email: panadera@test.com
+        phones:
+            - +12025550179
+            - +12025550123
+        website: infopaginas.com
+        slogan: Pizzahut hut  with cheez for everybody!
+        product: Pizza
+        description: Pizza. For deliveries, you can communicate at our local county at 787-946-4440. Serving County area, Mayagüez. Big Pizza hut with cheez, Small Pizza hut with cheez, Kids Pizza hut with cheez, Spicy Pizza hut with cheez.
+        areas:
+            - Mayagüez
+        tags:
+            - Restaurants
+            - Food
+        brands:
+            - Dominos
+        payment_methods:
+            - Visa
+            - Master Card
+            - PayPal
+        categories:
+            - Restaurants
