@@ -116,6 +116,7 @@ class ProfileController extends Controller
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile'  => $businessProfile,
+            'seoData'          => $businessProfile,
             'photos'           => $photos,
             'advertisements'   => $advertisements,
             'lastReview'       => $lastReview,
