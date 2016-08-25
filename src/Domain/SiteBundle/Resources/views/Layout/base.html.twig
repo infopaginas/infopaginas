@@ -48,14 +48,12 @@
                             </form>
                         </div>
                         <ul class="menu-nav">
-                            <li class="ad desc-menu"><a href="">Advertise with us</a></li>
+                            <li class="ad desc-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
                     </div>
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
-                            <li class="lang btn base-page"><a href="">Español</a></li>
-                            <li class="lang btn base-page"><a href="" class="active">English</a></li>
                             <li class="lang-dropdown">
                                 <div class="dropdown">
                                     <div class="select-container">
@@ -85,7 +83,7 @@
 
                             {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
 
-                            <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
+                            <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
                     </div>
                 </div>
