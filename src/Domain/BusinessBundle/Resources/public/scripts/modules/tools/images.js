@@ -90,23 +90,27 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
     //actions on ajax success
     images.prototype.onRequestSuccess = function( response ) {
-        var $response = $( '<table>' + response + '</table>' );
+        if ( response.success === false ) {
+            this.imageErrorHandler( response.message );
+        } else {
+            var $response = $( '<table>' + response + '</table>' );
 
-        var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
+            var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
-        var $responseImages = $response.find( 'tr' );
+            var $responseImages = $response.find( 'tr' );
 
-        $responseImages.each(function() {
-            var $imageRow = $(this);
+            $responseImages.each(function() {
+                var $imageRow = $(this);
 
-            var imageId = $imageRow.attr( 'id' );
+                var imageId = $imageRow.attr( 'id' );
 
-            if( !$(document).find( '#' + imageId ).length > 0 ) {
-                $imagesContainer.append( $imageRow );
-            }
-        });
+                if( !$(document).find( '#' + imageId ).length > 0 ) {
+                    $imagesContainer.append( $imageRow );
+                }
+            });
 
-        new select;
+            new select;
+        }
     };
 
     //ajax request
@@ -175,31 +179,31 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
             if ( !$remoteImageURLInput.val() ) {
-                $remoteImageURLInput.addClass( 'error' );
-                alertify.error( 'Error: URL field should not be empty.' );
-                return false;
-            } else if ( $remoteImageURLInput.hasClass( 'error' ) ) {
-                $remoteImageURLInput.removeClass( 'error' );
+                that.imageErrorHandler( 'Error: URL field should not be empty.' );
+            } else {
+                if ( $remoteImageURLInput.hasClass( 'error' ) ) {
+                    $remoteImageURLInput.removeClass( 'error' );
+                }
+
+                var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
+
+                var data = {
+                    url: $remoteImageURLInput.val(),
+                    businessProfileId: businessProfileId
+                };
+
+                $.ajax( {
+                    url: that.urls.uploadByURL,
+                    type: 'POST',
+                    data: data,
+                    beforeSend: $.proxy( that.beforeRequestHandler, that ),
+                    complete: $.proxy( that.completeHandler, that ),
+                    success: $.proxy( that.onRequestSuccess, that ),
+                    error: $.proxy( that.errorHandler, that )
+                } );
+
+                event.preventDefault();
             }
-
-            var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
-
-            var data = {
-                url: $remoteImageURLInput.val(),
-                businessProfileId: businessProfileId
-            };
-
-            $.ajax( {
-                url: that.urls.uploadByURL,
-                type: 'POST',
-                data: data,
-                beforeSend: $.proxy( that.beforeRequestHandler, that ),
-                complete: $.proxy( that.completeHandler, that ),
-                success: $.proxy( that.onRequestSuccess, that ),
-                error: $.proxy( that.errorHandler, that )
-            } );
-
-            event.preventDefault();
         } );
     };
 
@@ -241,6 +245,15 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
             event.preventDefault();
         } );
+    };
+
+    images.prototype.imageErrorHandler = function( error ) {
+        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
+
+        $remoteImageURLInput.addClass( 'error' );
+        alertify.error( error );
+
+        return false;
     };
 
     return images;
