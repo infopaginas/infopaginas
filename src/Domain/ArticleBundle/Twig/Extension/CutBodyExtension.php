@@ -23,7 +23,7 @@ class CutBodyExtension extends \Twig_Extension
      */
     public function cutBody(string $body)
     {
-        $body = strip_tags($body);
+        $body = strip_tags(html_entity_decode($body, ENT_QUOTES | ENT_HTML5));
         $body = strlen($body) > self::PREVIEW_BODY_LENGTH ? substr($body, 0, self::PREVIEW_BODY_LENGTH) . '...' : $body;
 
         return $body;
