@@ -33,12 +33,12 @@ class SubDomainListener
 
     private function getCurrentLocale($request)
     {
-        $locateAdmin = $this->container->getParameter('locate_admin');
+        $localeAdmin = $this->container->getParameter('locale_admin');
 
-        if (strpos(trim($request->getPathInfo(), '/'), $locateAdmin['url_part']) === 0) {
+        if (strpos(trim($request->getPathInfo(), '/'), $localeAdmin['url_part']) === 0) {
             // is admin
 
-            return $locateAdmin['locale'];
+            return $localeAdmin['locale'];
         }
 
         $languages = $this->container->getParameter('locale_data');
