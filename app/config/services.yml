@@ -3,3 +3,5 @@
 parameters:
 
 services:
+    dynamicDomainSessionStorage:
+        class: Domain\SiteBundle\Utils\DynamicDomainSessionStorage
