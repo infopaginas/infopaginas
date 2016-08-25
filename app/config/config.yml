@@ -27,6 +27,9 @@ parameters:
             domain: 'en'
             title: 'English'
     route_locales: en|es
+    locale_admin:
+        url_part: 'admin'
+        locale: 'en'
     videos_upload_path: %assetic.write_to%/uploads/videos
 
 framework:
