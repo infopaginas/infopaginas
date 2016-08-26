@@ -236,6 +236,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                     success: function( response ) {
                         $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
 
+                        var activeTab = $( '.tabs-block li.active' );
+                        activeTab.removeClass( 'active' );
+                        activeTab.find( 'a' ).click();
+
                         new select();
                     },
                     error: function( jqXHR, textStatus, errorThrown ) {
