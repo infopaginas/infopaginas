@@ -18,6 +18,10 @@ interface TypeInterface
     const CODE_PORTAL               = 2;
     const CODE_PORTAL_LEFT          = 10;
     const CODE_PORTAL_RIGHT         = 11;
+
+    const CODE_PORTAL_LEFT_MOBILE   = 12;
+    const CODE_PORTAL_RIGHT_MOBILE  = 13;
+
     const CODE_PORTAL_LEADERBOARD   = 3;
     const CODE_SERP_BANNER          = 4;
     const CODE_SERP_BOXED           = 5;

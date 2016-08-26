@@ -38,6 +38,8 @@ class HomeController extends Controller
             TypeInterface::CODE_PORTAL_LEADERBOARD,
             TypeInterface::CODE_PORTAL_LEFT,
             TypeInterface::CODE_PORTAL_RIGHT,
+            TypeInterface::CODE_PORTAL_LEFT_MOBILE,
+            TypeInterface::CODE_PORTAL_RIGHT_MOBILE,
         ));
 
         return $this->render(
