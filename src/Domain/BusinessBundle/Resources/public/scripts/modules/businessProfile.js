@@ -42,7 +42,8 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             loadingSpinnerContainerClass: '.spinner-container',
             mapContainerId: 'google-map',
             newProfileRequestSpinnerContainerId: 'new-profile-loading-spinner-container-id',
-            languageSelectorClass: '.language-selector'
+            languageSelectorClass: '.language-selector',
+            imagesTable: '.table-media-image'
         };
 
         this.newProfileRequestFormHandler = new FormHandler({
@@ -198,6 +199,23 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 data.push({
                     name: 'businessProfileId',
                     value: profileId
+                });
+            }
+
+            if ( $( that.html.imagesTable ).length ) {
+                var imageName, images, regexp;
+
+                $.each ( $( that.html.imagesTable + ' .hidden-media' ), function ( outerIndex ) {
+                    imageName = that.freeProfileFormName + '[images][' + outerIndex + '][media]';
+                    images = $( that.html.imagesTable + ' input[name="' + imageName + '"]' );
+
+                    if ( images.length > 1 ) {
+                        regexp = new RegExp(outerIndex, 'gi');
+
+                        $.each( images, function ( index, value ) {
+                            this.setAttribute( 'name', imageName.replace( regexp, ( index + outerIndex ) ) );
+                        });
+                    }
                 });
             }
 
