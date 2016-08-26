@@ -19,6 +19,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
@@ -49,6 +50,7 @@ class BusinessProfile implements
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
+    use SeoTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
