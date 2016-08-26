@@ -35,7 +35,7 @@ class HomeController extends Controller
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL_LEADERBOARD,
+            TypeInterface::CODE_SERP_BANNER,
             TypeInterface::CODE_PORTAL_LEFT,
             TypeInterface::CODE_PORTAL_RIGHT,
             TypeInterface::CODE_PORTAL_LEFT_MOBILE,
