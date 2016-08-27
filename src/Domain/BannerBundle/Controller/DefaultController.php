@@ -15,7 +15,7 @@ class DefaultController extends Controller
         $banner         = $bannerFactory->get($crop);
 
         return $this->render(
-            'DomainBannerBundle:Default:renderBannerTempate.html.twig',
+            'DomainBannerBundle:Default:render_banner_tempate.html.twig',
             array(
                 'banner' => $banner
             )
