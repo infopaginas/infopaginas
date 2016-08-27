@@ -1,0 +1,3 @@
+oxa_dfp_homepage:
+    path:     /dfp
+    defaults: { _controller: OxaDfpBundle:Default:index }

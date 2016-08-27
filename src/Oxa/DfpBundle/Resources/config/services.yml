@@ -1,0 +1,24 @@
+parameters:
+    google_auth_ini_path:      "@@OxaDfpBundle/Resources/config/google/auth.ini"
+    google_settings_ini_path:  "@@OxaDfpBundle/Resources/config/google/settings.ini"
+    api_properties_path:       "@@OxaDfpBundle/Resources/config/google/api.properties"
+
+services:
+    oxa_dfp.google.user:
+        class: Oxa\DfpBundle\Google\Api\Ads\Dfp\Lib\DfpUser
+        arguments:
+            - "%google_auth_ini_path%"
+            - null
+            - null
+            - "%google_settings_ini_path%"
+            - null
+            - "%api_properties_path%"
+            - "@service_container"
+
+    oxa_dfp.service.report:
+        class: Oxa\DfpBundle\Service\Google\ReportService
+        arguments: ['@oxa_dfp.google.user']
+
+    oxa_dfp.manager:
+        class: Oxa\DfpBundle\Manager\DfpManager
+        arguments: ['@oxa_dfp.service.report']
