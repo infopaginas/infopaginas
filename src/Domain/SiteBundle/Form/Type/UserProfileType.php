@@ -8,6 +8,7 @@
 
 namespace Domain\SiteBundle\Form\Type;
 
+use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -55,7 +56,7 @@ class UserProfileType extends AbstractType
                     'placeholder' => 'https://twitter.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Twitter',
@@ -66,7 +67,7 @@ class UserProfileType extends AbstractType
                     'placeholder' => 'https://www.facebook.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Facebook',
@@ -77,7 +78,7 @@ class UserProfileType extends AbstractType
                     'placeholder' => 'https://plus.google.com/user',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Google Plus',
@@ -87,7 +88,7 @@ class UserProfileType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Url(),
+                    new ConstraintUrlExpanded(),
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Youtube',
