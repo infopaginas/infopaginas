@@ -1,20 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sakovas
- * Date: 8/29/2016
- * Time: 1:32 PM
- */
 
 namespace Domain\BusinessBundle\Controller;
 
-
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
-use Sonata\DoctrineORMAdminBundle\Datagrid\ProxyQuery;
 use Symfony\Component\HttpFoundation\Request;
 
 class CategoryAdminCRUDController extends CRUDController
 {
+    /**
+     * Delete record completely
+     *
+     * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
+     */
     public function deletePhysicalAction(Request $request)
     {
         $objectId = ($request->get('id') != null) ? intval($request->get('id')) : $request->get('id');
