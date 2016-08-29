@@ -9,6 +9,8 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\Sonata\UserBundle\Entity\Group;
+use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -104,14 +106,24 @@ class BusinessProfileAdmin extends OxaAdmin
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
 
+        $em = $this->modelManager->getEntityManager(User::class);
+
+        $query = $em->createQueryBuilder('u')
+            ->select('u')
+            ->from(User::class, 'u')
+            ->andWhere('u.role = :merchantRole')
+            ->setParameter('merchantRole', Group::CODE_MERCHANT)
+        ;
+
         $formMapper
             ->tab('Profile')
                 ->with('General')
                     ->add('name')
-                    ->add('user', 'sonata_type_model_list', [
+                    ->add('user', 'sonata_type_model', [
                         'required' => false,
                         'btn_delete' => false,
                         'btn_add' => false,
+                        'query' => $query,
                     ])
                     ->add('logo', 'sonata_type_model_list', [
                         'required' => false

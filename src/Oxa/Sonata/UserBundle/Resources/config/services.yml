@@ -25,4 +25,6 @@ services:
 
     oxa.manager.users:
         class: Oxa\Sonata\UserBundle\Manager\UsersManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@oxa.manager.groups'
