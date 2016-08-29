@@ -32,14 +32,14 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
     /**
      * @var string - Tag name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -85,17 +85,7 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getName():
-                $result = $this->getName();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New tag';
-        }
-        return $result;
+        return $this->getName() ?: '';
     }
 
     public function getMarkCopyPropertyName()

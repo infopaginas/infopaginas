@@ -55,15 +55,19 @@ class TaskAdminController extends CRUDController
         $totalRejectedTasksCount = $this->tasksManager->getTotalRejectedTasksCount();
         $totalCompleteTasksCount = $this->tasksManager->getTotalIncompleteTasksCount();
 
-        return $this->render($this->admin->getTemplate('list'), array(
-            'action'                  => 'list',
-            'form'                    => $formView,
-            'datagrid'                => $datagrid,
-            'csrf_token'              => $this->getCsrfToken('sonata.batch'),
-            'totalApprovedTasksCount' => $totalApprovedTasksCount,
-            'totalRejectedTasksCount' => $totalRejectedTasksCount,
-            'totalCompleteTasksCount' => $totalCompleteTasksCount,
-        ), null);
+        return $this->render(
+            $this->admin->getTemplate('list'),
+            [
+                'action'                  => 'list',
+                'form'                    => $formView,
+                'datagrid'                => $datagrid,
+                'csrf_token'              => $this->getCsrfToken('sonata.batch'),
+                'totalApprovedTasksCount' => $totalApprovedTasksCount,
+                'totalRejectedTasksCount' => $totalRejectedTasksCount,
+                'totalCompleteTasksCount' => $totalCompleteTasksCount,
+            ],
+            null
+        );
     }
 
     /**
@@ -94,10 +98,14 @@ class TaskAdminController extends CRUDController
 
         $this->admin->setSubject($object);
 
-        return $this->render($this->admin->getTemplate('show'), array(
-            'action'   => 'show',
-            'object'   => $object,
-            'elements' => $this->admin->getShow(),
-        ), null);
+        return $this->render(
+            $this->admin->getTemplate('show'),
+            [
+                'action'   => 'show',
+                'object'   => $object,
+                'elements' => $this->admin->getShow(),
+            ],
+            null
+        );
     }
 }

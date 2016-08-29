@@ -1,5 +1,5 @@
 define(
-    ['jquery',  'abstract/view', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating'], 
+    ['jquery',  'abstract/view', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating'],
     function ( $, view, directions, select) {
     'use strict';
 
@@ -7,8 +7,9 @@ define(
         options = options || {};
         options.selector = options.selector || 'body';
         this.events = {
-            "#category-select change" : "selectCategory",
-            "#neighborhood-select change" : "selectCategory"
+            ".category-select change" : "selectCategory",
+            ".neighborhood-select change" : "selectCategory",
+            ".order-by-select change" : "selectCategory"
         };
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );

@@ -48,12 +48,8 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      */
     public function getResponse(string $code, string $format, array $filterParams) : Response
     {
-        $filename = sprintf(
-            '%s_%s.%s',
-            'business_overview_report',
-            date('Y_m_d_H_i_s', strtotime('now')),
-            $format
-        );
+        list($businessOverviewData, $filename) =
+            $this->businessOverviewReportManager->getBusinessOverviewReportDataAndName($filterParams, $format);
 
         $phpExcelObject = $this->phpExcel->createPHPExcelObject();
 
@@ -61,7 +57,7 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
             ->setTitle($this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle'))
         ;
 
-        $phpExcelObject = $this->setData($phpExcelObject, $filterParams);
+        $phpExcelObject = $this->setData($phpExcelObject, $filterParams, $businessOverviewData);
 
         $phpExcelObject->getActiveSheet()
             ->setTitle(
@@ -93,12 +89,8 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      * @return \PHPExcel
      * @throws \PHPExcel_Exception
      */
-    public function setData(\PHPExcel $phpExcelObject, array $filterParams)
+    public function setData(\PHPExcel $phpExcelObject, array $filterParams, array $data)
     {
-        // count data
-        $data = $this->businessOverviewReportManager
-            ->getBusinessOverviewDataByFilterParams($filterParams);
-
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
 
         // title part
@@ -108,26 +100,31 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
             $business = $this->translator->trans('export.title.all_businesses', [], 'AdminReportBundle');
         }
 
+        // generated date
         $activeSheet->setCellValue(
             'B2',
-            $this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle')
+            $this->translator->trans('export.generated_date', [], 'AdminReportBundle')
         );
 
         $activeSheet->setCellValue(
             'B3',
+            new \DateTime()
+        );
+
+        $activeSheet->setCellValue(
+            'B5',
+            $this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle')
+        );
+
+        $activeSheet->setCellValue(
+            'B6',
             $business
         );
         // end title part
 
         // start date period
         $activeSheet->setCellValue(
-            'B5',
-            $this->translator->trans('export.date_period', [], 'AdminReportBundle')
-        );
-
-        // start date period
-        $activeSheet->setCellValue(
-            'B5',
+            'B8',
             $this->translator->trans('export.date_period', [], 'AdminReportBundle')
         );
 
@@ -135,27 +132,29 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
         $activeSheet->mergeCells('B2:C2');
         $activeSheet->mergeCells('B3:C3');
         $activeSheet->mergeCells('B5:C5');
+        $activeSheet->mergeCells('B6:C6');
+        $activeSheet->mergeCells('B8:C8');
 
         $activeSheet->setCellValue(
-            'B6',
+            'B9',
             $this->translator->trans('export.start_date', [], 'AdminReportBundle')
         );
         $activeSheet->setCellValue(
-            'C6',
+            'C9',
             $this->translator->trans('export.end_date', [], 'AdminReportBundle')
         );
 
         $activeSheet->setCellValue(
-            'B7',
+            'B10',
             $data['datePeriod']['start']
         );
         $activeSheet->setCellValue(
-            'C7',
+            'C10',
             $data['datePeriod']['end']
         );
         // end date period
 
-        $cell = $initCell = 9;
+        $cell = $initCell = 12;
         $row = $initRow = $maxRow = 'B';
 
         // start header
@@ -268,9 +267,34 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
             ->applyFromArray($fontStyleArray)
         ;
 
+        $activeSheet
+            ->getStyle('B8')
+            ->applyFromArray($fontStyleArray)
+        ;
+
         // apply styles for header
-        for ($r = 'B'; $r < 'C'; $r++) {
+        for ($r = 'B'; $r < 'D'; $r++) {
             for ($c = 2; $c < 4; $c++) {
+                $activeSheet
+                    ->getColumnDimension($r)
+                    ->setAutoSize(true)
+                ;
+
+                $activeSheet
+                    ->getStyle($r.$c)
+                    ->applyFromArray($styleArray)
+                ;
+
+                $activeSheet
+                    ->getRowDimension($c)
+                    ->setRowHeight(15)
+                ;
+            }
+        }
+
+        // apply styles for header
+        for ($r = 'B'; $r < 'D'; $r++) {
+            for ($c = 5; $c < 7; $c++) {
                 $activeSheet
                     ->getColumnDimension($r)
                     ->setAutoSize(true)
@@ -290,7 +314,7 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
 
         // apply styles for date period block
         for ($r = 'B'; $r < 'D'; $r++) {
-            for ($c = 5; $c < 8; $c++) {
+            for ($c = 8; $c < 11; $c++) {
                 $activeSheet
                     ->getColumnDimension($r)
                     ->setAutoSize(true)

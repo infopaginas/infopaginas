@@ -22,4 +22,9 @@ class CategoryManager extends Manager
             )
         );
     }
+
+    public function getCategoryBySlug($categorySlug)
+    {
+        return $this->getRepository()->findOneBy(['slug' => $categorySlug]);
+    }
 }

@@ -14,14 +14,6 @@ class LoadPageData extends OxaAbstractFixture
     {
         $dataArray = [
             [
-                'title'         => 'About Us',
-                'code'          => PageInterface::CODE_ABOUT_AS,
-                'description'   => 'About Us Description',
-                'body'          => 'About Us Body',
-                'isPublished'   => true,
-                'slug'          => 'about-us',
-            ],
-            [
                 'title'         => 'Contact Us',
                 'code'          => PageInterface::CODE_CONTACT_US,
                 'description'   => 'Contact Us Description',
@@ -45,6 +37,14 @@ class LoadPageData extends OxaAbstractFixture
                 'isPublished'   => true,
                 'slug'          => 'terms',
             ],
+            [
+                'title'         => 'Advertise with Us',
+                'code'          => PageInterface::CODE_ADVERTISE,
+                'description'   => 'Advertise with Us Description',
+                'body'          => 'Advertise with Us  - <a href="/b/business/create">Get Your Free Listing</a>',
+                'isPublished'   => true,
+                'slug'          => 'advertise',
+            ],
         ];
 
         foreach ($dataArray as $data) {
@@ -59,7 +59,6 @@ class LoadPageData extends OxaAbstractFixture
     protected function loadPage(array $data)
     {
         $object = new Page();
-        
         $object->setTitle($data['title']);
         $object->setCode($data['code']);
         $object->setDescription($data['description']);
@@ -75,5 +74,4 @@ class LoadPageData extends OxaAbstractFixture
 
         return $object;
     }
-
 }

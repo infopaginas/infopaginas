@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessGalleryManager;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,6 +22,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ImagesController extends Controller
 {
+    use JsonResponseBuilderTrait;
+
     const BUSINESS_PROFILE_ID_PARAMNAME = 'businessProfileId';
 
     /**
@@ -64,11 +67,18 @@ class ImagesController extends Controller
 
         $business = $this->getBusinessGalleryManager()->createNewEntryFromRemoteFile($business, $request->get('url'));
 
-        $imagesForm = $this->getImagesForm($business);
+        if ($business) {
+            $imagesForm = $this->getImagesForm($business);
 
-        return $this->render('DomainBusinessBundle:Images/blocks:gallery.html.twig', [
-            'images' => $imagesForm->createView(),
-        ]);
+            return $this->render('DomainBusinessBundle:Images/blocks:gallery.html.twig', [
+                'images' => $imagesForm->createView(),
+            ]);
+        } else {
+            return $this->getFailureResponse(
+                $this->getTranslator()->trans('business_profile.images.invalid_url', [], 'validators'),
+                []
+            );
+        }
     }
 
     /**

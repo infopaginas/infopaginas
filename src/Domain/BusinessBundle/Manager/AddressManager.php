@@ -37,6 +37,18 @@ class AddressManager extends DefaultManager
     }
 
     /**
+     * @param $latitude
+     * @param $longitude
+     * @return mixed
+     */
+    public function getGoogleAddressesByCoordinates($latitude, $longitude)
+    {
+        $response = $this->getGeocoder()->reverse($latitude, $longitude);
+
+        return $response->getResults();
+    }
+
+    /**
      * @param $googleAddress
      * @param BusinessProfile $businessProfile
      */
@@ -48,7 +60,14 @@ class AddressManager extends DefaultManager
             $businessProfile->setLongitude($googleAddress->getGeometry()->getLocation()->getLongitude());
         }
 
-        if ($object = current($googleAddress->getAddressComponents('country'))) {
+        // set google address if it has'not been set automatically
+        if (!$businessProfile->getGoogleAddress()) {
+            $businessProfile->setGoogleAddress($googleAddress->getFormattedAddress());
+        }
+
+        $object = current($googleAddress->getAddressComponents('country'));
+
+        if ($object) {
             $country = $this->getEntityManager()
                 ->getRepository('DomainBusinessBundle:Address\Country')
                 ->findOneBy(['shortName' => $object->getShortName()]);
@@ -56,35 +75,47 @@ class AddressManager extends DefaultManager
             $businessProfile->setCountry($country);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('locality'))) {
+        $object = current($googleAddress->getAddressComponents('locality'));
+
+        if ($object) {
             $businessProfile->setCity($object->getLongName());
         }
 
-        if ($object = current($googleAddress->getAddressComponents('administrative_area_level_1'))) {
+        $object = current($googleAddress->getAddressComponents('administrative_area_level_1'));
+
+        if ($object) {
             $businessProfile->setState($object->getLongName());
         } else {
             $businessProfile->setState(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('administrative_area_level_2'))) {
+        $object = current($googleAddress->getAddressComponents('administrative_area_level_2'));
+
+        if ($object) {
             $businessProfile->setExtendedAddress($object->getLongName());
         } else {
             $businessProfile->setExtendedAddress(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('postal_code'))) {
+        $object = current($googleAddress->getAddressComponents('postal_code'));
+
+        if ($object) {
             $businessProfile->setZipCode($object->getShortName());
         } else {
             $businessProfile->setZipCode(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('route'))) {
+        $object = current($googleAddress->getAddressComponents('route'));
+
+        if ($object) {
             $businessProfile->setStreetAddress($object->getLongName());
         } else {
             $businessProfile->setStreetAddress(null);
         }
 
-        if ($object = current($googleAddress->getAddressComponents('street_number'))) {
+        $object = current($googleAddress->getAddressComponents('street_number'));
+
+        if ($object) {
             $businessProfile->setStreetNumber($object->getLongName());
         } else {
             $businessProfile->setStreetNumber(null);
@@ -110,6 +141,46 @@ class AddressManager extends DefaultManager
             return $response['error'] = $e->getMessage();
         }
 
+        $response = array_merge(
+            $response,
+            $this->checkGoogleResults($results)
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param $latitude
+     * @param $longitude
+     * @return array|string
+     */
+    public function validateCoordinates($latitude, $longitude)
+    {
+        $response = [
+            'result' => null,
+            'error' => ''
+        ];
+
+        try {
+            $results = $this->getGoogleAddressesByCoordinates($latitude, $longitude);
+        } catch (Exception $e) {
+            return $response['error'] = $e->getMessage();
+        }
+
+        $response = array_merge(
+            $response,
+            $this->checkGoogleResults($results)
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param $results
+     * @return mixed
+     */
+    private function checkGoogleResults($results)
+    {
         if ($results) {
             // get first address result
             // usually google returns list of addresses
@@ -143,7 +214,7 @@ class AddressManager extends DefaultManager
             // return first address result to use it next
             $response['result'] = $result;
         } else {
-            $response['error'] = 'Invalid address';
+            $response['error'] = 'Invalid address, no results';
         }
 
         return $response;

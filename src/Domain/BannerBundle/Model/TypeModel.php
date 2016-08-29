@@ -25,6 +25,10 @@ class TypeModel implements TypeInterface
         return [
             self::CODE_HOME                 => self::MEDIA_FORMAT_HOME,
             self::CODE_PORTAL               => self::MEDIA_FORMAT_PORTAL,
+            self::CODE_PORTAL_LEFT          => self::MEDIA_FORMAT_PORTAL,
+            self::CODE_PORTAL_RIGHT         => self::MEDIA_FORMAT_PORTAL,
+            self::CODE_PORTAL_LEFT_MOBILE   => self::MEDIA_FORMAT_PORTAL,
+            self::CODE_PORTAL_RIGHT_MOBILE  => self::MEDIA_FORMAT_PORTAL,
             self::CODE_PORTAL_LEADERBOARD   => self::MEDIA_FORMAT_SERP,
             self::CODE_SERP_BANNER          => self::MEDIA_FORMAT_SERP,
             self::CODE_SERP_BOXED           => self::MEDIA_FORMAT_SERP_BOXED,
@@ -41,6 +45,10 @@ class TypeModel implements TypeInterface
         return [
             self::CODE_HOME                 => self::SIZE_120_420,
             self::CODE_PORTAL               => self::SIZE_300_250,
+            self::CODE_PORTAL_LEFT          => self::SIZE_300_250,
+            self::CODE_PORTAL_RIGHT         => self::SIZE_300_250,
+            self::CODE_PORTAL_LEFT_MOBILE   => self::SIZE_300_250,
+            self::CODE_PORTAL_RIGHT_MOBILE  => self::SIZE_300_250,
             self::CODE_PORTAL_LEADERBOARD   => self::SIZE_728_90,
             self::CODE_SERP_BANNER          => self::SIZE_728_90,
             self::CODE_SERP_BOXED           => self::SIZE_250_250,

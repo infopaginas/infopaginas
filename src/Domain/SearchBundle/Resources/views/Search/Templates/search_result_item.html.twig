@@ -1,0 +1,73 @@
+<div class="card-item
+    {% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}
+        premium
+    {% endif %}
+    ">
+    <div class="card-title">
+        <label class="control-label card-label" for="card-check">
+            <span class="card-number">{{ iterator }}.</span>
+            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
+                <h1 class="card-name">{{ item.name }}</h1>
+            </a>
+                &nbsp;
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
+                <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
+                    <span class="card-slogan"><q>{{ item.slogan }}</q></span>
+                </a>
+            {% endif %}
+        </label>
+    </div>
+    <div class="col-xs-5 schedule">
+        <div class="address">
+            {% if not item.getHideAddress() %}
+                <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#address" class="address-link">
+                    <span class="address-info">
+                        {% if item.getCustomAddress() %}
+                            {{ item.getCustomAddress() }}
+                        {% else %}
+                            {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                        {% endif %}
+                    </span>
+                </a>
+
+                <a class="get-dir direction" data-latlng="{{ item.getLatLng }}">Get Direction <span>&#187;</span></a>
+            {% endif %}
+
+            <a href="" class="btn green-btn mobile-btn"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; Call<span></span></a>
+            <a class="get-dir get-direction mobile-btn btn"  data-latlng="{{ item.getLatLng }}">Get Direction<span></span></a>
+        </div>
+        <div class="shift">
+            {{ item.getWorkingHours() }}
+        </div>
+    </div>
+    <div class="col-xs-7 company-contact">
+        <ul class="company-info">
+            <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+            </li>
+            <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
+                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
+            </li>
+            <li>
+                <div class="dropdown filter-drop">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+
+                    <div class="select-container">
+                        <select class="form-control select-control">
+                            <option>phone number</option>
+                            <option>NY</option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xs-12 additional-info">
+        {% include ':blocks/business:business_profile_info_icons.html.twig'
+            with { 'business': item } %}
+    </div>
+    {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
+        <div class="company-logo">
+            {% thumbnail item.getLogo(), 'preview' %}
+        </div>
+    {% endif %}
+</div>

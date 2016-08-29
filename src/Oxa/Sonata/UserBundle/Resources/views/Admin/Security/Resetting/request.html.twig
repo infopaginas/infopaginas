@@ -1,26 +1,6 @@
-{% extends '@OxaSonataUser/Admin/Security/login.html.twig' %}
+{% set base_template = 'OxaSonataAdminBundle::layout.html.twig' %}
+{% extends "OxaSonataUserBundle:Admin/Security:login.html.twig" %}
 
 {% block sonata_wrapper %}
-    <div class="form-box" id="login-box">
-    <div class="header">{{ 'title_user_resetting'|trans({}, 'SonataUserBundle') }}</div>
-    <form class="login-form" action="{{ path('sonata_user_admin_resetting_send_email') }}" method="post"
-          novalidate="novalidate">
-        <div class="body bg-gray">
-            {% if invalid_username is defined %}
-                <div class="alert alert-danger">
-                    <span>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</span>
-                </div>
-            {% endif %}
-            <div class="form-group">
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off"
-                       placeholder="{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}" name="username">
-            </div>
-        </div>
-        <div class="footer">
-            <button type="submit" id="_submit" name="_submit"
-                    class="btn bg-olive btn-block">{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}</button>
-            <p><a href="{{ path('sonata_user_admin_security_login') }}"
-                  class="text-center">{{ 'title_user_authentication'|trans({}, 'SonataUserBundle') }}</a></p>
-        </div>
-    </form>
+    {% include "OxaSonataUserBundle:Admin/Security/Resetting:request_content.html.twig" %}
 {% endblock sonata_wrapper %}

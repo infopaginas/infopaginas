@@ -3,7 +3,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
     var search = function( options ) {
         this.events = {};
-        
+
         this.events[options.searchSelector + ' focus']  = 'onSearchBoxFocus';
         this.events[options.searchSelector + ' blur']   = 'onSearchBoxBlur';
 
@@ -12,12 +12,15 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             searchMenu : false,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
-            searchBaseUrl : '/search/'
+            searchBaseUrl : '/businesses',
+            mediaWidth: 480,
+            mediaSearchSection: '.search-input.home',
+            mediaCloseSection: '.searchCloseSection'
         };
 
         $.extend( this.options, options );
 
-        this.init( options );
+        this.init( this.options );
         this.bindEvents();
 
         $(options.searchHeaderButton).add( options.submitSelector ).on( 'click', function( evt ) {
@@ -37,6 +40,22 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             }
         });
 
+        $( window ).resize( function(){
+            if($( window ).width() > this.options.mediaWidth ) {
+                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
+            }
+        }.bind( this ));
+
+        $( this.options.searchSelector ).focus( function(){
+            if($( window ).width() < this.options.mediaWidth ) {
+                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
+            }
+        }.bind( this ));
+
+        $( this.options.mediaCloseSection ).click( function(){
+            $( this.options.mediaSearchSection ).css( {"display" : "none"} )
+        }.bind( this ));
+
         return this;
     };
 
@@ -55,11 +74,11 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.submitButton       = this.$( this.options.submitSelector );
 
         if( _.isNull( this.options.geolocation ) || _.isUndefined( this.options.geolocation ) ) {
-            this.geolocation        = new Geolocation( { 'locationBox' : this.searchLocations } );
+            this.geolocation = new Geolocation( { 'locationBox' : this.searchLocations } );
         } else {
             this.geolocation = this.options.geolocation;
         }
-        
+
 
         if ( this.options.autoComplete ) {
             this.initAutocomplete( this.options.autoCompleteUrl );
@@ -80,7 +99,9 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         url = url || this.options.autoCompleteUrl;
         var self = this;
         this.searchBox.autocomplete({
-            'source': url,
+            'source': function( term, callback ) {
+                $.getJSON( url, { q : term.term }, callback );
+            } ,
             minLength: this.options.autoCompleteMinLen,
             create: function() {
                 $( this ).data( 'ui-autocomplete' )._renderItem = self.returnAutocompleteDataElement;
@@ -109,7 +130,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype.setLocation = function ( data ) {
         this.searchLocations.val( data );
     };
-    
+
     search.prototype.quickSearch = function ( searchQuery ) {
         this.searchBox.val( searchQuery );
         this.submitButton.first().click();

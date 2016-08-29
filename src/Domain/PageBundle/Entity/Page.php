@@ -5,6 +5,7 @@ namespace Domain\PageBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\PageBundle\Model\PageInterface;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -26,20 +27,21 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use SeoTrait;
 
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string - Page title
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -51,11 +53,11 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @ORM\Column(name="code", type="integer")
      */
     protected $code;
-    
+
     /**
      * @var string - Page description
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="string", length=100, nullable=true)
      */
     protected $description;
@@ -63,7 +65,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     /**
      * @var string - Body
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="body", type="text")
      */
     protected $body;
@@ -117,17 +119,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getTitle():
-                $result = $this->getTitle();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New page';
-        }
-        return $result;
+        return $this->getTitle() ?: '';
     }
 
     /**

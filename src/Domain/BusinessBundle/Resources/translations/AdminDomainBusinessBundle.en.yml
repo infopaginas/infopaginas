@@ -5,6 +5,9 @@ form.google_address.invalid: Invalid Address
 form.label_useMapAddress: Update address using map coordinates
 filter.label_name: Name
 filter.label_subscription_plan: Subscription Plan
+form.business.max_images: Only max_images_per_business images quantity allowed per one business profile, please, delete extra
+form.business_gallery.max_images: Business business_profile already has max_images_per_business images in gallery, this is the max quantity per one business
+form.business.empty_images: Images in gallery must not contain empty value in Media field
 
 
 

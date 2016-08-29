@@ -42,41 +42,46 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
     {
         return [
             [
-                'code' => TypeInterface::CODE_HOME,
-                'name' => 'home-120x420',
-                'placement' => 'Home page',
+                'code' => TypeInterface::CODE_SERP_BANNER,
+                'name' => 'homepage-main-728x90',
+                'placement' => 'Homepage big top banner',
+                'comment' => 'Shown if Business corresponds to search category and location.',
+            ], [
+                'code' => TypeInterface::CODE_PORTAL_LEFT,
+                'name' => 'homepage-bottom-left-300x250',
+                'placement' => 'Home page banner at the bottom. left one',
                 'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
             ], [
-                'code' => TypeInterface::CODE_PORTAL,
-                'name' => 'portal-300x250',
-                'placement' => 'Home page',
+                'code' => TypeInterface::CODE_PORTAL_RIGHT,
+                'name' => 'homepage-bottom-right-300x250',
+                'placement' => 'Home page banner at the bottom. right one',
+                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
+            ],[
+                'code' => TypeInterface::CODE_PORTAL_LEFT_MOBILE,
+                'name' => 'homepage-bottom-left-mobile-300x250',
+                'placement' => 'Home page banner at the bottom. left one. Mobile',
+                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
+            ], [
+                'code' => TypeInterface::CODE_PORTAL_RIGHT_MOBILE,
+                'name' => 'homepage-bottom-right-mobile-300x250',
+                'placement' => 'Home page banner at the bottom. left one. Mobile',
                 'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
             ], [
                 'code' => TypeInterface::CODE_PORTAL_LEADERBOARD,
-                'name' => 'portal-leaderboard',
-                'placement' => 'Home page',
+                'name' => 'search-page-main-728x90',
+                'placement' => 'Search results page big banner',
                 'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
             ], [
-                'code' => TypeInterface::CODE_SERP_BANNER,
-                'name' => 'serp-banner',
-                'placement' => 'Search results',
-                'comment' => 'Shown if Business corresponds to search category and location.',
+                'code' => TypeInterface::CODE_PORTAL,
+                'name' => 'search-page-secondary-300x250',
+                'placement' => 'Search results page. Secondary banner',
+                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
             ], [
                 'code' => TypeInterface::CODE_SERP_BOXED,
-                'name' => 'serp-boxad',
-                'placement' => 'Search results',
+                'name' => 'business-profile-secondary-300x250',
+                'placement' => 'Business profile page',
                 'comment' => 'Shown if Business corresponds to search category and location.',
-            ], [
-                'code' => TypeInterface::CODE_SERP_FEATUREAD,
-                'name' => 'serp-featuread',
-                'placement' => 'Search results',
-                'comment' => 'Gives priority in results by searches by category and town.',
-            ], [
-                'code' => TypeInterface::CODE_SERP_MOBILE_TOP,
-                'name' => 'serp-mobile-top',
-                'placement' => '',
-                'comment' => 'Mobile version of serp-banner. Used by search on mobile devices.',
-            ],
+            ]
         ];
     }
 

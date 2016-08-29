@@ -19,6 +19,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
@@ -29,6 +30,7 @@ use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 
 /**
  * BusinessProfile
@@ -39,11 +41,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
-class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface, GeolocationInterface
+class BusinessProfile implements
+    DefaultEntityInterface,
+    CopyableEntityInterface,
+    TranslatableInterface,
+    GeolocationInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
+    use SeoTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
@@ -54,16 +61,17 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
     /**
      * @var string - Business name
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
      */
     protected $name;
 
@@ -92,18 +100,26 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $subscriptions;
 
     /**
-     * @var Discount[] - Business Discounts
+     * @var string
+     *
+     * @Gedmo\Translatable(fallback=true)
+     * @ORM\Column(name="discount", type="text", length=1000, nullable=true)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     */
+    protected $discount;
+
+    /**
+     * @var Coupon[] - Business Discounts
      *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\Discount",
+     *     targetEntity="Domain\BusinessBundle\Entity\Coupon",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
-     * @ORM\OrderBy({"status" = "ASC"})
      */
-    protected $discounts;
+    protected $coupons;
 
     /**
      * @var Campaign[] - Business Campaigns
@@ -134,6 +150,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=30, nullable=true)
+     * @DomainAssert\ConstraintUrlExpanded()
+     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $website;
 
@@ -142,6 +160,8 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      *
      * @ORM\Column(name="email", type="string", length=30, nullable=true)
      * @Assert\Email()
+     * @DomainAssert\ContainsEmailExpanded()
+     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
      */
     protected $email;
 
@@ -166,8 +186,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Slogan of a Business
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="slogan", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $slogan;
 
@@ -184,23 +205,25 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string - Description of Business
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $description;
 
     /**
      * @var string - Products of Business
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="product", type="text", length=1000, nullable=true)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $product;
 
     /**
      * @var string - Operational Hours
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="working_hours", type="text", nullable=true)
      */
     protected $workingHours;
@@ -312,6 +335,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="businessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
@@ -348,6 +372,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * @var string
      *
      * @ORM\Column(name="street_number", type="string", length=50, nullable=true)
+     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
      */
     protected $streetNumber;
 
@@ -423,22 +448,30 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     protected $hideAddress = false;
 
     /**
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $twitterURL;
 
     /**
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $facebookURL;
 
     /**
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $googleURL;
 
     /**
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=100)
+     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $youtubeURL;
 
@@ -464,8 +497,9 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="miles_of_my_business", type="string", length=50, nullable=true)
-     * @Assert\NotBlank(groups={"service_area_chosen"})
+     * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
+     * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
+     * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
      */
     protected $milesOfMyBusiness;
 
@@ -523,6 +557,13 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      * and it is not necessary because globally locale can be set in listener
      */
     protected $locale;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_closed", type="boolean", options={"default" : 0})
+     */
+    protected $isClosed;
 
      /**
      * @var string
@@ -602,7 +643,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
 
     public function __toString()
     {
-        return ($this->getName()) ?: 'New business';
+        return $this->getName() ?: '';
     }
 
     /**
@@ -620,7 +661,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
      */
     public function __construct()
     {
-        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->coupons = new \Doctrine\Common\Collections\ArrayCollection();
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
@@ -630,8 +671,10 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->locked = false;
+        $this->isClosed = false;
 
         $this->uid = uniqid('', true);
     }
@@ -1271,7 +1314,7 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
         return $this;
     }
 
-    /*
+    /**
      * Set logo
      *
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $logo
@@ -1739,36 +1782,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     }
 
     /**
-     * @return Discount|null
-     */
-    public function getDiscount()
-    {
-        $entitiesCollection = $this->getDiscounts()->filter(
-            function (StatusInterface $object) {
-                return ($object->getStatus() == StatusInterface::STATUS_ACTIVE);
-            }
-        );
-
-        return $entitiesCollection->first() ?: null;
-    }
-
-    /**
-     * Add discount
-     *
-     * @param \Domain\BusinessBundle\Entity\Discount $discount
-     *
-     * @return BusinessProfile
-     */
-    public function addDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
-    {
-        $this->discounts[] = $discount;
-
-        $discount->setBusinessProfile($this);
-
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getYoutubeURL()
@@ -1784,26 +1797,6 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     {
         $this->youtubeURL = $youtubeURL;
         return $this;
-    }
-
-     /**
-     * Remove discount
-     *
-     * @param \Domain\BusinessBundle\Entity\Discount $discount
-     */
-    public function removeDiscount(\Domain\BusinessBundle\Entity\Discount $discount)
-    {
-        $this->discounts->removeElement($discount);
-    }
-
-    /**
-     * Get discounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDiscounts()
-    {
-        return $this->discounts;
     }
 
     /**
@@ -2194,5 +2187,95 @@ class BusinessProfile implements DefaultEntityInterface, CopyableEntityInterface
     public function removePhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
     {
         $this->phones->removeElement($phone);
+    }
+
+    /**
+     * Set discount
+     *
+     * @param string $discount
+     *
+     * @return BusinessProfile
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Add coupon
+     *
+     * @param \Domain\BusinessBundle\Entity\Coupon $coupon
+     *
+     * @return BusinessProfile
+     */
+    public function addCoupon(\Domain\BusinessBundle\Entity\Coupon $coupon)
+    {
+        $this->coupons[] = $coupon;
+
+        $coupon->setBusinessProfile($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove coupon
+     *
+     * @param \Domain\BusinessBundle\Entity\Coupon $coupon
+     */
+    public function removeCoupon(\Domain\BusinessBundle\Entity\Coupon $coupon)
+    {
+        $this->coupons->removeElement($coupon);
+    }
+
+    /**
+     * Get coupons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoupons()
+    {
+        return $this->coupons;
+    }
+
+    /**
+     * Get discount
+     *
+     * @return string
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsClosed()
+    {
+        return $this->isClosed;
+    }
+
+    /**
+     * @param boolean $isClosed
+     * @return BusinessProfile
+     */
+    public function setIsClosed($isClosed)
+    {
+        $this->isClosed = $isClosed;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCitySlug()
+    {
+        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+
+        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
+
+        return $citySlug;
     }
 }

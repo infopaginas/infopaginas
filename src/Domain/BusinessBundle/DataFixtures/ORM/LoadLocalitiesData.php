@@ -142,7 +142,6 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
                 'latitude' => '18.034964',
                 'longitude' => '-66.849898'
             ]
-
         ];
 
     /**
@@ -157,12 +156,10 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
             $locObject->setName($item['name']);
             $locObject->setLatitude($item['latitude']);
             $locObject->setLongitude($item['longitude']);
-            
             if (!empty($item['area'])) {
                 $area = $this->getReference('area.' . str_replace(' ', '', $item['area']));
                 $locObject->setArea($area);
             }
-
 
             $this->addReference('locality.' . str_replace(' ', '', $item['name']), $locObject);
 
