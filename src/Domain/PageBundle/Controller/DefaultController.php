@@ -19,16 +19,6 @@ class DefaultController extends Controller
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewAboutAction()
-    {
-        $code = $this->get('domain_page.manager.page')->getPage()::CODE_ABOUT_AS;
-
-        return $this->renderPageByCode($code);
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function viewTermsAction()
     {
         $code = $this->get('domain_page.manager.page')->getPage()::CODE_TERMS_OF_USE;
