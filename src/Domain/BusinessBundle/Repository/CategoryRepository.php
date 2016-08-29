@@ -63,6 +63,7 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
     protected function splitPhraseToPlain(string $phrase)
     {
         $words = explode(' ', $phrase);
+        $words = array_filter($words);
         $wordParts = array_map(
             function ($item) {
                 return $item . ":*";

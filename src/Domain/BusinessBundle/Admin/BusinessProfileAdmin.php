@@ -17,8 +17,6 @@ use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Validator\Constraints\EmailValidator;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class BusinessProfileAdmin
@@ -33,9 +31,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('subscriptions.businessProfile', null, [
-                'label' => $this->trans('filter.label_name', [], $this->getTranslationDomain())
-            ])
+            ->add('name')
             ->add('city')
             ->add('state')
             ->add('country')
@@ -44,7 +40,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
             ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
@@ -250,6 +245,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
+                        'by_reference' => false,
                         'required' => true,
                         'type_options' => [
                             'delete' => true,
@@ -267,7 +263,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('coupons', 'sonata_type_collection', [
                         'by_reference' => false,
                         'required' => false,
-                        'mapped' => true,
                         'type_options' => [
                             'delete' => true,
                             'delete_options' => [
@@ -294,6 +289,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Reviews')
                 ->with('User Reviews')
                     ->add('businessReviews', 'sonata_type_collection', [
+                        'by_reference' => false,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,

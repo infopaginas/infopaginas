@@ -121,6 +121,10 @@ class SearchManager extends Manager
             $searchDTO->setNeighborhood($neighborhood);
         }
 
+        if ($orderBy = SearchDataUtil::getOrderByFromRequest($request)) {
+            $searchDTO->setOrderBy($orderBy);
+        }
+
         return $searchDTO;
     }
 

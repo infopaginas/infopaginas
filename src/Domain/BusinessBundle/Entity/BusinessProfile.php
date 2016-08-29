@@ -671,6 +671,7 @@ class BusinessProfile implements
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->locked = false;
         $this->isClosed = false;

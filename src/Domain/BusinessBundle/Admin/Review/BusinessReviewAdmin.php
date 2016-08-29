@@ -79,10 +79,7 @@ class BusinessReviewAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('user')
-                ->add('businessProfile', null, [
-                    // hide this field if this page used as sonata_type_collection on other pages
-                    'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass() ]
-                ])
+                ->add('businessProfile')
                 ->add('isActive')
             ->end()
             ->with('Review')
@@ -99,6 +96,11 @@ class BusinessReviewAdmin extends OxaAdmin
                 ])
             ->end()
         ;
+
+        // remove this field if this page used as sonata_type_collection on other pages
+        if ($this->getRoot()->getClass() != $this->getClass()) {
+            $formMapper->remove('businessProfile');
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
@@ -110,10 +111,16 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
-        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
-        $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
+        if (SearchDataUtil::ORDER_BY_DISTANCE == $searchParams->getOrderBy()) {
+            $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
+            $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
+            $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
+        } else {
+            $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
+            $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
+            $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
+        }
 
-        $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
         $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
         if ($category = $searchParams->getCategory()) {
