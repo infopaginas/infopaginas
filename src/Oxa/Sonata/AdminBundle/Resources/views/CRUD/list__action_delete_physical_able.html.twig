@@ -24,14 +24,14 @@
         </a>
     {% endif %}
 {% else %}
-    {% if is_granted('ROLE_RESTORE_ABLE') and admin.hasRoute('restore') %}
+    {% if is_granted('ROLE_RESTORE_ABLE') and admin.isGranted('ROLE_RESTORE_ABLE', object) and admin.hasRoute('restore') %}
         <a href="{{ admin.generateObjectUrl('restore', object) }}" class="btn btn-sm btn-default delete_link btn-list-action"
            title="{{ 'action_restore'|trans({}, 'SonataAdminBundle') }}">
             <i class="glyphicon glyphicon-upload"></i>
         </a>
     {% endif %}
 {% endif %}
-{% if is_granted('ROLE_PHYSICAL_DELETE_ABLE') and admin.hasRoute('delete_physical') %}
+{% if is_granted('ROLE_PHYSICAL_DELETE_ABLE') and admin.isGranted('ROLE_PHYSICAL_DELETE_ABLE', object) and admin.hasRoute('delete_physical') %}
     <a href="{{ admin.generateObjectUrl('delete_physical', object) }}" class="btn btn-sm btn-default delete_link btn-list-action"
        title="{{ 'action_delete_physical'|trans({}, 'SonataAdminBundle') }}">
         <i class="glyphicon glyphicon-remove"></i>

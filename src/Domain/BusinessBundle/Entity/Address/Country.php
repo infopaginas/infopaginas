@@ -22,6 +22,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Country implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
+    const PUERTO_RICO_SHORT_NAME = 'pr';
+    const USA_SHORT_NAME         = 'us';
+
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
@@ -189,5 +192,15 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Get countries which can not be removed
+     *
+     * @return array
+     */
+    public static function getRequiredCountries()
+    {
+        return [self::PUERTO_RICO_SHORT_NAME, self::USA_SHORT_NAME];
     }
 }
