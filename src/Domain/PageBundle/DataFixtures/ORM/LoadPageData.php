@@ -14,14 +14,6 @@ class LoadPageData extends OxaAbstractFixture
     {
         $dataArray = [
             [
-                'title'         => 'About Us',
-                'code'          => PageInterface::CODE_ABOUT_AS,
-                'description'   => 'About Us Description',
-                'body'          => 'About Us Body',
-                'isPublished'   => true,
-                'slug'          => 'about-us',
-            ],
-            [
                 'title'         => 'Contact Us',
                 'code'          => PageInterface::CODE_CONTACT_US,
                 'description'   => 'Contact Us Description',
