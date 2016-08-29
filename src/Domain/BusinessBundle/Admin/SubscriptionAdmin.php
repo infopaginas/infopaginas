@@ -93,10 +93,7 @@ class SubscriptionAdmin extends OxaAdmin
 
         $formMapper
             ->with('General')
-                ->add('businessProfile', null, [
-                    // hide this field if this page used as sonata_type_collection on other pages
-                    'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass()]
-                ])
+                ->add('businessProfile')
                 ->add('status', 'choice', ['choices' => StatusTrait::getStatuses()])
                 ->add('subscriptionPlan')
             ->end()
@@ -111,6 +108,11 @@ class SubscriptionAdmin extends OxaAdmin
                 ->add('updatedUser', 'sonata_type_model', $systemUserOptions)
             ->end()
         ;
+
+        // remove this field if this page used as sonata_type_collection on other pages
+        if ($this->getRoot()->getClass() != $this->getClass()) {
+            $formMapper->remove('businessProfile');
+        }
     }
 
     /**

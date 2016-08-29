@@ -27,13 +27,18 @@ class UsersManager
      */
     private $entityManager;
 
+    /** @var GroupsManager */
+    private $groupsManager;
+
     /**
      * UsersManager constructor.
      * @param EntityManager $entityManager
+     * @param GroupsManager $groupsManager
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, GroupsManager $groupsManager)
     {
         $this->entityManager = $entityManager;
+        $this->groupsManager = $groupsManager;
     }
 
     /**
@@ -63,6 +68,39 @@ class UsersManager
     public function getUserByEmail(string $email)
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param int $newRoleCode
+     * @param int $oldRoleCode
+     */
+    public function changeUserRole(User $user, int $newRoleCode, int $oldRoleCode = 0)
+    {
+        if ($oldRoleCode) {
+            if ($user->getRole()->getCode() == $oldRoleCode) {
+                $user = $this->setNewUserRole($user, $newRoleCode);
+            }
+        } else {
+            $user = $this->setNewUserRole($user, $newRoleCode);
+        }
+    }
+
+    /**
+     * @param User $user
+     * @param int $newRoleCode
+     * @return User
+     * @throws \Exception
+     */
+    protected function setNewUserRole(User $user, int $newRoleCode) : User
+    {
+        $newGroup = $this->groupsManager->findByCode($newRoleCode);
+        $user->setRole($newGroup);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
 
         return $user;
     }

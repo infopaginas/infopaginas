@@ -1,11 +1,5 @@
 {% extends "DomainSiteBundle:Layout:homepage.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
-{% endblock %}
-
 {% block homapageHeaderHexagonDesc %}
     {% include 'DomainSiteBundle:Home:widgets/hexagon_menu_widget.html.twig' %}
 {% endblock %}
@@ -35,15 +29,13 @@
              {% else %}
             <li class="login-link desc-menu not-logged-home">
                 <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
-                    login
+                    Login
                 </a>
             </li>
         {% endif %}
 
         <li class="ad mobile-menu">
-            <a href="">
-                Advertise with us
-            </a>
+            <a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a>
         </li>
     </ul>
 {% endblock %}
@@ -55,12 +47,21 @@
                 <div class="col-xs-12 banner-block desc-banner">
                     {% if bannerFactory is not null %}
                         {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
-                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD')) }
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_SERP_BANNER')) }
                         %}
                     {% endif %}
                 </div>
                 <div class="col-xs-12 mobile-banner">
-
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEFT_MOBILE'))  }
+                        %}
+                    {% endif %}
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_RIGHT_MOBILE'))  }
+                        %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -73,7 +74,7 @@
             <div class="row">
                 <div class="col-md-6 articles-section">
                     <div class="section-title">
-                        <span class="blue-c">{% trans %}Articles{% endtrans %}</span>
+                        <h1 class="blue-c">{% trans %}Articles{% endtrans %}</h1>
                         <hr>
                         <a href="{{ path('domain_article_homepage') }}" class="btn">{% trans %}View more articles{% endtrans %}</a>
                     </div>
@@ -81,7 +82,7 @@
                 </div>
                 <div class="col-md-6 videos-section">
                     <div class="section-title">
-                        <span class="blue-c">{% trans %}Videos{% endtrans %}</span>
+                        <h1 class="blue-c">{% trans %}Videos{% endtrans %}</h1>
                         <hr>
                         <a href="{{ path('domain_business_video_list') }}" class="btn">{% trans %}View more videos{% endtrans %}</a>
                     </div>

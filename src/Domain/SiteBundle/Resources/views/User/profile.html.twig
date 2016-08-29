@@ -74,9 +74,15 @@
                                         <a class="btn green-btn" href="#" data-dismiss="modal"
                                            data-toggle="modal" data-target="#updatePasswordModal">
                                             <i class="fa fa-exchange" aria-hidden="true"></i>
-                                            Change Password
+                                            {% trans %}Change Password{% endtrans %}
                                         </a>
                                     </div>
+                                </div>
+                                <div class="col-xs-12 text-center">
+                                    <a class="btn green-btn" href="{{ path('fos_user_security_logout') }}">
+                                        <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                        {% trans %}Logout{% endtrans %}
+                                    </a>
                                 </div>
                             </div>
 
@@ -140,8 +146,8 @@
                                             {% for review in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        <a href="{{ path('domain_business_profile_view', { slug: review.slug }) }}#reviews">
-                                                            {{ review.name }}
+                                                        <a href="{{ path('domain_business_profile_view', { 'citySlug' : review.business.getCitySlug(), slug: review.slug }) }}#reviews">
+                                                            {{ review.business.name }}
                                                         </a>
                                                     </span>
                                                 </div>

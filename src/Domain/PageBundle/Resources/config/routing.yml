@@ -1,0 +1,22 @@
+domain_page_view_contact:
+    path:     /contact-us
+    defaults: { _controller: DomainPageBundle:Default:viewContact }
+
+domain_page_view_terms:
+    path:     /terms
+    defaults: { _controller: DomainPageBundle:Default:viewTerms }
+
+domain_page_view_privacy:
+    path:     /privacy
+    defaults: { _controller: DomainPageBundle:Default:viewPrivacy }
+
+domain_page_view_advertise:
+    path:     /advertise
+    defaults: { _controller: DomainPageBundle:Default:viewAdvertise }
+
+domain_page_view_features:
+    path:     /features
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_page_view_advertise
+        permanent: true

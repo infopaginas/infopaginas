@@ -15,7 +15,9 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
+use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Oxa\Sonata\UserBundle\Manager\UsersManager;
 
 /**
  * Class TasksManager
@@ -38,17 +40,22 @@ class TasksManager
     /** @var BusinessReviewManager $businessReviewManager */
     protected $businessReviewManager;
 
+    /** @var UsersManager $usersManager */
+    protected $usersManager;
+
     /**
      * TasksManager constructor.
      *
      * @access public
      * @param EntityManager $entityManager
      * @param BusinessProfileManager $businessProfileManager
+     * @param UsersManager $usersManager
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessProfileManager $businessProfileManager,
-        BusinessReviewManager $businessReviewManager
+        BusinessReviewManager $businessReviewManager,
+        UsersManager $usersManager
     ) {
         $this->em = $entityManager;
 
@@ -56,6 +63,7 @@ class TasksManager
 
         $this->businessProfileManager = $businessProfileManager;
         $this->businessReviewManager  = $businessReviewManager;
+        $this->usersManager           = $usersManager;
     }
 
     /**
@@ -195,6 +203,14 @@ class TasksManager
 
         if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
             $this->getBusinessProfileManager()->activate($businessProfile);
+
+            if ($businessProfile->getUser()) {
+                $this->getUsersManager()->changeUserRole(
+                    $businessProfile->getUser(),
+                    Group::CODE_MERCHANT,
+                    Group::CODE_CONSUMER
+                );
+            }
         } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
             $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $this->getTaskLocale($task));
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
@@ -262,6 +278,11 @@ class TasksManager
     private function getBusinessReviewsManager() : BusinessReviewManager
     {
         return $this->businessReviewManager;
+    }
+
+    private function getUsersManager() : UsersManager
+    {
+        return $this->usersManager;
     }
 
     /**

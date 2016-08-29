@@ -5,6 +5,7 @@ namespace Domain\PageBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\PageBundle\Model\PageInterface;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -26,6 +27,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use SeoTrait;
 
     /**
      * @var int

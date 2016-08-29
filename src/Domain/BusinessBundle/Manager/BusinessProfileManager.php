@@ -21,6 +21,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 
 /**
  * Class BusinessProfileManager
@@ -542,5 +543,10 @@ class BusinessProfileManager extends Manager
     protected function getEntityManager() : EntityManager
     {
         return $this->em;
+    }
+
+    public function getSlugDcDataDTO(BusinessProfile $profile) : DCDataDTO
+    {
+        return new DCDataDTO(array(), '', array(), $profile->getSlug());
     }
 }

@@ -101,31 +101,29 @@ class ProfileController extends Controller
     {
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
+        $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
         $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile);
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
-        $reviewsCount     = $this->getBusinessProfilesManager()->getReviewsCountForBusinessProfile($businessProfile);
-        $reviewsAvgRating = $this->getBusinessProfilesManager()
-            ->calculateReviewsAvgRatingForBusinessProfile($businessProfile);
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
         $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL,
+            TypeInterface::CODE_SERP_BOXED,
         ));
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile'  => $businessProfile,
+            'seoData'          => $businessProfile,
             'photos'           => $photos,
             'advertisements'   => $advertisements,
             'lastReview'       => $lastReview,
             'reviewForm'       => $reviewForm->createView(),
-            'reviewsCount'     => $reviewsCount,
-            'reviewsAvgRating' => $reviewsAvgRating,
             'bannerFactory'    => $bannerFactory,
+            'dcDataDTO'        => $dcDataDTO,
         ]);
     }
 

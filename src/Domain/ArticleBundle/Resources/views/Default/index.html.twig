@@ -5,12 +5,21 @@
         <div class="container">
             <div class="row">
                 <div class="crumbs">
-                    <a href="/">
+                    <a href="{{ path('domain_site_home_index') }}">
                         {% trans %}Home{% endtrans %}
                         <span>&nbsp; &raquo;</span>
                     </a>
                     &nbsp;
-                    <span>{% trans %}Articles{% endtrans %}</span>
+                    {% if category is not defined %}
+                        <span>{% trans %}Articles{% endtrans %}</span>
+                    {% else %}
+                        <a href="{{ path('domain_article_homepage') }}">
+                            {% trans %}Articles{% endtrans %}
+                            <span>&nbsp; &raquo;</span>
+                        </a>
+                        &nbsp;
+                        <span>{{ category.getName() }}</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -18,16 +27,20 @@
 {% endblock %}
 
 {% block main %}
-    <section id="articles">
+    <!-- Articles-->
+    <section id="articles-videos" class="articles-videos view-all">
         <div class="container">
             <div class="row">
-                <div class="col-xs-12">
-                    <span class="search-title blue-c">{% trans %}Articles{% endtrans %}</span>
+                <div class="col-md-12">
+                    <div class="section-title">
+                        <h1 class="blue-c">{% trans %}Articles{% endtrans %}</h1>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' %}
-            </div>
+            {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' with {articles: articlesResultDTO.resultSet, isList: true} %}
+
+            <!-- Pagination -->
+            {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : articlesResultDTO.page, 'pageCount' : articlesResultDTO.pageCount } %}
         </div>
     </section>
 {% endblock %}

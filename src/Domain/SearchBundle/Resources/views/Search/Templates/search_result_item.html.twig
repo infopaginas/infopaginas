@@ -5,16 +5,13 @@
     ">
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
-            <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}">
-                <span class="card-number">{# item.order #}.</span>
+            <span class="card-number">{{ iterator }}.</span>
+            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
+                <h1 class="card-name">{{ item.name }}</h1>
             </a>
                 &nbsp;
-            <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
-            </a>
-                &nbsp;
-            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
-                <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}">
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
+                <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
                     <span class="card-slogan"><q>{{ item.slogan }}</q></span>
                 </a>
             {% endif %}
@@ -23,7 +20,7 @@
     <div class="col-xs-5 schedule">
         <div class="address">
             {% if not item.getHideAddress() %}
-                <a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}#address" class="address-link">
+                <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#address" class="address-link">
                     <span class="address-info">
                         {% if item.getCustomAddress() %}
                             {{ item.getCustomAddress() }}
@@ -45,9 +42,9 @@
     </div>
     <div class="col-xs-7 company-contact">
         <ul class="company-info">
-            <li><a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+            <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
             </li>
-            <li><a href="{{ path('domain_business_profile_view', { 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
+            <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
                                                             aria-hidden="true"></i><span>{{ item.email }}</span></a>
             </li>
             <li>

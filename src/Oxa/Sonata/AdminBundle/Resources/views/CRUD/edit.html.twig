@@ -4,11 +4,34 @@
     {% if not form.vars.valid %}
         {% set htmlErrorToFlash = '<ul>' %}
         {% for item in form if not item.vars.valid %}
+            {% set errors = {} %}
+            {% if item.children is not empty %}
+                {% for child in item.children %}
+                    {% if child.children is not empty %}
+                        {% for grandChild in child %}
+                            {% if errors is empty %}
+                                {% set errors = 'relation_not_valid'|trans({}, 'SonataAdminBundle') %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% set errors = errors|merge(child.vars.errors) %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% set errors = item.vars.errors %}
+            {% endif %}
+
             {% set htmlErrorToFlash=htmlErrorToFlash~'<li>' %}
             {% set htmlErrorToFlash=htmlErrorToFlash~ item.vars.label|trans~': ' %}
-            {% for e in item.vars.errors %}
-                {% set htmlErrorToFlash=htmlErrorToFlash~e.message %}
-            {% endfor %}
+
+            {% if errors is iterable %}
+                {% for e in errors %}
+                    {% set htmlErrorToFlash=htmlErrorToFlash~e.message~' ' %}
+                {% endfor %}
+            {% else %}
+                {% set htmlErrorToFlash=htmlErrorToFlash~errors %}
+            {% endif %}
+
             {% set htmlErrorToFlash=htmlErrorToFlash~'</li>' %}
         {% endfor %}
         {% set htmlErrorToFlash=htmlErrorToFlash~'</ul>' %}
