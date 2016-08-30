@@ -7,9 +7,10 @@ define(
         options = options || {};
         options.selector = options.selector || 'body';
         this.events = {
-            ".category-select change" : "selectCategory",
-            ".neighborhood-select change" : "selectCategory",
-            ".order-by-select change" : "selectCategory"
+            ".category-select change"       : "selectCategory",
+            ".neighborhood-select change"   : "selectCategory",
+            ".order-by-select change"       : "selectCategory",
+            ".view-phone select2:opening"      : "viewProfile"
         };
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
@@ -35,6 +36,12 @@ define(
 
         window.location = route;
     }
-   
+
+    searchpage.prototype.viewProfile = function (e) {
+        var id = $(e.currentTarget).data('business');
+
+        $.get(Routing.generate('domain_business_register_view', {id: id}));
+    }
+
     return searchpage;
 });
