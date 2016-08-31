@@ -181,6 +181,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
             if ( !$remoteImageURLInput.val() ) {
                 that.imageErrorHandler( 'Error: URL field should not be empty.' );
             } else {
+                if( that.checkMaxAllowedFilesCount( [$remoteImageURLInput.val()] ) == false ) {
+                    return false;
+                }
+
                 if ( $remoteImageURLInput.hasClass( 'error' ) ) {
                     $remoteImageURLInput.removeClass( 'error' );
                 }
