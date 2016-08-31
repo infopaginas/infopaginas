@@ -1,5 +1,5 @@
 domain_business_profile_create:
-    path:     /business/create
+    path:     /businesses/new
     defaults: { _controller: DomainBusinessBundle:Profile:create }
 
 domain_business_profile_edit:
@@ -21,5 +21,5 @@ domain_business_profile_close:
         expose: true
 
 domain_business_profile_view:
-    path:     /{citySlug}/{slug}
+    path:     /b/{citySlug}/{slug}
     defaults: { _controller: DomainBusinessBundle:Profile:view }
