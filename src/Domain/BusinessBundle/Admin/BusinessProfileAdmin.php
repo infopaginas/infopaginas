@@ -111,8 +111,8 @@ class BusinessProfileAdmin extends OxaAdmin
         $query = $em->createQueryBuilder('u')
             ->select('u')
             ->from(User::class, 'u')
-            ->andWhere('u.role = :merchantRole')
-            ->setParameter('merchantRole', Group::CODE_MERCHANT)
+            ->andWhere('u.role != :consumerRole')
+            ->setParameter('consumerRole', Group::CODE_CONSUMER)
         ;
 
         $formMapper
