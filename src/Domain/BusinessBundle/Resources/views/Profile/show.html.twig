@@ -97,30 +97,37 @@
                         </div>
                         <div class="card-item">
                             {% if businessProfile.getDescription() %}
+                            <div class="row">
                                 <div class="col-xs-3 fields-item">
                                     <span>{% trans %}Description{% endtrans %}:</span>
                                 </div>
                                 <div class="col-xs-9 fields-item">
                                     <p>{{ businessProfile.getDescription() }}</p>
                                 </div>
+                            </div>
                             {% endif %}
                             {% if businessProfile.getProduct() %}
+                            <div class="row">
                                 <div class="col-xs-3 fields-item">
                                     <span>{% trans %}Products or Services{% endtrans %}:</span>
                                 </div>
                                 <div class="col-xs-9 fields-item">
                                     <p>{{ businessProfile.getProduct() }}</p>
                                 </div>
-                            {% endif %}
-                            <div class="col-xs-3 fields-item">
-                                <span>{% trans %}Categories{% endtrans %}:</span>
                             </div>
-                            <div class="col-xs-9 fields-item">
-                                <p>
-                                    {{ businessProfile.getCategories() | join(', ') }}.
-                                </p>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Categories{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>
+                                        {{ businessProfile.getCategories() | join(', ') }}.
+                                    </p>
+                                </div>
                             </div>
                             {% if businessProfile.getWorkingHours() %}
+                            <div class="row">
                                 <div class="col-xs-3 fields-item">
                                     <span>{% trans %}Working hours{% endtrans %}:</span>
                                 </div>
@@ -129,6 +136,7 @@
                                         {{ businessProfile.getWorkingHours() }}
                                     </p>
                                 </div>
+                            </div>
                             {% endif %}
 
                             {% set socialLinksExists = businessProfile.getFacebookURL()
