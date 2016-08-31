@@ -1,6 +1,6 @@
 domain_business_profile:
     resource: "@DomainBusinessBundle/Resources/config/routing/profile.yml"
-    prefix: /b
+    prefix: /
 
 domain_business_reviews:
     resource: "@DomainBusinessBundle/Resources/config/routing/reviews.yml"
