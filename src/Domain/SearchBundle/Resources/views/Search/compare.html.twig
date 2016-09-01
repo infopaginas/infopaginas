@@ -15,11 +15,6 @@
             <div class="title-block">
                 <span>Compare</span>
                 <span>Bookstores in San Juan</span>
-
-                <div class="slider-arrows">
-                    <div class="prevSlide"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></div>
-                    <div class="nextSlide"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></div>
-                </div>
             </div>
 
             <div class="compare-wrapper">
@@ -35,7 +30,7 @@
                 </aside>
 
                 <div class="comparison-block">
-                    <div class="comparison-wrap carousel-property">
+                    <div class="comparison-wrap">
                         {% for item in results.resultSet %}
                             {% include 'DomainSearchBundle:Search:Templates/compare_card_item.html.twig' with { 'item' : item, 'iterator' : loop.index  } %}
                         {% endfor %}
