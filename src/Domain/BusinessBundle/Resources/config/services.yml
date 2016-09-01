@@ -18,7 +18,7 @@ services:
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
         arguments:
-            - '@doctrine.orm.entity_manager'
+            - '@doctrine'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.review'
 
@@ -60,6 +60,8 @@ services:
             -  { name: twig.extension }
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
+            - [ setTranslator, [ '@translator' ] ]
+            - [ setBusinessProfileForm, [ '@domain_business.form.business_profile' ] ]
 
     #form types section
     domain_business.form.type.google_map:

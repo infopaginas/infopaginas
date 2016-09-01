@@ -177,7 +177,7 @@
                                             {% for business in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        {% if business.getIsActive() and not business.isLocked() %}
+                                                        {% if business.getIsActive() %}
                                                             <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
                                                                 {{ business.getName() }}
                                                             </a>

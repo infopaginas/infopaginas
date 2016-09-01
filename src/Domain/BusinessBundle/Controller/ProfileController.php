@@ -3,20 +3,17 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Form\Type\BusinessReviewType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\BusinessBundle\Manager\BusinessReviewManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 use Domain\BannerBundle\Model\TypeInterface;
 
 /**

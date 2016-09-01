@@ -458,12 +458,6 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var QueryBuilder $query */
         $query = parent::createQuery($context);
 
-        // show only none locked records
-        $query->andWhere(
-            $query->expr()->eq($query->getRootAliases()[0] . '.locked', ':locked')
-        );
-        $query->setParameter('locked', false);
-
         $parameters = $this->getFilterParameters();
 
         // search by active subscription of chosen subscriptionPlan
