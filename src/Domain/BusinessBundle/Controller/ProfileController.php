@@ -101,6 +101,11 @@ class ProfileController extends Controller
     {
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
+
+        if (!$businessProfile) {
+            throw $this->createNotFoundException('');
+        }
+
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);

@@ -33,13 +33,20 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL,
         ));
 
+        // hardcode for catalog
+        $pageRouter = 'domain_search_index';
+
+        $searchData = $this->getSearchDataByRequest($request);
+
         return $this->render(
             'DomainSearchBundle:Search:index.html.twig',
             [
                 'search'        => $searchDTO,
                 'results'       => $searchResultsDTO,
                 'bannerFactory' => $bannerFactory,
-                'dcDataDTO'     => $dcDataDTO
+                'dcDataDTO'     => $dcDataDTO,
+                'searchData'    => $searchData,
+                'pageRouter'    => $pageRouter,
             ]
         );
     }
@@ -75,13 +82,17 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $searchData = $this->getSearchDataByRequest($request);
+        $pageRouter = $this->container->get('request')->attributes->get('_route');
 
         return $this->render(
             'DomainSearchBundle:Search:map.html.twig',
             [
-                'results'    => $searchResultsDTO,
-                'markers'    => $locationMarkers,
+                'results'       => $searchResultsDTO,
+                'markers'       => $locationMarkers,
                 'bannerFactory' => $bannerFactory,
+                'searchData'    => $searchData,
+                'pageRouter'    => $pageRouter,
             ]
         );
     }
@@ -98,12 +109,48 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $searchData = $this->getSearchDataByRequest($request);
+        $pageRouter = $this->container->get('request')->attributes->get('_route');
+
         return $this->render(
             'DomainSearchBundle:Search:compare.html.twig',
             [
                 'results'       => $searchResultsDTO,
                 'bannerFactory' => $bannerFactory,
+                'searchData'    => $searchData,
+                'pageRouter'    => $pageRouter,
             ]
         );
+    }
+
+    public function catalogAction(Request $request, $citySlug = '', $categorySlug = '')
+    {
+        //todo - replace with slugs
+
+        $q      = ucwords(str_replace('-', ' ', $categorySlug));
+        $geo    = ucwords(str_replace('-', ' ', $citySlug));
+
+        $request->attributes->set('q', $q);
+        $request->attributes->set('geo', $geo);
+
+        return $this->indexAction($request);
+    }
+
+    private function getSearchDataByRequest(Request $request)
+    {
+        $keys = [
+            'q',
+            'geo',
+            'order',
+            'category',
+        ];
+
+        $searchData = [];
+
+        foreach ($keys as $key) {
+            $searchData[$key] = $request->get($key, '');
+        }
+
+        return $searchData;
     }
 }
