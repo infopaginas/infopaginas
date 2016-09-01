@@ -14,10 +14,12 @@
         </div>
     </div>
     <div class="col-xs-9 company-mail">
+        {% if item.website is not null %}
         <a href="//{{ item.website }}">
             <i class="fa fa-home" aria-hidden="true"></i>
             <span>{{ item.website }}</span>
         </a>
+        {% endif %}
     </div>
     <div class="col-xs-12 additional-info">
         {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}

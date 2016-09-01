@@ -8,11 +8,13 @@
 
 namespace Domain\SiteBundle\Form\Type;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Url;
 
 /**
@@ -48,6 +50,20 @@ class UserProfileType extends AbstractType
                     'placeholder' => 'Puerto Rico',
                 ],
                 'label' => 'Location',
+            ])
+            ->add('phone', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => '(787) 594-7273',
+                ],
+                'label' => 'Phone Number',
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
+                        'message' => 'business_profile.phone.invalid',
+                    ]),
+                ],
             ])
             ->add('twitterURL', TextType::class, [
                 'attr' => [
@@ -85,6 +101,7 @@ class UserProfileType extends AbstractType
             ->add('youtubeURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'placeholder' => 'https://www.youtube.com/user',
                 ],
                 'constraints' => [
                     new Url(),

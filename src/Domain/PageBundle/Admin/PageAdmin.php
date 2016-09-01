@@ -32,7 +32,7 @@ class PageAdmin extends OxaAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('title')
+            ->addIdentifier('title')
             ->add('description')
             ->add('updatedAt')
             ->add('updatedUser')

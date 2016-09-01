@@ -9,6 +9,7 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Doctrine\ORM\EntityManager;
 use Oxa\ConfigBundle\Service\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
+use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
 class GeolocationManager extends Manager
 {
@@ -37,6 +38,10 @@ class GeolocationManager extends Manager
         if (!empty($name) && is_numeric($name)) {
             $zip = $name;
             $name = null;
+        }
+
+        if (!$name && $lat && $lng) {
+            $name = GeolocationUtils::filterResults(GeolocationUtils::getCityByGeolocation($lat, $lng));
         }
 
         if (!$name) {
