@@ -14,7 +14,8 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
             galleryContainerId:          'gallery',
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
-            remoteImageURLInputId:       '#remote-image-url'
+            remoteImageURLInputId:       '#remote-image-url',
+            imageTypeSelectClassname:    '.select-image-type'
         };
 
         this.urls = {
@@ -36,6 +37,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         this.handleClickOnIsPrimaryCheckbox();
         this.handleClickOnRemoveLink();
         this.handleRemoteImageUpload();
+        this.handleImageTypeChange();
     };
 
     //max allowed filesize: 10mb
@@ -252,12 +254,31 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
     };
 
     images.prototype.imageErrorHandler = function( error ) {
-        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
+        var $remoteImageURLInput = $(this.html.remoteImageURLInputId);
 
-        $remoteImageURLInput.addClass( 'error' );
-        alertify.error( error );
+        $remoteImageURLInput.addClass('error');
+        alertify.error(error);
 
         return false;
+    };
+
+    // only 1 image can be "Logo" - remove logo from other
+    images.prototype.handleImageTypeChange = function() {
+        var self = this;
+
+        $(document).on( 'change', this.html.imageTypeSelectClassname, function() {
+            if ( typeof logoTypeConstant !== undefined && $( this ).val() == logoTypeConstant ) {
+                var triggeredSelect = this;
+
+                $.each( $( self.html.imageTypeSelectClassname ), function() {
+                    if ( $( this ).val() == logoTypeConstant && $( triggeredSelect ).attr( 'name' ) != $( this ).attr( 'name' ) ) {
+                        $( this ).val( photoTypeConstant );
+
+                        new select;
+                    }
+                } );
+            }
+        } );
     };
 
     return images;
