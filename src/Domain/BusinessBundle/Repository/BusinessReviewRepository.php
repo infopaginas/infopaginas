@@ -2,11 +2,13 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use FOS\UserBundle\Model\UserInterface;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
+use Sonata\UserBundle\Model\User;
 
 /**
  * BusinessReviewRepository
@@ -16,20 +18,6 @@ use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
  */
 class BusinessReviewRepository extends \Doctrine\ORM\EntityRepository
 {
-    /**
-     * @param UserInterface $user
-     * @return array
-     */
-    public function findUserReviews(UserInterface $user)
-    {
-        $reviews = $this->findBy([
-            'user' => $user,
-            'isActive' => true,
-        ]);
-
-        return $reviews;
-    }
-
     /**
      * @param BusinessProfile $businessProfile
      * @return int

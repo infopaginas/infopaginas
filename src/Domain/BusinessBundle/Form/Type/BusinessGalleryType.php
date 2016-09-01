@@ -34,6 +34,7 @@ class BusinessGalleryType extends AbstractType
         $builder
             ->add('media', EntityHiddenType::class, [
                 'class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
+                'attr' => ['class' => 'hidden-media'],
             ])
             ->add('isPrimary', CheckboxType::class, [
                 'attr' => [
@@ -50,7 +51,7 @@ class BusinessGalleryType extends AbstractType
             ])
             ->add('type', ChoiceType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
+                    'class' => 'form-control select-control select-image-type',
                 ],
                 'choices' => [
                     OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO => 'Logo',

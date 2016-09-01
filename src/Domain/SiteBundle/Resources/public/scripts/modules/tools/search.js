@@ -3,7 +3,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
     var search = function( options ) {
         this.events = {};
-        
+
         this.events[options.searchSelector + ' focus']  = 'onSearchBoxFocus';
         this.events[options.searchSelector + ' blur']   = 'onSearchBoxBlur';
 
@@ -12,16 +12,15 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             searchMenu : false,
             autoCompleteUrl : '/search/autocomplete',
             autoCompleteMinLen : 1,
-            searchBaseUrl : '/search/',
+            searchBaseUrl : '/businesses',
             mediaWidth: 480,
             mediaSearchSection: '.search-input.home',
             mediaCloseSection: '.searchCloseSection'
-
         };
 
         $.extend( this.options, options );
 
-        this.init( options );
+        this.init( this.options );
         this.bindEvents();
 
         $(options.searchHeaderButton).add( options.submitSelector ).on( 'click', function( evt ) {
@@ -44,7 +43,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         $( window ).resize( function(){
             if($( window ).width() > this.options.mediaWidth ) {
                 $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
-            } else {
+            } else{
                 $( this.options.mediaSearchSection ).css( {"display": "none"} );
             }
         }.bind( this ));
@@ -81,7 +80,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         } else {
             this.geolocation = this.options.geolocation;
         }
-        
+
 
         if ( this.options.autoComplete ) {
             this.initAutocomplete( this.options.autoCompleteUrl );
@@ -133,7 +132,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     search.prototype.setLocation = function ( data ) {
         this.searchLocations.val( data );
     };
-    
+
     search.prototype.quickSearch = function ( searchQuery ) {
         this.searchBox.val( searchQuery );
         this.submitButton.first().click();

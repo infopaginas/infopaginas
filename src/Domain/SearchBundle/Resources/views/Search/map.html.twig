@@ -1,9 +1,6 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
+{% block breakcrumbs %}
 {% endblock %}
 
 {% block tabMenu %}
@@ -19,12 +16,7 @@
  <section id="search-results-map" class="search-results map-view">
     <div class="row search-map">
         <!--Breadcrumbs-->
-        <div class="crumbs">
-            <a href="">Home <span>&nbsp; &#187; &nbsp; </span></a><span>Bookstores in San Juan</span>
-        </div>
         <aside>
-
-
             <div class="map-view-aside">
                 <div class="map-search-aside">
                     <div class="sort-by">
@@ -34,7 +26,7 @@
                             <div class="select-container">
                                 <select class="form-control select-control">
                                     <option>Relevance</option>
-                                    <option>NY</option>
+                                    <option>Distance</option>
                                 </select>
                             </div>
                         </div>
@@ -42,7 +34,7 @@
                     <div class="cards">
                     {% if results.resultSet is defined and results.resultSet is not null %}
                         {% for item in results.resultSet %}
-                            {% include 'DomainSearchBundle:Search:Templates/map_search_result_item.html.twig' with { 'item' : item } %}
+                            {% include 'DomainSearchBundle:Search:Templates/map_search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index  } %}
                         {% endfor %}
                     {% endif %}
                     </div>

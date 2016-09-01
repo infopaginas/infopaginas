@@ -21,6 +21,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.review'
+            - '@oxa.manager.users'
 
     domain_business.manager.business_gallery:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
@@ -60,6 +61,8 @@ services:
             -  { name: twig.extension }
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
+            - [ setTranslator, [ '@translator' ] ]
+            - [ setBusinessProfileForm, [ '@domain_business.form.business_profile' ] ]
 
     #form types section
     domain_business.form.type.google_map:
@@ -184,3 +187,7 @@ services:
         class: Domain\BusinessBundle\Twig\Extension\HasSubscriptionExtension
         tags:
             - { name: twig.extension }
+
+    domain_business.video:
+        class: Domain\BusinessBundle\Manager\VideoManager
+        arguments: ['@doctrine.orm.entity_manager']

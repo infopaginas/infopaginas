@@ -19,6 +19,7 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
@@ -49,6 +50,7 @@ class BusinessProfile implements
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
+    use SeoTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
@@ -448,24 +450,28 @@ class BusinessProfile implements
     /**
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=100)
      * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $twitterURL;
 
     /**
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=100)
      * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $facebookURL;
 
     /**
      * @ORM\Column(name="google_url", type="string", nullable=true, length=100)
      * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $googleURL;
 
     /**
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=100)
      * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $youtubeURL;
 
@@ -519,20 +525,6 @@ class BusinessProfile implements
      */
     protected $phones;
 
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile")
-     * @ORM\JoinColumn(name="actual_business_profile_id", nullable=true)
-     */
-    protected $actualBusinessProfile;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_locked", type="boolean", options={"default" : 0})
-     */
-    protected $locked;
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -665,8 +657,8 @@ class BusinessProfile implements
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this->locked = false;
         $this->isClosed = false;
 
         $this->uid = uniqid('', true);
@@ -1937,41 +1929,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return BusinessProfile
-     */
-    public function getActualBusinessProfile()
-    {
-        return $this->actualBusinessProfile;
-    }
-
-    /**
-     * @param BusinessProfile $actualBusinessProfile
-     * @return BusinessProfile
-     */
-    public function setActualBusinessProfile($actualBusinessProfile)
-    {
-        $this->actualBusinessProfile = $actualBusinessProfile;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isLocked()
-    {
-        return $this->locked;
-    }
-
-    /**
-     * @param boolean $locked
-     * @return BusinessProfile
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2091,7 +2048,7 @@ class BusinessProfile implements
      */
     public function getShortAddress()
     {
-        return 'Puerto Rico, Ololoeva St 25, 00777';
+        return $this->getGoogleAddress();
     }
 
     /*
@@ -2120,16 +2077,6 @@ class BusinessProfile implements
         }
 
         return 0;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 
     /**
@@ -2258,5 +2205,17 @@ class BusinessProfile implements
     {
         $this->isClosed = $isClosed;
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getCitySlug()
+    {
+        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+
+        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
+
+        return $citySlug;
     }
 }

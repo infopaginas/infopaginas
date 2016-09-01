@@ -25,9 +25,9 @@
     requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
         requirejs(['tools/search'], function(Search) {
             var headerSearch = new Search({
-                'searchSelector' : '#headerSearch',
+                'searchSelector'     : '#headerSearch',
                 'searchHeaderButton' : '#searchHeaderButton',
-                'searchLocations': '#headerGeo'
+                'locationsSelector'  : '#headerGeo'
             });
         })
     })
