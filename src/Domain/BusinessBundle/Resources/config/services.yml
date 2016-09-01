@@ -61,6 +61,8 @@ services:
             -  { name: twig.extension }
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
+            - [ setTranslator, [ '@translator' ] ]
+            - [ setBusinessProfileForm, [ '@domain_business.form.business_profile' ] ]
 
     #form types section
     domain_business.form.type.google_map:

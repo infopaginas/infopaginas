@@ -525,20 +525,6 @@ class BusinessProfile implements
      */
     protected $phones;
 
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile")
-     * @ORM\JoinColumn(name="actual_business_profile_id", nullable=true)
-     */
-    protected $actualBusinessProfile;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_locked", type="boolean", options={"default" : 0})
-     */
-    protected $locked;
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -673,7 +659,6 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this->locked = false;
         $this->isClosed = false;
 
         $this->uid = uniqid('', true);
@@ -1944,41 +1929,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return BusinessProfile
-     */
-    public function getActualBusinessProfile()
-    {
-        return $this->actualBusinessProfile;
-    }
-
-    /**
-     * @param BusinessProfile $actualBusinessProfile
-     * @return BusinessProfile
-     */
-    public function setActualBusinessProfile($actualBusinessProfile)
-    {
-        $this->actualBusinessProfile = $actualBusinessProfile;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isLocked()
-    {
-        return $this->locked;
-    }
-
-    /**
-     * @param boolean $locked
-     * @return BusinessProfile
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2127,16 +2077,6 @@ class BusinessProfile implements
         }
 
         return 0;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 
     /**

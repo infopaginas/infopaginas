@@ -65,7 +65,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $businessProfiles = $this->findBy([
             'user' => $user,
-            'actualBusinessProfile' => null,
         ]);
 
         return $businessProfiles;
@@ -82,9 +81,21 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->join('bp.businessReviews', 'br')
             ->where('br.user = :user')
             ->andWhere('bp.isActive = TRUE')
-            ->andWhere('bp.locked = FALSE')
             ->setParameter('user', $user)
         ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param $ids
+     * @return array
+     */
+    public function findBusinessProfilesByIdsArray($ids)
+    {
+        $queryBuilder = $this->createQueryBuilder('bp')
+            ->where('bp.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -516,8 +527,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->from(WistiaMedia::class, 'v')
             ->leftJoin(BusinessProfile::class, 'bp')
             ->where('bp.isActive = TRUE')
-            ->andWhere('bp.actualBusinessProfile IS NULL')
-            ->andWhere('bp.locked = FALSE')
             ->orderBy('v.createdAt', 'DESC')
         ;
 
