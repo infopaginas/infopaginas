@@ -2048,7 +2048,7 @@ class BusinessProfile implements
      */
     public function getShortAddress()
     {
-        return 'Puerto Rico, Ololoeva St 25, 00777';
+        return $this->getGoogleAddress();
     }
 
     /*
