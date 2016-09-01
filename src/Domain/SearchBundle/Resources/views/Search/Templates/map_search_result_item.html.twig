@@ -25,8 +25,10 @@
         {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}
     </div>
     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
-        <div class="company-logo">
-            {% thumbnail item.getLogo(), 'preview' %}
-        </div>
+        {% if item.getIsSetLogo %}
+            <div class="company-logo">
+                {% thumbnail item.getLogo(), 'preview' %}
+            </div>
+        {% endif %}
     {% endif %}
 </div>
