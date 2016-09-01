@@ -183,6 +183,15 @@ google:
                     - 'ec'
         whitelist: [ 'q', 'utm_source', 'utm_medium', 'utm_term', 'utm_content', 'utm_campaign' ]
 
+happyr_google_site_authenticator:
+    cache_service: 'cache.provider.my_file_system'
+    tokens:
+        google_analytics:
+            client_id: '762185179500-76hu2nbchsk35h0vb8amh7d8m7t665uc.apps.googleusercontent.com'
+            client_secret: 'b44x5xaqKgt6iaPPmaAcqLrz'
+            redirect_url: 'http://infopaginas.io/app_dev.php/admin/authenticate-google/return-url'
+            scopes: ['https://www.googleapis.com/auth/analytics.readonly']
+
 oneup_flysystem:
     adapters:
         my_adapter:
@@ -198,15 +207,6 @@ cache_adapter:
           factory: 'cache.factory.filesystem'
           options:
               flysystem_service: 'oneup_flysystem.local_filesystem'
-
-happyr_google_site_authenticator:
-    cache_service: 'cache.provider.my_file_system'
-    tokens:
-        google_analytics:
-            client_id: '762185179500-76hu2nbchsk35h0vb8amh7d8m7t665uc.apps.googleusercontent.com'
-            client_secret: 'b44x5xaqKgt6iaPPmaAcqLrz'
-            redirect_url: 'http://infopaginas.io/app_dev.php/admin/authenticate-google/return-url'
-            scopes: ['https://www.googleapis.com/auth/analytics.readonly']
 
 happyr_google_analytics:
     http_client: 'httplug.client'

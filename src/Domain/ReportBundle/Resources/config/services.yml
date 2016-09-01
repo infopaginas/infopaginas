@@ -58,4 +58,3 @@ services:
     domain_report.google_analytics.data_fetcher:
         class: Domain\ReportBundle\Google\Analytics\DataFetcher
         parent: happyr.google_analytics.data_fetcher
-        #public: false
