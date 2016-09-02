@@ -89,7 +89,7 @@ doctrine:
             TaskType: Domain\BusinessBundle\DBAL\Types\TaskType
             TaskStatusType: Domain\BusinessBundle\DBAL\Types\TaskStatusType
     orm:
-        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         mappings:
