@@ -35,7 +35,10 @@ class ReportsController extends Controller
             throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
         }
 
-        $path = $this->generateUrl('domain_business_profile_view', ['slug' => $businessProfile->getSlug()]);
+        $path = $this->generateUrl('domain_business_profile_view', [
+            'slug'     => $businessProfile->getSlug(),
+            'citySlug' => $businessProfile->getCitySlug(),
+        ]);
 
         //only for dev env - remove app_dev.php from URL (GA doesn't track it)
         if ($this->get('kernel')->getEnvironment() == 'dev') {

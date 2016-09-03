@@ -58,3 +58,9 @@ services:
     domain_report.google_analytics.data_fetcher:
         class: Domain\ReportBundle\Google\Analytics\DataFetcher
         parent: happyr.google_analytics.data_fetcher
+        calls:
+            - [ setClientProvider, [ '@domain_report.google_analytics.client_provider' ]]
+
+    domain_report.google_analytics.client_provider:
+        class: Domain\ReportBundle\Google\Analytics\ClientProvider
+        arguments: ['analytics@infopaginas-1346.iam.gserviceaccount.com', %kernel.root_dir%/config/key.p12]

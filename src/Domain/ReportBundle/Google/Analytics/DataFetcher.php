@@ -23,7 +23,13 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
 
     const GA_DATE_FORMAT = 'Y-m-d';
 
+    /**
+     * @var \Google_Service_Analytics $analytics
+     */
     protected $analytics;
+
+    /** @var ClientProvider $clientProvider */
+    protected $clientProvider;
 
     /**
      * DataFetcher constructor.
@@ -36,8 +42,6 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
     public function __construct(CacheItemPoolInterface $cache, \Google_Client $client, $viewId, $cacheLifetime)
     {
         parent::__construct($cache, $client, $viewId, $cacheLifetime);
-
-        $this->analytics = new \Google_Service_Analytics($this->client);
     }
 
     /**
@@ -55,11 +59,6 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
         $item = $this->loadDataFromCache($uri, $start, $end);
 
         if (!$item->isHit()) {
-            //check if we got a token
-            if (null === $this->client->getAccessToken()) {
-                throw new \Exception('No google access token!');
-            }
-
             $gaId    = 'ga:' . $this->viewId;
             $metrics = 'ga:pageviews';
 
@@ -93,11 +92,6 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
         $item = $this->loadDataFromCache($productId, $start, $end);
 
         if (!$item->isHit()) {
-            //check if we got a token
-            if (null === $this->client->getAccessToken()) {
-                throw new \Exception('No google access token!');
-            }
-
             $gaId    = 'ga:' . $this->viewId;
             $metrics = 'ga:productListViews';
 
@@ -113,6 +107,24 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
         }
 
         return $item->get();
+    }
+
+    /**
+     * @param ClientProvider $clientProvider
+     */
+    public function setClientProvider(ClientProvider $clientProvider)
+    {
+        $this->clientProvider = $clientProvider;
+        $this->reInitClient();
+    }
+
+    /**
+     *
+     */
+    protected function reInitClient()
+    {
+        $this->client    = $this->clientProvider->getClient();
+        $this->analytics = new \Google_Service_Analytics($this->client);
     }
 
     /**
