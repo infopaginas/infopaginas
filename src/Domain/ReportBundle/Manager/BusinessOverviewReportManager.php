@@ -79,10 +79,13 @@ class BusinessOverviewReportManager extends BaseReportManager
         }
 
         $businessKey = 'businessOverviewReportBusinessProfiles__businessProfile';
+
         if (isset($filterParams[$businessKey]) &&
             $filterParams[$businessKey]['value'] != ''
         ) {
             $params['businessProfileId'] = $filterParams[$businessKey]['value'];
+        } else {
+            $params['businessProfileId'] = $this->businessProfileManager->findOneBusinessProfile()->getId();
         }
 
         return $this->getBusinessOverviewData($params);

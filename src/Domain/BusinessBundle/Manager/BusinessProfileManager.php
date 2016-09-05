@@ -195,20 +195,6 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @param BusinessProfile $businessProfile
-     * @return BusinessProfile
-     */
-    public function cloneProfile(BusinessProfile $businessProfile) : BusinessProfile
-    {
-        $clonedProfile = clone $businessProfile;
-        $clonedProfile->setUid($businessProfile->getUid());
-
-        $this->commit($clonedProfile);
-
-        return $clonedProfile;
-    }
-
-    /**
      * @return BusinessProfile
      */
     public function createProfile() : BusinessProfile
@@ -271,17 +257,7 @@ class BusinessProfileManager extends Manager
         $this->drop($businessProfile);
     }
 
-    private function getEntitiesByIds($class, $ids)
-    {
-        /** @var EntityRepository $repo */
-        $repo = $this->getEntityManager()->getRepository($class);
-        $objects = $repo->createQueryBuilder('qb')
-            ->where('qb.id IN (:ids)')
-            ->setParameter('ids', $ids)
-            ->getQuery()->getResult();
 
-        return $objects;
-    }
 
     public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet, $locale = 'en_US')
     {
@@ -508,6 +484,11 @@ class BusinessProfileManager extends Manager
         }
     }
 
+    public function findOneBusinessProfile()
+    {
+        return $this->getRepository()->findOneBy([]);
+    }
+
     /**
      * Persist & flush
      *
@@ -568,5 +549,17 @@ class BusinessProfileManager extends Manager
     public function getSlugDcDataDTO(BusinessProfile $profile) : DCDataDTO
     {
         return new DCDataDTO(array(), '', array(), $profile->getSlug());
+    }
+
+    private function getEntitiesByIds($class, $ids)
+    {
+        /** @var EntityRepository $repo */
+        $repo = $this->getEntityManager()->getRepository($class);
+        $objects = $repo->createQueryBuilder('qb')
+            ->where('qb.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()->getResult();
+
+        return $objects;
     }
 }
