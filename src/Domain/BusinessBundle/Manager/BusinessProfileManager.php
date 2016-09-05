@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use AntiMattr\GoogleBundle\Analytics;
+use AntiMattr\GoogleBundle\Analytics\Impression;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -52,11 +54,11 @@ class BusinessProfileManager extends Manager
     /** @var FormFactory */
     private $formFactory;
 
-    /** @var BusinessGalleryManager */
-    private $businessGalleryManager;
-
     /** @var WistiaMediaManager */
     private $wistiaMediaManager;
+
+    /** @var Analytics $analytics */
+    private $analytics;
 
     /**
      * Manager constructor.
@@ -68,8 +70,8 @@ class BusinessProfileManager extends Manager
      * @param TokenStorageInterface $tokenStorage
      * @param TranslatableListener $translatableListener
      * @param FormFactory $formFactory
-     * @param BusinessGalleryManager $businessGalleryManager
      * @param WistiaMediaManager $wistiaMediaManager
+     * @param Analytics $analytics
      */
     public function __construct(
         EntityManager $entityManager,
@@ -77,8 +79,8 @@ class BusinessProfileManager extends Manager
         TokenStorageInterface $tokenStorage,
         TranslatableListener $translatableListener,
         FormFactory $formFactory,
-        BusinessGalleryManager $businessGalleryManager,
-        WistiaMediaManager $wistiaMediaManager
+        WistiaMediaManager $wistiaMediaManager,
+        Analytics $analytics
     ) {
         $this->em = $entityManager;
 
@@ -94,9 +96,9 @@ class BusinessProfileManager extends Manager
 
         $this->formFactory = $formFactory;
 
-        $this->businessGalleryManager = $businessGalleryManager;
-
         $this->wistiaMediaManager = $wistiaMediaManager;
+
+        $this->analytics = $analytics;
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
@@ -453,16 +455,28 @@ class BusinessProfileManager extends Manager
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @param SearchDTO $searchParams
+     * @return mixed
+     */
     public function countSearchResults(SearchDTO $searchParams)
     {
         return $this->getRepository()->countSearchResults($searchParams);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return int
+     */
     public function getReviewsCountForBusinessProfile(BusinessProfile $businessProfile)
     {
         return $this->getBusinessProfileReviewsRepository()->getReviewsCountForBusinessProfile($businessProfile);
     }
 
+    /**
+     * @param $searchResultsDTO
+     * @return mixed
+     */
     public function removeItemWithHiddenAddress($searchResultsDTO)
     {
         foreach ($searchResultsDTO->resultSet as $key => $item)
@@ -473,6 +487,25 @@ class BusinessProfileManager extends Manager
         }
 
         return $searchResultsDTO;
+    }
+
+    /**
+     * @param array $businessProfiles
+     */
+    public function trackBusinessProfilesCollectionImpressions(array $businessProfiles)
+    {
+        /** @var BusinessProfile $businessProfile */
+        foreach ($businessProfiles as $businessProfile) {
+            $impression = new Impression();
+            $impression->setSku($businessProfile->getSlug());
+            $impression->setTitle($businessProfile->getName());
+            $impression->setAction('detail');
+            $impression->setBrand($businessProfile->getBrands()->first());
+            $impression->setCategory($businessProfile->getCategories()->first());
+            $impression->setList('Search Results');
+
+            $this->getGoogleAnalytics()->addImpression($impression);
+        }
     }
 
     /**
@@ -503,12 +536,9 @@ class BusinessProfileManager extends Manager
         return $this->wistiaMediaManager;
     }
 
-    /**
-     * @return BusinessGalleryManager
-     */
-    private function getBusinessGalleryManager() : BusinessGalleryManager
+    private function getGoogleAnalytics()
     {
-        return $this->businessGalleryManager;
+        return $this->analytics;
     }
 
     /**

@@ -47,16 +47,17 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
     /**
      * @param string $uri
      * @param ReportDatesRangeVO $datesRange
+     * @param string $dimension
      * @param string $regex
      * @return mixed
      * @throws \Exception
      */
-    public function getViews($uri, ReportDatesRangeVO $datesRange, $regex = '$')
+    public function getViews($uri, ReportDatesRangeVO $datesRange, string $dimension = 'date', $regex = '$')
     {
         $start = $this->getFormattedStartDate($datesRange->getStartDate());
         $end   = $this->getFormattedEndDate($datesRange->getEndDate());
 
-        $item = $this->loadDataFromCache($uri, $start, $end);
+        $item = $this->loadDataFromCache($uri, $start, $end, $dimension);
 
         if (!$item->isHit()) {
             $gaId    = 'ga:' . $this->viewId;
@@ -64,7 +65,7 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
 
             $filters = [
                 'filters' => 'ga:pagePath=~' . $uri . $regex,
-                'dimensions' => 'ga:date',
+                'dimensions' => 'ga:' . $dimension,
             ];
 
             $data     = $this->getAnalyticsDataResource()->get($gaId, $start, $end, $metrics, $filters);
@@ -81,15 +82,16 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
     /**
      * @param $productId
      * @param ReportDatesRangeVO $datesRangeVO
+     * @param string $dimension
      * @return mixed
      * @throws \Exception
      */
-    public function getImpressions($productId, ReportDatesRangeVO $datesRangeVO)
+    public function getImpressions($productId, ReportDatesRangeVO $datesRangeVO, string $dimension = 'date')
     {
         $start = $this->getFormattedStartDate($datesRangeVO->getStartDate());
         $end   = $this->getFormattedEndDate($datesRangeVO->getEndDate());
 
-        $item = $this->loadDataFromCache($productId, $start, $end);
+        $item = $this->loadDataFromCache($productId, $start, $end, $dimension);
 
         if (!$item->isHit()) {
             $gaId    = 'ga:' . $this->viewId;
@@ -97,7 +99,7 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
 
             $filters = [
                 'filters' => 'ga:productSku=~' . $productId,
-                'dimensions' => 'ga:date',
+                'dimensions' => 'ga:' . $dimension,
             ];
 
             $data     = $this->getAnalyticsDataResource()->get($gaId, $start, $end, $metrics, $filters);
@@ -166,11 +168,16 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
      * @param string $uri
      * @param string $startDate
      * @param string $endDate
+     * @param string $dimension
      * @return CacheItemInterface
      */
-    protected function loadDataFromCache(string $uri, string $startDate, string $endDate) : CacheItemInterface
-    {
-        $cacheKey = sha1($uri . $startDate . '-' . $endDate);
+    protected function loadDataFromCache(
+        string $uri,
+        string $startDate,
+        string $endDate,
+        string $dimension
+    ) : CacheItemInterface {
+        $cacheKey = sha1($uri . $startDate . '-' . $endDate . '-' . $dimension);
         return $this->cache->getItem($cacheKey);
     }
 

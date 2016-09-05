@@ -10,6 +10,11 @@ services:
             - [ setContainer, [ '@service_container' ] ]
     domain_report.manager.business_overview_report_manager:
         class: Domain\ReportBundle\Manager\BusinessOverviewReportManager
+        arguments:
+            - '@domain_business.manager.business_profile'
+            - '@domain_report.google_analytics.data_fetcher'
+            - '@router'
+            - '@kernel'
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
