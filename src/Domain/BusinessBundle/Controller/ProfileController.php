@@ -113,6 +113,8 @@ class ProfileController extends Controller
             TypeInterface::CODE_SERP_BOXED,
         ));
 
+        //$this->get('google.analytics')->get
+
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile'  => $businessProfile,
             'seoData'          => $businessProfile,

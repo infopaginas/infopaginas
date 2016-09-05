@@ -13,3 +13,7 @@ domain_business_images:
 domain_business_videos:
     resource: "@DomainBusinessBundle/Resources/config/routing/videos.yml"
     prefix: /videos
+
+domain_business_reports:
+    resource: "@DomainBusinessBundle/Resources/config/routing/reports.yml"
+    prefix: /reports
