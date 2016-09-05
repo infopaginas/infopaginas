@@ -49,7 +49,6 @@ class BusinessOverviewReportAdmin extends ReportAdmin
             ->getContainer()
             ->get('domain_report.manager.business_overview_report_manager')
             ->getBusinessOverviewDataByFilterParams($filterParam);
-        //dump($this->businessOverviewData); die();
 
         $this->colors = ChartHelper::getColors();
 
