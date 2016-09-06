@@ -62,6 +62,7 @@ class BannerFactory extends Factory
             case BannerType::CODE_SERP_BANNER:
                 break;
             case BannerType::CODE_SERP_BOXED:
+                $banner = $this->getProfileBanner();
                 break;
             case BannerType::CODE_SERP_FEATUREAD:
                 break;
@@ -173,6 +174,17 @@ class BannerFactory extends Factory
             return $leaderboardBanners[0];
         }
 
+        return null;
+    }
+
+    protected function getProfileBanner()
+    {
+        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
+            ->getBannerByTypeCode(BannerType::CODE_SERP_BOXED);
+
+        if (count($portalBanners)) {
+            return $portalBanners[0];
+        }
         return null;
     }
 }

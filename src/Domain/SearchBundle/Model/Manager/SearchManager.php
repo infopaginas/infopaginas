@@ -105,7 +105,7 @@ class SearchManager extends Manager
 
     public function getSearchDTO(Request $request) : SearchDTO
     {
-        $query      = SearchDataUtil::getQueryFromRequest($request);
+        $query      = preg_replace("/[^a-zA-Z0-9\s]+/", "", SearchDataUtil::getQueryFromRequest($request));
         $page       = SearchDataUtil::getPageFromRequest($request);
 
         $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
