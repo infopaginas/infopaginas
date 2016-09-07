@@ -24,10 +24,7 @@
 
                         <div class="dropdown filter-drop">
                             <div class="select-container">
-                                <select class="form-control select-control">
-                                    <option>Relevance</option>
-                                    <option>Distance</option>
-                                </select>
+                                {% include 'DomainSearchBundle:Layout/widgets:order_by_select_options.html.twig' %}
                             </div>
                         </div>
                     </div>

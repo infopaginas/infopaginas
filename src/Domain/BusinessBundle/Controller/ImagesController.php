@@ -115,4 +115,13 @@ class ImagesController extends Controller
         $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
         return $form->get('images');
     }
+
+    /**
+     * @access protected
+     * @throws NoResultException
+     */
+    protected function throwBusinessNotFoundException()
+    {
+        throw new NoResultException('Business not found');
+    }
 }

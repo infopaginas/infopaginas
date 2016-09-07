@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
@@ -99,6 +100,10 @@ class ProfileController extends Controller
     {
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
+
+        if (!$businessProfile) {
+            $this->throwBusinessNotFoundException();
+        }
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
@@ -205,5 +210,14 @@ class ProfileController extends Controller
         }
 
         return $this->createForm(new BusinessProfileFormType(), $businessProfile);
+    }
+
+    /**
+     * @access protected
+     * @throws NoResultException
+     */
+    protected function throwBusinessNotFoundException()
+    {
+        throw new NotFoundHttpException('Business not found');
     }
 }
