@@ -56,6 +56,9 @@ class BusinessProfile implements
 
     const DEFAULT_LOCALE = 'en_US';
 
+    const DISTANCE_APPENDIX_NAME_KILOMETERS = 'km';
+    const DISTANCE_APPENDIX_NAME_METERS     = 'm';
+
     /**
      * @var int
      *
@@ -2295,10 +2298,18 @@ class BusinessProfile implements
     /**
      * getting distance prettified
      *
-     * @return float
+     * @return string
      */
-    public function getDistanceUX() : float
+    public function getDistanceUX() : string
     {
+        $currentDistance = $this->getDistance();
+        $dimension       = self::DISTANCE_APPENDIX_NAME_KILOMETERS;
 
+        if ($currentDistance < 1) {
+            $currentDistance *= 1000;
+            $dimension   = self::DISTANCE_APPENDIX_NAME_METERS;
+        }
+
+        return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
     }
 }
