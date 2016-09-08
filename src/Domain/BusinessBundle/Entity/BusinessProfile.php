@@ -595,6 +595,13 @@ class BusinessProfile implements
     protected $searchCityFts;
 
     /**
+     * @var float
+     *
+     * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
+     */
+    protected $distance;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -641,6 +648,8 @@ class BusinessProfile implements
     {
         return $this->id;
     }
+
+
 
     /**
      * Constructor
@@ -710,6 +719,20 @@ class BusinessProfile implements
     public function getWebsite()
     {
         return $this->website;
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getWebsiteLink()
+    {
+        if (preg_match('/^http/', $this->getWebsite())) {
+            return $this->getWebsite();
+        }
+
+        return '//' . $this->getWebsite();
     }
 
     /**
@@ -2048,7 +2071,34 @@ class BusinessProfile implements
      */
     public function getShortAddress()
     {
-        return $this->getGoogleAddress();
+        if ($this->getHideAddress()) {
+            return '';
+        }
+
+        if ($this->getCustomAddress()) {
+            return $this->getCustomAddress();
+        }
+
+        $address = [];
+        if ($this->getStreetAddress()) {
+            $address[] = $this->getStreetAddress();
+        }
+
+        if ($this->getZipCode()) {
+            $address[] = $this->getZipCode();
+        }
+
+        if ($this->getCity()) {
+            $address[] = $this->getCity();
+        }
+
+        if ($address) {
+            $addressResult = implode(', ', $address);
+        } else {
+            $addressResult = $this->getGoogleAddress();
+        }
+
+        return $addressResult;
     }
 
     /*
@@ -2217,5 +2267,38 @@ class BusinessProfile implements
         $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
 
         return $citySlug;
+    }
+
+    /**
+     * getting distance
+     *
+     * @return float
+     */
+    public function getDistance() : float
+    {
+        return $this->distance;
+    }
+
+    /**
+     * Setting distance
+     *
+     * @param float $distance
+     * @return this
+     */
+    public function setDistance(float $distance)
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    /**
+     * getting distance prettified
+     *
+     * @return float
+     */
+    public function getDistanceUX() : float
+    {
+
     }
 }
