@@ -78,7 +78,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      *     cascade={"persist"},
      *     inversedBy="images"
      * )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
 
