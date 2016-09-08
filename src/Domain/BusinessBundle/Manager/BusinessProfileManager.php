@@ -140,7 +140,12 @@ class BusinessProfileManager extends Manager
 
     public function search(SearchDTO $searchParams)
     {
-        return $this->getRepository()->search($searchParams);
+        $searchResultsData = $this->getRepository()->search($searchParams);
+        $searchResultsData = array_map(function ($item) {
+            return $item[0]->setDistance($item['distance']);
+        }, $searchResultsData);
+
+        return $searchResultsData;
     }
 
     public function searchNeighborhood(SearchDTO $searchParams)
