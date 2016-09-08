@@ -223,6 +223,11 @@ class ChangeSetCollectorUtil
         $entry->setFieldName('video');
 
         if (!isset($profileDiff['video'])) {
+            
+            if (!$entity->getVideo()) {
+                return false;
+            }
+
             try {
                 $videoDiff = DoctrineUtil::diffDoctrineObject($em, $entity->getVideo());
             } catch (ContextErrorException $e) {
