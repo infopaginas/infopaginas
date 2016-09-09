@@ -19,6 +19,18 @@ services:
         class: Oxa\DfpBundle\Service\Google\ReportService
         arguments: ['@oxa_dfp.google.user']
 
+    oxa_dfp.service.order:
+        class: Oxa\DfpBundle\Service\Google\OrderService
+        arguments: ['@oxa_dfp.google.user']
+
+    oxa_dfp.service.company:
+        class: Oxa\DfpBundle\Service\Google\CompanyService
+        arguments: ['@oxa_dfp.google.user']
+
+    oxa_dfp.service.line_item:
+        class: Oxa\DfpBundle\Service\Google\LineItemService
+        arguments: ['@oxa_dfp.google.user']
+
     oxa_dfp.manager:
         class: Oxa\DfpBundle\Manager\DfpManager
         arguments: ['@oxa_dfp.service.report']

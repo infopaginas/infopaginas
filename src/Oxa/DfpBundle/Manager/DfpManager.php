@@ -32,17 +32,6 @@ class DfpManager
         $this->reportService = $reportService;
     }
 
-    /**
-     * @param int $orderId
-     * @param DateRangeInterface $dateRange
-     * @return OrderStatsDTO
-     */
-    public function getStatsForSingleOrder(int $orderId, DateRangeInterface $dateRange) : OrderStatsDTO
-    {
-        $columns = [ReportService::REPORT_CLICKS_COL_NAME, ReportService::REPORT_IMPRESSIONS_COL_NAME];
-        return $this->getReportService()->getStatsForSingleOrder($orderId, $dateRange, $columns);
-    }
-
     public function getStatsForMultipleOrders(array $orderIds, DateRangeInterface $dateRange)
     {
         $columns = [ReportService::REPORT_CLICKS_COL_NAME, ReportService::REPORT_IMPRESSIONS_COL_NAME];

@@ -35,7 +35,7 @@ class OrderStatsDTO
      * @param int $clicks
      * @param int $impressions
      */
-    public function __construct(int $orderId, int $clicks, int $impressions)
+    public function __construct(string $orderId, int $clicks, int $impressions)
     {
         $this->orderId     = $orderId;
         $this->clicks      = $clicks;

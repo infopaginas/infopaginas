@@ -9,7 +9,7 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        $orderId = 350347287;
+        /*$orderId = 350347287;
         $dateRange = new DateRangeVO(new \DateTime('-7 days'), new \DateTime());
 
         $dfpManager = $this->get('oxa_dfp.manager');
@@ -18,6 +18,25 @@ class DefaultController extends Controller
 
         $stats = $dfpManager->getStatsForSingleOrder($orderId, $dateRange);
         dump($stats);
+        die();*/
+
+        $advertiserId = 'oxagile';
+
+        $companyService = $this->get('oxa_dfp.service.company');
+        $companyId = $companyService->getAdvertiserIdByExternalIdAttr($advertiserId);
+
+        $orderService = $this->get('oxa_dfp.service.order');
+        $companyOrdersIds = $orderService->getCompanyOrderIds($companyId);
+
+        $lineItemService = $this->get('oxa_dfp.service.line_item');
+        $lineItemIds = $lineItemService->getLineItemIdsByOrderIds($companyOrdersIds);
+
+        $dfpManager = $this->get('oxa_dfp.manager');
+        $dateRange = new DateRangeVO(new \DateTime('-30 days'), new \DateTime());
+
+        $companyOrderStats = $dfpManager->getStatsForMultipleOrders($lineItemIds, $dateRange);
+
+        dump($companyOrderStats);
         die();
     }
 }
