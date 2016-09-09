@@ -69,9 +69,9 @@ class BusinessProfile implements
      * @var string - Business name
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $name;
 
@@ -149,19 +149,19 @@ class BusinessProfile implements
     /**
      * @var string - Website
      *
-     * @ORM\Column(name="website", type="string", length=30, nullable=true)
+     * @ORM\Column(name="website", type="string", length=255, nullable=true)
      * @DomainAssert\ConstraintUrlExpanded()
-     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $website;
 
     /**
      * @var string - Email address
      *
-     * @ORM\Column(name="email", type="string", length=30, nullable=true)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Assert\Email()
      * @DomainAssert\ContainsEmailExpanded()
-     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $email;
 
@@ -294,7 +294,7 @@ class BusinessProfile implements
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"}, updatable=false)
-     * @ORM\Column(name="slug", type="string", length=100)
+     * @ORM\Column(name="slug", type="string", length=255)
      */
     protected $slug;
 
@@ -362,33 +362,33 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
+     * @ORM\Column(name="street_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="street_number", type="string", length=50, nullable=true)
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="street_number", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetNumber;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="extended_address", type="string", length=50, nullable=true)
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="extended_address", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $extendedAddress;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cross_street", type="string", length=50, nullable=true)
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="cross_street", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $crossStreet;
 
@@ -410,9 +410,9 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=30, nullable=true)
+     * @ORM\Column(name="city", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
-     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $city;
 
@@ -428,8 +428,8 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="custom_address", type="string", length=100, nullable=true)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="custom_address", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
 
@@ -448,29 +448,29 @@ class BusinessProfile implements
     protected $hideAddress = false;
 
     /**
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $twitterURL;
 
     /**
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $facebookURL;
 
     /**
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $googleURL;
 
     /**
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $youtubeURL;
