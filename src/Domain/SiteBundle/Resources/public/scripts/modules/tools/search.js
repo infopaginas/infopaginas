@@ -40,20 +40,12 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             }
         });
 
-        $( window ).resize( function(){
-            if($( window ).width() > this.options.mediaWidth ) {
-                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
-            }
-        }.bind( this ));
-
         $( this.options.searchSelector ).focus( function(){
-            if($( window ).width() < this.options.mediaWidth ) {
-                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
-            }
+            $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
         }.bind( this ));
 
         $( this.options.mediaCloseSection ).click( function(){
-            $( this.options.mediaSearchSection ).css( {"display" : "none"} )
+            $( this.options.mediaSearchSection ).css( {"display" : ""} )
         }.bind( this ));
 
         return this;

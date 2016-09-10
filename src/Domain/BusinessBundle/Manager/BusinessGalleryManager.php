@@ -131,31 +131,6 @@ class BusinessGalleryManager
     }
 
     /**
-     * Used to restore images in case then task rejected
-     *
-     * @access public
-     * @param BusinessProfile $businessProfile
-     */
-    public function restoreBusinessProfileImages(BusinessProfile $businessProfile)
-    {
-        $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
-
-        $images = $this->getRepository()->findBusinessProfileRemovedImages($actualBusinessProfile);
-
-        foreach ($images as $image) {
-            $image->setDeletedAt(null);
-            $this->getEntityManager()->persist($image);
-        }
-
-        foreach ($businessProfile->getImages() as $image) {
-            $actualBusinessProfile->addImage($image);
-            $this->getEntityManager()->persist($actualBusinessProfile);
-        }
-
-        $this->getEntityManager()->flush();
-    }
-
-    /**
      * Go through business profile images and setup profile logo, if found
      *
      * @access public

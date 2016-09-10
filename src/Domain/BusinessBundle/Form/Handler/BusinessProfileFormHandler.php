@@ -66,17 +66,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
 
         if ($businessProfileId !== false) {
-
-            /** @var BusinessProfile $actualBusinessProfile */
-            $actualBusinessProfile = $this->manager->find($businessProfileId);
-
-            $businessProfile = $this->manager->cloneProfile($actualBusinessProfile);
+            $businessProfile = $this->manager->find($businessProfileId);
 
             if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
                 $businessProfile->setLocale($locale);
             }
-
-            $businessProfile->setActualBusinessProfile($actualBusinessProfile);
 
             $this->form->setData($businessProfile);
         }
@@ -111,19 +105,14 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
      */
     private function onSuccess(BusinessProfile $businessProfile)
     {
-        if ($businessProfile->getActualBusinessProfile() === null) {
+        if (!$businessProfile->getId()) {
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
+            $this->getBusinessProfilesManager()->saveProfile($businessProfile);
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
-
-            //Pessimistic block strategy used - user can't update his business profile before Admin response
-            $this->getBusinessProfilesManager()->lock($businessProfile->getActualBusinessProfile());
-
             //create 'Update Business Profile' Task for Admin / CM
             $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile);
         }
-
-        $this->getBusinessProfilesManager()->saveProfile($businessProfile);
     }
 
     /**

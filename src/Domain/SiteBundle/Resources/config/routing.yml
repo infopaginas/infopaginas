@@ -43,3 +43,33 @@ domain_site_oauth:
 domain_site_user:
     resource: "@DomainSiteBundle/Resources/config/routes/user.yml"
     prefix:   /user
+
+# 301 redirect for old urls
+
+domain_site_redirect_sign_up:
+    path:     /sign_up
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
+
+domain_site_redirect_sign_in:
+    path:     /sign_in
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
+
+domain_site_redirect_forgot:
+    path:     /users/password/new
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
+
+domain_site_redirect_manage_listings:
+    path:     /manage-listings
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
