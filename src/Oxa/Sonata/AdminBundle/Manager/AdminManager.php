@@ -196,7 +196,7 @@ class AdminManager extends DefaultManager
                 $childs = $entity->$methodGet();
                 if (count($childs)) {
                     $existDependentField[] = $this->getContainer()->get('translator')->trans(
-                        'form.label_' . $associationMapping['fieldName'],
+                        ucfirst($associationMapping['fieldName']),
                         []
                     );
                 }
@@ -240,7 +240,7 @@ class AdminManager extends DefaultManager
                         'batch_delete_error_rel',
                         array(
                             'record_id' => $entity->getId(),
-                            '%fields%' => implode(',', $existDependentFields),
+                            '%fields%' => implode(', ', $existDependentFields),
                         ),
                         'SonataAdminBundle'
                     ));
@@ -270,7 +270,7 @@ class AdminManager extends DefaultManager
                     'batch_delete_error_rel',
                     array(
                         'record_id' => $entity->getId(),
-                        '%fields%' => implode(',', $existDependentFields),
+                        '%fields%' => implode(', ', $existDependentFields),
                     ),
                     'SonataAdminBundle'
                 ));
