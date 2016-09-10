@@ -271,7 +271,9 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
                 var triggeredSelect = this;
 
                 $.each( $( self.html.imageTypeSelectClassname ), function() {
-                    if ( $( this ).val() == logoTypeConstant && $( triggeredSelect ).attr( 'name' ) != $( this ).attr( 'name' ) ) {
+                    if ( $( this ).val() == logoTypeConstant &&
+                        $( triggeredSelect ).closest( '.image-row' ).children('.hidden-media').val() != $( this ).closest( '.image-row' ).children('.hidden-media').val()
+                    ) {
                         $( this ).val( photoTypeConstant );
 
                         new select;
