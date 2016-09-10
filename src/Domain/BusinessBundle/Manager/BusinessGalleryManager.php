@@ -75,7 +75,9 @@ class BusinessGalleryManager
      */
     public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url)
     {
-        if (SiteHelper::checkUrlExistence($url) && getimagesize($url)) {
+        $headers = SiteHelper::checkUrlExistence($url);
+
+        if ($headers && in_array($headers['content_type'], SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
             $file = tmpfile();
 
             if ($file === false) {
