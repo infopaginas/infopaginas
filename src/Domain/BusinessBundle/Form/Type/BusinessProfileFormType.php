@@ -378,6 +378,7 @@ class BusinessProfileFormType extends AbstractType
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
+            $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
         $form->add('milesOfMyBusiness', IntegerType::class, $milesOfMyBusinessFieldOptions);
