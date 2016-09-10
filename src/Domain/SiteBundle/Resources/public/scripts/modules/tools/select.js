@@ -1,35 +1,35 @@
-define(['jquery', 'select2'], function( $, select2 ) {
+define(['jquery', 'select2'], function($, select2 ) {
     'use strict';
 
     var select = function() {
         this.selectControl = $( '.select-control' );
         this.selectArrow = $( '.select2-selection__arrow' );
         this.tab = $('.tabs-block a');
-
         this.initSelect();
     };
 
     select.prototype.initSelect = function() {
-        var self = this;
+        if($(document).width() > 480){
 
-        self.selectControl.select2({
-            placeholder: function(){
-                $(this).data('placeholder');
-            }
-        });
+            var self = this;
 
-        self.selectArrow.hide();
+            self.selectControl.select2({
+                minimumResultsForSearch: -1,
+                placeholder: function(){
+                    $(this).data('placeholder');
+                }
+            });
 
-        $( window ).resize(function() {
-            self.selectControl.select2();
             self.selectArrow.hide();
-        }.bind( this ) );
+            self.selectControl.hide();
 
-        this.tab.click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-            self.selectControl.select2();
-        })
+            this.tab.click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                self.selectControl.select2();
+            })
+        }
+
     };
 
     return select;

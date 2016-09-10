@@ -140,14 +140,7 @@ class BusinessReviewAdmin extends OxaAdmin
     {
         /** @var QueryBuilder $query */
         $query = parent::createQuery($context);
-
-        // show only none locked records
         $query->leftJoin($query->getRootAliases()[0] . '.businessProfile', 'bp');
-        $query->andWhere(
-            $query->expr()->eq('bp.locked', ':locked')
-        );
-        $query->setParameter('locked', false);
-
         return $query;
     }
 }

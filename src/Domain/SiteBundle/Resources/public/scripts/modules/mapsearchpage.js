@@ -10,7 +10,8 @@ define(
         };
 
         this.events = {
-            '.map-address click' : 'showMarker'
+            '.map-address click'        : 'showMarker',
+            ".order-by-select change"   : "changeSearchData",
         };
 
         this.mapSize = {
@@ -197,6 +198,12 @@ define(
             $(card).data( 'default-offset', $( card ).offset().top )
         })
     };
+
+    mapSearchPage.prototype.changeSearchData = function ( e ) {
+        var route = $(e.currentTarget).find('option:selected').data('route');
+
+        window.location = route;
+    }
 
     return mapSearchPage;
 });

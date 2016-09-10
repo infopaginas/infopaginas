@@ -54,6 +54,7 @@
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
+                            {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' with {'addBasePageClass': true} %}
                             <li class="lang-dropdown">
                                 <div class="dropdown">
                                     <div class="select-container">
@@ -81,7 +82,7 @@
                                 </li>
                             {% endif %}
 
-                            {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
+
 
                             <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>

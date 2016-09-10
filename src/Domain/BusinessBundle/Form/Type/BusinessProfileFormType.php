@@ -182,6 +182,7 @@ class BusinessProfileFormType extends AbstractType
                     'area' => 'Area',
                     'locality' => 'Locality'
                 ),
+                'label' => 'Service Areas',
                 'multiple' => false,
                 'expanded' => true,
                 'required' => true,

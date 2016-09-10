@@ -53,14 +53,13 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      *
      * @ORM\ManyToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     mappedBy="categories",
-     *     cascade={"persist"}
-     *     )
+     *     mappedBy="categories"
+     * )
      */
     protected $businessProfiles;
 
     /**
-     * @ORM\OneToOne(targetEntity="Domain\MenuBundle\Entity\Menu", mappedBy="category")
+     * @ORM\OneToOne(targetEntity="Domain\MenuBundle\Entity\Menu", mappedBy="category", cascade={"persist"})
      */
     protected $menu;
 

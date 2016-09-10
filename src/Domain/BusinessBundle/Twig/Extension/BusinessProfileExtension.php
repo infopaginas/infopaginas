@@ -12,9 +12,13 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Util\ChangeSetCalculator;
+use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
+use Domain\BusinessBundle\Util\Task\NormalizerUtil;
 use Gedmo\Translatable\TranslatableListener;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class BusinessProfilesChangesetExtension
@@ -25,9 +29,33 @@ class BusinessProfileExtension extends \Twig_Extension
     /** @var BusinessProfileManager */
     private $businessProfileManager;
 
-    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager)
-    {
+    /** @var TranslatorInterface $translator */
+    private $translator;
+
+    /** @var FormInterface */
+    private $form;
+
+    /**
+     * @param BusinessProfileManager $businessProfileManager
+     */
+    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager) {
         $this->businessProfileManager = $businessProfileManager;
+    }
+
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    /**
+     * @param FormInterface $form
+     */
+    public function setBusinessProfileForm(FormInterface $form)
+    {
+        $this->form = $form;
     }
 
     /**
@@ -47,6 +75,11 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'getBusinessProfileActualReviewsAvgRating'
             ),
+            'get_business_profile_changes_string' => new \Twig_Function_Method($this, 'unpackTaskChangeSetRow'),
+            'get_business_profile_image_changes' => new \Twig_Function_Method($this, 'getImageChangeSet'),
+            'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
+            'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
+            'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
         ];
     }
 
@@ -112,19 +145,79 @@ class BusinessProfileExtension extends \Twig_Extension
         return $businessProfile !== null ? $businessProfile : new BusinessProfile();
     }
 
+    public function unpackTaskChangeSetRow($value)
+    {
+        if (!$this->isJson($value)) {
+            return $value;
+        }
+
+        return implode(', ', array_map(function($element) {
+            if (isset($element->value)) {
+                return $element->value;
+            } elseif (isset($element->url)) {
+                    return $element->url;
+            }
+
+            return '';
+        }, json_decode($value)));
+    }
+
+    public function getImageChangeSet(string $value)
+    {
+        return ImagesChangeSetUtil::deserializeChangeSet($value);
+    }
+
+    public function prepareImageDiff($diff)
+    {
+        return ImagesChangeSetUtil::prepareImageDiff($diff);
+    }
+
+    public function normalizeTaskChangeActionLabel(string $action)
+    {
+        return NormalizerUtil::normalizeTaskChangeActionLabel($action, $this->getTranslator());
+    }
+
+    public function normalizeTaskFieldNameLabel(string $field)
+    {
+        return NormalizerUtil::normalizeTaskFieldNameLabel($field, $this->form);
+    }
+
+    /**
+     * @return TranslatorInterface
+     */
+    protected function getTranslator()
+    {
+        return $this->translator;
+    }
+
+    /**
+     * @return BusinessProfileManager
+     */
+    protected function getBusinessProfileManager() : BusinessProfileManager
+    {
+        return $this->businessProfileManager;
+    }
+
+    /**
+     * @param $json
+     * @return bool
+     */
+    private function isJson($json)
+    {
+        $result = json_decode($json);
+
+        if (!is_array($result)) {
+            return false;
+        }
+
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+
     /**
      * @return string
      */
     public function getName() : string
     {
         return 'business_profile_extension';
-    }
-
-    /**
-     * @return BusinessProfileManager
-     */
-    private function getBusinessProfileManager() : BusinessProfileManager
-    {
-        return $this->businessProfileManager;
     }
 }

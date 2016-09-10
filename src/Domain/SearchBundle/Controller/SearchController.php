@@ -33,6 +33,9 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL,
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
         return $this->render(
             'DomainSearchBundle:Search:index.html.twig',
             [
@@ -75,6 +78,8 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:map.html.twig',
@@ -98,6 +103,9 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
         return $this->render(
             'DomainSearchBundle:Search:compare.html.twig',
             [
@@ -105,5 +113,13 @@ class SearchController extends Controller
                 'bannerFactory' => $bannerFactory,
             ]
         );
+    }
+
+    /**
+     * @return \Domain\BusinessBundle\Manager\BusinessProfileManager
+     */
+    protected function getBusinessProfileManager()
+    {
+        return $this->get('domain_business.manager.business_profile');
     }
 }
