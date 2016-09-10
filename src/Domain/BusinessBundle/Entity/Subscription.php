@@ -44,7 +44,7 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
      *     inversedBy="subscriptions",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $businessProfile;
 

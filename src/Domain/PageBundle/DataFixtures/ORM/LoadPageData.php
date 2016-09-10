@@ -14,14 +14,6 @@ class LoadPageData extends OxaAbstractFixture
     {
         $dataArray = [
             [
-                'title'         => 'About Us',
-                'code'          => PageInterface::CODE_ABOUT_AS,
-                'description'   => 'About Us Description',
-                'body'          => 'About Us Body',
-                'isPublished'   => true,
-                'slug'          => 'about-us',
-            ],
-            [
                 'title'         => 'Contact Us',
                 'code'          => PageInterface::CODE_CONTACT_US,
                 'description'   => 'Contact Us Description',
@@ -44,6 +36,14 @@ class LoadPageData extends OxaAbstractFixture
                 'body'          => 'Terms of Usage Body',
                 'isPublished'   => true,
                 'slug'          => 'terms',
+            ],
+            [
+                'title'         => 'Advertise with Us',
+                'code'          => PageInterface::CODE_ADVERTISE,
+                'description'   => 'Advertise with Us Description',
+                'body'          => 'Advertise with Us  - <a href="/b/business/create">Get Your Free Listing</a>',
+                'isPublished'   => true,
+                'slug'          => 'advertise',
             ],
         ];
 

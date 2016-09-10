@@ -85,6 +85,8 @@ class GeolocationManager extends Manager
         $results = $this->getPlacesData();
 
         $list = array_column($results['predictions'], 'description');
+        $list = $this->filterComplexNames($list);
+
         return $list;
     }
 
@@ -123,5 +125,17 @@ class GeolocationManager extends Manager
     private function getGoogleAPIKey() : string
     {
         return $this->googleAPIKey;
+    }
+
+    protected function filterComplexNames(array $list)
+    {
+        return array_map(function ($item) {
+            if (strpos($item, ',')) {
+                $names = explode(',', $item);
+                $item = $names[0];
+            }
+
+            return $item;
+        }, $list);
     }
 }

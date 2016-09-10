@@ -52,7 +52,13 @@ class AppKernel extends Kernel
             new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new Spine\TrigonometricDQLBundle\SpineTrigonometricDQLBundle(),
-            
+            new AntiMattr\GoogleBundle\GoogleBundle(),
+            new Http\HttplugBundle\HttplugBundle(),
+            new Oneup\FlysystemBundle\OneupFlysystemBundle(),
+            new Cache\AdapterBundle\CacheAdapterBundle(),
+            new Happyr\GoogleSiteAuthenticatorBundle\HappyrGoogleSiteAuthenticatorBundle(),
+            new Happyr\GoogleAnalyticsBundle\HappyrGoogleAnalyticsBundle(),
+
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
@@ -82,6 +88,8 @@ class AppKernel extends Kernel
 
         return $bundles;
     }
+
+   
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

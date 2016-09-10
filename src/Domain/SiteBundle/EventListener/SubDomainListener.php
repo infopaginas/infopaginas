@@ -33,6 +33,14 @@ class SubDomainListener
 
     private function getCurrentLocale($request)
     {
+        $localeAdmin = $this->container->getParameter('locale_admin');
+
+        if (strpos(trim($request->getPathInfo(), '/'), $localeAdmin['url_part']) === 0) {
+            // is admin
+
+            return $localeAdmin['locale'];
+        }
+
         $languages = $this->container->getParameter('locale_data');
 
         $host = $request->getHttpHost();
@@ -63,7 +71,14 @@ class SubDomainListener
         foreach ($languages as $alias => $language) {
             $domainKey = $this->getDomainKey($language['domain']);
 
-            $langSchemeAndHttpHost = str_replace($host, $domainKey . $baseHost, $request->getSchemeAndHttpHost());
+            // work around for symfony as it request ignores HTTPS
+            $schemeAndHost = str_replace(
+                $request->getScheme(),
+                $request->server->get('REQUEST_SCHEME'),
+                $request->getSchemeAndHttpHost()
+            );
+
+            $langSchemeAndHttpHost = str_replace($host, $domainKey . $baseHost, $schemeAndHost);
 
             $languages[$alias]['url'] = $langSchemeAndHttpHost . $request->getRequestUri();
         }

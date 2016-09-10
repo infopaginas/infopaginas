@@ -5,12 +5,9 @@
     ">
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
+            <span class="card-number">{{ iterator }}.</span>
             <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-number">{{ iterator }}.</span>
-            </a>
-                &nbsp;
-            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
+                <h1 class="card-name">{{ item.name }}</h1>
             </a>
                 &nbsp;
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
@@ -45,23 +42,31 @@
     </div>
     <div class="col-xs-7 company-contact">
         <ul class="company-info">
-            <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
-            </li>
-            <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
-                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
-            </li>
+            {% if item.website is not null %}
+                <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+                </li>
+            {% endif %}
+            {% if item.email is not null %}
+                <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
+                                                                aria-hidden="true"></i><span>{{ item.email }}</span></a>
+                </li>
+            {% endif %}
+            {% if item.phones is not null %}
             <li>
                 <div class="dropdown filter-drop">
                     <i class="fa fa-phone" aria-hidden="true"></i>
 
                     <div class="select-container">
-                        <select class="form-control select-control">
+                        <select class="form-control select-control view-phone" data-business="{{ item.id }}">
                             <option>phone number</option>
-                            <option>NY</option>
+                            {% for phone in item.phones %}
+                                <option>{{ phone }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
             </li>
+            {% endif %}
         </ul>
     </div>
     <div class="col-xs-12 additional-info">

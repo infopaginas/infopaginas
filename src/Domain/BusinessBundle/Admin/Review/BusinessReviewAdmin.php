@@ -79,10 +79,7 @@ class BusinessReviewAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('user')
-                ->add('businessProfile', null, [
-                    // hide this field if this page used as sonata_type_collection on other pages
-                    'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass() ]
-                ])
+                ->add('businessProfile')
                 ->add('isActive')
             ->end()
             ->with('Review')
@@ -99,6 +96,11 @@ class BusinessReviewAdmin extends OxaAdmin
                 ])
             ->end()
         ;
+
+        // remove this field if this page used as sonata_type_collection on other pages
+        if ($this->getRoot()->getClass() != $this->getClass()) {
+            $formMapper->remove('businessProfile');
+        }
     }
 
     /**
@@ -138,14 +140,7 @@ class BusinessReviewAdmin extends OxaAdmin
     {
         /** @var QueryBuilder $query */
         $query = parent::createQuery($context);
-
-        // show only none locked records
         $query->leftJoin($query->getRootAliases()[0] . '.businessProfile', 'bp');
-        $query->andWhere(
-            $query->expr()->eq('bp.locked', ':locked')
-        );
-        $query->setParameter('locked', false);
-
         return $query;
     }
 }

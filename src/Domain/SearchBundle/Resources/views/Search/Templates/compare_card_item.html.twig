@@ -1,31 +1,43 @@
 <div class="card-item">
     <div class="card-title fields-item">
         <label class="control-label card-label" for="card-check2">
-            <span class="card-number">{{ iterator }}</span>
-            &nbsp;
+            <span class="card-number">{{ iterator }}.</span> &nbsp;
             <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                <span class="card-name">{{ item.name }}</span>
+                <h1 class="card-name">{{ item.name }}</h1>
             </a>
         </label>
     </div>
     <div class="company-contact fields-item">
         <ul class="company-info">
-            <li><a href=""><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
-            </li>
-            <li><a href="mailto:sonsnotebooks@yahoo.com"><i class="fa fa-envelope"
-                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
+            <li>
+                {% if item.website is not null %}
+                    <a href="{{ item.getWebsiteLink() }}">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                        <span>{{ item.website }}</span>
+                    </a>
+                {% endif %}
             </li>
             <li>
-                <div class="dropdown filter-drop">
-                    <i class="fa fa-phone" aria-hidden="true"></i>
+                {% if item.email is not null %}
+                    <a href="mailto:{{ item.email }}"><i class="fa fa-envelope"
+                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
+                {% endif %}
+            </li>
+            <li>
+                {% if item.phones is not null %}
+                    <div class="dropdown filter-drop">
+                        <i class="fa fa-phone" aria-hidden="true"></i>
 
-                    <div class="select-container">
-                        <select class="form-control select-control">
-                            <option>phone number</option>
-                            <option>NY</option>
-                        </select>
+                        <div class="select-container">
+                            <select class="form-control select-control view-phone" data-business="{{ item.id }}">
+                                <option>phone number</option>
+                                {% for phone in item.phones %}
+                                    <option>{{ phone }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </li>
         </ul>
     </div>
@@ -42,7 +54,7 @@
     </div>
     <div class="distance fields-item">
         {% if not item.getHideAddress() %}
-            <span>1,5 km</span>
+            <span>{{ item.getDistanceUX() }}</span>
         {% endif %}
     </div>
     <div class="additional-info fields-item">
