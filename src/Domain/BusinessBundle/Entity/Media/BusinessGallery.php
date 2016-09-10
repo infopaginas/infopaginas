@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\MediaBundle\Entity\Gallery;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseGalleryHasMedia;
 use Sonata\MediaBundle\Model\MediaInterface;
@@ -76,7 +78,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      *     cascade={"persist"},
      *     inversedBy="images"
      * )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
 
@@ -285,5 +287,16 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     public function __clone()
     {
         $this->id = null;
+    }
+
+    public static function createFromChangeSet($data, Media $media)
+    {
+        $gallery = new BusinessGallery();
+        $gallery->setDescription($data->description);
+        $gallery->setType($data->type);
+        $gallery->setIsPrimary($data->isPrimary);
+        $gallery->setMedia($media);
+
+        return $gallery;
     }
 }

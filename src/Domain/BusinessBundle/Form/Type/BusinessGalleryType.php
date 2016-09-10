@@ -34,6 +34,7 @@ class BusinessGalleryType extends AbstractType
         $builder
             ->add('media', EntityHiddenType::class, [
                 'class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
+                'attr' => ['class' => 'hidden-media'],
             ])
             ->add('isPrimary', CheckboxType::class, [
                 'attr' => [

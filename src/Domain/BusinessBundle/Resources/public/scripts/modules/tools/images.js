@@ -92,23 +92,27 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
     //actions on ajax success
     images.prototype.onRequestSuccess = function( response ) {
-        var $response = $( '<table>' + response + '</table>' );
+        if ( response.success === false ) {
+            this.imageErrorHandler( response.message );
+        } else {
+            var $response = $( '<table>' + response + '</table>' );
 
-        var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
+            var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
-        var $responseImages = $response.find( 'tr' );
+            var $responseImages = $response.find( 'tr' );
 
-        $responseImages.each(function() {
-            var $imageRow = $(this);
+            $responseImages.each(function() {
+                var $imageRow = $(this);
 
-            var imageId = $imageRow.attr( 'id' );
+                var imageId = $imageRow.attr( 'id' );
 
-            if( !$(document).find( '#' + imageId ).length > 0 ) {
-                $imagesContainer.append( $imageRow );
-            }
-        });
+                if( !$(document).find( '#' + imageId ).length > 0 ) {
+                    $imagesContainer.append( $imageRow );
+                }
+            });
 
-        new select;
+            new select;
+        }
     };
 
     //ajax request
@@ -146,8 +150,6 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
     //check allowed filesize/count. Start upload process
     images.prototype.handleFileUploadInput = function() {
-        var maxFilesCount = 10;
-
         var that = this;
 
         $(document).on( 'change', '#' + this.html.buttons.fileInputId, function() {
@@ -178,24 +180,36 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         var that = this;
 
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
-            var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
+            if ( !$remoteImageURLInput.val() ) {
+                that.imageErrorHandler( 'Error: URL field should not be empty.' );
+            } else {
+                if( that.checkMaxAllowedFilesCount( [$remoteImageURLInput.val()] ) == false ) {
+                    return false;
+                }
 
-            var data = {
-                url: $remoteImageURLInput.val(),
-                businessProfileId: businessProfileId
-            };
+                if ( $remoteImageURLInput.hasClass( 'error' ) ) {
+                    $remoteImageURLInput.removeClass( 'error' );
+                }
 
-            $.ajax( {
-                url: that.urls.uploadByURL,
-                type: 'POST',
-                data: data,
-                beforeSend: $.proxy( that.beforeRequestHandler, that ),
-                complete: $.proxy( that.completeHandler, that ),
-                success: $.proxy( that.onRequestSuccess, that ),
-                error: $.proxy( that.errorHandler, that )
-            } );
+                var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
 
-            event.preventDefault();
+                var data = {
+                    url: $remoteImageURLInput.val(),
+                    businessProfileId: businessProfileId
+                };
+
+                $.ajax( {
+                    url: that.urls.uploadByURL,
+                    type: 'POST',
+                    data: data,
+                    beforeSend: $.proxy( that.beforeRequestHandler, that ),
+                    complete: $.proxy( that.completeHandler, that ),
+                    success: $.proxy( that.onRequestSuccess, that ),
+                    error: $.proxy( that.errorHandler, that )
+                } );
+
+                event.preventDefault();
+            }
         } );
     };
 
@@ -233,11 +247,19 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         $(document).on( 'click', '.' + this.html.removeImageClassname, function( event ) {
             var imageId = $(this).data( 'id' );
 
-            $(document).find( '[data-id="' + imageId + '"]' ).remove();
             $(document).find( '#images-form-' + imageId ).remove();
 
             event.preventDefault();
         } );
+    };
+
+    images.prototype.imageErrorHandler = function( error ) {
+        var $remoteImageURLInput = $(this.html.remoteImageURLInputId);
+
+        $remoteImageURLInput.addClass('error');
+        alertify.error(error);
+
+        return false;
     };
 
     // only 1 image can be "Logo" - remove logo from other

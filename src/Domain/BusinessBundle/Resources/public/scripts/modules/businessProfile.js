@@ -42,7 +42,8 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             loadingSpinnerContainerClass: '.spinner-container',
             mapContainerId: 'google-map',
             newProfileRequestSpinnerContainerId: 'new-profile-loading-spinner-container-id',
-            languageSelectorClass: '.language-selector'
+            languageSelectorClass: '.language-selector',
+            imagesTable: '.table-media-image'
         };
 
         this.newProfileRequestFormHandler = new FormHandler({
@@ -201,6 +202,23 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 });
             }
 
+            if ( $( that.html.imagesTable ).length ) {
+                var imageName, images, regexp;
+
+                $.each ( $( that.html.imagesTable + ' .hidden-media' ), function ( outerIndex ) {
+                    imageName = that.freeProfileFormName + '[images][' + outerIndex + '][media]';
+                    images = $( that.html.imagesTable + ' input[name="' + imageName + '"]' );
+
+                    if ( images.length > 1 ) {
+                        regexp = new RegExp(outerIndex, 'gi');
+
+                        $.each( images, function ( index, value ) {
+                            this.setAttribute( 'name', imageName.replace( regexp, ( index + outerIndex ) ) );
+                        });
+                    }
+                });
+            }
+
             that.newProfileRequestFormHandler.doRequest( that.urls.saveBusinessProfile, data );
 
             event.preventDefault();
@@ -235,6 +253,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                     },
                     success: function( response ) {
                         $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
+
+                        var activeTab = $( '.tabs-block li.active' );
+                        activeTab.removeClass( 'active' );
+                        activeTab.find( 'a' ).click();
 
                         new select();
                     },

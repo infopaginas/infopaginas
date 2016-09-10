@@ -17,7 +17,9 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
     protected function getArticlesQueryBuilder()
     {
         return $this->createQueryBuilder('a')
-            ->where('a.isPublished = true');
+            ->where('a.isPublished = true')
+            ->andWhere('a.activationDate < CURRENT_TIMESTAMP()')
+            ->andWhere('a.expirationDate >= CURRENT_TIMESTAMP()');
     }
 
     /**

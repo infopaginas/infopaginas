@@ -54,6 +54,7 @@
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
+                            {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' with {'addBasePageClass': true} %}
                             <li class="lang-dropdown">
                                 <div class="dropdown">
                                     <div class="select-container">
@@ -81,7 +82,7 @@
                                 </li>
                             {% endif %}
 
-                            {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
+
 
                             <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
@@ -119,7 +120,7 @@
     <div class="container default-footer">
         <div class="row">
             <div class="col-xs-6 copyright white-c">
-                <a href="" class="footer-logo"></a>
+                <div class="footer-logo"></div>
 
                 <div class="copyright-date">
                     <span>&copy; 2016 infopáginas</span>
@@ -135,7 +136,7 @@
 
             <div class="col-xs-6 footer-menu">
                 <ul class="footer-links green-c">
-                    <li><a class="green-c" href="{{ path('domain_page_view_about') }}">About Us</a></li>
+                    <li><a class="green-c" href="http://www.infopaginasmedia.com/">About Us</a></li>
                     <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">Contact Us</a></li>
                 </ul>
                 <ul class="footer-links column">

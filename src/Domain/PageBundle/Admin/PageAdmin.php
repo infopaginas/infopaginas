@@ -20,10 +20,9 @@ class PageAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('id')
             ->add('title')
-            ->add('isPublished', null, [], null, $this->defaultDatagridBooleanTypeOptions)
-            ->add('template')
+            ->add('description')
+            ->add('updatedUser')
         ;
     }
 
@@ -33,11 +32,11 @@ class PageAdmin extends OxaAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('id')
-            ->add('title')
+            ->addIdentifier('title')
             ->add('description')
-            ->add('template')
-            ->add('isPublished', null, ['editable' => true])
+            ->add('updatedAt')
+            ->add('updatedUser')
+            ->add('isPublished')
         ;
 
         $this->addGridActions($listMapper);
@@ -105,6 +104,8 @@ class PageAdmin extends OxaAdmin
             ->add('title')
             ->add('description')
             ->add('body', null, array('template' => 'DomainPageBundle:Admin:show__body.html.twig'))
+            ->add('updatedAt')
+            ->add('updatedUser')
             ->add('slug')
             ->add('seoTitle')
             ->add('seoDescription')
@@ -120,6 +121,7 @@ class PageAdmin extends OxaAdmin
         parent::configureRoutes($collection);
 
         $collection
+            ->remove('restore')
             ->remove('delete_physical')
             ->remove('delete')
             ->remove('remove')
