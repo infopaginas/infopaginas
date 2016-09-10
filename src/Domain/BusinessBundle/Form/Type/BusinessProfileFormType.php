@@ -356,7 +356,7 @@ class BusinessProfileFormType extends AbstractType
                 'placeholder' => '100',
             ],
             'label' => 'Within miles of my business',
-            'required' => false,
+            'required' => true,
         ];
 
         $localitiesFieldOptions = [

@@ -284,9 +284,15 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
+
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                $( '.miles-of-business i' ).show();
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
+                $( '.miles-of-business i' ).hide();
             }
 
             new select();
