@@ -27,10 +27,6 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
-    const PAYPAL_METHOD = 'PayPal';
-    const VISA_METHOD = 'Visa';
-    const MASTERCARD_METHOD = 'Master Card';
-
     /**
      * @var int
      *
