@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Controller;
 use AntiMattr\GoogleBundle\Analytics\Impression;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\ReportBundle\Entity\Keyword;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -52,6 +53,11 @@ class ReportsController extends Controller
         return new JsonResponse($weeklyBusinessViews);
     }
 
+    /**
+     * @param Request $request
+     * @param int $businessProfileId
+     * @return JsonResponse
+     */
     public function impressionsAction(Request $request, int $businessProfileId)
     {
         /** @var BusinessProfile $businessProfile */
@@ -66,6 +72,22 @@ class ReportsController extends Controller
         $weeklyBusinessImpressions = $this->getGADataFetcher()->getImpressions($businessProfile->getSlug(), $dateRange);
 
         return new JsonResponse($weeklyBusinessImpressions);
+    }
+
+    public function keywordsAction(Request $request, int $businessProfileId)
+    {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+
+        if (!$businessProfile) {
+            throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
+        }
+
+        $repo = $this->getDoctrine()->getRepository(Keyword::class);
+        dump($repo->getTopKeywordsForBusinessProfile($businessProfile));
+        die();
+
+        //$dateRange = new ReportDatesRangeVO(new \DateTime('-1week'), new \DateTime());
     }
 
     /**

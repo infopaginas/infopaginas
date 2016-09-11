@@ -1,0 +1,116 @@
+{% extends 'DomainReportBundle:Admin/Default:list.html.twig' %}
+
+{% block list_table %}
+    {% if admin.keywordsData|length > 1 %}
+        <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
+        <div class="box box-primary">
+            <canvas id="keywordsReportChart" width="400" height="70"></canvas>
+        </div>
+        <script>
+            var ctx = document.getElementById("keywordsReportChart");
+            var data = {
+                labels: {{ admin.keywordsData|keys|json_encode|raw }},
+                datasets: [
+                    {% set lineColor = '#0080ff' %}
+                    {
+                        label: "Keywords",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "{{ lineColor }}",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.keywords|json_encode|raw }}
+                    }
+                ]
+            };
+            var myLineChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                bezierCurve: true,
+                scaleShowVerticalLines: true,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+
+    {{  parent() }}
+{% endblock %}
+
+{% block table_body %}
+    <tbody>
+    {% for keyword, count in admin.keywordsData %}
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ keyword }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ count }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+{% endblock %}
+
+{% set showPagination = false %}
+
+{% block export %}
+    {% if admin.hasRoute('export') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-export"></i>
+                {{ "label_export_download"|trans({}, "SonataAdminBundle") }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for code,format in admin.getExportFormats() %}
+                <li>
+                    <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {
+                        'format' : format,
+                        'code': code,
+                        '_page' : admin.getFilterParameters['_page'],
+                        '_per_page' : admin.getFilterParameters['_per_page']
+                    }) }}">
+                        <i class="glyphicon glyphicon-download"></i>
+                        {{ code|trans({}, admin.getTranslationDomain) }}
+                    </a>
+                <li>
+                    {% endfor %}
+            </ul>
+        </div>
+        {% if showPagination %}
+            &nbsp;-&nbsp;
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block pager_results %}
+    {% if showPagination %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block pager_links %}
+    {% if showPagination %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

@@ -595,6 +595,18 @@ class BusinessProfile implements
     protected $searchCityFts;
 
     /**
+     * @var SearchLog[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\SearchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $searchLogs;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -658,6 +670,7 @@ class BusinessProfile implements
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed = false;
 
@@ -2217,5 +2230,39 @@ class BusinessProfile implements
         $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
 
         return $citySlug;
+    }
+
+    /**
+     * Add searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     *
+     * @return BusinessProfile
+     */
+    public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs[] = $searchLog;
+
+        return $this;
+    }
+
+    /**
+     * Remove searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     */
+    public function removeSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs->removeElement($searchLog);
+    }
+
+    /**
+     * Get searchLogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSearchLogs()
+    {
+        return $this->searchLogs;
     }
 }
