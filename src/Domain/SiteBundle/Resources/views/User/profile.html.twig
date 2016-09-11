@@ -54,6 +54,18 @@
                                         {{ form_widget(profileForm.lastname) }}
                                         <span class="help-block"></span>
                                     </div>
+                                    <div class="col-xs-4">
+                                        <span>
+                                            {% trans %}Password{% endtrans %}:
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <a class="btn green-btn" href="#" data-dismiss="modal"
+                                           data-toggle="modal" data-target="#updatePasswordModal">
+                                            <i class="fa fa-exchange" aria-hidden="true"></i>
+                                            {% trans %}Change Password{% endtrans %}
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="col-xs-6 form-col">
                                     <div class="col-xs-4">
@@ -67,14 +79,22 @@
                                     </div>
                                     <div class="col-xs-4">
                                         <span>
-                                            {% trans %}Password{% endtrans %}:
+                                            {{ form_label(profileForm.phone) }}:
                                         </span>
                                     </div>
                                     <div class="col-xs-8">
-                                        <a class="btn green-btn" href="#" data-dismiss="modal"
-                                           data-toggle="modal" data-target="#updatePasswordModal">
-                                            <i class="fa fa-exchange" aria-hidden="true"></i>
-                                            Change Password
+                                        {{ form_widget(profileForm.phone) }}
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <span>
+                                            {% trans %}Logout{% endtrans %}:
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <a class="btn green-btn" href="{{ path('fos_user_security_logout') }}">
+                                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                            {% trans %}Logout{% endtrans %}
                                         </a>
                                     </div>
                                 </div>
@@ -140,8 +160,8 @@
                                             {% for review in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        <a href="{{ path('domain_business_profile_view', { slug: review.slug }) }}#reviews">
-                                                            {{ review.name }}
+                                                        <a href="{{ path('domain_business_profile_view', { 'citySlug' : review.business.getCitySlug(), slug: review.slug }) }}#reviews">
+                                                            {{ review.business.name }}
                                                         </a>
                                                     </span>
                                                 </div>
@@ -171,7 +191,7 @@
                                             {% for business in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        {% if business.getIsActive() and not business.isLocked() %}
+                                                        {% if business.getIsActive() %}
                                                             <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
                                                                 {{ business.getName() }}
                                                             </a>

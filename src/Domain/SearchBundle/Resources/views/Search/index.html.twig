@@ -1,9 +1,6 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
-{% block doubleClickHeader %}
-    {% if bannerFactory is not null %}
-        {% include 'DomainBannerBundle:Default:double_click_header_template.html.twig' with { 'bannerHeaders' : bannerFactory.getItemsHeaders } %}
-    {% endif %}
+{% block breakcrumbs %}
 {% endblock %}
 
 {% block main %}
@@ -22,7 +19,13 @@
             {% if results.resultSet is defined and results.resultSet is not null and  results.resultSet is not empty %}
                 <div class="row">
                     <div class="col-xs-12">
-                        <span class="search-title blue-c">{{ search.query }} in {{ search.locationValue.name }}</span>
+                        <h1 class="search-title blue-c">{{ search.query }} in
+                            {% if search.locationValue.zip is not null %}
+                                {{ search.locationValue.zip }}
+                            {% else %}
+                                {{ search.locationValue.name }}
+                            {% endif %}
+                        </h1>
                     </div>
                 </div>
                 <div class="row">
@@ -33,17 +36,20 @@
                                 {% if amount > results.resultCount %}
                                 {% set amount = results.resultCount %}
                                 {% endif %}
-                                <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in {{ search.locationValue.name }}</span>
+                                <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in
+                                    {% if search.locationValue.zip is not null %}
+                                        {{ search.locationValue.zip }}
+                                    {% else %}
+                                        {{ search.locationValue.name }}
+                                    {% endif %}
+                                </span>
                             </div>
                             <div class="sort-by">
                                 <span>Sort by:</span>
 
                                 <div class="dropdown filter-drop">
                                     <div class="select-container">
-                                        <select class="form-control select-control">
-                                            <option>Relevance</option>
-                                            <option>Distance</option>
-                                        </select>
+                                        {% include 'DomainSearchBundle:Layout/widgets:order_by_select_options.html.twig' %}
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +57,7 @@
                         <div class="cards">
                         {% if results.resultSet is defined and results.resultSet is not null %}
                             {% for item in results.resultSet %}
-                                {% include 'DomainSearchBundle:Search:Templates/search_result_item.html.twig' with { 'item' : item } %}
+                                {% include 'DomainSearchBundle:Search:Templates/search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
                             {% endfor %}
                         {% endif %}
                         </div>
@@ -70,7 +76,7 @@
             {% else %}
                 <div class="row">
                     <div class="col-md-9 list-block">
-                        Sorry, no results were found. Maybe you want to search this categories
+                        Sorry, no results were found.
                     </div>
                 </div>
             {% endif %}
@@ -87,4 +93,5 @@
             })
         })
     </script>
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
 {% endblock%}

@@ -19,6 +19,7 @@ use Domain\BusinessBundle\Util\BusinessProfileUtil;
 
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 
 class SearchManager extends Manager
 {
@@ -80,8 +81,7 @@ class SearchManager extends Manager
         }
 
         $totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
-        $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
-        $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
+        $categories         = $this->categoriesManager->getCategoriesByProfiles($results);
 
         $neighborhoodsData  = $this->localityManager
             ->getNeighborhoodLocationsByLocalityName($searchParams->locationValue->name);
@@ -91,7 +91,7 @@ class SearchManager extends Manager
         $pagesCount          = ceil($totalResults/$searchParams->limit);
 
         $response = SearchDataUtil::buildResponceDTO(
-            $businessProfiles,
+            $results,
             $totalResults,
             $searchParams->page,
             $pagesCount,
@@ -104,7 +104,7 @@ class SearchManager extends Manager
 
     public function getSearchDTO(Request $request) : SearchDTO
     {
-        $query      = SearchDataUtil::getQueryFromRequest($request);
+        $query      = preg_replace("/[^a-zA-Z0-9\s]+/", "", SearchDataUtil::getQueryFromRequest($request));
         $page       = SearchDataUtil::getPageFromRequest($request);
 
         $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
@@ -120,6 +120,19 @@ class SearchManager extends Manager
             $searchDTO->setNeighborhood($neighborhood);
         }
 
+        if ($orderBy = SearchDataUtil::getOrderByFromRequest($request)) {
+            $searchDTO->setOrderBy($orderBy);
+        }
+
         return $searchDTO;
+    }
+
+    public function getDoubleClickData(SearchDTO $searchDTO) : DCDataDTO
+    {
+        return new DCDataDTO(
+            explode(' ', $searchDTO->query),
+            $searchDTO->locationValue->name,
+            $searchDTO->getCategory()
+        );
     }
 }

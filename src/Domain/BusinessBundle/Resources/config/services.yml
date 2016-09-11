@@ -12,8 +12,8 @@ services:
             - '@security.token_storage'
             - '@sonata_translation.listener.translatable'
             - '@form.factory'
-            - '@domain_business.manager.business_gallery'
             - '@oxa.manager.wistia_media'
+            - '@google.analytics'
 
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
@@ -21,6 +21,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.review'
+            - '@oxa.manager.users'
 
     domain_business.manager.business_gallery:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
@@ -60,6 +61,8 @@ services:
             -  { name: twig.extension }
         calls:
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
+            - [ setTranslator, [ '@translator' ] ]
+            - [ setBusinessProfileForm, [ '@domain_business.form.business_profile' ] ]
 
     #form types section
     domain_business.form.type.google_map:

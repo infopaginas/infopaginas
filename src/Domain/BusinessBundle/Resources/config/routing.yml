@@ -1,10 +1,6 @@
-domain_business_default:
-    resource: "@DomainBusinessBundle/Resources/config/routing/default.yml"
-    prefix: /
-
 domain_business_profile:
     resource: "@DomainBusinessBundle/Resources/config/routing/profile.yml"
-    prefix: /profile
+    prefix: /
 
 domain_business_reviews:
     resource: "@DomainBusinessBundle/Resources/config/routing/reviews.yml"
@@ -17,3 +13,7 @@ domain_business_images:
 domain_business_videos:
     resource: "@DomainBusinessBundle/Resources/config/routing/videos.yml"
     prefix: /videos
+
+domain_business_reports:
+    resource: "@DomainBusinessBundle/Resources/config/routing/reports.yml"
+    prefix: /reports

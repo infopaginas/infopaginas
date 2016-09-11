@@ -25,11 +25,16 @@ class SearchController extends Controller
         $searchDTO          = $searchManager->getSearchDTO($request);
         $searchResultsDTO   = $searchManager->search($searchDTO);
 
+        $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
             TypeInterface::CODE_PORTAL_LEADERBOARD,
             TypeInterface::CODE_PORTAL,
         ));
+
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:index.html.twig',
@@ -37,6 +42,7 @@ class SearchController extends Controller
                 'search'        => $searchDTO,
                 'results'       => $searchResultsDTO,
                 'bannerFactory' => $bannerFactory,
+                'dcDataDTO'     => $dcDataDTO
             ]
         );
     }
@@ -72,6 +78,8 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:map.html.twig',
@@ -95,6 +103,9 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
         return $this->render(
             'DomainSearchBundle:Search:compare.html.twig',
             [
@@ -102,5 +113,13 @@ class SearchController extends Controller
                 'bannerFactory' => $bannerFactory,
             ]
         );
+    }
+
+    /**
+     * @return \Domain\BusinessBundle\Manager\BusinessProfileManager
+     */
+    protected function getBusinessProfileManager()
+    {
+        return $this->get('domain_business.manager.business_profile');
     }
 }

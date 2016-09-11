@@ -75,4 +75,17 @@ class BusinessGalleryRepository extends \Doctrine\ORM\EntityRepository
 
         return $images;
     }
+
+    /**
+     * @param $ids
+     * @return array
+     */
+    public function findBusinessGalleriesByIdsArray($ids)
+    {
+        $queryBuilder = $this->createQueryBuilder('bg')
+            ->where('bg.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

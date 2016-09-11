@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="campaign")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\CampaignRepository")
- * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
+ * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\CampaignTranslation")
  */
 class Campaign implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface
 {

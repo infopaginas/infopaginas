@@ -3,10 +3,10 @@
 namespace Domain\BusinessBundle\Admin;
 
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 
 class CategoryAdmin extends OxaAdmin
@@ -62,6 +62,18 @@ class CategoryAdmin extends OxaAdmin
             ->add('name')
             ->add('slug')
             ->add('businessProfiles')
+        ;
+    }
+
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        parent::configureRoutes($collection);
+
+        $collection
+            ->remove('delete_physical')
+            ->add('delete_physical', null, [
+                '_controller' => 'DomainBusinessBundle:CategoryAdminCRUD:deletePhysical'
+            ])
         ;
     }
 }
