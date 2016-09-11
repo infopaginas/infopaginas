@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class CategoryAdminCRUDController extends CRUDController
 {
