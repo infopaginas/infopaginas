@@ -481,6 +481,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      */
     protected function addDistanceBetweenPointsQueryBuilder(QueryBuilder $queryBuilder, LocationValueObject $location)
     {
+        if ($location->lat == null) {
+            $location->lat = 18.466333;
+        }
+
+        if ($location->lng == null) {
+            $location->lng = -66.105721;
+        }
+
         return $queryBuilder
             ->addSelect('(:earthDiameter * sin (
                 sqrt (

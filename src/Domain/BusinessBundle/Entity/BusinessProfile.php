@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -605,6 +606,17 @@ class BusinessProfile implements
      */
     protected $distance;
 
+     /** @var SearchLog[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\SearchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $searchLogs;
+
     /**
      * @return mixed
      */
@@ -671,6 +683,7 @@ class BusinessProfile implements
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed = false;
 
@@ -2304,13 +2317,46 @@ class BusinessProfile implements
     public function getDistanceUX() : string
     {
         $currentDistance = $this->getDistance();
-        $dimension       = self::DISTANCE_APPENDIX_NAME_KILOMETERS;
+        $dimension = self::DISTANCE_APPENDIX_NAME_KILOMETERS;
 
         if ($currentDistance < 1) {
             $currentDistance *= 1000;
-            $dimension   = self::DISTANCE_APPENDIX_NAME_METERS;
+            $dimension = self::DISTANCE_APPENDIX_NAME_METERS;
         }
 
         return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
+    }
+    
+    /**
+     * Add searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     * @return BusinessProfile
+     */
+    public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs[] = $searchLog;
+
+        return $this;
+    }
+
+    /**
+     * Remove searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     */
+    public function removeSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs->removeElement($searchLog);
+    }
+
+    /**
+     * Get searchLogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSearchLogs()
+    {
+        return $this->searchLogs;
     }
 }

@@ -6,6 +6,7 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Subscription Report}
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:SubscriptionReport\list.html.twig']]
+
     domain_report.admin.category_report:
         class: Domain\ReportBundle\Admin\CategoryReportAdmin
         arguments: [~, Domain\ReportBundle\Entity\CategoryReport, DomainReportBundle:CRUD]
@@ -13,6 +14,7 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Category Report}
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:CategoryReport\list.html.twig']]
+
     domain_report.admin.business_overview_report:
         class: Domain\ReportBundle\Admin\BusinessOverviewReportAdmin
         arguments: [~, Domain\ReportBundle\Entity\BusinessOverviewReport, DomainReportBundle:CRUD]
@@ -20,3 +22,11 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Overview Report}
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:BusinessOverviewReport\list.html.twig']]
+
+    domain_report.admin.keywords_report:
+        class: Domain\ReportBundle\Admin\KeywordsReportAdmin
+        arguments: [~, Domain\ReportBundle\Entity\SearchLog, DomainReportBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Keywords Report}
+        calls:
+            - [ setTemplate, ['list', 'DomainReportBundle:Admin:KeywordsReport\list.html.twig']]

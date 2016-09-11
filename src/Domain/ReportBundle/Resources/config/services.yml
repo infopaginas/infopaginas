@@ -18,6 +18,10 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
+    domain_report.manager.keywords_report_manager:
+        class: Domain\ReportBundle\Manager\KeywordsReportManager
+        arguments: [ '@doctrine.orm.entity_manager' ]
+
     # export services
     domain_report.exporter:
         class: Domain\ReportBundle\Service\Export\Exporter
@@ -69,3 +73,15 @@ services:
     domain_report.google_analytics.client_provider:
         class: Domain\ReportBundle\Google\Analytics\ClientProvider
         arguments: ['analytics@infopaginas-142911.iam.gserviceaccount.com', %kernel.root_dir%/config/key.p12]
+
+
+    domain_report.stemmer:
+        class: Domain\ReportBundle\Service\StemmerService
+
+    domain_report.manager.keywords:
+        class: Domain\ReportBundle\Manager\KeywordsManager
+        arguments: ['@doctrine.orm.entity_manager', '@domain_report.stemmer']
+
+    domain_report.manager.search_log:
+        class: Domain\ReportBundle\Manager\SearchLogManager
+        arguments: ['@doctrine.orm.entity_manager', '@domain_report.manager.keywords']
