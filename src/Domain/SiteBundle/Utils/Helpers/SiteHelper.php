@@ -7,10 +7,22 @@ class SiteHelper
     const CURL_TIMEOUT = 10;
 
     /**
+     * Data had been got from php.net mime types
+     */
+    public static $imageContentTypes = [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+        'image/bmp',
+    ];
+
+    /**
      * @param string $url
      */
     public static function checkUrlExistence(string $url)
     {
+        $info = null;
+
         $handle = curl_init($url);
 
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
@@ -20,10 +32,14 @@ class SiteHelper
         curl_setopt($handle, CURLOPT_USERAGENT, true);
         curl_setopt($handle, CURLOPT_TIMEOUT, self::CURL_TIMEOUT);
 
-        $headers = curl_exec($handle);
+        curl_exec($handle);
+
+        if(!curl_errno($handle)) {
+            $info = curl_getinfo($handle);
+        }
 
         curl_close($handle);
 
-        return $headers;
+        return $info;
     }
 }
