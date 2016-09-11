@@ -40,7 +40,7 @@ class Brand implements DefaultEntityInterface, CopyableEntityInterface, Translat
      * @var string - Brand name
      *
      * @Gedmo\Translatable(fallback=true)(fallback=true)
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=1000)
      * @Assert\NotBlank()
      */
     protected $name;

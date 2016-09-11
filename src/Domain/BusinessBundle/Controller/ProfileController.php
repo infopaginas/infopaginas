@@ -102,8 +102,9 @@ class ProfileController extends Controller
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
         if (!$businessProfile) {
-            $this->throwBusinessNotFoundException();
+            throw $this->createNotFoundException('');
         }
+
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
@@ -210,14 +211,5 @@ class ProfileController extends Controller
         }
 
         return $this->createForm(new BusinessProfileFormType(), $businessProfile);
-    }
-
-    /**
-     * @access protected
-     * @throws NoResultException
-     */
-    protected function throwBusinessNotFoundException()
-    {
-        throw new NotFoundHttpException('Business not found');
     }
 }
