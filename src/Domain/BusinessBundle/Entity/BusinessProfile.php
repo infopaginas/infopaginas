@@ -505,7 +505,7 @@ class BusinessProfile implements
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
      * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
      */
-    protected $milesOfMyBusiness;
+    protected $milesOfMyBusiness = 100;
 
     /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
