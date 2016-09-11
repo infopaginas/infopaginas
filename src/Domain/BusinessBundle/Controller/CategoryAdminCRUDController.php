@@ -37,7 +37,7 @@ class CategoryAdminCRUDController extends CRUDController
                     'sonata_flash_error',
                     $this->get('translator')->trans(
                         'flash_delete_error_rel',
-                        array('%fields%' => implode(',', $existDependentFields)),
+                        array('%fields%' => implode(', ', $existDependentFields)),
                         'SonataAdminBundle'
                     )
                 );
