@@ -28,7 +28,7 @@ class OxaAdmin extends BaseAdmin
     /**
      * Valid filter datetime format
      */
-    const FILTER_DATETIME_FORMAT = 'dd-MM-y hh:mm:ss';
+    const FILTER_DATETIME_FORMAT = 'dd-MM-y HH:mm:ss';
 
     /**
      * Valid filter date format
