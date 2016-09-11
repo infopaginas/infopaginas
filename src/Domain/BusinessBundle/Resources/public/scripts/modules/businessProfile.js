@@ -43,7 +43,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             mapContainerId: 'google-map',
             newProfileRequestSpinnerContainerId: 'new-profile-loading-spinner-container-id',
             languageSelectorClass: '.language-selector',
-            imagesTable: '.table-media-image'
+            imagesTable: '.table-media-image',
+            milesOfMyBusinessSpan: '.miles-of-business',
+            asteriskClass: 'i.fa-asterisk',
+            asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>'
         };
 
         this.newProfileRequestFormHandler = new FormHandler({
@@ -280,13 +283,24 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         $( document ).on( 'change' , 'input[name="' + serviceAreasRadioName + '"]', function() {
             var $self = $(this);
+            var milesOfMyBusinessAsteriskClass = that.html.milesOfMyBusinessSpan + ' ' + that.html.asteriskClass;
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
+
+                if ( $( milesOfMyBusinessAsteriskClass ).length ) {
+                    $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                    $( milesOfMyBusinessAsteriskClass ).show();
+                } else {
+                    $( that.html.milesOfMyBusinessSpan ).append( that.html.asteriskTag );
+                }
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
+                $( milesOfMyBusinessAsteriskClass ).hide();
             }
 
             new select();
