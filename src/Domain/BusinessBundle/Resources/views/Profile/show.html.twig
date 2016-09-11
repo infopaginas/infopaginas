@@ -192,27 +192,7 @@
                                 <div class="col-xs-9 fields-item">
                                     <ul class="payment-methods">
                                         {% for method in businessProfile.getPaymentMethods() %}
-                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::VISA_METHOD') %}
-                                                <li>
-                                                    <a class="blue-c" href="javascript: void(0);">
-                                                        <img src="{{ asset('assets/images/visa.png') }}">
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::MASTERCARD_METHOD') %}
-                                                <li>
-                                                    <a class="blue-c" href="javascript: void(0);">
-                                                        <img src="{{ asset('assets/images/mastercard.png') }}">
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                            {% if method.getName() == constant('Domain\\BusinessBundle\\Entity\\PaymentMethod::PAYPAL_METHOD') %}
-                                                <li>
-                                                    <a class="blue-c" href="javascript: void(0);">
-                                                        <img src="{{ asset('assets/images/paypal.png') }}">
-                                                    </a>
-                                                </li>
-                                            {% endif %}
+                                            {{ method.getName() }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     </ul>
                                 </div>
