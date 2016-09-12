@@ -32,10 +32,15 @@ class DfpManager
         $this->reportService = $reportService;
     }
 
-    public function getStatsForMultipleOrders(array $orderIds, DateRangeInterface $dateRange)
+    /**
+     * @param array $lineItemIds
+     * @param DateRangeInterface $dateRange
+     * @return \Oxa\DfpBundle\Model\DataType\OrderStatsDTOCollection
+     */
+    public function getStatsForMultipleLineItems(array $lineItemIds, DateRangeInterface $dateRange)
     {
         $columns = [ReportService::REPORT_CLICKS_COL_NAME, ReportService::REPORT_IMPRESSIONS_COL_NAME];
-        return $this->getReportService()->getStatsForMultipleOrders($orderIds, $dateRange, $columns);
+        return $this->getReportService()->getStatsForMultipleLineItems($lineItemIds, $dateRange, $columns);
     }
 
     /**

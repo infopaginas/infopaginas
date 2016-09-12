@@ -53,6 +53,32 @@ class LineItemService
     }
 
     /**
+     * @param array $orderIds
+     * @return array
+     */
+    public function getLineItemIdsAsOrderPair(array $orderIds)
+    {
+        $user = $this->getDfpUser();
+
+        $lineItemService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
+
+        $statementBuilder = new \StatementBuilder();
+        $statementBuilder->Where('orderId IN (' . implode(', ', $orderIds). ')');
+
+        $page = $lineItemService->getLineItemsByStatement($statementBuilder->ToStatement());
+
+        $ids = [];
+
+        foreach ($page->results as $lineItem) {
+            if (isset($lineItem->id)) {
+                $ids[$lineItem->id] = $lineItem->orderId;
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
      * @return DfpUser
      */
     protected function getDfpUser()

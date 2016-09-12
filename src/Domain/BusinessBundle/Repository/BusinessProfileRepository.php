@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -500,6 +501,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = new Paginator($qb, $fetchJoin = true);
 
         return $results;
+    }
+
+    public function getBusinessProfilesWithAllowedAdUnits() : array
+    {
+        $qb = $this->createQueryBuilder('bp');
+        $qb->where('bp.isActive = True');
+
+        return $qb->getQuery()->getResult();
     }
 
     private function getVideosQuery()

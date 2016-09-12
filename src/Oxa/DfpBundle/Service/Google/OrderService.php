@@ -42,6 +42,32 @@ class OrderService
         return $ids;
     }
 
+    public function getOrderIdsAsAdvertiserPair(array $advertiserIds)
+    {
+        $user = $this->getDfpUser();
+
+        $orderService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
+
+        array_walk($advertiserIds, function(&$item) {
+            $item = '\'' . $item . '\'';
+        });
+
+        $statementBuilder = new \StatementBuilder();
+        $statementBuilder->Where('advertiserId IN ( ' . implode(',', $advertiserIds) . ' )');
+
+        $ids = [];
+
+        $page = $orderService->getOrdersByStatement($statementBuilder->ToStatement());
+
+        foreach ($page->results as $result) {
+            if (isset($result->id)) {
+                $ids[$result->id] = $result->advertiserId;
+            }
+        }
+
+        return $ids;
+    }
+
     protected function getOrderIdsFromDFPResponse(\OrderPage $page)
     {
         $ids = [];

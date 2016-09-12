@@ -607,6 +607,26 @@ class BusinessProfile implements
     protected $searchCityFts;
 
     /**
+     * @var BusinessProfile
+     *
+     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickSynchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist"}
+     * )
+     */
+    private $doubleClickSynchLog;
+
+    /**
+     * @var BusinessProfile
+     *
+     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickCompany",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist"}
+     * )
+     */
+    private $doubleClickCompany;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -2274,5 +2294,49 @@ class BusinessProfile implements
         $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
 
         return $citySlug;
+    }
+
+    /**
+     * @return BusinessProfile
+     */
+    public function getDoubleClickSynchLog()
+    {
+        return $this->doubleClickSynchLog;
+    }
+
+    /**
+     * @param BusinessProfile $doubleClickSynchLog
+     * @return BusinessProfile
+     */
+    public function setDoubleClickSynchLog($doubleClickSynchLog)
+    {
+        $this->doubleClickSynchLog = $doubleClickSynchLog;
+        return $this;
+    }
+
+    /**
+     * @return BusinessProfile
+     */
+    public function getDoubleClickCompany()
+    {
+        return $this->doubleClickCompany;
+    }
+
+    /**
+     * @param BusinessProfile $doubleClickCompany
+     * @return BusinessProfile
+     */
+    public function setDoubleClickCompany($doubleClickCompany)
+    {
+        $this->doubleClickCompany = $doubleClickCompany;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDoubleClickExternalId()
+    {
+        return $this->getSlug();
     }
 }

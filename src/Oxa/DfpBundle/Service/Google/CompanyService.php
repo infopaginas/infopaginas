@@ -52,6 +52,32 @@ class CompanyService
         return $companyId;
     }
 
+    public function getAdvertiserIdsByBusinessProfileExternalIds(array $externalIds)
+    {
+        $user = $this->getDfpUser();
+
+        $companyService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
+
+        array_walk($externalIds, function(&$item) {
+            $item = '\'' . $item . '\'';
+        });
+
+        $statementBuilder = new \StatementBuilder();
+        $statementBuilder->Where('externalId IN ( ' . implode(',', $externalIds) . ' )');
+
+        $page = $companyService->getCompaniesByStatement($statementBuilder->ToStatement());
+
+        $ids = [];
+
+        foreach ($page->results as $result) {
+            if (isset($result->id)) {
+                $ids[$result->externalId] = $result->id;
+            }
+        }
+
+        return $ids;
+    }
+
     protected function getDfpUser()
     {
         return $this->dfpUser;

@@ -53,13 +53,13 @@ class ReportService
      * @param array $columns
      * @return OrderStatsDTOCollection
      */
-    public function getStatsForMultipleOrders(
+    public function getStatsForMultipleLineItems(
         array $lineItemIds,
         DateRangeInterface $dateRange,
         array $columns
-    ) : OrderStatsDTOCollection {
-        $apiResponse = $this->fetchStats($lineItemIds, $dateRange, $columns);
-        return new OrderStatsDTOCollection($apiResponse);
+    ) : array {
+        return $this->fetchStats($lineItemIds, $dateRange, $columns);
+        //return new OrderStatsDTOCollection($apiResponse);
     }
 
     /**
@@ -93,16 +93,17 @@ class ReportService
         // Download the report.
         $xml = $reportDownloader->downloadReport(self::REPORT_RESPONSE_FORMAT);
 
-        $preparedXML = $this->prepareXmlResponse($xml);
+        $preparedXML = $this->prepareXmlResponse($xml, $dateRange);
 
         return $preparedXML;
     }
 
     /**
      * @param string $gzippedXml
+     * @param DateRangeInterface $dateRange
      * @return array
      */
-    protected function prepareXmlResponse(string $gzippedXml) : array
+    protected function prepareXmlResponse(string $gzippedXml, DateRangeInterface $dateRange) : array
     {
         $decodedXML = gzdecode($gzippedXml);
         $xml = simplexml_load_string($decodedXML);
@@ -110,24 +111,47 @@ class ReportService
         $prepared = [];
 
         foreach ($xml->ReportData->DataSet->Row as $row) {
-            $order = 0;
-
             foreach ($row->Column as $column) {
                 switch ((string)$column['name']) {
                     case 'lineItemName':
                         $order = (string)$column->Val;
+                        if (!isset($prepared[$order])) {
+                            $prepared[$order] = self::prepareDefaultBannerStatsArray($dateRange);
+                        }
+                        break;
+                    case 'date':
+                        $date = (string)$column->Val;
                         break;
                     case self::REPORT_RESPONSE_CLICKS_PARAMNAME:
-                        $prepared[$order]['clicks'] = (int)$column->Val;
+                        $prepared[$order][$date]['clicks'] = (int)$column->Val;
                         break;
                     case self::REPORT_RESPONSE_IMPRESSIONS_PARAMNAME:
-                        $prepared[$order]['impressions'] = (int)$column->Val;
+                        $prepared[$order][$date]['impressions'] = (int)$column->Val;
                         break;
                 }
             }
         }
 
         return $prepared;
+    }
+
+    protected static function prepareDefaultBannerStatsArray(DateRangeInterface $dateRange)
+    {
+        /** @var \DateTime $from */
+        $from = clone $dateRange->getStartDate();
+
+        $stats = [];
+
+        while ($from <= $dateRange->getEndDate()) {
+            $stats[$from->format('n/j/y')] = [
+                'clicks' => 0,
+                'impressions' => 0,
+            ];
+
+            $from = $from->modify('+1 day');
+        }
+
+        return $stats;
     }
 
     /**
@@ -140,12 +164,12 @@ class ReportService
     {
         $reportQuery = new ReportQuery();
 
-        $reportQuery->dimensions = ['LINE_ITEM_ID', 'LINE_ITEM_NAME'];
-        $reportQuery->dimensionAttributes = []; /*[
+        $reportQuery->dimensions = ['LINE_ITEM_NAME', 'DATE'];
+        $reportQuery->dimensionAttributes = []; [
             'ORDER_TRAFFICKER',
             'ORDER_START_DATE_TIME',
             'ORDER_END_DATE_TIME'
-        ];*/
+        ];
 
         $reportQuery->columns = $columns;
 

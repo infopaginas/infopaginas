@@ -34,3 +34,15 @@ services:
     oxa_dfp.manager:
         class: Oxa\DfpBundle\Manager\DfpManager
         arguments: ['@oxa_dfp.service.report']
+
+    oxa_dfp.manager.doubleclick_companies:
+        class: Oxa\DfpBundle\Manager\DoubleClickCompaniesManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.service.company']
+
+    oxa_dfp.manager.doubleclick_orders:
+        class: Oxa\DfpBundle\Manager\DoubleClickOrdersManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager.doubleclick_companies', '@oxa_dfp.service.order']
+
+    oxa_dfp.manager.doubleclick_line_items:
+        class: Oxa\DfpBundle\Manager\DoubleClickLineItemsManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager.doubleclick_orders', '@oxa_dfp.service.line_item']

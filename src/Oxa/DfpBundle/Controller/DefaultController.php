@@ -2,6 +2,8 @@
 
 namespace Oxa\DfpBundle\Controller;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Oxa\DfpBundle\Entity\DoubleClickLineItem;
 use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -20,10 +22,14 @@ class DefaultController extends Controller
         dump($stats);
         die();*/
 
-        $advertiserId = 'oxagile';
+        /*$advertiserId = 'oxagile';
 
-        $companyService = $this->get('oxa_dfp.service.company');
-        $companyId = $companyService->getAdvertiserIdByExternalIdAttr($advertiserId);
+        $companyService = $this->get('oxa_dfp.manager.doubleclick_companies');
+
+        $companyService->synchronizeBusinessProfilesDoubleClickCompanies();*/
+
+
+        /*$companyId = $companyService->getAdvertiserIdByExternalIdAttr($advertiserId);
 
         $orderService = $this->get('oxa_dfp.service.order');
         $companyOrdersIds = $orderService->getCompanyOrderIds($companyId);
@@ -37,6 +43,20 @@ class DefaultController extends Controller
         $companyOrderStats = $dfpManager->getStatsForMultipleOrders($lineItemIds, $dateRange);
 
         dump($companyOrderStats);
+        die();*/
+
+        /*$ordersManager = $this->get('oxa_dfp.manager.doubleclick_orders');
+        $ordersManager->synchronizeDoubleClickOrders();*/
+
+        $businessProfile = $this->getDoctrine()->getRepository(BusinessProfile::class)->find(18);
+        $lineItemIds = $this->getDoctrine()->getRepository(DoubleClickLineItem::class)
+            ->getLineItemIdsByBusinessProfile($businessProfile);
+
+        $dfpManager = $this->get('oxa_dfp.manager');
+        $dateRange = new DateRangeVO(new \DateTime('-30 days'), new \DateTime());
+
+        $stats = $dfpManager->getStatsForMultipleLineItems($lineItemIds, $dateRange);
+        dump($stats);
         die();
     }
 }
