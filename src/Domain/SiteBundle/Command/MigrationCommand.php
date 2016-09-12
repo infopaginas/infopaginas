@@ -242,7 +242,7 @@ class MigrationCommand extends ContainerAwareCommand
 
         // process assigned items
 
-        $loadImages = true;
+        $loadImages = false;
 
         if ($loadImages and $profile->images) {
             $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
@@ -303,6 +303,21 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
+        $brandPrimary   = '';
+        $brandSecond    = '';
+
+        if ($profile->brands or $profileSecond->brands) {
+            if ($profile->brands) {
+                $brandPrimary = implode(PHP_EOL, $profile->brands);
+            }
+
+            if ($profileSecond->brands) {
+                $brandSecond = implode(PHP_EOL, $profileSecond->brands);
+            }
+
+            $entity->setBrands($brandPrimary);
+        }
+
         if ($subscriptions) {
             foreach ($subscriptions->subscriptions as $item) {
                 $key = $item->plan->contract_id;
@@ -355,6 +370,13 @@ class MigrationCommand extends ContainerAwareCommand
                     $translation = new BusinessProfileTranslation();
                     $this->addTranslation($translation, $profileSecond->$key, $entity, $field);
                 }
+            }
+
+            // special case for brands
+
+            if (($brandPrimary or $brandSecond) and ($brandPrimary != $brandSecond)) {
+                $translation = new BusinessProfileTranslation();
+                $this->addTranslation($translation, $brandSecond, $entity, 'brands');
             }
         }
 
