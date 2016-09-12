@@ -86,11 +86,7 @@
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Brands') }}</td>
-            <td>
-                {% for brand in business.getBrands() %}
-                    {{ brand }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            </td>
+            <td>{{ business.getBrands()|raw }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Payment methods') }}</td>

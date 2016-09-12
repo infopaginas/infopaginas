@@ -105,21 +105,4 @@ class ReportsController extends Controller
     {
         return $this->get('domain_business.manager.business_profile');
     }
-
-    /**
-     * todo: remove method after functional implementation
-     * @param BusinessProfile $businessProfile
-     */
-    private function addDummyImpressions(BusinessProfile $businessProfile)
-    {
-        $impression = new Impression();
-        $impression->setSku($businessProfile->getSlug());
-        $impression->setTitle($businessProfile->getName());
-        $impression->setAction('detail');
-        $impression->setBrand($businessProfile->getBrands()->first());
-        $impression->setCategory($businessProfile->getCategories()->first());
-        $impression->setList('Search Results');
-
-        $this->get('google.analytics')->addImpression($impression);
-    }
 }

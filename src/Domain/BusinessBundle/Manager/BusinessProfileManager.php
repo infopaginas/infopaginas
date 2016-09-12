@@ -481,7 +481,7 @@ class BusinessProfileManager extends Manager
             $impression->setSku($businessProfile->getSlug());
             $impression->setTitle($businessProfile->getName());
             $impression->setAction('detail');
-            $impression->setBrand($businessProfile->getBrands()->first());
+            $impression->setBrand($businessProfile->getBrands());
             $impression->setCategory($businessProfile->getCategories()->first());
             $impression->setList('Search Results');
 

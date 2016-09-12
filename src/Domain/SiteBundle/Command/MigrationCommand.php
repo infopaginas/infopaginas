@@ -10,14 +10,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\Locality;
-use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Tag;
 use Domain\BusinessBundle\Entity\Subscription;
-use Domain\BusinessBundle\Entity\Translation\BrandTranslation;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
 use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
@@ -305,20 +303,6 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        if ($profile->brands) {
-            if (count($profile->brands) == count($profileSecond->brands)) {
-                foreach ($profile->brands as $key => $valuePrimary) {
-                    $entity->addBrand($this->loadBrand($valuePrimary, $profileSecond->brands[$key]));
-                }
-            } else {
-                //todo - throw exception
-
-                if ($withDebug) {
-                    $this->output->writeln('Brands count are different ' . json_encode($profile->brands) . ' and ' . json_encode($profileSecond->brands));
-                }
-            }
-        }
-
         if ($subscriptions) {
             foreach ($subscriptions->subscriptions as $item) {
                 $key = $item->plan->contract_id;
@@ -423,11 +407,6 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $entity;
-    }
-
-    private function loadBrand($valuePrimary, $valueSecondary)
-    {
-        return $this->loadEntity('Brand', $valuePrimary, $valueSecondary);
     }
 
     private function loadPaymentMethod($key)

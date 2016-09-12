@@ -233,12 +233,8 @@ class BusinessProfile implements
     protected $workingHours;
 
     /**
-     * @var Brand[] - Brands, Business works with
-     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Brand",
-     *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinTable(name="business_profile_brands")
+     * @var string Brands - Brands, Business works with
+     * @ORM\Column(name="business_profile_brands", type="text", nullable=true)
      */
     protected $brands;
 
@@ -677,7 +673,6 @@ class BusinessProfile implements
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->brands = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
@@ -1185,30 +1180,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Add brand
-     *
-     * @param \Domain\BusinessBundle\Entity\Brand $brand
-     *
-     * @return BusinessProfile
-     */
-    public function addBrand(\Domain\BusinessBundle\Entity\Brand $brand)
-    {
-        $this->brands[] = $brand;
-
-        return $this;
-    }
-
-    /**
-     * Remove brand
-     *
-     * @param \Domain\BusinessBundle\Entity\Brand $brand
-     */
-    public function removeBrand(\Domain\BusinessBundle\Entity\Brand $brand)
-    {
-        $this->brands->removeElement($brand);
-    }
-
-    /**
      * Get brands
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -1216,6 +1187,17 @@ class BusinessProfile implements
     public function getBrands()
     {
         return $this->brands;
+    }
+
+    /**
+     * @param string $brands
+     * @return BusinessProfile
+     */
+    public function setBrands($brands)
+    {
+        $this->brands = $brands;
+
+        return $this;
     }
 
     /**
