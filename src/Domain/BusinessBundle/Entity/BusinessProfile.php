@@ -2359,4 +2359,12 @@ class BusinessProfile implements
     {
         return $this->searchLogs;
     }
+
+    public static function getServiceAreasTypes()
+    {
+        return [
+            'area' => 'Area',
+            'locality' => 'Locality'
+        ];
+    }
 }

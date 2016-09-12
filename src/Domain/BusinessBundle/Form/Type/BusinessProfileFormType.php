@@ -178,10 +178,7 @@ class BusinessProfileFormType extends AbstractType
                 'required' => false,
             ])
             ->add('serviceAreasType', ChoiceType::class, [
-                'choices' => array(
-                    'area' => 'Area',
-                    'locality' => 'Locality'
-                ),
+                'choices' => BusinessProfile::getServiceAreasTypes(),
                 'label' => 'Service Areas',
                 'multiple' => false,
                 'expanded' => true,
