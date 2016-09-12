@@ -20,6 +20,7 @@ class BusinessOverviewReportAdmin extends ReportAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
+
         $datagridMapper
             ->remove('date')
             ->remove('datePeriod')
@@ -29,6 +30,7 @@ class BusinessOverviewReportAdmin extends ReportAdmin
                 'label' => $this->trans('filter.label_business_profile', [], $this->getTranslationDomain()),
             ], null, [
                 'mapped' => false,
+                'empty_value' => null,
             ])
             ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
             ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getDatagridDateTypeOptions())

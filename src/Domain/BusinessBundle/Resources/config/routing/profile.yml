@@ -23,3 +23,9 @@ domain_business_profile_close:
 domain_business_profile_view:
     path:     /b/{citySlug}/{slug}
     defaults: { _controller: DomainBusinessBundle:Profile:view }
+
+domain_business_register_view:
+    path:     /register/view/{id}
+    defaults: { _controller: DomainBusinessBundle:Profile:registerView }
+    options:
+        expose: true

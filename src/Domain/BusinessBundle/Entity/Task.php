@@ -58,11 +58,6 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $closureReason;
 
     /**
-     * @ORM\Column(name="changeset", type="text", nullable=true)
-     */
-    protected $changeSet;
-
-    /**
      * @ORM\Column(name="locale", type="string", length=20, nullable=true)
      */
     protected $locale;
@@ -71,6 +66,13 @@ class Task implements DefaultEntityInterface, TaskInterface
      * @ORM\Column(name="business_profile_uid", type="string")
      */
     protected $businessProfileUID;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\ChangeSet", cascade={"persist"})
+     * @ORM\JoinColumn(name="changeset_id", referencedColumnName="id", onDelete="CASCADE")
+     * @MaxDepth(0)
+     */
+    protected $changeSet;
 
     /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")

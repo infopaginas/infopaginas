@@ -54,17 +54,6 @@
                                         {{ form_widget(profileForm.lastname) }}
                                         <span class="help-block"></span>
                                     </div>
-                                </div>
-                                <div class="col-xs-6 form-col">
-                                    <div class="col-xs-4">
-                                        <span>
-                                            {{ form_label(profileForm.location) }}:
-                                        </span>
-                                    </div>
-                                    <div class="col-xs-8">
-                                        {{ form_widget(profileForm.location) }}
-                                        <span class="help-block"></span>
-                                    </div>
                                     <div class="col-xs-4">
                                         <span>
                                             {% trans %}Password{% endtrans %}:
@@ -78,11 +67,36 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 text-center">
-                                    <a class="btn green-btn" href="{{ path('fos_user_security_logout') }}">
-                                        <i class="fa fa-sign-out" aria-hidden="true"></i>
-                                        {% trans %}Logout{% endtrans %}
-                                    </a>
+                                <div class="col-xs-6 form-col">
+                                    <div class="col-xs-4">
+                                        <span>
+                                            {{ form_label(profileForm.location) }}:
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        {{ form_widget(profileForm.location) }}
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <span>
+                                            {{ form_label(profileForm.phone) }}:
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        {{ form_widget(profileForm.phone) }}
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <span>
+                                            {% trans %}Logout{% endtrans %}:
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <a class="btn green-btn" href="{{ path('fos_user_security_logout') }}">
+                                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                            {% trans %}Logout{% endtrans %}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -177,7 +191,7 @@
                                             {% for business in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        {% if business.getIsActive() and not business.isLocked() %}
+                                                        {% if business.getIsActive() %}
                                                             <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
                                                                 {{ business.getName() }}
                                                             </a>

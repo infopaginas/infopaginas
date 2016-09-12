@@ -9,7 +9,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class ConstraintUrlExpandedValidator extends ConstraintValidator
 {
-    const URL_REGEXP_PATTERN = '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$';
+    const URL_REGEXP_PATTERN = '^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})(\/[a-zA-Z0-9\_\-\s\.\/\?\%\#\&\=]*)*\/?$';
     const TRANSLATION_DOMAIN = 'DomainSiteBundle';
 
     /**

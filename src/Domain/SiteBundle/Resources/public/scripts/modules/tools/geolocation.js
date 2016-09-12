@@ -23,6 +23,8 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         if ( _.isNull(this.options.locationBox) || _.isUndefined(this.options.locationBox) ) {
             this.options.locationBox = this.$(this.options.locationBoxSelector);
         }
+
+        setInterval(this.initPosition.bind(this), 30000); // 30 secs timeout
     }
 
     geolocation.prototype.getAddress = function ( callback ) {

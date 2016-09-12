@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -55,6 +56,9 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
     const DEFAULT_LOCALE = 'en_US';
+
+    const DISTANCE_APPENDIX_NAME_KILOMETERS = 'km';
+    const DISTANCE_APPENDIX_NAME_METERS     = 'm';
 
     /**
      * @var int
@@ -498,10 +502,11 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
+     * @Assert\NotBlank(groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
      * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
      */
-    protected $milesOfMyBusiness;
+    protected $milesOfMyBusiness = 100;
 
     /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
@@ -525,20 +530,6 @@ class BusinessProfile implements
      */
     protected $phones;
 
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile")
-     * @ORM\JoinColumn(name="actual_business_profile_id", nullable=true)
-     */
-    protected $actualBusinessProfile;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_locked", type="boolean", options={"default" : 0})
-     */
-    protected $locked;
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -609,6 +600,24 @@ class BusinessProfile implements
     protected $searchCityFts;
 
     /**
+     * @var float
+     *
+     * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
+     */
+    protected $distance;
+
+     /** @var SearchLog[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\SearchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $searchLogs;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -656,6 +665,8 @@ class BusinessProfile implements
         return $this->id;
     }
 
+
+
     /**
      * Constructor
      */
@@ -672,8 +683,8 @@ class BusinessProfile implements
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this->locked = false;
         $this->isClosed = false;
 
         $this->uid = uniqid('', true);
@@ -725,6 +736,20 @@ class BusinessProfile implements
     public function getWebsite()
     {
         return $this->website;
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getWebsiteLink()
+    {
+        if (preg_match('/^http/', $this->getWebsite())) {
+            return $this->getWebsite();
+        }
+
+        return '//' . $this->getWebsite();
     }
 
     /**
@@ -1944,41 +1969,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return BusinessProfile
-     */
-    public function getActualBusinessProfile()
-    {
-        return $this->actualBusinessProfile;
-    }
-
-    /**
-     * @param BusinessProfile $actualBusinessProfile
-     * @return BusinessProfile
-     */
-    public function setActualBusinessProfile($actualBusinessProfile)
-    {
-        $this->actualBusinessProfile = $actualBusinessProfile;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isLocked()
-    {
-        return $this->locked;
-    }
-
-    /**
-     * @param boolean $locked
-     * @return BusinessProfile
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2098,7 +2088,34 @@ class BusinessProfile implements
      */
     public function getShortAddress()
     {
-        return 'Puerto Rico, Ololoeva St 25, 00777';
+        if ($this->getHideAddress()) {
+            return '';
+        }
+
+        if ($this->getCustomAddress()) {
+            return $this->getCustomAddress();
+        }
+
+        $address = [];
+        if ($this->getStreetAddress()) {
+            $address[] = $this->getStreetAddress();
+        }
+
+        if ($this->getZipCode()) {
+            $address[] = $this->getZipCode();
+        }
+
+        if ($this->getCity()) {
+            $address[] = $this->getCity();
+        }
+
+        if ($address) {
+            $addressResult = implode(', ', $address);
+        } else {
+            $addressResult = $this->getGoogleAddress();
+        }
+
+        return $addressResult;
     }
 
     /*
@@ -2127,16 +2144,6 @@ class BusinessProfile implements
         }
 
         return 0;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 
     /**
@@ -2277,5 +2284,79 @@ class BusinessProfile implements
         $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
 
         return $citySlug;
+    }
+
+    /**
+     * getting distance
+     *
+     * @return float
+     */
+    public function getDistance() : float
+    {
+        return $this->distance;
+    }
+
+    /**
+     * Setting distance
+     *
+     * @param float $distance
+     * @return this
+     */
+    public function setDistance(float $distance)
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    /**
+     * getting distance prettified
+     *
+     * @return string
+     */
+    public function getDistanceUX() : string
+    {
+        $currentDistance = $this->getDistance();
+        $dimension = self::DISTANCE_APPENDIX_NAME_KILOMETERS;
+
+        if ($currentDistance < 1) {
+            $currentDistance *= 1000;
+            $dimension = self::DISTANCE_APPENDIX_NAME_METERS;
+        }
+
+        return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
+    }
+    
+    /**
+     * Add searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     * @return BusinessProfile
+     */
+    public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs[] = $searchLog;
+
+        return $this;
+    }
+
+    /**
+     * Remove searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     */
+    public function removeSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs->removeElement($searchLog);
+    }
+
+    /**
+     * Get searchLogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSearchLogs()
+    {
+        return $this->searchLogs;
     }
 }

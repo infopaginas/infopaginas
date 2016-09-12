@@ -2,6 +2,8 @@
 
 namespace Domain\SearchBundle\Controller;
 
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\ReportBundle\Manager\SearchLogManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +35,16 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL,
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
         $searchData = $this->getSearchDataByRequest($request);
+
+        $this->getSearchLogManager()
+            ->saveProfilesDataSuggestedBySearchQuery($request->query->get('q'), $searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:index.html.twig',
@@ -82,8 +90,14 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
         $searchData = $this->getSearchDataByRequest($request);
         $pageRouter = $this->container->get('request')->attributes->get('_route');
+
+        $this->getSearchLogManager()
+            ->saveProfilesDataSuggestedBySearchQuery($request->query->get('q'), $searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:map.html.twig',
@@ -109,8 +123,14 @@ class SearchController extends Controller
             TypeInterface::CODE_PORTAL
         ));
 
+        $this->getBusinessProfileManager()
+            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
         $searchData = $this->getSearchDataByRequest($request);
         $pageRouter = $this->container->get('request')->attributes->get('_route');
+
+        $this->getSearchLogManager()
+            ->saveProfilesDataSuggestedBySearchQuery($request->query->get('q'), $searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:compare.html.twig',
@@ -121,6 +141,22 @@ class SearchController extends Controller
                 'pageRouter'    => $pageRouter,
             ]
         );
+    }
+
+    /**
+     * @return \Domain\ReportBundle\Manager\SearchLogManager
+     */
+    protected function getSearchLogManager() : SearchLogManager
+    {
+        return $this->get('domain_report.manager.search_log');
+    }
+
+    /**
+     * @return \Domain\BusinessBundle\Manager\BusinessProfileManager
+     */
+    protected function getBusinessProfileManager() : BusinessProfileManager
+    {
+        return $this->get('domain_business.manager.business_profile');
     }
 
     public function catalogAction(Request $request, $citySlug = '', $categorySlug = '')

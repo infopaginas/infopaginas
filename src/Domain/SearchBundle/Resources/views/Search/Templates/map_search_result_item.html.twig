@@ -9,22 +9,26 @@
     </div>
     <div class="col-xs-8 schedule">
         <div class="address">
-            <span class="map-address">{{ item.city }}, {{ item.state }} {{ item.zipCode }}</span>
+            <span class="map-address">{{ item.getShortAddress() }}</span>
             <a class="get-dir" data-latlng="{{ item.getLatLng }}" >Get Direction <span>&#187;</span></a>
         </div>
     </div>
     <div class="col-xs-9 company-mail">
-        <a href="//{{ item.website }}">
+        {% if item.website is not null %}
+        <a href="{{ item.getWebsiteLink() }}">
             <i class="fa fa-home" aria-hidden="true"></i>
             <span>{{ item.website }}</span>
         </a>
+        {% endif %}
     </div>
     <div class="col-xs-12 additional-info">
         {% include ':blocks/business:business_profile_reviews.html.twig' with {'business': item} %}
     </div>
     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS")) %}
-        <div class="company-logo">
-            {% thumbnail item.getLogo(), 'preview' %}
-        </div>
+        {% if item.getIsSetLogo() %}
+            <div class="company-logo">
+                {% thumbnail item.getLogo(), 'preview' %}
+            </div>
+        {% endif %}
     {% endif %}
 </div>

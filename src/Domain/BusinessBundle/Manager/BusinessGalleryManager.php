@@ -75,7 +75,9 @@ class BusinessGalleryManager
      */
     public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url)
     {
-        if (SiteHelper::checkUrlExistence($url) && getimagesize($url)) {
+        $headers = SiteHelper::checkUrlExistence($url);
+
+        if ($headers && in_array($headers['content_type'], SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
             $file = tmpfile();
 
             if ($file === false) {
@@ -128,31 +130,6 @@ class BusinessGalleryManager
         $businessProfile->addImage($businessGallery);
 
         return $businessProfile;
-    }
-
-    /**
-     * Used to restore images in case then task rejected
-     *
-     * @access public
-     * @param BusinessProfile $businessProfile
-     */
-    public function restoreBusinessProfileImages(BusinessProfile $businessProfile)
-    {
-        $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
-
-        $images = $this->getRepository()->findBusinessProfileRemovedImages($actualBusinessProfile);
-
-        foreach ($images as $image) {
-            $image->setDeletedAt(null);
-            $this->getEntityManager()->persist($image);
-        }
-
-        foreach ($businessProfile->getImages() as $image) {
-            $actualBusinessProfile->addImage($image);
-            $this->getEntityManager()->persist($actualBusinessProfile);
-        }
-
-        $this->getEntityManager()->flush();
     }
 
     /**

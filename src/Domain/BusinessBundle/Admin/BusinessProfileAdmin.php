@@ -111,8 +111,8 @@ class BusinessProfileAdmin extends OxaAdmin
         $query = $em->createQueryBuilder('u')
             ->select('u')
             ->from(User::class, 'u')
-            ->andWhere('u.role = :merchantRole')
-            ->setParameter('merchantRole', Group::CODE_MERCHANT)
+            ->andWhere('u.role != :consumerRole')
+            ->setParameter('consumerRole', Group::CODE_CONSUMER)
         ;
 
         $formMapper
@@ -469,12 +469,6 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         /** @var QueryBuilder $query */
         $query = parent::createQuery($context);
-
-        // show only none locked records
-        $query->andWhere(
-            $query->expr()->eq($query->getRootAliases()[0] . '.locked', ':locked')
-        );
-        $query->setParameter('locked', false);
 
         $parameters = $this->getFilterParameters();
 

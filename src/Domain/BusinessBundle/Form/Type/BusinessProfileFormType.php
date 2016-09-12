@@ -182,6 +182,7 @@ class BusinessProfileFormType extends AbstractType
                     'area' => 'Area',
                     'locality' => 'Locality'
                 ),
+                'label' => 'Service Areas',
                 'multiple' => false,
                 'expanded' => true,
                 'required' => true,
@@ -355,7 +356,7 @@ class BusinessProfileFormType extends AbstractType
                 'placeholder' => '100',
             ],
             'label' => 'Within miles of my business',
-            'required' => false,
+            'required' => true,
         ];
 
         $localitiesFieldOptions = [
@@ -377,6 +378,7 @@ class BusinessProfileFormType extends AbstractType
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
+            $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
         $form->add('milesOfMyBusiness', IntegerType::class, $milesOfMyBusinessFieldOptions);

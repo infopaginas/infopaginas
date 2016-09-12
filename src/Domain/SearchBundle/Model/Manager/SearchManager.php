@@ -81,8 +81,7 @@ class SearchManager extends Manager
         }
 
         $totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
-        $businessProfiles   = BusinessProfileUtil::extractBusinessProfiles($results);
-        $categories         = $this->categoriesManager->getCategoriesByProfiles($businessProfiles);
+        $categories         = $this->categoriesManager->getCategoriesByProfiles($results);
 
         $neighborhoodsData  = $this->localityManager
             ->getNeighborhoodLocationsByLocalityName($searchParams->locationValue->name);
@@ -92,7 +91,7 @@ class SearchManager extends Manager
         $pagesCount          = ceil($totalResults/$searchParams->limit);
 
         $response = SearchDataUtil::buildResponceDTO(
-            $businessProfiles,
+            $results,
             $totalResults,
             $searchParams->page,
             $pagesCount,
@@ -105,7 +104,7 @@ class SearchManager extends Manager
 
     public function getSearchDTO(Request $request) : SearchDTO
     {
-        $query      = SearchDataUtil::getQueryFromRequest($request);
+        $query      = preg_replace("/[^a-zA-Z0-9\s]+/", "", SearchDataUtil::getQueryFromRequest($request));
         $page       = SearchDataUtil::getPageFromRequest($request);
 
         $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
