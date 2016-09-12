@@ -48,7 +48,6 @@ sonata_admin:
                     - domain_business.admin.category
                     - domain_business.admin.area
                     - domain_business.admin.tag
-                    - domain_business.admin.brand
                     - domain_business.admin.payment_method
                     - domain_business.admin.coupon
                     - domain_business.admin.address.country

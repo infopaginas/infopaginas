@@ -11,12 +11,6 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Tags}
 
-    domain_business.admin.brand:
-        class: Domain\BusinessBundle\Admin\BrandAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Brand, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Brands}
-
     domain_business.admin.payment_method:
         class: Domain\BusinessBundle\Admin\PaymentMethodAdmin
         arguments: [~, Domain\BusinessBundle\Entity\PaymentMethod, OxaSonataAdminBundle:CRUD]

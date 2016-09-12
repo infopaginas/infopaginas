@@ -8,7 +8,6 @@ use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\AreaRepository;
-use Domain\BusinessBundle\Repository\BrandRepository;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
@@ -97,18 +96,13 @@ class BusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'Email',
             ])
-            ->add('brands', EntityType::class, [
+            ->add('brands', TextareaType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Organize, store, plan, prioritize',
-                    'multiple' => 'multiple',
+                    'class' => 'form-control',
+                    'placeholder' => 'Organize, store, plan, prioritize',
+                    'rows' => 3,
                 ],
-                'class' => 'Domain\BusinessBundle\Entity\Brand',
                 'label' => 'Brands',
-                'multiple' => true,
-                'query_builder' => function (BrandRepository $repository) {
-                    return $repository->getAvailableBrandsQb();
-                },
                 'required' => false,
             ])
             ->add('description', TextareaType::class, [
