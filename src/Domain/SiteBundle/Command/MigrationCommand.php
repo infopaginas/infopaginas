@@ -33,7 +33,9 @@ class MigrationCommand extends ContainerAwareCommand
         $this->setDescription('Migrate all site data');
         $this->setDefinition(
             new InputDefinition(array(
-                new InputOption('pageStart', '1', InputOption::VALUE_OPTIONAL),
+                new InputOption('withDebug', 'd'),
+                new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
+                new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
             ))
         );
     }
@@ -67,18 +69,26 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         if ($input->getOption('pageStart')) {
-            $startPage = $input->getOption('pageStart');
+            $pageStart = $input->getOption('pageStart');
         } else {
-            $startPage = 1;
+            $pageStart = 1;
+        }
+
+        if ($input->getOption('pageCountLimit')) {
+            $pageCountLimit = $input->getOption('pageCountLimit');
+        } else {
+            $pageCountLimit = 1;
+        }
+
+        if ($input->getOption('withDebug')) {
+            $withDebug = true;
+        } else {
+            $withDebug = false;
         }
 
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
 
-        //todo - get from params
-        $withDebug = true;
-        $limitPages = 2;
-
-        for ($page = $startPage; $page <= $limitPages; $page++) {
+        for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
             if ($withDebug) {
                 $output->writeln('Start request page number ' . $page);
             }
@@ -112,8 +122,6 @@ class MigrationCommand extends ContainerAwareCommand
                         if ($withDebug) {
                             $output->writeln('Finish request item with id ' . $itemId);
                         }
-
-
                     } else {
                         if ($withDebug) {
                             $output->writeln('Skip as existed item with id ' . $itemId);
@@ -191,7 +199,6 @@ class MigrationCommand extends ContainerAwareCommand
 #        $entity->setVideo(?);
 #        $entity->setLocale(?);
 
-#        $profile = $business->profiles[0];
         $profile = $business->profile;
         $profileSecond = $itemSecond->business->profile;
 
@@ -201,11 +208,8 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setProduct($profile->products);
         $entity->setWorkingHours($profile->hours_opr);
 
-#        $entity->setLogo(?);
-#        $entity->addImage(?);
 #        $entity->setPosition(?);
 
-#        $address = $business->addresses[0];
         $address = $business->address;
 
         $entity->setCity($address->locality);
@@ -236,12 +240,49 @@ class MigrationCommand extends ContainerAwareCommand
 #        $entity->setActualBusinessProfile(?);
 #        $entity->setUid(?);
 
-        // todo - headings - en/es pairs
-
-#        $entity->addCategory(?);
 #        $entity->addArea(?);
 
         // process assigned items
+
+        $loadImages = true;
+
+        if ($loadImages and $profile->images) {
+            $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
+
+            foreach ($profile->images as $image) {
+                $path = 'http://assets3.drxlive.com' . $image->image->url;
+
+                $managerGallery->createNewEntryFromRemoteFile($entity, $path);
+
+                // todo - set logo for first
+
+                // $entity->setLogo(?);
+                // $entity->addImage(?);
+            }
+        }
+
+        if ($profile->headings) {
+            // categories
+
+            $pairs = [];
+
+            $pair = [];
+
+            foreach ($profile->headings as $key => $value) {
+                // process - en/es pair
+                $pair[] = $value;
+
+                if ($key %2 != 0) {
+                    $pairs[] = $pair;
+
+                    $pair = [];
+                }
+            }
+
+            foreach ($pairs as $pair) {
+                $entity->addCategory($this->loadCategory($pair));
+            }
+        }
 
         if ($business->phones) {
             foreach ($business->phones as $item) {
@@ -336,6 +377,38 @@ class MigrationCommand extends ContainerAwareCommand
         $this->em->flush();
     }
 
+    private function loadCategory($pair)
+    {
+        // first seems to be english
+
+        if ($this->localePrimary == 'en') {
+            $valuePrimary = $pair[0];
+            $valueSecondary = $pair[1];
+        } else {
+            $valuePrimary = $pair[1];
+            $valueSecondary = $pair[0];
+        }
+
+        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
+
+        if (!$entity) {
+            $entity = new Category();
+            $entity->setName($valuePrimary);
+
+            $entity = $this->saveEntity($entity);
+
+            $className = 'Category';
+
+            $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+
+            $translation = new $translationClassName();
+
+            $this->addTranslation($translation, $valueSecondary, $entity);
+        }
+
+        return $entity;
+    }
+
     private function loadTag($value)
     {
         $entity = $this->em->getRepository('DomainBusinessBundle:Tag')->findOneBy(['name' => $value]);
@@ -350,11 +423,6 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $entity;
-    }
-
-    private function loadCategory($valuePrimary, $valueSecondary)
-    {
-        return $this->loadEntity('Category', $valuePrimary, $valueSecondary);
     }
 
     private function loadBrand($valuePrimary, $valueSecondary)
