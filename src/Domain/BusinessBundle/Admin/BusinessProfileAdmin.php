@@ -208,7 +208,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'multiple' => true,
                         'required' => true,
                     ])
-                    ->add('brands', null, ['multiple' => true])
+                    ->add('brands', null, ['required' => false])
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,

@@ -3,13 +3,11 @@ namespace Domain\BusinessBundle\DataFixture\Test;
 
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\Locality;
-use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Tag;
-use Domain\BusinessBundle\Entity\Translation\BrandTranslation;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
 use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
@@ -28,11 +26,6 @@ class LoadTestBusinessData extends OxaAbstractFixture
      * @var Tag[] $tags
      */
     private $tags = [];
-
-    /**
-     * @var Brand[] $brands
-     */
-    private $brands = [];
 
     /**
      * @var Area[] $areas
@@ -87,6 +80,7 @@ class LoadTestBusinessData extends OxaAbstractFixture
             $object->setSlogan($item['slogan']);
             $object->setProduct($item['product']);
             $object->setDescription($item['description']);
+            $object->setBrands($item['brands']);
 
             // better to set google address manually,
             // cuz google finds not exact address by coordinates
@@ -109,11 +103,6 @@ class LoadTestBusinessData extends OxaAbstractFixture
             foreach ($item['areas'] as $value) {
                 $record = $this->loadArea($value);
                 $object->addArea($record);
-            }
-
-            foreach ($item['brands'] as $value) {
-                $record = $this->loadBrand($value);
-                $object->addBrand($record);
             }
 
             foreach ($item['payment_methods'] as $value) {
@@ -199,36 +188,6 @@ class LoadTestBusinessData extends OxaAbstractFixture
 
             // set reference to find this
             $this->addReference('tag.'.$value, $object);
-
-            return $object;
-        }
-    }
-
-    /**
-     * @param $value
-     * @return Brand
-     */
-    protected function loadBrand($value)
-    {
-        if (array_key_exists($value, $this->brands)) {
-            return $this->brands[$value];
-        } else {
-            $object = new Brand();
-            $object->setName($value);
-
-            $translation = new BrandTranslation();
-            $translation->setContent(sprintf('Spain %s', $value));
-            $translation->setField('name');
-            $translation->setLocale('es');
-            $translation->setObject($object);
-
-            $this->manager->persist($translation);
-            $this->manager->persist($object);
-
-            $this->brands[$value] = $object;
-
-            // set reference to find this
-            $this->addReference('brand.'.$value, $object);
 
             return $object;
         }
