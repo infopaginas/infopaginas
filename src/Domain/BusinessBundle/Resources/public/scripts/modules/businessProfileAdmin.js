@@ -1,7 +1,6 @@
 $( document ).ready( function() {
     $.each( ['#' + formId + '_serviceAreasType label', '#' + formId + '_serviceAreasType label ins'], function( index, fieldId ) {
         $( fieldId ).on( 'click', function() {
-            //var $self = $( 'input[name="' + formId + '[serviceAreasType]"]' );
             var $self = $( this).parent().find( 'input[name="' + formId + '[serviceAreasType]"]' );
             var withinMilesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
             var withinMilesOfMyBusinessLabel = $( '#sonata-ba-field-container-' + formId + '_milesOfMyBusiness label' );
