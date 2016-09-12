@@ -1,7 +1,4 @@
 domain_business_default_index:
    path:     /
    defaults: { _controller: DomainBusinessBundle:Default:index }
-domain_business_default_view:
-   path:     /view/{slug}
-   defaults: { _controller: DomainBusinessBundle:Default:view }
 

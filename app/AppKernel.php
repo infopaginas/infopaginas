@@ -51,11 +51,19 @@ class AppKernel extends Kernel
             new \JMaitan\SonataMediaCropBundle\JMaitanSonataMediaCropBundle(),
             new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
-            
+            new Spine\TrigonometricDQLBundle\SpineTrigonometricDQLBundle(),
+            new AntiMattr\GoogleBundle\GoogleBundle(),
+            new Http\HttplugBundle\HttplugBundle(),
+            new Oneup\FlysystemBundle\OneupFlysystemBundle(),
+            new Cache\AdapterBundle\CacheAdapterBundle(),
+            new Happyr\GoogleSiteAuthenticatorBundle\HappyrGoogleSiteAuthenticatorBundle(),
+            new Happyr\GoogleAnalyticsBundle\HappyrGoogleAnalyticsBundle(),
+
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
             new Oxa\Sonata\UserBundle\OxaSonataUserBundle(),
             new Oxa\Sonata\MediaBundle\OxaSonataMediaBundle(),
+            new Oxa\Sonata\TranslationBundle\OxaSonataTranslationBundle(),
             new Oxa\ConfigBundle\OxaConfigBundle(),
             new Oxa\GeolocationBundle\OxaGeolocationBundle(),
             new Domain\SiteBundle\DomainSiteBundle(),
@@ -80,6 +88,8 @@ class AppKernel extends Kernel
 
         return $bundles;
     }
+
+   
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

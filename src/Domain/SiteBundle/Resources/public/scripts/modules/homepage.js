@@ -1,8 +1,8 @@
 define(
     [
-        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/login', 'tools/registration',
-        'tools/resetPassword'
-    ], function ( $, bootstrap, Search, Geolocation, SearchMenu ) {
+        'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/resetPassword',
+        'tools/login', 'tools/registration'
+    ], function ( $, bootstrap, Search, Geolocation, SearchMenu, ResetPassword ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -11,6 +11,12 @@ define(
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
         };
+
+        $( '#forgottenPasswordModal' ).on('shown.bs.modal', function () {
+            $( 'body' ).addClass( 'modal-open' );
+        }).on('hidden', function () {
+            $( 'body' ).removeClass( 'modal-open' )
+        });
 
         this.init( options );
         return this;
@@ -26,12 +32,13 @@ define(
 
     homepage.prototype.initSearch = function ( ) {
         var searchOptions = {
-            selector            : '.search-form',
-            searchSelector      : '#searchBox',
-            searchHintSelector  : '#searchHint',
+            selector              : '.search-form',
+            searchSelector        : '#searchBox',
+            searchHintSelector    : '#searchHint',
             searchResultsSelector : '#searchResultsAutosuggest',
-            locationsSelector   : '#searchLocation',
-            submitSelector      : '#searchButton'
+            locationsSelector     : '#searchLocation',
+            submitSelector        : '#searchButton',
+            searchHeaderButton    : '#searchHeaderButton'
         };
 
         searchOptions['geolocation'] = new Geolocation( { 
@@ -40,8 +47,8 @@ define(
 
         searchOptions['searchMenu'] = new SearchMenu;
 
-        var search = new Search(searchOptions);
-        
+        var search = new Search( searchOptions );
+        this.resetPassword = new ResetPassword();
     };
    
     return homepage;

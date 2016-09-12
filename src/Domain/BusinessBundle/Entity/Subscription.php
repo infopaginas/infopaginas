@@ -35,7 +35,7 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
@@ -44,7 +44,7 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
      *     inversedBy="subscriptions",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $businessProfile;
 
@@ -96,7 +96,7 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
                 $this->getEndDate()->format('d/M/Y, H:m')
             );
         } else {
-            $result = 'New Subscription';
+            $result = '';
         }
 
         return $result;

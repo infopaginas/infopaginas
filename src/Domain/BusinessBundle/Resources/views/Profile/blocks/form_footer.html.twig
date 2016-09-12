@@ -1,13 +1,15 @@
 <div class="form-footer col-xs-12">
     {% if businessProfile is defined %}
-        <span>
-            {% trans %}Last date of profile update{% endtrans %}:
+        {% set updatedBy = businessProfile.getUpdatedUser() %}
+        {% if updatedBy %}
             <span>
-                {{ businessProfile.getUpdatedAt() | date("Y-m-d") }} {% trans %}by{% endtrans %}
-                {% set updatedBy = businessProfile.getUpdatedUser() %}
-                {{ updatedBy.getFirstname() }} {{ updatedBy.getLastname() }}
+                {% trans %}Last date of profile update{% endtrans %}:
+                <span>
+                    {{ businessProfile.getUpdatedAt() | date("Y-m-d") }} {% trans %}by{% endtrans %}
+                    {{ updatedBy.getFirstname() }} {{ updatedBy.getLastname() }}
+                </span>
             </span>
-        </span>
+        {% endif %}
     {% endif %}
     <div class="form-btn">
         <button type="reset" class="btn btn-default grey-light-bk">

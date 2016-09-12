@@ -8,7 +8,7 @@ oxa_wistia:
 
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
-    prefix:   /article
+    prefix:   /articles
 
 domain_menu:
     resource: "@DomainMenuBundle/Resources/config/routing.yml"
@@ -16,11 +16,11 @@ domain_menu:
 
 domain_page:
     resource: "@DomainPageBundle/Resources/config/routing.yml"
-    prefix:   /page
+    prefix:   /
 
 domain_business:
     resource: "@DomainBusinessBundle/Resources/config/routing.yml"
-    prefix:   /business
+    prefix:   /
 
 oxa_config:
     resource: "@OxaConfigBundle/Resources/config/routing.yml"
@@ -32,7 +32,7 @@ domain_site:
 
 domain_search:
     resource: "@DomainSearchBundle/Resources/config/routing.yml"
-    prefix:   /search
+    prefix:   /
 
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
@@ -50,7 +50,7 @@ sonata_user_security:
     resource: "@SonataUserBundle/Resources/config/routing/sonata_security_1.xml"
 
 sonata_user_admin_resetting:
-    resource: '@SonataUserBundle/Resources/config/routing/sonata_resetting_1.xml'
+    resource: '@OxaSonataUserBundle/Resources/config/sonata_resetting_1.xml'
     prefix: /resetting
 
 sonata_user_admin_security:
@@ -58,7 +58,7 @@ sonata_user_admin_security:
     prefix: /admin
 
 sonata_user_resetting:
-    resource: '@SonataUserBundle/Resources/config/routing/sonata_resetting_1.xml'
+    resource: '@OxaSonataUserBundle/Resources/config/sonata_resetting_1.xml'
     prefix: /resetting
 
 sonata_user_profile:
@@ -106,3 +106,7 @@ fos_js_routing:
 fos_user_resetting_reset:
     path:     /password_reset/{token}
     defaults: { _controller: DomainSiteBundle:Home:index }
+
+happyr_google_site_authenticator:
+    resource: "@HappyrGoogleSiteAuthenticatorBundle/Resources/config/routing.yml"
+    prefix:   /admin

@@ -2,20 +2,35 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use AntiMattr\GoogleBundle\Analytics;
+use AntiMattr\GoogleBundle\Analytics\Impression;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\ChangeSet;
+use Domain\BusinessBundle\Entity\ChangeSetEntry;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
-use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilesComparator;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\BusinessBundle\Repository\BusinessReviewRepository;
+use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
-use JMS\Serializer\SerializerBuilder;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\Sonata\MediaBundle\Entity\Media;
+use Oxa\Sonata\UserBundle\Entity\User;
+use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Manager\WistiaMediaManager;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 
 /**
  * Class BusinessProfileManager
@@ -23,6 +38,8 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
  */
 class BusinessProfileManager extends Manager
 {
+    const DEFAULT_LOCALE_NAME = 'San Juan';
+
     /**
      * @var CategoryManager
      */
@@ -37,11 +54,11 @@ class BusinessProfileManager extends Manager
     /** @var FormFactory */
     private $formFactory;
 
-    /** @var BusinessGalleryManager */
-    private $businessGalleryManager;
-
     /** @var WistiaMediaManager */
     private $wistiaMediaManager;
+
+    /** @var Analytics $analytics */
+    private $analytics;
 
     /**
      * Manager constructor.
@@ -53,8 +70,8 @@ class BusinessProfileManager extends Manager
      * @param TokenStorageInterface $tokenStorage
      * @param TranslatableListener $translatableListener
      * @param FormFactory $formFactory
-     * @param BusinessGalleryManager $businessGalleryManager
      * @param WistiaMediaManager $wistiaMediaManager
+     * @param Analytics $analytics
      */
     public function __construct(
         EntityManager $entityManager,
@@ -62,8 +79,8 @@ class BusinessProfileManager extends Manager
         TokenStorageInterface $tokenStorage,
         TranslatableListener $translatableListener,
         FormFactory $formFactory,
-        BusinessGalleryManager $businessGalleryManager,
-        WistiaMediaManager $wistiaMediaManager
+        WistiaMediaManager $wistiaMediaManager,
+        Analytics $analytics
     ) {
         $this->em = $entityManager;
 
@@ -73,21 +90,22 @@ class BusinessProfileManager extends Manager
             $this->currentUser = $tokenStorage->getToken()->getUser();
         }
 
+        $this->currentUser = $this->em->getRepository(User::class)->find(1);
+
         $this->translatableListener = $translatableListener;
 
         $this->formFactory = $formFactory;
 
-        $this->businessGalleryManager = $businessGalleryManager;
-
         $this->wistiaMediaManager = $wistiaMediaManager;
+
+        $this->analytics = $analytics;
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
     {
         $locationName = $location->name;
         if (empty($locationName)) {
-            // TODO Move magic string this to config
-            $locationName = "San Juan";
+            $locationName = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -95,10 +113,10 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
-    public function searchAutosuggestByPhraseAndLocation(string $phrase, string $location)
+    public function searchAutosuggestByPhraseAndLocation(SearchDTO $searchParams)
     {
-        $categories       = $this->categoryManager->searchAutosuggestByName($phrase);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($phrase);
+        $categories       = $this->categoryManager->searchAutosuggestByName($searchParams->query);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($searchParams);
 
         $result = array_merge($categories, $businessProfiles);
         return $result;
@@ -107,8 +125,7 @@ class BusinessProfileManager extends Manager
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
         if (empty($location)) {
-            // TODO Move magic string this to config
-            $location = "San Juan";
+            $location = self::DEFAULT_LOCALE_NAME;
         }
 
         // TODO Move to filtering functionality
@@ -123,7 +140,12 @@ class BusinessProfileManager extends Manager
 
     public function search(SearchDTO $searchParams)
     {
-        return $this->getRepository()->search($searchParams);
+        $searchResultsData = $this->getRepository()->search($searchParams);
+        $searchResultsData = array_map(function ($item) {
+            return $item[0]->setDistance($item['distance']);
+        }, $searchResultsData);
+
+        return $searchResultsData;
     }
 
     public function searchNeighborhood(SearchDTO $searchParams)
@@ -156,22 +178,25 @@ class BusinessProfileManager extends Manager
      */
     public function findByUid(string $uid)
     {
-        $businessProfile = $this->getRepository()->findOneBy(['uid' => $uid]);
+        $businessProfile = $this->getRepository()->findOneBy([
+            'uid' => $uid,
+        ]);
+
         return $businessProfile;
     }
 
     /**
-     * @param BusinessProfile $businessProfile
-     * @return BusinessProfile
+     * @param string $slug
+     * @return null|object
      */
-    public function cloneProfile(BusinessProfile $businessProfile) : BusinessProfile
+    public function findBySlug(string $slug)
     {
-        $clonedProfile = clone $businessProfile;
-        $clonedProfile->setUid($businessProfile->getUid());
+        $businessProfile = $this->getRepository()->findOneBy([
+            'slug' => $slug,
+            'isActive' => true,
+        ]);
 
-        $this->commit($clonedProfile);
-
-        return $clonedProfile;
+        return $businessProfile;
     }
 
     /**
@@ -191,7 +216,6 @@ class BusinessProfileManager extends Manager
      */
     public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en_US')
     {
-        //todo: move to model
         if (!$businessProfile->getId()) {
             $businessProfile->setIsActive(false);
         }
@@ -223,29 +247,11 @@ class BusinessProfileManager extends Manager
     /**
      * @param BusinessProfile $businessProfile
      */
-    public function lock(BusinessProfile $businessProfile)
+    public function deactivate(BusinessProfile $businessProfile)
     {
-        $businessProfile->setLocked(true);
+        $businessProfile->setIsActive(false);
+        $businessProfile->setIsClosed(true);
         $this->commit($businessProfile);
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     */
-    public function unlock(BusinessProfile $businessProfile)
-    {
-        $businessProfile->setLocked(false);
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     */
-    public function restore(BusinessProfile $businessProfile)
-    {
-        $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
-        $this->unlock($actualBusinessProfile);
-
-        $this->commit($actualBusinessProfile);
     }
 
     /**
@@ -256,40 +262,79 @@ class BusinessProfileManager extends Manager
         $this->drop($businessProfile);
     }
 
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param string $locale
-     */
-    public function publish(BusinessProfile $businessProfile, $locale = 'en_US')
+
+
+    public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet, $locale = 'en_US')
     {
-        $oldProfile = $businessProfile->getActualBusinessProfile();
+        $accessor = PropertyAccess::createPropertyAccessor();
 
-        $businessProfile->setActualBusinessProfile(null);
-        $businessProfile->setIsActive(true);
+        /** @var ChangeSetEntry $change */
+        foreach ($changeSet->getEntries() as $change) {
+            switch ($change->getAction()) {
+                case ChangeSetCalculator::PROPERTY_CHANGE:
+                    if (!$change->getClassName()) {
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
+                    } else {
+                        $ids = array_map(function($element) {
+                            return $element->id;
+                        }, json_decode($change->getNewValue()));
 
-        //backup object translations
-        if ($locale === BusinessProfile::DEFAULT_LOCALE) {
-            foreach ($oldProfile->getTranslations() as $translation) {
-                $businessProfile->addTranslation($translation);
+                        $collection = $this->getEntitiesByIds($change->getClassName(), $ids);
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                    }
+                    break;
+                case ChangeSetCalculator::IMAGE_ADD:
+                    $data = json_decode($change->getNewValue());
+                    $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
+                    $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
+                    break;
+                case ChangeSetCalculator::IMAGE_REMOVE:
+                    $data = json_decode($change->getNewValue());
+                    $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
+                    $businessProfile->removeImage($gallery);
+                    break;
+                case ChangeSetCalculator::IMAGE_UPDATE:
+                    $data = json_decode($change->getNewValue());
+                    $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
+                    if (isset($data->description)) {
+                        $gallery->setDescription($data->description[1]);
+                    }
+                    if (isset($data->isPrimary)) {
+                        $gallery->setIsPrimary($data->isPrimary[1]);
+                    }
+                    if (isset($data->type)) {
+                        $gallery->setType($data->type[1]);
+                    }
+                    $this->getEntityManager()->persist($gallery);
+                    break;
+                case ChangeSetCalculator::VIDEO_ADD:
+                    $data = json_decode($change->getNewValue());
+                    $video = $this->getEntityManager()->getRepository(WistiaMedia::class)->find($data->id);
+                    $businessProfile->setVideo($video);
+                    break;
+                case ChangeSetCalculator::VIDEO_REMOVE:
+                    $businessProfile->setVideo(null);
+                    break;
+                case ChangeSetCalculator::VIDEO_UPDATE:
+                    $data = json_decode($change->getNewValue());
+                    //if video was replaced
+                    if (!empty($change->getOldValue())) {
+                        $video = $this->getEntityManager()->getRepository(WistiaMedia::class)->find($data->id);
+                        $businessProfile->setVideo($video);
+                    } else {
+                        if (isset($data->description)) {
+                            $businessProfile->getVideo()->setDescription($data->description[1]);
+                        }
+                        if (isset($data->name)) {
+                            $businessProfile->getVideo()->setName($data->name[1]);
+                        }
+                    }
+                    break;
             }
         }
 
-        // ¯ \ _ (ツ) _ / ¯
-        $oldProfileSubscription = $oldProfile->getSubscription();
-        $newProfileSubscription = $businessProfile->getSubscription();
-
-        $oldProfileSubscription->setBusinessProfile($businessProfile);
-        $newProfileSubscription->setBusinessProfile($oldProfile);
-
-        $this->getEntityManager()->persist($oldProfileSubscription);
-        $this->getEntityManager()->persist($newProfileSubscription);
-
-        $this->getBusinessGalleryManager()->setupBusinessProfileLogo($businessProfile);
-
         $this->getEntityManager()->persist($businessProfile);
         $this->getEntityManager()->flush();
-
-        $this->drop($oldProfile);
     }
 
     /**
@@ -299,34 +344,6 @@ class BusinessProfileManager extends Manager
     public function getBusinessProfileAsForm(BusinessProfile $businessProfile)
     {
         return $this->formFactory->create(new BusinessProfileFormType(), $businessProfile);
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param string $locale
-     * @return string
-     */
-    public function getSerializedProfileChanges(BusinessProfile $businessProfile, $locale = 'en_US')
-    {
-        $actualBusinessProfile = $businessProfile->getActualBusinessProfile() ?
-            $businessProfile->getActualBusinessProfile() : new BusinessProfile();
-
-        if ($locale !== BusinessProfile::DEFAULT_LOCALE && !empty($locale)) {
-            $businessProfile->setLocale($locale);
-            $actualBusinessProfile->setLocale($locale);
-
-            $this->getEntityManager()->refresh($businessProfile);
-            $this->getEntityManager()->refresh($actualBusinessProfile);
-        }
-
-        $changes = BusinessProfilesComparator::compare(
-            $this->getBusinessProfileAsForm($businessProfile),
-            $this->getBusinessProfileAsForm($actualBusinessProfile)
-        );
-
-        $serializer = SerializerBuilder::create()->build();
-
-        return $serializer->serialize($changes, 'json');
     }
 
     /**
@@ -345,11 +362,136 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile)
+    {
+        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
+            $advertisements = $this->getBusinessGalleryRepository()
+                ->findBusinessProfileAdvertisementImages($businessProfile);
+
+            return $advertisements;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return array
+     */
+    public function getBusinessProfilePhotoImages(BusinessProfile $businessProfile)
+    {
+        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+
+        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
+            $photos = $this->getBusinessGalleryRepository()->findBusinessProfilePhotoImages($businessProfile);
+            return $photos;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return null|object
+     */
+    public function getLastReviewForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $lastReview = $this->getBusinessProfileReviewsRepository()->findBusinessProfileLastReview($businessProfile);
+        return $lastReview;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return float|int
+     */
+    public function calculateReviewsAvgRatingForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        $rating = 0;
+
+        $reviewsAmount = $this->getReviewsCountForBusinessProfile($businessProfile);
+
+        $reviews = $this->getBusinessProfileReviewsRepository()->findReviewsByBusinessProfile($businessProfile);
+
+        if ($reviewsAmount) {
+            foreach ($reviews as $review) {
+                $rating += (int) $review->getRating();
+            }
+
+            return round($rating / $reviewsAmount);
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
      */
     public function drop(BusinessProfile $businessProfile)
     {
         $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param SearchDTO $searchParams
+     * @return mixed
+     */
+    public function countSearchResults(SearchDTO $searchParams)
+    {
+        return $this->getRepository()->countSearchResults($searchParams);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @return int
+     */
+    public function getReviewsCountForBusinessProfile(BusinessProfile $businessProfile)
+    {
+        return $this->getBusinessProfileReviewsRepository()->getReviewsCountForBusinessProfile($businessProfile);
+    }
+
+    /**
+     * @param $searchResultsDTO
+     * @return mixed
+     */
+    public function removeItemWithHiddenAddress($searchResultsDTO)
+    {
+        foreach ($searchResultsDTO->resultSet as $key => $item)
+        {
+            if ($item->getHideAddress()) {
+                unset($searchResultsDTO->resultSet[$key]);
+            }
+        }
+
+        return $searchResultsDTO;
+    }
+
+    /**
+     * @param array $businessProfiles
+     */
+    public function trackBusinessProfilesCollectionImpressions(array $businessProfiles)
+    {
+        /** @var BusinessProfile $businessProfile */
+        foreach ($businessProfiles as $businessProfile) {
+            $impression = new Impression();
+            $impression->setSku($businessProfile->getSlug());
+            $impression->setTitle($businessProfile->getName());
+            $impression->setAction('detail');
+            $impression->setBrand($businessProfile->getBrands());
+            $impression->setCategory($businessProfile->getCategories()->first());
+            $impression->setList('Search Results');
+
+            $this->getGoogleAnalytics()->addImpression($impression);
+        }
+    }
+
+    public function findOneBusinessProfile()
+    {
+        return $this->getRepository()->findOneBy([]);
     }
 
     /**
@@ -365,6 +507,14 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @return BusinessGalleryRepository
+     */
+    private function getBusinessGalleryRepository() : BusinessGalleryRepository
+    {
+        return $this->getEntityManager()->getRepository(BusinessGallery::class);
+    }
+
+    /**
      * @return WistiaMediaManager
      */
     private function getWistiaMediaManager() : WistiaMediaManager
@@ -372,12 +522,9 @@ class BusinessProfileManager extends Manager
         return $this->wistiaMediaManager;
     }
 
-    /**
-     * @return BusinessGalleryManager
-     */
-    private function getBusinessGalleryManager() : BusinessGalleryManager
+    private function getGoogleAnalytics()
     {
-        return $this->businessGalleryManager;
+        return $this->analytics;
     }
 
     /**
@@ -389,10 +536,35 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @return BusinessReviewRepository
+     */
+    private function getBusinessProfileReviewsRepository()
+    {
+        return $this->getEntityManager()->getRepository(BusinessReview::class);
+    }
+
+    /**
      * @return EntityManager
      */
-    private function getEntityManager() : EntityManager
+    protected function getEntityManager() : EntityManager
     {
         return $this->em;
+    }
+
+    public function getSlugDcDataDTO(BusinessProfile $profile) : DCDataDTO
+    {
+        return new DCDataDTO(array(), '', array(), $profile->getSlug());
+    }
+
+    private function getEntitiesByIds($class, $ids)
+    {
+        /** @var EntityRepository $repo */
+        $repo = $this->getEntityManager()->getRepository($class);
+        $objects = $repo->createQueryBuilder('qb')
+            ->where('qb.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()->getResult();
+
+        return $objects;
     }
 }

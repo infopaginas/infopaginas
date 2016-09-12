@@ -21,6 +21,18 @@ class TaskAdmin extends OxaAdmin
      */
     protected $tasksManager;
 
+    /**
+     * Default values to the datagrid.
+     *
+     * @var array
+     */
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_per_page'   => 25,
+        '_sort_by' => 'createdAt',
+        '_sort_order' => 'DESC',
+    );
+
     public function postUpdate($task)
     {
         $reviewer = $this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
@@ -86,7 +98,7 @@ class TaskAdmin extends OxaAdmin
             'rejectReason',
             TextareaType::class,
             [
-                'required' => true,
+                //'required' => true,
             ]
         );
 
@@ -102,6 +114,7 @@ class TaskAdmin extends OxaAdmin
                 'cascade_validation' => true,
                 'required' => false,
                 'btn_add' => false,
+                'disabled' => true,
             ],
             [
                 'edit' => 'inline',

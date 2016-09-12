@@ -1,7 +1,11 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta name="title" content="infopáginas">
+    <title>{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}</title>
+
+    <meta name="description" content="{% if seoData is defined and seoData.seoDescription %}{{ seoData.seoDescription }}{% endif %}"/>
+    <meta name="keywords" content="{% if seoData is defined and seoData.seoKeywords %}{{ seoData.seoKeywords }}{% endif %}"/>
+
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
@@ -9,6 +13,10 @@
         <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}" />
         <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
         <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
+    {% endblock %}
+
+    {% block doubleClickHeader %}
+        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
     {% endblock %}
 </head>
 <body>
@@ -30,38 +38,35 @@
                         <a href="{{ path('domain_site_home_index')}}" class="logo-header"></a>
 
                         <div class="header-form">
-                            <form class="form-horizontal search-form">
+                            <form class="form-horizontal search-form" action="{{ path('domain_search_index')}}">
 
                                 <div class="form-group row">
                                     {% block headerSearch %}
-                                        {% include 'DomainSiteBundle:Layout:Widgets/headerSearchWidget.html.twig' %}
+                                        {% include 'DomainSiteBundle:Layout:widgets/header_search_widget.html.twig' %}
                                     {% endblock %}
                                 </div>
                             </form>
                         </div>
                         <ul class="menu-nav">
-                            <li class="ad desc-menu"><a href="">Advertise with us</a></li>
-                            <!-- <li class="login-link mobile-menu"><a href="">Welcome, <span class="user-name">Catalá Joyeros</span></a>
-                            </li>-->
+                            <li class="ad desc-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
                     </div>
 
                     <div class="collapse navbar-collapse" id="navbar-col">
                         <ul class="nav navbar-nav navbar-right">
+                            {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' with {'addBasePageClass': true} %}
+                            <li class="lang-dropdown">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        <select class="form-control select-control language-select" tabindex="-1" aria-hidden="true">
+                                            <option value="en_US">English</option>
+                                            <option value="es">Español</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
                             {% if (app.user) %}
-                                <li class="login-link mobile-menu">
-                                    <a href="">
-                                        <span class="welcome">Welcome, </span>
-                                        <span class="user-name">
-                                            {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
-                                        </span>
-                                    </a>
-                                </li>
-                            {% endif %}
-                            <li class="lang btn"><a href="">español</a></li>
-                            <li class="lang btn"><a href="" class="active">english</a></li>
-                            {% if (app.user) %}
-                                <li class="login-link desc-menu">
+                                 <li class="login-link desc-menu logged-home">
                                     <a href="{{ path('domain_site_user_profile') }}" class="login-button">
                                         <span class="welcome">Welcome, </span>
                                     <span class="user-name">
@@ -69,8 +74,17 @@
                                     </span>
                                     </a>
                                 </li>
+                            {% else %}
+                                <li class="login-link desc-menu home">
+                                    <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
+                                        Login
+                                    </a>
+                                </li>
                             {% endif %}
-                            <li class="ad mobile-menu"><a href="">Advertise with us</a></li>
+
+
+
+                            <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -85,33 +99,20 @@
 {% block breakcrumbs %}
     <!--Breadcrumbs-->
     <section id="breadcrumbs" class="breadcrumbs">
-            <div class="container">
-                <div class="row">
-                    <div class="crumbs">
-                        <a href="#">Bookstores in San Juan <span>&nbsp; &#187; &nbsp; </span></a><span>SONs Notebooks</span>
-                    </div>
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="#">Bookstores in San Juan <span>&nbsp; &#187; &nbsp; </span></a><span>SONs Notebooks</span>
                 </div>
             </div>
+        </div>
     </section>
 {% endblock %}
 
 <main>
     {% block main %}
-    
     {% endblock %}
 </main>
-
-<!-- Modal -->
-<div class="modal fade" id="photoGallery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-{% block modal %}
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body"> </div>
-    </div>
-  </div>
-{% endblock %}
-</div>
-
 
 <!-- Footer -->
 <footer class="blue-bk">
@@ -119,7 +120,7 @@
     <div class="container default-footer">
         <div class="row">
             <div class="col-xs-6 copyright white-c">
-                <a href="" class="footer-logo"></a>
+                <div class="footer-logo"></div>
 
                 <div class="copyright-date">
                     <span>&copy; 2016 infopáginas</span>
@@ -135,19 +136,19 @@
 
             <div class="col-xs-6 footer-menu">
                 <ul class="footer-links green-c">
-                    <li><a class="green-c" href="">About Us</a></li>
-                    <li><a class="green-c" href="">Contact Us</a></li>
+                    <li><a class="green-c" href="http://www.infopaginasmedia.com/">About Us</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">Contact Us</a></li>
                 </ul>
                 <ul class="footer-links column">
-                    <li><a class="green-c" href="">Privacy Statement</a></li>
-                    <li><a class="green-c" href="">Terms of Use</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">Privacy Statement</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">Terms of Use</a></li>
                 </ul>
                 <ul class="social-icons">
-                    <li><a class="white-c" href=""><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                    <li><a class="white-c" href=""><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                    <li><a class="white-c" href=""><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
-                    <li><a class="white-c" href=""><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                    <li><a class="white-c" href=""><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_FACEBOOK_PROFILE')) }}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_TWITTER_PROFILE')) }}"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_GOOGLE_PROFILE')) }}"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_LINKEDIN_PROFILE')) }}"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_INSTAGRAM_PROFILE')) }}"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
             <div class="col-xs-12 copyright small-view white-c">
@@ -168,9 +169,22 @@
     {% endblock %}
 </footer>
 
+{% block modals %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
+{% endblock %}
+
 <!-- Scripts -->
 {% block scripts %}
     <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
-{% endblock %} 
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+                var siteHomepage = new Homepage();
+            })
+        })
+    </script>
+{% endblock %}
 </body>
 </html>

@@ -1,6 +1,9 @@
 <?php
 namespace Oxa\Sonata\UserBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
+use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
+use Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -13,6 +16,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class UserAdmin extends OxaAdmin
 {
@@ -27,31 +31,14 @@ class UserAdmin extends OxaAdmin
         '_sort_by' => 'email',
     );
 
+    protected $formOptions = array(
+        'validation_groups' => ['Default']
+    );
+
     /**
      * @var UserManagerInterface
      */
     protected $userManager;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormBuilder()
-    {
-        $this->formOptions['data_class'] = $this->getClass();
-
-        $options = $this->formOptions;
-        if (!$this->getSubject() || is_null($this->getSubject()->getId())) {
-            $options['validation_groups'] = 'Registration';
-        } else {
-            $options['validation_groups'] = 'Profile';
-        }
-
-        $formBuilder = $this->getFormContractor()->getFormBuilder($this->getUniqid(), $options);
-
-        $this->defineFormBuilder($formBuilder);
-
-        return $formBuilder;
-    }
 
     /**
      * {@inheritdoc}
@@ -198,17 +185,20 @@ class UserAdmin extends OxaAdmin
                     'choices' => $roles
                 ])
                 ->add('enabled')
-//                ->add('role', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;
         }
 
         $formMapper
             ->with('General')
-                ->add('email')
+                ->add('email', 'email', [
+                    'required' => true,
+                    'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                ])
                 ->add('plainPassword', 'text', [
                     'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
                 ])
+                ->add('phone')
             ->end()
             ->with('Profile')
                 ->add('firstname', null, [
@@ -223,6 +213,27 @@ class UserAdmin extends OxaAdmin
                 ->add('twitterURL')
                 ->add('googleURL')
                 ->add('youtubeURL')
+            ->end()
+        ;
+    }
+
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        $errorElement
+            ->with('twitterURL')
+                ->addConstraint(new ConstraintUrlExpanded())
+            ->end()
+            ->with('facebookURL')
+                ->addConstraint(new ConstraintUrlExpanded())
+            ->end()
+            ->with('googleURL')
+                ->addConstraint(new ConstraintUrlExpanded())
+            ->end()
+            ->with('youtubeURL')
+                ->addConstraint(new ConstraintUrlExpanded())
+            ->end()
+            ->with('phone')
+                ->addConstraint(new Regex(BusinessProfilePhone::REGEX_PHONE_PATTERN))
             ->end()
         ;
     }

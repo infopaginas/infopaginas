@@ -44,7 +44,7 @@ class WistiaMediaEmbedManager
         $this->em = $entityManager;
         $this->wistiaEmbedAPIManager = $wistiaEmbedAPIManager;
 
-        $this->repository = $entityManager->getRepository(WistiaMediaEmbedRepository::SLUG);
+        $this->repository = $entityManager->getRepository(WistiaMediaEmbed::class);
     }
 
     /**
@@ -75,7 +75,12 @@ class WistiaMediaEmbedManager
         if ($embedObject !== null) {
             return $embedObject->getHTML();
         } else {
-            $embedResponse = $this->getWistiaEmbedAPIManager()->get($wistiaMedia->getHashedId(), $dimensions);
+            try {
+                $embedResponse = $this->getWistiaEmbedAPIManager()->get($wistiaMedia->getHashedId(), $dimensions);
+            } catch (\Exception $e) {
+                return '';
+            }
+
             $embedObject = $this->save($wistiaMedia, $embedResponse, $autoDimensions);
         }
 

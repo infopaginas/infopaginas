@@ -29,7 +29,7 @@ class Task implements DefaultEntityInterface, TaskInterface
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
@@ -49,14 +49,13 @@ class Task implements DefaultEntityInterface, TaskInterface
 
     /**
      * @ORM\Column(name="reject_reason", type="text", nullable=true)
-     * @Assert\NotBlank()
      */
     protected $rejectReason;
 
     /**
-     * @ORM\Column(name="changeset", type="text", nullable=true)
+     * @ORM\Column(name="closure_reason", type="text", nullable=true)
      */
-    protected $changeSet;
+    protected $closureReason;
 
     /**
      * @ORM\Column(name="locale", type="string", length=20, nullable=true)
@@ -67,6 +66,13 @@ class Task implements DefaultEntityInterface, TaskInterface
      * @ORM\Column(name="business_profile_uid", type="string")
      */
     protected $businessProfileUID;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domain\BusinessBundle\Entity\ChangeSet", cascade={"persist"})
+     * @ORM\JoinColumn(name="changeset_id", referencedColumnName="id", onDelete="CASCADE")
+     * @MaxDepth(0)
+     */
+    protected $changeSet;
 
     /**
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile", inversedBy="tasks")
@@ -161,6 +167,24 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setRejectReason($rejectReason)
     {
         $this->rejectReason = $rejectReason;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClosureReason()
+    {
+        return $this->closureReason;
+    }
+
+    /**
+     * @param mixed $closureReason
+     * @return Task
+     */
+    public function setClosureReason($closureReason)
+    {
+        $this->closureReason = $closureReason;
         return $this;
     }
 
@@ -318,7 +342,7 @@ class Task implements DefaultEntityInterface, TaskInterface
                 $this->getBusinessProfile()->getName()
             );
         } else {
-            $result = 'New Task';
+            $result = '';
         }
 
         return $result;

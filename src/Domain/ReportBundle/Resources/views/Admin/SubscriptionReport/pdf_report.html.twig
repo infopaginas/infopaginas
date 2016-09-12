@@ -5,7 +5,9 @@
 </head>
 
 <div>
-    {{ 'export.title.subscription_report'|trans({}, 'AdminReportBundle') }}
+    {{ 'export.title.subscription_report'|trans({}, 'AdminReportBundle') }},
+
+    {{ "now"|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATETIME_FORMAT')) }}
 </div>
 
 <br>

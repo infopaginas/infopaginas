@@ -14,6 +14,19 @@ namespace Domain\PageBundle\Model;
  */
 interface PageInterface
 {
-    const MEDIA_FORMAT_PREVIEW  = 'preview';
-    const MEDIA_FORMAT_NORMAL   = 'normal';
+    const CODE_CONTACT_US           = 2;
+    const CODE_PRIVACY_STATEMENT    = 3;
+    const CODE_TERMS_OF_USE         = 4;
+    const CODE_ADVERTISE            = 5;
+
+    /**
+     * @return mixed
+     */
+    public function getCode();
+
+    /**
+     * @param $code
+     * @return mixed
+     */
+    public function setCode($code);
 }

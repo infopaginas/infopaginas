@@ -1,0 +1,12 @@
+<option data-route="">
+    {% trans %}Category{% endtrans %}
+</option>
+{% if results.categories is not empty %}
+    {% for category in results.categories %}
+        {% set is_selected = searchData.category == category.getName() %}
+        <option data-route="{{ path(pageRouter, searchData|merge({'category': category.getName() })) }}"
+            {% if is_selected %}selected{% endif %} value="{{ category.getName() }}">
+            {{ category.getName() }}
+        </option>
+    {% endfor %}
+{% endif %}

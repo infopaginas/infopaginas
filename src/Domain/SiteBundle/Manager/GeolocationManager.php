@@ -2,18 +2,43 @@
 
 namespace Domain\SiteBundle\Manager;
 
+use Doctrine\ORM\EntityManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
+/**
+ * Class GeolocationManager
+ * @package Domain\SiteBundle\Manager
+ */
 class GeolocationManager extends Manager
 {
     private $ch;
 
     const   CONTENT_TYPE          = 'Content-Type: application/json';
     const   ACCEPT_TYPE           = 'Accept: application/json';
-    const   GOOGLE_API_KEY        = 'AIzaSyBBl4CQTYhUmdK4zs9EVcPmPjLBiIWez3w';
 
-    const   GOOGLE_PLACES_URL     = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&types=(cities)&components=country:pr&language=locale&region=pr&key=google_api_key&input=';
+    /** @var string $googlePlacesURL */
+    private $googlePlacesURL;
 
+    /** @var string $googleAPIKey */
+    private $googleAPIKey;
+
+    /**
+     * GeolocationManager constructor.
+     *
+     * @param EntityManager $entityManager
+     * @param string $googlePlacesURL
+     */
+    public function __construct(EntityManager $entityManager, string $googlePlacesURL, string $googleAPIKey)
+    {
+        $this->em = $entityManager;
+
+        $this->googlePlacesURL = $googlePlacesURL;
+        $this->googleAPIKey    = $googleAPIKey;
+    }
+
+    /**
+     * @return bool
+     */
     protected function initCurl()
     {
         $this->ch = curl_init();
@@ -32,6 +57,9 @@ class GeolocationManager extends Manager
         return true;
     }
 
+    /**
+     * @return array
+     */
     private function getContentTypes()
     {
         return array(
@@ -40,34 +68,74 @@ class GeolocationManager extends Manager
         );
     }
 
+    /**
+     * @param $term
+     * @param string $lang
+     * @return array
+     */
     public function getGooglePlacesSuggestions($term, $lang = 'en')
     {
         $this->initCurl();
 
         $url = $this->getPlacesUrl($lang);
-        
         $url = $url . urlencode($term);
+
         curl_setopt($this->ch, CURLOPT_URL, $url);
 
         $results = $this->getPlacesData();
 
         $list = array_column($results['predictions'], 'description');
+        $list = $this->filterComplexNames($list);
+
         return $list;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPlacesData()
     {
         $result = curl_exec($this->ch);
-        $info = curl_getinfo($this->ch);
-
         return json_decode($result, true);
     }
 
+    /**
+     * @param $locale
+     * @return mixed
+     */
     public function getPlacesUrl($locale)
     {
-        $url = preg_replace('#google_api_key#', self::GOOGLE_API_KEY, self::GOOGLE_PLACES_URL);
+        $url = preg_replace('#google_api_key#', $this->getGoogleAPIKey(), $this->getGooglePlacesURL());
         $url = preg_replace('#locale#', $locale, $url);
 
         return $url;
+    }
+
+    /**
+     * @return string
+     */
+    private function getGooglePlacesURL() : string
+    {
+        return $this->googlePlacesURL;
+    }
+
+    /**
+     * @return string
+     */
+    private function getGoogleAPIKey() : string
+    {
+        return $this->googleAPIKey;
+    }
+
+    protected function filterComplexNames(array $list)
+    {
+        return array_map(function ($item) {
+            if (strpos($item, ',')) {
+                $names = explode(',', $item);
+                $item = $names[0];
+            }
+
+            return $item;
+        }, $list);
     }
 }

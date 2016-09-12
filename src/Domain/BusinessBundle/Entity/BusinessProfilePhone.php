@@ -13,12 +13,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BusinessProfilePhone
 {
+    const REGEX_PHONE_PATTERN = '/^\d([-]*\d){0,10}$/';
+
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -33,16 +35,16 @@ class BusinessProfilePhone
     /**
      * @var BusinessProfile
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     cascade={"persist"},
-     *     inversedBy="phones"
+     *     cascade={"persist", "remove"},
+     *     inversedBy="phones",
      * )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $businessProfile;
 
     public function __toString()
     {
-        return ($this->getId()) ? $this->getPhone() : 'New phone';
+        return $this->getPhone() ?: '';
     }
 
     /**

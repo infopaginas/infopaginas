@@ -1,0 +1,4 @@
+{% for language in languages %}
+    <li class="lang btn {% if addBasePageClass is defined and addBasePageClass %}base-page{% endif %}">
+    <a href="{{ language.url }}" class="{% if language.active %}active{% endif %}">{{ language.title|raw }}</a></li>
+{% endfor %}

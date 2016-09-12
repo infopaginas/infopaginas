@@ -1,7 +1,7 @@
 <section id="profile-media" class="profile-manage profile-manage-general">
     <div class="container general-manage">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 business-container">
                 <div class="cards">
                     <div class="form-group card-item">
                         <div class="card-item-name">
@@ -79,7 +79,7 @@
 
                                 <div id="videos-spin-container"></div>
 
-                                <div class="row" id="video">
+                                <div id="video">
                                     {% if businessProfile.video %}
                                         {%
                                             include 'DomainBusinessBundle:Videos/blocks:video.html.twig'
@@ -89,10 +89,10 @@
                                 </div>
                             </div>
                         </div>
+                        {% do businessProfileForm.video.setRendered %}
                     {% endif %}
                 </div>
             </div>
-            {% do businessProfileForm.video.setRendered %}
 
             {% include 'DomainBusinessBundle:Profile:blocks/form_footer.html.twig' %}
         </div>

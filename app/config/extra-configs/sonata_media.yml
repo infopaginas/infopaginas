@@ -46,14 +46,6 @@ sonata_media:
                 portal:     { width: 300, height: 250, quality: 100}
                 serp:       { width: 728, height: 90, quality: 100}
                 serp_boxed: { width: 250, height: 250, quality: 100}
-        page:
-            download:
-                mode: http
-            providers:
-                - sonata.media.provider.image
-            formats:
-                preview:    { width: 150, height: 150, quality: 100}
-                normal:     { width: 500, height: 500, quality: 100}
         article:
             download:
                 mode: http

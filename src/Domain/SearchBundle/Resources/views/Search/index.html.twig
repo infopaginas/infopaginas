@@ -1,18 +1,31 @@
 {% extends "DomainSearchBundle:Layout:base.html.twig" %}
 
+{% block breakcrumbs %}
+{% endblock %}
+
 {% block main %}
  <!-- Search Results -->
     <section id="search-results" class="search-results">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 banner-block desc-banner">
-                    {% include 'DomainSiteBundle:Layout:Widgets/bannerWidget.html.twig' with { 'banner' : banner, 'crop' : 'serp' } %}
+                    {% if bannerFactory is not null %}
+                        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                            bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL_LEADERBOARD'))  }
+                        %}
+                    {% endif %}
                 </div>
             </div>
             {% if results.resultSet is defined and results.resultSet is not null and  results.resultSet is not empty %}
                 <div class="row">
                     <div class="col-xs-12">
-                        <span class="search-title blue-c">{{ search.query }} in {{ search.locationValue.name }}</span>
+                        <h1 class="search-title blue-c">{{ search.query }} in
+                            {% if search.locationValue.zip is not null %}
+                                {{ search.locationValue.zip }}
+                            {% else %}
+                                {{ search.locationValue.name }}
+                            {% endif %}
+                        </h1>
                     </div>
                 </div>
                 <div class="row">
@@ -23,17 +36,20 @@
                                 {% if amount > results.resultCount %}
                                 {% set amount = results.resultCount %}
                                 {% endif %}
-                                <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in {{ search.locationValue.name }}</span>
+                                <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in
+                                    {% if search.locationValue.zip is not null %}
+                                        {{ search.locationValue.zip }}
+                                    {% else %}
+                                        {{ search.locationValue.name }}
+                                    {% endif %}
+                                </span>
                             </div>
                             <div class="sort-by">
                                 <span>Sort by:</span>
 
                                 <div class="dropdown filter-drop">
                                     <div class="select-container">
-                                        <select class="form-control select-control">
-                                            <option>Relevance</option>
-                                            <option>Distance</option>
-                                        </select>
+                                        {% include 'DomainSearchBundle:Layout/widgets:order_by_select_options.html.twig' %}
                                     </div>
                                 </div>
                             </div>
@@ -41,22 +57,26 @@
                         <div class="cards">
                         {% if results.resultSet is defined and results.resultSet is not null %}
                             {% for item in results.resultSet %}
-                                {% include 'DomainSearchBundle:Search:Templates/searchResultItem.html.twig' with { 'item' : item } %}
+                                {% include 'DomainSearchBundle:Search:Templates/search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
                             {% endfor %}
                         {% endif %}
                         </div>
                     </div>
                     <aside class="map col-md-3">
-                        <img src="http://placehold.it/410x350">
+                        {% if bannerFactory is not null %}
+                            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
+                                bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL'))  }
+                            %}
+                        {% endif %}
                     </aside>
                 </div>
                 {% block pagination %}
-                    {% include 'DomainSiteBundle:Layout:Widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                    {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
                 {% endblock %}
             {% else %}
                 <div class="row">
                     <div class="col-md-9 list-block">
-                        Sorry, no results were found. Maybe you want to search this categories
+                        Sorry, no results were found.
                     </div>
                 </div>
             {% endif %}
@@ -73,4 +93,5 @@
             })
         })
     </script>
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
 {% endblock%}

@@ -9,6 +9,9 @@ use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
 class SearchDataUtil
 {
+    const ORDER_BY_RELEVANCE = 'relevance';
+    const ORDER_BY_DISTANCE  = 'distance';
+
     public static function buildResponceDTO(
         $resutlSet,
         int $totalCount,
@@ -43,5 +46,15 @@ class SearchDataUtil
     public static function getNeighborhoodFromRequest(Request $request)
     {
         return $request->get('neighborhood', null);
+    }
+
+    public static function extractNeigborhoods($neighborhoods)
+    {
+        return array_column($neighborhoods, 0);
+    }
+
+    public static function getOrderByFromRequest(Request $request)
+    {
+        return $request->get('order', self::ORDER_BY_RELEVANCE);
     }
 }

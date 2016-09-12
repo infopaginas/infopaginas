@@ -1,0 +1,8 @@
+services:
+    sonata_translation.block.locale_switcher:
+          class: Oxa\Sonata\TranslationBundle\Block\LocaleSwitcherBlockService
+          arguments:
+              - 'sonata_translation.block.locale_switcher'
+              - '@templating'
+          tags:
+              - {name: sonata.block}

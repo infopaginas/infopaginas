@@ -14,8 +14,6 @@ use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
  */
 class TaskRepository extends \Doctrine\ORM\EntityRepository
 {
-    const SLUG = 'DomainBusinessBundle:Task';
-
     /**
      * Get count of closed tasks
      *

@@ -7,7 +7,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Area;
-use Domain\BusinessBundle\Entity\Brand;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\Subscription;

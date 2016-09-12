@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="campaign")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\CampaignRepository")
- * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
+ * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\CampaignTranslation")
  */
 class Campaign implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface
 {
@@ -32,14 +32,14 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface, Datetim
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string - Campaign title
      *
-     * @Gedmo\Translatable
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -95,17 +95,7 @@ class Campaign implements DefaultEntityInterface, TranslatableInterface, Datetim
 
     public function __toString()
     {
-        switch (true) {
-            case $this->getTitle():
-                $result = $this->getTitle();
-                break;
-            case $this->getId():
-                $result = sprintf('id(%s): not translated', $this->getId());
-                break;
-            default:
-                $result = 'New Campaign';
-        }
-        return $result;
+        return $this->getTitle() ?: '';
     }
 
     /**

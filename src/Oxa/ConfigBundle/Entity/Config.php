@@ -31,7 +31,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
@@ -191,7 +191,7 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
 
     public function __toString()
     {
-        return $this->title ?: '';
+        return $this->getTitle() ?: '';
     }
 
     /**
