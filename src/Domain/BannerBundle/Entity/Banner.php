@@ -78,7 +78,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      *     inversedBy="banners",
      *     cascade={"persist"}
      *     )
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="template_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $template;
 

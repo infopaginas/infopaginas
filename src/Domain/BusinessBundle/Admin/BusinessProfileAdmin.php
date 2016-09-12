@@ -9,6 +9,8 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\Sonata\UserBundle\Entity\Group;
+use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -17,8 +19,6 @@ use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Validator\Constraints\EmailValidator;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class BusinessProfileAdmin
@@ -33,9 +33,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('subscriptions.businessProfile', null, [
-                'label' => $this->trans('filter.label_name', [], $this->getTranslationDomain())
-            ])
+            ->add('name')
             ->add('city')
             ->add('state')
             ->add('country')
@@ -44,7 +42,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
             ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
-            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
         ;
     }
@@ -91,6 +88,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Subscriptions')->end()
                 ->with('Coupons', array('class' => 'col-md-6'))->end()
                 ->with('Discount', array('class' => 'col-md-6'))->end()
+                ->with('SEO', array('class' => 'col-md-12'))->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
@@ -108,14 +106,24 @@ class BusinessProfileAdmin extends OxaAdmin
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
 
+        $em = $this->modelManager->getEntityManager(User::class);
+
+        $query = $em->createQueryBuilder('u')
+            ->select('u')
+            ->from(User::class, 'u')
+            ->andWhere('u.role != :consumerRole')
+            ->setParameter('consumerRole', Group::CODE_CONSUMER)
+        ;
+
         $formMapper
             ->tab('Profile')
                 ->with('General')
                     ->add('name')
-                    ->add('user', 'sonata_type_model_list', [
+                    ->add('user', 'sonata_type_model', [
                         'required' => false,
                         'btn_delete' => false,
                         'btn_add' => false,
+                        'query' => $query,
                     ])
                     ->add('logo', 'sonata_type_model_list', [
                         'required' => false
@@ -249,6 +257,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
+                        'by_reference' => false,
                         'required' => true,
                         'type_options' => [
                             'delete' => true,
@@ -266,7 +275,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('coupons', 'sonata_type_collection', [
                         'by_reference' => false,
                         'required' => false,
-                        'mapped' => true,
                         'type_options' => [
                             'delete' => true,
                             'delete_options' => [
@@ -284,10 +292,16 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                     ])
                 ->end()
+                ->with('SEO')
+                    ->add('seoTitle')
+                    ->add('seoDescription')
+                    ->add('seoKeywords')
+                ->end()
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
                     ->add('businessReviews', 'sonata_type_collection', [
+                        'by_reference' => false,
                         'mapped' => true,
                         'type_options' => [
                             'delete' => true,
@@ -350,6 +364,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('isActive')
+            ->add('seoTitle')
+            ->add('seoDescription')
+            ->add('seoKeywords')
         ;
     }
 
@@ -452,12 +469,6 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         /** @var QueryBuilder $query */
         $query = parent::createQuery($context);
-
-        // show only none locked records
-        $query->andWhere(
-            $query->expr()->eq($query->getRootAliases()[0] . '.locked', ':locked')
-        );
-        $query->setParameter('locked', false);
 
         $parameters = $this->getFilterParameters();
 

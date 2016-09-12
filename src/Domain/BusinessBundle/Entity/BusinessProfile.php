@@ -13,12 +13,14 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
@@ -49,10 +51,14 @@ class BusinessProfile implements
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
+    use SeoTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
 
     const DEFAULT_LOCALE = 'en_US';
+
+    const DISTANCE_APPENDIX_NAME_KILOMETERS = 'km';
+    const DISTANCE_APPENDIX_NAME_METERS     = 'm';
 
     /**
      * @var int
@@ -67,9 +73,9 @@ class BusinessProfile implements
      * @var string - Business name
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $name;
 
@@ -147,19 +153,19 @@ class BusinessProfile implements
     /**
      * @var string - Website
      *
-     * @ORM\Column(name="website", type="string", length=30, nullable=true)
+     * @ORM\Column(name="website", type="string", length=255, nullable=true)
      * @DomainAssert\ConstraintUrlExpanded()
-     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $website;
 
     /**
      * @var string - Email address
      *
-     * @ORM\Column(name="email", type="string", length=30, nullable=true)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Assert\Email()
      * @DomainAssert\ContainsEmailExpanded()
-     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $email;
 
@@ -292,7 +298,7 @@ class BusinessProfile implements
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"}, updatable=false)
-     * @ORM\Column(name="slug", type="string", length=100)
+     * @ORM\Column(name="slug", type="string", length=255)
      */
     protected $slug;
 
@@ -360,33 +366,33 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="street_address", type="string", length=50, nullable=true)
+     * @ORM\Column(name="street_address", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetAddress;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="street_number", type="string", length=50, nullable=true)
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="street_number", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $streetNumber;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="extended_address", type="string", length=50, nullable=true)
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="extended_address", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $extendedAddress;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cross_street", type="string", length=50, nullable=true)
-     * @Assert\Length(max=50, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="cross_street", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $crossStreet;
 
@@ -408,9 +414,9 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=30, nullable=true)
+     * @ORM\Column(name="city", type="string", length=255, nullable=true)
      * @Assert\NotBlank()
-     * @Assert\Length(max=30, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $city;
 
@@ -426,8 +432,8 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="custom_address", type="string", length=100, nullable=true)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="custom_address", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $customAddress;
 
@@ -446,29 +452,29 @@ class BusinessProfile implements
     protected $hideAddress = false;
 
     /**
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $twitterURL;
 
     /**
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $facebookURL;
 
     /**
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $googleURL;
 
     /**
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=100)
-     * @Assert\Length(max=100, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded()
      */
     protected $youtubeURL;
@@ -496,10 +502,11 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
+     * @Assert\NotBlank(groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
      * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
      */
-    protected $milesOfMyBusiness;
+    protected $milesOfMyBusiness = 100;
 
     /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
@@ -523,20 +530,6 @@ class BusinessProfile implements
      */
     protected $phones;
 
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile")
-     * @ORM\JoinColumn(name="actual_business_profile_id", nullable=true)
-     */
-    protected $actualBusinessProfile;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_locked", type="boolean", options={"default" : 0})
-     */
-    protected $locked;
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -626,6 +619,23 @@ class BusinessProfile implements
      */
     private $doubleClickCompany;
 
+    /** @var float
+     *
+     * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
+     */
+    protected $distance;
+
+     /** @var SearchLog[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\SearchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $searchLogs;
+
     /**
      * @return mixed
      */
@@ -689,8 +699,9 @@ class BusinessProfile implements
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this->locked = false;
         $this->isClosed = false;
 
         $this->uid = uniqid('', true);
@@ -742,6 +753,20 @@ class BusinessProfile implements
     public function getWebsite()
     {
         return $this->website;
+    }
+
+    /**
+     * Get website final link
+     *
+     * @return string
+     */
+    public function getWebsiteLink()
+    {
+        if (preg_match('/^http/', $this->getWebsite())) {
+            return $this->getWebsite();
+        }
+
+        return '//' . $this->getWebsite();
     }
 
     /**
@@ -1961,41 +1986,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return BusinessProfile
-     */
-    public function getActualBusinessProfile()
-    {
-        return $this->actualBusinessProfile;
-    }
-
-    /**
-     * @param BusinessProfile $actualBusinessProfile
-     * @return BusinessProfile
-     */
-    public function setActualBusinessProfile($actualBusinessProfile)
-    {
-        $this->actualBusinessProfile = $actualBusinessProfile;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isLocked()
-    {
-        return $this->locked;
-    }
-
-    /**
-     * @param boolean $locked
-     * @return BusinessProfile
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2115,7 +2105,34 @@ class BusinessProfile implements
      */
     public function getShortAddress()
     {
-        return 'Puerto Rico, Ololoeva St 25, 00777';
+        if ($this->getHideAddress()) {
+            return '';
+        }
+
+        if ($this->getCustomAddress()) {
+            return $this->getCustomAddress();
+        }
+
+        $address = [];
+        if ($this->getStreetAddress()) {
+            $address[] = $this->getStreetAddress();
+        }
+
+        if ($this->getZipCode()) {
+            $address[] = $this->getZipCode();
+        }
+
+        if ($this->getCity()) {
+            $address[] = $this->getCity();
+        }
+
+        if ($address) {
+            $addressResult = implode(', ', $address);
+        } else {
+            $addressResult = $this->getGoogleAddress();
+        }
+
+        return $addressResult;
     }
 
     /*
@@ -2144,16 +2161,6 @@ class BusinessProfile implements
         }
 
         return 0;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean
-     */
-    public function getLocked()
-    {
-        return $this->locked;
     }
 
     /**
@@ -2311,6 +2318,26 @@ class BusinessProfile implements
     public function setDoubleClickSynchLog($doubleClickSynchLog)
     {
         $this->doubleClickSynchLog = $doubleClickSynchLog;
+    }
+
+    /** getting distance
+     *
+     * @return float
+     */
+    public function getDistance() : float
+    {
+        return $this->distance;
+    }
+
+    /**
+     * Setting distance
+     *
+     * @param float $distance
+     * @return this
+     */
+    public function setDistance(float $distance)
+    {
+        $this->distance = $distance;
         return $this;
     }
 
@@ -2329,6 +2356,35 @@ class BusinessProfile implements
     public function setDoubleClickCompany($doubleClickCompany)
     {
         $this->doubleClickCompany = $doubleClickCompany;
+    }
+
+     /**
+     * getting distance prettified
+     *
+     * @return string
+     */
+    public function getDistanceUX() : string
+    {
+        $currentDistance = $this->getDistance();
+        $dimension = self::DISTANCE_APPENDIX_NAME_KILOMETERS;
+
+        if ($currentDistance < 1) {
+            $currentDistance *= 1000;
+            $dimension = self::DISTANCE_APPENDIX_NAME_METERS;
+        }
+
+        return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
+    }
+    
+    /**
+     * Add searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     * @return BusinessProfile
+     */
+    public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs[] = $searchLog;
         return $this;
     }
 
@@ -2338,5 +2394,24 @@ class BusinessProfile implements
     public function getDoubleClickExternalId()
     {
         return $this->getSlug();
+    }
+
+    /** Remove searchLog
+     *
+     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
+     */
+    public function removeSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
+    {
+        $this->searchLogs->removeElement($searchLog);
+    }
+
+    /**
+     * Get searchLogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSearchLogs()
+    {
+        return $this->searchLogs;
     }
 }

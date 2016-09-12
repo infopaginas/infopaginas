@@ -226,7 +226,7 @@
                             <aside class="map col-md-3">
                                 {% if bannerFactory is not null %}
                                     {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :
-                                        bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_PORTAL'))  }
+                                        bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_SERP_BOXED'))  }
                                     %}
                                 {% endif %}
                             </aside>
