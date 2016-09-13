@@ -94,13 +94,7 @@ class TaskAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper->add(
-            'rejectReason',
-            TextareaType::class,
-            [
-                //'required' => true,
-            ]
-        );
+        $formMapper->add('rejectReason');
 
         $formMapper->add(
             'businessProfile.businessReviews',

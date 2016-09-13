@@ -16,8 +16,7 @@
         {% if admin_pool.getOption('form_type') == 'horizontal' %}class="form-horizontal"{% endif %}
         role="form"
         action="{{ admin.generateUrl('edit', {'id': admin.id(object), 'uniqid': admin.uniqid, 'subclass': app.request.get('subclass')}) }}" {{ form_enctype(form) }}
-        method="POST"
-        novalidate="novalidate">
+        method="POST">
 
         {% if (object.type == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskType::TASK_REVIEW_APPROVE')) %}
             <hr>
@@ -63,7 +62,7 @@
                         value="{{ constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_CLOSED') }}">
                     Approve
                 </button>
-                <button class="btn btn-danger" data-toggle="modal" data-target="#rejectReasonModal" type="button">
+                <button class="btn btn-danger" data-toggle="modal" data-target="#rejectReasonModal" type="button" id="rejectTaskButton">
                     Reject
                 </button>
             </div>
@@ -94,4 +93,9 @@
 
         {{ form_row(form._token) }}
     </form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/domainbusiness/scripts/modules/tools/tasks.js') }}"></script>
 {% endblock %}
