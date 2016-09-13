@@ -105,6 +105,8 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
             $data     = $this->getAnalyticsDataResource()->get($gaId, $start, $end, $metrics, $filters);
             $prepared = $this->prepareResults($data);
 
+            $this->saveDataToCache($item, $prepared);
+
             return $prepared;
         }
 

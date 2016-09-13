@@ -5,7 +5,13 @@
     "description": "Infopaginas project",
     "autoload": {
         "psr-4": { "": "src/" },
-        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+        "classmap": [
+            "app/AppKernel.php",
+            "app/AppCache.php",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Lib",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201605",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Common"
+        ]
     },
     "require": {
         "php": ">=7.0.0",
@@ -48,7 +54,8 @@
         "cache/filesystem-adapter": "^0.3.1",
         "oneup/flysystem-bundle": "^1.4",
         "cache/adapter-bundle": "^0.4.0",
-        "happyr/google-site-authenticator-bundle": "^0.3.2"
+        "happyr/google-site-authenticator-bundle": "^0.3.2",
+        "googleads/googleads-php-lib": "^10.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

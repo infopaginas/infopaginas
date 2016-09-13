@@ -596,7 +596,26 @@ class BusinessProfile implements
     protected $searchCityFts;
 
     /**
-     * @var float
+     * @var BusinessProfile
+     *
+     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickSynchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist"}
+     * )
+     */
+    private $doubleClickSynchLog;
+
+    /**
+     * @var BusinessProfile
+     *
+     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickCompany",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist"}
+     * )
+     */
+    private $doubleClickCompany;
+
+    /** @var float
      *
      * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
      */
@@ -660,8 +679,6 @@ class BusinessProfile implements
     {
         return $this->id;
     }
-
-
 
     /**
      * Constructor
@@ -2269,7 +2286,23 @@ class BusinessProfile implements
     }
 
     /**
-     * getting distance
+     * @return BusinessProfile
+     */
+    public function getDoubleClickSynchLog()
+    {
+        return $this->doubleClickSynchLog;
+    }
+
+    /**
+     * @param BusinessProfile $doubleClickSynchLog
+     * @return BusinessProfile
+     */
+    public function setDoubleClickSynchLog($doubleClickSynchLog)
+    {
+        $this->doubleClickSynchLog = $doubleClickSynchLog;
+    }
+
+    /** getting distance
      *
      * @return float
      */
@@ -2287,11 +2320,27 @@ class BusinessProfile implements
     public function setDistance(float $distance)
     {
         $this->distance = $distance;
-
         return $this;
     }
 
     /**
+     * @return BusinessProfile
+     */
+    public function getDoubleClickCompany()
+    {
+        return $this->doubleClickCompany;
+    }
+
+    /**
+     * @param BusinessProfile $doubleClickCompany
+     * @return BusinessProfile
+     */
+    public function setDoubleClickCompany($doubleClickCompany)
+    {
+        $this->doubleClickCompany = $doubleClickCompany;
+    }
+
+     /**
      * getting distance prettified
      *
      * @return string
@@ -2318,12 +2367,18 @@ class BusinessProfile implements
     public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
     {
         $this->searchLogs[] = $searchLog;
-
         return $this;
     }
 
     /**
-     * Remove searchLog
+     * @return string
+     */
+    public function getDoubleClickExternalId()
+    {
+        return $this->getSlug();
+    }
+
+    /** Remove searchLog
      *
      * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
      */
