@@ -20,7 +20,6 @@ class BusinessOverviewReportAdmin extends ReportAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-
         $datagridMapper
             ->remove('date')
             ->remove('datePeriod')

@@ -70,6 +70,10 @@ class ReportService
      */
     protected function fetchStats(array $lineItemIds, DateRangeInterface $dateRange, array $columns)
     {
+        if (empty($lineItemIds)) {
+            return [];
+        }
+
         $user = $this->getDfpUser();
 
         $reportService = $user->GetService(self::REPORT_SERVICE_NAME, self::API_VERSION);

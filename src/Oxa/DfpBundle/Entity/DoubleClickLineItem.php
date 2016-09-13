@@ -29,6 +29,12 @@ class DoubleClickLineItem
     private $doubleClickLineItemId;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="date", type="date", nullable=true)
+     */
+    protected $date;
+
+    /**
      * @var DoubleClickOrder
      *
      * @ORM\ManyToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickOrder",
