@@ -234,7 +234,9 @@ class BusinessProfile implements
 
     /**
      * @var string Brands - Brands, Business works with
-     * @ORM\Column(name="business_profile_brands", type="text", nullable=true)
+     *
+     * @Gedmo\Translatable(fallback=true)
+     * @ORM\Column(name="brands", type="text", nullable=true)
      */
     protected $brands;
 
@@ -1199,7 +1201,7 @@ class BusinessProfile implements
     /**
      * Get brands
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return string
      */
     public function getBrands()
     {
@@ -2357,7 +2359,7 @@ class BusinessProfile implements
 
         return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
     }
-    
+
     /**
      * Add searchLog
      *
