@@ -122,6 +122,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $milesOfMyBusinessFieldOptions = [
             'required' => true,
         ];
+
         $localitiesFieldOptions = [
             'multiple' => true,
             'required' => true,
@@ -225,15 +226,16 @@ class BusinessProfileAdmin extends OxaAdmin
                         'multiple' => true,
                         'required' => true,
                     ])
+                    ->add('brands', null, ['required' => false])
+                    ->add('areas', null, ['multiple' => true, 'required' => false])
                     ->add('serviceAreasType', ChoiceType::class, [
                         'choices' => BusinessProfile::getServiceAreasTypes(),
                         'multiple' => false,
                         'expanded' => true,
                         'required' => true,
                     ])
-                    ->add('brands', null, ['required' => false])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
-                    ->add('areas', null, $localitiesFieldOptions)
+                    ->add('localities', null, $localitiesFieldOptions)
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,
@@ -363,6 +365,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('coupons')
             ->add('categories')
             ->add('areas')
+            ->add('localities')
             ->add('brands')
             ->add('paymentMethods')
             ->add('tags')

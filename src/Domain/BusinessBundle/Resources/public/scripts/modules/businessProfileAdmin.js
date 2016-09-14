@@ -4,8 +4,8 @@ $( document ).ready( function() {
             var $self = $( this).parent().find( 'input[name="' + formId + '[serviceAreasType]"]' );
             var withinMilesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
             var withinMilesOfMyBusinessLabel = $( '#sonata-ba-field-container-' + formId + '_milesOfMyBusiness label' );
-            var localitiesField = $( '#' + formId + '_areas' );
-            var localitiesLabel = $( '#sonata-ba-field-container-' + formId + '_areas label' );
+            var localitiesField = $( '#' + formId + '_localities' );
+            var localitiesLabel = $( '#sonata-ba-field-container-' + formId + '_localities label' );
             var localitiesDropdown = localitiesField.parent( '.sonata-ba-field' ).find( '.select2-container-multi' );
 
             if ( $self.val() == 'area' ) {
