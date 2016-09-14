@@ -52,8 +52,13 @@
             });
         </script>
     {% endif %}
-
-    {{  parent() }}
+    {% if admin.keywordsData|length > 0 %}
+        {{  parent() }}
+    {% else %}
+        <div class="callout callout-info">
+            {{ 'no_result'|trans({}, 'SonataAdminBundle') }}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block table_body %}

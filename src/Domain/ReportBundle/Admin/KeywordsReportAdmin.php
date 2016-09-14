@@ -8,6 +8,7 @@
 
 namespace Domain\ReportBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Entity\BusinessOverviewReport;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -42,16 +43,19 @@ class KeywordsReportAdmin extends ReportAdmin
             ->remove('businessProfile')
             ->remove('keywordsCount')
             ->add(
-                'businessProfile',
-                null, [
-                    'label' => $this->trans('filter.label_business_profile', [], $this->getTranslationDomain()),
-                ],
-                null,
-                [
+                'businessProfile', 'doctrine_orm_choice', [
+                'field_type' => 'choice',
+                'field_options' => [
                     'mapped' => false,
-                    'required' => true,
-                ]
-            )
+                    'required'  => true,
+                    'empty_value'  => null,
+                    'choices'   => $this->getDoctrine()->getRepository(BusinessProfile::class)
+                        ->getBusinessProfilesForFilter(),
+                    'translation_domain' => 'SonataAdminBundle',
+                    'attr' => [
+                    ],
+                ],
+            ])
             ->add(
                 'keywordsCount',
                 'doctrine_orm_choice',
@@ -121,5 +125,10 @@ class KeywordsReportAdmin extends ReportAdmin
         }
 
         return $parameters;
+    }
+
+    protected function getDoctrine()
+    {
+        return $this->getConfigurationPool()->getContainer()->get('doctrine');
     }
 }
