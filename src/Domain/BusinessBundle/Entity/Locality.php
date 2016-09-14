@@ -9,6 +9,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Domain\BusinessBundle\Entity\Area;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
+use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 
 /**
  * Locality
@@ -16,10 +20,12 @@ use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
  * @ORM\Table(name="localities")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityRepository")
  */
-class Locality implements GeolocationInterface
+class Locality implements GeolocationInterface, DefaultEntityInterface
 {
+    use DefaultEntityTrait;
     use LocationTrait;
- 
+    use PersonalTranslatable;
+
     /**
      * @var int
      *
@@ -133,7 +139,7 @@ class Locality implements GeolocationInterface
 
         return $this;
     }
-    
+
     /**
      *  Get owning area for this locality
      *

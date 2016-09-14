@@ -183,7 +183,6 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_areas")
-     * @Assert\Count(min = 1, minMessage = "At least 1 area should be selected")
      */
     protected $areas;
 
