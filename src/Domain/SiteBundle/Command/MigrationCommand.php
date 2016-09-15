@@ -108,12 +108,12 @@ class MigrationCommand extends ContainerAwareCommand
                         $itemSecond = $this->getCurlData($baseUrl . '/' . $itemId, $this->localeSecond);
                         $subscriptions = $this->getCurlData($baseUrl . '/' . $itemId . '/subscriptions', $this->localePrimary);
 
-                        $areas = [];
+                        $localities = [];
 
                         if (!empty($item->service_areas)) {
-                            foreach ($item->service_areas as $area) {
+                            foreach ($item->service_areas as $locality) {
                                 // in API data not unique
-                                $areas[$area->locality] = $area->locality;
+                                $localities[$locality->locality] = $locality;
                             }
                         }
 
@@ -123,7 +123,7 @@ class MigrationCommand extends ContainerAwareCommand
                             $itemPrimary,
                             $itemSecond,
                             $subscriptions,
-                            $areas,
+                            $localities,
                             $radius,
                             $country
                         );
@@ -181,7 +181,7 @@ class MigrationCommand extends ContainerAwareCommand
         }
     }
 
-    private function addBusinessProfileByApiData($itemPrimary, $itemSecond, $subscriptions, $areas, $radius, $country)
+    private function addBusinessProfileByApiData($itemPrimary, $itemSecond, $subscriptions, $localities, $radius, $country)
     {
         $manager = $this->getContainer()->get('domain_business.manager.business_profile');
 
@@ -197,8 +197,7 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setName($name);
 
         //todo - set real slug !!!
-#        $entity->setSlug($data['list_slugs']);
-        $entity->setSlug($name);
+        $entity->setSlug($business->slug);
 
         $entity->setRegistrationDate(new \DateTime($business->created_at));
 
@@ -227,8 +226,8 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setZipCode($address->postal_code);
         $entity->setExtendedAddress($address->extended_address);
         $entity->setCrossStreet($address->cross_street);
-        $entity->setLatitude($address->coordinates[0]);
         $entity->setLongitude($address->coordinates[0]);
+        $entity->setLatitude($address->coordinates[1]);
 
         $entity->setCountry($country);
 
@@ -244,14 +243,12 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setGoogleURL($profile->google_plus_url);
         $entity->setYoutubeURL($profile->yt_url);
 
-#        $entity->setServiceAreasType(?);
-#        $entity->setLocalities(?);
 #        $entity->setSearchFts(?);
 #        $entity->setActualBusinessProfile(?);
 
         // process assigned items
 
-        $loadImages = false;
+        $loadImages = true;
 
         if ($loadImages and $profile->images) {
             $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
@@ -259,20 +256,21 @@ class MigrationCommand extends ContainerAwareCommand
             foreach ($profile->images as $image) {
                 $path = 'http://assets3.drxlive.com' . $image->image->url;
 
-                $managerGallery->createNewEntryFromRemoteFile($entity, $path);
+                if ($image->label == 'logo') {
+                    $isLogo = true;
+                } else {
+                    $isLogo = false;
+                }
 
-                // todo - set logo for first
-
-                // $entity->setLogo(?);
-                // $entity->addImage(?);
+                $managerGallery->createNewEntryFromRemoteFile($entity, $path, $isLogo);
             }
         }
 
-        if ($areas) {
+        if ($localities) {
             $entity->setServiceAreasType('area');
 
-            foreach ($areas as $item) {
-                $entity->addArea($this->loadArea($item));
+            foreach ($localities as $item) {
+                $entity->addLocality($this->loadLocality($item));
             }
         } else {
             $entity->setMilesOfMyBusiness($radius);
@@ -283,7 +281,6 @@ class MigrationCommand extends ContainerAwareCommand
             // categories
 
             $pairs = [];
-
             $pair = [];
 
             foreach ($profile->headings as $key => $value) {
@@ -355,8 +352,15 @@ class MigrationCommand extends ContainerAwareCommand
                     $subscription->setSubscriptionPlan($this->subscriptionPlans[$key]);
                     $subscription->setBusinessProfile($entity);
                     $subscription->setStartDate(new \DateTime($item->current_period_started_at));
-                    $subscription->setEndDate(new \DateTime($item->current_period_ends_at));
-                    $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+
+                    $endDate = new \DateTime($item->current_period_ends_at);
+                    $now = new \DateTime('now');
+
+                    $subscription->setEndDate($endDate);
+
+                    if ($endDate >= $now) {
+                        $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+                    }
 
                     $subscription = $this->saveEntity($subscription);
 
@@ -484,6 +488,36 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $this->loadEntity('PaymentMethod', $valuePrimary, $valuePrimary);
+    }
+
+    private function loadLocality($item)
+    {
+        $className = 'Locality';
+
+        $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
+
+        if (!$entity) {
+            $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
+
+            $entity = new $classNameEntity();
+            $entity->setName($item->locality);
+            $entity->setLongitude($item->coordinates[0]);
+            $entity->setLatitude($item->coordinates[1]);
+
+            $entity = $this->saveEntity($entity);
+            $this->em->persist($entity);
+
+            // todo - add area?
+        } else {
+            if (!$entity->getLongitude()) {
+                $entity->setLongitude($item->coordinates[0]);
+                $entity->setLatitude($item->coordinates[1]);
+
+                $this->em->persist($entity);
+            }
+        }
+
+        return $entity;
     }
 
     private function loadArea($valuePrimary)

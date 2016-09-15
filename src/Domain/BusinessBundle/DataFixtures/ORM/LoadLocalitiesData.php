@@ -6,6 +6,7 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\Translation\LocalityTranslation;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,125 +24,385 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
 
     private $localityData = [
             [
-                'name' => 'Aguadilla',
-                'area' => 'Aguadilla',
-                'latitude' => '18.427445',
-                'longitude' => '-67.154070'
+                'name_es' => 'Adjuntas',
+                'name_en' => 'Adjuntas',
+                'area' => 'Central',
             ],
             [
-                'name' => 'Arecibo',
-                'area' => 'Arecibo',
-                'latitude' => '18.459605',
-                'longitude' => '-66.744172'
+                'name_es' => 'Aguada',
+                'name_en' => 'Aguada',
+                'area' => 'West',
             ],
             [
-                'name' => 'Bayamón',
-                'area' => 'Bayamón',
-                'latitude' => '18.369196',
-                'longitude' => '-66.165967'
+                'name_es' => 'Aguadilla',
+                'name_en' => 'Aguadilla',
+                'area' => 'West',
             ],
             [
-                'name' => 'Caguas',
-                'area' => 'Caguas',
-                'latitude' => '18.238799',
-                'longitude' => '-66.035249'
+                'name_es' => 'Aguas Buenas',
+                'name_en' => 'Aguas Buenas',
+                'area' => 'Central',
             ],
             [
-                'name' => 'Carolina',
-                'area' => 'Carolina',
-                'latitude' => '18.380782',
-                'longitude' => '-65.957387'
+                'name_es' => 'Aibonito',
+                'name_en' => 'Aibonito',
+                'area' => 'Central',
             ],
             [
-                'name' => 'Cayey',
-                'area' => 'Cayey',
-                'latitude' => '18.111905',
-                'longitude' => '-66.166000'
+                'name_es' => 'Añasco',
+                'name_en' => 'Anasco',
+                'area' => 'West',
             ],
             [
-                'name' => 'Fajardo',
-                'area' => 'Fajardo',
-                'latitude' => '18.325787',
-                'longitude' => '-65.652384'
+                'name_es' => 'Arecibo',
+                'name_en' => 'Arecibo',
+                'area' => 'North',
             ],
             [
-                'name' => 'Guayama',
-                'area' => 'Guayama',
-                'latitude' => '17.984133',
-                'longitude' => '-66.113777'
+                'name_es' => 'Arroyo',
+                'name_en' => 'Arroyo',
+                'area' => 'South',
             ],
             [
-                'name' => 'Humacao',
-                'area' => 'Humacao',
-                'latitude' => '18.149683',
-                'longitude' => '-65.827385'
+                'name_es' => 'Barceloneta',
+                'name_en' => 'Barceloneta',
+                'area' => 'North',
             ],
             [
-                'name' => 'Juana Díaz',
-                'area' => 'Juana Díaz',
-                'latitude' => '18.053437',
-                'longitude' => '-66.507508'
+                'name_es' => 'Barranquitas',
+                'name_en' => 'Barranquitas',
+                'area' => 'Central',
             ],
             [
-                'name' => 'Manatí',
-                'area' => 'Manatí',
-                'latitude' => '18.429933',
-                'longitude' => '-66.488464'
+                'name_es' => 'Bayamón',
+                'name_en' => 'Bayamon',
+                'area' => 'Metro',
             ],
             [
-                'name' => 'Mayagüez',
-                'area' => 'Mayagüez',
-                'latitude' => '18.201346',
-                'longitude' => '-67.145152'
+                'name_es' => 'Cabo Rojo',
+                'name_en' => 'Cabo Rojo',
+                'area' => 'West',
             ],
             [
-                'name' => 'Ponce',
-                'area' => 'Ponce',
-                'latitude' => '18.011077',
-                'longitude' => '-66.614062'
+                'name_es' => 'Caguas',
+                'name_en' => 'Caguas',
+                'area' => 'Metro',
             ],
             [
-                'name' => 'San Germán',
-                'area' => 'San Germán',
-                'latitude' => '18.080708',
-                'longitude' => '-67.041110'
+                'name_es' => 'Canóvanas',
+                'name_en' => 'Canovanas',
+                'area' => 'East',
             ],
             [
-                'name' => 'San Sebastián',
-                'area' => 'San Sebastián',
-                'latitude' => '18.333521',
-                'longitude' => '-66.990992'
+                'name_es' => 'Carolina',
+                'name_en' => 'Carolina',
+                'area' => 'Metro',
             ],
             [
-                'name' => 'San Juan',
-                'area' => 'San Juan',
-                'latitude' => '18.465539',
-                'longitude' => '-66.105735'
+                'name_es' => 'Cataño',
+                'name_en' => 'Catano',
+                'area' => 'Metro',
             ],
             [
-                'name' => 'Toa Baja',
-                'area' => 'Toa Baja',
-                'latitude' => '18.444471',
-                'longitude' => '-66.254329'
+                'name_es' => 'Cayey',
+                'name_en' => 'Cayey',
+                'area' => 'Central',
             ],
             [
-                'name' => 'Utuado',
-                'area' => 'Utuado',
-                'latitude' => '18.265510',
-                'longitude' => '-66.700452'
+                'name_es' => 'Ceiba',
+                'name_en' => 'Ceiba',
+                'area' => 'East',
             ],
             [
-                'name' => 'Vega Baja',
-                'area' => 'Vega Baja',
-                'latitude' => '18.444391',
-                'longitude' => '-66.387670'
+                'name_es' => 'Ciales',
+                'name_en' => 'Ciales',
+                'area' => 'Central',
             ],
             [
-                'name' => 'Yauco',
-                'area' => 'Yauco',
-                'latitude' => '18.034964',
-                'longitude' => '-66.849898'
-            ]
+                'name_es' => 'Cidra',
+                'name_en' => 'Cidra',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Coamo',
+                'name_en' => 'Coamo',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Comerío',
+                'name_en' => 'Comerio',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Corozal',
+                'name_en' => 'Corozal',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Culebra',
+                'name_en' => 'Culebra',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Dorado',
+                'name_en' => 'Dorado',
+                'area' => 'Metro',
+            ],
+            [
+                'name_es' => 'Fajardo',
+                'name_en' => 'Fajardo',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Florida',
+                'name_en' => 'Florida',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Guánica',
+                'name_en' => 'Guanica',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Guayama',
+                'name_en' => 'Guayama',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Guayanilla',
+                'name_en' => 'Guayanilla',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Guaynabo',
+                'name_en' => 'Guaynabo',
+                'area' => 'Metro',
+            ],
+            [
+                'name_es' => 'Gurabo',
+                'name_en' => 'Gurabo',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Hatillo',
+                'name_en' => 'Hatillo',
+                'area' => 'North',
+            ],
+            [
+                'name_es' => 'Hormigueros',
+                'name_en' => 'Hormigueros',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Humacao',
+                'name_en' => 'Humacao',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Isabela',
+                'name_en' => 'Isabela',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Jayuya',
+                'name_en' => 'Jayuya',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Juana Díaz',
+                'name_en' => 'Juana Diaz',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Juncos',
+                'name_en' => 'Juncos',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Lajas',
+                'name_en' => 'Lajas',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Las Marías',
+                'name_en' => 'Las Marias',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Las Piedras',
+                'name_en' => 'Las Piedras',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Loíza',
+                'name_en' => 'Loiza',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Luquillo',
+                'name_en' => 'Luquillo',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Manatí',
+                'name_en' => 'Manati',
+                'area' => 'North',
+            ],
+            [
+                'name_es' => 'Maricao',
+                'name_en' => 'Maricao',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Maunabo',
+                'name_en' => 'Maunabo',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Mayagüez',
+                'name_en' => 'Mayaguez',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Moca',
+                'name_en' => 'Moca',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Morovis',
+                'name_en' => 'Morovis',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Naguabo',
+                'name_en' => 'Naguabo',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Naranjito',
+                'name_en' => 'Naranjito',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Orocovis',
+                'name_en' => 'Orocovis',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Patillas',
+                'name_en' => 'Patillas',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Peñuelas',
+                'name_en' => 'Penuelas',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Ponce',
+                'name_en' => 'Ponce',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Quebradillas',
+                'name_en' => 'Quebradillas',
+                'area' => 'North',
+            ],
+            [
+                'name_es' => 'Rincón',
+                'name_en' => 'Rincon',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Río Grande',
+                'name_en' => 'Rio Grande',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Sabana Grande',
+                'name_en' => 'Sabana Grande',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Salinas',
+                'name_en' => 'Salinas',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'San Germán',
+                'name_en' => 'San German',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'San Juan',
+                'name_en' => 'San Juan',
+                'area' => 'Metro',
+            ],
+            [
+                'name_es' => 'San Lorenzo',
+                'name_en' => 'San Lorenzo',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'San Sebastián',
+                'name_en' => 'San Sebastian',
+                'area' => 'West',
+            ],
+            [
+                'name_es' => 'Santa Isabel',
+                'name_en' => 'Santa Isabel',
+                'area' => '',
+            ],
+            [
+                'name_es' => 'Toa Alta',
+                'name_en' => 'Toa Alta',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Toa Baja',
+                'name_en' => 'Toa Baja',
+                'area' => 'Metro',
+            ],
+            [
+                'name_es' => 'Trujillo Alto',
+                'name_en' => 'Trujillo Alto',
+                'area' => 'Metro',
+            ],
+            [
+                'name_es' => 'Utuado',
+                'name_en' => 'Utuado',
+                'area' => 'Central',
+            ],
+            [
+                'name_es' => 'Vega Alta',
+                'name_en' => 'Vega Alta',
+                'area' => 'North',
+            ],
+            [
+                'name_es' => 'Vega Baja',
+                'name_en' => 'Vega Baja',
+                'area' => 'North',
+            ],
+            [
+                'name_es' => 'Vieques',
+                'name_en' => 'Vieques',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Villalba',
+                'name_en' => 'Villalba',
+                'area' => 'South',
+            ],
+            [
+                'name_es' => 'Yabucoa',
+                'name_en' => 'Yabucoa',
+                'area' => 'East',
+            ],
+            [
+                'name_es' => 'Yauco',
+                'name_en' => 'Yauco',
+                'area' => 'South',
+            ],
         ];
 
     /**
@@ -153,15 +414,22 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
 
         foreach ($this->localityData as $item) {
             $locObject = new Locality();
-            $locObject->setName($item['name']);
-            $locObject->setLatitude($item['latitude']);
-            $locObject->setLongitude($item['longitude']);
+            $locObject->setName($item['name_en']);
+
             if (!empty($item['area'])) {
                 $area = $this->getReference('area.' . str_replace(' ', '', $item['area']));
                 $locObject->setArea($area);
             }
 
-            $this->addReference('locality.' . str_replace(' ', '', $item['name']), $locObject);
+            $translation = new LocalityTranslation();
+            $translation->setContent($item['name_es']);
+            $translation->setField('name');
+            $translation->setLocale('es');
+            $translation->setObject($locObject);
+
+            $this->manager->persist($translation);
+
+            $this->addReference('locality.' . str_replace(' ', '', $item['name_en']), $locObject);
 
             $this->manager->persist($locObject);
         }

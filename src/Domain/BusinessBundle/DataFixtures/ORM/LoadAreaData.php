@@ -24,167 +24,13 @@ class LoadAreaData extends AbstractFixture implements ContainerAwareInterface, O
     protected $manager;
 
     private $areaAndLocalities = [
-            [
-                'name' => 'Aguadilla',
-                'localities' => [
-                    [
-                        'name' => 'Aguadilla',
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Arecibo',
-                'localities' => [
-                    [
-                        'name' => 'Arecibo'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Bayamón',
-                'localities' => [
-                    [
-                        'name' => 'Bayamón'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Caguas',
-                'localities' => [
-                    [
-                        'name' => 'Caguas'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Carolina',
-                'localities' => [
-                    [
-                        'name' => 'Carolina'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Cayey',
-                'localities' => [
-                    [
-                        'name' => 'Cayey'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Fajardo',
-                'localities' => [
-                    [
-                        'name' => 'Fajardo'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Guayama',
-                'localities' => [
-                    [
-                        'name' => 'Guayama'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Humacao',
-                'localities' => [
-                    [
-                        'name' => 'Humacao'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Juana Díaz',
-                'localities' => [
-                    [
-                        'name' => 'Juana Díaz'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Manatí',
-                'localities' => [
-                    [
-                        'name' => 'Manatí'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Mayagüez',
-                'localities' => [
-                    [
-                        'name' => 'Mayagüez'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Ponce',
-                'localities' => [
-                    [
-                        'name' => 'Ponce'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'San Germán',
-                'localities' => [
-                    [
-                        'name' => 'San Germán'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'San Sebastián',
-                'localities' => [
-                    [
-                        'name' => 'San Sebastián'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'San Juan',
-                'localities' => [
-                    [
-                        'name' => 'San Juan'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Toa Baja',
-                'localities' => [
-                    [
-                        'name' => 'Toa Baja'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Utuado',
-                'localities' => [
-                    [
-                        'name' => 'Utuado'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Vega Baja',
-                'localities' => [
-                    [
-                        'name' => 'Vega Baja'
-                    ]
-                ]
-            ],
-            [
-                'name' => 'Yauco',
-                'localities' => [
-                    [
-                        'name' => 'Yauco'
-                    ]
-                ]
-            ],
-        ];
+        'Central',
+        'North',
+        'South',
+        'West',
+        'East',
+        'Metro',
+    ];
 
     /**
      * {@inheritDoc}
@@ -195,24 +41,14 @@ class LoadAreaData extends AbstractFixture implements ContainerAwareInterface, O
 
         foreach ($this->areaAndLocalities as $areaItem) {
             $area = new Area();
-            $area->setName($areaItem['name']);
-
-            $translation = new AreaTranslation();
-            $translation->setContent(sprintf('Spain %s', $areaItem['name']));
-            $translation->setField('name');
-            $translation->setLocale('es');
-            $translation->setObject($area);
-
-            $this->manager->persist($translation);
+            $area->setName($areaItem);
             $this->manager->persist($area);
 
-            $this->addReference('area.' . str_replace(' ', '', $areaItem['name']), $area);
+            $this->addReference('area.' . str_replace(' ', '', $areaItem), $area);
         }
 
         $manager->flush();
     }
-
-
 
     /**
      * Get the order of this fixture
