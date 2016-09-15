@@ -2401,7 +2401,7 @@ class BusinessProfile implements
     public static function getServiceAreasTypes()
     {
         return [
-            'area' => 'Area',
+            'area' => 'Distance',
             'locality' => 'Locality'
         ];
     }

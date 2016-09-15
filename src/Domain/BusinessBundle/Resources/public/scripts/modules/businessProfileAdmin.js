@@ -12,9 +12,7 @@ $( document ).ready( function() {
                 withinMilesOfMyBusinessField.removeAttr( 'disabled' );
                 localitiesField.attr('disabled', 'disabled');
 
-                localitiesField.removeAttr( 'required' );
                 withinMilesOfMyBusinessField.attr('required', 'required');
-                localitiesLabel.removeClass( 'required' );
 
                 if ( !withinMilesOfMyBusinessLabel.hasClass( 'required' ) ) {
                     withinMilesOfMyBusinessLabel.addClass( 'required' );
@@ -23,14 +21,9 @@ $( document ).ready( function() {
                 localitiesField.removeAttr( 'disabled' );
                 withinMilesOfMyBusinessField.attr( 'disabled', 'disabled' );
 
-                localitiesField.attr('required', 'required');
                 withinMilesOfMyBusinessField.removeAttr( 'required' );
                 localitiesDropdown.removeClass( 'select2-container-disabled' );
                 withinMilesOfMyBusinessLabel.removeClass( 'required' );
-
-                if ( !localitiesLabel.hasClass( 'required' ) ) {
-                    localitiesLabel.addClass( 'required' );
-                }
             }
         } );
     } );
