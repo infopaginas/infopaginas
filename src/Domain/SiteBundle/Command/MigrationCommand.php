@@ -267,14 +267,14 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         if ($localities) {
-            $entity->setServiceAreasType('area');
+            $entity->setServiceAreasType('locality');
 
             foreach ($localities as $item) {
                 $entity->addLocality($this->loadLocality($item));
             }
         } else {
             $entity->setMilesOfMyBusiness($radius);
-            $entity->setServiceAreasType('locality');
+            $entity->setServiceAreasType('area');
         }
 
         if ($profile->headings) {
