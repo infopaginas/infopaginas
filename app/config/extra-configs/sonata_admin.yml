@@ -90,3 +90,5 @@ sonata_admin:
                     - domain_report.admin.keywords_report
                     - domain_report.admin.subscription_report
                     - domain_report.admin.category_report
+                    - domain_report.admin.views_and_visitors_report
+                    - domain_report.admin.interactions

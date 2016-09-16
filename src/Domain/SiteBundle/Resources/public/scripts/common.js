@@ -57,6 +57,7 @@ requirejs.config({
         'photo-gallery' : 'domainsite/scripts/vendors/photo-gallery',
         'lightbox'      : 'domainsite/scripts/vendors/simple-lightbox.min',
         'select2'       : 'domainsite/scripts/vendors/select2.min',
+        'iframetracker' : 'domainsite/scripts/vendors/jquery.iframetracker',
 
         'business/modules' : 'domainbusiness/scripts/modules',
         'business/tools'   : 'domainbusiness/scripts/modules/tools'

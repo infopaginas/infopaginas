@@ -16,6 +16,8 @@ class DefaultManager implements ContainerAwareInterface
 {
     const REPORT_NAME_DATE_FORMAT = 'Ymd_His';
 
+    const REPORT_ADMIN_DATE_FORMAT = 'd.m.Y';
+
     /**
      * @var ContainerInterface
      */

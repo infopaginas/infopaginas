@@ -85,3 +85,11 @@ services:
     domain_report.manager.search_log:
         class: Domain\ReportBundle\Manager\SearchLogManager
         arguments: ['@doctrine.orm.entity_manager', '@domain_report.manager.keywords']
+
+    domain_report.manager.views_and_visitors:
+        class: Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager
+        arguments: ['@domain_report.google_analytics.data_fetcher']
+
+    domain_report.manager.interactions:
+        class: Domain\ReportBundle\Manager\InteractionsReportManager
+        arguments: ['@domain_report.google_analytics.data_fetcher']
