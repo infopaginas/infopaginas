@@ -3,10 +3,8 @@
 </option>
 {% if results.neighborhoods is not empty %}
     {% for neighborhood in results.neighborhoods %}
-        {% set is_selected = app.request.get('geo') == neighborhood.getName() %}
-
-        <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'geo': neighborhood.getName() })) }}"
-            {% if is_selected %}selected{% endif %} value="{{ neighborhood.getName() }}">
+        <option data-route="{{ path(pageRouter, searchData|merge({'geo': neighborhood.getName() })) }}"
+            {% if searchData.geo == neighborhood.getName() %}selected{% endif %} value="{{ neighborhood.getName() }}">
             {{ neighborhood.getName() }}
         </option>
     {% endfor %}

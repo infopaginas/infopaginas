@@ -9,7 +9,7 @@ define(['jquery', 'select2'], function($, select2 ) {
     };
 
     select.prototype.initSelect = function() {
-        if($(document).width() > 480){
+
 
             var self = this;
 
@@ -28,7 +28,7 @@ define(['jquery', 'select2'], function($, select2 ) {
                 $(this).tab('show');
                 self.selectControl.select2();
             })
-        }
+
 
     };
 

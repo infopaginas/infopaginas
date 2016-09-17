@@ -1,0 +1,104 @@
+{% extends 'DomainReportBundle:Admin/Default:list.html.twig' %}
+
+{% block list_table %}
+    {% if admin.adUnits | length <= 0 %}
+        <div class="callout callout-info">
+            {{ 'no_result'|trans({}, 'SonataAdminBundle') }}
+        </div>
+    {% else %}
+        <div class="panel-group" id="accordion">
+            {% for bannerName, statistics in admin.adUnits %}
+                {% set totalClicks = 0 %}
+                {% set totalImpressions = 0 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}">
+                                Banner (Line Item) Name: "{{ bannerName }}"
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse{{ loop.index }}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr class="sonata-ba-list-field-header">
+                                    <td>Date</td>
+                                    <td>Clicks</td>
+                                    <td>Impressions</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for date, stats in statistics %}
+                                    {% set totalClicks = totalClicks + stats.clicks %}
+                                    {% set totalImpressions = totalImpressions + stats.impressions %}
+                                    <tr>
+                                        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                                            {{ date }}
+                                        </td>
+                                        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                                            {{ stats.clicks }}
+                                        </td>
+                                        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                                            {{ stats.impressions }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{ totalClicks }}</td>
+                                    <td>{{ totalImpressions }}</td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+    {% block table_footer %}
+        <div class="pull-right">
+            {% if admin.hasRoute('export') and admin.isGranted("EXPORT") and admin.getExportFormats()|length and admin.adUnits|length > 0 %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-export"></i>
+                        {{ "label_export_download"|trans({}, "SonataAdminBundle") }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for format in admin.getExportFormats() %}
+                        <li>
+                            <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : format}) }}">
+                                <i class="glyphicon glyphicon-download"></i>
+                                {{ format|upper }}
+                            </a>
+                        <li>
+                            {% endfor %}
+                    </ul>
+                </div>
+
+                &nbsp;-&nbsp;
+            {% endif %}
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% set showPagination = false %}
+
+
+{% block pager_results %}
+    {% if showPagination %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block pager_links %}
+    {% if showPagination %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

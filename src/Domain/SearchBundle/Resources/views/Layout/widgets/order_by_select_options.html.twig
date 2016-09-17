@@ -1,9 +1,9 @@
 <select class="form-control select-control order-by-select">
-    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'order': 'relevance'})) }}"
+    <option data-route="{{ path(pageRouter, searchData|merge({'order': 'relevance'})) }}"
         {% if app.request.get('order') == 'relevance' %}selected{% endif %} value="relevance">
        Relevance
     </option>
-    <option data-route="{{ path(app.request.get('_route'), app.request.query|merge({'order': 'distance'})) }}"
+    <option data-route="{{ path(pageRouter, searchData|merge({'order': 'distance'})) }}"
         {% if app.request.get('order') == 'distance' %}selected{% endif %} value="distance">
        Distance
     </option>

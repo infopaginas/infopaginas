@@ -1,14 +1,28 @@
 <div class="col-xs-6 find-input">
-    <input type="text" id='headerSearch' name="q" placeholder="What do you want to find?"
-        {% if app.request.query.get('q') is not null %} value="{{ app.request.query.get('q') }}" {% endif %}
-           class="form-control what">
-        
+
+    {% if searchData is defined and searchData %}
+        {% set qValue = searchData.q %}
+        {% set geoValue = searchData.geo %}
+    {% else %}
+        {% if app.request.query.get('q') is not null %}
+            {% set qValue = app.request.query.get('q') %}
+        {% else %}
+            {% set qValue = '' %}
+        {% endif %}
+
+        {% if app.request.query.get('geo') is not null %}
+            {% set geoValue = app.request.query.get('geo') %}
+        {% else %}
+            {% set geoValue = '' %}
+        {% endif %}
+    {% endif %}
+
+    <input type="text" id='headerSearch' name="q" placeholder="What do you want to find?" value="{{ qValue }}" class="form-control what">
+
 </div>
 <div class="col-xs-5 search-input home">
     <div class="search-geo">
-    <input type="text" id='headerGeo'  name="geo" placeholder="San Juan"
-        {% if app.request.query.get('geo') is not null %} value="{{ app.request.query.get('geo') }}" {% endif %}
-        class="form-control">
+    <input type="text" id='headerGeo' name="geo" placeholder="San Juan" value="{{ geoValue }}" class="form-control">
         <span class="cross"></span>
     </div>
     <div class="search-button-home">

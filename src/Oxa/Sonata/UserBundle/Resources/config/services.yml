@@ -28,3 +28,8 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@oxa.manager.groups'
+
+    # disable CRUD for user roles
+    sonata.user.admin.group:
+      abstract: true
+      public: false

@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class CategoryAdminCRUDController extends CRUDController
 {
@@ -37,7 +38,7 @@ class CategoryAdminCRUDController extends CRUDController
                     'sonata_flash_error',
                     $this->get('translator')->trans(
                         'flash_delete_error_rel',
-                        array('%fields%' => implode(',', $existDependentFields)),
+                        array('%fields%' => implode(', ', $existDependentFields)),
                         'SonataAdminBundle'
                     )
                 );

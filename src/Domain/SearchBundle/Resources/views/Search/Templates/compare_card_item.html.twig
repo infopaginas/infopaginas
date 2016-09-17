@@ -65,26 +65,12 @@
             {{ item.workingHours }}
         </div>
     </div>
-    <div class="payment-method fields-item">
-        <ul class="payment-methods">
+    <div class="schedule fields-item">
+        <div class="address">
             {% for method in item.paymentMethods %}
-                {% if method.name == 'Cash' %}
-                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/cash.png')}}"></a></li>
-                {% endif %}
-
-                {% if method.name == 'Visa' %}
-                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/visa.png')}}"></a></li>
-                {% endif %}
-
-                {% if method.name == 'Master Card' %}
-                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/mastercard.png')}}"></a></li>
-                {% endif %}
-
-                {% if method.name == 'PayPal' %}
-                    <li><a class="blue-c" href=""><img src="{{ asset('/assets/images/paypal.png')}}"></a></li>
-                {% endif %}
+                {{ method.getName() }}{% if not loop.last %}, {% endif %}
             {% endfor%}
-        </ul>
+        </div>
     </div>
     <div class="social fields-item">
         <ul class="social-icons">

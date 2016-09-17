@@ -70,10 +70,11 @@ class BusinessGalleryManager
     /**
      * @param BusinessProfile $businessProfile
      * @param string $url
+     * @param bool $isLogo
      * @return BusinessProfile
      * @throws \Exception
      */
-    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url)
+    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url, bool $isLogo = false)
     {
         $headers = SiteHelper::checkUrlExistence($url);
 
@@ -94,7 +95,7 @@ class BusinessGalleryManager
 
             $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile);
 
-            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
+            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media, $isLogo);
 
             return $businessProfile;
         } else {
@@ -123,11 +124,15 @@ class BusinessGalleryManager
      * @param Media $media
      * @return BusinessProfile
      */
-    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media) : BusinessProfile
+    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media, bool $isLogo = false) : BusinessProfile
     {
         $businessGallery = new BusinessGallery();
         $businessGallery->setMedia($media);
         $businessProfile->addImage($businessGallery);
+
+        if ($isLogo) {
+            $businessProfile->setLogo($media);
+        }
 
         return $businessProfile;
     }
