@@ -41,7 +41,7 @@ class LoadPageData extends OxaAbstractFixture
                 'title'         => 'Advertise with Us',
                 'code'          => PageInterface::CODE_ADVERTISE,
                 'description'   => 'Advertise with Us Description',
-                'body'          => 'Advertise with Us  - <a href="/b/business/create">Get Your Free Listing</a>',
+                'body'          => 'Advertise with Us  - <a href="/businesses/new">Get Your Free Listing</a>',
                 'isPublished'   => true,
                 'slug'          => 'advertise',
             ],
