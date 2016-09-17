@@ -87,14 +87,21 @@ class VideosController extends Controller
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
 
-        $editVideoForm = $this->getEditVideoForm($business, $media);
+        if ($media) {
+            $editVideoForm = $this->getEditVideoForm($business, $media);
 
-        $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
-            'media' => $media,
-            'form' => $editVideoForm->createView(),
-        ]);
+            $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+                'media' => $media,
+                'form' => $editVideoForm->createView(),
+            ]);
 
-        return $this->getSuccessResponse($response);
+            return $this->getSuccessResponse($response);
+        } else {
+            return $this->getFailureResponse(
+                $this->getTranslator()->trans('business_profile.video.invalid_url', [], 'validators'),
+                []
+            );
+        }
     }
 
     public function indexAction()
