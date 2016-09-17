@@ -88,3 +88,10 @@ services:
     domain_report.manager.ad_usage:
         class: Domain\ReportBundle\Manager\AdUsageReportManager
         arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager', '@cache.provider.my_file_system']
+    domain_report.manager.views_and_visitors:
+        class: Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager
+        arguments: ['@domain_report.google_analytics.data_fetcher']
+
+    domain_report.manager.interactions:
+        class: Domain\ReportBundle\Manager\InteractionsReportManager
+        arguments: ['@domain_report.google_analytics.data_fetcher']

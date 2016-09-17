@@ -173,9 +173,6 @@ class AdUsageReportAdmin extends ReportAdmin
 
     protected function getCacheService() : CacheItemPoolInterface
     {
-        /*$cacheService = 'cache.provider.my_file_system';
-        return new Reference($cacheService);*/
-
         return $this->getConfigurationPool()->getContainer()->get('cache.provider.my_file_system');
     }
 
