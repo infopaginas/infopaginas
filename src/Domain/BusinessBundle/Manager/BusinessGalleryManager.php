@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\MediaManager;
@@ -69,30 +70,37 @@ class BusinessGalleryManager
     /**
      * @param BusinessProfile $businessProfile
      * @param string $url
+     * @param bool $isLogo
      * @return BusinessProfile
      * @throws \Exception
      */
-    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url) : BusinessProfile
+    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url, bool $isLogo = false)
     {
-        $file = tmpfile();
+        $headers = SiteHelper::checkUrlExistence($url);
 
-        if ($file === false) {
-            throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+        if ($headers && in_array($headers['content_type'], SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
+            $file = tmpfile();
+
+            if ($file === false) {
+                throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+            }
+
+            // Put content in this file
+            $path = stream_get_meta_data($file)['uri'];
+            file_put_contents($path, file_get_contents($url));
+
+            // the UploadedFile of the user image
+            // referencing the temp file (used for validation only)
+            $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+            $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile);
+
+            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media, $isLogo);
+
+            return $businessProfile;
+        } else {
+            return false;
         }
-
-        // Put content in this file
-        $path = stream_get_meta_data($file)['uri'];
-        file_put_contents($path, file_get_contents($url));
-
-        // the UploadedFile of the user image
-        // referencing the temp file (used for validation only)
-        $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
-
-        $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile);
-
-        $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
-
-        return $businessProfile;
     }
 
     /**
@@ -116,38 +124,17 @@ class BusinessGalleryManager
      * @param Media $media
      * @return BusinessProfile
      */
-    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media) : BusinessProfile
+    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media, bool $isLogo = false) : BusinessProfile
     {
         $businessGallery = new BusinessGallery();
         $businessGallery->setMedia($media);
         $businessProfile->addImage($businessGallery);
 
+        if ($isLogo) {
+            $businessProfile->setLogo($media);
+        }
+
         return $businessProfile;
-    }
-
-    /**
-     * Used to restore images in case then task rejected
-     *
-     * @access public
-     * @param BusinessProfile $businessProfile
-     */
-    public function restoreBusinessProfileImages(BusinessProfile $businessProfile)
-    {
-        $actualBusinessProfile = $businessProfile->getActualBusinessProfile();
-
-        $images = $this->getRepository()->findBusinessProfileRemovedImages($actualBusinessProfile);
-
-        foreach ($images as $image) {
-            $image->setDeletedAt(null);
-            $this->getEntityManager()->persist($image);
-        }
-
-        foreach ($businessProfile->getImages() as $image) {
-            $actualBusinessProfile->addImage($image);
-            $this->getEntityManager()->persist($actualBusinessProfile);
-        }
-
-        $this->getEntityManager()->flush();
     }
 
     /**

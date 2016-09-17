@@ -6,6 +6,10 @@ oxa_wistia:
     resource: "@OxaWistiaBundle/Resources/config/routing.yml"
     prefix:   /
 
+oxa_dfp:
+    resource: "@OxaDfpBundle/Resources/config/routing.yml"
+    prefix:   /
+
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
     prefix:   /articles
@@ -106,3 +110,7 @@ fos_js_routing:
 fos_user_resetting_reset:
     path:     /password_reset/{token}
     defaults: { _controller: DomainSiteBundle:Home:index }
+
+happyr_google_site_authenticator:
+    resource: "@HappyrGoogleSiteAuthenticatorBundle/Resources/config/routing.yml"
+    prefix:   /admin

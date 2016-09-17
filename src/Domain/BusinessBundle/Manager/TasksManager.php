@@ -8,14 +8,22 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\PersistentCollection;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
+use Oxa\Sonata\UserBundle\Entity\Group;
+use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Oxa\Sonata\UserBundle\Entity\User;
+use Oxa\Sonata\UserBundle\Manager\UsersManager;
 
 /**
  * Class TasksManager
@@ -38,17 +46,24 @@ class TasksManager
     /** @var BusinessReviewManager $businessReviewManager */
     protected $businessReviewManager;
 
+    /** @var UsersManager $usersManager */
+    protected $usersManager;
+
+    protected $doctrine;
+
     /**
      * TasksManager constructor.
      *
      * @access public
      * @param EntityManager $entityManager
      * @param BusinessProfileManager $businessProfileManager
+     * @param UsersManager $usersManager
      */
     public function __construct(
         EntityManager $entityManager,
         BusinessProfileManager $businessProfileManager,
-        BusinessReviewManager $businessReviewManager
+        BusinessReviewManager $businessReviewManager,
+        UsersManager $usersManager
     ) {
         $this->em = $entityManager;
 
@@ -56,6 +71,7 @@ class TasksManager
 
         $this->businessProfileManager = $businessProfileManager;
         $this->businessReviewManager  = $businessReviewManager;
+        $this->usersManager           = $usersManager;
     }
 
     /**
@@ -68,7 +84,6 @@ class TasksManager
     public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_CREATE, $businessProfile);
-        $task->setChangeSet($this->calculateBusinessProfileChanges($task));
         return $this->save($task);
     }
 
@@ -82,8 +97,8 @@ class TasksManager
     public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
-        $task->setChangeSet($this->calculateBusinessProfileChanges($task));
-        return $this->save($task);
+        $task->setChangeSet(ChangeSetCalculator::getChangeSet($this->em, $businessProfile));
+        return $this->save($task, false);
     }
 
     /**
@@ -172,11 +187,6 @@ class TasksManager
     public function reject(Task $task) : array
     {
         $task->setStatus(TaskStatusType::TASK_STATUS_REJECTED);
-
-        if ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
-            $this->getBusinessProfileManager()->restore($task->getBusinessProfile());
-        }
-
         return $this->save($task);
     }
 
@@ -195,8 +205,16 @@ class TasksManager
 
         if ($task->getType() == TaskType::TASK_PROFILE_CREATE) {
             $this->getBusinessProfileManager()->activate($businessProfile);
+
+            if ($businessProfile->getUser()) {
+                $this->getUsersManager()->changeUserRole(
+                    $businessProfile->getUser(),
+                    Group::CODE_MERCHANT,
+                    Group::CODE_CONSUMER
+                );
+            }
         } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
-            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $this->getTaskLocale($task));
+            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet(), $this->getTaskLocale($task));
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
             $this->getBusinessReviewsManager()->publish($task->getReview());
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
@@ -204,16 +222,6 @@ class TasksManager
         }
 
         return $this->save($task);
-    }
-
-    /**
-     * @param Task $task
-     * @return string
-     */
-    private function calculateBusinessProfileChanges(Task $task)
-    {
-        $locale = $this->getTaskLocale($task);
-        return $this->getBusinessProfileManager()->getSerializedProfileChanges($task->getBusinessProfile(), $locale);
     }
 
     /**
@@ -228,18 +236,22 @@ class TasksManager
     /**
      * Save task entity (call $em->persist() & $em->flush())
      *
-     * @access protected
      * @param Task $task
+     * @param bool $updateRelated
      * @return array
      */
-    protected function save(Task $task) : array
+    protected function save(Task $task, $updateRelated = true) : array
     {
         $success = true;
         $message = self::TASK_SUCCESSFULLY_CREATED_MESSAGE;
 
         try {
             $this->em->persist($task);
-            $this->em->flush();
+            if ($updateRelated) {
+                $this->em->flush();
+            } else {
+                $this->em->flush($task);
+            }
         } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
@@ -262,6 +274,11 @@ class TasksManager
     private function getBusinessReviewsManager() : BusinessReviewManager
     {
         return $this->businessReviewManager;
+    }
+
+    private function getUsersManager() : UsersManager
+    {
+        return $this->usersManager;
     }
 
     /**

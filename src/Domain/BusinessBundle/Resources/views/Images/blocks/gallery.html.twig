@@ -28,3 +28,10 @@
         </td>
     </tr>
 {% endfor %}
+
+{% block scripts %}
+    <script>
+        var logoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO') }}';
+        var photoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES') }}';
+    </script>
+{% endblock %}

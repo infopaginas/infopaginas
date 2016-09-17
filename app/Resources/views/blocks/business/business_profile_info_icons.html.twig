@@ -1,30 +1,21 @@
 <div class="icons">
     {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and business.getImages() | length > 0  %}
-        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#photo">
+        <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#photo">
             <i class="photo"></i>
         </a>
     {% endif %}
 
     {% if hasSubscription(business, "CODE_PREMIUM_PLATINUM") and business.getVideo() is not null %}
-        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#video">
+        <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#video">
             <i class="video"></i>
         </a>
     {% endif %}
 
     {% if hasSubscription(business, "CODE_PRIORITY") and business.getImages() | length > 0 %}
-        <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#ad">
+        <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#ad">
             <i class="ad"></i>
         </a>
     {% endif %}
 </div>
 
-{% set businessReviewsCount = get_business_profile_reviews_count(business) %}
-{% set reviewsAvgRating = get_business_profile_reviews_avg_rating(business) %}
-
-<div class="reviews">
-    <a href="{{ path('domain_business_profile_view', { 'slug' : business.getSlug() }) }}#reviews">
-        {% include ':blocks/business:review_rating_stars.html.twig'
-        with { 'rating': reviewsAvgRating } %}
-        <span>{{ businessReviewsCount }} Reviews</span>
-    </a>
-</div>
+{% include ':blocks/business:business_profile_reviews.html.twig' with {'business': business, 'withLink': true} %}

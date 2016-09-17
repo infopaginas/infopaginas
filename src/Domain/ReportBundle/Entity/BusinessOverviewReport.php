@@ -170,4 +170,14 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     {
         return $this->businessOverviewReportBusinessProfiles;
     }
+
+    /**
+     * Get businessOverviewReportBusinessProfiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessOverviewReportBusinessProfiles()
+    {
+        return $this->businessOverviewReportBusinessProfiles;
+    }
 }

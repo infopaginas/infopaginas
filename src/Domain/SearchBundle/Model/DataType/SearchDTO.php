@@ -16,6 +16,8 @@ class SearchDTO extends AbstractDTO
     protected $category;
     protected $neighborhood;
 
+    protected $orderBy;
+
     public function __construct(string $query, LocationValueObject $locationValue, int $page, int $limit)
     {
         $this->query            = $query;
@@ -25,6 +27,8 @@ class SearchDTO extends AbstractDTO
 
         $this->category         = null;
         $this->neighborhood     = null;
+
+        $this->orderBy          = null;
     }
 
     public function setCategory(string $category)
@@ -49,5 +53,15 @@ class SearchDTO extends AbstractDTO
     public function getNeighborhood()
     {
         return $this->neighborhood;
+    }
+
+    public function setOrderBy($order)
+    {
+        $this->orderBy = $order;
+    }
+
+    public function getOrderBy()
+    {
+        return $this->orderBy;
     }
 }

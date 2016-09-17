@@ -42,7 +42,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             loadingSpinnerContainerClass: '.spinner-container',
             mapContainerId: 'google-map',
             newProfileRequestSpinnerContainerId: 'new-profile-loading-spinner-container-id',
-            languageSelectorId: '#language-selector'
+            languageSelectorClass: '.language-selector',
+            imagesTable: '.table-media-image',
+            milesOfMyBusinessSpan: '.miles-of-business',
+            asteriskClass: 'i.fa-asterisk',
+            asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>'
         };
 
         this.newProfileRequestFormHandler = new FormHandler({
@@ -57,7 +61,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.isDirty = false;
         this.formSubmitting = false;
 
-        this.currentLocale = $( this.html.languageSelectorId + ' option:selected' ).val();
+        this.currentLocale = $( this.html.languageSelectorClass + '.selected' ).data('locale');
 
         this.run();
     };
@@ -77,6 +81,16 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             "address": address
         }, function(results) {
             callback(results[0].geometry.location);
+        });
+    };
+
+    businessProfile.prototype.updateAddressByLatLng = function(latlng) {
+        var self = this;
+
+        this.geocoder.geocode({
+            'location': latlng
+        }, function(results) {
+            self.updateAddress(results[0].address_components);
         });
     };
 
@@ -181,6 +195,35 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         });
     };
 
+    /**
+     * Move marker correspond of coordinates
+     */
+    businessProfile.prototype.moveMarker = function() {
+        var self = this;
+
+        $.each( [this.html.fields.latitudeInputId, this.html.fields.longitudeInputId], function( index, fieldId ) {
+            $( fieldId ).change( function( event ) {
+                var lat = function() {
+                    return parseFloat( $( self.html.fields.latitudeInputId ).val() );
+                };
+
+                var lng = function() {
+                    return parseFloat( $( self.html.fields.longitudeInputId ).val() );
+                };
+
+                var Latlng = new google.maps.LatLng(lat(), lng());
+
+                self.updateAddressByLatLng(Latlng);
+                self.initGoogleMap();
+                setTimeout(
+                    function() {
+                        $( self.html.buttons.geocodeButtonId ).click();
+                    }, 100
+                );
+            });
+        } );
+    };
+
     businessProfile.prototype.handleProfileSave = function() {
         var that = this;
 
@@ -189,7 +232,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
             var data = [{
                 name: 'locale',
-                value: $( that.html.languageSelectorId + ' option:selected' ).val()
+                value: $( that.html.languageSelectorClass + '.selected' ).data( 'locale' )
             }];
 
             var profileId = $( this ) .data( 'id' );
@@ -198,6 +241,23 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 data.push({
                     name: 'businessProfileId',
                     value: profileId
+                });
+            }
+
+            if ( $( that.html.imagesTable ).length ) {
+                var imageName, images, regexp;
+
+                $.each ( $( that.html.imagesTable + ' .hidden-media' ), function ( outerIndex ) {
+                    imageName = that.freeProfileFormName + '[images][' + outerIndex + '][media]';
+                    images = $( that.html.imagesTable + ' input[name="' + imageName + '"]' );
+
+                    if ( images.length > 1 ) {
+                        regexp = new RegExp(outerIndex, 'gi');
+
+                        $.each( images, function ( index, value ) {
+                            this.setAttribute( 'name', imageName.replace( regexp, ( index + outerIndex ) ) );
+                        });
+                    }
                 });
             }
 
@@ -210,8 +270,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
     businessProfile.prototype.handleLocaleChange = function() {
         var that = this;
 
-        $( this.html.languageSelectorId ).on( 'change' , function( event ) {
-            var locale = $( that.html.languageSelectorId + ' option:selected' ).val();
+        $( this.html.languageSelectorClass ).on( 'click', function( event ) {
+            $( document).find( that.html.languageSelectorClass ).removeClass( 'selected' );
+            $(this).addClass( 'selected' );
+
+            var locale = $( that.html.languageSelectorClass + '.selected' ).data( 'locale' );
             var isLeave = that.beforeUnload();
 
             if ( isLeave || isLeave === undefined ) {
@@ -233,6 +296,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                     success: function( response ) {
                         $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
 
+                        var activeTab = $( '.tabs-block li.active' );
+                        activeTab.removeClass( 'active' );
+                        activeTab.find( 'a' ).click();
+
                         new select();
                     },
                     error: function( jqXHR, textStatus, errorThrown ) {
@@ -240,10 +307,12 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                     }
                 });
             } else {
-                $( that.html.languageSelectorId + ' option[value="' + that.currentLocale + '"]' ).attr('selected', true);
-                new select();
+                $( document ).find( that.html.languageSelectorClass).not(this).addClass( 'selected' );
+                $(this).removeClass( 'selected' );
             }
-        });
+
+            event.preventDefault();
+        } );
     };
 
     businessProfile.prototype.handleServiceAreaChange = function() {
@@ -253,13 +322,24 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         $( document ).on( 'change' , 'input[name="' + serviceAreasRadioName + '"]', function() {
             var $self = $(this);
+            var milesOfMyBusinessAsteriskClass = that.html.milesOfMyBusinessSpan + ' ' + that.html.asteriskClass;
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
+
+                if ( $( milesOfMyBusinessAsteriskClass ).length ) {
+                    $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                    $( milesOfMyBusinessAsteriskClass ).show();
+                } else {
+                    $( that.html.milesOfMyBusinessSpan ).append( that.html.asteriskTag );
+                }
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
+                $( milesOfMyBusinessAsteriskClass ).hide();
             }
 
             new select();
@@ -397,6 +477,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
+        this.moveMarker();
         this.handleProfileSave();
         this.handleLocaleChange();
         this.handleServiceAreaChange();

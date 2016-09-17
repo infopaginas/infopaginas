@@ -19,16 +19,6 @@ class DefaultController extends Controller
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewAboutAction()
-    {
-        $code = $this->get('domain_page.manager.page')->getPage()::CODE_ABOUT_AS;
-
-        return $this->renderPageByCode($code);
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function viewTermsAction()
     {
         $code = $this->get('domain_page.manager.page')->getPage()::CODE_TERMS_OF_USE;
@@ -46,10 +36,23 @@ class DefaultController extends Controller
         return $this->renderPageByCode($code);
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewAdvertiseAction()
+    {
+        $code = $this->get('domain_page.manager.page')->getPage()::CODE_ADVERTISE;
+
+        return $this->renderPageByCode($code);
+    }
+
     private function renderPageByCode($slug)
     {
+        $page = $this->get('domain_page.manager.page')->getPageByCode($slug);
+
         $params = [
-            'page' => $this->get('domain_page.manager.page')->getPageByCode($slug),
+            'page'      => $page,
+            'seoData'   => $page,
         ];
 
         return $this->render('DomainPageBundle:Default:view.html.twig', $params);

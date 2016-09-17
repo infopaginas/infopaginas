@@ -41,9 +41,9 @@ class FOSUBUserProvider extends BaseClass
 
         //on connect - get the access token and the user ID
         $service = $response->getResourceOwner()->getName();
-        $setter = 'set'.ucfirst($service);
-        $setterId = $setter.'Id';
-        $setterToken = $setter.'AccessToken';
+        $setter = 'set' . ucfirst($service);
+        $setterId = $setter . 'Id';
+        $setterToken = $setter . 'AccessToken';
 
         $previousUser = $this->userManager->findUserBy(['email' => $email]);
 
@@ -78,9 +78,9 @@ class FOSUBUserProvider extends BaseClass
         if ($user === null) {
             $service = $response->getResourceOwner()->getName();
 
-            $setter = 'set'.ucfirst($service);
-            $setterId = $setter.'Id';
-            $setterToken = $setter.'AccessToken';
+            $setter = 'set' . ucfirst($service);
+            $setterId = $setter . 'Id';
+            $setterToken = $setter . 'AccessToken';
 
             // create new user here
             $user = $this->userManager->createUser();
