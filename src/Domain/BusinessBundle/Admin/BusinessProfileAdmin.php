@@ -330,16 +330,15 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('businessReviews', 'sonata_type_collection', [
                         'by_reference' => false,
                         'mapped' => true,
+                        'btn_add' => false,
+                        'disabled' => true,
                         'type_options' => [
-                            'delete' => true,
-                            'delete_options' => [
-                                'type' => 'checkbox',
-                                'type_options' => ['mapped' => false, 'required' => false]
-                            ]]
+                            'delete' => false,
+                        ]
                     ], [
                         'edit' => 'inline',
                         'inline' => 'table',
-                        'allow_delete' => true,
+                        'allow_delete' => false,
                     ])
                 ->end()
             ->end()
