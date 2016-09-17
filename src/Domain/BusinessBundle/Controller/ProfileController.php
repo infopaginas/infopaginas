@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Domain\ReportBundle\Manager\CategoryReportManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
@@ -119,7 +120,7 @@ class ProfileController extends Controller
             TypeInterface::CODE_SERP_BOXED,
         ));
 
-        //$this->get('google.analytics')->get
+        $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
             'businessProfile'  => $businessProfile,
@@ -169,6 +170,11 @@ class ProfileController extends Controller
     private function getBusinessReviewForm()
     {
         return $this->createForm(new BusinessReviewType());
+    }
+
+    protected function getCategoryReportManager() : CategoryReportManager
+    {
+        return $this->get('domain_report.manager.category_report_manager');
     }
 
     /**

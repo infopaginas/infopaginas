@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Repository;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * SubscriptionPlanRepository
@@ -10,4 +11,15 @@ namespace Domain\BusinessBundle\Repository;
  */
 class SubscriptionPlanRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getSubscriptionStatistics()
+    {
+        $qb = $this->createQueryBuilder('subscription_plan');
+        $qb->select('subscription_plan')
+            ->addSelect('count(subscriptions.id) as cnt')
+            ->leftJoin('subscription_plan.subscriptions', 'subscriptions', Join::LEFT_JOIN)
+            ->andWhere('subscriptions.isActive = True')
+            ->groupBy('subscription_plan');
+
+        return $qb->getQuery()->getResult();
+    }
 }
