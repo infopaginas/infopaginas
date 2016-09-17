@@ -1,3 +1,7 @@
+domain_business_reports_index:
+    path:     /{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Reports:index }
+
 domain_business_reports_business_overview:
     path:     /overview/{businessProfileId}
     defaults: { _controller: DomainBusinessBundle:Reports:overview }

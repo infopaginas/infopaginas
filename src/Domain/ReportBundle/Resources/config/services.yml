@@ -74,7 +74,6 @@ services:
         class: Domain\ReportBundle\Google\Analytics\ClientProvider
         arguments: ['analytics@infopaginas-142911.iam.gserviceaccount.com', %kernel.root_dir%/config/key.p12]
 
-
     domain_report.stemmer:
         class: Domain\ReportBundle\Service\StemmerService
 
@@ -85,3 +84,7 @@ services:
     domain_report.manager.search_log:
         class: Domain\ReportBundle\Manager\SearchLogManager
         arguments: ['@doctrine.orm.entity_manager', '@domain_report.manager.keywords']
+
+    domain_report.manager.ad_usage:
+        class: Domain\ReportBundle\Manager\AdUsageReportManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager', '@cache.provider.my_file_system']

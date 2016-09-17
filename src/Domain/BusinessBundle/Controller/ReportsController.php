@@ -7,6 +7,8 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Entity\Keyword;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
+use Domain\ReportBundle\Manager\AdUsageReportManager;
+use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +22,33 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ReportsController extends Controller
 {
     const BUSINESS_NOT_FOUND_MESSAGE = 'Business profile is not found.';
+
+    public function indexAction(Request $request, int $businessProfileId)
+    {
+        $params = [
+            'businessProfileId' => $businessProfileId,
+            'date' => [
+                'start' => '05-08-2016',
+                'end' => '17-09-2016',
+            ],
+            'limit' => 10,
+        ];
+
+        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+
+        $businessAdUsageReportManager = $this->getAdUsageReportManager();
+        $adUsageData = $businessAdUsageReportManager->getAdUsageData($params);
+
+        $keywordsReportManager = $this->getKeywordsReportManager();
+        $keywordsData = $keywordsReportManager->getKeywordsData($params);
+
+        return $this->render('DomainBusinessBundle:Reports:index.html.twig', [
+            'overviewData' => $overviewData,
+            'adUsageData' => $adUsageData,
+            'keywordsData' => $keywordsData,
+        ]);
+    }
 
     /**
      * @param Request $request
@@ -88,6 +117,26 @@ class ReportsController extends Controller
         die();
 
         //$dateRange = new ReportDatesRangeVO(new \DateTime('-1week'), new \DateTime());
+    }
+
+    protected function getInteractionsReportManager()
+    {
+
+    }
+
+    protected function getKeywordsReportManager()
+    {
+        return $this->get('domain_report.manager.keywords_report_manager');
+    }
+
+    protected function getAdUsageReportManager() : AdUsageReportManager
+    {
+        return $this->get('domain_report.manager.ad_usage');
+    }
+
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
+    {
+        return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
     /**

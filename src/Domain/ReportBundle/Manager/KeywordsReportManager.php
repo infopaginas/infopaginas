@@ -36,6 +36,22 @@ class KeywordsReportManager
         $this->entityManager = $entityManager;
     }
 
+    public function getKeywordsData(array $params = [])
+    {
+        $businessProfile = $this->getBusinessProfilesRepository()->find($params['businessProfileId']);
+        $limit = $params['limit'];
+
+        $stats = $this->getKeywordsDataFromRepo($businessProfile, $limit);
+
+        $keywordsData = [
+            'results' => $stats,
+            'keywords' => array_keys($stats),
+            'searches' => array_values($stats),
+        ];
+
+        return $keywordsData;
+    }
+
     /**
      * @param array $filterParams
      * @return array
@@ -45,7 +61,7 @@ class KeywordsReportManager
         $businessProfile = $this->getBusinessProfilesRepository()->find($filterParams['businessProfile']['value']);
         $limit = KeywordsReportAdmin::KEYWORDS_PER_PAGE_COUNT[$filterParams['keywordsCount']['value']];
 
-        return $this->getKeywordsData($businessProfile, $limit);
+        return $this->getKeywordsDataFromRepo($businessProfile, $limit);
     }
 
     /**
@@ -53,7 +69,7 @@ class KeywordsReportManager
      * @param int $limit
      * @return array
      */
-    protected function getKeywordsData(BusinessProfile $businessProfile, int $limit)
+    protected function getKeywordsDataFromRepo(BusinessProfile $businessProfile, int $limit)
     {
         return $this->getKeywordsRepository()->getTopKeywordsForBusinessProfile($businessProfile, $limit);
     }

@@ -1,0 +1,290 @@
+{% extends "DomainSiteBundle:Layout:base.html.twig" %}
+
+{% block breakcrumbs %} {% endblock %}
+
+
+{% block header %}
+    {{ parent() }}
+    <div class="container">
+        <div class="row profile-managment">
+            <div class="col-xs-12 tabs-block-wrap">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs tabs-block">
+                    <li class="active">
+                        <a href="#overview" aria-controls="overview" role="tab"
+                           data-toggle="tab">
+                            {% trans %}Overview{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ad_usage" aria-controls="ad_usage" role="tab"
+                           data-toggle="tab">
+                            {% trans %}Ad usage{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#keywords" aria-controls="keywords" role="tab"
+                           data-toggle="tab">
+                            {% trans %}Keywords{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#interactions" aria-controls="interactions" role="tab"
+                           data-toggle="tab">
+                            {% trans %}Interactions{% endtrans %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    <form class="form-horizontal general-manage" novalidate="novalidate">
+        <div id="new-profile-loading-spinner-container-id"></div>
+        <div class="tab-content">
+            <div class="tab-pane active" id="overview">
+                <section id="profile-manage-general" class="profile-manage profile-manage-general">
+                    <div class="container general-manage">
+                        <div class="row">
+                            <div class="col-md-12 business-container">
+                                <div class="cards">
+                                    <div class="form-group card-item">
+                                        <div class="card-item-name">
+                                            <span>{% trans %}Chart{% endtrans %}</span>
+                                        </div>
+                                        <div class="col-xs-12 form-col">
+                                            <div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group card-item">
+                                        <div class="card-item-name">
+                                            <span>{% trans %}Statistics{% endtrans %}</span>
+                                        </div>
+                                        <div class="col-xs-12 form-col">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>{% trans %}Date{% endtrans %}</th>
+                                                    <th>{% trans %}Views{% endtrans %}</th>
+                                                    <th>{% trans %}Impressions{% endtrans %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in overviewData.results %}
+                                                        <tr>
+                                                            <td>{{ row.date }}</td>
+                                                            <td>{{ row.views }}</td>
+                                                            <td>{{ row.impressions }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-pane" id="ad_usage">
+                <section id="ad-usage-general" class="profile-manage profile-manage-general">
+                    <div class="container general-manage">
+                        <div class="row">
+                            <div class="col-md-12 business-container">
+                                <div class="cards">
+                                    <div class="form-group card-item">
+                                        <div class="card-item-name">
+                                            <span>{% trans %}Statistics{% endtrans %}</span>
+                                        </div>
+                                        <div class="col-xs-12 form-col">
+                                            <div class="panel-group" id="accordion" style="color: #123157">
+                                                {% for bannerName, statistics in adUsageData %}
+                                                    {% set totalClicks = 0 %}
+                                                    {% set totalImpressions = 0 %}
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}">
+                                                                    Banner (Line Item) Name: "{{ bannerName }}"
+                                                                </a>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapse{{ loop.index }}" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Date</th>
+                                                                        <th>Clicks</th>
+                                                                        <th>Impressions</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    {% for date, stats in statistics %}
+                                                                        {% set totalClicks = totalClicks + stats.clicks %}
+                                                                        {% set totalImpressions = totalImpressions + stats.impressions %}
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{ date }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ stats.clicks }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ stats.impressions }}
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                    </tbody>
+                                                                    <tfoot>
+                                                                    <tr>
+                                                                        <td>Total</td>
+                                                                        <td>{{ totalClicks }}</td>
+                                                                        <td>{{ totalImpressions }}</td>
+                                                                    </tr>
+                                                                    </tfoot>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-pane" id="keywords">
+                <section id="profile-manage-general" class="profile-manage profile-manage-general">
+                    <div class="container general-manage">
+                        <div class="row">
+                            <div class="col-md-12 business-container">
+                                <div class="cards">
+                                    <div class="form-group card-item">
+                                        <div class="card-item-name">
+                                            <span>{% trans %}Chart{% endtrans %}</span>
+                                        </div>
+                                        <div class="col-xs-12 form-col">
+                                            <div id="chart-keywords" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group card-item">
+                                        <div class="card-item-name">
+                                            <span>{% trans %}Statistics{% endtrans %}</span>
+                                        </div>
+                                        <div class="col-xs-12 form-col">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{% trans %}Keyword{% endtrans %}</th>
+                                                        <th>{% trans %}Searches Count{% endtrans %}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for keyword, count in keywordsData['results'] %}
+                                                        <tr>
+                                                            <td>{{ keyword }}</td>
+                                                            <td>{{ count }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-pane" id="interactions">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+        $(function () {
+            $('#chart').highcharts({
+                title: {
+                    text: 'Business Profile Views vs Impressions',
+                    x: -20 //center
+                },
+                xAxis: {
+                    categories: {{ overviewData['dates']|json_encode|raw }}
+                },
+                yAxis: {
+                    title: {
+                        text: 'Count'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Views',
+                    data: {{ overviewData['views']|json_encode|raw }}
+                }, {
+                    name: 'Impressions',
+                    data: {{ overviewData['impressions']|json_encode|raw }}
+                }]
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            $('#chart-keywords').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Keywords Statistics'
+                },
+                xAxis: {
+                    categories: {{ keywordsData['keywords']|json_encode|raw }}
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: 'Number of searches'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b><br/>' + this.point.stackTotal;
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal'
+                    }
+                },
+                series: [{
+                    name: 'Searches',
+                    data: {{ keywordsData['searches']|json_encode|raw }}
+                }]
+            });
+        });
+    </script>
+{% endblock %}

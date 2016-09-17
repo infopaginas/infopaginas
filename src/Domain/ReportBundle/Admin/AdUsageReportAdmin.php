@@ -84,13 +84,10 @@ class AdUsageReportAdmin extends ReportAdmin
     {
         $filterParam = $this->getDatagrid()->getValues();
 
-        $this->getDatagrid()->setValue('results', null, [1,2,3]);
-
         $dateFrom = \DateTime::createFromFormat('d-m-Y', $filterParam['date']['value']['start']);
         $dateTo   = \DateTime::createFromFormat('d-m-Y', $filterParam['date']['value']['end']);
 
         $dateRange = new DateRangeVO($dateFrom, $dateTo);
-
 
         if (!isset($filterParam['businessProfiles']['value'])) {
             $businessProfiles = $this->getBusinessProfilesForFilter();
@@ -122,7 +119,6 @@ class AdUsageReportAdmin extends ReportAdmin
             } else {
                 $this->adUnits = $item->get();
             }
-
         } else {
             $this->adUnits = [];
         }
