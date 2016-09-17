@@ -14,6 +14,7 @@
 
     <form
         {% if admin_pool.getOption('form_type') == 'horizontal' %}class="form-horizontal"{% endif %}
+        id="task-form"
         role="form"
         action="{{ admin.generateUrl('edit', {'id': admin.id(object), 'uniqid': admin.uniqid, 'subclass': app.request.get('subclass')}) }}" {{ form_enctype(form) }}
         method="POST">
@@ -78,7 +79,9 @@
                             <h4 class="modal-title" id="myModalLabel">{{ admin.trans('Reject Reason') }}</h4>
                         </div>
                         <div class="modal-body">
-                            {{ form_widget(form.rejectReason) }}
+                            <div class="form-group">
+                                {{ form_widget(form.rejectReason) }}
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" name="status" class="btn btn-danger"
