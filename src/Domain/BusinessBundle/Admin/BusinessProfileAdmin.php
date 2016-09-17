@@ -18,6 +18,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 /**
@@ -115,6 +116,27 @@ class BusinessProfileAdmin extends OxaAdmin
             ->setParameter('consumerRole', Group::CODE_CONSUMER)
         ;
 
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getSubject();
+
+        $milesOfMyBusinessFieldOptions = [
+            'required' => true,
+        ];
+
+        $localitiesFieldOptions = [
+            'multiple' => true,
+            'required' => true,
+            'label' => 'Localities',
+        ];
+
+        if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
+            $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+            $localitiesFieldOptions['required'] = false;
+        } else {
+            $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
+            $milesOfMyBusinessFieldOptions['required'] = false;
+        }
+
         $formMapper
             ->tab('Profile')
                 ->with('General')
@@ -204,11 +226,16 @@ class BusinessProfileAdmin extends OxaAdmin
                         'multiple' => true,
                         'required' => true,
                     ])
-                    ->add('areas', null, [
-                        'multiple' => true,
+                    ->add('brands', null, ['required' => false])
+                    ->add('areas', null, ['multiple' => true, 'required' => false])
+                    ->add('serviceAreasType', ChoiceType::class, [
+                        'choices' => BusinessProfile::getServiceAreasTypes(),
+                        'multiple' => false,
+                        'expanded' => true,
                         'required' => true,
                     ])
-                    ->add('brands', null, ['required' => false])
+                    ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
+                    ->add('localities', null, $localitiesFieldOptions)
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,
@@ -338,6 +365,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('coupons')
             ->add('categories')
             ->add('areas')
+            ->add('localities')
             ->add('brands')
             ->add('paymentMethods')
             ->add('tags')
@@ -368,6 +396,11 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('seoDescription')
             ->add('seoKeywords')
         ;
+    }
+
+    public function setTemplate($name, $template)
+    {
+        $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
     }
 
     /**

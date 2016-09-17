@@ -183,7 +183,6 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_areas")
-     * @Assert\Count(min = 1, minMessage = "At least 1 area should be selected")
      */
     protected $areas;
 
@@ -234,7 +233,9 @@ class BusinessProfile implements
 
     /**
      * @var string Brands - Brands, Business works with
-     * @ORM\Column(name="business_profile_brands", type="text", nullable=true)
+     *
+     * @Gedmo\Translatable(fallback=true)
+     * @ORM\Column(name="brands", type="text", nullable=true)
      */
     protected $brands;
 
@@ -596,7 +597,26 @@ class BusinessProfile implements
     protected $searchCityFts;
 
     /**
-     * @var float
+     * @var BusinessProfile
+     *
+     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickSynchLog",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist"}
+     * )
+     */
+    private $doubleClickSynchLog;
+
+    /**
+     * @var BusinessProfile
+     *
+     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickCompany",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist"}
+     * )
+     */
+    private $doubleClickCompany;
+
+    /** @var float
      *
      * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
      */
@@ -660,8 +680,6 @@ class BusinessProfile implements
     {
         return $this->id;
     }
-
-
 
     /**
      * Constructor
@@ -1182,7 +1200,7 @@ class BusinessProfile implements
     /**
      * Get brands
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return string
      */
     public function getBrands()
     {
@@ -2269,7 +2287,23 @@ class BusinessProfile implements
     }
 
     /**
-     * getting distance
+     * @return BusinessProfile
+     */
+    public function getDoubleClickSynchLog()
+    {
+        return $this->doubleClickSynchLog;
+    }
+
+    /**
+     * @param BusinessProfile $doubleClickSynchLog
+     * @return BusinessProfile
+     */
+    public function setDoubleClickSynchLog($doubleClickSynchLog)
+    {
+        $this->doubleClickSynchLog = $doubleClickSynchLog;
+    }
+
+    /** getting distance
      *
      * @return float
      */
@@ -2287,11 +2321,27 @@ class BusinessProfile implements
     public function setDistance(float $distance)
     {
         $this->distance = $distance;
-
         return $this;
     }
 
     /**
+     * @return BusinessProfile
+     */
+    public function getDoubleClickCompany()
+    {
+        return $this->doubleClickCompany;
+    }
+
+    /**
+     * @param BusinessProfile $doubleClickCompany
+     * @return BusinessProfile
+     */
+    public function setDoubleClickCompany($doubleClickCompany)
+    {
+        $this->doubleClickCompany = $doubleClickCompany;
+    }
+
+     /**
      * getting distance prettified
      *
      * @return string
@@ -2308,7 +2358,7 @@ class BusinessProfile implements
 
         return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
     }
-    
+
     /**
      * Add searchLog
      *
@@ -2318,12 +2368,18 @@ class BusinessProfile implements
     public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
     {
         $this->searchLogs[] = $searchLog;
-
         return $this;
     }
 
     /**
-     * Remove searchLog
+     * @return string
+     */
+    public function getDoubleClickExternalId()
+    {
+        return $this->getSlug();
+    }
+
+    /** Remove searchLog
      *
      * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
      */
@@ -2340,5 +2396,13 @@ class BusinessProfile implements
     public function getSearchLogs()
     {
         return $this->searchLogs;
+    }
+
+    public static function getServiceAreasTypes()
+    {
+        return [
+            'area' => 'Distance',
+            'locality' => 'Locality'
+        ];
     }
 }

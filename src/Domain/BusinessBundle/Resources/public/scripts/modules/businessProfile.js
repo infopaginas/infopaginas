@@ -84,6 +84,16 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         });
     };
 
+    businessProfile.prototype.updateAddressByLatLng = function(latlng) {
+        var self = this;
+
+        this.geocoder.geocode({
+            'location': latlng
+        }, function(results) {
+            self.updateAddress(results[0].address_components);
+        });
+    };
+
     businessProfile.prototype.updateAddress = function(address)
     {
         var streetNumber = '';
@@ -183,6 +193,35 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             that.initGoogleMap();
             event.preventDefault();
         });
+    };
+
+    /**
+     * Move marker correspond of coordinates
+     */
+    businessProfile.prototype.moveMarker = function() {
+        var self = this;
+
+        $.each( [this.html.fields.latitudeInputId, this.html.fields.longitudeInputId], function( index, fieldId ) {
+            $( fieldId ).change( function( event ) {
+                var lat = function() {
+                    return parseFloat( $( self.html.fields.latitudeInputId ).val() );
+                };
+
+                var lng = function() {
+                    return parseFloat( $( self.html.fields.longitudeInputId ).val() );
+                };
+
+                var Latlng = new google.maps.LatLng(lat(), lng());
+
+                self.updateAddressByLatLng(Latlng);
+                self.initGoogleMap();
+                setTimeout(
+                    function() {
+                        $( self.html.buttons.geocodeButtonId ).click();
+                    }, 100
+                );
+            });
+        } );
     };
 
     businessProfile.prototype.handleProfileSave = function() {
@@ -438,6 +477,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
+        this.moveMarker();
         this.handleProfileSave();
         this.handleLocaleChange();
         this.handleServiceAreaChange();

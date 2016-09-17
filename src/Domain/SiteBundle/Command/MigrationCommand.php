@@ -31,7 +31,9 @@ class MigrationCommand extends ContainerAwareCommand
         $this->setDescription('Migrate all site data');
         $this->setDefinition(
             new InputDefinition(array(
-                new InputOption('pageStart', '1', InputOption::VALUE_OPTIONAL),
+                new InputOption('withDebug', 'd'),
+                new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
+                new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
             ))
         );
     }
@@ -58,26 +60,34 @@ class MigrationCommand extends ContainerAwareCommand
 
         $plans = $this->em->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();
 
-        $subscriptionPlans = [];
+        $this->subscriptionPlans = [];
 
         foreach ($plans as $item) {
-            $subscriptionPlans[$planMapping[$item->getCode()]] = $item;
+            $this->subscriptionPlans[$planMapping[$item->getCode()]] = $item;
         }
 
         if ($input->getOption('pageStart')) {
-            $startPage = $input->getOption('pageStart');
+            $pageStart = $input->getOption('pageStart');
         } else {
-            $startPage = 1;
+            $pageStart = 1;
+        }
+
+        if ($input->getOption('pageCountLimit')) {
+            $pageCountLimit = $input->getOption('pageCountLimit');
+        } else {
+            $pageCountLimit = 1;
+        }
+
+        if ($input->getOption('withDebug')) {
+            $this->withDebug = true;
+        } else {
+            $this->withDebug = false;
         }
 
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
 
-        //todo - get from params
-        $withDebug = true;
-        $limitPages = 2;
-
-        for ($page = $startPage; $page <= $limitPages; $page++) {
-            if ($withDebug) {
+        for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
+            if ($this->withDebug) {
                 $output->writeln('Start request page number ' . $page);
             }
 
@@ -90,7 +100,7 @@ class MigrationCommand extends ContainerAwareCommand
                     $itemId = $item->_id;
 
                     if (1) {
-                        if ($withDebug) {
+                        if ($this->withDebug) {
                             $output->writeln('Starts request item with id ' . $itemId);
                         }
 
@@ -98,22 +108,31 @@ class MigrationCommand extends ContainerAwareCommand
                         $itemSecond = $this->getCurlData($baseUrl . '/' . $itemId, $this->localeSecond);
                         $subscriptions = $this->getCurlData($baseUrl . '/' . $itemId . '/subscriptions', $this->localePrimary);
 
+                        $localities = [];
+
+                        if (!empty($item->service_areas)) {
+                            foreach ($item->service_areas as $locality) {
+                                // in API data not unique
+                                $localities[$locality->locality] = $locality;
+                            }
+                        }
+
+                        $radius = $item->radius_served;
+
                         $this->addBusinessProfileByApiData(
                             $itemPrimary,
                             $itemSecond,
                             $subscriptions,
-                            $subscriptionPlans,
-                            $country,
-                            $withDebug
+                            $localities,
+                            $radius,
+                            $country
                         );
 
-                        if ($withDebug) {
+                        if ($this->withDebug) {
                             $output->writeln('Finish request item with id ' . $itemId);
                         }
-
-
                     } else {
-                        if ($withDebug) {
+                        if ($this->withDebug) {
                             $output->writeln('Skip as existed item with id ' . $itemId);
                         }
                     }
@@ -121,7 +140,7 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        if ($withDebug) {
+        if ($this->withDebug) {
             $output->writeln('Finish requests');
         }
     }
@@ -162,7 +181,7 @@ class MigrationCommand extends ContainerAwareCommand
         }
     }
 
-    private function addBusinessProfileByApiData($itemPrimary, $itemSecond, $subscriptions, $subscriptionPlans, $country, $withDebug)
+    private function addBusinessProfileByApiData($itemPrimary, $itemSecond, $subscriptions, $localities, $radius, $country)
     {
         $manager = $this->getContainer()->get('domain_business.manager.business_profile');
 
@@ -174,11 +193,11 @@ class MigrationCommand extends ContainerAwareCommand
 
         // populate profile
 
+        $entity->setUid($business->id);
         $entity->setName($name);
 
         //todo - set real slug !!!
-#        $entity->setSlug($data['list_slugs']);
-        $entity->setSlug($name);
+        $entity->setSlug($business->slug);
 
         $entity->setRegistrationDate(new \DateTime($business->created_at));
 
@@ -189,7 +208,6 @@ class MigrationCommand extends ContainerAwareCommand
 #        $entity->setVideo(?);
 #        $entity->setLocale(?);
 
-#        $profile = $business->profiles[0];
         $profile = $business->profile;
         $profileSecond = $itemSecond->business->profile;
 
@@ -199,11 +217,8 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setProduct($profile->products);
         $entity->setWorkingHours($profile->hours_opr);
 
-#        $entity->setLogo(?);
-#        $entity->addImage(?);
 #        $entity->setPosition(?);
 
-#        $address = $business->addresses[0];
         $address = $business->address;
 
         $entity->setCity($address->locality);
@@ -211,8 +226,8 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setZipCode($address->postal_code);
         $entity->setExtendedAddress($address->extended_address);
         $entity->setCrossStreet($address->cross_street);
-        $entity->setLatitude($address->coordinates[0]);
         $entity->setLongitude($address->coordinates[0]);
+        $entity->setLatitude($address->coordinates[1]);
 
         $entity->setCountry($country);
 
@@ -228,23 +243,73 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setGoogleURL($profile->google_plus_url);
         $entity->setYoutubeURL($profile->yt_url);
 
-#        $entity->setServiceAreasType(?);
-#        $entity->setLocalities(?);
 #        $entity->setSearchFts(?);
 #        $entity->setActualBusinessProfile(?);
-#        $entity->setUid(?);
-
-        // todo - headings - en/es pairs
-
-#        $entity->addCategory(?);
-#        $entity->addArea(?);
 
         // process assigned items
 
+        $loadImages = true;
+
+        if ($loadImages and $profile->images) {
+            $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
+
+            foreach ($profile->images as $image) {
+                $path = 'http://assets3.drxlive.com' . $image->image->url;
+
+                if ($image->label == 'logo') {
+                    $isLogo = true;
+                } else {
+                    $isLogo = false;
+                }
+
+                $managerGallery->createNewEntryFromRemoteFile($entity, $path, $isLogo);
+            }
+        }
+
+        if ($localities) {
+            $entity->setServiceAreasType('locality');
+
+            foreach ($localities as $item) {
+                $entity->addLocality($this->loadLocality($item));
+            }
+        } else {
+            $entity->setMilesOfMyBusiness($radius);
+            $entity->setServiceAreasType('area');
+        }
+
+        if ($profile->headings) {
+            // categories
+
+            $pairs = [];
+            $pair = [];
+
+            foreach ($profile->headings as $key => $value) {
+                // process - en/es pair
+                $pair[] = $value;
+
+                if ($key %2 != 0) {
+                    $pairs[] = $pair;
+
+                    $pair = [];
+                }
+            }
+
+            foreach ($pairs as $pair) {
+                $entity->addCategory($this->loadCategory($pair));
+            }
+        }
+
         if ($business->phones) {
+            $phones = [];
+
             foreach ($business->phones as $item) {
+                // in API data not unique
+                $phones[$item->number] = $item->number;
+            }
+
+            foreach ($phones as $item) {
                 $phone = new BusinessProfilePhone();
-                $phone->setPhone($item->number);
+                $phone->setPhone($item);
 
                 $entity->addPhone($phone);
             }
@@ -262,24 +327,46 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
+        $brandPrimary   = '';
+        $brandSecond    = '';
+
+        if ($profile->brands or $profileSecond->brands) {
+            if ($profile->brands) {
+                $brandPrimary = implode(PHP_EOL, $profile->brands);
+            }
+
+            if ($profileSecond->brands) {
+                $brandSecond = implode(PHP_EOL, $profileSecond->brands);
+            }
+
+            $entity->setBrands($brandPrimary);
+        }
+
         if ($subscriptions) {
             foreach ($subscriptions->subscriptions as $item) {
                 $key = $item->plan->contract_id;
 
-                if (isset($subscriptionPlans[$key])) {
+                if (isset($this->subscriptionPlans[$key])) {
                     $subscription = new Subscription();
 
-                    $subscription->setSubscriptionPlan($subscriptionPlans[$key]);
+                    $subscription->setSubscriptionPlan($this->subscriptionPlans[$key]);
                     $subscription->setBusinessProfile($entity);
                     $subscription->setStartDate(new \DateTime($item->current_period_started_at));
-                    $subscription->setEndDate(new \DateTime($item->current_period_ends_at));
-                    $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+
+                    $endDate = new \DateTime($item->current_period_ends_at);
+                    $now = new \DateTime('now');
+
+                    $subscription->setEndDate($endDate);
+
+                    if ($endDate >= $now) {
+                        $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+                    }
 
                     $subscription = $this->saveEntity($subscription);
 
                     $entity->addSubscription($subscription);
                 } else {
-                    if ($withDebug) {
+                    if ($this->withDebug) {
                         $this->output->writeln('Unknown subscription Plan:' . json_encode($item));
                     }
                 }
@@ -315,9 +402,48 @@ class MigrationCommand extends ContainerAwareCommand
                     $this->addTranslation($translation, $profileSecond->$key, $entity, $field);
                 }
             }
+
+            // special case for brands
+
+            if (($brandPrimary or $brandSecond) and ($brandPrimary != $brandSecond)) {
+                $translation = new BusinessProfileTranslation();
+                $this->addTranslation($translation, $brandSecond, $entity, 'brands');
+            }
         }
 
         $this->em->flush();
+    }
+
+    private function loadCategory($pair)
+    {
+        // first seems to be english
+
+        if ($this->localePrimary == 'en') {
+            $valuePrimary = $pair[0];
+            $valueSecondary = $pair[1];
+        } else {
+            $valuePrimary = $pair[1];
+            $valueSecondary = $pair[0];
+        }
+
+        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
+
+        if (!$entity) {
+            $entity = new Category();
+            $entity->setName($valuePrimary);
+
+            $entity = $this->saveEntity($entity);
+
+            $className = 'Category';
+
+            $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+
+            $translation = new $translationClassName();
+
+            $this->addTranslation($translation, $valueSecondary, $entity);
+        }
+
+        return $entity;
     }
 
     private function loadTag($value)
@@ -334,11 +460,6 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $entity;
-    }
-
-    private function loadCategory($valuePrimary, $valueSecondary)
-    {
-        return $this->loadEntity('Category', $valuePrimary, $valueSecondary);
     }
 
     private function loadPaymentMethod($key)
@@ -367,6 +488,41 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $this->loadEntity('PaymentMethod', $valuePrimary, $valuePrimary);
+    }
+
+    private function loadLocality($item)
+    {
+        $className = 'Locality';
+
+        $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
+
+        if (!$entity) {
+            $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
+
+            $entity = new $classNameEntity();
+            $entity->setName($item->locality);
+            $entity->setLongitude($item->coordinates[0]);
+            $entity->setLatitude($item->coordinates[1]);
+
+            $entity = $this->saveEntity($entity);
+            $this->em->persist($entity);
+
+            // todo - add area?
+        } else {
+            if (!$entity->getLongitude()) {
+                $entity->setLongitude($item->coordinates[0]);
+                $entity->setLatitude($item->coordinates[1]);
+
+                $this->em->persist($entity);
+            }
+        }
+
+        return $entity;
+    }
+
+    private function loadArea($valuePrimary)
+    {
+        return $this->loadEntity('Area', $valuePrimary, $valuePrimary);
     }
 
     private function loadEntity($className, $valuePrimary, $valueSecondary)

@@ -2,10 +2,12 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -518,6 +520,52 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = new Paginator($qb, $fetchJoin = true);
 
         return $results;
+    }
+
+    public function getBusinessProfilesWithAllowedAdUnitsForFilter() : array
+    {
+        $qb = $this->createQueryBuilder('bp');
+        $qb
+            ->innerJoin('bp.subscriptions', 'bp_s', Join::INNER_JOIN)
+            ->innerJoin('bp_s.subscriptionPlan', 'bps_s', Join::INNER_JOIN)
+            ->where('bp.isActive = True')
+            ->andWhere('bp_s.isActive = True')
+            ->andWhere('bps_s.code >= :priorityPlanCode')
+            ->setParameter('priorityPlanCode', SubscriptionPlanInterface::CODE_PRIORITY)
+        ;
+
+        $result = [];
+
+        /** @var BusinessProfile $businessProfile */
+        foreach ($qb->getQuery()->getResult() as $businessProfile) {
+            $result[$businessProfile->getId()] = $businessProfile->getName();
+        }
+
+        return $result;
+    }
+
+    public function getBusinessProfilesForFilter()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->where('bp.isActive = True')
+        ;
+
+        $result = [];
+
+        /** @var BusinessProfile $businessProfile */
+        foreach ($qb->getQuery()->getResult() as $businessProfile) {
+            $result[$businessProfile->getId()] = $businessProfile->getName();
+        }
+
+        return $result;
+    }
+
+    public function getBusinessProfilesWithAllowedAdUnits() : array
+    {
+        $qb = $this->createQueryBuilder('bp');
+        $qb->where('bp.isActive = True');
+
+        return $qb->getQuery()->getResult();
     }
 
     private function getVideosQuery()

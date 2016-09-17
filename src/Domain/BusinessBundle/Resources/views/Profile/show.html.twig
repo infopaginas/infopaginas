@@ -138,6 +138,16 @@
                                 </div>
                             </div>
                             {% endif %}
+                            {% if businessProfile.brands %}
+                                <div class="row">
+                                    <div class="col-xs-3 fields-item">
+                                        <span>{% trans %}Brands{% endtrans %}:</span>
+                                    </div>
+                                    <div class="col-xs-9 fields-item">
+                                        <p>{{ businessProfile.brands }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
 
                             {% set socialLinksExists = businessProfile.getFacebookURL()
                                 or businessProfile.getGoogleURL()
@@ -146,6 +156,7 @@
                             %}
 
                             {% if socialLinksExists %}
+                            <div class="row">
                                 <div class="col-xs-3 fields-item">
                                     <span>{% trans %}social networks{% endtrans %}:</span>
                                 </div>
@@ -181,6 +192,7 @@
                                         {% endif %}
                                     </ul>
                                 </div>
+                            </div>
                             {% endif %}
                         </div>
 

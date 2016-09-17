@@ -3,23 +3,33 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\Area;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
+use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 
 /**
  * Locality
  *
- * @ORM\Table(name="localities")
+ * @ORM\Table(name="locality")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @ORM\HasLifecycleCallbacks
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\LocalityTranslation")
  */
-class Locality implements GeolocationInterface
+class Locality implements GeolocationInterface, DefaultEntityInterface, TranslatableInterface
 {
+    use DefaultEntityTrait;
     use LocationTrait;
- 
+    use PersonalTranslatable;
+
     /**
      * @var int
      *
@@ -32,6 +42,7 @@ class Locality implements GeolocationInterface
     /**
      * @var string - Locality name
      *
+     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -58,11 +69,23 @@ class Locality implements GeolocationInterface
     protected $area;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\LocalityTranslation",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->businessProfile = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations     = new ArrayCollection();
     }
 
     /**
@@ -133,7 +156,7 @@ class Locality implements GeolocationInterface
 
         return $this;
     }
-    
+
     /**
      *  Get owning area for this locality
      *
@@ -155,6 +178,16 @@ class Locality implements GeolocationInterface
         $this->area = $area;
 
         return $this;
+    }
+
+    /**
+     * Remove translation
+     *
+     * @param \Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation
+     */
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
     }
 
     /**
