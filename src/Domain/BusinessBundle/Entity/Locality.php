@@ -80,6 +80,20 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $translations;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="search_fts", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "name"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchFts;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -188,6 +202,30 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set searchFts
+     *
+     * @param tsvector $searchFts
+     *
+     * @return Locality
+     */
+    public function setSearchFts($searchFts)
+    {
+        $this->searchFts = $searchFts;
+
+        return $this;
+    }
+
+    /**
+     * Get searchFts
+     *
+     * @return tsvector
+     */
+    public function getSearchFts()
+    {
+        return $this->searchFts;
     }
 
     /**
