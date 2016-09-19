@@ -30,9 +30,12 @@ class BannerAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('title')
+            ->add('description')
             ->add('type')
             ->add('template')
             ->add('allowedForBusinesses', null, [], null, $choiceOptions)
+            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
+            ->add('updatedUser')
         ;
     }
 
@@ -45,10 +48,13 @@ class BannerAdmin extends OxaAdmin
             ->add('id')
             ->add('image', null, ['template' => 'DomainBannerBundle:Admin:list_image.html.twig'])
             ->add('title')
+            ->add('description')
             ->add('type')
             ->add('size')
             ->add('template')
             ->add('allowedForBusinesses')
+            ->add('updatedAt')
+            ->add('updatedUser')
         ;
 
         $this->addGridActions($listMapper);
@@ -104,6 +110,8 @@ class BannerAdmin extends OxaAdmin
             ->add('image', null, [
                 'template' => 'DomainBannerBundle:Admin:show_image.html.twig'
             ])
+            ->add('updatedAt')
+            ->add('updatedUser')
         ;
     }
 

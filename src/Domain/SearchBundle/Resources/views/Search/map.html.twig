@@ -35,6 +35,10 @@
                         {% endfor %}
                     {% endif %}
                     </div>
+
+                    {% block pagination %}
+                        {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                    {% endblock %}
                 </div>
             </div>
         </aside>
