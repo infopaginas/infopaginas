@@ -106,6 +106,16 @@
                 <td>{{ object.getClosureReason() }}</td>
             </tr>
         {% endif %}
+        {% if object.reviewer %}
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Submitted by') }}</td>
+                <td>{{ object.reviewer.firstname }} {{ object.reviewer.lastname }}</td>
+            </tr>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Submitted on') }}</td>
+                <td>{{ object.updatedAt|date('d M, Y, H:i:s A') }}</td>
+            </tr>
+        {% endif %}
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Profile') }}</td>
             <td>
