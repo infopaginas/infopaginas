@@ -54,6 +54,10 @@ class CompanyService
 
     public function getAdvertiserIdsByBusinessProfileExternalIds(array $externalIds)
     {
+        if (empty($externalIds)) {
+            return [];
+        }
+
         $user = $this->getDfpUser();
 
         $companyService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
