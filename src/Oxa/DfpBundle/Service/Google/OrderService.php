@@ -44,6 +44,10 @@ class OrderService
 
     public function getOrderIdsAsAdvertiserPair(array $advertiserIds)
     {
+        if (empty($advertiserIds)) {
+            return [];
+        }
+        
         $user = $this->getDfpUser();
 
         $orderService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
