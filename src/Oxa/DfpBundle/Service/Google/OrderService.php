@@ -47,7 +47,7 @@ class OrderService
         if (empty($advertiserIds)) {
             return [];
         }
-        
+
         $user = $this->getDfpUser();
 
         $orderService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
