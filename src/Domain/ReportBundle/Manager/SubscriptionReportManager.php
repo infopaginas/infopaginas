@@ -77,6 +77,22 @@ class SubscriptionReportManager extends BaseReportManager
 
         $stats = $repo->getSubscriptionStatistics();
 
+        //Doctrine's LEFT JOIN dirty fix
+        $counts = [];
+
+        foreach ($stats as $stat) {
+            $counts[$stat[0]->getId()] = $stat['cnt'];
+        }
+
+        foreach ($repo->findAll() as $subscriptionPlan) {
+            if (!isset($counts[$subscriptionPlan->getId()])) {
+                $stats[] = [
+                    0 => $subscriptionPlan,
+                    'cnt' => 0,
+                ];
+            }
+        }
+
         $date = new \DateTime('today');
         $subscriptionReport = new SubscriptionReport();
         $subscriptionReport->setDate($date);
