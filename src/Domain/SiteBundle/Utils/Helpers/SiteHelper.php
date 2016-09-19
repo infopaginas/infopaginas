@@ -16,6 +16,18 @@ class SiteHelper
         'image/bmp',
     ];
 
+    public static $videoContentTypes = [
+        'video/quicktime',
+        'application/x-troff-msvideo',
+        'video/avi',
+        'video/msvideo',
+        'video/x-msvideo',
+        'video/mpeg',
+        'video/mp4',
+        'video/x-ms-wmv',
+        'video/x-flv'
+    ];
+
     /**
      * @param string $url
      */

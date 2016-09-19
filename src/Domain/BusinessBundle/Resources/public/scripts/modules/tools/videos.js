@@ -60,11 +60,17 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         if( response.success ) {
             $( this.html.videoContainerId ).html( response.message );
         } else {
+            var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
+
+            $remoteVideoURLInput.addClass('error');
             alertify.error( response.message );
         }
     };
 
     videos.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
+        var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
+
+        $remoteVideoURLInput.addClass('error');
         alertify.error( errorThrown );
     };
 
@@ -135,6 +141,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
 
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
             var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
+
+            if ( $remoteVideoURLInput.hasClass( 'error' ) ) {
+                $remoteVideoURLInput.removeClass( 'error' );
+            }
 
             var data = {
                 url: $remoteVideoURLInput.val(),
