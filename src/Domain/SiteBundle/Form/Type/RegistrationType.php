@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Domain\SiteBundle\Validator\Constraints\ContainsEmailExpanded;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RegistrationType extends AbstractType
 {
@@ -23,6 +24,7 @@ class RegistrationType extends AbstractType
                     'placeholder' => 'Email',
                 ],
                 'constraints' => [
+                    new NotBlank(),
                     new ContainsEmailExpanded(),
                     new ConstraintEmailUnique(),
                 ],
@@ -56,6 +58,7 @@ class RegistrationType extends AbstractType
                 'invalid_message' => 'fos_user.password.mismatch',
                 'constraints' => [
                     new Length(['min' => 6, 'minMessage' => 'user.password.min_length']),
+                    new NotBlank(),
                 ],
             ])
             ->add('location', TextType::class, [
