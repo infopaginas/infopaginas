@@ -2,14 +2,20 @@
 
 namespace Domain\SiteBundle\Controller;
 
+use AntiMattr\GoogleBundle\Analytics\CustomVariable;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Form\Type\RegistrationType;
 use Domain\SiteBundle\Form\Type\LoginType;
 use Domain\SiteBundle\Form\Type\ResetPasswordRequestType;
 use Domain\SiteBundle\Form\Type\ResetPasswordType;
+use Domain\SiteBundle\Utils\Helpers\GoogleAnalyticsHelper;
+use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Domain\BannerBundle\Model\TypeInterface;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Class HomeController
@@ -41,6 +47,11 @@ class HomeController extends Controller
             TypeInterface::CODE_PORTAL_LEFT_MOBILE,
             TypeInterface::CODE_PORTAL_RIGHT_MOBILE,
         ));
+
+        $userRoles = $this->get('security.token_storage')->getToken()->getRoles();
+        $roleForGA = GoogleAnalyticsHelper::getUserRoleForAnalytics($userRoles);
+
+        $this->get('google.analytics')->addCustomVariable(new CustomVariable('default', 'dimension1', $roleForGA));
 
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
