@@ -57,8 +57,7 @@ class BusinessProfile implements
 
     const DEFAULT_LOCALE = 'en_US';
 
-    const DISTANCE_APPENDIX_NAME_KILOMETERS = 'km';
-    const DISTANCE_APPENDIX_NAME_METERS     = 'm';
+    const MILE_TO_KILOMETER  = 0.621371;
 
     /**
      * @var int
@@ -2348,15 +2347,10 @@ class BusinessProfile implements
      */
     public function getDistanceUX() : string
     {
-        $currentDistance = $this->getDistance();
-        $dimension = self::DISTANCE_APPENDIX_NAME_KILOMETERS;
+        // convert to miles
+        $miles = $this->getDistance() * self::MILE_TO_KILOMETER;
 
-        if ($currentDistance < 1) {
-            $currentDistance *= 1000;
-            $dimension = self::DISTANCE_APPENDIX_NAME_METERS;
-        }
-
-        return number_format($currentDistance, 2, '.', '') . ' ' . $dimension;
+        return number_format($miles, 2, '.', '');
     }
 
     /**

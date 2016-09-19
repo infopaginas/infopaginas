@@ -54,7 +54,7 @@
     </div>
     <div class="distance fields-item">
         {% if not item.getHideAddress() %}
-            <span>{{ item.getDistanceUX() }}</span>
+            <span>{{ item.getDistanceUX() }} {% trans %}miles{% endtrans %}</span>
         {% endif %}
     </div>
     <div class="additional-info fields-item">
