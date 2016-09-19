@@ -15,6 +15,8 @@ use Domain\ReportBundle\Admin\KeywordsReportAdmin;
 use Domain\ReportBundle\Entity\Keyword;
 use Domain\ReportBundle\Entity\SearchLog;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 
 /**
  * Class KeywordsReportManager
@@ -26,6 +28,10 @@ class KeywordsReportManager
      * @var EntityManagerInterface
      */
     protected $entityManager;
+
+    const KEYWORDS_PER_PAGE_COUNT = [5 => 5, 10 => 10, 15 => 15, 20=> 20, 25 => 25];
+
+    const DEFAULT_KEYWORDS_COUNT = 15;
 
     /**
      * KeywordsReportManager constructor.
@@ -39,9 +45,8 @@ class KeywordsReportManager
     public function getKeywordsData(array $params = [])
     {
         $businessProfile = $this->getBusinessProfilesRepository()->find($params['businessProfileId']);
-        $limit = $params['limit'];
 
-        $stats = $this->getKeywordsDataFromRepo($businessProfile, $limit);
+        $stats = $this->getKeywordsDataFromRepo($businessProfile, $params);
 
         $keywordsData = [
             'results' => $stats,
@@ -53,25 +58,18 @@ class KeywordsReportManager
     }
 
     /**
-     * @param array $filterParams
-     * @return array
-     */
-    public function getKeywordsDataByFilterParams(array $filterParams)
-    {
-        $businessProfile = $this->getBusinessProfilesRepository()->find($filterParams['businessProfile']['value']);
-        $limit = KeywordsReportAdmin::KEYWORDS_PER_PAGE_COUNT[$filterParams['keywordsCount']['value']];
-
-        return $this->getKeywordsDataFromRepo($businessProfile, $limit);
-    }
-
-    /**
      * @param BusinessProfile $businessProfile
-     * @param int $limit
-     * @return array
+     * @param array $params
+     * @return mixed
      */
-    protected function getKeywordsDataFromRepo(BusinessProfile $businessProfile, int $limit)
+    protected function getKeywordsDataFromRepo(BusinessProfile $businessProfile, array $params)
     {
-        return $this->getKeywordsRepository()->getTopKeywordsForBusinessProfile($businessProfile, $limit);
+        $start = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $params['date']['start']);
+        $end = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $params['date']['end']);
+
+        $limit = $params['limit'];
+
+        return $this->getKeywordsRepository()->getTopKeywordsForBusinessProfile($businessProfile, $start, $end, $limit);
     }
 
     /**

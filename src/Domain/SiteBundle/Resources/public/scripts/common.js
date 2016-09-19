@@ -58,6 +58,7 @@ requirejs.config({
         'lightbox'      : 'domainsite/scripts/vendors/simple-lightbox.min',
         'select2'       : 'domainsite/scripts/vendors/select2.min',
         'iframetracker' : 'domainsite/scripts/vendors/jquery.iframetracker',
+        'highcharts' : 'domainsite/scripts/vendors/highcharts',
 
         'business/modules' : 'domainbusiness/scripts/modules',
         'business/tools'   : 'domainbusiness/scripts/modules/tools'

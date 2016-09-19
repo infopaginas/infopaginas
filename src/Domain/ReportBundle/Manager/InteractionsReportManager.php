@@ -38,17 +38,17 @@ class InteractionsReportManager
     }
 
     /**
-     * @param array $filterParams
+     * @param array $params
      * @return array
      */
-    public function getInteractionsData(array $filterParams = [])
+    public function getInteractionsData(array $params = [])
     {
         $dates = $this->getDateRangeVOFromDateString(
-            $filterParams['date']['value']['start'],
-            $filterParams['date']['value']['end']
+            $params['date']['start'],
+            $params['date']['end']
         );
 
-        $data = $this->getGaDataSource()->getInteractions($filterParams['businessProfile']['value'], $dates);
+        $data = $this->getGaDataSource()->getInteractions($params['businessProfileId'], $dates);
 
         $interactions = [];
 

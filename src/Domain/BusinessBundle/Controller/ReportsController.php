@@ -4,15 +4,22 @@ namespace Domain\BusinessBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\Impression;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Entity\Keyword;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
+use Domain\ReportBundle\Manager\InteractionsReportManager;
+use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
+use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -21,110 +28,182 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ReportsController extends Controller
 {
-    const BUSINESS_NOT_FOUND_MESSAGE = 'Business profile is not found.';
-
-    public function indexAction(Request $request, int $businessProfileId)
+    public function indexAction(int $businessProfileId)
     {
+        $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_DEFAULT);
+
         $params = [
             'businessProfileId' => $businessProfileId,
-            'date' => [
-                'start' => '05-08-2016',
-                'end' => '17-09-2016',
-            ],
-            'limit' => 10,
+            'date' => DatesUtil::getDateAsArrayFromVO($dateRange),
+            'limit' => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
         ];
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
         $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
 
+        $filtersForm = $this->createForm(new BusinessReportFilterType());
+
+        return $this->render('DomainBusinessBundle:Reports:index.html.twig', [
+            'overviewData'      => $overviewData,
+            'filtersForm'       => $filtersForm->createView(),
+            'businessProfileId' => $businessProfileId,
+        ]);
+    }
+
+    public function overviewAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+
+        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
+            [
+                'overviewData' => $overviewData,
+            ]
+        );
+
+        return new JsonResponse([
+            'stats'       => $stats,
+            'dates'       => $overviewData['dates'],
+            'views'       => $overviewData['views'],
+            'impressions' => $overviewData['impressions'],
+        ]);
+    }
+
+    public function adUsageAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+
         $businessAdUsageReportManager = $this->getAdUsageReportManager();
         $adUsageData = $businessAdUsageReportManager->getAdUsageData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/adUsageStatistics.html.twig',
+            [
+                'adUsageData' => $adUsageData,
+            ]
+        );
+
+        return new JsonResponse([
+            'stats' => $stats,
+        ]);
+    }
+
+    public function keywordsAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
 
         $keywordsReportManager = $this->getKeywordsReportManager();
         $keywordsData = $keywordsReportManager->getKeywordsData($params);
 
-        return $this->render('DomainBusinessBundle:Reports:index.html.twig', [
-            'overviewData' => $overviewData,
-            'adUsageData' => $adUsageData,
-            'keywordsData' => $keywordsData,
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/keywordStatistics.html.twig',
+            [
+                'keywordsData' => $keywordsData,
+            ]
+        );
+
+        return new JsonResponse([
+            'stats'    => $stats,
+            'keywords' => $keywordsData['keywords'],
+            'searches' => $keywordsData['searches'],
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param int $businessProfileId
-     * @return JsonResponse
-     * @throws \Exception
-     */
-    public function overviewAction(Request $request, int $businessProfileId)
+    public function interactionsAction(Request $request)
     {
-        /** @var BusinessProfile $businessProfile */
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+        $params = $this->prepareReportParameters($request->request->all());
 
-        if (!$businessProfile) {
-            throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
-        }
+        $interactionsReportManager = $this->getInteractionsReportManager();
+        $interactionsData = $interactionsReportManager->getInteractionsData($params);
 
-        $path = $this->generateUrl('domain_business_profile_view', [
-            'slug'     => $businessProfile->getSlug(),
-            'citySlug' => $businessProfile->getCitySlug(),
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/interactionStatistics.html.twig',
+            [
+                'interactionsData' => $interactionsData,
+            ]
+        );
+
+        return new JsonResponse([
+            'stats' => $stats,
         ]);
+    }
 
-        //only for dev env - remove app_dev.php from URL (GA doesn't track it)
-        if ($this->get('kernel')->getEnvironment() == 'dev') {
-            $path = str_replace('/app_dev.php', '', $path);
+    public function excelExportAction(Request $request)
+    {
+        $params = $request->query->all();
+        return $this->getExcelExporterService()->export($this->prepareReportParameters($params));
+    }
+
+    public function pdfExportAction(Request $request)
+    {
+        $params = $request->query->all();
+        list($filename, $content) = $this->getPdfExporterService()->export($this->prepareReportParameters($params));
+
+        return new Response(
+            $content,
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
+            )
+        );
+    }
+
+    public function printAction(Request $request)
+    {
+        $params = $request->request->all();
+        list($filename, $content) = $this->getPdfExporterService()->export($this->prepareReportParameters($params));
+
+        $pdfPath = $this->getParameter('assetic.write_to') . '/uploads/' . $filename;
+
+        file_put_contents($pdfPath, $content);
+
+        $url = $this->get('request')->getUriForPath('/uploads/' . $filename);
+
+        return new JsonResponse([
+            'pdf' => str_replace('/app_dev.php', '', $url)
+        ]);
+    }
+
+    protected function prepareReportParameters($requestData)
+    {
+        $params = [
+            'businessProfileId' => $requestData['businessProfileId'],
+            'limit' => $requestData['limit'],
+        ];
+
+        if ($requestData['datesRange'] !== 'custom') {
+            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType($requestData['datesRange']);
+            $params['date'] = DatesUtil::getDateAsArrayFromVO($dateRange);
+        } else {
+            $params['date'] = DatesUtil::getDateAsArrayFromRequestData($requestData);
         }
 
-        $dateRange = new ReportDatesRangeVO(new \DateTime('-1week'), new \DateTime());
+        return $params;
+    }
 
-        $weeklyBusinessViews = $this->getGADataFetcher()->getViews($path, $dateRange);
-
-        return new JsonResponse($weeklyBusinessViews);
+    protected function getPdfExporterService()
+    {
+        return $this->get('domain_report.exporter.pdf');
     }
 
     /**
-     * @param Request $request
-     * @param int $businessProfileId
-     * @return JsonResponse
+     * @return \Domain\ReportBundle\Service\Export\BusinessReportExcelExporter
      */
-    public function impressionsAction(Request $request, int $businessProfileId)
+    protected function getExcelExporterService() : BusinessReportExcelExporter
     {
-        /** @var BusinessProfile $businessProfile */
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
-
-        if (!$businessProfile) {
-            throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
-        }
-
-        $dateRange = new ReportDatesRangeVO(new \DateTime('-1week'), new \DateTime());
-
-        $weeklyBusinessImpressions = $this->getGADataFetcher()->getImpressions($businessProfile->getSlug(), $dateRange);
-
-        return new JsonResponse($weeklyBusinessImpressions);
+        return $this->get('domain_report.exporter.excel');
     }
 
-    public function keywordsAction(Request $request, int $businessProfileId)
+    protected function getInteractionsReportManager() : InteractionsReportManager
     {
-        /** @var BusinessProfile $businessProfile */
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
-
-        if (!$businessProfile) {
-            throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
-        }
-
-        $repo = $this->getDoctrine()->getRepository(Keyword::class);
-        dump($repo->getTopKeywordsForBusinessProfile($businessProfile));
-        die();
-
-        //$dateRange = new ReportDatesRangeVO(new \DateTime('-1week'), new \DateTime());
+        return $this->get('domain_report.manager.interactions');
     }
 
-    protected function getInteractionsReportManager()
-    {
-
-    }
-
-    protected function getKeywordsReportManager()
+    protected function getKeywordsReportManager() : KeywordsReportManager
     {
         return $this->get('domain_report.manager.keywords_report_manager');
     }
@@ -137,21 +216,5 @@ class ReportsController extends Controller
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
-    }
-
-    /**
-     * @return DataFetcher
-     */
-    private function getGADataFetcher() : DataFetcher
-    {
-        return $this->get('domain_report.google_analytics.data_fetcher');
-    }
-
-    /**
-     * @return BusinessProfileManager
-     */
-    private function getBusinessProfileManager() : BusinessProfileManager
-    {
-        return $this->get('domain_business.manager.business_profile');
     }
 }

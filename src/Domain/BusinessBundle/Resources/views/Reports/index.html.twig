@@ -2,9 +2,13 @@
 
 {% block breakcrumbs %} {% endblock %}
 
-
 {% block header %}
     {{ parent() }}
+    <style>
+        .card-item {
+            min-height: 150px;
+        }
+    </style>
     <div class="container">
         <div class="row profile-managment">
             <div class="col-xs-12 tabs-block-wrap">
@@ -42,10 +46,78 @@
 
 {% block main %}
     <form class="form-horizontal general-manage" novalidate="novalidate">
-        <div id="new-profile-loading-spinner-container-id"></div>
+        <section id="profile-manage-general" class="profile-manage profile-manage-general">
+            <div class="container general-manage">
+                <div class="row">
+                    <div class="col-md-12 business-container">
+                        <div class="cards">
+                            <div class="form-group card-item">
+                                <div class="card-item-name">
+                                    <span>{% trans %}Filters{% endtrans %}</span>
+                                </div>
+                                <input type="hidden" id="businessProfileId" value="{{ businessProfileId }}">
+                                <div class="col-xs-12 form-col">
+                                    <div class="col-xs-4">
+                                        <span>
+                                            Date period
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <div class="dropdown">
+                                            <div class="select-container">
+                                                {{ form_widget(filtersForm.dateRange) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="keywordsLimitContainer" style="display: none;">
+                                    <div class="col-xs-12 form-col">
+                                        <div class="col-xs-4">
+                                            <span>
+                                                Keywords Count
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <div class="dropdown">
+                                                <div class="select-container">
+                                                    {{ form_widget(filtersForm.limit) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="customDatesContainer" style="display: none;">
+                                    <div class="col-xs-12 form-col">
+                                        <div class="col-xs-4">
+                                            <span>
+                                                Date Start
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            {{ form_widget(filtersForm.start) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 form-col">
+                                        <div class="col-xs-4">
+                                            <span>
+                                                Date End
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            {{ form_widget(filtersForm.end) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="tab-content">
             <div class="tab-pane active" id="overview">
-                <section id="profile-manage-general" class="profile-manage profile-manage-general">
+                <section id="profile-manage-general" class="profile-manage profile-manage-general" style="padding-top: 0px">
                     <div class="container general-manage">
                         <div class="row">
                             <div class="col-md-12 business-container">
@@ -55,32 +127,15 @@
                                             <span>{% trans %}Chart{% endtrans %}</span>
                                         </div>
                                         <div class="col-xs-12 form-col">
-                                            <div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                            <div id="businessOverviewChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                                         </div>
                                     </div>
                                     <div class="form-group card-item">
                                         <div class="card-item-name">
                                             <span>{% trans %}Statistics{% endtrans %}</span>
                                         </div>
-                                        <div class="col-xs-12 form-col">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                <tr>
-                                                    <th>{% trans %}Date{% endtrans %}</th>
-                                                    <th>{% trans %}Views{% endtrans %}</th>
-                                                    <th>{% trans %}Impressions{% endtrans %}</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for row in overviewData.results %}
-                                                        <tr>
-                                                            <td>{{ row.date }}</td>
-                                                            <td>{{ row.views }}</td>
-                                                            <td>{{ row.impressions }}</td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
+                                        <div class="col-xs-12 form-col" id="businessOverviewStatisticsContainer">
+                                            {% include 'DomainBusinessBundle:Reports/blocks:businessOverviewStatistics.html.twig' %}
                                         </div>
                                     </div>
                                 </div>
@@ -91,7 +146,7 @@
             </div>
 
             <div class="tab-pane" id="ad_usage">
-                <section id="ad-usage-general" class="profile-manage profile-manage-general">
+                <section id="ad-usage-general" class="profile-manage profile-manage-general" style="padding-top: 0px">
                     <div class="container general-manage">
                         <div class="row">
                             <div class="col-md-12 business-container">
@@ -100,60 +155,7 @@
                                         <div class="card-item-name">
                                             <span>{% trans %}Statistics{% endtrans %}</span>
                                         </div>
-                                        <div class="col-xs-12 form-col">
-                                            <div class="panel-group" id="accordion" style="color: #123157">
-                                                {% for bannerName, statistics in adUsageData %}
-                                                    {% set totalClicks = 0 %}
-                                                    {% set totalImpressions = 0 %}
-                                                    <div class="panel panel-default">
-                                                        <div class="panel-heading">
-                                                            <h4 class="panel-title">
-                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}">
-                                                                    Banner (Line Item) Name: "{{ bannerName }}"
-                                                                </a>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="collapse{{ loop.index }}" class="panel-collapse collapse">
-                                                            <div class="panel-body">
-                                                                <table class="table table-bordered">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th>Date</th>
-                                                                        <th>Clicks</th>
-                                                                        <th>Impressions</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    {% for date, stats in statistics %}
-                                                                        {% set totalClicks = totalClicks + stats.clicks %}
-                                                                        {% set totalImpressions = totalImpressions + stats.impressions %}
-                                                                        <tr>
-                                                                            <td>
-                                                                                {{ date }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{ stats.clicks }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{ stats.impressions }}
-                                                                            </td>
-                                                                        </tr>
-                                                                    {% endfor %}
-                                                                    </tbody>
-                                                                    <tfoot>
-                                                                    <tr>
-                                                                        <td>Total</td>
-                                                                        <td>{{ totalClicks }}</td>
-                                                                        <td>{{ totalImpressions }}</td>
-                                                                    </tr>
-                                                                    </tfoot>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
+                                        <div class="col-xs-12 form-col" id="adUsageStatisticsContainer"></div>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +165,7 @@
             </div>
 
             <div class="tab-pane" id="keywords">
-                <section id="profile-manage-general" class="profile-manage profile-manage-general">
+                <section id="profile-manage-general" class="profile-manage profile-manage-general" style="padding-top: 0px">
                     <div class="container general-manage">
                         <div class="row">
                             <div class="col-md-12 business-container">
@@ -173,31 +175,14 @@
                                             <span>{% trans %}Chart{% endtrans %}</span>
                                         </div>
                                         <div class="col-xs-12 form-col">
-                                            <div id="chart-keywords" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                            <div id="keywordChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                                         </div>
                                     </div>
                                     <div class="form-group card-item">
                                         <div class="card-item-name">
                                             <span>{% trans %}Statistics{% endtrans %}</span>
                                         </div>
-                                        <div class="col-xs-12 form-col">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{% trans %}Keyword{% endtrans %}</th>
-                                                        <th>{% trans %}Searches Count{% endtrans %}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for keyword, count in keywordsData['results'] %}
-                                                        <tr>
-                                                            <td>{{ keyword }}</td>
-                                                            <td>{{ count }}</td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <div class="col-xs-12 form-col" id="keywordStatisticsContainer"></div>
                                     </div>
                                 </div>
                             </div>
@@ -207,84 +192,82 @@
             </div>
 
             <div class="tab-pane" id="interactions">
+                <section id="profile-manage-general" class="profile-manage profile-manage-general" style="padding-top: 0px">
+                    <div class="container general-manage">
+                        <div class="row">
+                            <div class="col-md-12 business-container">
+                                <div class="cards">
+                                    <div class="form-group card-item">
+                                        <div class="card-item-name">
+                                            <span>{% trans %}Statistics{% endtrans %}</span>
+                                        </div>
+                                        <div class="col-xs-12 form-col" id="interactionsStatisticsContainer"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
+
+        <section id="profile-manage-general" class="profile-manage profile-manage-general" style="padding-top: 0px">
+            <div class="container general-manage">
+                <div class="row">
+                    <div class="col-md-12 business-container" style="margin-top: 0px;">
+                        <div class="cards">
+                            <div class="form-group card-item" style="margin-top: 0px;">
+                                <div class="card-item-name">
+                                    <span>{% trans %}Export{% endtrans %}</span>
+                                </div>
+                                <div class="col-xs-8 form-col">
+                                    <div id="export-spinner"></div>
+                                </div>
+                                <div class="col-xs-4 form-col">
+                                    <div class="form-btn">
+                                        {% set pdfExportURL = path('domain_business_reports_pdf_export') %}
+                                        <button type="button" href="{{ pdfExportURL }}" id="export-pdf" class="btn green-btn">
+                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            {% trans %}PDF{% endtrans %}
+                                        </button>
+                                        {% set excelExportURL = path('domain_business_reports_excel_export') %}
+                                        <button type="button" href="{{ excelExportURL }}" id="export-excel" class="btn green-btn">
+                                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                            {% trans %}Excel{% endtrans %}
+                                        </button>
+                                        <button type="button" id="print" class="btn green-btn">
+                                            <i class="fa fa-print" aria-hidden="true"></i>
+                                            {% trans %}Print{% endtrans %}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </form>
 {% endblock %}
 
 {% block scripts %}
-    {{ parent() }}
-    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
-        $(function () {
-            $('#chart').highcharts({
-                title: {
-                    text: 'Business Profile Views vs Impressions',
-                    x: -20 //center
-                },
-                xAxis: {
-                    categories: {{ overviewData['dates']|json_encode|raw }}
-                },
-                yAxis: {
-                    title: {
-                        text: 'Count'
-                    },
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }]
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'middle',
-                    borderWidth: 0
-                },
-                series: [{
-                    name: 'Views',
-                    data: {{ overviewData['views']|json_encode|raw }}
-                }, {
-                    name: 'Impressions',
-                    data: {{ overviewData['impressions']|json_encode|raw }}
-                }]
-            });
-        });
+        var overviewDataDates       = {{ overviewData['dates']|json_encode|raw }};
+        var overviewDataViews       = {{ overviewData['views']|json_encode|raw }};
+        var overviewDataImpressions = {{ overviewData['impressions']|json_encode|raw }};
     </script>
-    <script>
-        $(function () {
-            $('#chart-keywords').highcharts({
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Keywords Statistics'
-                },
-                xAxis: {
-                    categories: {{ keywordsData['keywords']|json_encode|raw }}
-                },
-                yAxis: {
-                    allowDecimals: false,
-                    min: 0,
-                    title: {
-                        text: 'Number of searches'
-                    }
-                },
-                tooltip: {
-                    formatter: function () {
-                        return '<b>' + this.x + '</b><br/>' + this.point.stackTotal;
-                    }
-                },
-                plotOptions: {
-                    column: {
-                        stacking: 'normal'
-                    }
-                },
-                series: [{
-                    name: 'Searches',
-                    data: {{ keywordsData['searches']|json_encode|raw }}
-                }]
-            });
-        });
+
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs([
+                '{{asset("/bundles/domainbusiness/scripts/modules/reports.js")}}'
+            ], function(Reports) {
+                var reports = new Reports();
+            })
+        })
     </script>
 {% endblock %}

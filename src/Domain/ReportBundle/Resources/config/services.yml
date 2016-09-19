@@ -95,3 +95,22 @@ services:
     domain_report.manager.interactions:
         class: Domain\ReportBundle\Manager\InteractionsReportManager
         arguments: ['@domain_report.google_analytics.data_fetcher']
+
+    domain_report.exporter.excel:
+        class: Domain\ReportBundle\Service\Export\BusinessReportExcelExporter
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@domain_report.manager.business_overview_report_manager'
+            - '@domain_report.manager.keywords_report_manager'
+            - '@domain_report.manager.ad_usage'
+            - '@phpexcel'
+
+    domain_report.exporter.pdf:
+        class: Domain\ReportBundle\Service\Export\BusinessReportPdfExporter
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@domain_report.manager.business_overview_report_manager'
+            - '@domain_report.manager.keywords_report_manager'
+            - '@domain_report.manager.ad_usage'
+            - '@templating'
+            - '@spraed.pdf.generator'
