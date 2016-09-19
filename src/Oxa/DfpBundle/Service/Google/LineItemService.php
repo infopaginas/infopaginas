@@ -62,6 +62,10 @@ class LineItemService
      */
     public function getLineItemIdsAsOrderPair(array $orderIds)
     {
+        if (empty($orderIds)) {
+            return [];
+        }
+        
         $user = $this->getDfpUser();
 
         $lineItemService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
