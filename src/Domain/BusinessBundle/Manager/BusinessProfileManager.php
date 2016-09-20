@@ -214,7 +214,7 @@ class BusinessProfileManager extends Manager
      * @param BusinessProfile $businessProfile
      * @param string $locale
      */
-    public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en_US')
+    public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en')
     {
         if (!$businessProfile->getId()) {
             $businessProfile->setIsActive(false);
@@ -223,8 +223,6 @@ class BusinessProfileManager extends Manager
         if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
             $businessProfile->setLocale($locale);
         }
-
-        $businessProfile->setUser($this->currentUser);
 
         foreach ($businessProfile->getImages() as $image) {
             $clonedImage = clone $image;

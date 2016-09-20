@@ -16,6 +16,7 @@ use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class BusinessProfileFormHandler
@@ -47,13 +48,15 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         Request $request,
         BusinessProfileManager $manager,
         TasksManager $tasksManager,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        TokenStorageInterface $tokenStorage
     ) {
         $this->form               = $form;
         $this->request            = $request;
         $this->manager            = $manager;
         $this->tasksManager       = $tasksManager;
         $this->validator          = $validator;
+        $this->currentUser        = $tokenStorage->getToken()->getUser();
     }
 
     /**
@@ -107,6 +110,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     {
         if (!$businessProfile->getId()) {
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
+
+            $businessProfile->setUser($this->currentUser);
             $this->getBusinessProfilesManager()->saveProfile($businessProfile);
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);

@@ -142,6 +142,7 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@validator'
+            - '@security.token_storage'
 
     domain_business.form.handler.review:
         class: Domain\BusinessBundle\Form\Handler\ReviewFormHandler
