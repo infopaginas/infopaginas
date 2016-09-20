@@ -34,31 +34,43 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="green-btn">
+                                <a href="https://www.google.com/dfp/" class="green-btn" target="_blank">
                                     <i class="fa fa-newspaper-o" aria-hidden="true"></i>
                                     <span>{% trans %}Manage Ads{% endtrans %}</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}" class="green-btn">
+                                <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
                                     <i class="fa fa-pie-chart" aria-hidden="true"></i>
                                     <span>{% trans %}Reports{% endtrans %}</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="green-btn">
+                                <a href="{{ path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>
-                                    <span>{% trans %}Reviews{% endtrans %}</span></a>
+                                    <span>{% trans %}Reviews{% endtrans %}</span>
+                                </a>
                             </li>
                             {% if app.security.token and is_granted('ROLE_CONTENT_MANAGER') %}
                                 <li>
-                                    <a href="#" class="green-btn">
+                                    <a href="{{ path('admin_domain_business_subscription_edit', { id: businessProfile.getId() }) }}" class="green-btn" target="_blank" >
                                         <i class="fa fa-tag" aria-hidden="true"></i>
                                         <span>{% trans %}Subscriptions{% endtrans %}</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="green-btn">
+                                    {%
+                                        set couponParams = {
+                                            filter: {
+                                                businessProfile: {
+                                                    value: businessProfile.getId()
+                                                },
+                                                _page: 1,
+                                                _per_page: 25
+                                            }
+                                        }
+                                    %}
+                                    <a href="{{ path('admin_domain_business_coupon_list', couponParams) }}" target="_blank" class="green-btn">
                                         <i class="fa fa-percent" aria-hidden="true"></i>
                                         <span>{% trans %}Discounts{% endtrans %}</span>
                                     </a>
