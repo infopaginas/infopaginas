@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 use Doctrine\ORM\Query\Expr\Join;
+use Domain\BusinessBundle\Model\StatusInterface;
 
 /**
  * SubscriptionPlanRepository
@@ -18,6 +19,8 @@ class SubscriptionPlanRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('count(subscriptions.id) as cnt')
             ->leftJoin('subscription_plan.subscriptions', 'subscriptions', Join::LEFT_JOIN)
             ->andWhere('subscriptions.isActive = True')
+            ->andWhere('subscriptions.status = :activeStatus')
+            ->setParameter('activeStatus', StatusInterface::STATUS_ACTIVE)
             ->groupBy('subscription_plan');
 
         return $qb->getQuery()->getResult();
