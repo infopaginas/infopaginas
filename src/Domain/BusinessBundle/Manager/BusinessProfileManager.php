@@ -271,6 +271,12 @@ class BusinessProfileManager extends Manager
         /** @var ChangeSetEntry $change */
         foreach ($changeSet->getEntries() as $change) {
             switch ($change->getAction()) {
+                case ChangeSetCalculator::PROPERTY_ADD:
+                    $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
+                    break;
+                case ChangeSetCalculator::PROPERTY_REMOVE:
+                    $accessor->setValue($businessProfile, $change->getFieldName(), null);
+                    break;
                 case ChangeSetCalculator::PROPERTY_CHANGE:
                     if (!$change->getClassName()) {
                         $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
