@@ -77,6 +77,10 @@ class LineItemService
 
         $ids = [];
 
+        if (!is_array($page->results)) {
+            return $ids;
+        }
+
         foreach ($page->results as $lineItem) {
             if (isset($lineItem->id)) {
                 $ids[$lineItem->id] = $lineItem->orderId;

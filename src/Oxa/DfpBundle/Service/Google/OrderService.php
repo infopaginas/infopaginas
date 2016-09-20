@@ -63,6 +63,10 @@ class OrderService
 
         $page = $orderService->getOrdersByStatement($statementBuilder->ToStatement());
 
+        if (!is_array($page->results)) {
+            return $ids;
+        }
+
         foreach ($page->results as $result) {
             if (isset($result->id)) {
                 $ids[$result->id] = $result->advertiserId;

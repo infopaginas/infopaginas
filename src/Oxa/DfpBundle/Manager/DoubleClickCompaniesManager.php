@@ -83,7 +83,9 @@ class DoubleClickCompaniesManager
 
         /** @var BusinessProfile $businessProfile */
         foreach ($businessProfiles as $businessProfile) {
-            $externalIds[$businessProfile->getDoubleClickExternalId()] = $businessProfile;
+            if (!empty($businessProfile->getDoubleClickExternalId())) {
+                $externalIds[$businessProfile->getDoubleClickExternalId()] = $businessProfile;
+            }
         }
 
         return $externalIds;
