@@ -35,7 +35,7 @@ class BusinessProfilePhone
     /**
      * @var BusinessProfile
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     cascade={"persist", "remove"},
+     *     cascade={"persist"},
      *     inversedBy="phones",
      * )
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
