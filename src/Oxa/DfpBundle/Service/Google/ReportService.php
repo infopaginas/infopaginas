@@ -59,7 +59,6 @@ class ReportService
         array $columns
     ) : array {
         return $this->fetchStats($lineItemIds, $dateRange, $columns);
-        //return new OrderStatsDTOCollection($apiResponse);
     }
 
     /**
