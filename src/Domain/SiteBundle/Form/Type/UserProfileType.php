@@ -51,6 +51,13 @@ class UserProfileType extends AbstractType
                 ],
                 'label' => 'Location',
             ])
+            ->add('advertiserId', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => '11111111',
+                ],
+                'label' => 'Advertiser Id',
+            ])
             ->add('phone', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',

@@ -52,6 +52,11 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     protected $location = 'San Juan, Puerto Rico';
 
     /**
+     * @ORM\Column(name="advertiser_id", type="string", nullable=true, length=255)
+     */
+    protected $advertiserId;
+
+    /**
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
      */
     protected $twitterURL;
@@ -237,6 +242,24 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setLocation($location)
     {
         $this->location = $location;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
+
+    /**
+     * @param mixed $advertiserId
+     * @return User
+     */
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
         return $this;
     }
 

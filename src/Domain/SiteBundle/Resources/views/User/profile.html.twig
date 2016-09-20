@@ -56,6 +56,14 @@
                                     </div>
                                     <div class="col-xs-4">
                                         <span>
+                                            {{ form_label(profileForm.advertiserId) }}
+                                        </span>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        {{ form_widget(profileForm.advertiserId) }}
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <span>
                                             {% trans %}Password{% endtrans %}:
                                         </span>
                                     </div>
