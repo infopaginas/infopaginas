@@ -295,9 +295,11 @@ class BusinessProfileManager extends Manager
                     $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
                     break;
                 case ChangeSetCalculator::IMAGE_REMOVE:
-                    $data = json_decode($change->getNewValue());
+                    $data = json_decode($change->getOldValue());
                     $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
-                    $businessProfile->removeImage($gallery);
+                    if ($gallery) {
+                        $businessProfile->removeImage($gallery);
+                    }
                     break;
                 case ChangeSetCalculator::IMAGE_UPDATE:
                     $data = json_decode($change->getNewValue());
