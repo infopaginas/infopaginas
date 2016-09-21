@@ -132,4 +132,18 @@ class SubscriptionAdmin extends OxaAdmin
             ->add('updatedUser')
         ;
     }
+
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        if ($object->getStartDate() > new \DateTime('now')) {
+            $errorElement->with('startDate')
+                ->addViolation($this->getTranslator()->trans(
+                    'form.subscription.start_date',
+                    [],
+                    $this->getTranslationDomain()
+                ))
+                ->end()
+            ;
+        }
+    }
 }

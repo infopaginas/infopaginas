@@ -28,6 +28,8 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\Subscription, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
+        calls:
+            - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
 
     domain_business.admin.subscription_plan:
         class: Domain\BusinessBundle\Admin\SubscriptionPlanAdmin
