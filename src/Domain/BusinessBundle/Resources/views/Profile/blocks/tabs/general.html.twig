@@ -86,10 +86,18 @@
                                     data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
                                     {% for phoneField in businessProfileForm.phones %}
                                         <li>
-                                            {{ form_widget(phoneField) }}
-                                            <br>
+                                            <div>
+                                                <div class="phone-add-wrap">
+                                                    {{ form_widget(phoneField) }}
+                                                    <span class="help-block"></span>
+                                                    {% if loop.index > 1 %}
+                                                        <a class="pull-right remove-phone" href="#">X</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
                                         </li>
                                         <span class="help-block"></span>
+
                                     {% endfor %}
                                 </ul>
                                 <ul class="add-phone-block">
