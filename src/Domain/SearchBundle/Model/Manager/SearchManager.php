@@ -76,7 +76,7 @@ class SearchManager extends Manager
     {
         $results      = $this->businessProfilehManager->search($searchParams);
 
-        if (empty($results)) {
+        if (!$results) {
             $results  = $this->businessProfilehManager->searchNeighborhood($searchParams);
         }
 
@@ -102,14 +102,18 @@ class SearchManager extends Manager
         return $response;
     }
 
-    public function getSearchDTO(Request $request) : SearchDTO
+    public function getSearchDTO(Request $request)
     {
+        $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
+
+        if (!$location) {
+            return null;
+        }
+
         $query      = preg_replace("/[^a-zA-Z0-9\s]+/", "", SearchDataUtil::getQueryFromRequest($request));
         $page       = SearchDataUtil::getPageFromRequest($request);
 
-        $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
-
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
 
         if ($category = SearchDataUtil::getCategoryFromRequest($request)) {

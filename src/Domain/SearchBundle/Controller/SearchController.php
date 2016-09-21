@@ -24,27 +24,33 @@ class SearchController extends Controller
     {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $searchDTO          = $searchManager->getSearchDTO($request);
-        $searchResultsDTO   = $searchManager->search($searchDTO);
-
-        $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
-
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL_LEADERBOARD,
-            TypeInterface::CODE_PORTAL,
-        ));
-
-        $this->getBusinessProfileManager()
-            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-
-        // hardcode for catalog
-        $pageRouter = 'domain_search_index';
+        $searchDTO = $searchManager->getSearchDTO($request);
 
         $searchData = $this->getSearchDataByRequest($request);
 
-        $this->getSearchLogManager()
-            ->saveProfilesDataSuggestedBySearchQuery($request->query->get('q'), $searchResultsDTO->resultSet);
+        if ($searchDTO) {
+            $searchResultsDTO   = $searchManager->search($searchDTO);
+            $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
+
+            $this->getBusinessProfileManager()
+                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+            $this->getSearchLogManager()
+                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+        } else {
+            $searchResultsDTO = null;
+            $dcDataDTO = null;
+        }
+
+        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_LEADERBOARD,
+                TypeInterface::CODE_PORTAL,
+            ]
+        );
+
+        // hardcode for catalog
+        $pageRouter = 'domain_search_index';
 
         return $this->render(
             'DomainSearchBundle:Search:index.html.twig',
@@ -79,25 +85,33 @@ class SearchController extends Controller
         $searchManager = $this->get('domain_search.manager.search');
 
         $searchDTO          = $searchManager->getSearchDTO($request);
-        $searchResultsDTO   = $searchManager->search($searchDTO);
 
-        $businessProfileManager = $this->get('domain_business.manager.business_profile');
-        $searchResultsDTO   = $businessProfileManager->removeItemWithHiddenAddress($searchResultsDTO);
-        $locationMarkers    = $businessProfileManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+        $searchData = $this->getSearchDataByRequest($request);
+
+        if ($searchDTO) {
+            $searchResultsDTO   = $searchManager->search($searchDTO);
+
+            $businessProfileManager = $this->get('domain_business.manager.business_profile');
+
+            $searchResultsDTO   = $businessProfileManager->removeItemWithHiddenAddress($searchResultsDTO);
+            $locationMarkers    = $businessProfileManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+
+            $this->getBusinessProfileManager()
+                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
+            $this->getSearchLogManager()
+                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+        } else {
+            $searchResultsDTO = null;
+            $locationMarkers = null;
+        }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
             TypeInterface::CODE_PORTAL
         ));
 
-        $this->getBusinessProfileManager()
-            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-
-        $searchData = $this->getSearchDataByRequest($request);
         $pageRouter = $this->container->get('request')->attributes->get('_route');
-
-        $this->getSearchLogManager()
-            ->saveProfilesDataSuggestedBySearchQuery($request->query->get('q'), $searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:map.html.twig',
@@ -115,22 +129,29 @@ class SearchController extends Controller
     {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $searchDTO          = $searchManager->getSearchDTO($request);
-        $searchResultsDTO   = $searchManager->search($searchDTO);
+        $searchDTO = $searchManager->getSearchDTO($request);
+
+        $searchData = $this->getSearchDataByRequest($request);
+
+        if ($searchDTO) {
+            $searchResultsDTO   = $searchManager->search($searchDTO);
+
+            $this->getBusinessProfileManager()
+                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
+            $this->getSearchLogManager()
+                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+        } else {
+            $searchResultsDTO = null;
+            $locationMarkers = null;
+        }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
             TypeInterface::CODE_PORTAL
         ));
 
-        $this->getBusinessProfileManager()
-            ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-
-        $searchData = $this->getSearchDataByRequest($request);
         $pageRouter = $this->container->get('request')->attributes->get('_route');
-
-        $this->getSearchLogManager()
-            ->saveProfilesDataSuggestedBySearchQuery($request->query->get('q'), $searchResultsDTO->resultSet);
 
         return $this->render(
             'DomainSearchBundle:Search:compare.html.twig',

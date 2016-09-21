@@ -110,6 +110,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      */
     public function search(SearchDTO $searchParams)
     {
+        if (!$searchParams->locationValue) {
+            return null;
+        }
+
         $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
         $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
 
@@ -117,7 +121,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $offset = ($searchParams->page - 1) * $limit;
 
         $queryBuilder = $this->getQueryBuilder();
-        
+
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
         $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
         $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);

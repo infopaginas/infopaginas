@@ -135,13 +135,13 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE,
                 'title' => 'Default map latitude parameter',
-                'value' => '18.4248008',
+                'value' => '18.4161654',
                 'format' => 'text',
                 'description' => 'Used to show default map position',
             ], [
                 'key' => ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE,
                 'title' => 'Default map longitude parameter',
-                'value' => '-66.1185967',
+                'value' => '-66.0450088',
                 'format' => 'text',
                 'description' => 'Used to show default map position',
             ], [
