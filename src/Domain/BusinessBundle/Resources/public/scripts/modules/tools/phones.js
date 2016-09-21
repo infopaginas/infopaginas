@@ -33,6 +33,8 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
 
             newLi.appendTo(phonesList);
 
+            phonesList.data('length', phonesCount);
+
             event.preventDefault();
         });
     };
@@ -43,7 +45,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
         $(document).on('click', that.html.removeLinkClass, function(event) {
             var $li = $(this).parents('li');
             $li.remove();
-
+            
             event.preventDefault();
         });
     };

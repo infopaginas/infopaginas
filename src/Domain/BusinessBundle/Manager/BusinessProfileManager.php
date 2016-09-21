@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
@@ -17,6 +18,7 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
+use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -279,12 +281,22 @@ class BusinessProfileManager extends Manager
                     if (!$change->getClassName()) {
                         $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
                     } else {
-                        $ids = array_map(function($element) {
-                            return $element->id;
-                        }, json_decode($change->getNewValue()));
+                        if ($change->getClassName() === BusinessProfilePhone::class) {
+                            $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
+                                $change,
+                                $businessProfile,
+                                $this->getEntityManager()
+                            );
 
-                        $collection = $this->getEntitiesByIds($change->getClassName(), $ids);
-                        $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        } else {
+                            $ids = array_map(function($element) {
+                                return $element->id;
+                            }, json_decode($change->getNewValue()));
+
+                            $collection = $this->getEntitiesByIds($change->getClassName(), $ids);
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        }
                     }
                     break;
                 case ChangeSetCalculator::IMAGE_ADD:
