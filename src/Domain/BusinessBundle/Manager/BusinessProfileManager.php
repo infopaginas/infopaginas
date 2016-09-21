@@ -279,7 +279,12 @@ class BusinessProfileManager extends Manager
                     break;
                 case ChangeSetCalculator::PROPERTY_CHANGE:
                     if (!$change->getClassName()) {
-                        $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
+                        if (strstr($change->getFieldName(), 'isSet') && empty($change->getNewValue())) {
+                            $newValue = false;
+                        } else {
+                            $newValue = $change->getNewValue();
+                        }
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $newValue);
                     } else {
                         if ($change->getClassName() === BusinessProfilePhone::class) {
                             $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
