@@ -44,7 +44,7 @@ class SubscriptionStatusManager
 
         // if you try to set status as Active
         // if status was edited or new entity added
-        if ((isset($changeSet[StatusInterface::PROPERTY_NAME_STATUS]) || !$entity->getId()) &&
+        if (isset($changeSet[StatusInterface::PROPERTY_NAME_STATUS]) &&
             $entity->getStatus() == StatusInterface::STATUS_ACTIVE
         ) {
             // set Cancel if you try to set Active status for more than one entity
