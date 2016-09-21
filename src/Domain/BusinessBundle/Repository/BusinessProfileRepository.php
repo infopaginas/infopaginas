@@ -7,6 +7,7 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -512,7 +513,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getVideosQuery()->setMaxResults($limit);
 
-        $results = new Paginator($qb, $fetchJoin = true);
+        $results = new Paginator($qb, $fetchJoin = false);
 
         return $results;
     }
@@ -521,7 +522,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getVideosQuery();
 
-        $results = new Paginator($qb, $fetchJoin = true);
+        $results = new Paginator($qb, $fetchJoin = false);
 
         return $results;
     }
@@ -576,9 +577,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('v')
-            ->from(WistiaMedia::class, 'v')
-            ->leftJoin(BusinessProfile::class, 'bp')
+            ->from(BusinessProfile::class, 'bp')
+            ->innerJoin('bp.subscriptions', 'bp_s')
+            ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
+            ->innerJoin(WistiaMedia::class, 'v', Join::WITH, 'bp.video = v')
             ->where('bp.isActive = TRUE')
+            ->andWhere('bps_p.code = :platinumPlanCode')
+            ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
             ->orderBy('v.createdAt', 'DESC')
         ;
 
