@@ -13,13 +13,24 @@ imports:
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
+    - { resource: "@OxaDfpBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
     locales: [en, es]
+    locale_data:
+        es:
+            domain: ''
+            title: 'Espa&ntilde;ol'
+        en:
+            domain: 'en'
+            title: 'English'
     route_locales: en|es
+    locale_admin:
+        url_part: 'admin'
+        locale: 'en'
     videos_upload_path: %assetic.write_to%/uploads/videos
 
 framework:
@@ -43,6 +54,8 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
+        storage_id: dynamicDomainSessionStorage
+        name: SFSESSID
     fragments:       ~
     http_method_override: true
 
@@ -77,7 +90,7 @@ doctrine:
             TaskType: Domain\BusinessBundle\DBAL\Types\TaskType
             TaskStatusType: Domain\BusinessBundle\DBAL\Types\TaskStatusType
     orm:
-        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         mappings:
@@ -152,3 +165,56 @@ hwi_oauth:
 
 fos_js_routing:
     routes_to_expose: [ fos_user_security_check ]
+
+google:
+    analytics:
+        enhanced_ecommerce: true
+        session_auto_started: true
+        trackers:
+            default:
+                name: MyJavaScriptCompatibleVariableNameWithNoSpaces
+                accountId: UA-83876369-2
+                domain: infopaginas.io
+                setSiteSpeedSampleRate: 5
+                allowAnchor: true
+                allowHash: true
+                includeNamePrefix: false
+                plugins:
+                    - 'linkid'
+                    - 'ec'
+        whitelist: [ 'q', 'utm_source', 'utm_medium', 'utm_term', 'utm_content', 'utm_campaign' ]
+
+happyr_google_site_authenticator:
+    cache_service: 'cache.provider.my_file_system'
+    tokens:
+        google_analytics:
+            client_id: '496444845522-no82atjdrcmbnbo2jl6238g28qiamae9.apps.googleusercontent.com'
+            client_secret: 'eRZEJiZIQw9w0SKyye-68jTU'
+            redirect_url: 'http://infopaginas.io/app_dev.php/admin/authenticate-google/return-url'
+            scopes: ['https://www.googleapis.com/auth/analytics.readonly']
+
+oneup_flysystem:
+    adapters:
+        my_adapter:
+            local:
+                directory: %kernel.root_dir%/cache
+    filesystems:
+        local:
+            adapter: my_adapter
+
+cache_adapter:
+  providers:
+      my_file_system:
+          factory: 'cache.factory.filesystem'
+          options:
+              flysystem_service: 'oneup_flysystem.local_filesystem'
+
+happyr_google_analytics:
+    http_client: 'httplug.client'
+    http_message_factory: 'httplug.message_factory'
+    tracking_id: UA-83876369-2
+    fetching:
+        client_service: 'google.client.google_analytics'
+        view_id: 129461101
+        cache_service: 'cache.provider.my_file_system'
+        cache_lifetime: 3600

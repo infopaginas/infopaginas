@@ -2,6 +2,7 @@
 
 namespace Oxa\WistiaBundle\Manager;
 
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Uploader\WistiaLocalFileUploader;
 use Oxa\WistiaBundle\Uploader\WistiaRemoteFileUploader;
@@ -97,22 +98,35 @@ class WistiaManager
 
     public function uploadLocalFile(string $filePath, array $data = []) : WistiaMedia
     {
+        $wistiaMediaData = $this->uploadLocalFileData($filePath, $data);
+
+        return $this->wistiaMediaManager->save($wistiaMediaData);
+    }
+
+    public function uploadLocalFileData(string $filePath, array $data = []) : array
+    {
         $uploaderRequestData = ['file' => $filePath];
         $fileUploader = $this->wistiaLocalFileUploader->setData(array_merge($uploaderRequestData, $data));
 
         $wistiaMediaData = $fileUploader->upload();
 
-        return $this->wistiaMediaManager->save($wistiaMediaData);
+        return $wistiaMediaData;
     }
 
-    public function uploadRemoteFile(string $url, array $data = []) : WistiaMedia
+    public function uploadRemoteFile(string $url, array $data = [])
     {
-        $uploaderRequestData = ['url' => $url];
-        $fileUploader = $this->wistiaRemoteFileUploader->setData(array_merge($uploaderRequestData, $data));
+        $headers = SiteHelper::checkUrlExistence($url);
 
-        $wistiaMediaData = $fileUploader->upload();
+        if ($headers && in_array($headers['content_type'], SiteHelper::$videoContentTypes)) {
+            $uploaderRequestData = ['url' => $url];
+            $fileUploader = $this->wistiaRemoteFileUploader->setData(array_merge($uploaderRequestData, $data));
 
-        return $this->wistiaMediaManager->save($wistiaMediaData);
+            $wistiaMediaData = $fileUploader->upload();
+
+            return $this->wistiaMediaManager->save($wistiaMediaData);
+        }
+
+        return false;
     }
 
     public function getEmbedCode(string $hash, array $dimensions = [])

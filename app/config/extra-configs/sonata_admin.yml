@@ -47,8 +47,8 @@ sonata_admin:
                     - domain_business.admin.subscription_plan
                     - domain_business.admin.category
                     - domain_business.admin.area
+                    - domain_business.admin.locality
                     - domain_business.admin.tag
-                    - domain_business.admin.brand
                     - domain_business.admin.payment_method
                     - domain_business.admin.coupon
                     - domain_business.admin.address.country
@@ -86,6 +86,10 @@ sonata_admin:
                 label: Reports
                 icon: <i class="fa fa-bar-chart-o"></i>
                 items:
-                    - domain_report.admin.business_overview_report
+                    #- domain_report.admin.business_overview_report
+                    #- domain_report.admin.ad_usage_report
+                    #- domain_report.admin.keywords_report
                     - domain_report.admin.subscription_report
                     - domain_report.admin.category_report
+                    - domain_report.admin.views_and_visitors_report
+                    #- domain_report.admin.interactions

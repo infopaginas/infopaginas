@@ -1,0 +1,176 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/AdminLTE/css/AdminLTE.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
+
+
+</head>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2}
+</style>
+<div>
+    <b>
+        {{ businessProfile.getName() }}
+    </b>,
+    {{ "now"|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATETIME_FORMAT')) }}
+</div>
+
+<br>
+
+<div>{{ businessProfile.getFullAddress() }}</div>
+
+<br>
+
+<div class="box box-primary box-pdf" style="display: block; clear: both; page-break-after: always;">
+    <table class="table table-bordered table-striped" style="width: 100%;">
+        <thead>
+        <tr class="sonata-ba-list-field-header">
+            <th colspan="3" class="export-date-period">
+                Business Overview
+            </th>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <th>Impressions</th>
+            <th>Views</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for stats in overviewData['results'] %}
+                <tr>
+                    <td>{{ stats['date'] }}</td>
+                    <td>{{ stats['impressions'] }}</td>
+                    <td>{{ stats['views'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div class="box box-primary box-pdf" style="display: block; clear: both; page-break-after: always;">
+    <table class="table table-bordered table-striped" style="width: 100%">
+        <thead>
+        <tr class="sonata-ba-list-field-header">
+            <th colspan="2" class="export-date-period">
+                Keywords Statistics
+            </th>
+        </tr>
+        <tr>
+            <th>Keyword</th>
+            <th>Number of searches</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for keyword, searches in keywordsData['results'] %}
+            <tr>
+                <td>{{ keyword }}</td>
+                <td>{{ searches }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div class="box box-primary box-pdf" style="display: block; clear: both; page-break-after: always;">
+    <table class="table table-bordered table-striped" style="width: 100%">
+        <thead>
+        <tr class="sonata-ba-list-field-header">
+            <th colspan="3" class="export-date-period">
+                Ad Usage
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for banner, data in adUsageData %}
+            <tr>
+                <td colspan="3">{{ banner }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <th>Last month</th>
+                <th>Current month</th>
+            </tr>
+            {% for date, stats in data %}
+                <tr>
+                    <td>{{ date|date('d.m.Y') }}</td>
+                    <td>{{ stats['impressions'] }}</td>
+                    <td>{{ stats['clicks'] }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div class="box box-primary box-pdf" style="display: block; clear: both; page-break-after: always;">
+    <table class="table table-bordered table-striped" style="width: 100%">
+        <thead>
+        <tr class="sonata-ba-list-field-header">
+            <th colspan="3" class="export-date-period">
+                Monthly Impressions Dynamics
+            </th>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <th>Last month</th>
+            <th>Current month</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for monthlyData in thisMonthOverviewData %}
+            <tr>
+                <td>{{ loop.index + 1 }}</td>
+                <td>{{ lastMonthOverviewData[loop.index]['impressions'] }}</td>
+                <td>{{ monthlyData['impressions'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div class="box box-primary box-pdf">
+    <table class="table table-bordered table-striped" style="width: 100%">
+        <thead>
+        <tr class="sonata-ba-list-field-header">
+            <th colspan="4" class="export-date-period">
+                Yearly Impressions Dynamics
+            </th>
+        </tr>
+        <tr>
+            <th colspan="2">Last Year</th>
+            <th colspan="2">Year before last year</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for yearlyData in thisYearOverviewData %}
+            <tr>
+                <td>{{ yearlyData['date']|date('F, Y') }}</td>
+                <td>{{ yearlyData['impressions'] }}</td>
+                <td>{{ lastYearOverviewData[loop.index -1]['date']|date('F, Y') }}</td>
+                <td>{{ lastYearOverviewData[loop.index -1]['impressions'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

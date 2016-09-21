@@ -5,17 +5,17 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Areas}
 
+    domain_business.admin.locality:
+        class: Domain\BusinessBundle\Admin\LocalityAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Locality, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Localities}
+
     domain_business.admin.tag:
         class: Domain\BusinessBundle\Admin\TagAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Tag, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Tags}
-
-    domain_business.admin.brand:
-        class: Domain\BusinessBundle\Admin\BrandAdmin
-        arguments: [~, Domain\BusinessBundle\Entity\Brand, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Brands}
 
     domain_business.admin.payment_method:
         class: Domain\BusinessBundle\Admin\PaymentMethodAdmin

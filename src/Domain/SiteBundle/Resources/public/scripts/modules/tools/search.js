@@ -20,12 +20,13 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
         $.extend( this.options, options );
 
-        this.init( options );
+        this.init( this.options );
         this.bindEvents();
 
         $(options.searchHeaderButton).add( options.submitSelector ).on( 'click', function( evt ) {
-            if( $( options.searchSelector ).val() === '' ){
+            if( $( options.searchSelector ).val() === '' || !$( options.searchSelector ).val().trim().length ){
                 evt.preventDefault();
+                $( options.searchSelector ).val('');
                 $( options.searchSelector ).css( {"border-color": "#FF3300"}) ;
                 $( options.searchSelector ).parent().addClass( "validation-error" );
                 $( options.searchSelector ).attr( "placeholder", "Please enter a search term" );
@@ -40,20 +41,12 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             }
         });
 
-        $( window ).resize( function(){
-            if($( window ).width() > this.options.mediaWidth ) {
-                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
-            }
-        }.bind( this ));
-
         $( this.options.searchSelector ).focus( function(){
-            if($( window ).width() < this.options.mediaWidth ) {
-                $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
-            }
+            $( this.options.mediaSearchSection ).css( {"display": "inline-block"} );
         }.bind( this ));
 
         $( this.options.mediaCloseSection ).click( function(){
-            $( this.options.mediaSearchSection ).css( {"display" : "none"} )
+            $( this.options.mediaSearchSection ).css( {"display" : ""} )
         }.bind( this ));
 
         return this;

@@ -86,11 +86,7 @@
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Brands') }}</td>
-            <td>
-                {% for brand in business.getBrands() %}
-                    {{ brand }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            </td>
+            <td>{{ business.getBrands()|raw }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Payment methods') }}</td>
@@ -108,6 +104,16 @@
             <tr class="sonata-ba-view-container">
                 <td>{{ admin.trans('Closure Reason') }}</td>
                 <td>{{ object.getClosureReason() }}</td>
+            </tr>
+        {% endif %}
+        {% if object.reviewer %}
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Submitted by') }}</td>
+                <td>{{ object.reviewer.firstname }} {{ object.reviewer.lastname }}</td>
+            </tr>
+            <tr class="sonata-ba-view-container">
+                <td>{{ admin.trans('Submitted on') }}</td>
+                <td>{{ object.updatedAt|date('d M, Y, H:i:s A') }}</td>
             </tr>
         {% endif %}
         <tr class="sonata-ba-view-container">

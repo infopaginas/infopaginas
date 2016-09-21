@@ -12,6 +12,12 @@ define(
             return $( options.selector ).find( selector );
         };
 
+        $( '#forgottenPasswordModal' ).on('shown.bs.modal', function () {
+            $( 'body' ).addClass( 'modal-open' );
+        }).on('hidden', function () {
+            $( 'body' ).removeClass( 'modal-open' )
+        });
+
         this.init( options );
         return this;
     };

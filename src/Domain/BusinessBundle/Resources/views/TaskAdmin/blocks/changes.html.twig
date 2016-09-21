@@ -1,7 +1,7 @@
 <div class="sonata-ba-view">
     {{ sonata_block_render_event('sonata.admin.show.top', { 'admin': admin, 'object': object }) }}
 
-    {% set data = get_business_profiles_changeset_array(object.getChangeSet()) %}
+    {% set data = object.getChangeSet().getEntries() %}
 
     <table class="table table-bordered">
         <thead>
@@ -27,12 +27,70 @@
         </thead>
         <tbody>
         {% for row in data %}
-            <tr class="sonata-ba-view-container">
-                <td>{{ row.field }}</td>
-                <td>{{ row.action }}</td>
-                <td>{{ row.oldValue }}</td>
-                <td>{{ row.newValue }}</td>
+            {% if row.fieldName != 'latitude' and row.fieldName != 'longitude' %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName) }}</td>
+
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+
+                    {% if row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_UPDATE') %}
+                        {% set newData = get_business_profile_image_changes(row.newValue) %}
+                        {% set changes = prepare_image_diff(newData) %}
+                        <td>
+                            {% for change in changes['old'] %}
+                                {{ change }}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for change in changes['new'] %}
+                                {{ change }}
+                            {% endfor %}
+                        </td>
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_ADD') %}
+                        {% set changes = get_business_profile_image_changes(row.newValue) %}
+                        <td></td>
+                        <td>{{ changes.name }}</td>
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_REMOVE') %}
+                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
+                        <td>{{ changes.name }}</td>
+                        <td></td>
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_UPDATE') %}
+                        {% set oldData = get_business_profile_image_changes(row.oldValue) %}
+                        {% set newData = get_business_profile_image_changes(row.newValue) %}
+                        {% if oldData != '' %}
+                            <td>
+                                {{ oldData.name }}
+                            </td>
+                            <td>
+                                {{ newData.name }}
+                            </td>
+                        {% else %}
+                            {% set changes = prepare_image_diff(newData) %}
+                            <td>
+                                {% for change in changes['old'] %}
+                                    {{ change }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for change in changes['new'] %}
+                                    {{ change }}
+                                {% endfor %}
+                            </td>
+                        {% endif %}
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_REMOVE') %}
+                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
+                        <td> {{ changes.name }} </td>
+                        <td>-</td>
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_ADD') %}
+                        {% set changes = get_business_profile_image_changes(row.newValue) %}
+                        <td>-</td>
+                        <td> {{ changes.name }} </td>
+                    {% else %}
+                        <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>
+                        <td>{{ get_business_profile_changes_string(row.newValue) }}</td>
+                    {% endif %}
             </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>

@@ -62,17 +62,20 @@ class CountryAdmin extends OxaAdmin
     }
 
     /**
-     * @param RouteCollection $collection
+     * @param string $name
+     * @param null $object
+     * @return bool
      */
-    protected function configureRoutes(RouteCollection $collection)
+    public function isGranted($name, $object = null)
     {
-        parent::configureRoutes($collection);
+        $deniedActions = ['DELETE', 'ROLE_PHYSICAL_DELETE_ABLE', 'ROLE_RESTORE_ABLE'];
 
-        $collection
-            ->remove('delete')
-            ->remove('delete_physical')
-            ->remove('restore')
-            ->remove('create')
-        ;
+        if ($object && in_array($name, $deniedActions) &&
+            in_array(strtolower($object->getShortName()), $object::getRequiredCountries())
+        ) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
     }
 }

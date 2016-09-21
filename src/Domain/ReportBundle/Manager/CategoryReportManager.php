@@ -8,6 +8,8 @@
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Entity\CategoryReportCategory;
@@ -88,19 +90,20 @@ class CategoryReportManager extends BaseReportManager
     }
 
     /**
-     * @param int $categoryId
-     * @param \DateTime|null $date
+     * @param BusinessProfile $businessProfile
      */
-    public function registerBusinessVisit(int $categoryId, \DateTime $date = null)
+    public function registerBusinessVisit(BusinessProfile $businessProfile)
+    {
+        foreach ($businessProfile->getCategories() as $category) {
+            $this->createNewCategoryReportRecord($category);
+        }
+
+        $this->getEntityManager()->flush();
+    }
+
+    protected function createNewCategoryReportRecord(Category $category)
     {
         $em = $this->getEntityManager();
-
-        $category = $em->getRepository('DomainBusinessBundle:Category')
-            ->findOneBy(['id' => $categoryId]);
-
-        if (!$category) {
-            throw new \InvalidArgumentException(sprintf('Invalid category Id (%s)'), $categoryId);
-        }
 
         $categoryReport = $em->getRepository('DomainReportBundle:CategoryReport')
             ->findOneBy(['category' => $category]);
@@ -114,11 +117,6 @@ class CategoryReportManager extends BaseReportManager
         $categoryReportCategory = new CategoryReportCategory();
         $categoryReportCategory->setCategoryReport($categoryReport);
 
-        if ($date) {
-            $categoryReportCategory->setDate($date);
-        }
-
         $em->persist($categoryReportCategory);
-        $em->flush();
     }
 }

@@ -13,6 +13,12 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class AreaAdmin extends OxaAdmin
 {
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_per_page'   => 25,
+        '_sort_by'    => 'name',
+    );
+
     /**
      * @param DatagridMapper $datagridMapper
      */

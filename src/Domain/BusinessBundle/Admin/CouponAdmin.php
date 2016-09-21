@@ -47,10 +47,7 @@ class CouponAdmin extends OxaAdmin
     {
         $formMapper
             ->add('title')
-            ->add('businessProfile', null, [
-                // hide this field if this page used as sonata_type_collection on other pages
-                'attr' => ['hidden' => $this->getRoot()->getClass() != $this->getClass()]
-            ])
+            ->add('businessProfile')
             ->add('image', 'sonata_type_model_list', [
                 'btn_delete' => null
             ], [
@@ -60,6 +57,11 @@ class CouponAdmin extends OxaAdmin
                     'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                 ]])
         ;
+
+        // remove this field if this page used as sonata_type_collection on other pages
+        if ($this->getRoot()->getClass() != $this->getClass()) {
+            $formMapper->remove('businessProfile');
+        }
     }
 
     /**

@@ -185,7 +185,6 @@ class UserAdmin extends OxaAdmin
                     'choices' => $roles
                 ])
                 ->add('enabled')
-//                ->add('role', 'sonata_security_roles', array('expanded' => true))
                 ->end()
             ;
         }
