@@ -33,3 +33,13 @@ services:
     sonata.user.admin.group:
       abstract: true
       public: false
+
+    sonata.user.admin.user:
+        class: '%sonata.user.admin.user.class%'
+        arguments: [~, '%sonata.user.admin.user.entity%', '%sonata.user.admin.user.controller%']
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: '%sonata.user.admin.groupname%', label: users, label_catalogue: SonataUserBundle, label_translator_strategy: sonata.admin.label.strategy.underscore }
+        calls:
+            - [ setTemplate, [edit, OxaSonataUserBundle:Admin:User/edit.html.twig]]
+            - [ setUserManager, [ '@fos_user.user_manager' ] ]
+            - [ setTranslationDomain, ['%sonata.user.admin.user.translation_domain%']]
