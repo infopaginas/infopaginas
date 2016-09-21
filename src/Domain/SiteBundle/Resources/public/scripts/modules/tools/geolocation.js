@@ -2,10 +2,9 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
     'use strict'
 
     var geolocation = function ( options ) {
+        this.position = null;
         this.init(options);
 
-        this.position = null;
-        this.getPosition();
         return this;
     }
 
@@ -17,48 +16,74 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             googleAutoSuggestApiURL : '',
             autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
             autoCompleteMinLen : 2,
+            refreshPositionTimeout : 10, // secs
+            cookieKey : 'geo_location_data',
         };
         $.extend( this.options, options );
 
         if ( _.isNull(this.options.locationBox) || _.isUndefined(this.options.locationBox) ) {
-            this.options.locationBox = this.$(this.options.locationBoxSelector);
+            this.options.locationBox = this.$(this.options.searchLocation);
         }
 
-        setInterval(this.initPosition.bind(this), 30000); // 30 secs timeout
-    }
+        if ( !this.options.locationBox.val()) {
+            // start geo if custom field is empty
 
-    geolocation.prototype.getAddress = function ( callback ) {
-        if (!this.isGelocationAvailable()) {
-            return null;
+            var cookieString = cookie.get( this.options.cookieKey);
+
+            if ( cookieString ) {
+                this.position = JSON.parse( cookieString );
+
+                this.setToForm();
+            } else {
+                this.initPosition();
+            }
         }
-
-        this.callback = callback;
-
-        this.getGeodata();
     }
 
     geolocation.prototype.isGelocationAvailable = function () {
         return !!navigator.geolocation;
     }
 
-    geolocation.prototype.showPosition = function ( position ) {
-        this.getLocationsNameByLatLng.bind(this)( position.coords.latitude, position.coords.longitude );
-    }
-
     geolocation.prototype.getLocationsNameByLatLng = function ( lat, lng ) {
         var self = this;
+
         $.when(
             $.get(window.location.protocol + this.options.geoCodeApiURL + (lat + ',' + lng))
         ).then(
-            this.onGeoLocationSuccess.bind(self),
+            this.onLocationsNameByLatLngSuccess.bind(self),
             this.onGeoLocationError.bind(self)
         );
     }
 
-    geolocation.prototype.onGeoLocationSuccess = function ( data ) {
-        this.callback(
-            this.extractAddress(data)
-        );
+    geolocation.prototype.onLocationsNameByLatLngSuccess = function ( data ) {
+        this.extractAddress(data);
+        this.setToCookie();
+        this.setToForm();
+    }
+
+    geolocation.prototype.setToCookie = function () {
+        var expiresDate = new Date(new Date().getTime() + this.options.refreshPositionTimeout * 1000);
+
+        var cookieString = {
+            address: this.position.address,
+            coords:
+                {
+                    latitude: this.position.coords.latitude,
+                    longitude: this.position.coords.longitude,
+                }
+        };
+
+        cookie.set( this.options.cookieKey, JSON.stringify(cookieString), { expires: expiresDate } );
+    }
+
+    geolocation.prototype.setToForm = function () {
+        // set to form fields coordinates and address
+
+        this.$( this.options.searchLocation ).val( this.position.address );
+        this.$( this.options.searchLocationGeoLoc ).val( this.position.address );
+
+        this.$( this.options.searchLatSelector ).val( this.position.coords.latitude );
+        this.$( this.options.searchLngSelector ).val( this.position.coords.longitude );
     }
 
     geolocation.prototype.onGeoLocationError = function ( data ) {
@@ -73,59 +98,29 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             if ( _.contains( item.types, 'locality') ) {
                 city = item.long_name;
             }
-
-            if ( _.contains( item.types, 'postal_code') ) {
-                zip = item.long_name;
-            }
         })
 
-        fullAddr = ( !_.isNull(city) ? city : '' ) + (!_.isNull(zip) ? ', ' + zip : ''); 
-        return fullAddr;
+        fullAddr = ( !_.isNull(city) ? city : '' );
+
+        this.position.address = fullAddr;
     }
 
     geolocation.prototype.setPosition = function ( position ) {
         this.position = position;
 
-        cookie.set('lat', this.getLat());
-        cookie.set('lng', this.getLng());
+        this.getLocationsNameByLatLng(
+            this.position.coords.latitude,
+            this.position.coords.longitude
+        );
 
         return this;
-    }
-
-    geolocation.prototype.getPosition = function () {
-        if ( _.isNull(this.position) ) {
-            this.initPosition();
-        }
-
-        return this.position;
     }
 
     geolocation.prototype.initPosition = function () {
         navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.onGeoLocationError.bind(this))
     }
 
-
-    geolocation.prototype.getLat = function () {
-        return this.position.coords.latitude;
-    }
-
-    geolocation.prototype.getLng = function () {
-        return this.position.coords.longitude;
-    }
-
-    geolocation.prototype.coordinatesCallback = function ( position ) {
-        this.setPosition( position );
-
-        this.getLocationsNameByLatLng(
-            this.getLat(),
-            this.getLng()
-        );
-    }
-
-    geolocation.prototype.getGeodata = function () {
-        navigator.geolocation.getCurrentPosition(this.coordinatesCallback.bind(this), this.onGeoLocationError.bind(this))
-    }
-
+    //todo - fix autocomplete
     geolocation.prototype.locationAutocomplete = function ( ) {
         this.options.locationBox.autocomplete({
             'source': this.options.autoCompleteUrl,
@@ -133,5 +128,6 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             select: this.onAutoCompleteSelect
         });
     }
+
     return geolocation;
 })

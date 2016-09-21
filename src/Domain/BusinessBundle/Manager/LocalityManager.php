@@ -11,16 +11,8 @@ class LocalityManager extends Manager
         return $this->getRepository()->getNeighborhoodToLocalityByName($localityName);
     }
 
-    public function getLocalityByNameAndLocale(string $localityName, $locale)
+    public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
-        $locality = null;
-
-        // todo - get for $locale
-
-        if (1) {
-            $locality = $this->getRepository()->findOneBy(['name' => $localityName]);
-        }
-
-        return $locality;
+        return $this->getRepository()->getLocalityByNameAndLocale($localityName, $locale);
     }
 }

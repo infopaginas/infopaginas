@@ -200,6 +200,11 @@ class SearchController extends Controller
             'geo',
             'order',
             'category',
+
+            // geo location
+            'lat',
+            'lng',
+            'geoLoc',
         ];
 
         $searchData = [];

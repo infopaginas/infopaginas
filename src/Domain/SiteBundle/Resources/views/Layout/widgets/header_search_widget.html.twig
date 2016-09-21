@@ -22,7 +22,11 @@
 </div>
 <div class="col-xs-5 search-input home">
     <div class="search-geo">
-    <input type="text" id='headerGeo' name="geo" placeholder="San Juan" value="{{ geoValue }}" class="form-control">
+        <input type="hidden" id='searchLat' name='lat' value="">
+        <input type="hidden" id='searchLng' name='lng' value="">
+        <input type="hidden" id='searchLocationGeoLoc' name='geoLoc' value="">
+
+        <input type="text" id='searchLocation' name="geo" placeholder="San Juan" value="{{ geoValue }}" class="form-control">
         <span class="cross"></span>
     </div>
     <div class="search-button-home">

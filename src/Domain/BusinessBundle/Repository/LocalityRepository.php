@@ -83,4 +83,19 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->setMaxResults(10)
             ->setFirstResult(1);
     }
+
+    public function getLocalityByNameAndLocale(string $localityName, string $locale)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('l')
+            ->from('DomainBusinessBundle:Locality', 'l')
+            ->leftJoin('l.translations', 't')
+            ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
+            ->setParameter('name', strtolower($localityName))
+            ->setParameter('locale', $locale)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $query;
+    }
 }
