@@ -31,25 +31,27 @@ class GeolocationManager extends Manager
 
     public function buildLocationValueFromRequest(Request $request)
     {
-        $geo = $request->get('geo', null);
+        $geo    = $request->get('geo', null);
+        $geoLoc = $request->get('geoLoc', null);
 
         $lat = null;
         $lat = null;
 
-        // todo - check is custom not from geolocation
         if ($geo) {
-            if (1) {
+            // check is custom geo request not from geolocation
+
+            if ($geoLoc == $geo) {
+                $lat = $request->get('lat', null);
+                $lng = $request->get('lng', null);
+            } else {
                 // get locality by name and locale
 
-                $locality = $this->localityManager->getLocalityByNameAndLocale($geo, 'en');
+                $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
 
                 if ($locality) {
                     $lat = $locality->getLatitude();
                     $lng = $locality->getLongitude();
                 }
-            } else {
-                $lat = $request->cookies->get('lat');
-                $lng = $request->cookies->get('lng');
             }
         } else {
             // empty search - show default

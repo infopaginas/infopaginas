@@ -34,15 +34,19 @@
 
                 <div class="comparison-block">
                     <div class="comparison-wrap">
-                        {% for item in results.resultSet %}
-                            {% include 'DomainSearchBundle:Search:Templates/compare_card_item.html.twig' with { 'item' : item, 'iterator' : loop.index  } %}
-                        {% endfor %}
+                        {% if results %}
+                            {% for item in results.resultSet %}
+                                {% include 'DomainSearchBundle:Search:Templates/compare_card_item.html.twig' with { 'item' : item, 'iterator' : loop.index  } %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
 
             {% block pagination %}
-                {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                {% if results %}
+                    {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                {% endif %}
             {% endblock %}
         </div>
     </section>

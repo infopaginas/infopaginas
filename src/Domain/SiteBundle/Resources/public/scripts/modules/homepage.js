@@ -36,13 +36,19 @@ define(
             searchSelector        : '#searchBox',
             searchHintSelector    : '#searchHint',
             searchResultsSelector : '#searchResultsAutosuggest',
-            locationsSelector     : '#searchLocation',
+            searchLocation        : '#searchLocation',
+            searchLocationGeoLoc  : '#searchLocationGeoLoc',
+            searchLatSelector     : '#searchLat',
+            searchLngSelector     : '#searchLng',
             submitSelector        : '#searchButton',
             searchHeaderButton    : '#searchHeaderButton'
         };
 
-        searchOptions['geolocation'] = new Geolocation( { 
-            'locationBoxSelector' : searchOptions.locationsSelector
+        searchOptions['geolocation'] = new Geolocation( {
+            'searchLocation'        : searchOptions.searchLocation,
+            'searchLocationGeoLoc'  : searchOptions.searchLocationGeoLoc,
+            'searchLatSelector'     : searchOptions.searchLatSelector,
+            'searchLngSelector'     : searchOptions.searchLngSelector
         } );
 
         searchOptions['searchMenu'] = new SearchMenu;
@@ -50,6 +56,6 @@ define(
         var search = new Search( searchOptions );
         this.resetPassword = new ResetPassword();
     };
-   
+
     return homepage;
 });
