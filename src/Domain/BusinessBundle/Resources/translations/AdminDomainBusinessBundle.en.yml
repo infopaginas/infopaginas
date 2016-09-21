@@ -8,10 +8,4 @@ filter.label_subscription_plan: Subscription Plan
 form.business.max_images: Only max_images_per_business images quantity allowed per one business profile, please, delete extra
 form.business_gallery.max_images: Business business_profile already has max_images_per_business images in gallery, this is the max quantity per one business
 form.business.empty_images: Images in gallery must not contain empty value in Media field
-
-
-
-
-
-
-
+form.subscription.start_date: Start Date cannot be in the future
