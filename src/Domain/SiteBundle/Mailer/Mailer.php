@@ -60,6 +60,22 @@ class Mailer
 
     /**
      * @param UserInterface $user
+     * @param $password
+     */
+    public function sendMerchantRegisteredEmailMessage(UserInterface $user, $password)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_NEW_MERCHANT_TEMPLATE);
+        $message = str_replace('{NAME}', $user->getFirstName() . ' ' . $user->getLastName(), $message);
+        $message = str_replace('{EMAIL}', $user->getEmail(), $message);
+        $message = str_replace('{PASSWORD}', $password, $message);
+
+        $contentType = 'text/html';
+
+        $this->send($user->getEmail(), self::REGISTRATION_MAIL_SUBJECT, $message, $contentType);
+    }
+
+    /**
+     * @param UserInterface $user
      */
     public function sendResetPasswordEmailMessage(UserInterface $user)
     {

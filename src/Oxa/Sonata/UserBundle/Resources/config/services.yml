@@ -28,6 +28,9 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@oxa.manager.groups'
+            - '@fos_user.user_manager.default'
+            - '@domain_site.mailer'
+            - '@fos_user.util.token_generator'
 
     # disable CRUD for user roles
     sonata.user.admin.group:
