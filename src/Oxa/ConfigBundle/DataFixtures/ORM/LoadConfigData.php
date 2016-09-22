@@ -81,6 +81,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'html',
                 'description' => 'Registration mail template',
             ],[
+                'key' => ConfigInterface::MAIL_NEW_MERCHANT_TEMPLATE,
+                'title' => 'New merchant mail template',
+                'value' => $this->container->get('templating')->render(
+                    'OxaConfigBundle:Fixtures:mail_new_merchant_template.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'New merchant mail template',
+            ],[
                 'key' => ConfigInterface::MAIL_RESET_PASSWORD_TEMPLATE,
                 'title' => 'Reset password mail template',
                 'value' => $this->container->get('templating')->render(

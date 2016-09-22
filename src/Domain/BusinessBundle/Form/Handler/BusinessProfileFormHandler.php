@@ -11,8 +11,10 @@ namespace Domain\BusinessBundle\Form\Handler;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
+use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
+use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -36,6 +38,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     /** @var ValidatorInterface */
     protected $validator;
 
+    /** @var UsersManager $userManager */
+    protected $userManager;
+
     /**
      * FreeBusinessProfileFormHandler constructor.
      * @param FormInterface $form
@@ -49,7 +54,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         BusinessProfileManager $manager,
         TasksManager $tasksManager,
         ValidatorInterface $validator,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        UsersManager $userManager
     ) {
         $this->form               = $form;
         $this->request            = $request;
@@ -57,6 +63,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $this->tasksManager       = $tasksManager;
         $this->validator          = $validator;
         $this->currentUser        = $tokenStorage->getToken()->getUser();
+        $this->userManager        = $userManager;
     }
 
     /**
@@ -94,6 +101,18 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $businessProfile->setIsSetVideo(true);
             }
 
+            $post = $this->request->request->all()[$this->form->getName()];
+
+            //create new user entry for not-logged users
+            if (isset($post['firstname']) && isset($post['lastname'])) {
+                if (!empty($post['firstname']) && !empty($post['lastname'])) {
+                    $user = $this->getUsersManager()
+                        ->createMerchantForBusinessProfile($post['firstname'], $post['lastname'], $post['email']);
+
+                    $businessProfile->setUser($user);
+                }
+            }
+
             if ($this->form->isValid()) {
                 $this->onSuccess($businessProfile);
                 return true;
@@ -111,13 +130,21 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         if (!$businessProfile->getId()) {
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
 
-            $businessProfile->setUser($this->currentUser);
+            if ($this->currentUser instanceof User) {
+                $businessProfile->setUser($this->currentUser);
+            }
+
             $this->getBusinessProfilesManager()->saveProfile($businessProfile);
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
             $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile);
         }
+    }
+
+    private function getUsersManager() : UsersManager
+    {
+        return $this->userManager;
     }
 
     /**

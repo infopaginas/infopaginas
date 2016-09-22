@@ -88,6 +88,8 @@ services:
         arguments: [null]
         tags:
             - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
+        calls:
+            - [ setCurrentUser, [ '@session' ] ]
 
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
@@ -143,6 +145,7 @@ services:
             - '@domain_business.manager.tasks'
             - '@validator'
             - '@security.token_storage'
+            - '@oxa.manager.users'
 
     domain_business.form.handler.review:
         class: Domain\BusinessBundle\Form\Handler\ReviewFormHandler

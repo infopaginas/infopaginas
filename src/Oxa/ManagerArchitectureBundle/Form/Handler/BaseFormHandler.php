@@ -43,6 +43,8 @@ abstract class BaseFormHandler implements FormHandlerInterface
         if ($form->count()) {
             /** @var FormInterface $child */
             foreach ($form as $child) {
+                dump($child->getName());
+                dump($child->isValid());
                 if (!$child->isValid()) {
                     $errors[$child->getName()] = $this->getErrors($child);
                 }

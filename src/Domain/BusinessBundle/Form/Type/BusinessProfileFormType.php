@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -28,7 +29,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
@@ -38,8 +43,30 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
  */
 class BusinessProfileFormType extends AbstractType
 {
+    protected $isUserSectionRequired = false;
+
+    public function __construct($isUserSectionRequired = false)
+    {
+        $this->isUserSectionRequired = $isUserSectionRequired;
+    }
+
+    public function setCurrentUser(Session $session)
+    {
+        if ($session->has('_security_user')) {
+            $this->isUserSectionRequired = false;
+        } else {
+            $this->isUserSectionRequired = true;
+        }
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($this->isUserSectionRequired) {
+            $emailConstraints = [new NotBlank()];
+        } else {
+            $emailConstraints = [];
+        }
+
         $builder
             ->add('name', TextType::class, [
                 'attr' => [
@@ -95,6 +122,7 @@ class BusinessProfileFormType extends AbstractType
                     'placeholder' => 'sonsnotebook@info.com',
                 ],
                 'label' => 'Email',
+                'constraints' => $emailConstraints,
             ])
             ->add('brands', TextareaType::class, [
                 'attr' => [
@@ -307,6 +335,35 @@ class BusinessProfileFormType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        if ($this->isUserSectionRequired) {
+            $builder
+                ->add('firstname', TextType::class, [
+                    'attr' => [
+                        'class' => 'form-control',
+                        'placeholder' => 'Catalá',
+                    ],
+                    'label' => 'First Name',
+                    'required' => true,
+                    'mapped' => false,
+                    'constraints' => [
+                        new NotBlank(),
+                    ]
+                ])
+                ->add('lastname', TextType::class, [
+                    'attr' => [
+                        'class' => 'form-control',
+                        'placeholder' => 'Joyeros',
+                    ],
+                    'label' => 'Last Name',
+                    'required' => true,
+                    'mapped' => false,
+                    'constraints' => [
+                        new NotBlank(),
+                    ]
+                ])
+            ;
+        }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var BusinessProfile $businessProfile */
