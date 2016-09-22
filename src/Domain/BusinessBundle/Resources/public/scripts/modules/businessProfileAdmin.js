@@ -27,4 +27,27 @@ $( document ).ready( function() {
             }
         } );
     } );
+
+
+    var useMapAddress = $( '#' + formId + '_useMapAddress' );
+
+    $.each( [ useMapAddress.parent().find('ins'), useMapAddress.parent().parent().parent().find('label') ], function( index, fieldId ) {
+        $( fieldId ).on( 'click', function() {
+            setUseMapAddress();
+        } );
+    } );
+
+    function setUseMapAddress() {
+        $.each( [ 'country','state', 'city', 'zipCode', 'streetAddress', 'extendedAddress' ], function( targetIndex, targetFieldId ) {
+            var input = $( '#' + formId + '_' + targetFieldId );
+            
+            if ( useMapAddress.prop( 'checked' ) ) {
+                input.attr( 'disabled', 'disabled' );
+            } else {
+                input.removeAttr( 'disabled' );
+            }
+        } );
+    }
+
+    setUseMapAddress();
 } );

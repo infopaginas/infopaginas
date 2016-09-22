@@ -74,8 +74,8 @@ class SearchController extends Controller
 
         $searchDTO     = $searchManager->getSearchDTO($request);
 
-        $businessProfilehManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfilehManager->searchAutosuggestByPhraseAndLocation($searchDTO);
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation($searchDTO);
 
         return (new JsonResponse)->setData($results);
     }
