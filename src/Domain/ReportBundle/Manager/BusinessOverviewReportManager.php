@@ -190,7 +190,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         $views = $this->getGaDataSource()->getViews($path, $dates, $dimension);
 
         return array_map(function($value) {
-            return $value[1];
+            return (int)$value[1];
         }, $views);
     }
 
@@ -203,7 +203,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         $impressions = $this->getGaDataSource()->getImpressions($businessProfile->getSlug(), $dates, $dimension);
 
         return array_map(function($value) {
-            return $value[1];
+            return (int)$value[1];
         }, $impressions);
     }
 

@@ -9,6 +9,7 @@
 namespace Domain\ReportBundle\Util;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 
 /**
  * Class DatesUtil
@@ -19,6 +20,89 @@ class DatesUtil
     const STEP_DAY = '+1 day';
 
     const STEP_MONTH = '+1 month';
+
+    const RANGE_TODAY = 'today';
+    const RANGE_THIS_WEEK = 'this_week';
+    const RANGE_LAST_WEEK = 'last_week';
+    const RANGE_THIS_MONTH = 'this_month';
+    const RANGE_LAST_MONTH = 'last_month';
+    const RANGE_CUSTOM = 'custom';
+
+    const RANGE_THIS_YEAR = 'this_year';
+    const RANGE_LAST_YEAR = 'last_year';
+
+    const RANGE_DEFAULT = 'this_week';
+
+    const START_END_DATE_ARRAY_FORMAT = 'd-m-Y';
+
+    public static function getReportDataRanges()
+    {
+        return [
+            self::RANGE_TODAY      => 'Today',
+            self::RANGE_THIS_WEEK  => 'This week',
+            self::RANGE_LAST_WEEK  => 'Last week',
+            self::RANGE_THIS_MONTH => 'This month',
+            self::RANGE_LAST_MONTH => 'Last month',
+            self::RANGE_CUSTOM     => 'Custom',
+        ];
+    }
+
+    public static function getDateRangeValueObjectFromRangeType(string $range)
+    {
+        switch ($range) {
+            case self::RANGE_TODAY:
+                $start = new \DateTime('today 00:00:00');
+                $end = new \DateTime('today  23:59:59');
+                break;
+            case self::RANGE_THIS_WEEK:
+                $start = new \DateTime('monday this week');
+                $end = new \DateTime('sunday this week');
+                break;
+            case self::RANGE_LAST_WEEK:
+                $start = new \DateTime('monday last week');
+                $end = new \DateTime('monday this week - 1 second');
+                break;
+            case self::RANGE_THIS_MONTH:
+                $start = new \DateTime('first day of this month');
+                $end = new \DateTime('last day of this month');
+                break;
+            case self::RANGE_LAST_MONTH:
+                $start = new \DateTime('first day of last month');
+                $end = new \DateTime('last day of last month');
+                break;
+            case self::RANGE_THIS_YEAR:
+                $start = new \DateTime('first day of January ' . date('Y'));
+                $end = new \DateTime('last day of December ' . date('Y'));
+                break;
+            case self::RANGE_LAST_YEAR:
+                $start = new \DateTime('first day of January ' . (date('Y') -1));
+                $end = new \DateTime('last day of December ' . (date('Y') - 1));
+                break;
+            default:
+                throw new \Exception('invalid param');
+        }
+
+        return new DateRangeVO($start, $end);
+    }
+
+    public static function getDateAsArrayFromVO(DateRangeVO $dateRange)
+    {
+        $date['start'] = $dateRange->getStartDate()->format(self::START_END_DATE_ARRAY_FORMAT);
+        $date['end']   = $dateRange->getEndDate()->format(self::START_END_DATE_ARRAY_FORMAT);
+
+        return $date;
+    }
+
+    public static function getDateAsArrayFromRequestData(array $requestData)
+    {
+        $date['start'] = \DateTime::createFromFormat('Y-m-d', $requestData['start'])
+            ->format(self::START_END_DATE_ARRAY_FORMAT);
+
+        $date['end']   = \DateTime::createFromFormat('Y-m-d', $requestData['end'])
+            ->format(self::START_END_DATE_ARRAY_FORMAT);
+
+        return $date;
+    }
 
     /**
      *

@@ -80,8 +80,10 @@
                     {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_REMOVE') %}
                         {% set changes = get_business_profile_image_changes(row.oldValue) %}
                         <td> {{ changes.name }} </td>
+                        <td>-</td>
                     {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_ADD') %}
                         {% set changes = get_business_profile_image_changes(row.newValue) %}
+                        <td>-</td>
                         <td> {{ changes.name }} </td>
                     {% else %}
                         <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>

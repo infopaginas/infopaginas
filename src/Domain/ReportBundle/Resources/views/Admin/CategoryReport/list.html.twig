@@ -2,7 +2,7 @@
 
 {% block list_table %}
 
-    {% if admin.categoryData['categories']|length > 1 %}
+    {% if admin.categoryData['categories']|length >= 1 %}
         <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
         <div class="box box-primary">
             <canvas id="subscriptionReportChart" width="400" height="70"></canvas>

@@ -9,6 +9,7 @@
 namespace Domain\ReportBundle\Google\Analytics;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -114,6 +115,72 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
     }
 
     /**
+     * @param ReportDatesRangeVO $datesRange
+     * @param string $dimension
+     * @return array
+     */
+    public function getWebsiteViewsAndVisitors(ReportDatesRangeVO $datesRange, string $dimension = 'date')
+    {
+        $start = $this->getFormattedStartDate($datesRange->getStartDate());
+        $end   = $this->getFormattedEndDate($datesRange->getEndDate());
+
+        $uri = '/$';
+
+        $gaId    = 'ga:' . $this->viewId;
+        $metrics = 'ga:pageviews,ga:uniquePageviews';
+
+        $filters = [
+            'filters' => 'ga:dimension1=~USER;ga:pagePath=~' . $uri,
+            'dimensions' => 'ga:' . $dimension,
+        ];
+
+        $data = $this->getAnalyticsDataResource()->get($gaId, $start, $end, $metrics, $filters);
+
+        $prepared = [];
+
+        foreach ($this->prepareResults($data) as $item) {
+            if ($dimension == 'date') {
+                $date = \DateTime::createFromFormat('Ymd', $item[0]);
+                $format = DefaultManager::REPORT_ADMIN_DATE_FORMAT;
+            } else {
+                $date = \DateTime::createFromFormat('Ym', $item[0]);
+                $format = 'm.Y';
+            }
+
+            $prepared[$date->format($format)] = [
+                'views' => $item[1],
+                'visitors' => $item[2],
+            ];
+        }
+
+        return $prepared;
+    }
+
+    public function getInteractions($eventLabel, ReportDatesRangeVO $datesRange)
+    {
+        $start = $this->getFormattedStartDate($datesRange->getStartDate());
+        $end   = $this->getFormattedEndDate($datesRange->getEndDate());
+
+        $gaId    = 'ga:' . $this->viewId;
+        $metrics = 'ga:totalEvents';
+
+        $filters = [
+            'filters' => 'ga:eventCategory=~interaction;ga:eventLabel=~' . $eventLabel,
+            'dimensions' => 'ga:eventCategory,ga:eventLabel,ga:eventAction',
+        ];
+
+        $data = $this->getAnalyticsDataResource()->get($gaId, $start, $end, $metrics, $filters);
+
+        $prepared = [];
+
+        foreach ($this->prepareResults($data) as $item) {
+            $prepared[$item[2]] = $item[3];
+        }
+
+        return $prepared;
+    }
+
+    /**
      * @param ClientProvider $clientProvider
      */
     public function setClientProvider(ClientProvider $clientProvider)
@@ -137,7 +204,8 @@ class DataFetcher extends \Happyr\GoogleAnalyticsBundle\Service\DataFetcher
      */
     protected function prepareResults(\Google_Service_Analytics_GaData $data)
     {
-        return $data->getRows();
+        $rows = $data->getRows();
+        return $rows === null ? [] : $rows;
     }
 
     /**

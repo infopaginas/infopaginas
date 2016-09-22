@@ -60,6 +60,7 @@ class BannerFactory extends Factory
                 $banner = $this->getPortalLeftMobileBanner();
                 break;
             case BannerType::CODE_SERP_BANNER:
+                $banner = $this->getHomepageLargeBanner();
                 break;
             case BannerType::CODE_SERP_BOXED:
                 $banner = $this->getProfileBanner();
@@ -185,6 +186,18 @@ class BannerFactory extends Factory
         if (count($portalBanners)) {
             return $portalBanners[0];
         }
+        return null;
+    }
+
+    protected function getHomepageLargeBanner()
+    {
+        $homepageBanners = $this->em->getRepository('DomainBannerBundle:Banner')
+            ->getBannerByTypeCode(BannerType::CODE_SERP_BANNER);
+
+        if (count($homepageBanners)) {
+            return $homepageBanners[0];
+        }
+
         return null;
     }
 }

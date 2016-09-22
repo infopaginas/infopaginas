@@ -1,0 +1,18 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>{% trans %}Date{% endtrans %}</th>
+        <th>{% trans %}Views{% endtrans %}</th>
+        <th>{% trans %}Impressions{% endtrans %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in overviewData.results %}
+        <tr>
+            <td>{{ row.date }}</td>
+            <td>{{ row.views }}</td>
+            <td>{{ row.impressions }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

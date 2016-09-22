@@ -123,6 +123,8 @@
 
 {% block scripts %}
     {{ parent() }}
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
@@ -130,6 +132,7 @@
                     'locale'       : '{{ locale }}'
                 });
             })
-        })
+        });
     </script>
+
 {% endblock%}

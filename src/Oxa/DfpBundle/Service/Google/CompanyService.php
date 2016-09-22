@@ -54,6 +54,10 @@ class CompanyService
 
     public function getAdvertiserIdsByBusinessProfileExternalIds(array $externalIds)
     {
+        if (empty($externalIds)) {
+            return [];
+        }
+
         $user = $this->getDfpUser();
 
         $companyService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
@@ -68,6 +72,10 @@ class CompanyService
         $page = $companyService->getCompaniesByStatement($statementBuilder->ToStatement());
 
         $ids = [];
+
+        if (!is_array($page->results)) {
+            return $ids;
+        }
 
         foreach ($page->results as $result) {
             if (isset($result->id)) {

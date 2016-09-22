@@ -43,7 +43,7 @@
                                                 {{ businessProfile.getStreetAddress() }} {{ businessProfile.getZipCode() }}
                                             {% endif %}
                                         </span>
-                                        <a href="#" class="get-dir get-direction" data-latlng="{{ businessProfile.getLatLng() }}">
+                                        <a href="#" class="get-dir get-direction businessProfileMapLink" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
                                             {% trans %}Get Direction{% endtrans %} <span>&#187;</span>
                                         </a>
                                     </div>
@@ -53,7 +53,7 @@
                                 <ul class="company-info">
                                     {% if businessProfile.getWebsite() %}
                                         <li>
-                                            <a target="_blank" href="{{ businessProfile.getWebsite() }}">
+                                            <a class="businessProfileWebsiteLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getWebsite() }}">
                                                 <i class="fa fa-home" aria-hidden="true"></i>
                                                 <span>{{ businessProfile.getWebsite() }}</span>
                                             </a>
@@ -164,28 +164,28 @@
                                     <ul class="social-icons">
                                         {% if businessProfile.getFacebookURL() %}
                                             <li>
-                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getFacebookURL() }}">
+                                                <a class="blue-c businessProfileSocialNetworkLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getFacebookURL() }}">
                                                     <i class="fa fa-facebook" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                         {% endif %}
                                         {% if businessProfile.getTwitterURL() %}
                                             <li>
-                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getTwitterURL() }}">
+                                                <a class="blue-c businessProfileSocialNetworkLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getTwitterURL() }}">
                                                     <i class="fa fa-twitter" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                         {% endif %}
                                         {% if businessProfile.getGoogleURL() %}
                                             <li>
-                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getGoogleURL() }}">
+                                                <a class="blue-c businessProfileSocialNetworkLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getGoogleURL() }}">
                                                     <i class="fa fa-google-plus" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                         {% endif %}
                                         {% if businessProfile.getYoutubeURL() %}
                                             <li>
-                                                <a class="blue-c" target="_blank" href="{{ businessProfile.getYoutubeURL() }}">
+                                                <a class="blue-c businessProfileSocialNetworkLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getYoutubeURL() }}">
                                                     <i class="fa fa-youtube" aria-hidden="true"></i>
                                                 </a>
                                             </li>
@@ -317,7 +317,7 @@
                                 <div class="col-xs-9 fields-item">
                                     <div class="images-wrapper gallery carousel-property">
                                         {% for photo in photos %}
-                                            <a href="{% path photo.getMedia(), 'reference' %}" class="image-wrap">
+                                            <a href="{% path photo.getMedia(), 'reference' %}" data-id="{{ businessProfile.getId() }}" class="businessProfileImage image-wrap">
                                                 {% thumbnail photo.getMedia(), 'preview' %}
                                             </a>
                                         {% endfor %}
@@ -326,14 +326,14 @@
                             </div>
                         {% endif %}
 
-                        {% if media_tab_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
+                        {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <div class="card-item video-block" id="video">
                                 <div class="col-xs-3 fields-item">
                                     <span>
                                         <i class="video-icon icon"></i>{% trans %}Video{% endtrans %}
                                     </span>
                                 </div>
-                                <div class="col-xs-9 fields-item">
+                                <div class="col-xs-9 fields-item businessProfileVideo" data-id="{{ businessProfile.getId() }}">
                                     {{ render_wistia_embed(businessProfile.getVideo(), {width: 320, height: 220}) | raw }}
                                 </div>
                             </div>
@@ -360,12 +360,17 @@
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'], function(businessProfileView) {
+            requirejs([
+                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}',
+                '{{asset("/bundles/domainreport/js/modules/interactions.js")}}'
+            ], function(businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
+                var interactionsReport = new interactionsReport();
             })
         })
     </script>
-    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
 {% endblock%}

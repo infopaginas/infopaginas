@@ -15,7 +15,7 @@ trait StatusTrait
     /**
      * @var string
      *
-     * @ORM\Column(name="code", type="integer", nullable=false)
+     * @ORM\Column(name="status", type="integer", nullable=false)
      */
     protected $status;
 

@@ -2370,7 +2370,7 @@ class BusinessProfile implements
      */
     public function getDoubleClickExternalId()
     {
-        return $this->getSlug();
+        return $this->getUser() ? $this->getUser()->getAdvertiserId() : '';
     }
 
     /** Remove searchLog

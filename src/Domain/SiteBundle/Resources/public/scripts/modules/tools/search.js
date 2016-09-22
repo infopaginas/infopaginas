@@ -24,8 +24,9 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.bindEvents();
 
         $(options.searchHeaderButton).add( options.submitSelector ).on( 'click', function( evt ) {
-            if( $( options.searchSelector ).val() === '' ){
+            if( $( options.searchSelector ).val() === '' || !$( options.searchSelector ).val().trim().length ){
                 evt.preventDefault();
+                $( options.searchSelector ).val('');
                 $( options.searchSelector ).css( {"border-color": "#FF3300"}) ;
                 $( options.searchSelector ).parent().addClass( "validation-error" );
                 $( options.searchSelector ).attr( "placeholder", "Please enter a search term" );

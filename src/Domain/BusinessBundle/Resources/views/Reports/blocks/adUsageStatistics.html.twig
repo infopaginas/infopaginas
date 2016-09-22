@@ -1,0 +1,52 @@
+<div class="panel-group" id="accordion" style="color: #123157">
+    {% for bannerName, statistics in adUsageData %}
+        {% set totalClicks = 0 %}
+        {% set totalImpressions = 0 %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}">
+                        Banner (Line Item) Name: "{{ bannerName }}"
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse{{ loop.index }}" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Clicks</th>
+                            <th>Impressions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for date, stats in statistics %}
+                            {% set totalClicks = totalClicks + stats.clicks %}
+                            {% set totalImpressions = totalImpressions + stats.impressions %}
+                            <tr>
+                                <td>
+                                    {{ date|date('d.m.Y') }}
+                                </td>
+                                <td>
+                                    {{ stats.clicks }}
+                                </td>
+                                <td>
+                                    {{ stats.impressions }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td>{{ totalClicks }}</td>
+                            <td>{{ totalImpressions }}</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

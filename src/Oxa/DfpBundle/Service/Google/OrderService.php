@@ -44,6 +44,10 @@ class OrderService
 
     public function getOrderIdsAsAdvertiserPair(array $advertiserIds)
     {
+        if (empty($advertiserIds)) {
+            return [];
+        }
+
         $user = $this->getDfpUser();
 
         $orderService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
@@ -58,6 +62,10 @@ class OrderService
         $ids = [];
 
         $page = $orderService->getOrdersByStatement($statementBuilder->ToStatement());
+
+        if (!is_array($page->results)) {
+            return $ids;
+        }
 
         foreach ($page->results as $result) {
             if (isset($result->id)) {

@@ -97,7 +97,7 @@ class KeywordsReportAdmin extends ReportAdmin
 
         $listMapper
             ->add('Keywords', null, ['sortable' => false])
-            ->add('Count', null, ['sortable' => false])
+            ->add('Number of Searches', null, ['sortable' => false])
         ;
     }
 

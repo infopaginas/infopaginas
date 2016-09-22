@@ -34,6 +34,10 @@ class LineItemService
      */
     public function getLineItemIdsByOrderIds(array $orderIds)
     {
+        if (empty($orderIds)) {
+            return [];
+        }
+
         $user = $this->getDfpUser();
 
         $lineItemService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
@@ -58,6 +62,10 @@ class LineItemService
      */
     public function getLineItemIdsAsOrderPair(array $orderIds)
     {
+        if (empty($orderIds)) {
+            return [];
+        }
+
         $user = $this->getDfpUser();
 
         $lineItemService = $user->GetService(self::SERVICE_NAME, self::API_VERSION);
@@ -68,6 +76,10 @@ class LineItemService
         $page = $lineItemService->getLineItemsByStatement($statementBuilder->ToStatement());
 
         $ids = [];
+
+        if (!is_array($page->results)) {
+            return $ids;
+        }
 
         foreach ($page->results as $lineItem) {
             if (isset($lineItem->id)) {

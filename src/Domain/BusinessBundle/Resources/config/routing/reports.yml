@@ -1,11 +1,41 @@
-domain_business_reports_business_overview:
-    path:     /overview/{businessProfileId}
-    defaults: { _controller: DomainBusinessBundle:Reports:overview }
+domain_business_reports_index:
+    path:     /{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Reports:index }
 
-domain_business_reports_business_impressions:
-    path:     /impressions/{businessProfileId}
-    defaults: { _controller: DomainBusinessBundle:Reports:impressions }
+domain_business_reports_business_overview_data:
+     path:     /data/overview
+     defaults: { _controller: DomainBusinessBundle:Reports:overview }
+     options:
+        expose: true
 
-domain_business_reports_business_keywords:
-    path:     /keywords/{businessProfileId}
-    defaults: { _controller: DomainBusinessBundle:Reports:keywords }
+domain_business_reports_ad_usage_data:
+     path:     /data/ad_usage
+     defaults: { _controller: DomainBusinessBundle:Reports:adUsage }
+     options:
+        expose: true
+
+domain_business_reports_keywords_data:
+     path:     /data/keywords
+     defaults: { _controller: DomainBusinessBundle:Reports:keywords }
+     options:
+        expose: true
+
+domain_business_reports_interactions_data:
+     path:     /data/interactions
+     defaults: { _controller: DomainBusinessBundle:Reports:interactions }
+     options:
+        expose: true
+
+domain_business_reports_excel_export:
+     path:     /export/excel
+     defaults: { _controller: DomainBusinessBundle:Reports:excelExport }
+
+domain_business_reports_pdf_export:
+     path:     /export/pdf
+     defaults: { _controller: DomainBusinessBundle:Reports:pdfExport }
+
+domain_business_reports_print:
+     path:     /export/print
+     defaults: { _controller: DomainBusinessBundle:Reports:print }
+     options:
+        expose: true

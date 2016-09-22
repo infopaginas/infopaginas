@@ -9,6 +9,7 @@
 namespace Domain\ReportBundle\Manager;
 
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Repository\SubscriptionPlanRepository;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
@@ -67,5 +68,54 @@ class SubscriptionReportManager extends BaseReportManager
         }
 
         return $result;
+    }
+
+    public function saveSubscriptionStats()
+    {
+        /** @var SubscriptionPlanRepository $repo */
+        $repo = $this->getSubscriptionPlanRepository();
+
+        $stats = $repo->getSubscriptionStatistics();
+
+        //Doctrine's LEFT JOIN dirty fix
+        $counts = [];
+
+        foreach ($stats as $stat) {
+            $counts[$stat[0]->getId()] = $stat['cnt'];
+        }
+
+        foreach ($repo->findAll() as $subscriptionPlan) {
+            if (!isset($counts[$subscriptionPlan->getId()])) {
+                $stats[] = [
+                    0 => $subscriptionPlan,
+                    'cnt' => 0,
+                ];
+            }
+        }
+
+        $date = new \DateTime('today');
+        $subscriptionReport = new SubscriptionReport();
+        $subscriptionReport->setDate($date);
+
+        $this->getEntityManager()->persist($subscriptionReport);
+
+        foreach ($stats as $subscriptionStat) {
+            $subscriptionPlan = $subscriptionStat[0];
+            $quantity = $subscriptionStat['cnt'];
+
+            $subscriptionReportSubscription = new SubscriptionReportSubscription();
+            $subscriptionReportSubscription->setSubscriptionPlan($subscriptionPlan);
+            $subscriptionReportSubscription->setQuantity($quantity);
+            $subscriptionReportSubscription->setSubscriptionReport($subscriptionReport);
+
+            $this->getEntityManager()->persist($subscriptionReportSubscription);
+        }
+
+        $this->getEntityManager()->flush();
+    }
+
+    protected function getSubscriptionPlanRepository() : SubscriptionPlanRepository
+    {
+        return $this->getEntityManager()->getRepository(SubscriptionPlan::class);
     }
 }
