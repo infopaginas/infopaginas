@@ -21,12 +21,21 @@ define(['jquery', 'abstract/view', 'js-cookie'],
         $.extend( this.options, options );
     }
 
-    directions.prototype.getDirections = function ( e ) {
-        var latlng = $( e.currentTarget ).data( 'latlng' );
+    directions.prototype.getDirections = function ( e, Latlng ) {
+        var latlng;
+
+        if ( e ) {
+            latlng = $( e.currentTarget ).data( 'latlng' );
+        } else if ( Latlng ) {
+            latlng = Latlng;
+        }
+
         var userLatLng = cookie.get( 'lat' ) + ',' +cookie.get( 'lng' );
 
         var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
         window.open( directionsLink );
+
+        return directionsLink;
     }
 
     return directions;

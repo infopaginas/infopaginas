@@ -26,11 +26,10 @@ use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Manager\WistiaMediaManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
 
@@ -62,31 +61,22 @@ class BusinessProfileManager extends Manager
     /** @var Analytics $analytics */
     private $analytics;
 
+    /** @var ContainerInterface $container */
+    private $container;
+
     /**
      * Manager constructor.
-     * Accepts only entityManager as main dependency.
-     * Regargless hole container, need to keep it clear and work only with needed dependency
      *
-     * @param EntityManager $entityManager
-     * @param CategoryManager $categoryManager
-     * @param TokenStorageInterface $tokenStorage
-     * @param TranslatableListener $translatableListener
-     * @param FormFactory $formFactory
-     * @param WistiaMediaManager $wistiaMediaManager
-     * @param Analytics $analytics
+     * @param ContainerInterface $container
      */
-    public function __construct(
-        EntityManager $entityManager,
-        CategoryManager $categoryManager,
-        TokenStorageInterface $tokenStorage,
-        TranslatableListener $translatableListener,
-        FormFactory $formFactory,
-        WistiaMediaManager $wistiaMediaManager,
-        Analytics $analytics
-    ) {
-        $this->em = $entityManager;
+    public function __construct(ContainerInterface $container) {
+        $this->container = $container;
 
-        $this->categoryManager = $categoryManager;
+        $this->em = $container->get('doctrine.orm.entity_manager');
+
+        $this->categoryManager = $container->get('domain_business.manager.category');
+
+        $tokenStorage = $container->get('security.token_storage');
 
         if ($tokenStorage->getToken() !== null) {
             $this->currentUser = $tokenStorage->getToken()->getUser();
@@ -94,13 +84,13 @@ class BusinessProfileManager extends Manager
 
         $this->currentUser = $this->em->getRepository(User::class)->find(1);
 
-        $this->translatableListener = $translatableListener;
+        $this->translatableListener = $container->get('sonata_translation.listener.translatable');
 
-        $this->formFactory = $formFactory;
+        $this->formFactory = $container->get('form.factory');
 
-        $this->wistiaMediaManager = $wistiaMediaManager;
+        $this->wistiaMediaManager = $container->get('oxa.manager.wistia_media');
 
-        $this->analytics = $analytics;
+        $this->analytics = $container->get('google.analytics');
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
@@ -137,7 +127,36 @@ class BusinessProfileManager extends Manager
 
     public function getLocationMarkersFromProfileData(array $profilesList)
     {
-        return BusinessProfileUtil::filterLocationMarkers($profilesList);
+        $profilesArray = [];
+
+        /** @var BusinessProfile $profile */
+        foreach ($profilesList as $profile) {
+            $logoPath = null;
+            $logo = $profile->getLogo();
+
+            if ($logo) {
+                $provider = $this->container->get($logo->getProviderName());
+
+                $logoPath = $provider->generatePublicUrl($logo, 'admin');
+            }
+
+            $profilesArray[] = [
+                "id"            => $profile->getId(),
+                "name"          => $profile->getName(),
+                "address"       => $profile->getShortAddress(),
+                "reviewsCount"  => $profile->getBusinessReviewsCount(),
+                "logo"          => $logoPath,
+                "latitude"      => $profile->getLatitude(),
+                "longitude"     => $profile->getLongitude(),
+                'rating'        => $this->calculateReviewsAvgRatingForBusinessProfile($profile),
+                "profileUrl"    => $this->container->get('router')->generate('domain_business_profile_view', [
+                    'slug'          => $profile->getSlug(),
+                    'citySlug'      => $profile->getCitySlug(),
+                ]),
+            ];
+        }
+
+        return json_encode($profilesArray);
     }
 
     public function search(SearchDTO $searchParams)
