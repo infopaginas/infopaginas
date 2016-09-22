@@ -18,6 +18,10 @@ define(
             $( 'body' ).removeClass( 'modal-open' )
         });
 
+        $( '#mobileLanguageSelect' ).on('change', function () {
+            document.location = $(this).val();
+        });
+
         this.init( options );
         return this;
     };
