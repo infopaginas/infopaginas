@@ -8,6 +8,8 @@
 
 namespace Domain\SiteBundle\Mailer;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use FOS\UserBundle\Model\UserInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
@@ -92,6 +94,69 @@ class Mailer
         $contentType = 'text/html';
 
         $this->send($user->getEmail(), self::RESET_PASSWORD_MAIL_SUBJECT, $message, $contentType);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $reason
+     */
+    public function sendBusinessProfileCreateRejectEmailMessage(BusinessProfile $businessProfile, string $reason)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'BUSINESS PROFILE CREATE [' . $businessProfile->getName() . '] - Rejected';
+
+        $this->send($businessProfile->getUser()->getEmail(), $subject, $message, $contentType);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $reason
+     */
+    public function sendBusinessProfileUpdateRejectEmailMessage(BusinessProfile $businessProfile, string $reason)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'BUSINESS PROFILE UPDATE [' . $businessProfile->getName() . '] - Rejected';
+
+        $this->send($businessProfile->getUser()->getEmail(), $subject, $message, $contentType);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string $reason
+     */
+    public function sendBusinessProfileCloseRejectEmailMessage(BusinessProfile $businessProfile, string $reason)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'BUSINESS PROFILE CLOSE [' . $businessProfile->getName() . '] - Rejected';
+
+        $this->send($businessProfile->getUser()->getEmail(), $subject, $message, $contentType);
+    }
+
+    /**
+     * @param BusinessReview $review
+     * @param string $reason
+     */
+    public function sendBusinessProfileReviewRejectEmailMessage(BusinessReview $review, string $reason) {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'BUSINESS PROFILE REVIEW [' . $review->getBusinessProfile()->getName() . '] - Rejected';
+
+        $this->send($review->getBusinessProfile()->getUser()->getEmail(), $subject, $message, $contentType);
     }
 
     /**
