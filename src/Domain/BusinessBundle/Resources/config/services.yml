@@ -7,13 +7,7 @@ services:
     domain_business.manager.business_profile:
         class: Domain\BusinessBundle\Manager\BusinessProfileManager
         arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@domain_business.manager.category'
-            - '@security.token_storage'
-            - '@sonata_translation.listener.translatable'
-            - '@form.factory'
-            - '@oxa.manager.wistia_media'
-            - '@google.analytics'
+            - '@service_container'
 
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
