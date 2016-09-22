@@ -20,6 +20,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
+use Domain\SiteBundle\Mailer\Mailer;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -49,7 +50,8 @@ class TasksManager
     /** @var UsersManager $usersManager */
     protected $usersManager;
 
-    protected $doctrine;
+    /** @var Mailer $mailer */
+    protected $mailer;
 
     /**
      * TasksManager constructor.
@@ -63,15 +65,16 @@ class TasksManager
         EntityManager $entityManager,
         BusinessProfileManager $businessProfileManager,
         BusinessReviewManager $businessReviewManager,
-        UsersManager $usersManager
+        UsersManager $usersManager,
+        Mailer $mailer
     ) {
-        $this->em = $entityManager;
-
+        $this->em         = $entityManager;
         $this->repository = $this->em->getRepository(Task::class);
 
         $this->businessProfileManager = $businessProfileManager;
         $this->businessReviewManager  = $businessReviewManager;
         $this->usersManager           = $usersManager;
+        $this->mailer                 = $mailer;
     }
 
     /**
@@ -187,6 +190,9 @@ class TasksManager
     public function reject(Task $task) : array
     {
         $task->setStatus(TaskStatusType::TASK_STATUS_REJECTED);
+
+        $this->notifyUserAboutReject($task);
+
         return $this->save($task);
     }
 
@@ -260,6 +266,36 @@ class TasksManager
         return $this->buildResponseArray($success, $message);
     }
 
+    protected function notifyUserAboutReject(Task $task)
+    {
+        $businessProfile = $task->getBusinessProfile();
+        $rejectReason    = $task->getRejectReason();
+
+        switch ($task->getType()) {
+            case TaskType::TASK_PROFILE_CREATE:
+                $this->getMailer()->sendBusinessProfileCreateRejectEmailMessage($businessProfile, $rejectReason);
+                break;
+            case TaskType::TASK_PROFILE_UPDATE:
+                $this->getMailer()->sendBusinessProfileUpdateRejectEmailMessage($businessProfile, $rejectReason);
+                break;
+            case TaskType::TASK_PROFILE_CLOSE:
+                $this->getMailer()->sendBusinessProfileCloseRejectEmailMessage($businessProfile, $rejectReason);
+                break;
+            case TaskType::TASK_REVIEW_APPROVE:
+                $review = $task->getReview();
+                $this->getMailer()->sendBusinessProfileReviewRejectEmailMessage($review, $rejectReason);
+                break;
+        }
+    }
+
+    /**
+     * @return Mailer
+     */
+    private function getMailer() : Mailer
+    {
+        return $this->mailer;
+    }
+
     /**
      * Provide access to business profiles manager object
      *
@@ -271,11 +307,17 @@ class TasksManager
         return $this->businessProfileManager;
     }
 
+    /**
+     * @return BusinessReviewManager
+     */
     private function getBusinessReviewsManager() : BusinessReviewManager
     {
         return $this->businessReviewManager;
     }
 
+    /**
+     * @return UsersManager
+     */
     private function getUsersManager() : UsersManager
     {
         return $this->usersManager;

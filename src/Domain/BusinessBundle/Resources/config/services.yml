@@ -16,6 +16,7 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.review'
             - '@oxa.manager.users'
+            - '@domain_site.mailer'
 
     domain_business.manager.business_gallery:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
