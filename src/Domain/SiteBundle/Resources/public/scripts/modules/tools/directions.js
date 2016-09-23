@@ -23,7 +23,18 @@ define(['jquery', 'abstract/view', 'js-cookie'],
 
     directions.prototype.getDirections = function ( e ) {
         var latlng = $( e.currentTarget ).data( 'latlng' );
-        var userLatLng = cookie.get( 'lat' ) + ',' +cookie.get( 'lng' );
+
+        var cookieKey = 'geo_location_data';
+
+        var cookieString = cookie.get( cookieKey );
+
+        if ( cookieString ) {
+            var position = JSON.parse( cookieString );
+
+            var userLatLng = position.coords.latitude + ',' + position.coords.longitude;
+        } else {
+            var userLatLng = ',';
+        }
 
         var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
         window.open( directionsLink );

@@ -16,7 +16,7 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             googleAutoSuggestApiURL : '',
             autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
             autoCompleteMinLen : 2,
-            refreshPositionTimeout : 10, // secs
+            refreshPositionTimeout : 600, // secs
             cookieKey : 'geo_location_data',
         };
         $.extend( this.options, options );
