@@ -531,6 +531,12 @@ class BusinessProfileManager extends Manager
         }
     }
 
+    public function isAdUsageReportAllowedForBusiness(BusinessProfile $businessProfile)
+    {
+        $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+        return $code >= SubscriptionPlanInterface::CODE_PRIORITY;
+    }
+
     public function findOneBusinessProfile()
     {
         return $this->getRepository()->findOneBy([]);

@@ -59,6 +59,14 @@ services:
             - [ setTranslator, [ '@translator' ] ]
             - [ setBusinessProfileForm, [ '@domain_business.form.business_profile' ] ]
 
+    domain_business.twig_extension.report:
+        class: Domain\BusinessBundle\Twig\Extension\ReportExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+        calls:
+            - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
+
     #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType
