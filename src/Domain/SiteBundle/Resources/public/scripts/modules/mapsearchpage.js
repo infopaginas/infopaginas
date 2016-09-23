@@ -110,7 +110,16 @@ define(
         });
 
         var infoWindow = new google.maps.InfoWindow({
-            content: this.getInfoHTML( markerData.name, markerData.address, markerData.reviewsCount )
+            content: this.getInfoHTML(
+                markerData.name,
+                markerData.address,
+                markerData.reviewsCount,
+                markerData.rating,
+                markerData.logo,
+                markerData.longitude,
+                markerData.latitude,
+                markerData.profileUrl
+            )
         });
 
         marker.addListener( 'click', function( event ) {
@@ -165,31 +174,39 @@ define(
         });
     };
 
-    mapSearchPage.prototype.getInfoHTML = function ( name, address, reviewsCount, avgMark, icon )
+    mapSearchPage.prototype.getInfoHTML = function ( name, address, reviewsCount, avgMark, icon, longitude, latitude, profileUrl )
     {
+        var directionsObj = new directions();
+        var directionLink = directionsObj.getDirections(null, latitude + ',' + longitude);
+
         var template = "<div class='business-info'>" +
             "<div>" + name + "</div>" +
             "<div>" + address + "</div>" +
+            "<a href='" + directionLink + "' target='_blank'>Get Direction <span>&#187;</span></a>"+
                 "<div class=\"reviews\">" +
-                    "<div class=\"star-rating\">" +
-                        "<span class=\"fa fa-star-o\" data-rating=\"1\"></span>" +
-                        "<span class=\"fa fa-star-o\" data-rating=\"2\"></span>" +
-                        "<span class=\"fa fa-star-o\" data-rating=\"3\"></span>" +
-                        "<span class=\"fa fa-star-o\" data-rating=\"4\"></span>" +
-                        "<span class=\"fa fa-star-o\" data-rating=\"5\"></span>" +
-                        "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
+                    "<div class=\"star-rating\">";
+                    for ( var i = 1; i < 6; i++ ) {
+                        if ( i <= avgMark ) {
+                            var additionClass = ' fa-star-selected';
+                        } else {
+                            additionClass = '';
+                        }
+
+                        template += "<span class='fa fa-star-o" + additionClass + "' data-rating=\"" + i + "\"></span>";
+                    }
+                        template += "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
                     "</div>" +
-                    "<span class=\"reviews-value\">" + reviewsCount + " Reviews</span>" +
+                    "<a href='" + profileUrl + "#reviews' target='_blank'><span class=\"reviews-value\">" + reviewsCount + " Reviews</span></a>" +
                 "</div>" +
             "</div>";
 
-            if ( !_.isUndefined(icon) && !_.isNull(icon) ) {
-                template += "<div class='business-logo'>" +
-                    "<img src='" + icon + "'>" +
-                "</div>";
-            }
+        if ( !_.isUndefined(icon) && !_.isNull(icon) ) {
+            template += "<div class='business-logo'>" +
+                "<img width='60' src='" + icon + "'>" +
+            "</div>";
+        }
 
-            return  template;
+        return  template;
     };
 
     mapSearchPage.prototype.setDefaultHeighForCards = function ( cards )

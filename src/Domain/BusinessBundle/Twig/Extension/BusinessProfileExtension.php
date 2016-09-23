@@ -8,14 +8,11 @@
 
 namespace Domain\BusinessBundle\Twig\Extension;
 
-use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
-use Gedmo\Translatable\TranslatableListener;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;

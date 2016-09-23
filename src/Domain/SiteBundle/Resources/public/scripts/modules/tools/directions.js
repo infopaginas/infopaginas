@@ -38,6 +38,8 @@ define(['jquery', 'abstract/view', 'js-cookie'],
 
         var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
         window.open( directionsLink );
+
+        return directionsLink;
     }
 
     return directions;

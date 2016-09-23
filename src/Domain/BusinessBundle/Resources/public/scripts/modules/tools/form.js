@@ -56,7 +56,14 @@ define(
                 var $tab = $( this.formId ).find( '.error' ).parents( '.tabs-block li.active' );
                 var href = $tab.find( 'a' ).attr( 'href' );
             }
-            alertify.error( errorThrown );
+
+            if (jqXHR.responseJSON !== 'undefined' && jqXHR.responseJSON.message !== 'undefined') {
+                var message = jqXHR.responseJSON.message;
+            } else {
+                var message = errorThrown;
+            }
+
+            alertify.error( message );
         };
 
         //ajax request

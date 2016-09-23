@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -31,6 +32,7 @@ class ProfileController extends Controller
     const SUCCESS_PROFILE_CLOSE_REQUEST_CREATED_MESSAGE = 'Close Profile Request send. Please wait for approval';
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
+    const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -85,7 +87,9 @@ class ProfileController extends Controller
             if ($formHandler->process()) {
                 return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
             }
-        } catch (Exception $e) {
+        } catch(UniqueConstraintViolationException $e) {
+            return $this->getFailureResponse(self::ERROR_EMAIL_ALREADY_USED, [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -156,11 +160,13 @@ class ProfileController extends Controller
         if ($businessProfileId) {
             try {
                 $this->getBusinessOverviewReviewManager()->registerBusinessView($businessProfileId);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return $this->getFailureResponse($e->getMessage(), $e->getErrors());
             }
+
             return $this->getSuccessResponse(true);
         }
+
         return $this->getFailureResponse(false);
     }
 
@@ -216,6 +222,6 @@ class ProfileController extends Controller
             $businessProfile = $this->getBusinessProfilesManager()->createProfile();
         }
 
-        return $this->createForm(new BusinessProfileFormType(), $businessProfile);
+        return $this->get('domain_business.form.business_profile')->setData($businessProfile);
     }
 }

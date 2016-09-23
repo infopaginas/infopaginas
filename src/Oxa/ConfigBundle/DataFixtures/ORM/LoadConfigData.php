@@ -81,6 +81,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'html',
                 'description' => 'Registration mail template',
             ],[
+                'key' => ConfigInterface::MAIL_NEW_MERCHANT_TEMPLATE,
+                'title' => 'New merchant mail template',
+                'value' => $this->container->get('templating')->render(
+                    'OxaConfigBundle:Fixtures:mail_new_merchant_template.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'New merchant mail template',
+            ],[
                 'key' => ConfigInterface::MAIL_RESET_PASSWORD_TEMPLATE,
                 'title' => 'Reset password mail template',
                 'value' => $this->container->get('templating')->render(
@@ -97,6 +105,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'html',
                 'description' => 'User mail template',
             ], [
+                'key' => ConfigInterface::MAIL_CHANGE_WAS_REJECTED,
+                'title' => 'User mail template',
+                'value' => $this->container->get('templating')->render(
+                    'OxaConfigBundle:Fixtures:mail_change_was_rejected.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Change was rejected message',
+            ],  [
                 'key' => ConfigInterface::SOCIAL_FACEBOOK_PROFILE,
                 'title' => 'Social Facebook profile',
                 'value' => 'https://www.facebook.com/',
