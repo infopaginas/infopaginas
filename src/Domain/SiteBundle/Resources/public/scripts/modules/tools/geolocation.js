@@ -16,7 +16,7 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             googleAutoSuggestApiURL : '',
             autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
             autoCompleteMinLen : 2,
-            refreshPositionTimeout : 10, // secs
+            refreshPositionTimeout : 600, // secs
             cookieKey : 'geo_location_data',
         };
         $.extend( this.options, options );
@@ -38,6 +38,8 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
                 this.initPosition();
             }
         }
+
+        this.locationAutocomplete();
     }
 
     geolocation.prototype.isGelocationAvailable = function () {
@@ -87,7 +89,6 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
     }
 
     geolocation.prototype.onGeoLocationError = function ( data ) {
-        this.locationAutocomplete();
     }
 
     geolocation.prototype.extractAddress = function ( arrayData ) {
@@ -120,7 +121,6 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         navigator.geolocation.getCurrentPosition(this.setPosition.bind(this), this.onGeoLocationError.bind(this))
     }
 
-    //todo - fix autocomplete
     geolocation.prototype.locationAutocomplete = function ( ) {
         this.options.locationBox.autocomplete({
             'source': this.options.autoCompleteUrl,

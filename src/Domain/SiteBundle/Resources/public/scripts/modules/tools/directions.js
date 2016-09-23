@@ -21,16 +21,16 @@ define(['jquery', 'abstract/view', 'js-cookie'],
         $.extend( this.options, options );
     }
 
-    directions.prototype.getDirections = function ( e, Latlng ) {
-        var latlng;
+    directions.prototype.getDirections = function ( e ) {
+        var cookieString = cookie.get( 'geo_location_data' );
 
-        if ( e ) {
-            latlng = $( e.currentTarget ).data( 'latlng' );
-        } else if ( Latlng ) {
-            latlng = Latlng;
+        if ( cookieString ) {
+            var position = JSON.parse( cookieString );
+
+            var userLatLng = position.coords.latitude + ',' + position.coords.longitude;
+        } else {
+            var userLatLng = ',';
         }
-
-        var userLatLng = cookie.get( 'lat' ) + ',' +cookie.get( 'lng' );
 
         var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
         window.open( directionsLink );
