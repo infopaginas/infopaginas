@@ -5,6 +5,7 @@ namespace Oxa\ManagerArchitectureBundle\Form\Handler;
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Created by PhpStorm.
@@ -43,16 +44,25 @@ abstract class BaseFormHandler implements FormHandlerInterface
         if ($form->count()) {
             /** @var FormInterface $child */
             foreach ($form as $child) {
-                dump($child->getName());
-                dump($child->isValid());
                 if (!$child->isValid()) {
                     $errors[$child->getName()] = $this->getErrors($child);
                 }
             }
         } else {
             /** @var FormError $error */
-            foreach ($form->getErrors() as $error) {
+            foreach ($form->getErrors(true, false) as $error) {
                 $errors[] = $error->getMessage();
+            }
+        }
+
+        if (empty($errors) && $form->count()) {
+            foreach ($form->getErrors(true, false) as $error) {
+                if ($error->getCause() instanceof ConstraintViolation) {
+                    $path = $error->getCause()->getPropertyPath();
+                    $path = str_replace('[', '', $path);
+                    $path = str_replace('].data', '', $path);
+                    $errors[$path] = [$error->getMessage()];
+                }
             }
         }
 
