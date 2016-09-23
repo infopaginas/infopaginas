@@ -365,11 +365,9 @@
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs([
-                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}',
-                '{{asset("/bundles/domainreport/js/modules/interactions.js")}}'
+                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'
             ], function(businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
-                var interactionsReport = new interactionsReport();
             })
         })
     </script>
