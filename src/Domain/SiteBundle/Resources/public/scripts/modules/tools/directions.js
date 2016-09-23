@@ -22,11 +22,7 @@ define(['jquery', 'abstract/view', 'js-cookie'],
     }
 
     directions.prototype.getDirections = function ( e ) {
-        var latlng = $( e.currentTarget ).data( 'latlng' );
-
-        var cookieKey = 'geo_location_data';
-
-        var cookieString = cookie.get( cookieKey );
+        var cookieString = cookie.get( 'geo_location_data' );
 
         if ( cookieString ) {
             var position = JSON.parse( cookieString );
