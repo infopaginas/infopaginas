@@ -1,10 +1,10 @@
-<option>
+<option data-route="{{ path(pageRouter, searchData|merge({'neighborhood': '' })) }}">
     {% trans %}Neighborhoods{% endtrans %}
 </option>
 {% if results and results.neighborhoods is not empty %}
     {% for neighborhood in results.neighborhoods %}
-        <option data-route="{{ path(pageRouter, searchData|merge({'geo': neighborhood.getName() })) }}"
-            {% if searchData.geo == neighborhood.getName() %}selected{% endif %} value="{{ neighborhood.getName() }}">
+        <option data-route="{{ path(pageRouter, searchData|merge({'neighborhood': neighborhood.id })) }}"
+            {% if searchData.neighborhood == neighborhood.id %}selected{% endif %} value="{{ neighborhood.getName() }}">
             {{ neighborhood.getName() }}
         </option>
     {% endfor %}

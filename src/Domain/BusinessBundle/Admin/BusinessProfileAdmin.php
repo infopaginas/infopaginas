@@ -236,6 +236,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
+                    ->add('neighborhoods', null, ['multiple' => true, 'required' => false])
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,
@@ -365,6 +366,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('categories')
             ->add('areas')
             ->add('localities')
+            ->add('neighborhoods')
             ->add('brands')
             ->add('paymentMethods')
             ->add('tags')

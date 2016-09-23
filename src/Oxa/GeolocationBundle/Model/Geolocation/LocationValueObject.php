@@ -9,17 +9,17 @@ class LocationValueObject extends AbstractValueObject
     public $name;
     public $lat;
     public $lng;
-    public $zip;
+    public $locality;
 
-    public function __construct($name = null, $lat = null, $lng = null, $zip = null)
+    public function __construct($name = null, $lat = null, $lng = null, $locality = null)
     {
         if (null === $name && null  === $lat && null === $lng) {
             throw new Exception("All params can not be NULL", 1);
         }
 
-        $this->name = $name;
-        $this->lat  = $lat;
-        $this->lng  = $lng;
-        $this->zip  = $zip;
+        $this->name     = $name;
+        $this->lat      = $lat;
+        $this->lng      = $lng;
+        $this->locality = $locality;
     }
 }

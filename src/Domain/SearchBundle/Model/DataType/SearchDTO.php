@@ -43,7 +43,7 @@ class SearchDTO extends AbstractDTO
         return $this->category;
     }
 
-    public function setNeighborhood(string $neighborhood)
+    public function setNeighborhood($neighborhood)
     {
         $this->neighborhood = $neighborhood;
 

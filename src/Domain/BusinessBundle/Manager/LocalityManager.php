@@ -6,9 +6,15 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
 {
-    public function getNeighborhoodLocationsByLocalityName(string $localityName)
+    public function getLocalityNeighborhoods($locality)
     {
-        return $this->getRepository()->getNeighborhoodToLocalityByName($localityName);
+        if ($locality) {
+            $neighborhoods = $locality->getNeighborhoods();
+        } else {
+            $neighborhoods = null;
+        }
+
+        return $neighborhoods;
     }
 
     public function getLocalityByNameAndLocale(string $localityName, string $locale)

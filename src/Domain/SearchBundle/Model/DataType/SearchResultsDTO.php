@@ -12,7 +12,7 @@ class SearchResultsDTO extends AbstractDTO
     public $page;          // current page
     public $pageCount;     // total amount of pages
     public $categories;    // list of related categories
-    public $neighborhoods; // list of related neighborhoods
+    public $neighborhoods; // ArrayCollection of neighborhoods
 
     public function __construct(
         array $resultSet,
@@ -20,7 +20,7 @@ class SearchResultsDTO extends AbstractDTO
         int $page,
         int $pageCount,
         array $categories,
-        array $neighborhoods
+        $neighborhoods
     ) {
         $this->resultSet        = $resultSet;
         $this->resultCount      = $resultCount;

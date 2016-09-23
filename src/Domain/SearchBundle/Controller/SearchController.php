@@ -41,7 +41,7 @@ class SearchController extends Controller
             $dcDataDTO = null;
         }
 
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
+        $bannerFactory = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
                 TypeInterface::CODE_PORTAL_LEADERBOARD,
@@ -84,7 +84,7 @@ class SearchController extends Controller
     {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $searchDTO          = $searchManager->getSearchDTO($request);
+        $searchDTO = $searchManager->getSearchDTO($request);
 
         $searchData = $this->getSearchDataByRequest($request);
 
@@ -200,6 +200,7 @@ class SearchController extends Controller
             'geo',
             'order',
             'category',
+            'neighborhood',
 
             // geo location
             'lat',
