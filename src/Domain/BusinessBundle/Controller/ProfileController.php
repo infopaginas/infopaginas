@@ -90,6 +90,7 @@ class ProfileController extends Controller
         } catch(UniqueConstraintViolationException $e) {
             return $this->getFailureResponse(self::ERROR_EMAIL_ALREADY_USED, [], Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (\Exception $e) {
+            //dump($e); die();
             return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

@@ -2226,11 +2226,13 @@ class BusinessProfile implements
      *
      * @return BusinessProfile
      */
-    public function addPhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
+    public function addPhone($phone)
     {
         $this->phones[] = $phone;
 
-        $phone->setBusinessProfile($this);
+        if ($phone) {
+            $phone->setBusinessProfile($this);
+        }
 
         return $this;
     }

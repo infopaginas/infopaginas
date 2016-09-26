@@ -19,6 +19,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as PhoneNumber;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class BusinessProfilePhoneType
@@ -38,6 +42,16 @@ class BusinessProfilePhoneType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => '(787) 594-7273',
                 ],
+                'constraints' => [
+                    new Length([
+                        'max' => 10
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[0-9-]*$/',
+                        'message' => 'Only digits and dash are allowed',
+                    ]),
+                    new NotBlank(),
+                ]
             ])
         ;
     }
