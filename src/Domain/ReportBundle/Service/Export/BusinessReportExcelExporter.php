@@ -290,7 +290,7 @@ class BusinessReportExcelExporter
         // create the response
         $response = $excel->createStreamedResponse($writer);
 
-        $fileName = str_replace(' ', '', $businessProfile->getName()) . '_' . (new \DateTime('now'))->format('dmY_H:i:s') . 'xls';
+        $fileName = str_replace(' ', '', $businessProfile->getName()) . '_' . (new \DateTime('now'))->format('dmY_H:i:s') . '.xls';
 
         // adding headers
         $dispositionHeader = $response->headers->makeDisposition(
