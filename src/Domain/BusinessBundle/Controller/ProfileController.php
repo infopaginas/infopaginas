@@ -34,6 +34,7 @@ class ProfileController extends Controller
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
     const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
+    const ERROR_ACCESS_NOT_ALLOWED = 'You haven\'t access to this page!';
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -220,17 +221,17 @@ class ProfileController extends Controller
     {
         $token = $this->get('security.context')->getToken();
         if (!$token) {
-            throw $this->createNotFoundException('You haven\'t access to this page!');
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
         }
 
         $user = $token->getUser();
 
         if (!$user || !$user instanceof User) {
-            throw $this->createNotFoundException('You haven\'t access to this page!');
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
         }
 
         if (!$user->getBusinessProfiles()->contains($businessProfile)) {
-            throw $this->createNotFoundException('You haven\'t access to this page!');
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
         }
     }
 
