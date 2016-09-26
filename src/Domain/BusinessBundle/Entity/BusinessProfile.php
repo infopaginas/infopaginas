@@ -515,6 +515,16 @@ class BusinessProfile implements
     protected $localities;
 
     /**
+     * @var Neighborhood[] - Using this field a User may define Neighborhoods, business is related to.
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Neighborhood",
+     *     inversedBy="businessProfile",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinTable(name="business_profile_neighborhoods")
+     */
+    protected $neighborhoods;
+
+    /**
      * @var Campaign[] - Business Profile Phones
      *
      * @ORM\OneToMany(
@@ -525,7 +535,6 @@ class BusinessProfile implements
      *     )
      */
     protected $phones;
-
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -1876,6 +1885,23 @@ class BusinessProfile implements
         $this->localities = $localities;
     }
 
+    /**
+     * @return Neighborhood[]
+     */
+    public function getNeighborhoods()
+    {
+        return $this->neighborhoods;
+    }
+
+    /**
+     * @param Neighborhood[] $neighborhoods
+     * @return BusinessProfile
+     */
+    public function setNeighborhoods($neighborhoods)
+    {
+        $this->neighborhoods = $neighborhoods;
+    }
+
      /**
      * Set searchFts
      *
@@ -2167,6 +2193,30 @@ class BusinessProfile implements
     public function removeLocality(\Domain\BusinessBundle\Entity\Locality $locality)
     {
         $this->localities->removeElement($locality);
+    }
+
+    /**
+     * Add Neighborhood
+     *
+     * @param \Domain\BusinessBundle\Entity\Neighborhood $neighborhood
+     *
+     * @return BusinessProfile
+     */
+    public function addNeighborhood(\Domain\BusinessBundle\Entity\Neighborhood $neighborhood)
+    {
+        $this->neighborhoods[] = $neighborhood;
+
+        return $this;
+    }
+
+    /**
+     * Remove Neighborhood
+     *
+     * @param \Domain\BusinessBundle\Entity\Neighborhood $neighborhood
+     */
+    public function removeNeighborhood(\Domain\BusinessBundle\Entity\Neighborhood $neighborhood)
+    {
+        $this->neighborhoods->removeElement($neighborhood);
     }
 
     /**

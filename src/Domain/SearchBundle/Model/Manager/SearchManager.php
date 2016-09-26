@@ -77,18 +77,18 @@ class SearchManager extends Manager
         $results      = $this->businessProfilehManager->search($searchParams);
 
         if (!$results) {
+            // todo - change logic to 40 miles
             $results  = $this->businessProfilehManager->searchNeighborhood($searchParams);
         }
 
         $totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
         $categories         = $this->categoriesManager->getCategoriesByProfiles($results);
 
-        $neighborhoodsData  = $this->localityManager
-            ->getNeighborhoodLocationsByLocalityName($searchParams->locationValue->name);
+        // get by current locality
 
-        $neighborhoods      = SearchDataUtil::extractNeigborhoods($neighborhoodsData);
+        $neighborhoods      = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
 
-        $pagesCount          = ceil($totalResults/$searchParams->limit);
+        $pagesCount         = ceil($totalResults/$searchParams->limit);
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,

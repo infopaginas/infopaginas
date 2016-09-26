@@ -24,9 +24,9 @@ class GeolocationManager extends Manager
         $this->localityManager = $localityManager;
     }
 
-    public function buildLocationValue(string $name, $lat = null, $lng = null, $zip = null)
+    public function buildLocationValue(string $name, $lat = null, $lng = null, $locality = null)
     {
-        return new LocationValueObject($name, $lat, $lng, $zip);
+        return new LocationValueObject($name, $lat, $lng, $locality);
     }
 
     public function buildLocationValueFromRequest(Request $request)
@@ -34,8 +34,9 @@ class GeolocationManager extends Manager
         $geo    = $request->get('geo', null);
         $geoLoc = $request->get('geoLoc', null);
 
-        $lat = null;
-        $lat = null;
+        $lat        = null;
+        $lat        = null;
+        $locality   = null;
 
         if ($geo) {
             // check is custom geo request not from geolocation
@@ -61,8 +62,7 @@ class GeolocationManager extends Manager
         }
 
         if ($lat and $lng) {
-            //todo - remove zip
-            $return = $this->buildLocationValue($geo, $lat, $lng, null);
+            $return = $this->buildLocationValue($geo, $lat, $lng, $locality);
         } else {
             $return = null;
         }

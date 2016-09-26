@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\Area;
-use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -16,18 +15,17 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 
 /**
- * Locality
+ * Neighborhood
  *
- * @ORM\Table(name="locality")
- * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityRepository")
+ * @ORM\Table(name="neighborhood")
+ * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\NeighborhoodRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\LocalityTranslation")
+ * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation")
  */
-class Locality implements GeolocationInterface, DefaultEntityInterface, TranslatableInterface
+class Neighborhood implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
-    use LocationTrait;
     use PersonalTranslatable;
 
     /**
@@ -40,7 +38,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     private $id;
 
     /**
-     * @var string - Locality name
+     * @var string - Neighborhood name
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=100)
@@ -51,39 +49,40 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     /**
      * @ORM\ManyToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     mappedBy="localities",
+     *     mappedBy="neighborhoods",
      *     cascade={"persist"}
      * )
      */
     private $businessProfile;
 
     /**
-     * @var Domain\BusinessBundle\Entity\Area
+     * @var Domain\BusinessBundle\Entity\Locality
      *
      * @ORM\ManyToOne(
-     *      targetEntity="Domain\BusinessBundle\Entity\Area",
+     *      targetEntity="Domain\BusinessBundle\Entity\Locality",
      *      inversedBy="locality"
      * )
-     * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="locality_id", referencedColumnName="id")
      */
-    protected $area;
+    protected $locality;
 
     /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
-     *      targetEntity="Domain\BusinessBundle\Entity\Neighborhood",
-     *      mappedBy="locality",
-     *      cascade={"persist"}
+     *      targetEntity="Domain\BusinessBundle\Entity\Zip",
+     *      mappedBy="neighborhood",
+     *      cascade={"persist", "remove"},
+     *      orphanRemoval=true
      * )
      */
-    protected $neighborhoods;
+    protected $zips;
 
     /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\BusinessBundle\Entity\Translation\LocalityTranslation",
+     *     targetEntity="Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation",
      *     mappedBy="object",
      *     cascade={"persist", "remove"}
      * )
@@ -91,27 +90,13 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $translations;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "name"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFts;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->businessProfile  = new ArrayCollection();
+        $this->businessProfile  = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations     = new ArrayCollection();
-        $this->neighborhoods    = new ArrayCollection();
+        $this->zips             = new ArrayCollection();
     }
 
     /**
@@ -134,7 +119,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
 
     /**
      * @param string $name
-     * @return Locality
+     * @return Neighborhood
      */
     public function setName($name)
     {
@@ -152,7 +137,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
 
     /**
      * @param mixed $businessProfile
-     * @return Locality
+     * @return Neighborhood
      */
     public function setBusinessProfile($businessProfile)
     {
@@ -165,7 +150,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      *
-     * @return Locality
+     * @return Neighborhood
      */
     public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
@@ -184,71 +169,74 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     }
 
     /**
-     *  Get owning area for this locality
+     *  Get owning Locality for this Neighborhood
      *
-     * @return Area
+     * @return Neighborhood
      */
-    public function getArea()
+    public function getLocality()
     {
-        return $this->area;
+        return $this->locality;
     }
 
     /**
-     *  Set owning area for this locality
+     *  Set owning Locality for this Neighborhood
      *
-     * @param Area $area
+     * @param Locality $locality
      * @return $this
      */
-    public function setArea(Area $area)
+    public function setLocality(Locality $locality)
     {
-        $this->area = $area;
+        $this->locality = $locality;
 
         return $this;
-    }
-
-    /**
-     * Get Neighborhoods
-     *
-     * @return Neighborhood[]
-     */
-    public function getNeighborhoods()
-    {
-        return $this->neighborhoods;
     }
 
     /**
      * Remove translation
      *
-     * @param \Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation
+     * @param \Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation $translation
      */
-    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\LocalityTranslation $translation)
+    public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation $translation)
     {
         $this->translations->removeElement($translation);
     }
 
     /**
-     * Set searchFts
+     * Get Locality
      *
-     * @param tsvector $searchFts
-     *
-     * @return Locality
+     * @return Zip[]
      */
-    public function setSearchFts($searchFts)
+    public function getZips()
     {
-        $this->searchFts = $searchFts;
+        return $this->zips;
+    }
+
+    /**
+     * Add zip
+     *
+     * @param \Domain\BusinessBundle\Entity\Zip $zip
+     *
+     * @return BusinessProfile
+     */
+    public function addZip(\Domain\BusinessBundle\Entity\Zip $zip)
+    {
+        $this->zips[] = $zip;
+
+        $zip->setNeighborhood($this);
 
         return $this;
     }
 
     /**
-     * Get searchFts
+     * Remove zip
      *
-     * @return tsvector
+     * @param \Domain\BusinessBundle\Entity\Zip $zip
      */
-    public function getSearchFts()
+    public function removeZip(\Domain\BusinessBundle\Entity\Zip $zip)
     {
-        return $this->searchFts;
+        $this->zips->removeElement($zip);
     }
+
 
     /**
      * @return string

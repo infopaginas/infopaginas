@@ -124,7 +124,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
-        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
+
+        // tmp disable geo search
+
+//        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
         $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
@@ -165,7 +168,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addCountToSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
-        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
+
+        // tmp disable geo search
+
+//        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);

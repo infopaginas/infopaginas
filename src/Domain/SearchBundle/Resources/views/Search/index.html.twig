@@ -20,11 +20,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <h1 class="search-title blue-c">{{ search.query }} in
-                            {% if search.locationValue.zip is not null %}
-                                {{ search.locationValue.zip }}
-                            {% else %}
-                                {{ search.locationValue.name }}
-                            {% endif %}
+                            {{ search.locationValue.name }}
                         </h1>
                     </div>
                 </div>
@@ -37,11 +33,7 @@
                                 {% set amount = results.resultCount %}
                                 {% endif %}
                                 <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in
-                                    {% if search.locationValue.zip is not null %}
-                                        {{ search.locationValue.zip }}
-                                    {% else %}
-                                        {{ search.locationValue.name }}
-                                    {% endif %}
+                                    {{ search.locationValue.name }}
                                 </span>
                             </div>
                             <div class="sort-by">
