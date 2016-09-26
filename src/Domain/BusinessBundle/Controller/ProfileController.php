@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Domain\BannerBundle\Model\TypeInterface;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class ProfileController
@@ -57,6 +58,8 @@ class ProfileController extends Controller
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
+
+        $this->checkBusinessProfileAccess($businessProfile);
 
         $businessProfileForm = $this->getBusinessProfileForm($businessProfile);
 
@@ -211,6 +214,24 @@ class ProfileController extends Controller
     protected function getBusinessOverviewReviewManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
+    }
+
+    protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
+    {
+        $token = $this->get('security.context')->getToken();
+        if (!$token) {
+            throw $this->createNotFoundException('You haven\'t access to this page!');
+        }
+
+        $user = $token->getUser();
+
+        if (!$user || !$user instanceof User) {
+            throw $this->createNotFoundException('You haven\'t access to this page!');
+        }
+
+        if (!$user->getBusinessProfiles()->contains($businessProfile)) {
+            throw $this->createNotFoundException('You haven\'t access to this page!');
+        }
     }
 
     /**
