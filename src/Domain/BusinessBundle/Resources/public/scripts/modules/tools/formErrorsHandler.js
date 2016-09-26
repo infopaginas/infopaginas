@@ -26,12 +26,17 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
         if (typeof errors !== 'undefined') {
             for (var field in errors) {
                 //check for "repeated" fields or embed forms
-                if (Array.isArray(errors[field])) {
+                if (Array.isArray(errors[field]) || field == 'phones') {
                     var fieldId = this.getFormFieldId( prefix, field );
 
                     if (Array.isArray(errors[field][0])) {
                         fieldId = fieldId + '_0';
                         errors[field] = errors[field][0];
+                    }
+
+                    //dirty workaround for phones field
+                    if (fieldId == '#domain_business_bundle_business_profile_form_type_phones') {
+                        fieldId = '#domain_business_bundle_business_profile_form_type_phones_0_phone';
                     }
 
                     var $field = $( fieldId );
@@ -57,8 +62,15 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                         var $errorSection = $field.next('.help-block');
                     }
 
-                    for (var key in errors[field]) {
-                        $errorSection.append(errors[field][key]);
+                    for( var key in errors[field] ) {
+                        if( errors[field][key]['phone'] !== undefined ) {
+                            for( var index in errors[field][key]['phone'] ) {
+                                var $errorSection = $('.phone-error-section-' + key);
+                                $errorSection.append(errors[field][key]['phone'][index]);
+                            }
+                        } else {
+                            $errorSection.append(errors[field][key]);
+                        }
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId(prefix, field) );
