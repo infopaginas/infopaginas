@@ -50,22 +50,23 @@ abstract class BaseFormHandler implements FormHandlerInterface
             }
         } else {
             /** @var FormError $error */
-            foreach ($form->getErrors(true, false) as $error) {
+            foreach ($form->getErrors() as $error) {
                 $errors[] = $error->getMessage();
             }
         }
 
-        if (empty($errors) && $form->count()) {
-            foreach ($form->getErrors(true, false) as $error) {
-                if ($error->getCause() instanceof ConstraintViolation) {
-                    $path = $error->getCause()->getPropertyPath();
-                    $path = str_replace('[', '', $path);
-                    $path = str_replace('].data', '', $path);
-                    $errors[$path] = [$error->getMessage()];
-                }
-            }
+        return $errors;
+    }
+
+    protected function getPropertyPath($error)
+    {
+        $path = '';
+
+        if ($error->getCause() instanceof ConstraintViolation) {
+            $path = $error->getCause()->getPropertyPath();
         }
 
-        return $errors;
+
+        return $path;
     }
 }
