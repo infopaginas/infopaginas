@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Domain\BannerBundle\Model\TypeInterface;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class ProfileController
@@ -33,6 +34,7 @@ class ProfileController extends Controller
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
     const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
+    const ERROR_ACCESS_NOT_ALLOWED = 'You haven\'t access to this page!';
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -57,6 +59,8 @@ class ProfileController extends Controller
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
+
+        $this->checkBusinessProfileAccess($businessProfile);
 
         $businessProfileForm = $this->getBusinessProfileForm($businessProfile);
 
@@ -90,6 +94,7 @@ class ProfileController extends Controller
         } catch(UniqueConstraintViolationException $e) {
             return $this->getFailureResponse(self::ERROR_EMAIL_ALREADY_USED, [], Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (\Exception $e) {
+            //dump($e); die();
             return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -210,6 +215,24 @@ class ProfileController extends Controller
     protected function getBusinessOverviewReviewManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
+    }
+
+    protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
+    {
+        $token = $this->get('security.context')->getToken();
+        if (!$token) {
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
+        }
+
+        $user = $token->getUser();
+
+        if (!$user || !$user instanceof User) {
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
+        }
+
+        if (!$user->getBusinessProfiles()->contains($businessProfile)) {
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
+        }
     }
 
     /**

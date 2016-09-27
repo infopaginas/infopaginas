@@ -24,12 +24,16 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
             // grab the prototype template
             var newWidget = phonesList.attr('data-prototype');
 
-            newWidget = newWidget.replace(/__name__/g, phonesCount);
+            var $newWidget = $(newWidget.replace(/__name__/g, phonesCount));
+
+            $newWidget.find('.help-block').addClass('phone-error-section-' + phonesCount);
+
+            console.log($newWidget[0].outerHTML);
 
             phonesCount++;
 
             // create a new list element and add it to the list
-            var newLi = $('<li></li>').html(newWidget);
+            var newLi = $('<li></li>').html($newWidget[0].outerHTML);
 
             newLi.appendTo(phonesList);
 
