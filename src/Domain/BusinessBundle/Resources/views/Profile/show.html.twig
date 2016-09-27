@@ -53,9 +53,9 @@
                                 <ul class="company-info">
                                     {% if businessProfile.getWebsite() %}
                                         <li>
-                                            <a class="businessProfileWebsiteLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getWebsite() }}">
+                                            <a class="businessProfileWebsiteLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getWebsiteLink() }}">
                                                 <i class="fa fa-home" aria-hidden="true"></i>
-                                                <span>{{ businessProfile.getWebsite() }}</span>
+                                                <span>{{ businessProfile.getWebsiteLink() }}</span>
                                             </a>
                                         </li>
                                     {% endif %}
@@ -232,7 +232,7 @@
                                             {% set media = coupon.getImage() %}
                                             <p>
                                                 {{ coupon.title }}
-                                                
+
                                                 <a href="{% path media, 'reference' %}" class="green-btn btn print-btn coupon">
                                                     <i class="fa fa-print" aria-hidden="true"></i>
                                                     <span>{% trans %}Print{% endtrans %}</span>
