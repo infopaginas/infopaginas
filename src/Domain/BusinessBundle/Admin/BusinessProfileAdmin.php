@@ -491,6 +491,19 @@ class BusinessProfileAdmin extends OxaAdmin
                 break;
             }
         }
+
+        foreach ($object->getSubscriptions() as $subscription) {
+            if ($subscription->getStartDate() > new \DateTime('now')) {
+                $errorElement->with('subscriptions')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.subscription.start_date',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+            }
+        }
     }
 
     /**
