@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -24,7 +25,14 @@ class CategoryAdminCRUDController extends CRUDController
         if ($this->getRestMethod() == Request::METHOD_DELETE) {
             $existDependentFields = $adminManager->checkExistDependentEntity($object);
 
-            if (!count($existDependentFields)) {
+            $categoryAttachedToProfiles = ($this->admin->getClass() == Category::class)
+                && (count($object->getBusinessProfiles()) > 0);
+
+            if ($categoryAttachedToProfiles) {
+                $existDependentFields[] = 'Business Profiles';
+            }
+
+            if (!count($existDependentFields) && !$categoryAttachedToProfiles) {
                 $adminManager->deletePhysicalEntity($object);
                 $this->addFlash(
                     'sonata_flash_success',
