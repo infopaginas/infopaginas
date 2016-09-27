@@ -115,20 +115,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             return null;
         }
 
-        $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
-        $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
+        $searchQuery = $this->splitPhraseToPlain($searchParams->query);
 
         $limit  = $searchParams->limit;
         $offset = ($searchParams->page - 1) * $limit;
 
         $queryBuilder = $this->getQueryBuilder();
 
+        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
         $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
 
-        // tmp disable geo search
-
-//        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
-        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
+        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
@@ -163,15 +160,12 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     public function countSearchResults(SearchDTO $searchParams)
     {
         $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
-        $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
 
         $queryBuilder = $this->getQueryBuilder();
 
-        $this->addCountToSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
+        $this->addCountToSearchByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
 
-        // tmp disable geo search
-
-//        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchLocation, $searchParams->locationValue->zip);
+        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
         if ($category = $searchParams->getCategory()) {
             $categoryFilter = $this->splitPhraseToPlain($category);
@@ -281,7 +275,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
-            ->join('bp.localities', 'loc')
+            ->leftJoin('bp.localities', 'loc')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
             ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
@@ -292,14 +286,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    protected function addCountToSearchbByCategoryAndNameWithingAreaQueryBuilder(
+    protected function addCountToSearchByCategoryAndNameWithingAreaQueryBuilder(
         QueryBuilder &$queryBuilder,
         $searchQuery
     ) {
         return $queryBuilder
             ->select('count(bp.id) as rows')
             ->join('bp.categories', 'c')
-            ->join('bp.localities', 'loc')
+            ->leftJoin('bp.localities', 'loc')
             ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
                 OR
@@ -309,26 +303,34 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    protected function addSearchByLocationQueryBuilder(QueryBuilder $queryBuilder, $location, $zip = null)
+    protected function addSearchByLocationQueryBuilder(QueryBuilder $queryBuilder, $searchParams)
     {
         $searchString = '(
-                TSQUERY( loc.searchFts, :searchLocation) = true
+                (bp.serviceAreasType = :serviceAreasTypeArea
+                    AND ' . $this->getDistanceBetweenPointsSql() . ' <= bp.milesOfMyBusiness)
                 OR
-                TSQUERY( bp.searchCityFts, :searchLocation) = true
+                (bp.serviceAreasType = :serviceAreasTypeLoc
+                    AND loc.id = :localityId)
             )';
 
-        if ($zip) {
-            $searchString = '(
-                bp.zipCode = :zip
-            )';
-            $queryBuilder->setParameter('zip', $zip);
-        } else {
-            $queryBuilder->setParameter('searchLocation', $location);
+        if ($searchParams->getNeighborhood()) {
+            $queryBuilder->join('bp.neighborhoods', 'nei')
+                ->andWhere('nei.id = :neighborhoodId')
+                ->setParameter('neighborhoodId', $searchParams->getNeighborhood())
+            ;
         }
 
-        return $queryBuilder
-            ->andWhere($searchString)
-            ;
+        $location = $searchParams->locationValue;
+
+        $queryBuilder->andWhere($searchString)
+            ->setParameter('userLatitude', $location->lat)
+            ->setParameter('userLongitude', $location->lng)
+            ->setParameter('serviceAreasTypeArea', BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE)
+            ->setParameter('serviceAreasTypeLoc', BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE)
+            ->setParameter('localityId', $location->locality->getId())
+        ;
+
+        return $queryBuilder;
     }
 
     protected function addCityRankQueryBuilder(QueryBuilder $queryBuilder)
@@ -495,7 +497,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     protected function addDistanceBetweenPointsQueryBuilder(QueryBuilder $queryBuilder, LocationValueObject $location)
     {
         return $queryBuilder
-            ->addSelect('(:earthDiameter * sin (
+            ->addSelect($this->getDistanceBetweenPointsSql() . ' AS distance')
+            ->setParameter('userLatitude', $location->lat)
+            ->setParameter('userLongitude', $location->lng)
+        ;
+    }
+
+    private function getDistanceBetweenPointsSql()
+    {
+        //todo - change constant to miles
+
+        return '(' . GeolocationUtils::getEarthDiameterMiles() . ' * sin (
                 sqrt (
                     ( 1 - cos (
                         (bp.latitude - :userLatitude) * PI()/180
@@ -506,13 +518,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
                     *
                     cos (bp.latitude * PI()/180)
                     *
-                    ( 1 - cos( ( bp.longitude - :userLongitude ) * PI()/180 ) ) / 2
-                )
-            )) AS distance')
-            ->setParameter('userLatitude', $location->lat)
-            ->setParameter('userLongitude', $location->lng)
-            ->setParameter('earthDiameter', GeolocationUtils::getEarthDiameterKm())
-        ;
+                    ( 1 - cos( ( bp.longitude - :userLongitude ) * PI()/180 ) ) / 2)
+                ))';
     }
 
     public function getHomepageVideos($limit)

@@ -17,6 +17,5 @@ class DCDataDTO extends AbstractDTO
         $this->locationName    = $locationName;
         $this->categories      = $categories;
         $this->slug            = $slug;
-
     }
 }

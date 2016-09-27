@@ -54,10 +54,9 @@ class BusinessProfile implements
     use SeoTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
+    const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
-    const DEFAULT_LOCALE = 'en_US';
-
-    const MILE_TO_KILOMETER  = 0.621371;
+    const DEFAULT_LOCALE = 'en';
 
     /**
      * @var int
@@ -2399,10 +2398,7 @@ class BusinessProfile implements
      */
     public function getDistanceUX() : string
     {
-        // convert to miles
-        $miles = $this->getDistance() * self::MILE_TO_KILOMETER;
-
-        return number_format($miles, 2, '.', '');
+        return number_format($this->getDistance(), 2, '.', '');
     }
 
     /**
@@ -2447,8 +2443,8 @@ class BusinessProfile implements
     public static function getServiceAreasTypes()
     {
         return [
-            'area' => 'Distance',
-            'locality' => 'Locality'
+            self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
+            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
     }
 }
