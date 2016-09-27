@@ -1,5 +1,5 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], 
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'],
     function ( $, view, _, directions, select ) {
     'use strict';
 
@@ -129,7 +129,7 @@ define(
         });
 
         var markerObjec = {};
-        this.markers[markerData.id] = { 
+        this.markers[markerData.id] = {
             marker : marker,
             infoWindow : infoWindow
         }
@@ -143,7 +143,7 @@ define(
             .animate({
                 scrollTop : offset
             }, 1500);
-        this.highlightCard( elementId ); 
+        this.highlightCard( elementId );
     };
 
     mapSearchPage.prototype.showMarker = function ( event )
@@ -176,8 +176,7 @@ define(
 
     mapSearchPage.prototype.getInfoHTML = function ( name, address, reviewsCount, avgMark, icon, longitude, latitude, profileUrl )
     {
-        var directionsObj = new directions();
-        var directionLink = directionsObj.getDirections(null, latitude + ',' + longitude);
+        var directionLink = this.options.directions.getDirection(null, latitude + ',' + longitude);
 
         var template = "<div class='business-info'>" +
             "<div>" + name + "</div>" +
@@ -206,7 +205,7 @@ define(
             "</div>";
         }
 
-        return  template;
+        return template;
     };
 
     mapSearchPage.prototype.setDefaultHeighForCards = function ( cards )

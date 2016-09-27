@@ -30,7 +30,9 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
     //setup required "listeners"
     businessProfileView.prototype.run = function() {
         new select();
-        new directions();
+        this.directions = new directions;
+        this.directions.bindEventsDirections();
+
         new interactionsTracker();
 
         this.handleReviewCreation();

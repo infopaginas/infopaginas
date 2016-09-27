@@ -26,6 +26,8 @@ define(
     searchpage.prototype.init = function ( options ) {
         this.options = {};
         this.directions = new directions;
+        this.directions.bindEventsDirections();
+
         $.extend( this.options, options );
 
         new select();
