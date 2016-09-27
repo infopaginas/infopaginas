@@ -39,26 +39,27 @@ class GeolocationManager extends Manager
         $locality   = null;
 
         if ($geo) {
-            // check is custom geo request not from geolocation
+            // get locality by name and locale
 
+            $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
+
+            // check is custom geo request not from geolocation - use coordinates
             if ($geoLoc == $geo) {
                 $lat = $request->get('lat', null);
                 $lng = $request->get('lng', null);
-            } else {
-                // get locality by name and locale
-
-                $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
-
-                if ($locality) {
-                    $lat = $locality->getLatitude();
-                    $lng = $locality->getLongitude();
-                }
             }
         } else {
             // empty search - show default
-            $geo = $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY);
-            $lat = $this->confingService->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
-            $lng = $this->confingService->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+
+            $locality = $this->localityManager->getLocalityByNameAndLocale(
+                ConfigInterface::DEFAULT_SEARCH_CITY,
+                $request->getLocale()
+            );
+        }
+
+        if ($locality) {
+            $lat = $locality->getLatitude();
+            $lng = $locality->getLongitude();
         }
 
         if ($lat and $lng) {
