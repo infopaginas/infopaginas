@@ -67,6 +67,7 @@ class BusinessProfileFormType extends AbstractType
             $emailConstraints = [];
         }
 
+
         $builder
             ->add('name', TextType::class, [
                 'attr' => [
