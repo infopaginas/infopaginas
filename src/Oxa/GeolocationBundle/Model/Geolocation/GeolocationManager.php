@@ -52,7 +52,7 @@ class GeolocationManager extends Manager
             // empty search - show default
 
             $locality = $this->localityManager->getLocalityByNameAndLocale(
-                ConfigInterface::DEFAULT_SEARCH_CITY,
+                $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY),
                 $request->getLocale()
             );
         }

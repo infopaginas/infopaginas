@@ -70,12 +70,10 @@ class SearchController extends Controller
      */
     public function autocompleteAction(Request $request)
     {
-        $searchManager = $this->get('domain_search.manager.search');
-
-        $searchDTO     = $searchManager->getSearchDTO($request);
+        $searchData = $this->getSearchDataByRequest($request);
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation($searchDTO);
+        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation($searchData['q']);
 
         return (new JsonResponse)->setData($results);
     }

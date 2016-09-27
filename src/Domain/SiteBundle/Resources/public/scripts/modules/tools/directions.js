@@ -21,7 +21,15 @@ define(['jquery', 'abstract/view', 'js-cookie'],
         $.extend( this.options, options );
     }
 
-    directions.prototype.getDirections = function ( e ) {
+    directions.prototype.getDirections = function ( e, latlngEvent ) {
+        var latlng;
+
+        if ( e ) {
+            latlng = $( e.currentTarget ).data( 'latlng' );
+        } else if ( latlngEvent ) {
+            latlng = latlngEvent;
+        }
+
         var cookieString = cookie.get( 'geo_location_data' );
 
         if ( cookieString ) {
