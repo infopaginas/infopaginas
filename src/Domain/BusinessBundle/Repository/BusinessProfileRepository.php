@@ -123,7 +123,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
-        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
+        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery);
 
         $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
@@ -184,15 +184,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $this->search($searchParams);
     }
 
-    public function searchAutosuggestWithBuilder(SearchDTO $searchParams, $limit = 5, $offset = 0)
+    public function searchAutosuggestWithBuilder($query, $limit = 5, $offset = 0)
     {
-        $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
-        $searchLocation     = $this->splitPhraseToPlain($searchParams->locationValue->name);
+        $searchQuery = $this->splitPhraseToPlain($query);
 
         $queryBuilder = $this->getQueryBuilder()
             ->addSelect('bp.name');
 
-        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
+        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery);
         $this->addHeadlineToNameQueryBuilder($queryBuilder);
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
         $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
@@ -269,14 +268,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    protected function addSearchbByCategoryAndNameWithingAreaQueryBuilder(
-        QueryBuilder $queryBuilder,
-        $searchQuery
-    ) {
+    protected function addSearchbByCategoryAndNameQueryBuilder(QueryBuilder $queryBuilder, string $searchQuery) {
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
-            ->leftJoin('bp.localities', 'loc')
             ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
             ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
@@ -294,7 +289,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder
             ->select('count(bp.id) as rows')
             ->join('bp.categories', 'c')
-            ->leftJoin('bp.localities', 'loc')
             ->andWhere('(
                 TSQUERY( c.searchFts, :searchQuery) = true
                 OR
@@ -329,7 +323,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $localityId = 0;
         }
 
-        $queryBuilder->andWhere($searchString)
+        $queryBuilder->leftJoin('bp.localities', 'loc')
+            ->andWhere($searchString)
             ->setParameter('userLatitude', $location->lat)
             ->setParameter('userLongitude', $location->lng)
             ->setParameter('serviceAreasTypeArea', BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE)
