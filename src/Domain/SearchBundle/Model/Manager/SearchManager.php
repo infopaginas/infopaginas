@@ -25,7 +25,7 @@ class SearchManager extends Manager
 {
     protected $configService;
 
-    protected $businessProfilehManager;
+    protected $businessProfileManager;
     protected $categoriesManager;
     protected $geolocationManager;
     protected $localityManager;
@@ -33,7 +33,7 @@ class SearchManager extends Manager
     public function __construct(
         EntityManager $em,
         Config $configService,
-        BusinessProfileManager $businessProfilehManager,
+        BusinessProfileManager $businessProfileManager,
         CategoryManager $categoryManager,
         GeolocationManager $geolocationManager,
         LocalityManager $localityManager
@@ -41,7 +41,7 @@ class SearchManager extends Manager
         parent::__construct($em);
 
         $this->configService            = $configService;
-        $this->businessProfilehManager  = $businessProfilehManager;
+        $this->businessProfileManager  = $businessProfileManager;
         $this->categoriesManager        = $categoryManager;
         $this->geolocationManager       = $geolocationManager;
         $this->localityManager          = $localityManager;
@@ -74,21 +74,21 @@ class SearchManager extends Manager
 
     public function search(SearchDTO $searchParams) : SearchResultsDTO
     {
-        $results      = $this->businessProfilehManager->search($searchParams);
+        $results = $this->businessProfileManager->search($searchParams);
 
         if (!$results) {
             // todo - change logic to 40 miles
-            $results  = $this->businessProfilehManager->searchNeighborhood($searchParams);
+            $results  = $this->businessProfileManager->searchNeighborhood($searchParams);
         }
 
-        $totalResults       = $this->businessProfilehManager->countSearchResults($searchParams);
-        $categories         = $this->categoriesManager->getCategoriesByProfiles($results);
+        $totalResults   = $this->businessProfileManager->countSearchResults($searchParams);
+        $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
 
         // get by current locality
 
-        $neighborhoods      = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+        $neighborhoods  = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
 
-        $pagesCount         = ceil($totalResults/$searchParams->limit);
+        $pagesCount     = ceil($totalResults/$searchParams->limit);
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
@@ -104,7 +104,7 @@ class SearchManager extends Manager
 
     public function getSearchDTO(Request $request)
     {
-        $location   = $this->geolocationManager->buildLocationValueFromRequest($request);
+        $location = $this->geolocationManager->buildLocationValueFromRequest($request);
 
         if (!$location) {
             return null;
@@ -116,15 +116,21 @@ class SearchManager extends Manager
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
 
-        if ($category = SearchDataUtil::getCategoryFromRequest($request)) {
+        $category = SearchDataUtil::getCategoryFromRequest($request);
+
+        if ($category) {
             $searchDTO->setCategory($category);
         }
 
-        if ($neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request)) {
+        $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
+
+        if ($neighborhood) {
             $searchDTO->setNeighborhood($neighborhood);
         }
 
-        if ($orderBy = SearchDataUtil::getOrderByFromRequest($request)) {
+        $orderBy = SearchDataUtil::getOrderByFromRequest($request);
+
+        if ($orderBy) {
             $searchDTO->setOrderBy($orderBy);
         }
 
