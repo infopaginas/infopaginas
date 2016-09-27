@@ -57,7 +57,7 @@ class GeolocationManager extends Manager
             );
         }
 
-        if ($locality) {
+        if ($locality and !$lat) {
             $lat = $locality->getLatitude();
             $lng = $locality->getLongitude();
         }

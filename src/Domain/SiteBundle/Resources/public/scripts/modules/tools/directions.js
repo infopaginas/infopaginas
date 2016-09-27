@@ -3,13 +3,7 @@ define(['jquery', 'abstract/view', 'js-cookie'],
     'use strict';
 
     var directions = function( options ) {
-
-        this.events = {
-             ".get-dir click" : "getDirections"
-        };
-
         this.init( options );
-        this.bindEvents( );
     };
 
     directions.prototype = new view;
@@ -21,7 +15,20 @@ define(['jquery', 'abstract/view', 'js-cookie'],
         $.extend( this.options, options );
     }
 
-    directions.prototype.getDirections = function ( e, latlngEvent ) {
+    directions.prototype.bindEventsDirections = function () {
+        this.events = {
+            ".get-dir click" : "openDirection"
+        };
+
+        this.bindEvents( );
+    }
+
+    directions.prototype.openDirection = function ( e, latlngEvent ) {
+        var directionLink = this.getDirection( e, latlngEvent );
+        window.open( directionLink );
+    }
+
+    directions.prototype.getDirection = function ( e, latlngEvent ) {
         var latlng;
 
         if ( e ) {
@@ -40,10 +47,9 @@ define(['jquery', 'abstract/view', 'js-cookie'],
             var userLatLng = ',';
         }
 
-        var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
-        window.open( directionsLink );
+        var directionLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
 
-        return directionsLink;
+        return directionLink;
     }
 
     return directions;

@@ -112,12 +112,13 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
-    public function searchAutosuggestByPhraseAndLocation(SearchDTO $searchParams)
+    public function searchAutosuggestByPhraseAndLocation($query)
     {
-        $categories       = $this->categoryManager->searchAutosuggestByName($searchParams->query);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($searchParams);
+        $categories = $this->categoryManager->searchAutosuggestByName($query);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query);
 
         $result = array_merge($categories, $businessProfiles);
+
         return $result;
     }
 
