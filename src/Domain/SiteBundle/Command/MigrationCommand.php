@@ -32,6 +32,7 @@ class MigrationCommand extends ContainerAwareCommand
         $this->setDefinition(
             new InputDefinition(array(
                 new InputOption('withDebug', 'd'),
+                new InputOption('skipImages', 'i'),
                 new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
                 new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
             ))
@@ -82,6 +83,12 @@ class MigrationCommand extends ContainerAwareCommand
             $this->withDebug = true;
         } else {
             $this->withDebug = false;
+        }
+
+        if ($input->getOption('skipImages')) {
+            $this->skipImages = true;
+        } else {
+            $this->skipImages = false;
         }
 
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
@@ -248,9 +255,7 @@ class MigrationCommand extends ContainerAwareCommand
 
         // process assigned items
 
-        $loadImages = true;
-
-        if ($loadImages and $profile->images) {
+        if (!$this->skipImages and $profile->images) {
             $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
 
             foreach ($profile->images as $image) {
@@ -270,7 +275,15 @@ class MigrationCommand extends ContainerAwareCommand
             $entity->setServiceAreasType('locality');
 
             foreach ($localities as $item) {
-                $entity->addLocality($this->loadLocality($item));
+                $locality = $this->loadLocality($item);
+
+                $entity->addLocality($locality);
+
+                if ($locality->getNeighborhoods()) {
+                    foreach ($locality->getNeighborhoods() as $neighborhood) {
+                        $entity->addNeighborhood($neighborhood);
+                    }
+                }
             }
         } else {
             $entity->setMilesOfMyBusiness($radius);
@@ -494,6 +507,7 @@ class MigrationCommand extends ContainerAwareCommand
     {
         $className = 'Locality';
 
+        // todo - change to both languages search
         $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
 
         if (!$entity) {

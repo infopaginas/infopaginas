@@ -141,9 +141,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
-        if ($category = $searchParams->getCategory()) {
-            $categoryFilter = $this->splitPhraseToPlain($category);
-            $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
+        $category = $searchParams->getCategory();
+
+        if ($category) {
+            $this->addCategoryFilterToQueryBuilder($queryBuilder, $category);
         }
 
         $results = $queryBuilder->getQuery()->getResult();
@@ -159,7 +160,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      */
     public function countSearchResults(SearchDTO $searchParams)
     {
-        $searchQuery        = $this->splitPhraseToPlain($searchParams->query);
+        $searchQuery = $this->splitPhraseToPlain($searchParams->query);
 
         $queryBuilder = $this->getQueryBuilder();
 
@@ -167,9 +168,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
-        if ($category = $searchParams->getCategory()) {
-            $categoryFilter = $this->splitPhraseToPlain($category);
-            $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
+        $category = $searchParams->getCategory();
+
+        if ($category) {
+            $this->addCategoryFilterToQueryBuilder($queryBuilder, $category);
         }
 
         $results = $queryBuilder->getQuery()->getResult();
@@ -226,7 +228,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $this->addOrderByAreaRankQueryBuilder($queryBuilder);
 
         if ($categoryFilter) {
-            $categoryFilter = $this->splitPhraseToPlain($categoryFilter);
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
         }
 
@@ -322,12 +323,18 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $location = $searchParams->locationValue;
 
+        if ($location->locality) {
+            $localityId = $location->locality->getId();
+        } else {
+            $localityId = 0;
+        }
+
         $queryBuilder->andWhere($searchString)
             ->setParameter('userLatitude', $location->lat)
             ->setParameter('userLongitude', $location->lng)
             ->setParameter('serviceAreasTypeArea', BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE)
             ->setParameter('serviceAreasTypeLoc', BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE)
-            ->setParameter('localityId', $location->locality->getId())
+            ->setParameter('localityId', $localityId)
         ;
 
         return $queryBuilder;
@@ -414,8 +421,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     protected function addCategoryFilterToQueryBuilder(QueryBuilder $queryBuilder, $category)
     {
         return $queryBuilder
-            ->andWhere('TSQUERY( c.searchFts, :categoryFilter) = true')
-            ->setParameter('categoryFilter', $category)
+            ->andWhere('c.id = :categoryId')
+            ->setParameter('categoryId', $category)
         ;
     }
 
@@ -505,8 +512,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     private function getDistanceBetweenPointsSql()
     {
-        //todo - change constant to miles
-
         return '(' . GeolocationUtils::getEarthDiameterMiles() . ' * sin (
                 sqrt (
                     ( 1 - cos (

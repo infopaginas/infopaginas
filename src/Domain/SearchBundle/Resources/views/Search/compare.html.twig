@@ -56,6 +56,9 @@
     {{ parent() }}
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/bundles/domainsite/scripts/modules/searchpage.js")}}'], function(searchpage){
+                var searchPage = new searchpage;
+            })
             require(['{{asset("/bundles/domainsite/scripts/modules/comparepage.js")}}'], function(comparepage){
                 var comparePage = new comparepage;
             })

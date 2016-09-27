@@ -3,9 +3,9 @@
 </option>
 {% if results and results.categories is not empty %}
     {% for category in results.categories %}
-        {% set is_selected = searchData.category == category.getName() %}
-        <option data-route="{{ path(pageRouter, searchData|merge({'category': category.getName() })) }}"
-            {% if is_selected %}selected{% endif %} value="{{ category.getName() }}">
+        {% set is_selected = (searchData.category == category.id) %}
+        <option data-route="{{ path(pageRouter, searchData|merge({'category': category.id })) }}"
+            {% if is_selected %}selected{% endif %} value="{{ category.id }}">
             {{ category.getName() }}
         </option>
     {% endfor %}

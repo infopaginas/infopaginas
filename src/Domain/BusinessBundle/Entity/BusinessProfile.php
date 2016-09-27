@@ -765,11 +765,13 @@ class BusinessProfile implements
      */
     public function getWebsiteLink()
     {
-        if (preg_match('/^http/', $this->getWebsite())) {
+        $http = 'http';
+
+        if (preg_match('/^' . $http . '/', $this->getWebsite())) {
             return $this->getWebsite();
         }
 
-        return '//' . $this->getWebsite();
+        return $http . '://' . $this->getWebsite();
     }
 
     /**
