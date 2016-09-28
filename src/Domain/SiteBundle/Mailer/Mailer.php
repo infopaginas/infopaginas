@@ -171,14 +171,7 @@ class Mailer
 
         $subject = 'BUSINESS PROFILE REVIEW [' . $review->getBusinessProfile()->getName() . '] - Rejected';
 
-        $businessProfile = $review->getBusinessProfile();
-
-        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
-             : $businessProfile->getEmail();
-
-        if ($email !== null) {
-            $this->send($email, $subject, $message, $contentType);
-        }
+        $this->send($review->getUser()->getEmail(), $subject, $message, $contentType);
     }
 
     /**
