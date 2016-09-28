@@ -101,19 +101,19 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $businessProfile->setIsSetVideo(true);
             }
 
-            $post = $this->request->request->all()[$this->form->getName()];
-
-            //create new user entry for not-logged users
-            if (isset($post['firstname']) && isset($post['lastname'])) {
-                if (!empty($post['firstname']) && !empty($post['lastname'])) {
-                    $user = $this->getUsersManager()
-                        ->createMerchantForBusinessProfile($post['firstname'], $post['lastname'], $post['email']);
-
-                    $businessProfile->setUser($user);
-                }
-            }
-
             if ($this->form->isValid()) {
+                $post = $this->request->request->all()[$this->form->getName()];
+
+                //create new user entry for not-logged users
+                if (isset($post['firstname']) && isset($post['lastname'])) {
+                    if (!empty($post['firstname']) && !empty($post['lastname']) && !empty($post['email'])) {
+                        $user = $this->getUsersManager()
+                            ->createMerchantForBusinessProfile($post['firstname'], $post['lastname'], $post['email']);
+
+                        $businessProfile->setUser($user);
+                    }
+                }
+
                 $this->onSuccess($businessProfile);
                 return true;
             }

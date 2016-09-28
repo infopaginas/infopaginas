@@ -109,7 +109,12 @@ class Mailer
 
         $subject = 'BUSINESS PROFILE CREATE [' . $businessProfile->getName() . '] - Rejected';
 
-        $this->send($businessProfile->getUser()->getEmail(), $subject, $message, $contentType);
+        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
+            : $businessProfile->getEmail();
+
+        if ($email !== null) {
+            $this->send($email, $subject, $message, $contentType);
+        }
     }
 
     /**
@@ -125,7 +130,12 @@ class Mailer
 
         $subject = 'BUSINESS PROFILE UPDATE [' . $businessProfile->getName() . '] - Rejected';
 
-        $this->send($businessProfile->getUser()->getEmail(), $subject, $message, $contentType);
+        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
+            : $businessProfile->getEmail();
+
+        if ($email !== null) {
+            $this->send($email, $subject, $message, $contentType);
+        }
     }
 
     /**
@@ -141,7 +151,12 @@ class Mailer
 
         $subject = 'BUSINESS PROFILE CLOSE [' . $businessProfile->getName() . '] - Rejected';
 
-        $this->send($businessProfile->getUser()->getEmail(), $subject, $message, $contentType);
+        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
+            : $businessProfile->getEmail();
+
+        if ($email !== null) {
+            $this->send($email, $subject, $message, $contentType);
+        }
     }
 
     /**
@@ -156,7 +171,14 @@ class Mailer
 
         $subject = 'BUSINESS PROFILE REVIEW [' . $review->getBusinessProfile()->getName() . '] - Rejected';
 
-        $this->send($review->getBusinessProfile()->getUser()->getEmail(), $subject, $message, $contentType);
+        $businessProfile = $review->getBusinessProfile();
+
+        $email = $businessProfile->getUser() !== null ? $businessProfile->getUser()->getEmail()
+             : $businessProfile->getEmail();
+
+        if ($email !== null) {
+            $this->send($email, $subject, $message, $contentType);
+        }
     }
 
     /**

@@ -58,7 +58,7 @@ class BusinessReportExcelExporter
         ;
 
         $phpExcelObject->getActiveSheet()
-            ->setTitle($businessProfile->getName());
+            ->setTitle(substr($businessProfile->getName(), 0, 31));
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
