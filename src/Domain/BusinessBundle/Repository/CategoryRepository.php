@@ -18,12 +18,13 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
-    public function searchAutosuggest($name)
+    public function searchAutosuggest($name, string $locale)
     {
         $name    = $this->splitPhraseToPlain($name);
         $connection = $this->getEntityManager()->getConnection();
 
-        $searchSQL = $this->getSearchSQLQuery();
+        $searchSQL = $this->getSearchSQLQuery($locale);
+
         $statement = $connection->prepare(
             "SELECT
                 ts_headline(name, q) as data,
@@ -42,18 +43,18 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
         return $results;
     }
 
-    protected function getSearchSQLQuery()
+    protected function getSearchSQLQuery(string $locale)
     {
         return 'SELECT
                 c.id AS id,
-                c.name,
+                c.search_text_' . $locale . ' as name,
                 q,
-                ts_rank(c.search_fts, q) AS rank
+                ts_rank(c.search_fts_' . $locale . ', q) AS rank
             FROM
                 category c,
                 to_tsquery(:searchQuery) q
             WHERE
-                c.search_fts @@ q
+                c.search_fts_' . $locale . ' @@ q
             AND (
                 c.deleted_at IS NULL
             )

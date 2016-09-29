@@ -4,6 +4,9 @@ domain_search_index:
 domain_search_autocomplete:
     path:   /search/autocomplete
     defaults: { _controller: DomainSearchBundle:Search:autocomplete }
+    options:
+        expose: true
+
 domain_search_map:
     path:   /search/map
     defaults: { _controller: DomainSearchBundle:Search:map }

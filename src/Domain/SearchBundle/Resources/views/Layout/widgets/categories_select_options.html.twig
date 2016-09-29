@@ -1,4 +1,4 @@
-<option data-route="">
+<option data-route="{{ path(pageRouter, searchData|merge({'category': '' })) }}">
     {% trans %}Category{% endtrans %}
 </option>
 {% if results and results.categories is not empty %}

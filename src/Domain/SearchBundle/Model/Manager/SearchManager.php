@@ -78,17 +78,24 @@ class SearchManager extends Manager
 
         if (!$results) {
             // todo - change logic to 40 miles
-            $results  = $this->businessProfileManager->searchNeighborhood($searchParams);
+            $results  = [];
         }
 
-        $totalResults   = $this->businessProfileManager->countSearchResults($searchParams);
-        $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
+        if ($results) {
+            $totalResults   = $this->businessProfileManager->countSearchResults($searchParams);
+            $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
 
-        // get by current locality
+            // get by current locality
 
-        $neighborhoods  = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+            $neighborhoods  = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
 
-        $pagesCount     = ceil($totalResults/$searchParams->limit);
+            $pagesCount     = ceil($totalResults/$searchParams->limit);
+        } else {
+            $totalResults = 0;
+            $categories = [];
+            $neighborhoods = [];
+            $pagesCount = 0;
+        }
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,

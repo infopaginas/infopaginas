@@ -69,6 +69,9 @@ class BusinessProfileManager extends Manager
     /** @var ContainerInterface $container */
     private $container;
 
+    /** @var string */
+    private $locale;
+
     /**
      * Manager constructor.
      *
@@ -98,6 +101,10 @@ class BusinessProfileManager extends Manager
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
 
         $this->analytics = $container->get('google.analytics');
+
+        if ($container->isScopeActive('request')) {
+            $this->locale = ucwords($container->get('request')->getLocale());
+        }
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
@@ -114,8 +121,8 @@ class BusinessProfileManager extends Manager
 
     public function searchAutosuggestByPhraseAndLocation($query)
     {
-        $categories = $this->categoryManager->searchAutosuggestByName($query);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query);
+        $categories = $this->categoryManager->searchAutosuggestByName($query, $this->locale);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, $this->locale);
 
         $result = array_merge($categories, $businessProfiles);
 
@@ -124,7 +131,7 @@ class BusinessProfileManager extends Manager
 
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
-        if (empty($location)) {
+        if (!$location) {
             $location = self::DEFAULT_LOCALE_NAME;
         }
 
@@ -169,7 +176,7 @@ class BusinessProfileManager extends Manager
 
     public function search(SearchDTO $searchParams)
     {
-        $searchResultsData = $this->getRepository()->search($searchParams);
+        $searchResultsData = $this->getRepository()->search($searchParams, $this->locale);
         $searchResultsData = array_map(function ($item) {
             return $item[0]->setDistance($item['distance']);
         }, $searchResultsData);
@@ -177,21 +184,16 @@ class BusinessProfileManager extends Manager
         return $searchResultsData;
     }
 
-    public function searchNeighborhood(SearchDTO $searchParams)
-    {
-        return $this->getRepository()->searchNeighborhood($searchParams);
-    }
-
     /**
      * @param int $id
      * @param string $locale
      * @return null|object
      */
-    public function find(int $id, string $locale = 'en_US')
+    public function find(int $id, string $locale = 'en')
     {
         $business = $this->getRepository()->find($id);
 
-        if ($locale !== 'en_US') {
+        if ($locale !== 'en') {
             $this->getTranslatableListener()->setTranslatableLocale($locale);
             $this->getTranslatableListener()->setTranslationFallback('');
 
@@ -290,7 +292,7 @@ class BusinessProfileManager extends Manager
     }
 
 
-    public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet, $locale = 'en_US')
+    public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet, $locale = 'en')
     {
         $accessor = PropertyAccess::createPropertyAccessor();
 
@@ -503,7 +505,7 @@ class BusinessProfileManager extends Manager
      */
     public function countSearchResults(SearchDTO $searchParams)
     {
-        return $this->getRepository()->countSearchResults($searchParams);
+        return $this->getRepository()->countSearchResults($searchParams, $this->locale);
     }
 
     /**
