@@ -34,6 +34,10 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
             $object = new Category();
             $object->setName($value);
 
+            // set to both locales
+            $object->setSearchTextEn($value);
+            $object->setSearchTextEs($value);
+
             $this->manager->persist($object);
 
             // set reference to find this

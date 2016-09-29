@@ -76,4 +76,32 @@ class CategoryAdmin extends OxaAdmin
             ])
         ;
     }
+
+    public function preUpdate($entity)
+    {
+        $textEn = '';
+        $textEs = '';
+
+        if ($entity->getLocale() == 'en') {
+            $textEn = $entity->getName();
+
+            if (!$entity->getSearchTextEs()) {
+                $textEs = $entity->getName();
+            }
+        } else {
+            $textEs = $entity->getName();
+
+            if (!$entity->getSearchTextEn()) {
+                $textEn = $entity->getName();
+            }
+        }
+
+        if ($textEn) {
+            $entity->setSearchTextEn($textEn);
+        }
+
+        if ($textEs) {
+            $entity->setSearchTextEs($textEs);
+        }
+    }
 }

@@ -10,7 +10,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         this.options = {
             autoComplete : true,
             searchMenu : false,
-            autoCompleteUrl : '/search/autocomplete',
+            autoCompleteUrl : Routing.generate('domain_search_autocomplete'),
             autoCompleteMinLen : 1,
             searchBaseUrl : '/businesses',
             mediaWidth: 480,
@@ -69,7 +69,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
         if ( this.options.autoComplete ) {
             this.initAutocomplete( this.options.autoCompleteUrl );
         }
-        
+
         if ( this.options.searchMenu !== false ) {
             this.options.searchMenu.initQuickLinks( this.quickSearch.bind( this ) );
         }

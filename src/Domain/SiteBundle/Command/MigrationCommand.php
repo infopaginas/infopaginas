@@ -434,9 +434,15 @@ class MigrationCommand extends ContainerAwareCommand
         if ($this->localePrimary == 'en') {
             $valuePrimary = $pair[0];
             $valueSecondary = $pair[1];
+
+            $valueEn = $valuePrimary;
+            $valueEs = $valueSecondary;
         } else {
             $valuePrimary = $pair[1];
             $valueSecondary = $pair[0];
+
+            $valueEs = $valuePrimary;
+            $valueEn = $valueSecondary;
         }
 
         $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
@@ -444,6 +450,9 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity) {
             $entity = new Category();
             $entity->setName($valuePrimary);
+
+            $entity->setSearchTextEn($valueEn);
+            $entity->setSearchTextEs($valueEs);
 
             $entity = $this->saveEntity($entity);
 

@@ -109,7 +109,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      * @param SearchDTO $searchParams
      * @return array
      */
-    public function search(SearchDTO $searchParams)
+    public function search(SearchDTO $searchParams, string $locale)
     {
         if (!$searchParams->locationValue) {
             return null;
@@ -119,11 +119,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $limit  = $searchParams->limit;
         $offset = ($searchParams->page - 1) * $limit;
-
         $queryBuilder = $this->getQueryBuilder();
 
         $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
-        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery);
+        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery, $locale);
 
         $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
@@ -156,15 +155,16 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      * Counting search results
      *
      * @param SearchDTO $searchParams
+     * @param string $locale
      * @return int
      */
-    public function countSearchResults(SearchDTO $searchParams)
+    public function countSearchResults(SearchDTO $searchParams, string $locale)
     {
         $searchQuery = $this->splitPhraseToPlain($searchParams->query);
 
         $queryBuilder = $this->getQueryBuilder();
 
-        $this->addCountToSearchByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery);
+        $this->addCountToSearchByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $locale);
 
         $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
@@ -179,19 +179,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return count($results);
     }
 
-    public function searchNeighborhood(SearchDTO $searchParams)
-    {
-        return $this->search($searchParams);
-    }
-
-    public function searchAutosuggestWithBuilder($query, $limit = 5, $offset = 0)
+    public function searchAutosuggestWithBuilder($query, $locale, $limit = 5, $offset = 0)
     {
         $searchQuery = $this->splitPhraseToPlain($query);
 
         $queryBuilder = $this->getQueryBuilder()
             ->addSelect('bp.name');
 
-        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery);
+        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery, $locale);
         $this->addHeadlineToNameQueryBuilder($queryBuilder);
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
         $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
@@ -268,13 +263,17 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    protected function addSearchbByCategoryAndNameQueryBuilder(QueryBuilder $queryBuilder, string $searchQuery) {
+    protected function addSearchbByCategoryAndNameQueryBuilder(
+        QueryBuilder $queryBuilder,
+        string $searchQuery,
+        string $locale
+    ) {
         return $queryBuilder
             ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
             ->join('bp.categories', 'c')
-            ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
+            ->addSelect('MAX(TSRANK(c.searchFts' . $locale . ', :searchQuery)) as rank_c')
             ->andWhere('(
-                TSQUERY( c.searchFts, :searchQuery) = true
+                TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true
                 OR
                 TSQUERY( bp.searchFts, :searchQuery) = true
             )')
@@ -284,13 +283,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
     protected function addCountToSearchByCategoryAndNameWithingAreaQueryBuilder(
         QueryBuilder &$queryBuilder,
-        $searchQuery
+        string $searchQuery,
+        string $locale
     ) {
         return $queryBuilder
             ->select('count(bp.id) as rows')
             ->join('bp.categories', 'c')
             ->andWhere('(
-                TSQUERY( c.searchFts, :searchQuery) = true
+                TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true
                 OR
                 TSQUERY( bp.searchFts, :searchQuery) = true
             )')
@@ -343,12 +343,12 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    protected function addCategoryRankQueryBuilder(QueryBuilder $queryBuilder)
+    protected function addCategoryRankQueryBuilder(QueryBuilder $queryBuilder, string $locale)
     {
         return $queryBuilder
             ->join('bp.categories', 'c')
-            ->addSelect('MAX(TSRANK(c.searchFts, :searchQuery)) as rank_c')
-            ->orWhere('TSQUERY( c.searchFts, :searchQuery) = true')
+            ->addSelect('MAX(TSRANK(c.searchFts' . $locale . ', :searchQuery)) as rank_c')
+            ->orWhere('TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true')
             ->andWhere('TSQUERY( loc.searchFts, :searchLocation) = true')
         ;
     }
