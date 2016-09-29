@@ -77,7 +77,17 @@ class CategoryAdmin extends OxaAdmin
         ;
     }
 
+    public function prePersist($entity)
+    {
+        $this->preSave($entity);
+    }
+
     public function preUpdate($entity)
+    {
+        $this->preSave($entity);
+    }
+
+    private function preSave($entity)
     {
         $textEn = '';
         $textEs = '';

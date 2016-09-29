@@ -250,7 +250,6 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setGoogleURL($profile->google_plus_url);
         $entity->setYoutubeURL($profile->yt_url);
 
-#        $entity->setSearchFts(?);
 #        $entity->setActualBusinessProfile(?);
 
         // process assigned items
@@ -396,6 +395,28 @@ class MigrationCommand extends ContainerAwareCommand
 
         $entity->setSeoTitle($seoTitle);
         $entity->setSeoDescription($name);
+
+        // set translation vectors
+
+        if ($this->localePrimary == 'en') {
+            $nameEn = $itemPrimary->business->name;
+            $nameEs = $itemSecond->business->name;
+
+            $descriptionEn = $profile->description;
+            $descriptionEs = $profileSecond->description;
+        } else {
+            $nameEs = $itemPrimary->business->name;
+            $nameEn = $itemSecond->business->name;
+
+            $descriptionEs = $profile->description;
+            $descriptionEn = $profileSecond->description;
+        }
+
+        $entity->setNameEn($nameEn);
+        $entity->setNameEs($nameEs);
+
+        $entity->setDescriptionEn($descriptionEn);
+        $entity->setDescriptionEs($descriptionEs);
 
         $entity = $this->saveEntity($entity);
 

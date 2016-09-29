@@ -537,4 +537,65 @@ class BusinessProfileAdmin extends OxaAdmin
 
         return $query;
     }
+
+    public function prePersist($entity)
+    {
+        $this->preSave($entity);
+    }
+
+    public function preUpdate($entity)
+    {
+        $this->preSave($entity);
+    }
+
+    private function preSave($entity)
+    {
+        $nameEn = '';
+        $nameEs = '';
+
+        $descEn = '';
+        $descEs = '';
+
+        if ($entity->getLocale() == 'en') {
+            $nameEn = $entity->getName();
+
+            if (!$entity->getNameEs()) {
+                $nameEs = $entity->getName();
+            }
+
+            $descEn = $entity->getDescription();
+
+            if ($descEn and !$entity->getDescriptionEs()) {
+                $descEs = $descEn;
+            }
+        } else {
+            $nameEs = $entity->getName();
+
+            if (!$entity->getNameEn()) {
+                $nameEn = $entity->getName();
+            }
+
+            $descEs = $entity->getDescription();
+
+            if ($descEs and !$entity->getDescriptionEn()) {
+                $descEn = $descEs;
+            }
+        }
+
+        if ($nameEn) {
+            $entity->setNameEn($nameEn);
+        }
+
+        if ($nameEs) {
+            $entity->setNameEs($nameEs);
+        }
+
+        if ($descEn) {
+            $entity->setDescriptionEn($descEn);
+        }
+
+        if ($descEs) {
+            $entity->setDescriptionEs($descEs);
+        }
+    }
 }
