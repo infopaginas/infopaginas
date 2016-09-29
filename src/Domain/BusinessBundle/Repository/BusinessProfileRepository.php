@@ -196,40 +196,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
-    public function searchWithQueryBuilder(
-        $searchQuery,
-        $location,
-        $categoryFilter = null,
-        $neighborhoodFilter = null,
-        $limit = 20,
-        $offset = 0
-    ) {
-        $searchQuery    = $this->splitPhraseToPlain($searchQuery);
-        $searchLocation = $this->splitPhraseToPlain($location);
-
-        $queryBuilder = $this->getQueryBuilder();
-
-        $this->addSearchbByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $searchLocation);
-
-        $this->addAreaRankQueryBuilder($queryBuilder, $searchLocation);
-
-        $this->addCityRankQueryBuilder($queryBuilder);
-
-        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
-        $this->addOrderByCategoryRankQueryBuilder($queryBuilder);
-        $this->addOrderByRankQueryBuilder($queryBuilder);
-        $this->addOrderByCityRankQueryBuilder($queryBuilder);
-        $this->addOrderByAreaRankQueryBuilder($queryBuilder);
-
-        if ($categoryFilter) {
-            $this->addCategoryFilterToQueryBuilder($queryBuilder, $categoryFilter);
-        }
-
-        $results = $queryBuilder->getQuery()->getResult();
-
-        return $results;
-    }
-
     protected function splitPhraseToPlain(string $phrase)
     {
         $words = explode(' ', $phrase);
@@ -269,13 +235,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         string $locale
     ) {
         return $queryBuilder
-            ->addSelect('TSRANK(bp.searchFts, :searchQuery) as rank')
+            ->addSelect('TSRANK(bp.searchFts' . $locale . ', :searchQuery) as rank')
             ->join('bp.categories', 'c')
             ->addSelect('MAX(TSRANK(c.searchFts' . $locale . ', :searchQuery)) as rank_c')
             ->andWhere('(
                 TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true
                 OR
-                TSQUERY( bp.searchFts, :searchQuery) = true
+                TSQUERY( bp.searchFts' . $locale . ', :searchQuery) = true
             )')
             ->setParameter('searchQuery', $searchQuery)
         ;
@@ -292,7 +258,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('(
                 TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true
                 OR
-                TSQUERY( bp.searchFts, :searchQuery) = true
+                TSQUERY( bp.searchFts' . $locale . ', :searchQuery) = true
             )')
             ->setParameter('searchQuery', $searchQuery)
         ;
@@ -350,16 +316,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('MAX(TSRANK(c.searchFts' . $locale . ', :searchQuery)) as rank_c')
             ->orWhere('TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true')
             ->andWhere('TSQUERY( loc.searchFts, :searchLocation) = true')
-        ;
-    }
-
-    protected function addAreaRankQueryBuilder(QueryBuilder $queryBuilder, $location)
-    {
-        return $queryBuilder
-            ->join('bp.localities', 'loc')
-            ->addSelect('MAX(TSRANK(a.searchFts, :searchLocation)) as rank_a')
-            ->orWhere('TSQUERY( loc.searchFts, :searchLocation) = true')
-            ->setParameter('searchLocation', $location)
         ;
     }
 

@@ -78,6 +78,20 @@ class BusinessProfile implements
     protected $name;
 
     /**
+     * @var string - Business name en
+     *
+     * @ORM\Column(name="name_en", type="string", length=255, nullable=true)
+     */
+    protected $nameEn;
+
+    /**
+     * @var string - Business name es
+     *
+     * @ORM\Column(name="name_es", type="string", length=255, nullable=true)
+     */
+    protected $nameEs;
+
+    /**
      * @var User - Business owner
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\UserBundle\Entity\User",
      *     inversedBy="businessProfiles",
@@ -211,6 +225,20 @@ class BusinessProfile implements
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $description;
+
+    /**
+     * @var string - Description of Business en
+     *
+     * @ORM\Column(name="description_en", type="text", length=1000, nullable=true)
+     */
+    protected $descriptionEn;
+
+    /**
+     * @var string - Description of Business es
+     *
+     * @ORM\Column(name="description_es", type="text", length=1000, nullable=true)
+     */
+    protected $descriptionEs;
 
     /**
      * @var string - Products of Business
@@ -563,31 +591,32 @@ class BusinessProfile implements
      /**
      * @var string
      *
-     * @ORM\Column(name="search_fts", type="tsvector", options={
+     * @ORM\Column(name="search_fts_en", type="tsvector", options={
      *      "customSchemaOptions": {
      *          "searchFields" : {
-     *              "name",
-     *              "description"
+     *              "nameEn",
+     *              "descriptionEn"
      *          }
      *      }
      *  }, nullable=true)
      *
      */
-    protected $searchFts;
+    protected $searchFtsEn;
 
-    /**
+     /**
      * @var string
      *
-     * @ORM\Column(name="search_name_fts", type="tsvector", options={
+     * @ORM\Column(name="search_fts_es", type="tsvector", options={
      *      "customSchemaOptions": {
      *          "searchFields" : {
-     *              "name"
+     *              "nameEs",
+     *              "descriptionEs"
      *          }
      *      }
      *  }, nullable=true)
      *
      */
-    protected $searchNameFts;
+    protected $searchFtsEs;
 
     /**
      * @var string
@@ -735,6 +764,54 @@ class BusinessProfile implements
     }
 
     /**
+     * Set nameEn
+     *
+     * @param string $nameEn
+     *
+     * @return BusinessProfile
+     */
+    public function setNameEn($nameEn)
+    {
+        $this->nameEn = $nameEn;
+
+        return $this;
+    }
+
+    /**
+     * Get nameEn
+     *
+     * @return string
+     */
+    public function getNameEn()
+    {
+        return $this->nameEn;
+    }
+
+    /**
+     * Set nameEs
+     *
+     * @param string $nameEs
+     *
+     * @return BusinessProfile
+     */
+    public function setNameEs($nameEs)
+    {
+        $this->nameEs = $nameEs;
+
+        return $this;
+    }
+
+    /**
+     * Get nameEs
+     *
+     * @return string
+     */
+    public function getNameEs()
+    {
+        return $this->nameEs;
+    }
+
+    /**
      * Set website
      *
      * @param string $website
@@ -868,6 +945,54 @@ class BusinessProfile implements
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set descriptionEn
+     *
+     * @param string $descriptionEn
+     *
+     * @return BusinessProfile
+     */
+    public function setDescriptionEn($descriptionEn)
+    {
+        $this->descriptionEn = $descriptionEn;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionEn
+     *
+     * @return string
+     */
+    public function getDescriptionEn()
+    {
+        return $this->descriptionEn;
+    }
+
+    /**
+     * Set descriptionEs
+     *
+     * @param string $descriptionEs
+     *
+     * @return BusinessProfile
+     */
+    public function setDescriptionEs($descriptionEs)
+    {
+        $this->descriptionEs = $descriptionEs;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionEs
+     *
+     * @return string
+     */
+    public function getDescriptionEs()
+    {
+        return $this->descriptionEs;
     }
 
     /**
@@ -1904,49 +2029,49 @@ class BusinessProfile implements
     }
 
      /**
-     * Set searchFts
+     * Set searchFtsEn
      *
-     * @param tsvector $searchFts
+     * @param tsvector $searchFtsEn
      *
      * @return BusinessProfile
      */
-    public function setSearchFts($searchFts)
+    public function setSearchFtsEn($searchFtsEn)
     {
-        $this->searchFts = $searchFts;
+        $this->searchFtsEn = $searchFtsEn;
         return $this;
     }
 
     /*
-    * Get searchFts
+    * Get searchFtsEn
     *
     * @return tsvector
     */
-    public function getSearchFts()
+    public function getSearchFtsEn()
     {
-        return $this->searchFts;
+        return $this->searchFtsEn;
     }
 
-    /**
-     * Set searchNameFts
+     /**
+     * Set searchFtsEs
      *
-     * @param tsvector $searchNameFts
+     * @param tsvector $searchFtsEs
      *
      * @return BusinessProfile
      */
-    public function setSearchNameFts($searchNameFts)
+    public function setSearchFtsEs($searchFtsEs)
     {
-        $this->searchNameFts = $searchNameFts;
+        $this->searchFtsEs = $searchFtsEs;
         return $this;
     }
 
-    /**
-     * Get searchNameFts
-     *
-     * @return tsvector
-     */
-    public function getSearchNameFts()
+    /*
+    * Get searchFtsEs
+    *
+    * @return tsvector
+    */
+    public function getSearchFtsEs()
     {
-        return $this->searchNameFts;
+        return $this->searchFtsEs;
     }
 
     /**
