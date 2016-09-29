@@ -93,12 +93,20 @@ class DatesUtil
         return $date;
     }
 
-    public static function getDateAsArrayFromRequestData(array $requestData)
+    public static function getDateAsDateRangeVOFromRequestData(array $requestData, string $dateFormat)
     {
-        $date['start'] = \DateTime::createFromFormat('Y-m-d', $requestData['start'])
+        $start = \DateTime::createFromFormat($dateFormat, $requestData['start']);
+        $end = \DateTime::createFromFormat($dateFormat, $requestData['end']);
+
+        return new DateRangeVO($start, $end);
+    }
+
+    public static function getDateAsArrayFromRequestData(array $requestData, string $format = 'Y-m-d')
+    {
+        $date['start'] = \DateTime::createFromFormat($format, $requestData['start'])
             ->format(self::START_END_DATE_ARRAY_FORMAT);
 
-        $date['end']   = \DateTime::createFromFormat('Y-m-d', $requestData['end'])
+        $date['end']   = \DateTime::createFromFormat($format, $requestData['end'])
             ->format(self::START_END_DATE_ARRAY_FORMAT);
 
         return $date;
@@ -123,7 +131,7 @@ class DatesUtil
      * @return array
      */
     public static function dateRange(
-        ReportDatesRangeVO $rangeVO,
+        $rangeVO,
         string $step = '+1 day',
         string $outputFormat = 'd.m.Y'
     ) : array {

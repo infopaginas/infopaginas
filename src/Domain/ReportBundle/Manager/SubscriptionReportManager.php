@@ -31,19 +31,30 @@ class SubscriptionReportManager extends BaseReportManager
      * @param SubscriptionReport[] $subscriptionReports
      * @return array|\Domain\BusinessBundle\Entity\SubscriptionPlan[]
      */
-    public function getSubscriptionsQuantities(array $subscriptionReports)
+    public function getSubscriptionsQuantities(array $subscriptionReports, $dates = [], $subscriptionPlans)
     {
         $result = [
-            'dates' => [],
+            'dates' => $dates,
             'subscription_quantities' => [],
             'subscription_total_quantities' => [],
             'total_quantity' => 0,
         ];
 
         $request = $this->container->get('request');
+
+        foreach ($dates as $date) {
+            foreach ($subscriptionPlans as $plan) {
+                $code = $plan->getCode();
+                $subscriptionName = $plan->getTranslation('name', $request->getLocale());
+
+                $result['subscription_quantities'][$code]['quantities'][] = 0;
+                $result['subscription_quantities'][$code]['name'] = $subscriptionName;
+            }
+        }
+
         foreach ($subscriptionReports as $subscriptionReport) {
             $date = $subscriptionReport->getDate()->format(AdminHelper::DATE_FORMAT);
-            $result['dates'][] = $date;
+
             foreach ($subscriptionReport->getSubscriptionReportSubscriptions() as $subscriptionReportSubscription) {
                 /** @var SubscriptionReportSubscription $subscriptionReportSubscription*/
                 $code = $subscriptionReportSubscription->getSubscriptionPlan()->getCode();
@@ -53,8 +64,14 @@ class SubscriptionReportManager extends BaseReportManager
                     ->getSubscriptionPlan()
                     ->getTranslation('name', $request->getLocale());
 
-                $result['subscription_quantities'][$code]['quantities'][] = $subscriptionQuantity;
-                $result['subscription_quantities'][$code]['name'] = $subscriptionName;
+                $position = array_search($date, $result['dates']);
+
+                if ($position !== false) {
+                    $result['subscription_quantities'][$code]['quantities'][$position] += $subscriptionQuantity;
+                    $result['subscription_quantities'][$code]['name'] = $subscriptionName;
+                } else {
+                    $subscriptionQuantity = 0;
+                }
 
                 if (isset($result['subscription_total_quantities'][$code])) {
                     $result['subscription_total_quantities'][$code]['quantity'] += $subscriptionQuantity;
@@ -66,6 +83,8 @@ class SubscriptionReportManager extends BaseReportManager
                 $result['total_quantity'] += $subscriptionQuantity;
             }
         }
+
+        ksort($result['subscription_total_quantities']);
 
         return $result;
     }
@@ -94,6 +113,7 @@ class SubscriptionReportManager extends BaseReportManager
         }
 
         $date = new \DateTime('today');
+
         $subscriptionReport = new SubscriptionReport();
         $subscriptionReport->setDate($date);
 
