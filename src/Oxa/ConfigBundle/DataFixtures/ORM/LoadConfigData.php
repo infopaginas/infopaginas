@@ -81,6 +81,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'html',
                 'description' => 'Registration mail template',
             ],[
+                'key' => ConfigInterface::MAIL_NEW_MERCHANT_TEMPLATE,
+                'title' => 'New merchant mail template',
+                'value' => $this->container->get('templating')->render(
+                    'OxaConfigBundle:Fixtures:mail_new_merchant_template.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'New merchant mail template',
+            ],[
                 'key' => ConfigInterface::MAIL_RESET_PASSWORD_TEMPLATE,
                 'title' => 'Reset password mail template',
                 'value' => $this->container->get('templating')->render(
@@ -97,6 +105,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'format' => 'html',
                 'description' => 'User mail template',
             ], [
+                'key' => ConfigInterface::MAIL_CHANGE_WAS_REJECTED,
+                'title' => 'User mail template',
+                'value' => $this->container->get('templating')->render(
+                    'OxaConfigBundle:Fixtures:mail_change_was_rejected.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Change was rejected message',
+            ],  [
                 'key' => ConfigInterface::SOCIAL_FACEBOOK_PROFILE,
                 'title' => 'Social Facebook profile',
                 'value' => 'https://www.facebook.com/',
@@ -135,13 +151,13 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE,
                 'title' => 'Default map latitude parameter',
-                'value' => '18.4248008',
+                'value' => '18.446344',
                 'format' => 'text',
                 'description' => 'Used to show default map position',
             ], [
                 'key' => ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE,
                 'title' => 'Default map longitude parameter',
-                'value' => '-66.1185967',
+                'value' => '-66.07558',
                 'format' => 'text',
                 'description' => 'Used to show default map position',
             ], [

@@ -7,13 +7,7 @@ services:
     domain_business.manager.business_profile:
         class: Domain\BusinessBundle\Manager\BusinessProfileManager
         arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@domain_business.manager.category'
-            - '@security.token_storage'
-            - '@sonata_translation.listener.translatable'
-            - '@form.factory'
-            - '@oxa.manager.wistia_media'
-            - '@google.analytics'
+            - '@service_container'
 
     domain_business.manager.tasks:
         class: Domain\BusinessBundle\Manager\TasksManager
@@ -22,6 +16,7 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.review'
             - '@oxa.manager.users'
+            - '@domain_site.mailer'
 
     domain_business.manager.business_gallery:
         class: Domain\BusinessBundle\Manager\BusinessGalleryManager
@@ -64,6 +59,14 @@ services:
             - [ setTranslator, [ '@translator' ] ]
             - [ setBusinessProfileForm, [ '@domain_business.form.business_profile' ] ]
 
+    domain_business.twig_extension.report:
+        class: Domain\BusinessBundle\Twig\Extension\ReportExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+        calls:
+            - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ] ]
+
     #form types section
     domain_business.form.type.google_map:
         class: Domain\BusinessBundle\Form\Type\GoogleMapType
@@ -88,6 +91,8 @@ services:
         arguments: [null]
         tags:
             - { name: form.type, alias: domain_business_bundle_business_profile_form_type }
+        calls:
+            - [ setCurrentUser, [ '@session' ] ]
 
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
@@ -142,6 +147,8 @@ services:
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
             - '@validator'
+            - '@security.token_storage'
+            - '@oxa.manager.users'
 
     domain_business.form.handler.review:
         class: Domain\BusinessBundle\Form\Handler\ReviewFormHandler

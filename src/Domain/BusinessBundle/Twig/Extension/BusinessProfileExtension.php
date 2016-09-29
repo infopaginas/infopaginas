@@ -8,14 +8,11 @@
 
 namespace Domain\BusinessBundle\Twig\Extension;
 
-use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
-use Gedmo\Translatable\TranslatableListener;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -80,6 +77,7 @@ class BusinessProfileExtension extends \Twig_Extension
             'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
+            'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
         ];
     }
 
@@ -180,6 +178,24 @@ class BusinessProfileExtension extends \Twig_Extension
     public function normalizeTaskFieldNameLabel(string $field)
     {
         return NormalizerUtil::normalizeTaskFieldNameLabel($field, $this->form);
+    }
+
+    public function videoSectionAllowedForBusiness(BusinessProfile $businessProfile) : bool
+    {
+        if (!$businessProfile) {
+            return false;
+        }
+
+        $subscription = $businessProfile->getSubscriptionPlan();
+
+        if ($subscription) {
+
+            if ($subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

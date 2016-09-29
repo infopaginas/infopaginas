@@ -28,7 +28,6 @@ class VideoManager
     public function fetchHomepageVideos()
     {
         $videos = $this->getRepository()->getHomepageVideos(self::VIDEOS_HOMEPAGE_LIMIT);
-
         return $videos;
     }
 

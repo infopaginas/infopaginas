@@ -1,0 +1,40 @@
+{% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
+
+{% block sonata_tab_content %}
+    {{ parent() }}
+
+    {% if 'ROLE_MERCHANT' in admin.form.viewData.getRoles() %}
+        <div class="col-md-12">
+            <div class="col-md-12 col-md-6">
+                <div class="box box-success">
+                    <div class="box-header">
+                        <h4 class="box-title">
+                            Business Profiles
+                        </h4>
+                    </div>
+                    <div class="box-body">
+                        <div class="sonata-ba-collapsed-fields">
+                            {% set businessProfiles = admin.form.viewData.getBusinessProfiles() %}
+
+                            {% if businessProfiles|length > 0 %}
+                                <ul>
+                                    {% for businessProfile in businessProfiles %}
+                                        <li>
+                                            <a href="{{ path('domain_business_profile_view', { 'citySlug' : businessProfile.citySlug, slug: businessProfile.getSlug() }) }}" target="_blank">
+                                                {{ businessProfile.getName() }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <div class="callout callout-info">
+                                    {{ 'no_result'|trans({}, 'SonataAdminBundle') }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

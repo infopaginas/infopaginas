@@ -6,9 +6,9 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class CategoryManager extends Manager
 {
-    public function searchAutosuggestByName($name)
+    public function searchAutosuggestByName(string $name, string $locale)
     {
-        return $this->getRepository()->searchAutosuggest($name);
+        return $this->getRepository()->searchAutosuggest($name, $locale);
     }
 
     public function getCategoriesByProfiles(array $profileList)

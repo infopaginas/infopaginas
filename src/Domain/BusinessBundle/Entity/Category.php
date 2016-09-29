@@ -49,6 +49,20 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="search_text_en", type="string", length=100, nullable=true)
+     */
+    protected $searchTextEn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="search_text_es", type="string", length=100, nullable=true)
+     */
+    protected $searchTextEs;
+
+    /**
      * @var BusinessProfile[]
      *
      * @ORM\ManyToMany(
@@ -96,16 +110,30 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     /**
      * @var string
      *
-     * @ORM\Column(name="search_fts", type="tsvector", options={
+     * @ORM\Column(name="search_fts_en", type="tsvector", options={
      *      "customSchemaOptions": {
      *          "searchFields" : {
-     *              "name"
+     *              "searchTextEn"
      *          }
      *      }
      *  }, nullable=true)
      *
      */
-    protected $searchFts;
+    protected $searchFtsEn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="search_fts_es", type="tsvector", options={
+     *      "customSchemaOptions": {
+     *          "searchFields" : {
+     *              "searchTextEs"
+     *          }
+     *      }
+     *  }, nullable=true)
+     *
+     */
+    protected $searchFtsEs;
 
     /**
      * @Gedmo\Locale
@@ -172,6 +200,54 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set searchTextEn
+     *
+     * @param string $searchTextEn
+     *
+     * @return Category
+     */
+    public function setSearchTextEn($searchTextEn)
+    {
+        $this->searchTextEn = $searchTextEn;
+
+        return $this;
+    }
+
+    /**
+     * Get searchTextEn
+     *
+     * @return string
+     */
+    public function getSearchTextEn()
+    {
+        return $this->searchTextEn;
+    }
+
+    /**
+     * Set searchTextEs
+     *
+     * @param string $searchTextEs
+     *
+     * @return Category
+     */
+    public function setSearchTextEs($searchTextEs)
+    {
+        $this->searchTextEs = $searchTextEs;
+
+        return $this;
+    }
+
+    /**
+     * Get searchTextEs
+     *
+     * @return string
+     */
+    public function getSearchTextEs()
+    {
+        return $this->searchTextEs;
     }
 
     /**
@@ -316,26 +392,50 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     }
 
     /**
-     * Set searchFts
+     * Set searchFtsEn
      *
-     * @param tsvector $searchFts
+     * @param tsvector $searchFtsEn
      *
      * @return Category
      */
-    public function setSearchFts($searchFts)
+    public function setSearchFtsEn($searchFtsEn)
     {
-        $this->searchFts = $searchFts;
+        $this->searchFtsEn = $searchFtsEn;
 
         return $this;
     }
 
     /**
-     * Get searchFts
+     * Get searchFtsEn
      *
      * @return tsvector
      */
-    public function getSearchFts()
+    public function getSearchFtsEn()
     {
-        return $this->searchFts;
+        return $this->searchFtsEn;
+    }
+
+    /**
+     * Set searchFtsEs
+     *
+     * @param tsvector $searchFtsEs
+     *
+     * @return Category
+     */
+    public function setSearchFtsEs($searchFtsEs)
+    {
+        $this->searchFtsEs = $searchFtsEs;
+
+        return $this;
+    }
+
+    /**
+     * Get searchFtsEs
+     *
+     * @return tsvector
+     */
+    public function getSearchFtsEs()
+    {
+        return $this->searchFtsEs;
     }
 }

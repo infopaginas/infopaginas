@@ -18,7 +18,7 @@ class SearchDataUtil
         int $page,
         int $pageCount,
         array $categories,
-        array $neighborhoods
+        $neighborhoods
     ) : SearchResultsDTO {
         return new SearchResultsDTO($resutlSet, $totalCount, $page, $pageCount, $categories, $neighborhoods);
     }
@@ -46,11 +46,6 @@ class SearchDataUtil
     public static function getNeighborhoodFromRequest(Request $request)
     {
         return $request->get('neighborhood', null);
-    }
-
-    public static function extractNeigborhoods($neighborhoods)
-    {
-        return array_column($neighborhoods, 0);
     }
 
     public static function getOrderByFromRequest(Request $request)

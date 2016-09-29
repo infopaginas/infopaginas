@@ -10,47 +10,64 @@ use Doctrine\ORM\EntityManager;
 use Oxa\ConfigBundle\Service\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
+use Domain\BusinessBundle\Manager\LocalityManager;
 
 class GeolocationManager extends Manager
 {
     protected $confingService;
 
-    public function __construct(EntityManager $em, Config $confingService)
+    public function __construct(EntityManager $em, Config $confingService, LocalityManager $localityManager)
     {
         parent::__construct($em);
 
         $this->confingService = $confingService;
+        $this->localityManager = $localityManager;
     }
 
-    public function buildLocationValue(string $name, $lat = null, $lng = null, $zip = null)
+    public function buildLocationValue(string $name, $lat = null, $lng = null, $locality = null)
     {
-        return new LocationValueObject($name, $lat, $lng, $zip);
+        return new LocationValueObject($name, $lat, $lng, $locality);
     }
 
     public function buildLocationValueFromRequest(Request $request)
     {
-        $defaultLat = $this->confingService->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
-        $defaultLng = $this->confingService->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
+        $geo    = $request->get('geo', null);
+        $geoLoc = $request->get('geoLoc', null);
 
-        $lat    = $request->cookies->get('lat', $defaultLat);
-        $lng    = $request->cookies->get('lng', $defaultLng);
+        $lat        = null;
+        $lat        = null;
+        $locality   = null;
 
-        $name   = $request->get('geo', null);
-        $zip    = null;
+        if ($geo) {
+            // get locality by name and locale
 
-        if (!empty($name) && is_numeric($name)) {
-            $zip = $name;
-            $name = null;
+            $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
+
+            // check is custom geo request not from geolocation - use coordinates
+            if ($geoLoc == $geo) {
+                $lat = $request->get('lat', null);
+                $lng = $request->get('lng', null);
+            }
+        } else {
+            // empty search - show default
+
+            $locality = $this->localityManager->getLocalityByNameAndLocale(
+                $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY),
+                $request->getLocale()
+            );
         }
 
-        if (!$name && $lat && $lng) {
-            $name = GeolocationUtils::filterResults(GeolocationUtils::getCityByGeolocation($lat, $lng));
+        if ($locality and !$lat) {
+            $lat = $locality->getLatitude();
+            $lng = $locality->getLongitude();
         }
 
-        if (!$name) {
-            $name = $this->confingService->getSetting(ConfigInterface::DEFAULT_SEARCH_CITY)->getValue();
+        if ($lat and $lng) {
+            $return = $this->buildLocationValue($geo, $lat, $lng, $locality);
+        } else {
+            $return = null;
         }
 
-        return $this->buildLocationValue($name, $lat, $lng, $zip);
+        return $return;
     }
 }

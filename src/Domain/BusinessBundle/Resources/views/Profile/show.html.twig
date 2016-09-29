@@ -53,9 +53,9 @@
                                 <ul class="company-info">
                                     {% if businessProfile.getWebsite() %}
                                         <li>
-                                            <a class="businessProfileWebsiteLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getWebsite() }}">
+                                            <a class="businessProfileWebsiteLink" data-id="{{ businessProfile.getId() }}" target="_blank" href="{{ businessProfile.getWebsiteLink() }}">
                                                 <i class="fa fa-home" aria-hidden="true"></i>
-                                                <span>{{ businessProfile.getWebsite() }}</span>
+                                                <span>{{ businessProfile.getWebsiteLink() }}</span>
                                             </a>
                                         </li>
                                     {% endif %}
@@ -232,7 +232,7 @@
                                             {% set media = coupon.getImage() %}
                                             <p>
                                                 {{ coupon.title }}
-                                                
+
                                                 <a href="{% path media, 'reference' %}" class="green-btn btn print-btn coupon">
                                                     <i class="fa fa-print" aria-hidden="true"></i>
                                                     <span>{% trans %}Print{% endtrans %}</span>
@@ -326,7 +326,7 @@
                             </div>
                         {% endif %}
 
-                        {% if media_tab_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
+                        {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <div class="card-item video-block" id="video">
                                 <div class="col-xs-3 fields-item">
                                     <span>
@@ -365,11 +365,9 @@
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             requirejs([
-                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}',
-                '{{asset("/bundles/domainreport/js/modules/interactions.js")}}'
+                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'
             ], function(businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
-                var interactionsReport = new interactionsReport();
             })
         })
     </script>

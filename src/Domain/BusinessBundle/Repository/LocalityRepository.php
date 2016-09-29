@@ -19,68 +19,18 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
-    public function getNeighborhoodToLocalityByName(string $name)
+    public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
-        $queryBuilder = $this->getQueryBuilder();
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('l')
+            ->from('DomainBusinessBundle:Locality', 'l')
+            ->leftJoin('l.translations', 't')
+            ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
+            ->setParameter('name', strtolower($localityName))
+            ->setParameter('locale', $locale)
+            ->getQuery()
+            ->getOneOrNullResult();
 
-        $this->getLatLngByNameQueryBuilder($queryBuilder, $name);
-
-        $results = $queryBuilder->getQuery()->getResult();
-        if (empty($results)) {
-            return array();
-        } else {
-            $results = $results[0];
-        }
-
-        $queryBuilderForList = $this->getQueryBuilder();
-
-        $this->getNeighborhoodLocalitiesWithDistanceByLatLng($queryBuilderForList, $results['lat'], $results['lng']);
-
-        $resultList = $queryBuilderForList->getQuery()->getResult();
-
-        return $resultList;
-    }
-
-    protected function getQueryBuilder()
-    {
-        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
-
-        $queryBuilder->select('l')
-        ->from('DomainBusinessBundle:Locality', 'l');
-
-        return $queryBuilder;
-    }
-
-    protected function getLatLngByNameQueryBuilder(QueryBuilder &$queryBuilder, string $name)
-    {
-        return $queryBuilder
-            ->select('l.latitude lat, l.longitude lng')
-            ->where('l.name = :name')
-            ->setParameter('name', $name);
-    }
-
-    protected function getNeighborhoodLocalitiesWithDistanceByLatLng(QueryBuilder &$queryBuilder, $lat, $lng)
-    {
-        return $queryBuilder
-            ->addSelect('(:earthDiameter * sin (
-                sqrt (
-                    ( 1 - cos (
-                        (l.latitude - :currentLat) * PI()/180
-                        )
-                    ) / 2
-                    +
-                    cos (:currentLat * PI()/180)
-                    *
-                    cos (l.latitude * PI()/180)
-                    *
-                    ( 1 - cos( ( l.longitude - :currentLng ) * PI()/180 ) ) / 2
-                )
-            )) AS distance')
-            ->setParameter('currentLat', $lat)
-            ->setParameter('currentLng', $lng)
-            ->setParameter('earthDiameter', GeolocationUtils::getEarthDiameterKm())
-            ->orderBy('distance', 'ASC')
-            ->setMaxResults(10)
-            ->setFirstResult(1);
+        return $query;
     }
 }

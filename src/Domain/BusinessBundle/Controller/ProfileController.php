@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -18,6 +19,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Domain\BannerBundle\Model\TypeInterface;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class ProfileController
@@ -31,6 +33,8 @@ class ProfileController extends Controller
     const SUCCESS_PROFILE_CLOSE_REQUEST_CREATED_MESSAGE = 'Close Profile Request send. Please wait for approval';
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
+    const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
+    const ERROR_ACCESS_NOT_ALLOWED = 'You haven\'t access to this page!';
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -55,6 +59,8 @@ class ProfileController extends Controller
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
+
+        $this->checkBusinessProfileAccess($businessProfile);
 
         $businessProfileForm = $this->getBusinessProfileForm($businessProfile);
 
@@ -85,7 +91,9 @@ class ProfileController extends Controller
             if ($formHandler->process()) {
                 return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
             }
-        } catch (Exception $e) {
+        } catch(UniqueConstraintViolationException $e) {
+            return $this->getFailureResponse(self::ERROR_EMAIL_ALREADY_USED, $formHandler->getErrors(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -156,11 +164,13 @@ class ProfileController extends Controller
         if ($businessProfileId) {
             try {
                 $this->getBusinessOverviewReviewManager()->registerBusinessView($businessProfileId);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return $this->getFailureResponse($e->getMessage(), $e->getErrors());
             }
+
             return $this->getSuccessResponse(true);
         }
+
         return $this->getFailureResponse(false);
     }
 
@@ -206,6 +216,24 @@ class ProfileController extends Controller
         return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
+    protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
+    {
+        $token = $this->get('security.context')->getToken();
+        if (!$token) {
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
+        }
+
+        $user = $token->getUser();
+
+        if (!$user || !$user instanceof User) {
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
+        }
+
+        if (!$user->getBusinessProfiles()->contains($businessProfile)) {
+            throw $this->createNotFoundException(self::ERROR_ACCESS_NOT_ALLOWED);
+        }
+    }
+
     /**
      * @param bool $businessProfile
      * @return FormInterface
@@ -216,6 +244,6 @@ class ProfileController extends Controller
             $businessProfile = $this->getBusinessProfilesManager()->createProfile();
         }
 
-        return $this->createForm(new BusinessProfileFormType(), $businessProfile);
+        return $this->get('domain_business.form.business_profile')->setData($businessProfile);
     }
 }

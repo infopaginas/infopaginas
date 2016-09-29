@@ -37,7 +37,9 @@
                     </div>
 
                     {% block pagination %}
-                        {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                        {% if results %}
+                            {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                        {% endif %}
                     {% endblock %}
                 </div>
             </div>
@@ -55,6 +57,9 @@
 {{ parent() }}
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/bundles/domainsite/scripts/modules/searchpage.js")}}'], function(searchpage){
+                var searchPage = new searchpage;
+            })
             require(['{{asset("/bundles/domainsite/scripts/modules/mapsearchpage.js")}}'], function(mapSearchPage) {
                 var mapSearchPage = new mapSearchPage({
                     'markers' : {{ markers|raw }}

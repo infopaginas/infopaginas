@@ -32,6 +32,7 @@ class MigrationCommand extends ContainerAwareCommand
         $this->setDefinition(
             new InputDefinition(array(
                 new InputOption('withDebug', 'd'),
+                new InputOption('skipImages', 'i'),
                 new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
                 new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
             ))
@@ -82,6 +83,12 @@ class MigrationCommand extends ContainerAwareCommand
             $this->withDebug = true;
         } else {
             $this->withDebug = false;
+        }
+
+        if ($input->getOption('skipImages')) {
+            $this->skipImages = true;
+        } else {
+            $this->skipImages = false;
         }
 
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
@@ -243,14 +250,11 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setGoogleURL($profile->google_plus_url);
         $entity->setYoutubeURL($profile->yt_url);
 
-#        $entity->setSearchFts(?);
 #        $entity->setActualBusinessProfile(?);
 
         // process assigned items
 
-        $loadImages = true;
-
-        if ($loadImages and $profile->images) {
+        if (!$this->skipImages and $profile->images) {
             $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
 
             foreach ($profile->images as $image) {
@@ -270,7 +274,15 @@ class MigrationCommand extends ContainerAwareCommand
             $entity->setServiceAreasType('locality');
 
             foreach ($localities as $item) {
-                $entity->addLocality($this->loadLocality($item));
+                $locality = $this->loadLocality($item);
+
+                $entity->addLocality($locality);
+
+                if ($locality->getNeighborhoods()) {
+                    foreach ($locality->getNeighborhoods() as $neighborhood) {
+                        $entity->addNeighborhood($neighborhood);
+                    }
+                }
             }
         } else {
             $entity->setMilesOfMyBusiness($radius);
@@ -384,6 +396,28 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setSeoTitle($seoTitle);
         $entity->setSeoDescription($name);
 
+        // set translation vectors
+
+        if ($this->localePrimary == 'en') {
+            $nameEn = $itemPrimary->business->name;
+            $nameEs = $itemSecond->business->name;
+
+            $descriptionEn = $profile->description;
+            $descriptionEs = $profileSecond->description;
+        } else {
+            $nameEs = $itemPrimary->business->name;
+            $nameEn = $itemSecond->business->name;
+
+            $descriptionEs = $profile->description;
+            $descriptionEn = $profileSecond->description;
+        }
+
+        $entity->setNameEn($nameEn);
+        $entity->setNameEs($nameEs);
+
+        $entity->setDescriptionEn($descriptionEn);
+        $entity->setDescriptionEs($descriptionEs);
+
         $entity = $this->saveEntity($entity);
 
         // add translations to profile
@@ -421,9 +455,15 @@ class MigrationCommand extends ContainerAwareCommand
         if ($this->localePrimary == 'en') {
             $valuePrimary = $pair[0];
             $valueSecondary = $pair[1];
+
+            $valueEn = $valuePrimary;
+            $valueEs = $valueSecondary;
         } else {
             $valuePrimary = $pair[1];
             $valueSecondary = $pair[0];
+
+            $valueEs = $valuePrimary;
+            $valueEn = $valueSecondary;
         }
 
         $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
@@ -431,6 +471,9 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity) {
             $entity = new Category();
             $entity->setName($valuePrimary);
+
+            $entity->setSearchTextEn($valueEn);
+            $entity->setSearchTextEs($valueEs);
 
             $entity = $this->saveEntity($entity);
 
@@ -494,6 +537,7 @@ class MigrationCommand extends ContainerAwareCommand
     {
         $className = 'Locality';
 
+        // todo - change to both languages search
         $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
 
         if (!$entity) {

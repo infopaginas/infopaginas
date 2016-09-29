@@ -24,6 +24,7 @@ use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
@@ -146,6 +147,30 @@ class BusinessProfileAdmin extends OxaAdmin
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
+        if ($businessProfile->getVideo()) {
+            $videoParams = [
+                'type' => TextType::class,
+                'params' => [
+                    'required' => false,
+                    'mapped' => false,
+                    'data' => $businessProfile->getVideo()->getWistiaId(),
+                ],
+            ];
+        } else {
+            $videoParams = [
+                'type' => FileType::class,
+                'params' => [
+                    'attr' => [
+                        'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo,
+                            video/avi, video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
+                    ],
+                    'data_class' => null,
+                    'mapped' => false,
+                    'required' => false,
+                ],
+            ];
+        }
+
         $formMapper
             ->tab('Profile')
                 ->with('General')
@@ -245,6 +270,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
+                    ->add('neighborhoods', null, ['multiple' => true, 'required' => false])
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,
@@ -267,15 +293,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
                 ->with('Video')
-                    ->add('videoFile', FileType::class, [
-                        'attr' => [
-                            'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo,
-                            video/avi, video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
-                        ],
-                        'data_class' => null,
-                        'mapped' => false,
-                        'required' => false,
-                    ])
+                    ->add('videoFile', $videoParams['type'], $videoParams['params'])
                     ->add('video', WistiaMediaType::class, [
                         'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
                         'by_reference' => false,
@@ -390,6 +408,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('categories')
             ->add('areas')
             ->add('localities')
+            ->add('neighborhoods')
             ->add('brands')
             ->add('paymentMethods')
             ->add('tags')
@@ -514,6 +533,19 @@ class BusinessProfileAdmin extends OxaAdmin
                 break;
             }
         }
+
+        foreach ($object->getSubscriptions() as $subscription) {
+            if ($subscription->getStartDate() > new \DateTime('now')) {
+                $errorElement->with('subscriptions')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.subscription.start_date',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+            }
+        }
     }
 
     /**
@@ -548,18 +580,76 @@ class BusinessProfileAdmin extends OxaAdmin
         return $query;
     }
 
-    public function preUpdate($object)
+    public function prePersist($entity)
     {
-        /** @var BusinessProfile $object */
-        $video = $object->getVideo();
-        $wistiaMediaData = $this->uploadVideo($object);
+        $this->preSave($entity);
+    }
+
+    public function preUpdate($entity)
+    {
+        /** @var BusinessProfile $entity */
+        $this->preSave($entity);
+
+        $video = $entity->getVideo();
+        $wistiaMediaData = $this->uploadVideo($entity);
 
         if ($wistiaMediaData) {
             $wistiaMediaData['name']        = $video->getName();
             $wistiaMediaData['description'] = $video->getDescription();
             $wistiaMedia = new WistiaMedia($wistiaMediaData);
 
-            $object->setVideo($wistiaMedia);
+            $entity->setVideo($wistiaMedia);
+        }
+    }
+
+    private function preSave($entity)
+    {
+        $nameEn = '';
+        $nameEs = '';
+
+        $descEn = '';
+        $descEs = '';
+
+        if ($entity->getLocale() == 'en') {
+            $nameEn = $entity->getName();
+
+            if (!$entity->getNameEs()) {
+                $nameEs = $entity->getName();
+            }
+
+            $descEn = $entity->getDescription();
+
+            if ($descEn and !$entity->getDescriptionEs()) {
+                $descEs = $descEn;
+            }
+        } else {
+            $nameEs = $entity->getName();
+
+            if (!$entity->getNameEn()) {
+                $nameEn = $entity->getName();
+            }
+
+            $descEs = $entity->getDescription();
+
+            if ($descEs and !$entity->getDescriptionEn()) {
+                $descEn = $descEs;
+            }
+        }
+
+        if ($nameEn) {
+            $entity->setNameEn($nameEn);
+        }
+
+        if ($nameEs) {
+            $entity->setNameEs($nameEs);
+        }
+
+        if ($descEn) {
+            $entity->setDescriptionEn($descEn);
+        }
+
+        if ($descEs) {
+            $entity->setDescriptionEs($descEs);
         }
     }
 

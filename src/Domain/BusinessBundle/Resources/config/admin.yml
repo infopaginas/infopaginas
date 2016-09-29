@@ -11,6 +11,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Localities}
 
+    domain_business.admin.neighborhood:
+        class: Domain\BusinessBundle\Admin\NeighborhoodAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Neighborhood, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Neighborhoods}
+
     domain_business.admin.tag:
         class: Domain\BusinessBundle\Admin\TagAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Tag, OxaSonataAdminBundle:CRUD]
@@ -28,6 +34,8 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\Subscription, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
+        calls:
+            - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
 
     domain_business.admin.subscription_plan:
         class: Domain\BusinessBundle\Admin\SubscriptionPlanAdmin
@@ -92,3 +100,9 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\BusinessProfilePhone, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Phones}
+
+    domain_business.admin.neighborhood_zip:
+        class: Domain\BusinessBundle\Admin\NeighborhoodZipAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}

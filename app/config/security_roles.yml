@@ -60,7 +60,6 @@ security:
         # PROJECT ROLE
         ROLE_MERCHANT:
             - ROLE_CONSUMER
-
             - ROLE_BUSINESS_PROFILE__EDIT
             - ROLE_REPORT__EXPORT
 

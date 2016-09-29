@@ -58,9 +58,10 @@
                             <li class="lang-dropdown">
                                 <div class="dropdown">
                                     <div class="select-container">
-                                        <select class="form-control select-control language-select" tabindex="-1" aria-hidden="true">
-                                            <option value="en_US">English</option>
-                                            <option value="es">Español</option>
+                                        <select class="form-control select-control language-select" id="mobileLanguageSelect" tabindex="-1" aria-hidden="true">
+                                            {% for language in languages %}
+                                                <option value="{{ language.url }}" {% if language.active %}selected="selected"{% endif %}">{{ language.title|raw }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
@@ -81,8 +82,6 @@
                                     </a>
                                 </li>
                             {% endif %}
-
-
 
                             <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>

@@ -10,17 +10,19 @@
     <div class="company-contact fields-item">
         <ul class="company-info">
             <li>
-                {% if item.website is not null %}
+                {% if item.website is not null and item.website is not empty %}
                     <a href="{{ item.getWebsiteLink() }}">
                         <i class="fa fa-home" aria-hidden="true"></i>
-                        <span>{{ item.website }}</span>
+                        <span>{{ item.getWebsiteLink() }}</span>
                     </a>
                 {% endif %}
             </li>
             <li>
-                {% if item.email is not null %}
-                    <a href="mailto:{{ item.email }}"><i class="fa fa-envelope"
-                                                            aria-hidden="true"></i><span>{{ item.email }}</span></a>
+                {% if item.email is not null and item.email is not empty %}
+                    <a href="mailto:{{ item.email }}">
+                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                        <span>{{ item.email }}</span>
+                    </a>
                 {% endif %}
             </li>
             <li>

@@ -3,13 +3,7 @@ define(['jquery', 'abstract/view', 'js-cookie'],
     'use strict';
 
     var directions = function( options ) {
-
-        this.events = {
-             ".get-dir click" : "getDirections"
-        };
-
         this.init( options );
-        this.bindEvents( );
     };
 
     directions.prototype = new view;
@@ -21,12 +15,41 @@ define(['jquery', 'abstract/view', 'js-cookie'],
         $.extend( this.options, options );
     }
 
-    directions.prototype.getDirections = function ( e ) {
-        var latlng = $( e.currentTarget ).data( 'latlng' );
-        var userLatLng = cookie.get( 'lat' ) + ',' +cookie.get( 'lng' );
+    directions.prototype.bindEventsDirections = function () {
+        this.events = {
+            ".get-dir click" : "openDirection"
+        };
 
-        var directionsLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
-        window.open( directionsLink );
+        this.bindEvents( );
+    }
+
+    directions.prototype.openDirection = function ( e, latlngEvent ) {
+        var directionLink = this.getDirection( e, latlngEvent );
+        window.open( directionLink );
+    }
+
+    directions.prototype.getDirection = function ( e, latlngEvent ) {
+        var latlng;
+
+        if ( e ) {
+            latlng = $( e.currentTarget ).data( 'latlng' );
+        } else if ( latlngEvent ) {
+            latlng = latlngEvent;
+        }
+
+        var cookieString = cookie.get( 'geo_location_data' );
+
+        if ( cookieString ) {
+            var position = JSON.parse( cookieString );
+
+            var userLatLng = position.coords.latitude + ',' + position.coords.longitude;
+        } else {
+            var userLatLng = ',';
+        }
+
+        var directionLink = this.options.detDirectionsLink.replace( '{companyLoc}', latlng ).replace( '{userLoc}', userLatLng );
+
+        return directionLink;
     }
 
     return directions;

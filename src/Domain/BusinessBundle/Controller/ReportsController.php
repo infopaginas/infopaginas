@@ -43,10 +43,13 @@ class ReportsController extends Controller
 
         $filtersForm = $this->createForm(new BusinessReportFilterType());
 
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+
         return $this->render('DomainBusinessBundle:Reports:index.html.twig', [
             'overviewData'      => $overviewData,
             'filtersForm'       => $filtersForm->createView(),
             'businessProfileId' => $businessProfileId,
+            'businessProfile'   => $businessProfile
         ]);
     }
 
@@ -216,5 +219,10 @@ class ReportsController extends Controller
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
+    }
+
+    protected function getBusinessProfileManager() : BusinessProfileManager
+    {
+        return $this->get('domain_business.manager.business_profile');
     }
 }

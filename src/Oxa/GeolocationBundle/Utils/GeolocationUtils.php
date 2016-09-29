@@ -6,20 +6,16 @@ class GeolocationUtils
 {
     protected static $ch;
 
-    const EARTH_RADIUS_KM           = 6371;
+    const EARTH_RADIUS_KM   = 6371;
+    const MILE_TO_KILOMETER = 0.621371;
 
     const GEO_CODE_URL_BASE         = "https://maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng=";
     const GEO_CODE_APP_CONTENT_TYPE = 'Content-Type: application/json';
     const GEO_CODE_APP_ACCEPT_TYPE  = 'Accept: application/json';
 
-    public static function getEarthRadiusKm()
+    public static function getEarthDiameterMiles()
     {
-        return self::EARTH_RADIUS_KM;
-    }
-
-    public static function getEarthDiameterKm()
-    {
-        return self::EARTH_RADIUS_KM * 2;
+        return self::EARTH_RADIUS_KM * 2 * self::MILE_TO_KILOMETER;
     }
 
     protected static function initCurl()

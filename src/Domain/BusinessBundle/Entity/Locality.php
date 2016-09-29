@@ -72,6 +72,17 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\Neighborhood",
+     *      mappedBy="locality",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $neighborhoods;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Translation\LocalityTranslation",
      *     mappedBy="object",
      *     cascade={"persist", "remove"}
@@ -98,8 +109,9 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
      */
     public function __construct()
     {
-        $this->businessProfile = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfile  = new ArrayCollection();
         $this->translations     = new ArrayCollection();
+        $this->neighborhoods    = new ArrayCollection();
     }
 
     /**
@@ -192,6 +204,16 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->area = $area;
 
         return $this;
+    }
+
+    /**
+     * Get Neighborhoods
+     *
+     * @return Neighborhood[]
+     */
+    public function getNeighborhoods()
+    {
+        return $this->neighborhoods;
     }
 
     /**

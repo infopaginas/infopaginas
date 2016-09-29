@@ -54,10 +54,9 @@ class BusinessProfile implements
     use SeoTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
+    const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
-    const DEFAULT_LOCALE = 'en_US';
-
-    const MILE_TO_KILOMETER  = 0.621371;
+    const DEFAULT_LOCALE = 'en';
 
     /**
      * @var int
@@ -77,6 +76,20 @@ class BusinessProfile implements
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $name;
+
+    /**
+     * @var string - Business name en
+     *
+     * @ORM\Column(name="name_en", type="string", length=255, nullable=true)
+     */
+    protected $nameEn;
+
+    /**
+     * @var string - Business name es
+     *
+     * @ORM\Column(name="name_es", type="string", length=255, nullable=true)
+     */
+    protected $nameEs;
 
     /**
      * @var User - Business owner
@@ -212,6 +225,20 @@ class BusinessProfile implements
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $description;
+
+    /**
+     * @var string - Description of Business en
+     *
+     * @ORM\Column(name="description_en", type="text", length=1000, nullable=true)
+     */
+    protected $descriptionEn;
+
+    /**
+     * @var string - Description of Business es
+     *
+     * @ORM\Column(name="description_es", type="text", length=1000, nullable=true)
+     */
+    protected $descriptionEs;
 
     /**
      * @var string - Products of Business
@@ -515,6 +542,16 @@ class BusinessProfile implements
     protected $localities;
 
     /**
+     * @var Neighborhood[] - Using this field a User may define Neighborhoods, business is related to.
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Neighborhood",
+     *     inversedBy="businessProfile",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinTable(name="business_profile_neighborhoods")
+     */
+    protected $neighborhoods;
+
+    /**
      * @var Campaign[] - Business Profile Phones
      *
      * @ORM\OneToMany(
@@ -525,7 +562,6 @@ class BusinessProfile implements
      *     )
      */
     protected $phones;
-
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -555,31 +591,32 @@ class BusinessProfile implements
      /**
      * @var string
      *
-     * @ORM\Column(name="search_fts", type="tsvector", options={
+     * @ORM\Column(name="search_fts_en", type="tsvector", options={
      *      "customSchemaOptions": {
      *          "searchFields" : {
-     *              "name",
-     *              "description"
+     *              "nameEn",
+     *              "descriptionEn"
      *          }
      *      }
      *  }, nullable=true)
      *
      */
-    protected $searchFts;
+    protected $searchFtsEn;
 
-    /**
+     /**
      * @var string
      *
-     * @ORM\Column(name="search_name_fts", type="tsvector", options={
+     * @ORM\Column(name="search_fts_es", type="tsvector", options={
      *      "customSchemaOptions": {
      *          "searchFields" : {
-     *              "name"
+     *              "nameEs",
+     *              "descriptionEs"
      *          }
      *      }
      *  }, nullable=true)
      *
      */
-    protected $searchNameFts;
+    protected $searchFtsEs;
 
     /**
      * @var string
@@ -727,6 +764,54 @@ class BusinessProfile implements
     }
 
     /**
+     * Set nameEn
+     *
+     * @param string $nameEn
+     *
+     * @return BusinessProfile
+     */
+    public function setNameEn($nameEn)
+    {
+        $this->nameEn = $nameEn;
+
+        return $this;
+    }
+
+    /**
+     * Get nameEn
+     *
+     * @return string
+     */
+    public function getNameEn()
+    {
+        return $this->nameEn;
+    }
+
+    /**
+     * Set nameEs
+     *
+     * @param string $nameEs
+     *
+     * @return BusinessProfile
+     */
+    public function setNameEs($nameEs)
+    {
+        $this->nameEs = $nameEs;
+
+        return $this;
+    }
+
+    /**
+     * Get nameEs
+     *
+     * @return string
+     */
+    public function getNameEs()
+    {
+        return $this->nameEs;
+    }
+
+    /**
      * Set website
      *
      * @param string $website
@@ -757,11 +842,13 @@ class BusinessProfile implements
      */
     public function getWebsiteLink()
     {
-        if (preg_match('/^http/', $this->getWebsite())) {
+        $http = 'http';
+
+        if (preg_match('/^' . $http . '/', $this->getWebsite())) {
             return $this->getWebsite();
         }
 
-        return '//' . $this->getWebsite();
+        return $http . '://' . $this->getWebsite();
     }
 
     /**
@@ -858,6 +945,54 @@ class BusinessProfile implements
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set descriptionEn
+     *
+     * @param string $descriptionEn
+     *
+     * @return BusinessProfile
+     */
+    public function setDescriptionEn($descriptionEn)
+    {
+        $this->descriptionEn = $descriptionEn;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionEn
+     *
+     * @return string
+     */
+    public function getDescriptionEn()
+    {
+        return $this->descriptionEn;
+    }
+
+    /**
+     * Set descriptionEs
+     *
+     * @param string $descriptionEs
+     *
+     * @return BusinessProfile
+     */
+    public function setDescriptionEs($descriptionEs)
+    {
+        $this->descriptionEs = $descriptionEs;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionEs
+     *
+     * @return string
+     */
+    public function getDescriptionEs()
+    {
+        return $this->descriptionEs;
     }
 
     /**
@@ -1345,7 +1480,7 @@ class BusinessProfile implements
      *
      * @return BusinessProfile
      */
-    public function setLogo(\Oxa\Sonata\MediaBundle\Entity\Media $logo = null)
+    public function setLogo($logo = null)
     {
         $this->logo = $logo;
 
@@ -1876,50 +2011,67 @@ class BusinessProfile implements
         $this->localities = $localities;
     }
 
+    /**
+     * @return Neighborhood[]
+     */
+    public function getNeighborhoods()
+    {
+        return $this->neighborhoods;
+    }
+
+    /**
+     * @param Neighborhood[] $neighborhoods
+     * @return BusinessProfile
+     */
+    public function setNeighborhoods($neighborhoods)
+    {
+        $this->neighborhoods = $neighborhoods;
+    }
+
      /**
-     * Set searchFts
+     * Set searchFtsEn
      *
-     * @param tsvector $searchFts
+     * @param tsvector $searchFtsEn
      *
      * @return BusinessProfile
      */
-    public function setSearchFts($searchFts)
+    public function setSearchFtsEn($searchFtsEn)
     {
-        $this->searchFts = $searchFts;
+        $this->searchFtsEn = $searchFtsEn;
         return $this;
     }
 
     /*
-    * Get searchFts
+    * Get searchFtsEn
     *
     * @return tsvector
     */
-    public function getSearchFts()
+    public function getSearchFtsEn()
     {
-        return $this->searchFts;
+        return $this->searchFtsEn;
     }
 
-    /**
-     * Set searchNameFts
+     /**
+     * Set searchFtsEs
      *
-     * @param tsvector $searchNameFts
+     * @param tsvector $searchFtsEs
      *
      * @return BusinessProfile
      */
-    public function setSearchNameFts($searchNameFts)
+    public function setSearchFtsEs($searchFtsEs)
     {
-        $this->searchNameFts = $searchNameFts;
+        $this->searchFtsEs = $searchFtsEs;
         return $this;
     }
 
-    /**
-     * Get searchNameFts
-     *
-     * @return tsvector
-     */
-    public function getSearchNameFts()
+    /*
+    * Get searchFtsEs
+    *
+    * @return tsvector
+    */
+    public function getSearchFtsEs()
     {
-        return $this->searchNameFts;
+        return $this->searchFtsEs;
     }
 
     /**
@@ -2170,17 +2322,43 @@ class BusinessProfile implements
     }
 
     /**
+     * Add Neighborhood
+     *
+     * @param \Domain\BusinessBundle\Entity\Neighborhood $neighborhood
+     *
+     * @return BusinessProfile
+     */
+    public function addNeighborhood(\Domain\BusinessBundle\Entity\Neighborhood $neighborhood)
+    {
+        $this->neighborhoods[] = $neighborhood;
+
+        return $this;
+    }
+
+    /**
+     * Remove Neighborhood
+     *
+     * @param \Domain\BusinessBundle\Entity\Neighborhood $neighborhood
+     */
+    public function removeNeighborhood(\Domain\BusinessBundle\Entity\Neighborhood $neighborhood)
+    {
+        $this->neighborhoods->removeElement($neighborhood);
+    }
+
+    /**
      * Add phone
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfilePhone $phone
      *
      * @return BusinessProfile
      */
-    public function addPhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
+    public function addPhone($phone)
     {
         $this->phones[] = $phone;
 
-        $phone->setBusinessProfile($this);
+        if ($phone) {
+            $phone->setBusinessProfile($this);
+        }
 
         return $this;
     }
@@ -2347,10 +2525,7 @@ class BusinessProfile implements
      */
     public function getDistanceUX() : string
     {
-        // convert to miles
-        $miles = $this->getDistance() * self::MILE_TO_KILOMETER;
-
-        return number_format($miles, 2, '.', '');
+        return number_format($this->getDistance(), 2, '.', '');
     }
 
     /**
@@ -2395,8 +2570,8 @@ class BusinessProfile implements
     public static function getServiceAreasTypes()
     {
         return [
-            'area' => 'Distance',
-            'locality' => 'Locality'
+            self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
+            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
     }
 }
