@@ -12,8 +12,9 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
     public function getAvailableCategoriesQb()
     {
-        $qb = $this->createQueryBuilder('c');
-        $qb->where('c.isActive = TRUE');
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.isActive = TRUE')
+            ->orderBy('c.name');
 
         return $qb;
     }

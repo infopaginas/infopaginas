@@ -15,7 +15,9 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
 {
     public function getAvailableLocalitiesQb()
     {
-        $qb = $this->createQueryBuilder('l');
+        $qb = $this->createQueryBuilder('l')
+            ->orderBy('l.name');
+
         return $qb;
     }
 

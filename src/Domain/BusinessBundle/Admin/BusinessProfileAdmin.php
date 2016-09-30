@@ -139,12 +139,18 @@ class BusinessProfileAdmin extends OxaAdmin
             'multiple' => true,
             'required' => true,
             'label' => 'Localities',
+            'query_builder' => function (\Domain\BusinessBundle\Repository\LocalityRepository $rep) {
+                return $rep->getAvailableLocalitiesQb();
+            },
         ];
 
         $neighborhoodsFieldOptions = [
             'multiple' => true,
             'required' => false,
             'label' => 'Neighborhoods',
+            'query_builder' => function (\Domain\BusinessBundle\Repository\NeighborhoodRepository $rep) {
+                return $rep->getAvailableNeighborhoodsQb();
+            },
         ];
 
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
@@ -245,6 +251,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('categories', null, [
                         'multiple' => true,
                         'required' => true,
+                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
+                            return $rep->getAvailableCategoriesQb();
+                        },
                     ])
                     ->add('brands', null, ['required' => false])
                     ->add('areas', null, ['multiple' => true, 'required' => false])
