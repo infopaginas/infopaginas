@@ -50,7 +50,6 @@ sonata_admin:
                     - domain_business.admin.neighborhood
                     - domain_business.admin.tag
                     - domain_business.admin.payment_method
-                    - domain_business.admin.coupon
                     - domain_business.admin.address.country
             domain.admin.group.menu:
                 label: Pages
