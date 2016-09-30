@@ -68,21 +68,28 @@
 
 {% block table_body %}
     <tbody>
-    {% for object in results %}
+
+    {% for date in admin.subscriptionData.dates %}
         <tr>
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ object.date|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATE_FORMAT')) }}
+                {{ date|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATE_FORMAT')) }}
             </td>
-            {% for subscriptionReportSubscription in object.subscriptionReportSubscriptions %}
+
+            {% set total = 0 %}
+            {% set position = loop.index - 1 %}
+
+            {% for quantity in admin.subscriptionData.subscription_quantities %}
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                    {{ subscriptionReportSubscription.quantity }}
+                    {{ quantity.quantities[position] }}
+                    {% set total = total + quantity.quantities[position] %}
                 </td>
             {% endfor %}
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ object.total }}
+                {{ total }}
             </td>
         </tr>
     {% endfor %}
+
     <tr class="list-subscription-report-total">
         <td class="sonata-ba-list-field sonata-ba-list-field-string">
             {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}

@@ -58,3 +58,27 @@
 
 {% endblock %}
 
+
+{% block table_header %}
+    {% if admin.datagrid|length %}
+        {{ parent() }}
+    {% else %}
+        {{ 'list.content_no_results'|trans({}, 'AdminReportBundle') }}
+    {% endif %}
+{% endblock %}
+
+{% block table_body %}
+    <tbody>
+        {% for categoryStats in admin.categoryData.resultsArray %}
+            <tr>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ categoryStats.categoryName }}
+                </td>
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ categoryStats.categoryVisitors }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+{% endblock %}
+

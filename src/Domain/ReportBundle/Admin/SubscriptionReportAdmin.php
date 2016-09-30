@@ -4,7 +4,10 @@ namespace Domain\ReportBundle\Admin;
 
 use Doctrine\ORM\Query;
 use Domain\ReportBundle\Entity\SubscriptionReport;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\ReportBundle\Util\DatesUtil;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
+use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -49,7 +52,21 @@ class SubscriptionReportAdmin extends ReportAdmin
 
         $subscriptionPlans = $subscriptionReportManager->getSubscriptionPlans();
 
-        $this->subscriptionData = $subscriptionReportManager->getSubscriptionsQuantities($subscriptionReports);
+        $parameters = parent::getFilterParameters();
+
+        if ($parameters['datePeriod']['value'] == 'custom') {
+            $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData($parameters['date']['value'], 'd-m-Y');
+        } else {
+            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType($parameters['datePeriod']['value']);
+        }
+
+        $dates = DatesUtil::dateRange($dateRange);
+
+        //dates'll has one non-required day
+        unset($dates[count($dates) -1]);
+
+        $this->subscriptionData = $subscriptionReportManager->getSubscriptionsQuantities($subscriptionReports, $dates, $subscriptionPlans);
+
         $this->colors = ChartHelper::getColors();
 
         $locale = $this->getConfigurationPool()

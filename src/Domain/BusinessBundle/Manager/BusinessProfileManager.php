@@ -336,11 +336,11 @@ class BusinessProfileManager extends Manager
                     $data = json_decode($change->getNewValue());
                     $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
                     if ($data->type == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-                        $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO);
-                        $this->getSonataMediaManager()->save($media, false);
+                        $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
                         $businessProfile->setLogo($media);
                     } else {
                         $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
+                        $this->getSonataMediaManager()->save($media, false);
                     }
                     break;
                 case ChangeSetCalculator::IMAGE_REMOVE:
@@ -353,19 +353,34 @@ class BusinessProfileManager extends Manager
                 case ChangeSetCalculator::IMAGE_UPDATE:
                     $data = json_decode($change->getNewValue());
                     $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
+
                     if (isset($data->description)) {
                         $gallery->setDescription($data->description[1]);
                     }
+
                     if (isset($data->isPrimary)) {
                         $gallery->setIsPrimary($data->isPrimary[1]);
                     }
+                    
                     if (isset($data->type)) {
                         $gallery->setType($data->type[1]);
+
                         if ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-                            $media = $gallery->getMedia();
-                            $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO);
-                            $this->getSonataMediaManager()->save($media, false);
+                            $media = $this->makeLogoFromPhoto($gallery->getMedia());
                             $businessProfile->setLogo($media);
+                            $gallery->setMedia($media);
+                        } else {
+                            $media = $gallery->getMedia();
+
+                            if ($data->type[0] != $data->type[1]) {
+                                $businessProfile->setLogo(null);
+                            }
+
+                            if ($media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                                $media = $this->makePhotoFromLogo($gallery->getMedia());
+                                $gallery->setMedia($media);
+                                $businessProfile->addImage($gallery);
+                            }
                         }
                     }
                     $this->getEntityManager()->persist($gallery);
@@ -561,6 +576,24 @@ class BusinessProfileManager extends Manager
     public function findOneBusinessProfile()
     {
         return $this->getRepository()->findOneBy([]);
+    }
+
+    protected function makeLogoFromPhoto(Media $media)
+    {
+        $media = clone $media;
+        $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO);
+        $this->getSonataMediaManager()->save($media, false);
+
+        return $media;
+    }
+
+    protected function makePhotoFromLogo(Media $media)
+    {
+        $media = clone $media;
+        $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
+        $this->getSonataMediaManager()->save($media, false);
+
+        return $media;
     }
 
     /**
