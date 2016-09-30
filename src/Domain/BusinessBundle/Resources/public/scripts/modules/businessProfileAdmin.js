@@ -5,12 +5,14 @@ $( document ).ready( function() {
             var withinMilesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
             var withinMilesOfMyBusinessLabel = $( '#sonata-ba-field-container-' + formId + '_milesOfMyBusiness label' );
             var localitiesField = $( '#' + formId + '_localities' );
+            var neighborhoodsField = $( '#' + formId + '_neighborhoods' );
             var localitiesLabel = $( '#sonata-ba-field-container-' + formId + '_localities label' );
             var localitiesDropdown = localitiesField.parent( '.sonata-ba-field' ).find( '.select2-container-multi' );
 
             if ( $self.val() == 'area' ) {
                 withinMilesOfMyBusinessField.removeAttr( 'disabled' );
                 localitiesField.attr('disabled', 'disabled');
+                neighborhoodsField.attr('disabled', 'disabled');
 
                 withinMilesOfMyBusinessField.attr('required', 'required');
 
@@ -19,6 +21,7 @@ $( document ).ready( function() {
                 }
             } else {
                 localitiesField.removeAttr( 'disabled' );
+                neighborhoodsField.removeAttr( 'disabled' );
                 withinMilesOfMyBusinessField.attr( 'disabled', 'disabled' );
 
                 withinMilesOfMyBusinessField.removeAttr( 'required' );

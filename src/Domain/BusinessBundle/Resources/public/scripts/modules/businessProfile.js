@@ -33,6 +33,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 longitudeInputId: '#' + this.freeProfileFormName + '_longitude',
                 withinMilesOfMyBusinessFieldId: '#' + this.freeProfileFormName + '_milesOfMyBusiness',
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
+                neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
                 serviceAreaRadioName: '[serviceAreasType]'
             },
             modals: {
@@ -327,6 +328,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
+                $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
 
                 if ( $( milesOfMyBusinessAsteriskClass ).length ) {
                     $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
@@ -336,6 +338,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 }
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
+                $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
 
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );

@@ -12,7 +12,7 @@
                 &nbsp;
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                 <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug }) }}">
-                    <span class="card-slogan"><q>{{ item.slogan }}</q></span>
+                    <span class="card-slogan">{{ item.slogan }}</span>
                 </a>
             {% endif %}
         </label>

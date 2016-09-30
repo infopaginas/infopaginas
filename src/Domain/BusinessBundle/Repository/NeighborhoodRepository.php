@@ -9,4 +9,11 @@ use Doctrine\ORM\QueryBuilder;
  */
 class NeighborhoodRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAvailableNeighborhoodsQb()
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->orderBy('n.name');
+
+        return $qb;
+    }
 }

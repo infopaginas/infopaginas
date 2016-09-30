@@ -139,11 +139,25 @@ class BusinessProfileAdmin extends OxaAdmin
             'multiple' => true,
             'required' => true,
             'label' => 'Localities',
+            'query_builder' => function (\Domain\BusinessBundle\Repository\LocalityRepository $rep) {
+                return $rep->getAvailableLocalitiesQb();
+            },
+        ];
+
+        $neighborhoodsFieldOptions = [
+            'multiple' => true,
+            'required' => false,
+            'label' => 'Neighborhoods',
+            'query_builder' => function (\Domain\BusinessBundle\Repository\NeighborhoodRepository $rep) {
+                return $rep->getAvailableNeighborhoodsQb();
+            },
         ];
 
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
             $localitiesFieldOptions['required'] = false;
+
+            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
             $milesOfMyBusinessFieldOptions['required'] = false;
@@ -237,6 +251,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('categories', null, [
                         'multiple' => true,
                         'required' => true,
+                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
+                            return $rep->getAvailableCategoriesQb();
+                        },
                     ])
                     ->add('brands', null, ['required' => false])
                     ->add('areas', null, ['multiple' => true, 'required' => false])
@@ -248,7 +265,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
-                    ->add('neighborhoods', null, ['multiple' => true, 'required' => false])
+                    ->add('neighborhoods', null, $neighborhoodsFieldOptions)
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,
