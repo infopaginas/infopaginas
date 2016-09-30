@@ -141,9 +141,17 @@ class BusinessProfileAdmin extends OxaAdmin
             'label' => 'Localities',
         ];
 
+        $neighborhoodsFieldOptions = [
+            'multiple' => true,
+            'required' => false,
+            'label' => 'Neighborhoods',
+        ];
+
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
             $localitiesFieldOptions['required'] = false;
+
+            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
             $milesOfMyBusinessFieldOptions['required'] = false;
@@ -248,7 +256,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
-                    ->add('neighborhoods', null, ['multiple' => true, 'required' => false])
+                    ->add('neighborhoods', null, $neighborhoodsFieldOptions)
                     ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,

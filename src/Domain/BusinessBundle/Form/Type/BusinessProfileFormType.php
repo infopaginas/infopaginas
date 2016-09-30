@@ -11,6 +11,7 @@ use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
+use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
@@ -423,15 +424,34 @@ class BusinessProfileFormType extends AbstractType
             'required' => false,
         ];
 
+        $neighborhoodsFieldOptions = [
+            'attr' => [
+                'class' => 'form-control select-control',
+                'data-placeholder' => 'Select Neighborhoods',
+                'multiple' => 'multiple',
+            ],
+            'class' => 'Domain\BusinessBundle\Entity\Neighborhood',
+            'label' => 'Neighborhoods',
+            'multiple' => true,
+            'query_builder' => function (NeighborhoodRepository $repository) {
+                return $repository->getAvailableNeighborhoodsQb();
+            },
+            'required' => false,
+        ];
+
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
             $milesOfMyBusinessFieldOptions['required'] = false;
+
+            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         }
 
         $form->add('milesOfMyBusiness', IntegerType::class, $milesOfMyBusinessFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
+        $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }
 
     private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
