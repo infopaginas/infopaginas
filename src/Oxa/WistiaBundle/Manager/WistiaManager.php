@@ -98,12 +98,19 @@ class WistiaManager
 
     public function uploadLocalFile(string $filePath, array $data = []) : WistiaMedia
     {
+        $wistiaMediaData = $this->uploadLocalFileData($filePath, $data);
+
+        return $this->wistiaMediaManager->save($wistiaMediaData);
+    }
+
+    public function uploadLocalFileData(string $filePath, array $data = []) : array
+    {
         $uploaderRequestData = ['file' => $filePath];
         $fileUploader = $this->wistiaLocalFileUploader->setData(array_merge($uploaderRequestData, $data));
 
         $wistiaMediaData = $fileUploader->upload();
 
-        return $this->wistiaMediaManager->save($wistiaMediaData);
+        return $wistiaMediaData;
     }
 
     public function uploadRemoteFile(string $url, array $data = [])
