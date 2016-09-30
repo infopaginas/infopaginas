@@ -735,6 +735,11 @@ class BusinessProfileAdmin extends OxaAdmin
         $files = current($request->files->all());
 
         if ($files) {
+
+            if (!isset($files['videoFile']) || (isset($files['videoFile']) && $files['videoFile'] == null)) {
+                return $media;
+            }
+
             list($videoPath, $filename) = $this->uploadVideoToLocalServer($files);
 
             $media = $container->get('oxa.manager.wistia')->uploadLocalFileData($videoPath, ['name' => $filename]);
