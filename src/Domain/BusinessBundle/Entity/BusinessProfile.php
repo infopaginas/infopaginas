@@ -1480,7 +1480,7 @@ class BusinessProfile implements
      *
      * @return BusinessProfile
      */
-    public function setLogo(\Oxa\Sonata\MediaBundle\Entity\Media $logo = null)
+    public function setLogo($logo = null)
     {
         $this->logo = $logo;
 
