@@ -17,7 +17,7 @@ trait VideoUploadTrait
     private function uploadVideoToLocalServer(array $files)
     {
         /** @var UploadedFile $video */
-        $video = $files[0];
+        $video = current($files);
 
         $videosUploadPath = $this->getMediaUploadDirectory();
 
