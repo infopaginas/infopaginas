@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
@@ -85,6 +86,11 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getSubject();
+
+        $subscriptionPlan = $businessProfile->getSubscription()->getSubscriptionPlan();
+
         // define group zoning
         $formMapper
             ->tab('Profile', array('class' => 'col-md-6'))
@@ -95,8 +101,13 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Categories', array('class' => 'col-md-6'))->end()
                 ->with('Social Networks', array('class' => 'col-md-6'))->end()
                 ->with('Gallery')->end()
-                ->with('Video')->end()
-                ->with('Status', array('class' => 'col-md-6'))->end()
+            ->end();
+
+            if ($subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+                $formMapper->tab('Profile')->with('Video')->end()->end();
+            }
+
+            $formMapper->tab('Profile')->with('Status', array('class' => 'col-md-6'))->end()
                 ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
                 ->with('Subscriptions')->end()
                 ->with('Coupons', array('class' => 'col-md-6'))->end()
@@ -127,9 +138,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->andWhere('u.role != :consumerRole')
             ->setParameter('consumerRole', Group::CODE_CONSUMER)
         ;
-
-        /** @var BusinessProfile $businessProfile */
-        $businessProfile = $this->getSubject();
 
         $milesOfMyBusinessFieldOptions = [
             'required' => true,
@@ -289,48 +297,53 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ->end();
 
-        if (!$businessProfile->getVideo()) {
-            $formMapper
-                ->tab('Profile')
+
+        if ($subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            if (!$businessProfile->getVideo()) {
+                $formMapper
+                    ->tab('Profile')
                     ->with('Video')
-                        ->add('videoFile', FileType::class, [
-                            'attr' => [
-                                'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo,
+                    ->add('videoFile', FileType::class, [
+                        'attr' => [
+                            'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo,
                             video/avi, video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
-                            ],
-                            'data_class' => null,
-                            'mapped' => false,
-                            'required' => false,
-                        ])
-                        ->add('video', WistiaMediaType::class, [
-                            'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
-                            'by_reference' => false,
-                            'required' => false,
-                        ])
+                        ],
+                        'data_class' => null,
+                        'mapped' => false,
+                        'required' => false,
+                    ])
+                    ->add('video', WistiaMediaType::class, [
+                        'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
+                        'by_reference' => false,
+                        'required' => false,
+                    ])
                     ->end()
-                ->end();
-        } else {
-            $formMapper
-                ->tab('Profile')
+                    ->end();
+            } else {
+                $formMapper
+                    ->tab('Profile')
                     ->with('Video')
-                        ->add('removeVideo', CheckboxType::class, [
-                            'mapped' => false,
-                            'required' => false,
-                        ])
-                        ->add('videoTitle', TextType::class, [
-                            'mapped' => false,
-                            'required' => false,
-                            'attr' => [
-                                'value' => $businessProfile->getVideo()->getName(),
-                            ],
-                        ])
-                        ->add('videoDescription', TextareaType::class, [
-                            'mapped' => false,
-                            'required' => false,
-                            'data' => $businessProfile->getVideo()->getDescription(),
-                        ])
+                    ->add('removeVideo', CheckboxType::class, [
+                        'mapped' => false,
+                        'required' => false,
+                    ])
+                    ->add('videoTitle', TextType::class, [
+                        'mapped' => false,
+                        'required' => false,
+                        'attr' => [
+                            'value' => $businessProfile->getVideo()->getName(),
+                        ],
+                    ])
+                    ->add('videoDescription', TextareaType::class, [
+                        'mapped' => false,
+                        'required' => false,
+                        'data' => $businessProfile->getVideo()->getDescription(),
+                    ])
                     ->end()
-                ->end();
+                    ->end();
+            }
+        } else {
+         //   $formMapper->tab('Profile')->remove('Video');
         }
 
         $formMapper
