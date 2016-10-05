@@ -27,7 +27,7 @@
                             <div class="card-title">
                                 <label class="control-label card-label" for="card-check">
                                     <h1 class="card-name">&nbsp;{{ businessProfile.getName() }}</h1>
-                                    {% if (businessProfile.getSlogan()) %}
+                                    {% if (hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") and businessProfile.getSlogan()) %}
                                         <span class="card-slogan">&nbsp;{{ businessProfile.getSlogan() }}</span>
                                     {% endif %}
                                 </label>
