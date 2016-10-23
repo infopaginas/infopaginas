@@ -39,12 +39,18 @@
                                     <span>{% trans %}Manage Ads{% endtrans %}</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
-                                    <i class="fa fa-pie-chart" aria-hidden="true"></i>
-                                    <span>{% trans %}Reports{% endtrans %}</span>
-                                </a>
-                            </li>
+
+                            {% set isFreePlan = businessProfile.getSubscription().getSubscriptionPlan().getCode() == constant('Domain\\BusinessBundle\\Model\\SubscriptionPlanInterface::CODE_FREE') %}
+
+                            {% if not isFreePlan %}
+                                <li>
+                                    <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
+                                        <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                        <span>{% trans %}Reports{% endtrans %}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
                             <li>
                                 <a href="{{ path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>
