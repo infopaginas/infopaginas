@@ -342,8 +342,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                     ->end();
             }
-        } else {
-         //   $formMapper->tab('Profile')->remove('Video');
         }
 
         $formMapper
@@ -642,7 +640,6 @@ class BusinessProfileAdmin extends OxaAdmin
     private function preSave($entity)
     {
         $entity = $this->setSearchValues($entity);
-
         $entity = $this->setVideoValue($entity);
     }
 

@@ -202,6 +202,7 @@ class AdminManager extends DefaultManager
                 }
             }
         }
+
         return $existDependentField;
     }
 
