@@ -30,16 +30,16 @@
                     </span>
                 </a>
 
-                <a class="get-dir direction" data-latlng="{{ item.getLatLng }}">Get Direction <span>&#187;</span></a>
+                <a class="get-dir direction" data-latlng="{{ item.getLatLng }}">{% trans %}Get Direction{% endtrans %} <span>&#187;</span></a>
             {% endif %}
 
             {% if item.phones is not null %}
                 {% for phone in item.phones %}
-                    <a href="tel:{{ phone }}" class="btn green-btn mobile-btn"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; Call<span></span></a>
+                    <a href="tel:{{ phone }}" class="btn green-btn mobile-btn"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; {% trans %}Call{% endtrans %}<span></span></a>
                 {% endfor %}
             {% endif %}
 
-            <a class="get-dir get-direction mobile-btn btn" data-latlng="{{ item.getLatLng }}">Get Direction<span></span></a>
+            <a class="get-dir get-direction mobile-btn btn" data-latlng="{{ item.getLatLng }}">{% trans %}Get Direction{% endtrans %}<span></span></a>
         </div>
         <div class="shift">
             {{ item.getWorkingHours() }}

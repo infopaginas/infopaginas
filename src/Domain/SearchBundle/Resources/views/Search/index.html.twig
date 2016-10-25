@@ -19,8 +19,8 @@
             {% if results.resultSet is defined and results.resultSet is not null and  results.resultSet is not empty %}
                 <div class="row">
                     <div class="col-xs-12">
-                        <h1 class="search-title blue-c">{{ search.query }} in
-                            {{ search.locationValue.name }}
+                        <h1 class="search-title blue-c">
+                            {% trans with {'%searchQuery%': search.query, '%searchLocationName%': search.locationValue.name} %}%searchQuery% in %searchLocationName%{% endtrans %}
                         </h1>
                     </div>
                 </div>
@@ -32,12 +32,15 @@
                                 {% if amount > results.resultCount %}
                                 {% set amount = results.resultCount %}
                                 {% endif %}
-                                <span>{{ (results.page - 1) * search.limit + 1 }}-{{ amount }} of {{ results.resultCount }} Results </span><span>for {{ search.query }} in
-                                    {{ search.locationValue.name }}
+                                <span>
+                                    {% trans with {'%page%': (results.page - 1) * search.limit + 1, '%amount%': amount, '%resultCount%': results.resultCount} %}%page%-%amount% of %resultCount% Results{% endtrans %}
+                                </span>
+                                <span>
+                                    {% trans with {'%searchQuery%': search.query, '%searchLocationName%': search.locationValue.name} %}for %searchQuery% in %searchLocationName%{% endtrans %}
                                 </span>
                             </div>
                             <div class="sort-by">
-                                <span>Sort by:</span>
+                                <span>{% trans %}Sort by:{% endtrans %}</span>
 
                                 <div class="dropdown filter-drop">
                                     <div class="select-container">
@@ -68,7 +71,7 @@
             {% else %}
                 <div class="row">
                     <div class="col-md-9 list-block">
-                        Sorry, no results were found.
+                        {% trans %}Sorry, no results were found.{% endtrans %}
                     </div>
                 </div>
             {% endif %}

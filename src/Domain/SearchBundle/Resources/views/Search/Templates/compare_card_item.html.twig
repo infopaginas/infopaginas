@@ -32,7 +32,7 @@
 
                         <div class="select-container">
                             <select class="form-control select-control view-phone" data-business="{{ item.id }}">
-                                <option>phone number</option>
+                                <option>{% trans %}phone number{% endtrans %}</option>
                                 {% for phone in item.phones %}
                                     <option>{{ phone }}</option>
                                 {% endfor %}

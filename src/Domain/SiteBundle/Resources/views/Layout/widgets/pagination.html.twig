@@ -10,7 +10,7 @@
 
             <li>
               <a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}" aria-label="Previous">
-                <span aria-hidden="true">&larr; &nbsp;prev</span>
+                <span aria-hidden="true">&larr; &nbsp;{% trans %}prev{% endtrans %}</span>
               </a>
             </li>
         {% endif %}
@@ -32,7 +32,7 @@
 
             <li>
               <a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}" aria-label="Next">
-                <span aria-hidden="true">next&nbsp; &rarr;</span>
+                <span aria-hidden="true">{% trans %}next{% endtrans %}&nbsp; &rarr;</span>
               </a>
             </li>
         {% endif %}
