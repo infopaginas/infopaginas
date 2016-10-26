@@ -17,7 +17,7 @@
         {% endif %}
     {% endif %}
 
-    <input type="text" id='headerSearch' name="q" placeholder="What do you want to find?" value="{{ qValue }}" class="form-control what">
+    <input type="text" id='headerSearch' name="q" placeholder="{% trans %}What do you want to find?{% endtrans %}" value="{{ qValue }}" class="form-control what">
 
 </div>
 <div class="col-xs-5 search-input home">
@@ -26,7 +26,7 @@
         <input type="hidden" id='searchLng' name='lng' value="">
         <input type="hidden" id='searchLocationGeoLoc' name='geoLoc' value="">
 
-        <input type="text" id='searchLocation' name="geo" placeholder="San Juan" value="{{ geoValue }}" class="form-control">
+        <input type="text" id='searchLocation' name="geo" placeholder="{% trans %}San Juan{% endtrans %}" value="{{ geoValue }}" class="form-control">
         <span class="cross"></span>
     </div>
     <div class="search-button-home">

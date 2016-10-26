@@ -61,10 +61,10 @@
 
                             <div class="form-group row">
                                 <div class="col-xs-12">
-                                    <input type="text" id='searchBox' placeholder="What do you want to find?" class="form-control what">
+                                    <input type="text" id='searchBox' placeholder="{% trans %}What do you want to find?{% endtrans %}" class="form-control what">
                                 </div>
                                 <div class="col-xs-8 search-input">
-                                    <input type="text" id='searchLocation' class="form-control" placeholder="San Juan"><span class="cross"></span>
+                                    <input type="text" id='searchLocation' class="form-control" placeholder="{% trans %}San Juan{% endtrans %}"><span class="cross"></span>
                                 </div>
                                 <div class="col-xs-4 search-button">
                                     <button type="submit" id='searchButton' class="btn btn-primary green-btn search-btn"><i class="fa fa-search"
@@ -329,10 +329,10 @@
                     <div class="footer-logo"></div>
 
                     <div class="copyright-date">
-                        <span>{% trans %}&copy; 2016 infopáginas{% endtrans %}</span>
+                        <span>{% trans %}infopaginos.copyright{% endtrans %}</span>
                         <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
                             <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
-                                <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, </span>
+                                <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %} , </span>
                                 <span itemprop="addressLocality">{% trans %}PR{% endtrans %}</span>
                             </a>
                         </div>

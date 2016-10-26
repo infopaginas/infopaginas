@@ -75,7 +75,7 @@ class UserProfileType extends AbstractType
             ->add('twitterURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://twitter.com/user',
+                    'placeholder' => 'twitter.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),
@@ -86,7 +86,7 @@ class UserProfileType extends AbstractType
             ->add('facebookURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://www.facebook.com/user',
+                    'placeholder' => 'facebook.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),
@@ -97,7 +97,7 @@ class UserProfileType extends AbstractType
             ->add('googleURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://plus.google.com/user',
+                    'placeholder' => 'plus.google.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),
@@ -108,7 +108,7 @@ class UserProfileType extends AbstractType
             ->add('youtubeURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://www.youtube.com/user',
+                    'placeholder' => 'youtube.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),

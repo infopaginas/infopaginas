@@ -80,7 +80,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('website', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'http://sonsnotebook.com',
+                    'placeholder' => 'website.example.placeholder',
                 ],
                 'label' => 'Website',
                 'required' => false,
@@ -121,7 +121,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('email', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'sonsnotebook@info.com',
+                    'placeholder' => 'email.example.placeholder',
                 ],
                 'label' => 'Email',
                 'constraints' => $emailConstraints,
@@ -138,13 +138,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => preg_replace(
-                        "/\r|\n/",
-                        "",
-                        'At the time of study, all parents,
-                        teachers, students we welcome ideas that foster greater productivity and end of the day,
-                        produce better academic achievement'
-                    ),
+                    'placeholder' => 'business.add.description.placeholder',
                     'rows' => 5,
                 ],
                 'label' => 'Description',
@@ -167,12 +161,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('product', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => preg_replace(
-                        "/\r|\n/",
-                        "",
-                        'The SONS system currently offers the SON\'S starter
-                        kit, notebooks, writing pads and labels.'
-                    ),
+                    'placeholder' => 'business.add.product.placeholder',
                     'rows' => 3,
                 ],
                 'label' => 'Products',
@@ -195,7 +184,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('workingHours', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Mon - Fri  9 a.m. - 7 p.m. Sat  9:00 am-2:00pm',
+                    'placeholder' => 'business.add.workingHours.placeholder',
                     'rows' => 3,
                 ],
                 'label' => 'Working hours',
@@ -207,11 +196,12 @@ class BusinessProfileFormType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => true,
             ])
             ->add('streetAddress', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '',
+                    'placeholder' => 'business.add.streetAddress.placeholder',
                 ],
                 'label' => 'Street address',
             ])
@@ -221,7 +211,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('latitude', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '66° 33′ 39″ N',
+                    'placeholder' => 'latitude.example.placeholder',
                 ],
                 'label' => 'Latitude',
                 'required' => false,
@@ -229,7 +219,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('longitude', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '23° 27′ 30″ E',
+                    'placeholder' => 'longitude.example.placeholder',
                 ],
                 'label' => 'Longitude',
                 'required' => false,
@@ -296,7 +286,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('twitterURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://twitter.com/user',
+                    'placeholder' => 'twitter.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),
@@ -307,7 +297,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('facebookURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://www.facebook.com/user',
+                    'placeholder' => 'facebook.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),
@@ -318,7 +308,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('googleURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'https://plus.google.com/user',
+                    'placeholder' => 'plus.google.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),
@@ -329,6 +319,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('youtubeURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'placeholder' => 'youtube.example.email.placeholder',
                 ],
                 'constraints' => [
                     new ConstraintUrlExpanded(),

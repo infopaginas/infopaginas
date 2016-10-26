@@ -19,7 +19,7 @@
             <li class="login-link desc-menu logged">
                 <a href="{{ path('domain_site_user_profile') }}" class="login-button">
                     <span class="welcome">
-                        Welcome,
+                        {% trans %}Welcome{% endtrans %},
                     </span>
                     <span class="user-name">
                         {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
@@ -29,7 +29,7 @@
              {% else %}
             <li class="login-link desc-menu not-logged-home">
                 <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
-                    Login
+                    {% trans %}Login{% endtrans %}
                 </a>
             </li>
         {% endif %}
