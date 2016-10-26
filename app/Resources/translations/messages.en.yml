@@ -42,7 +42,7 @@ Filter by: Filter by
 Category: Category
 Neighborhoods: Neighborhoods
 %searchQuery% in %searchLocationName%: %searchQuery% in %searchLocationName%
-%page%-%amount% of %resultCount% Results: 	%page%-%amount% of %resultCount% Results
+%page%-%amount% of %resultCount% Results: %page%-%amount% of %resultCount% Results
 for %searchQuery% in %searchLocationName%: for %searchQuery% in %searchLocationName%
 Sort by: Sort by
 Relevance: Relevance
