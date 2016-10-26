@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Admin;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
@@ -89,7 +90,8 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getSubject();
 
-        $subscriptionPlan = $businessProfile->getSubscription()->getSubscriptionPlan();
+        $subscriptionPlan = $businessProfile->getSubscription() ?
+            $businessProfile->getSubscription()->getSubscriptionPlan() : new SubscriptionPlan();
 
         // define group zoning
         $formMapper
