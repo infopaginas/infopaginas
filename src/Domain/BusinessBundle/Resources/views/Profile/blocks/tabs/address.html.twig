@@ -15,7 +15,7 @@
                         <div class="col-xs-6 form-col">
                             {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
                                 <div class="radio-row col-xs-12">
-                                    <label class="control-label">{{ serviceType.vars.label }}:</label>
+                                    <label class="control-label">{{ serviceType.vars.label|trans }}:</label>
                                     {{ form_widget(serviceType) }}
                                 </div>
                             {% endfor %}
@@ -38,7 +38,7 @@
                             <div class="col-xs-8">
                                 <div class="dropdown">
                                     <div class="select-container">
-                                        {{ form_widget(businessProfileForm.localities) }}
+                                        {{ form_widget(businessProfileForm.localities, {'attr': {'data-placeholder': attribute(businessProfileForm.children.localities.vars.attr, 'data-placeholder')|trans } }) }}
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                             <div class="col-xs-8">
                                 <div class="dropdown">
                                     <div class="select-container">
-                                        {{ form_widget(businessProfileForm.neighborhoods) }}
+                                        {{ form_widget(businessProfileForm.neighborhoods, {'attr': {'data-placeholder': attribute(businessProfileForm.children.neighborhoods.vars.attr, 'data-placeholder')|trans } }) }}
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
 
                     <div class="form-group card-item business-info">
                         <div class="card-item-name">
-                            <span>Address</span>
+                            <span>{% trans %}Address{% endtrans %}</span>
                         </div>
                         <div class="col-xs-6 form-col">
                             <div class="col-xs-4">
@@ -75,7 +75,7 @@
                             <div class="col-xs-8">
                                 <div class="dropdown">
                                     <div class="select-container">
-                                        {{ form_widget(businessProfileForm.country) }}
+                                        {{ form_widget(businessProfileForm.country, {'attr': {'data-placeholder': attribute(businessProfileForm.children.country.vars.attr, 'data-placeholder')|trans } }) }}
                                     </div>
                                 </div>
                                 <span class="help-block"></span>
@@ -131,7 +131,7 @@
                         </div>
                         <div class="col-xs-6 form-col">
                             <div class="col-xs-4">
-                                <span>Map:</span>
+                                <span>{% trans %}Map{% endtrans %}:</span>
                             </div>
                             <div class="col-xs-8 business-map">
                                 {{ form_widget(businessProfileForm.map) }}
@@ -149,7 +149,7 @@
                                 {{ form_widget(businessProfileForm.longitude) }}
                                 <a href="#" class="btn green-btn geo-btn" id="geocodeButton">
                                     <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    Geocode
+                                    {% trans %}Geocode{% endtrans %}
                                 </a>
                             </div>
                         </div>

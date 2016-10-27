@@ -2,6 +2,7 @@
 
 namespace Oxa\Sonata\AdminBundle\Controller;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -225,11 +226,17 @@ class CRUDController extends SortableAdminController
             throw new AccessDeniedHttpException();
         }
 
+
         if ($this->getRestMethod() == Request::METHOD_DELETE) {
             // check the csrf token
             $this->validateCsrfToken('sonata.delete');
             $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-            $existDependentFields = $adminManager->checkExistDependentEntity($object);
+
+            if ($object instanceOf BusinessProfile) {
+                $existDependentFields = [];
+            } else {
+                $existDependentFields = $adminManager->checkExistDependentEntity($object);
+            }
 
             if (!count($existDependentFields)) {
                 try {
