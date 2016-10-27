@@ -53,7 +53,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     {
         $redirect = false;
 
-        if($this->security->isGranted('ROLE_ADMINISTRATOR')) {
+        if ($this->security->isGranted('ROLE_ADMINISTRATOR')) {
             $redirect = $this->router->generate('sonata_admin_dashboard');
         }
 
