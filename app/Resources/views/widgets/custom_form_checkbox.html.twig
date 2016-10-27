@@ -2,7 +2,7 @@
     <div class="checkbox">
         <label>
             {{ form_widget(field) }}
-            {{ field.vars.label }}
+            {{ field.vars.label|trans }}
         </label>
     </div>
 {% endmacro %}

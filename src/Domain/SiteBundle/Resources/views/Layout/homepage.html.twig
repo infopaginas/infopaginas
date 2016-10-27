@@ -36,7 +36,7 @@
                                     <li class="ad desc-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                                     {% if not app.user %}
                                         <li class="login-link mobile-menu btn">
-                                            <a href="#" data-toggle="modal" data-target="#loginModal">Login</a>
+                                            <a href="#" data-toggle="modal" data-target="#loginModal">{% trans %}Login{% endtrans %}</a>
                                         </li>
                                     {% endif %}
                                 </ul>
@@ -45,7 +45,7 @@
                             <div class="collapse navbar-collapse" id="navbar-col">
                                 {% block homepageHeaderTopBarNavigation %}
                                 <ul class="nav navbar-nav navbar-right">
-                                    <li class="login-link desc-menu btn"><a href="" class="login-button">Login</a></li>
+                                    <li class="login-link desc-menu btn"><a href="" class="login-button">{% trans %}Login{% endtrans %}</a></li>
                                     <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                                 </ul>
                                 {% endblock %}
@@ -57,18 +57,18 @@
                 {% block  homapageHeaderSearchBlock %}
                     <div class="col-md-6 header-form">
                         <form class="form-horizontal search-form">
-                            <span class="form-title">We can find everything!</span>
+                            <span class="form-title">{% trans %}We can find everything!{% endtrans %}</span>
 
                             <div class="form-group row">
                                 <div class="col-xs-12">
-                                    <input type="text" id='searchBox' placeholder="What do you want to find?" class="form-control what">
+                                    <input type="text" id='searchBox' placeholder="{% trans %}What do you want to find?{% endtrans %}" class="form-control what">
                                 </div>
                                 <div class="col-xs-8 search-input">
-                                    <input type="text" id='searchLocation' class="form-control" placeholder="San Juan"><span class="cross"></span>
+                                    <input type="text" id='searchLocation' class="form-control" placeholder="{% trans %}San Juan{% endtrans %}"><span class="cross"></span>
                                 </div>
                                 <div class="col-xs-4 search-button">
                                     <button type="submit" id='searchButton' class="btn btn-primary green-btn search-btn"><i class="fa fa-search"
-                                                                                                          aria-hidden="true"></i><span>Search</span>
+                                                                                                          aria-hidden="true"></i><span>{% trans %}Search{% endtrans %}</span>
                                     </button>
                                 </div>
                             </div>
@@ -81,56 +81,56 @@
                     <ol class="even">
                         <li class="r-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk sol-icon"
-                                                        href="#"><span>Solicitors</span></a></div>
+                                                        href="#"><span>{% trans %}Solicitors{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex photo-hex">
-                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-build" href="#"><span>Builders</span></a>
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-build" href="#"><span>{% trans %}Builders{% endtrans %}</span></a>
                             </div>
                         </li>
                     </ol>
                     <ol class="odd">
                         <li class="r-hex photo-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-pharma"
-                                                        href="#"><span>Pharmacies</span></a></div>
+                                                        href="#"><span>{% trans %}Pharmacies{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 grey-bk el-icon"
-                                                        href="#"><span>Electricians</span></a></div>
+                                                        href="#"><span>{% trans %}Electricians{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk plum-icon"
-                                                        href="#"><span>Plumbers</span></a></div>
+                                                        href="#"><span>{% trans %}Plumbers{% endtrans %}</span></a></div>
                         </li>
                     </ol>
                     <ol class="odd">
                         <li class="r-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk mech-icon"
-                                                        href="#"><span>Mechanics</span></a></div>
+                                                        href="#"><span>{% trans %}Mechanics{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex photo-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-dent"
-                                                        href="#"><span>Dentists</span></a></div>
+                                                        href="#"><span>{% trans %}Dentists{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk rest-icon"
-                                                        href="#"><span>Restaurants</span></a></div>
+                                                        href="#"><span>{% trans %}Restaurants{% endtrans %}</span></a></div>
                         </li>
                     </ol>
                     <ol class="odd">
                         <li class="r-hex photo-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-flor"
-                                                        href="#"><span>Florists</span></a></div>
+                                                        href="#"><span>{% trans %}Florists{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex">
-                            <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk salon-icon" href="#"><span>Beauty Salons</span></a>
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk salon-icon" href="#"><span>{% trans %}Beauty Salons{% endtrans %}</span></a>
                             </div>
                         </li>
                         <li class="r-hex photo-hex">
                             <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-hair"
-                                                        href="#"><span>Hairdressers</span></a></div>
+                                                        href="#"><span>{% trans %}Hairdressers{% endtrans %}</span></a></div>
                         </li>
                         <li class="r-hex">
-                            <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk doc-icon" href="#"><span>Doctors</span></a>
+                            <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk doc-icon" href="#"><span>{% trans %}Doctors{% endtrans %}</span></a>
                             </div>
                         </li>
                     </ol>
@@ -142,50 +142,50 @@
                         <ol>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk sol-icon"
-                                                            href="#"><span>Solicitors</span></a></div>
+                                                            href="#"><span>{% trans %}Solicitors{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
-                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-build" href="#"><span>Builders</span></a>
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-build" href="#"><span>{% trans %}Builders{% endtrans %}</span></a>
                                 </div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk plum-icon"
-                                                            href="#"><span>Plumbers</span></a></div>
+                                                            href="#"><span>{% trans %}Plumbers{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-pharma"
-                                                            href="#"><span>Pharmacies</span></a></div>
+                                                            href="#"><span>{% trans %}Pharmacies{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk mech-icon"
-                                                            href="#"><span>Mechanics</span></a></div>
+                                                            href="#"><span>{% trans %}Mechanics{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-dent"
-                                                            href="#"><span>Dentists</span></a></div>
+                                                            href="#"><span>{% trans %}Dentists{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 grey-bk el-icon"
-                                                            href="#"><span>Electricians</span></a></div>
+                                                            href="#"><span>{% trans %}Electricians{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk rest-icon"
-                                                            href="#"><span>Restaurants</span></a></div>
+                                                            href="#"><span>{% trans %}Restaurants{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-flor"
-                                                            href="#"><span>Florists</span></a></div>
+                                                            href="#"><span>{% trans %}Florists{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
-                                <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk salon-icon" href="#"><span>Beauty Salons</span></a>
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 green-bk salon-icon" href="#"><span>{% trans %}Beauty Salons{% endtrans %}</span></a>
                                 </div>
                             </li>
                             <li class="r-hex">
                                 <div class="r-hex-inner"><a class="r-hex-inner-2 photo-bk-hair"
-                                                            href="#"><span>Hairdressers</span></a></div>
+                                                            href="#"><span>{% trans %}Hairdressers{% endtrans %}</span></a></div>
                             </li>
                             <li class="r-hex">
-                                <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk doc-icon" href="#"><span>Doctors</span></a>
+                                <div class="r-hex-inner"><a class="r-hex-inner-2 blue-bk doc-icon" href="#"><span>{% trans %}Doctors{% endtrans %}</span></a>
                                 </div>
                             </li>
                         </ol>
@@ -222,22 +222,22 @@
                     <div class="row">
                         <div class="col-md-6 articles-section">
                             <div class="section-title">
-                            <h1 class="blue-c">Articles</h1>
+                            <h1 class="blue-c">{% trans %}Articles{% endtrans %}</h1>
                                 <hr>
-                                <a href="#" class="btn">View more articles</a></div>
+                                <a href="#" class="btn">{% trans %}View more articles{% endtrans %}</a></div>
                             <div class="articles">
                                 <div class="col-xs-6 article">
                                     <div class="article-pic"><a href="#"><img src="{{ asset('/assets/images/homepage/article1.png')}}"></a>
                                     </div>
                                     <div class="article-info">
-                                        <a href="#" class="article-title blue-c">Why you feel grumpy when the seasons change</a>
+                                        <a href="#" class="article-title blue-c">{% trans %}Why you feel grumpy when the seasons change{% endtrans %}</a>
 
-                                        <div class="article-area green-c">Psychologists</div>
-                                        <div class="article-text">If you live in a part of Australia with cold, cheerless
+                                        <div class="article-area green-c">{% trans %}Psychologists{% endtrans %}</div>
+                                        <div class="article-text">{% trans %}If you live in a part of Australia with cold, cheerless
                                             winters,
                                             you’ll understand. Your energy levels plummet, you want to hide under the doona, and
                                             you
-                                            feel well, sad. You’re not sick, you’re actually depressed.
+                                            feel well, sad. You’re not sick, you’re actually depressed.{% endtrans %}
                                         </div>
                                     </div>
                                 </div>
@@ -245,14 +245,14 @@
                                     <div class="article-pic"><a href="#"><img src="{{ asset('/assets/images/homepage/article2.png')}}"></a>
                                     </div>
                                     <div class="article-info">
-                                        <a href="#" class="article-title blue-c">Why you feel grumpy when the seasons change</a>
+                                        <a href="#" class="article-title blue-c">{% trans %}Why you feel grumpy when the seasons change{% endtrans %}</a>
 
-                                        <div class="article-area green-c">Psychologists</div>
-                                        <div class="article-text">If you live in a part of Australia with cold, cheerless
+                                        <div class="article-area green-c">{% trans %}Psychologists{% endtrans %}</div>
+                                        <div class="article-text">{% trans %}If you live in a part of Australia with cold, cheerless
                                             winters,
                                             you’ll understand. Your energy levels plummet, you want to hide under the doona, and
                                             you
-                                            feel well, sad. You’re not sick, you’re actually depressed.
+                                            feel well, sad. You’re not sick, you’re actually depressed.{% endtrans %}
                                         </div>
                                     </div>
                                 </div>
@@ -260,22 +260,22 @@
                         </div>
                         <div class="col-md-6 videos-section">
                             <div class="section-title">
-                            <h1 class="blue-c">Videos</h1>
+                            <h1 class="blue-c">{% trans %}Videos{% endtrans %}</h1>
                                 <hr>
-                                <a href="#" class="btn">View more videos</a></div>
+                                <a href="#" class="btn">{% trans %}View more videos{% endtrans %}</a></div>
                             <div class="articles videos">
                                 <div class="col-xs-6 article">
                                     <div class="article-pic video-preview"><a href="#"><img
                                             src="{{ asset('/assets/images/homepage/article3.png')}}"></a>
                                     </div>
                                     <div class="article-info">
-                                        <a href="#" class="article-title blue-c">How to choose the right builder</a>
+                                        <a href="#" class="article-title blue-c">{% trans %}How to choose the right builder{% endtrans %}</a>
 
-                                        <div class="article-area green-c">Building Contractors</div>
-                                        <div class="article-text">There’s nothing like being home for the holidays to start
+                                        <div class="article-area green-c">{% trans %}Building Contractors{% endtrans %}</div>
+                                        <div class="article-text">{% trans %}There’s nothing like being home for the holidays to start
                                             noticing
                                             all the little annoying bits and pieces around the house that you’d really like to
-                                            change. The kitchen is always top of the list when it comes to sprucing up.
+                                            change. The kitchen is always top of the list when it comes to sprucing up.{% endtrans %}
                                         </div>
                                     </div>
                                 </div>
@@ -284,13 +284,13 @@
                                             src="{{ asset('/assets/images/homepage/article4.png')}}"></a>
                                     </div>
                                     <div class="article-info">
-                                        <a href="#" class="article-title blue-c">How to choose the right builder</a>
+                                        <a href="#" class="article-title blue-c">{% trans %}How to choose the right builder{% endtrans %}</a>
 
-                                        <div class="article-area green-c">Building Contractors</div>
-                                        <div class="article-text">There’s nothing like being home for the holidays to start
+                                        <div class="article-area green-c">{% trans %}Building Contractors{% endtrans %}</div>
+                                        <div class="article-text">{% trans %}There’s nothing like being home for the holidays to start
                                             noticing
                                             all the little annoying bits and pieces around the house that you’d really like to
-                                            change. The kitchen is always top of the list when it comes to sprucing up.
+                                            change. The kitchen is always top of the list when it comes to sprucing up.{% endtrans %}
                                         </div>
                                     </div>
                                 </div>
@@ -329,11 +329,11 @@
                     <div class="footer-logo"></div>
 
                     <div class="copyright-date">
-                        <span>&copy; 2016 infopáginas</span>
+                        <span>{% trans %}infopaginos.copyright{% endtrans %}</span>
                         <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
                             <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
-                                <span itemprop="streetAddress">90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo, </span>
-                                <span itemprop="addressLocality">PR</span>
+                                <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %} , </span>
+                                <span itemprop="addressLocality">{% trans %}PR{% endtrans %}</span>
                             </a>
                         </div>
                     </div>
@@ -341,12 +341,12 @@
 
                 <div class="col-xs-6 footer-menu">
                     <ul class="footer-links green-c">
-                        <li><a class="green-c" href="http://www.infopaginasmedia.com/">About Us</a></li>
-                        <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">Contact Us</a></li>
+                        <li><a class="green-c" href="http://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a></li>
+                        <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">{% trans %}Contact Us{% endtrans %}</a></li>
                     </ul>
                     <ul class="footer-links column">
-                        <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">Privacy Statement</a></li>
-                        <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">Terms of Use</a></li>
+                        <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Statement{% endtrans %}</a></li>
+                        <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Use{% endtrans %}</a></li>
                     </ul>
                     <ul class="social-icons">
                         <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_FACEBOOK_PROFILE')) }}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>

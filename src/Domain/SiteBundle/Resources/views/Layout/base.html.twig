@@ -69,7 +69,7 @@
                             {% if (app.user) %}
                                  <li class="login-link desc-menu logged-home">
                                     <a href="{{ path('domain_site_user_profile') }}" class="login-button">
-                                        <span class="welcome">Welcome, </span>
+                                        <span class="welcome">{% trans %}Welcome{% endtrans %}, </span>
                                     <span class="user-name">
                                         {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
                                     </span>
@@ -78,7 +78,7 @@
                             {% else %}
                                 <li class="login-link desc-menu home">
                                     <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
-                                        Login
+                                        {% trans %}Login{% endtrans %}
                                     </a>
                                 </li>
                             {% endif %}
@@ -122,12 +122,12 @@
                 <div class="footer-logo"></div>
 
                 <div class="copyright-date">
-                    <span>&copy; 2016 infopáginas</span>
+                    <span>{% trans %}infopaginos.copyright{% endtrans %}</span>
 
                     <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
                         <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
-                            <span itemprop="streetAddress">90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo, </span>
-                            <span itemprop="addressLocality">PR</span>
+                            <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, </span>
+                            <span itemprop="addressLocality">{% trans %}PR{% endtrans %}</span>
                         </a>
                     </div>
                 </div>
@@ -135,12 +135,12 @@
 
             <div class="col-xs-6 footer-menu">
                 <ul class="footer-links green-c">
-                    <li><a class="green-c" href="http://www.infopaginasmedia.com/">About Us</a></li>
-                    <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">Contact Us</a></li>
+                    <li><a class="green-c" href="http://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">{% trans %}Contact Us{% endtrans %}</a></li>
                 </ul>
                 <ul class="footer-links column">
-                    <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">Privacy Statement</a></li>
-                    <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">Terms of Use</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Statement{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Use{% endtrans %}</a></li>
                 </ul>
                 <ul class="social-icons">
                     <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_FACEBOOK_PROFILE')) }}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -152,12 +152,12 @@
             </div>
             <div class="col-xs-12 copyright small-view white-c">
                 <div>
-                    <span>&copy; 2016 infopáginas</span>
+                    <span>{% trans %}infopaginos.copyright{% endtrans %}</span>
 
                     <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
                         <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
-                            <span itemprop="streetAddress">90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo, </span>
-                            <span itemprop="addressLocality">PR</span>
+                            <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, </span>
+                            <span itemprop="addressLocality">{% trans %}PR{% endtrans %}</span>
                         </a>
                     </div>
                 </div>
