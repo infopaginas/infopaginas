@@ -9,8 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SubDomainListener
+class SubDomainListener implements EventSubscriberInterface
 {
     protected $container;
     private $router;
@@ -29,6 +31,14 @@ class SubDomainListener
         $locale = $this->getCurrentLocale($request);
 
         $request->setLocale($locale);
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            // must be registered after the default Locale listener
+            KernelEvents::REQUEST => array(array('onKernelRequest', 15)),
+        );
     }
 
     private function getCurrentLocale($request)
