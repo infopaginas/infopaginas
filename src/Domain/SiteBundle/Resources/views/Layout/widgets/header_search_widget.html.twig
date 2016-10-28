@@ -17,7 +17,7 @@
         {% endif %}
     {% endif %}
 
-    <input type="text" id='headerSearch' name="q" placeholder="{% trans %}What do you want to find?{% endtrans %}" value="{{ qValue }}" class="form-control what">
+    <input type="text" id='headerSearch' name="q" placeholder="{% trans %}What do you want to find?{% endtrans %}" data-placeholder="{% trans %}What do you want to find?{% endtrans %}" data-error-placeholder="{% trans %}Please enter a search term{% endtrans %}" value="{{ qValue }}" class="form-control what">
 
 </div>
 <div class="col-xs-5 search-input home">

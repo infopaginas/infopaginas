@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="crumbs">
                     <a href="#">
-                        {{ businessProfile.getCategories() | first }} in {{ businessProfile.getCity() }}
+                        {% trans with {'%category%': businessProfile.getCategories() | first, '%city%': businessProfile.getCity()} %}%category% in %city%{% endtrans %}
                         <span>&nbsp; »</span>
                     </a>
                     &nbsp;

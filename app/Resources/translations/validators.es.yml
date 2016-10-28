@@ -1,0 +1,18 @@
+#SiteBundle/Resources/translations/validators.en.yml
+user:
+  password:
+    min_length: Por favor, use un mínimo de 6 símbolos para asegurar su contraseña.
+
+#BusinessBundle/Resources/translations/validators.en.yml
+business_profile:
+  max_length: Por favor, use max {{ limit }} símbolos
+  phone:
+    invalid: Número máximo de dígitos es 10. Solamente los dígitos y el tablero están permitidos
+    digit_dash: Solamente los dígitos y el tablero están permitidos
+  images:
+    invalid_url: Error: URL de la imagen no válida.
+  video:
+    invalid_url: Error: la dirección URL del vídeo no es válido.
+  category:
+    min_count: En la categoría {{ limit }} mínimo debe seleccionarse
+  service_areas_type: Usted debe elegir un área de servicio válido
