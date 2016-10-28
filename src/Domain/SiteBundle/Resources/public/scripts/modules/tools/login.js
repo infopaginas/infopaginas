@@ -46,7 +46,12 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
     login.prototype.successHandler = function( response ) {
         if( response.success ) {
             alertify.success( response.message );
-            document.location.href = this.urls.home;
+
+            if ( response.redirect ) {
+                document.location.href = response.redirect;
+            } else {
+                document.location.href = this.urls.home;
+            }
         } else {
             this.enableFieldsHighlight();
             alertify.error( response.message );

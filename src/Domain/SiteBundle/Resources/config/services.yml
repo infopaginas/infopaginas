@@ -155,4 +155,4 @@ services:
         class: Domain\SiteBundle\EventListener\SubDomainListener
         arguments: [ @service_container, @router, @twig ]
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_subscriber }

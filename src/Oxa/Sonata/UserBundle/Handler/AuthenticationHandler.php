@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -32,10 +34,14 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     /**
      * AuthenticationHandler constructor.
      * @param TranslatorInterface $translator
+     * @param Router              $router
+     * @param SecurityContext     $security
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, Router $router, SecurityContext $security)
     {
         $this->translator = $translator;
+        $this->router     = $router;
+        $this->security   = $security;
     }
 
     /**
@@ -45,9 +51,16 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
+        $redirect = false;
+
+        if ($this->security->isGranted('ROLE_ADMINISTRATOR')) {
+            $redirect = $this->router->generate('sonata_admin_dashboard');
+        }
+
         return new JsonResponse([
-            'success' => true,
-            'message' => $this->getTranslator()->trans(self::SUCCESS_LOGIN_MESSAGE),
+            'success'  => true,
+            'message'  => $this->getTranslator()->trans(self::SUCCESS_LOGIN_MESSAGE),
+            'redirect' => $redirect,
         ]);
     }
 
