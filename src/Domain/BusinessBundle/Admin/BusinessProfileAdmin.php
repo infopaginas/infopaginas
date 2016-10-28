@@ -721,7 +721,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 $entity->setVideo($wistiaMedia);
             }
         } else {
-            if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) { //todo
+            if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
                 $video = null;
             } else {
                 $video = $entity->getVideo();
