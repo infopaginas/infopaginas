@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row profile-managment">
             <div class="col-xs-12">
-                <div class="notice-block blue-c">Please note: changes will be applied after approval
+                <div class="notice-block blue-c">{% trans %}business.profile.edit.note{% endtrans %}
                 </div>
             </div>
              {% if businessProfile is defined %}
@@ -94,7 +94,7 @@
                 {% endif %}
             <div class="dropdown-col">
                 {% if businessProfile is defined %}
-                    <span class="language-content-label">Content:</span>
+                    <span class="language-content-label">{% trans %}Content{% endtrans %}:</span>
                     <div class="language-content">
                         <span>
                             <a href="#" class="language-selector selected" data-locale="en">{% trans %}Eng{% endtrans %}</a>

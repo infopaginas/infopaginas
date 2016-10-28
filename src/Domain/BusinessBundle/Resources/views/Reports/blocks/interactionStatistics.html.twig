@@ -8,7 +8,7 @@
     <tbody>
     {% for row in interactionsData %}
         <tr>
-            <td>{{ row['category'] }}</td>
+            <td>{{ row['category']|trans }}</td>
             <td>{{ row['clicks'] }}</td>
         </tr>
     {% endfor %}

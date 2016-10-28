@@ -1,4 +1,4 @@
-Advertise with us: Publicidad con nosotros
+Advertise with us: Anúnciate con nosotros
 Login: Iniciar sesión
 Articles: Artículos
 View more articles: Ver más artículos
@@ -8,76 +8,76 @@ infopaginos.copyright: © 2016 infopáginas
 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo: 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo
 PR: PR
 About Us: Acerca de Nosotros
-Contact Us: Póngase en contacto con nosotros
-Privacy Statement: Declaración de Privacidad
-Terms of Use: Condiciones de uso
+Contact Us: Contáctenos
+Privacy Statement: Políticas de Privacidad
+Terms of Use: Términos y condiciones
 Email: Email
 Password: Contraseña
 Forgot Password?: ¿Se te olvidó tu contraseña?
-Log In: Entrar
+Log In: Ingresar
 or: o
-Log In with: Entrar con
+Log In with: Login con
 New to Infopaginas?: Nuevo en Infopáginas?
 Create account: Crear cuenta
 By joining Infopaginas you agree to our: Al unirse a Infopáginas está de acuerdo con nuestra
 Terms of Service: Términos de servicio
 and: y
 Privacy Policy: Política de Privacidad
-We value your privacy, and will not post to your wall without your permission.: Valoramos su privacidad, y no vamos a publicar en su muro sin su permiso.
-First Name: Nombre de pila
+We value your privacy, and will not post to your wall without your permission.: Infopáginas valora su privacidad y no publicará en su muro sin su autorización.
+First Name: Nombre
 Last Name: Apellido
 Confirm Password: Confirmar Contraseña
 Location: Ubicación
 Create Account: Crear Cuenta
-Already have an account?: Ya tiene su cuenta ?
+Already have an account?: ¿Ya tiene una cuenta?
 Reset Password: Restablecer contraseña
 Update Password: Actualizar contraseña
-We can find everything!: Podemos encontrar todo!
-What do you want to find?: ¿Qué desea encontrar?
+We can find everything!: ¡Podemos encontrar todo!
+What do you want to find?: ¿Qué está buscando?
 Search by: Buscar por
 business name: nombre de la empresa
 keyword: palabra clave
 San Juan: San Juan
 Filter by: Filtrar por
 Category: Categoría
-Neighborhoods: Barrios
+Neighborhoods: Vecindarios
 %searchQuery% in %searchLocationName%: %searchQuery% en %searchLocationName%
 %page%-%amount% of %resultCount% Results: %page%-%amount% de %resultCount% Resultados
 for %searchQuery% in %searchLocationName%: la  %searchQuery% en %searchLocationName%
-Sort by: Ordenar por
-Relevance: Pertinencia
+Sort by: Organizar por
+Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
-Call: De llamadas
-Reviews: Las críticas
-list: lista
-map: el mapa
+Call: Llamadas
+Reviews: Comentarios
+list: Ok
+map: Mapa
 compare: comparar
 phone number: número de teléfono
-Compare: Compare
+Compare: Comparar
 Bookstores in San Juan: Librerías en San Juan
 Name of Business: Nombre del Negocio
 Contact details: Datos de contacto
 Address: Dirección
-Distance from your location: Distancia a su lugar
-Profile Rating: Perfil Valoración
-Working Hours: Horas de trabajo
+Distance from your location: Distancia de su localidad
+Profile Rating: Rating del perfil
+Working Hours: Horarios
 Payment Methods: Métodos de pago
-Social networks: Las redes sociales
+Social networks: Redes Sociales
 miles: millas
 Filter: Filtro
-Submit: Presentar
+Submit: Enviar
 
 Homepage: Página principal
-User profile: Perfil de usuario
+User profile: Perfil
 Personal Information: Información Personal
 Catalá: Catalá
 Joyeros: Joyeros
-Advertiser Id: Anunciante Id
+Advertiser Id: ID del Anunciante
 11111111: 11111111
 Change Password: Cambiar contraseña
 Puerto Rico: Puerto Rico
-Phone Number: Número de teléfono
+Phone Number: Teléfono
 (787) 594-7273: (787) 594-7273
 Logout: Cerrar sesión
 Twitter: Twitter
@@ -89,9 +89,9 @@ plus.google.example.email.placeholder: https://plus.google.com/user
 Youtube: Youtube
 youtube.example.email.placeholder: https://www.youtube.com/user
 No reviews found.: No se encontraron comentarios.
-My Business Profiles: Mis perfiles de actividad
-No business profiles found.: No se han encontrado perfiles de negocios.
-Request Business Profile: Solicitud de perfil de actividad
+My Business Profiles: Mis perfiles
+No business profiles found.: No se encontraron perfiles.
+Request Business Profile: Solicitud de perfil de negocio
 Cancel: Cancelar
 Save: Guardar
 Old Password: Contraseña anterior
@@ -101,17 +101,17 @@ Welcome: Bienvenido
 Social Networks: Redes sociales
 
 General: General
-Business Address: Dirección Comercial
-Sons Notebook: Notebook hijos
+Business Address: Dirección de Negocio
+Sons Notebook: Sons Notebook
 Subscription: Suscripción
 Free: Gratis
 website.example.placeholder: http://sonsnotebook.com
-Phone number: Número de teléfono
+Phone number: Teléfono
 Phone: Teléfono
 Add: Añadir
 email.example.placeholder: sonsnotebook@info.com
 Date of registration: Fecha de registro
-Business Description: Descripción de actividad
+Business Description: Descripción de negocio o empresa
 Description: Descripción
 business.add.description.placeholder: En el momento del estudio, todos los padres, maestros, estudiantes damos la bienvenida a las ideas que promuevan una mayor productividad y al final del día, producen un mejor rendimiento académico
 Products: Productos
@@ -123,7 +123,7 @@ business.add.workingHours.placeholder: lunes - viernes 9 a.m. - 7 p.m. sábado d
 Fullness: Plenitud
 Map: Mapa
 Service Areas: Áreas de servicio
-Within miles of my business: Dentro de las millas de mi negocio
+Within miles of my business: Millas alrededor de mi negocio
 100: 100
 Localities: Localidades
 Street address: Dirección
@@ -131,9 +131,9 @@ Country: País
 State: Estado
 City: Ciudad
 Zip code: Código postal
-Extended address: Direcciones extendida
-Cross street: Cruzar la calle
-Display custom address: Dirección de pantalla personalizado
+Extended address: Dirección adicional
+Cross street: Al cruzar la calle
+Display custom address: Dirección personalizada
 Hide Address: Ocultar Dirección
 Latitude: Latitud
 latitude.example.placeholder: 66° 33′ 39″ N
@@ -143,7 +143,7 @@ longitude.example.placeholder: 23° 27′ 30″ E
 name: nombre
 Categories: Categorías
 Areas: Áreas
-Website: Sitio Web
+Website: Página Web
 Geocode: Geocode
 yes: sí
 Pending: Pendiente
@@ -160,34 +160,119 @@ Esp: Esp
 Last date of profile update: Última fecha de actualización del perfil
 by: por
 Close Business Profile Request: Cerca del perfil de la Solicitud
-Closure reason: Cierre razón
+Closure reason: Razón del cierre del negocio
 Close: Cerrar
 
-Write a Review: Escribir un Comentario
-Write a review: Escribir un comentario
-Rating: Valoración
-Display name: Nombre de usuario
-Review text: Texto del comentario
+Write a Review: Escriba un comentario
+Write a review: Escriba un comentario
+Rating: Rating
+Display name: Nombre
+Review text: Revisar comentario
 
 Select categories: Seleccione categorías
 Select areas: Seleccionar áreas
 Select payment methods: Seleccionar métodos de pago
 Advertising, Cafeterias, Grooming, Restaurants: Publicidad, Cafeterías, Grooming, Restaurantes
-Select Localities: Seleccione Poblaciones
-Select Neighborhoods: Seleccione Barrios
+Select Localities: Seleccione Localidades
+Select Neighborhoods: Seleccione Vecindarios
 Select country: Seleccione el país
 Locality: Localidad
 Search: Buscar
 
-Solicitors: Procuradores
-Builders: Constructores
+Solicitors: Solicitantes
+Builders: Contratistas
 Pharmacies: Farmacias
 Electricians: Electricistas
-Plumbers: Fontaneros
+Plumbers: Plomeros
 Mechanics: Mecánica
 Dentists: Dentistas
 Restaurants: Restaurantes
 Florists: Floristerías
 Beauty salons: Salones de belleza
 Hairdressers: Peluquerías
-Doctors: Doctors
+Doctors: Doctores
+
+#new translations
+Products or Services: Productos o Servicios
+Working hours: Las horas de trabajo
+Photos: Fotos
+Video: Vídeo
+Sorry, no results were found.: Lo sentimos, no se encontraron resultados.
+Home: Casa
+%category% in %city%: %category% en %city%
+Bookstores in San Juan: Librerías en San Juan
+SONs Notebooks: SONs Cuadernos
+
+Reports: Informes
+Media: Medios
+Slogan: Lema
+Ad: Ad
+Images: Imágenes
+Logo: Logo
+UPLOAD AN IMAGE: SUBIR UNA FOTO
+BROWSE: EXAMINE LAS
+UPLOAD BY URL: SUBIDA POR URL
+PRIMARY: PRIMARIA
+TYPE: TIPO
+Type: Type
+DESCRIPTION: DESCRIPCIÓN
+REMOVE: REMUEVA
+Photo: Foto
+Banner Ad: Anuncio de la bandera
+
+social networks: las redes sociales
+Advertisement: Publicidad
+
+Overview: Descripción general
+Ad usage: El uso de anuncios
+Keywords: Palabras clave
+Interactions: Interacciones
+Filters: Filtros
+Today: Hoy
+This week: Esta semana
+Last week: La semana pasada
+This month: Este mes
+Last month: El mes pasado
+Custom: Personalizado
+Chart: Gráfico
+Statistics: Estadísticas
+Date: Fecha
+Views: Vistas
+Impressions: Impresiones
+Export: Exportación
+PDF: PDF
+Excel: Excel
+Print: Imprimir
+
+Content: Contenido
+business.profile.edit.note: Tenga en cuenta: los cambios se aplicarán después de la aprobación
+Please enter a search term: Por favor, introduzca un término de búsqueda
+Business Profile Views vs Impressions: Vistas empresariales Perfil vs Impresiones
+Count: Incluido
+Keywords Statistics: Estadísticas Palabras clave
+Number of searches: Número de búsquedas
+Searches: Búsquedas
+Date period: Período la fecha
+Keywords Count: Palabras clave Count
+Date Start: Fecha de inicio
+Date End: Fecha de finalización
+Keyword: Palabra clave
+Searches Count: Búsquedas Count
+Clicks: Clics
+Image: Imagen
+Social Network: Red social
+
+Coupons: Cupones
+View more reviews: Ver más opiniones
+firstname: nombre
+Lastname: Apellido
+UPLOAD VIDEO: CARGAR VÍDEOS
+New Business Review: New Business Review
+Why you feel grumpy when the seasons change: ¿Por qué se siente mal humor cuando las estaciones cambian
+Psychologists: Psicólogos
+homepage.article.psychologists.text: Si usted vive en una parte de Australia, con inviernos fríos y tristes, vas a entender. Sus niveles de energía caen en picado, que desea ocultar bajo el edredón, y se siente bien, triste. Usted no está enfermo, en realidad estás deprimido.
+How to choose the right builder: ¿Cómo elegir el constructor adecuado
+Building Contractors: Contratistas de construcción
+homepage.article.building_contractors.text: No hay nada como estar en casa para las vacaciones para empezar a notar todos los pequeños trozos y piezas molestas en la casa que realmente te gustaría cambiar. La cocina es siempre la parte superior de la lista cuando se trata de respiró ahí.
+prev: anterior
+next: siguiente

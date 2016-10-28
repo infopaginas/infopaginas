@@ -48,7 +48,7 @@ class BusinessProfilePhoneType extends AbstractType
                     ]),
                     new Regex([
                         'pattern' => '/^[0-9-]*$/',
-                        'message' => 'Only digits and dash are allowed',
+                        'message' => 'business_profile.phone.digit_dash',
                     ]),
                     new NotBlank(),
                 ]
