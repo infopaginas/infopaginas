@@ -26,7 +26,7 @@ class SubDomainListener implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $request   = $event->getRequest();
+        $request = $event->getRequest();
 
         $locale = $this->getCurrentLocale($request);
 

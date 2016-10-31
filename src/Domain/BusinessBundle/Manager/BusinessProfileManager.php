@@ -119,10 +119,10 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
-    public function searchAutosuggestByPhraseAndLocation($query)
+    public function searchAutosuggestByPhraseAndLocation($query, $locale)
     {
-        $categories = $this->categoryManager->searchAutosuggestByName($query, $this->locale);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, $this->locale);
+        $categories = $this->categoryManager->searchAutosuggestByName($query, $locale);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, ucwords($locale));
 
         $result = array_merge($categories, $businessProfiles);
 
@@ -193,12 +193,10 @@ class BusinessProfileManager extends Manager
     {
         $business = $this->getRepository()->find($id);
 
-        if ($locale !== 'en') {
-            $this->getTranslatableListener()->setTranslatableLocale($locale);
-            $this->getTranslatableListener()->setTranslationFallback('');
+        $this->getTranslatableListener()->setTranslatableLocale($locale);
+        $this->getTranslatableListener()->setTranslationFallback('');
 
-            $this->getEntityManager()->refresh($business);
-        }
+        $this->getEntityManager()->refresh($business);
 
         return $business;
     }

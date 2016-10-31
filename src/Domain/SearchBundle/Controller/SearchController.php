@@ -73,7 +73,10 @@ class SearchController extends Controller
         $searchData = $this->getSearchDataByRequest($request);
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation($searchData['q']);
+        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation(
+            $searchData['q'],
+            $request->getLocale()
+        );
 
         return (new JsonResponse)->setData($results);
     }
