@@ -183,11 +183,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $searchQuery = $this->splitPhraseToPlain($query);
 
-        $queryBuilder = $this->getQueryBuilder()
-            ->addSelect('bp.name');
+        $queryBuilder = $this->getQueryBuilder()->addSelect('bp.name');
 
         $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery, $locale);
-        $this->addHeadlineToNameQueryBuilder($queryBuilder);
+        $this->addHeadlineToNameQueryBuilder($queryBuilder, $locale);
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
         $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
 
@@ -319,10 +318,10 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    protected function addHeadlineToNameQueryBuilder(QueryBuilder $queryBuilder)
+    protected function addHeadlineToNameQueryBuilder(QueryBuilder $queryBuilder, $locale)
     {
         return $queryBuilder
-            ->addSelect('TSHEADLINE(bp.name, :searchQuery ) as data')
+            ->addSelect('TSHEADLINE(bp.name' . $locale . ', :searchQuery ) as data')
         ;
     }
 
