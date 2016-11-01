@@ -107,6 +107,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      * Main search functionality
      *
      * @param SearchDTO $searchParams
+     * @param string    $locale
      * @return array
      */
     public function search(SearchDTO $searchParams, string $locale)
@@ -183,7 +184,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $searchQuery = $this->splitPhraseToPlain($query);
 
-        $queryBuilder = $this->getQueryBuilder()->addSelect('bp.name');
+        $queryBuilder = $this->getQueryBuilder()->addSelect('bp.name' . $locale . ' as name');
 
         $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery, $locale);
         $this->addHeadlineToNameQueryBuilder($queryBuilder, $locale);

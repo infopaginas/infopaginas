@@ -174,9 +174,9 @@ class BusinessProfileManager extends Manager
         return json_encode($profilesArray);
     }
 
-    public function search(SearchDTO $searchParams)
+    public function search(SearchDTO $searchParams, string $locale)
     {
-        $searchResultsData = $this->getRepository()->search($searchParams, $this->locale);
+        $searchResultsData = $this->getRepository()->search($searchParams, $locale);
         $searchResultsData = array_map(function ($item) {
             return $item[0]->setDistance($item['distance']);
         }, $searchResultsData);
@@ -514,11 +514,12 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $searchParams
+     * @param string    $locale
      * @return mixed
      */
-    public function countSearchResults(SearchDTO $searchParams)
+    public function countSearchResults(SearchDTO $searchParams, string $locale)
     {
-        return $this->getRepository()->countSearchResults($searchParams, $this->locale);
+        return $this->getRepository()->countSearchResults($searchParams, $locale);
     }
 
     /**

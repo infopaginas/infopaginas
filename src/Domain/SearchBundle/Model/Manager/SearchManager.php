@@ -72,9 +72,9 @@ class SearchManager extends Manager
         $this->getRepository()->getSearchQuery($phrase, $location);
     }
 
-    public function search(SearchDTO $searchParams) : SearchResultsDTO
+    public function search(SearchDTO $searchParams, string $locale) : SearchResultsDTO
     {
-        $results = $this->businessProfileManager->search($searchParams);
+        $results = $this->businessProfileManager->search($searchParams, $locale);
 
         if (!$results) {
             // todo - change logic to 40 miles
@@ -82,7 +82,7 @@ class SearchManager extends Manager
         }
 
         if ($results) {
-            $totalResults   = $this->businessProfileManager->countSearchResults($searchParams);
+            $totalResults   = $this->businessProfileManager->countSearchResults($searchParams, $locale);
             $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
 
             // get by current locality
