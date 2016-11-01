@@ -69,9 +69,6 @@ class BusinessProfileManager extends Manager
     /** @var ContainerInterface $container */
     private $container;
 
-    /** @var string */
-    private $locale;
-
     /**
      * Manager constructor.
      *
@@ -101,10 +98,6 @@ class BusinessProfileManager extends Manager
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
 
         $this->analytics = $container->get('google.analytics');
-
-        if ($container->isScopeActive('request')) {
-            $this->locale = ucwords($container->get('request')->getLocale());
-        }
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
