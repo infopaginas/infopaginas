@@ -1,0 +1,90 @@
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        # enable the SonataAdminBundle block
+        sonata.user.block.menu:    # used to display the menu in profile pages
+        sonata.user.block.account: # used to display menu option (login option)
+        sonata.block.service.text: # used to if you plan to use Sonata user routes
+        sonata.admin.block.admin_list:
+            contexts: [admin]
+        sonata.admin.block.search_result:
+            contexts: [admin]
+        sonata_translation.block.locale_switcher:
+            contexts: [admin]
+
+sonata_admin:
+    title: Ingopaginas
+    title_logo: logo.png
+    templates:
+        layout: OxaSonataAdminBundle::layout.html.twig
+        list:   OxaSonataAdminBundle:CRUD:list.html.twig
+        edit:   OxaSonataAdminBundle:CRUD:edit.html.twig
+        show:   OxaSonataAdminBundle:CRUD:show.html.twig
+        base_list_field:   OxaSonataAdminBundle:CRUD:base_list_field.html.twig
+        batch_confirmation:   OxaSonataAdminBundle:CRUD:batch_confirmation.html.twig
+    security:
+        handler: sonata.admin.security.handler.role
+    dashboard:
+        groups:
+            sonata.admin.group.user:
+                label: Users
+                icon: <i class="fa fa-users"></i>
+                items:
+                    - sonata.user.admin.user
+            sonata.admin.group.task:
+                label: Tasks
+                icon: <i class="fa fa-tasks"></i>
+                items:
+                    - domain_business.admin.task
+            domain.admin.group.business:
+                label: Businesses
+                icon: <i class="fa fa-briefcase"></i>
+                items:
+                    - domain_business.admin.business_profile
+                    - domain_business.admin.business_profile_has_media
+                    - domain_business.admin.subscription
+                    - domain_business.admin.subscription_plan
+                    - domain_business.admin.category
+                    - domain_business.admin.area
+                    - domain_business.admin.locality
+                    - domain_business.admin.neighborhood
+                    - domain_business.admin.tag
+                    - domain_business.admin.payment_method
+                    - domain_business.admin.address.country
+            domain.admin.group.menu:
+                label: Pages
+                icon: <i class="fa fa-list"></i>
+                items:
+                    - domain_menu.admin.menu
+            domain.admin.group.page:
+                label: Pages
+                icon: <i class="fa fa-file"></i>
+                items:
+                    - domain_article.admin.article
+                    - domain_page.admin.page
+                    - domain_page.admin.template
+            domain.admin.group.banner:
+                label: Banners
+                icon: <i class="fa fa-star"></i>
+                items:
+                    - domain_banner.admin.campaign
+                    - domain_banner.admin.banner
+                    - domain_banner.admin.type
+                    - domain_banner.admin.template
+            sonata.admin.group.media:
+                label: Media
+                icon: <i class="fa fa-picture-o"></i>
+                items:
+                    - sonata.media.admin.media
+            oxa.admin.group.config:
+                label: Configs
+                icon: <i class="fa fa-cogs"></i>
+                items:
+                    - oxa_config.admin.config
+            domain.admin.group.report:
+                label: Reports
+                icon: <i class="fa fa-bar-chart-o"></i>
+                items:
+                    - domain_report.admin.subscription_report
+                    - domain_report.admin.category_report
+                    - domain_report.admin.views_and_visitors_report

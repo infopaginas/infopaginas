@@ -1,0 +1,15 @@
+stof_doctrine_extensions:
+    default_locale: %locale%
+    orm:
+        default:
+            timestampable: true
+            sortable: true
+            translatable: true
+            sluggable: true
+            loggable: true
+
+sonata_admin:
+    extensions:
+        j_maitan_sonata_media_crop.crop.extension:
+            implements:
+                - Sonata\MediaBundle\Model\MediaInterface

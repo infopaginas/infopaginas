@@ -1,0 +1,37 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block google_map_widget %}
+
+    {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+    {%- set type = type|default('text') -%}
+
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+
+    <br>
+
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div style="{{ attr.class }}" id="google-map"></div>
+
+    <script>
+        var addressInput = document.getElementById('{{ id }}');
+        var latitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_latitude' }}');
+        var longitudeInput = document.getElementById('{{ form.parent.vars.id ~ '_longitude' }}');
+
+        var MAP_LAT = {{ latitude }};
+        var MAP_LNG = {{ longitude }};
+        var MAP_ZOOM = {{ zoom }};
+
+        var MARKER_VALUE = '{{ value }}';
+    </script>
+
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/google_map_admin.js') }}"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places&callback=initAutocomplete&language={{ language }}"
+            async defer
+    ></script>
+
+{% endblock %}
+
+{% block google_map_front_widget %}
+    {% include 'DomainBusinessBundle:Form/widgets:google_map_front.html.twig' %}
+{% endblock %}

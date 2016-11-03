@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}</title>
+
+    <meta name="description" content="{% if seoData is defined and seoData.seoDescription %}{{ seoData.seoDescription }}{% endif %}"/>
+    <meta name="keywords" content="{% if seoData is defined and seoData.seoKeywords %}{{ seoData.seoKeywords }}{% endif %}"/>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    {% block styles %}
+        <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}" />
+        <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
+        <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
+    {% endblock %}
+
+    {% block doubleClickHeader %}
+        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
+    {% endblock %}
+</head>
+<body>
+
+<!-- Header -->
+<header class="header pages-header">
+{% block header %}
+    <nav class="navbar main-nav navbar-default white-c">
+        <div class="row">
+            <div class="col-md-12 nav-block">
+                <div class="container container-nav">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#navbar-col" aria-expanded="false">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="{{ path('domain_site_home_index')}}" class="logo-header"></a>
+
+                        <div class="header-form">
+                            <form class="form-horizontal search-form" action="{{ path('domain_search_index')}}">
+
+                                <div class="form-group row">
+                                    {% block headerSearch %}
+                                        {% include 'DomainSiteBundle:Layout:widgets/header_search_widget.html.twig' %}
+                                    {% endblock %}
+                                </div>
+                            </form>
+                        </div>
+                        <ul class="menu-nav">
+                            <li class="ad desc-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="navbar-col">
+                        <ul class="nav navbar-nav navbar-right">
+                            {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' with {'addBasePageClass': true} %}
+                            <li class="lang-dropdown">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        <select class="form-control select-control language-select" id="mobileLanguageSelect" tabindex="-1" aria-hidden="true">
+                                            {% for language in languages %}
+                                                <option value="{{ language.url }}" {% if language.active %}selected="selected"{% endif %}">{{ language.title|raw }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                            {% if (app.user) %}
+                                 <li class="login-link desc-menu logged-home">
+                                    <a href="{{ path('domain_site_user_profile') }}" class="login-button">
+                                        <span class="welcome">{% trans %}Welcome{% endtrans %}, </span>
+                                    <span class="user-name">
+                                        {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
+                                    </span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="login-link desc-menu home">
+                                    <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
+                                        {% trans %}Login{% endtrans %}
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block headerFilters %}
+{% endblock %}
+</header>
+
+{% block breakcrumbs %}
+    <!--Breadcrumbs-->
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="crumbs">
+                    <a href="#">{% trans %}Bookstores in San Juan{% endtrans %} <span>&nbsp; &#187; &nbsp; </span></a><span>{% trans %}SONs Notebooks{% endtrans %}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+<main>
+    {% block main %}
+    {% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="blue-bk">
+    {% block footer %}
+    <div class="container default-footer">
+        <div class="row">
+            <div class="col-xs-6 copyright white-c">
+                <div class="footer-logo"></div>
+
+                <div class="copyright-date">
+                    <span>{% trans %}infopaginos.copyright{% endtrans %}</span>
+
+                    <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
+                        <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
+                            <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, </span>
+                            <span itemprop="addressLocality">{% trans %}PR{% endtrans %}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6 footer-menu">
+                <ul class="footer-links green-c">
+                    <li><a class="green-c" href="http://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">{% trans %}Contact Us{% endtrans %}</a></li>
+                </ul>
+                <ul class="footer-links column">
+                    <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Statement{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Use{% endtrans %}</a></li>
+                </ul>
+                <ul class="social-icons">
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_FACEBOOK_PROFILE')) }}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_TWITTER_PROFILE')) }}"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_GOOGLE_PROFILE')) }}"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_LINKEDIN_PROFILE')) }}"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                    <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_INSTAGRAM_PROFILE')) }}"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-xs-12 copyright small-view white-c">
+                <div>
+                    <span>{% trans %}infopaginos.copyright{% endtrans %}</span>
+
+                    <div itemscope itemtype="http://schema.org/PostalAddress" itemprop="address">
+                        <a class="white-c map-link" href="https://maps.google.com/?q=18.4140605,-66.1041006">
+                            <span itemprop="streetAddress">{% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, </span>
+                            <span itemprop="addressLocality">{% trans %}PR{% endtrans %}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endblock %}
+</footer>
+
+{% block modals %}
+    {{ render(controller('DomainSiteBundle:Home:authModal')) }}
+{% endblock %}
+
+<!-- Scripts -->
+{% block scripts %}
+    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+                var siteHomepage = new Homepage();
+            })
+        })
+    </script>
+{% endblock %}
+</body>
+</html>

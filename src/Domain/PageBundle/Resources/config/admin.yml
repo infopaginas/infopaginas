@@ -1,0 +1,12 @@
+services:
+    domain_page.admin.page:
+        class: Domain\PageBundle\Admin\PageAdmin
+        arguments: [~, Domain\PageBundle\Entity\Page, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Pages}
+
+    domain_page.admin.template:
+        class: Domain\PageBundle\Admin\TemplateAdmin
+        arguments: [~, Domain\PageBundle\Entity\Template, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Templates}

@@ -1,0 +1,6 @@
+[submodule "web/layout"]
+	path = web/layout
+	url = git@git.oxagile.com:infopaginas/infopaginas_html.git
+[submodule "web/layout2"]
+	path = web/layout2
+	url = git@git.oxagile.com:infopaginas/infopaginas_html.git

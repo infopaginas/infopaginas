@@ -1,0 +1,95 @@
+{
+    "name": "oxagile/infopaginas",
+    "license": "Oxagile",
+    "type": "project",
+    "description": "Infopaginas project",
+    "autoload": {
+        "psr-4": { "": "src/" },
+        "classmap": [
+            "app/AppKernel.php",
+            "app/AppCache.php",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Lib",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201605",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Common"
+        ]
+    },
+    "require": {
+        "php": ">=7.0.0",
+        "symfony/symfony": "2.8.9",
+        "doctrine/orm": "^2.4.8",
+        "doctrine/doctrine-bundle": "~1.4",
+        "symfony/assetic-bundle": "~2.3",
+        "symfony/swiftmailer-bundle": "~2.3",
+        "symfony/monolog-bundle": "~2.4",
+        "sensio/distribution-bundle": "~4.0",
+        "sensio/framework-extra-bundle": "^3.0.2",
+        "incenteev/composer-parameter-handler": "~2.0",
+        "sonata-project/admin-bundle": "2.3.10",
+        "sonata-project/doctrine-orm-admin-bundle": "~2.3",
+        "sonata-project/user-bundle": "2.2.5",
+        "sonata-project/easy-extends-bundle": "^2.1",
+        "stof/doctrine-extensions-bundle": "^1.2",
+        "sonata-project/formatter-bundle": "^2.3",
+        "helios-ag/fm-elfinder-bundle": "^5.3",
+        "doctrine/doctrine-migrations-bundle": "^1.1",
+        "doctrine/doctrine-fixtures-bundle": "~2.2",
+        "sonata-project/media-bundle": "2.3.3",
+        "sonata-project/translation-bundle": "1.0.4",
+        "twig/extensions": "~1.0",
+        "fresh/doctrine-enum-bundle": "4.5",
+        "pixassociates/sortable-behavior-bundle": "1.0",
+        "egeloen/google-map-bundle": "~2.1",
+        "willdurand/geocoder": "2.8.1",
+        "hwi/oauth-bundle": "^0.4.1",
+        "friendsofsymfony/jsrouting-bundle": "^1.6",
+        "spine/postgres-search-bundle": "^0.1.1",
+        "liuggio/excelbundle": "v2.1.0",
+        "spraed/pdf-generator-bundle": "v1.0",
+        "guzzlehttp/guzzle": "^6.2",
+        "spine/spine-trigonometric-dql-bundle": "^0.1.6",
+        "antimattr/google-bundle": "^2.0",
+        "happyr/google-analytics-bundle": "^4.0",
+        "php-http/guzzle6-adapter": "^1.1",
+        "php-http/httplug-bundle": "^1.3",
+        "cache/filesystem-adapter": "^0.3.1",
+        "oneup/flysystem-bundle": "^1.4",
+        "cache/adapter-bundle": "^0.4.0",
+        "happyr/google-site-authenticator-bundle": "^0.3.2",
+        "googleads/googleads-php-lib": "^10.1"
+    },
+    "require-dev": {
+        "sensio/generator-bundle": "~3.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        },
+        "branch-alias": {
+            "dev-master": "2.8-dev"
+        }
+    }
+}

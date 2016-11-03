@@ -1,0 +1,75 @@
+domain_site_home:
+    resource: "@DomainSiteBundle/Resources/config/routes/homeControllerRoutes.yml"
+    host: "{_locale}.{domain}"
+    prefix:   /
+    defaults:  { _locale: "%locale%", domain: "localhost" }
+    requirements:
+        _locale : '%route_locales%'
+        domain:  "localhost"
+
+domain_site_home_nolocale:
+    resource: "@DomainSiteBundle/Resources/config/routes/homeControllerRoutes.yml"
+    prefix:   /
+
+domain_site_profile:
+    resource: "@DomainSiteBundle/Resources/config/routes/profileControllerRoutes.yml"
+    host: "{_locale}.{domain}"
+    prefix:   /profile
+    defaults:  { _locale: "%locale%", domain: "localhost" }
+    requirements:
+        _locale : '%route_locales%'
+        domain:  "localhost"
+
+domain_site_geolocation:
+    resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
+    host: "{_locale}.{domain}"
+    prefix:   /geolocation
+    requirements:
+        _locale : '%route_locales%'
+        domain:  "localhost"
+
+domain_site_geolocation_nolocale:
+    resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
+    prefix:   /geolocation
+
+domain_site_auth:
+    resource: "@DomainSiteBundle/Resources/config/routes/auth.yml"
+    prefix:   /auth
+
+domain_site_oauth:
+    resource: "@DomainSiteBundle/Resources/config/routes/oauth.yml"
+    prefix:   /
+
+domain_site_user:
+    resource: "@DomainSiteBundle/Resources/config/routes/user.yml"
+    prefix:   /user
+
+# 301 redirect for old urls
+
+domain_site_redirect_sign_up:
+    path:     /sign_up
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
+
+domain_site_redirect_sign_in:
+    path:     /sign_in
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
+
+domain_site_redirect_forgot:
+    path:     /users/password/new
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true
+
+domain_site_redirect_manage_listings:
+    path:     /manage-listings
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: domain_site_home_index
+        permanent: true

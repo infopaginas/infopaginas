@@ -1,0 +1,33 @@
+btn_cancel: Cancel
+edit: Edit
+return_to_list: List
+title_batch_physical_delete_confirmation: Physical delete confirmation
+title_physical_delete: Physical delete
+message_physical_delete_confirmation: Are you sure you want to delete physically this item?
+message_batch_physical_delete_confirmation: Are you sure you want to delete physically this item?
+message_batch_physical_delete_confirmation: Are you sure you want to confirm this action and execute it for the 2 selected elements?
+physical_deleting_element: Item to be deleted physically
+flash_delete_physical_action_success: Item has been deleted successfully.
+delete_item: Delete item: "%object%"
+action_copy: Copy
+action_restore: Restore
+action_delete_physical: Physical delete
+flash_restore_action_success: Item has been restored
+flash_batch_copy_success: The copy has completed successfully
+copy_: copy_
+flash_delete_error_rel: Can not delete object which is used in: "%fields%"
+batch_delete_error_rel: Can not delete object with id: "record_id", which is used in: "%fields%"
+label_yes: Yes
+label_no: No
+title_crop: Crop
+export_pdf: Export to PDF
+export_xls: Export to Excel
+filter.label.today: Today
+filter.label.last_week: Last week
+filter.label.last_month: Last month
+filter.label.last_year: Last year
+filter.label.custom: Custom
+label_export_download: Export
+filter.label.period.daily: Daily
+filter.label.period.per_month: Per Month
+relation_not_valid: Some values are not valid.

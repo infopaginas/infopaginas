@@ -1,0 +1,6 @@
+{% set base_template = 'OxaSonataAdminBundle::layout.html.twig' %}
+{% extends "OxaSonataUserBundle:Admin/Security:login.html.twig" %}
+
+{% block sonata_wrapper %}
+    {% include "OxaSonataUserBundle:Admin/Security/Resetting:request_content.html.twig" %}
+{% endblock sonata_wrapper %}

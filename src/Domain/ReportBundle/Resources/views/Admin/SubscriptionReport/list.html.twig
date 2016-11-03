@@ -1,0 +1,108 @@
+{% extends 'DomainReportBundle:Admin/Default:list.html.twig' %}
+
+{% set results = admin.datagrid.results %}
+
+{% block list_table %}
+    {% if admin.subscriptionData['dates']|length > 1 %}
+        <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
+                <div class="box box-primary">
+                    <canvas id="subscriptionReportChart" width="400" height="70"></canvas>
+                </div>
+        <script>
+            var ctx = document.getElementById("subscriptionReportChart");
+            var data = {
+                labels: {{ admin.subscriptionData['dates']|json_encode|raw }},
+                datasets: [
+                    {% for key, subscription in admin.subscriptionData['subscription_quantities'] %}
+                        {% set lineColor = admin.colors[key] %}
+                        {
+                            label: "{{ subscription['name'] }}",
+                            fill: false,
+                            lineTension: 0.1,
+                            backgroundColor: "{{ lineColor }}",
+                            borderColor: "{{ lineColor }}",
+                            borderCapStyle: 'butt',
+                            borderDashOffset: 0.0,
+                            borderJoinStyle: 'miter',
+                            pointBorderColor: "{{ lineColor }}",
+                            pointBackgroundColor: "#fff",
+                            pointBorderWidth: 1,
+                            pointHoverRadius: 3,
+                            pointHoverBackgroundColor: "{{ lineColor }}",
+                            pointHoverBorderColor: "{{ lineColor }}",
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 1,
+                            pointHitRadius: 10,
+                            data: {{ subscription['quantities']|json_encode|raw }},
+                        },
+                    {% endfor %}
+                ]
+            };
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+
+{{ parent() }}
+{% endblock %}
+
+{% block table_header %}
+{% if admin.datagrid|length %}
+    {{ parent() }}
+{% else %}
+    {{ 'list.content_no_results'|trans({}, 'AdminReportBundle') }}
+{% endif %}
+{% endblock %}
+
+{% block table_body %}
+    <tbody>
+
+    {% for date in admin.subscriptionData.dates %}
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ date|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATE_FORMAT')) }}
+            </td>
+
+            {% set total = 0 %}
+            {% set position = loop.index - 1 %}
+
+            {% for quantity in admin.subscriptionData.subscription_quantities %}
+                <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                    {{ quantity.quantities[position] }}
+                    {% set total = total + quantity.quantities[position] %}
+                </td>
+            {% endfor %}
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ total }}
+            </td>
+        </tr>
+    {% endfor %}
+
+    <tr class="list-subscription-report-total">
+        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+            {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}
+        </td>
+        {% for subscription in admin.subscriptionData['subscription_total_quantities'] %}
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ subscription['quantity'] }}
+            </td>
+        {% endfor %}
+        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+            {{ admin.subscriptionData['total_quantity'] }}
+        </td>
+    </tr>
+    </tbody>
+{% endblock %}
+

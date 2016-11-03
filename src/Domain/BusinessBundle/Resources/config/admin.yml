@@ -1,0 +1,108 @@
+services:
+    domain_business.admin.area:
+        class: Domain\BusinessBundle\Admin\AreaAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Area, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Areas}
+
+    domain_business.admin.locality:
+        class: Domain\BusinessBundle\Admin\LocalityAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Locality, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Localities}
+
+    domain_business.admin.neighborhood:
+        class: Domain\BusinessBundle\Admin\NeighborhoodAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Neighborhood, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Neighborhoods}
+
+    domain_business.admin.tag:
+        class: Domain\BusinessBundle\Admin\TagAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Tag, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Tags}
+
+    domain_business.admin.payment_method:
+        class: Domain\BusinessBundle\Admin\PaymentMethodAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\PaymentMethod, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Payment Methods}
+
+    domain_business.admin.subscription:
+        class: Domain\BusinessBundle\Admin\SubscriptionAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Subscription, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscriptions}
+        calls:
+            - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
+
+    domain_business.admin.subscription_plan:
+        class: Domain\BusinessBundle\Admin\SubscriptionPlanAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\SubscriptionPlan, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Subscription Plans}
+
+    domain_business.admin.category:
+        class: Domain\BusinessBundle\Admin\CategoryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Category, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Categories}
+
+    domain_business.admin.business_profile:
+        class: Domain\BusinessBundle\Admin\BusinessProfileAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfile, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profiles, audit: true}
+        calls:
+            - [setTranslationDomain, [ 'AdminDomainBusinessBundle' ] ]
+            - [setPositionService, ['@pix_sortable_behavior.position']]
+            - [ setTemplate, ['edit', 'DomainBusinessBundle:Admin:edit.html.twig']]
+
+    domain_business.admin.task:
+        class: Domain\BusinessBundle\Admin\TaskAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Task, DomainBusinessBundle:TaskAdmin]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Tasks}
+        calls:
+            - [ setTemplate, [list, DomainBusinessBundle:TaskAdmin:list.html.twig]]
+            - [ setTemplate, [edit, DomainBusinessBundle:TaskAdmin:edit.html.twig]]
+            - [ setTasksManager, ['@domain_business.manager.tasks']]
+
+    domain_business.admin.business_review:
+        class: Domain\BusinessBundle\Admin\Review\BusinessReviewAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Review\BusinessReview, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Reviews}
+
+    domain_business.admin.business_profile_has_media:
+        class: Domain\BusinessBundle\Admin\Media\BusinessGalleryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Media\BusinessGallery, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Gallery}
+        calls:
+             - [setPositionService, ['@pix_sortable_behavior.position']]
+
+    domain_business.admin.address.country:
+        class: Domain\BusinessBundle\Admin\Address\CountryAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Address\Country, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Countries}
+
+    domain_business.admin.coupon:
+        class: Domain\BusinessBundle\Admin\CouponAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Coupon, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Coupons}
+
+    domain_business.admin.business_profile_phone:
+        class: Domain\BusinessBundle\Admin\BusinessProfilePhoneAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfilePhone, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Phones}
+
+    domain_business.admin.neighborhood_zip:
+        class: Domain\BusinessBundle\Admin\NeighborhoodZipAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}

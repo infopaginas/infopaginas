@@ -1,0 +1,150 @@
+{% extends 'DomainReportBundle:Admin/Default:list.html.twig' %}
+
+{% block list_table %}
+
+    {% if admin.businessOverviewData['dates']|length > 1 %}
+        <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
+        <div class="box box-primary">
+            <canvas id="businessOverviewDataChart" width="400" height="70"></canvas>
+        </div>
+        <script>
+            var ctx = document.getElementById("businessOverviewDataChart");
+            var data = {
+                labels: {{ admin.businessOverviewData['dates']|json_encode|raw }},
+                datasets: [
+                    {
+                        {% set lineColor = admin.colors[6] %}
+
+                        label: "{{ "list.label_impressions"|trans({}, "AdminReportBundle") }}",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.businessOverviewData['impressions']|json_encode|raw }}
+                    },
+                    {
+                        {% set lineColor = admin.colors[4] %}
+
+                        label: "{{ "list.label_views"|trans({}, "AdminReportBundle") }}",
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: "{{ lineColor }}",
+                        borderColor: "{{ lineColor }}",
+                        borderCapStyle: 'butt',
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "{{ lineColor }}",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "{{ lineColor }}",
+                        pointHoverBorderColor: "{{ lineColor }}",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: {{ admin.businessOverviewData['views']|json_encode|raw }}
+                    }
+                ]
+            };
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+
+    {{  parent() }}
+
+{% endblock %}
+
+{% block table_body %}
+    <tbody>
+    {% for data in admin.businessOverviewData['results'] %}
+        <tr>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ data['date'] }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ data['impressions'] }}
+            </td>
+            <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                {{ data['views'] }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+{% endblock %}
+
+
+{# switch off pagination for per month option, cuz it requares custom pagination #}
+{% set showPagintaion = (
+        admin.getFilterParameters['periodOption'] is not defined or
+        admin.getFilterParameters['periodOption']['value'] != constant(
+            'Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::PERIOD_OPTION_CODE_PER_MONTH'
+        )
+    )
+%}
+
+{% block export %}
+    {% if admin.hasRoute('export') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-export"></i>
+                {{ "label_export_download"|trans({}, "SonataAdminBundle") }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for code,format in admin.getExportFormats() %}
+                <li>
+                    <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {
+                        'format' : format,
+                        'code': code,
+                        '_page' : admin.getFilterParameters['_page'],
+                        '_per_page' : admin.getFilterParameters['_per_page']
+                    }) }}">
+                        <i class="glyphicon glyphicon-download"></i>
+                        {{ code|trans({}, admin.getTranslationDomain) }}
+                    </a>
+                <li>
+                    {% endfor %}
+            </ul>
+        </div>
+        {% if showPagintaion %}
+            &nbsp;-&nbsp;
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block pager_results %}
+    {% if showPagintaion %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block pager_links %}
+    {% if showPagintaion %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

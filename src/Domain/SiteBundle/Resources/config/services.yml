@@ -1,0 +1,158 @@
+parameters:
+    google_places_url: "https://maps.googleapis.com/maps/api/place/autocomplete/json?&types=(cities)&components=country:pr&language=locale&region=pr&key=google_api_key&input="
+    google_api_key: "AIzaSyBBl4CQTYhUmdK4zs9EVcPmPjLBiIWez3w"
+
+services:
+    #services section:
+    domain_site.mailer:
+        class: Domain\SiteBundle\Mailer\Mailer
+        arguments: ['@mailer', '@oxa_config', '@router']
+
+    #managers section
+    domain_site.manager.search:
+        class: Domain\SiteBundle\Manager\SearchManager
+        arguments: ['@doctrine.orm.entity_manager']
+
+    domain_site.manager.geolocation:
+        class: Domain\SiteBundle\Manager\GeolocationManager
+        arguments: ['@doctrine.orm.entity_manager', '%google_places_url%', '%google_api_key%']
+
+    #form types section
+    domain_site.registration.form.type:
+        class: Domain\SiteBundle\Form\Type\RegistrationType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_registration }
+
+    domain_site.reset_password_request.form.type:
+        class: Domain\SiteBundle\Form\Type\ResetPasswordRequestType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_reset_password_request }
+
+    domain_site.reset_password.form.type:
+        class: Domain\SiteBundle\Form\Type\ResetPasswordType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_reset_password }
+
+    domain_site.user_profile.form.type:
+        class: Domain\SiteBundle\Form\Type\UserProfileType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_user_profile }
+
+    domain_site.user_password_update.form.type:
+        class: Domain\SiteBundle\Form\Type\PasswordUpdateType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: domain_site_user_password_update }
+
+    #forms section
+    domain_site.registration.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_registration, domain_site_registration]
+
+    domain_site.reset_password_request.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_reset_password_request, domain_site_reset_password_request]
+
+    domain_site.reset_password.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_reset_password, domain_site_reset_password]
+
+    domain_site.user_profile.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_user_profile, domain_site_user_profile]
+
+    domain_site.user_password_update.form:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments: [domain_site_user_password_update, domain_site_user_password_update]
+
+    #form handlers section
+    domain_site.registration.form.handler:
+        class: Domain\SiteBundle\Form\Handler\RegistrationFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.registration.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@oxa.manager.groups'
+            - '@domain_site.mailer'
+
+    domain_site.reset_password_request.form.handler:
+        class: Domain\SiteBundle\Form\Handler\ResetPasswordRequestFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.reset_password_request.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@fos_user.util.token_generator'
+            - '@domain_site.mailer'
+
+    domain_site.reset_password.form.handler:
+        class: Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.reset_password.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@translator.default'
+
+    domain_site.user_profile.form.handler:
+        class: Domain\SiteBundle\Form\Handler\UserProfileFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.user_profile.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'
+
+    domain_site.user_password_update.form.handler:
+        class: Domain\SiteBundle\Form\Handler\PasswordUpdateFormHandler
+        scope: request
+        arguments:
+            - '@domain_site.user_password_update.form'
+            - '@request'
+            - '@fos_user.user_manager'
+            - '@security.token_storage'
+
+    domain_site.contains_email:
+        class: Domain\SiteBundle\Validator\Constraints\ContainsEmailExpandedValidator
+        arguments:
+            - @translator
+            - @validator
+        tags:
+            - { name: validator.constraint_validator }
+
+    domain_site.constraint_email_unique:
+        class: Domain\SiteBundle\Validator\Constraints\ConstraintEmailUniqueValidator
+        arguments:
+            - @translator
+            - '@doctrine.orm.default_entity_manager'
+            - '@oxa.manager.users'
+        tags:
+            - { name: validator.constraint_validator }
+
+    domain_site.constraint_url:
+        class: Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpandedValidator
+        arguments:
+            - @translator
+        tags:
+            - { name: validator.constraint_validator }
+
+    listener.subdomain_request:
+        class: Domain\SiteBundle\EventListener\SubDomainListener
+        arguments: [ @service_container, @router, @twig ]
+        tags:
+            - { name: kernel.event_subscriber }

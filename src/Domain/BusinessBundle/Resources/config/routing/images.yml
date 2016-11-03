@@ -1,0 +1,11 @@
+domain_business_images_upload:
+    path:     /upload
+    defaults: { _controller: DomainBusinessBundle:Images:upload }
+    options:
+        expose: true
+
+domain_business_remote_images_upload:
+    path:     /remote/upload
+    defaults: { _controller: DomainBusinessBundle:Images:uploadRemoteImage }
+    options:
+        expose: true

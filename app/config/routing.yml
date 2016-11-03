@@ -1,0 +1,116 @@
+jmaitan_media:
+    resource: "@JMaitanSonataMediaCropBundle/Resources/config/routing.xml"
+    prefix:   /jmaitan_media
+
+oxa_wistia:
+    resource: "@OxaWistiaBundle/Resources/config/routing.yml"
+    prefix:   /
+
+oxa_dfp:
+    resource: "@OxaDfpBundle/Resources/config/routing.yml"
+    prefix:   /
+
+domain_article:
+    resource: "@DomainArticleBundle/Resources/config/routing.yml"
+    prefix:   /articles
+
+domain_menu:
+    resource: "@DomainMenuBundle/Resources/config/routing.yml"
+    prefix:   /menu
+
+domain_page:
+    resource: "@DomainPageBundle/Resources/config/routing.yml"
+    prefix:   /
+
+domain_business:
+    resource: "@DomainBusinessBundle/Resources/config/routing.yml"
+    prefix:   /
+
+oxa_config:
+    resource: "@OxaConfigBundle/Resources/config/routing.yml"
+    prefix:   /config
+
+domain_site:
+    resource: "@DomainSiteBundle/Resources/config/routing.yml"
+    prefix:   /
+
+domain_search:
+    resource: "@DomainSearchBundle/Resources/config/routing.yml"
+    prefix:   /
+
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+
+elfinder:
+     resource: "@FMElfinderBundle/Resources/config/routing.yml"
+
+sonata_user_security:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_security_1.xml"
+
+sonata_user_admin_resetting:
+    resource: '@OxaSonataUserBundle/Resources/config/sonata_resetting_1.xml'
+    prefix: /resetting
+
+sonata_user_admin_security:
+    resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
+    prefix: /admin
+
+sonata_user_resetting:
+    resource: '@OxaSonataUserBundle/Resources/config/sonata_resetting_1.xml'
+    prefix: /resetting
+
+sonata_user_profile:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_profile_1.xml"
+    prefix: /admin/profile
+
+sonata_user_register:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_registration_1.xml"
+    prefix: /register
+
+sonata_user_change_password:
+    resource: "@SonataUserBundle/Resources/config/routing/sonata_change_password_1.xml"
+    prefix: /profile
+
+gallery:
+    resource: '@SonataMediaBundle/Resources/config/routing/gallery.xml'
+    prefix: /media/gallery
+
+media:
+    resource: '@SonataMediaBundle/Resources/config/routing/media.xml'
+    prefix: /media
+
+#HWIOAuthBundle routes
+hwi_oauth_security:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix: /login
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix: /login
+
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /login
+
+facebook_login:
+    pattern: /login/check-facebook
+
+google_login:
+    pattern: /login/check-google
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+fos_user_resetting_reset:
+    path:     /password_reset/{token}
+    defaults: { _controller: DomainSiteBundle:Home:index }
+
+happyr_google_site_authenticator:
+    resource: "@HappyrGoogleSiteAuthenticatorBundle/Resources/config/routing.yml"
+    prefix:   /admin

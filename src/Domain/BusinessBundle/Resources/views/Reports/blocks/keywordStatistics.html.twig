@@ -1,0 +1,16 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>{% trans %}Keyword{% endtrans %}</th>
+        <th>{% trans %}Searches Count{% endtrans %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for keyword, count in keywordsData['results'] %}
+        <tr>
+            <td>{{ keyword }}</td>
+            <td>{{ count }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

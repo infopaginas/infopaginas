@@ -1,0 +1,48 @@
+services:
+    #hwioauth user provider
+    oxa.user.oauth_provider:
+        class: Oxa\Sonata\UserBundle\Security\Core\User\FOSUBUserProvider
+        arguments: [@fos_user.user_manager, {facebook: facebookId, google: googleId}]
+        calls:
+            - [setEntityManager, ['@doctrine.orm.entity_manager']]
+
+    #handlers section
+    oxa.user.authentication_handler:
+        class:        Oxa\Sonata\UserBundle\Handler\AuthenticationHandler
+        arguments:    ['@translator', '@router', '@security.context']
+
+    #repository section
+    oxa.repository.group:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - Oxa\Sonata\UserBundle\Entity\Group
+
+    #managers section
+    oxa.manager.groups:
+        class: Oxa\Sonata\UserBundle\Manager\GroupsManager
+        arguments: ['@oxa.repository.group']
+
+    oxa.manager.users:
+        class: Oxa\Sonata\UserBundle\Manager\UsersManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@oxa.manager.groups'
+            - '@fos_user.user_manager.default'
+            - '@domain_site.mailer'
+            - '@fos_user.util.token_generator'
+
+    # disable CRUD for user roles
+    sonata.user.admin.group:
+      abstract: true
+      public: false
+
+    sonata.user.admin.user:
+        class: '%sonata.user.admin.user.class%'
+        arguments: [~, '%sonata.user.admin.user.entity%', '%sonata.user.admin.user.controller%']
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: '%sonata.user.admin.groupname%', label: users, label_catalogue: SonataUserBundle, label_translator_strategy: sonata.admin.label.strategy.underscore }
+        calls:
+            - [ setTemplate, [edit, OxaSonataUserBundle:Admin:User/edit.html.twig]]
+            - [ setUserManager, [ '@fos_user.user_manager' ] ]
+            - [ setTranslationDomain, ['%sonata.user.admin.user.translation_domain%']]

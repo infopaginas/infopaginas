@@ -1,0 +1,37 @@
+{% for image in images %}
+    <tr id="images-form-{{ image.vars.data.media.id }}" class="image-row">
+        <td>
+            <div class="image-wrap">
+                {% thumbnail image.vars.data.media, 'preview' %}
+            </div>
+        </td>
+        <td>
+            <div class="checkbox">
+                {{ form_widget(image.isPrimary) }}
+            </div>
+        </td>
+        <td>
+            <div class="dropdown-col ">
+                <div class="dropdown">
+                    <div class="select-container">
+                        {{ form_widget(image.type) }}
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            {{ form_widget(image.description) }}
+        </td>
+        {{ form_widget(image.media) }}
+        <td>
+            <a href="#" class="media-close remove-image-link" data-id="{{ image.vars.data.media.id }}">X</a>
+        </td>
+    </tr>
+{% endfor %}
+
+{% block scripts %}
+    <script>
+        var logoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO') }}';
+        var photoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES') }}';
+    </script>
+{% endblock %}

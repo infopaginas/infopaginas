@@ -1,0 +1,132 @@
+{% extends "@SonataAdmin/CRUD/base_edit.html.twig" %}
+
+{% block form %}
+    {% if not form.vars.valid %}
+        {% set htmlErrorToFlash = '<ul>' %}
+        {% for item in form if not item.vars.valid %}
+            {% set errors = {} %}
+            {% if item.children is not empty %}
+                {% for child in item.children %}
+                    {% if child.children is not empty %}
+                        {% for grandChild in child %}
+                            {% if errors is empty %}
+                                {% set errors = 'relation_not_valid'|trans({}, 'SonataAdminBundle') %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% set errors = errors|merge(child.vars.errors) %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% set errors = item.vars.errors %}
+            {% endif %}
+
+            {% set htmlErrorToFlash=htmlErrorToFlash~'<li>' %}
+            {% set htmlErrorToFlash=htmlErrorToFlash~ item.vars.label|trans~': ' %}
+
+            {% if errors is iterable %}
+                {% for e in errors %}
+                    {% set htmlErrorToFlash=htmlErrorToFlash~e.message~' ' %}
+                {% endfor %}
+            {% else %}
+                {% set htmlErrorToFlash=htmlErrorToFlash~errors %}
+            {% endif %}
+
+            {% set htmlErrorToFlash=htmlErrorToFlash~'</li>' %}
+        {% endfor %}
+        {% set htmlErrorToFlash=htmlErrorToFlash~'</ul>' %}
+        <script type="text/javascript">
+            $('.alert-danger').append('{{ htmlErrorToFlash|raw }}');
+        </script>
+    {% endif %}
+    {{ block('parentForm') }}
+{% endblock %}
+
+{% block formactions %}
+    <div class="well well-small form-actions">
+        {% if app.request.isxmlhttprequest %}
+            {% if admin.id(object) is not null %}
+                <button type="submit" class="btn btn-success" name="btn_update"><i
+                            class="fa fa-save"></i> {{ 'btn_update'|trans({}, 'SonataAdminBundle') }}</button>
+            {% else %}
+                <button type="submit" class="btn btn-success" name="btn_create"><i
+                            class="fa fa-plus-circle"></i> {{ 'btn_create'|trans({}, 'SonataAdminBundle') }}</button>
+            {% endif %}
+        {% else %}
+            {% if admin.supportsPreviewMode %}
+                <button class="btn btn-info persist-preview" name="btn_preview" type="submit">
+                    <i class="fa fa-eye"></i>
+                    {{ 'btn_preview'|trans({}, 'SonataAdminBundle') }}
+                </button>
+            {% endif %}
+            {% if admin.id(object) is not null %}
+                <button type="submit" class="btn btn-success" name="btn_update_and_edit"><i
+                            class="fa fa-save"></i> {{ 'btn_update_and_edit_again'|trans({}, 'SonataAdminBundle') }}
+                </button>
+
+                {% if admin.hasroute('list') and admin.isGranted('LIST') %}
+                    <button type="submit" class="btn btn-success" name="btn_update_and_list"><i class="fa fa-save"></i>
+                        <i class="fa fa-list"></i> {{ 'btn_update_and_return_to_list'|trans({}, 'SonataAdminBundle') }}
+                    </button>
+                {% endif %}
+
+                {% if admin.isAclEnabled() and admin.hasroute('acl') and admin.isGranted('MASTER', object) %}
+                    <a class="btn btn-info" href="{{ admin.generateObjectUrl('acl', object) }}"><i
+                                class="fa fa-users"></i> {{ 'link_edit_acl'|trans({}, 'SonataAdminBundle') }}</a>
+                {% endif %}
+            {% else %}
+                {% if admin.hasroute('edit') and admin.isGranted('EDIT') %}
+                    <button class="btn btn-success" type="submit" name="btn_create_and_edit"><i
+                                class="fa fa-save"></i> {{ 'btn_create'|trans({}, 'SonataAdminBundle') }}</button>
+                {% endif %}
+                {% if admin.hasroute('list') and admin.isGranted('LIST') %}
+                    <button type="submit" class="btn btn-success" name="btn_create_and_list"><i class="fa fa-save"></i>
+                        <i class="fa fa-list"></i> {{ 'btn_create_and_return_to_list'|trans({}, 'SonataAdminBundle') }}
+                    </button>
+                {% endif %}
+                <button class="btn btn-success" type="submit" name="btn_create_and_create"><i class="fa fa-save"></i> <i
+                            class="fa fa-plus-circle"></i> {{ 'btn_create_and_create_a_new_one'|trans({}, 'SonataAdminBundle') }}
+                </button>
+            {% endif %}
+            <a class="btn btn-danger" style="float: right" href="{{ admin.generateUrl('list') }}"><i
+                        class="fa fa-minus-circle"></i> {{ 'btn_cancel'|trans({}, 'SonataAdminBundle') }}</a>
+        {% endif %}
+    </div>
+{% endblock formactions %}
+
+{% block nav_bar_right %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('create') and admin.isGranted('CREATE') %}
+            <a href="{{ admin.generateUrl('create') }}">
+                <i class="fa fa-plus-circle"></i>
+                {{ 'link_action_create'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    <li class="dropdown sonata-actions">
+        {% if object.id and admin.hasRoute('show') and admin.isGranted('SHOW') %}
+            <a href="{{ admin.generateObjectUrl('show', object) }}">
+                <i class="fa fa-eye"></i>
+                {{ 'action_show'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    {% if object.id %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('delete') and admin.isGranted('DELETE') %}
+            <a href="{{ admin.generateObjectUrl('delete', object) }}">
+                <i class="fa fa-trash-o"></i>
+                {{ 'action_delete'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+    {% endif %}
+    <li class="dropdown sonata-actions">
+        {% if admin.hasRoute('list') and admin.isGranted('LIST') %}
+            <a href="{{ admin.generateUrl('list') }}">
+                <i class="fa fa-list"></i>
+                {{ 'return_to_list'|trans({}, 'SonataAdminBundle') }}
+            </a>
+        {% endif %}
+    </li>
+{% endblock %}

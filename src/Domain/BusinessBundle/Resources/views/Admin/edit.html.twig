@@ -1,0 +1,9 @@
+{% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var formId = '{{ form.vars.id }}';
+    </script>
+    <script type="text/javascript" src="{{ asset('/bundles/domainbusiness/scripts/modules/businessProfileAdmin.js')}}"></script>
+{% endblock %}

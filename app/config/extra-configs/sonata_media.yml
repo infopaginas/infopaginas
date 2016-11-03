@@ -1,0 +1,102 @@
+#
+# more information can be found here http://sonata-project.org/bundles/media
+#
+
+sonata_media:
+    db_driver:       doctrine_orm # | doctrine_mongodb
+    default_context: business_profile_logo
+    class:
+        media:              Oxa\Sonata\MediaBundle\Entity\Media
+        gallery:            Oxa\Sonata\MediaBundle\Entity\Gallery
+        gallery_has_media:  Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia
+    contexts:
+        # when you add a new one or edit context name,
+        # edit OxaMediaInterface constans
+        business_profile_logo:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:    { width: 120, height: 120, quality: 100}
+                normal:     { width: 300, height: 300, quality: 100}
+        business_profile_images:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:   { width: 150, height: 150, quality: 100}
+                normal:    { width: 500, height: 500, quality: 100}
+        coupon:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:    { width: 150, height: 150, quality: 100}
+                normal:     { width: 500, height: 500, quality: 100}
+        banner:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                home:       { width: 120, height: 420, quality: 100}
+                portal:     { width: 300, height: 250, quality: 100}
+                serp:       { width: 728, height: 90, quality: 100}
+                serp_boxed: { width: 250, height: 250, quality: 100}
+        article:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:      { width: 150, height: 150, quality: 100}
+                homepage:     { width: 312, height: 260, quality: 100}
+    cdn:
+        #define the public base url for the uploaded media
+        server:
+            path:      %sonata_media.cdn.host%
+#             path: 'http://symfony-admin/uploads/media'
+    filesystem:
+        # define where the uploaded file will be stored
+        local:
+            directory:  %kernel.root_dir%/../web/uploads/media
+            create:     true
+
+    providers:
+        image:
+            allowed_extensions: ['jpg', 'png', 'gif', 'jpeg']
+            allowed_mime_types: ['image/pjpeg','image/jpeg','image/png','image/x-png', 'image/gif']
+        # ...
+        file:
+            # the resizer must be set to false, otherwhise this can delete icon files from the fs
+            resizer:    false
+        image:
+           thumbnail: sonata.media.thumbnail.format          # default value
+#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
+#            thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
+        vimeo:
+            thumbnail: sonata.media.thumbnail.format          # default value
+#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
+#           thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
+        youtube:
+            thumbnail: sonata.media.thumbnail.format          # default value
+#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
+#           thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
+        dailymotion:
+            thumbnail: sonata.media.thumbnail.format          # default value
+#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
+#           thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
+
+    pixlr:
+        enabled:  false
+        referrer: Demo - Sonata Project
+
+    resizer:
+        simple:
+#            mode:  outbound
+            mode:  inset
+
+

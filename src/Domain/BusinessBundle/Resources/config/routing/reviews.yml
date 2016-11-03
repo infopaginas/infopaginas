@@ -1,0 +1,9 @@
+domain_business_review_save:
+    path:     /save
+    defaults: { _controller: DomainBusinessBundle:Reviews:save }
+    options:
+        expose: true
+
+domain_business_reviews_list:
+    path: /list
+    defaults: { _controller: DomainBusinessBundle:Reviews:list }

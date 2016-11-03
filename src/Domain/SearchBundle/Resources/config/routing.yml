@@ -1,0 +1,18 @@
+domain_search_index:
+    path:   /businesses
+    defaults: { _controller: DomainSearchBundle:Search:index }
+domain_search_autocomplete:
+    path:   /search/autocomplete
+    defaults: { _controller: DomainSearchBundle:Search:autocomplete }
+    options:
+        expose: true
+
+domain_search_map:
+    path:   /search/map
+    defaults: { _controller: DomainSearchBundle:Search:map }
+domain_search_compare:
+    path:   /search/compare
+    defaults: { _controller: DomainSearchBundle:Search:compare }
+domain_search_catalog:
+    path:   /c/{citySlug}/{categorySlug}
+    defaults: { _controller: DomainSearchBundle:Search:catalog, citySlug: '', categorySlug: '' }

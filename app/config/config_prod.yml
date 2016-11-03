@@ -1,0 +1,65 @@
+imports:
+    - { resource: config.yml }
+parameters:
+    domain: 'infopaginas-stage.oxagile.com'
+#framework:
+#    validation:
+#        cache: validator.mapping.cache.doctrine.apc
+#    serializer:
+#        cache: serializer.mapping.cache.doctrine.apc
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+        console:
+            type:  console
+
+google:
+    analytics:
+        enhanced_ecommerce: true
+        session_auto_started: true
+        trackers:
+            default:
+                name: MyJavaScriptCompatibleVariableNameWithNoSpaces
+                accountId: UA-83876369-3
+                domain: infopaginas-prod.com
+                setSiteSpeedSampleRate: 5
+                allowAnchor: true
+                allowHash: true
+                includeNamePrefix: false
+                plugins:
+                    - 'linkid'
+                    - 'ec'
+        whitelist: [ 'q', 'utm_source', 'utm_medium', 'utm_term', 'utm_content', 'utm_campaign' ]
+
+happyr_google_site_authenticator:
+    cache_service: 'cache.provider.my_file_system'
+    tokens:
+        google_analytics:
+            client_id: '496444845522-no82atjdrcmbnbo2jl6238g28qiamae9.apps.googleusercontent.com'
+            client_secret: 'eRZEJiZIQw9w0SKyye-68jTU'
+            redirect_url: 'https://infopaginas-prod.com/admin/authenticate-google/return-url'
+            scopes: ['https://www.googleapis.com/auth/analytics.readonly']
+
+happyr_google_analytics:
+    http_client: 'httplug.client'
+    http_message_factory: 'httplug.message_factory'
+    tracking_id: UA-83876369-3
+    fetching:
+        client_service: 'google.client.google_analytics'
+        view_id: 130700540
+        cache_service: 'cache.provider.my_file_system'
+        cache_lifetime: 3600

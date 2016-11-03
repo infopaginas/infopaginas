@@ -1,0 +1,31 @@
+domain_business_profile_create:
+    path:     /businesses/new
+    defaults: { _controller: DomainBusinessBundle:Profile:create }
+
+domain_business_profile_edit:
+    path:     /business/edit/{id}
+    defaults: { _controller: DomainBusinessBundle:Profile:edit }
+    options:
+        expose: true
+
+domain_business_profile_save:
+    path:     /business/save
+    defaults: { _controller: DomainBusinessBundle:Profile:save }
+    options:
+        expose: true
+
+domain_business_profile_close:
+    path:     /business/close
+    defaults: { _controller: DomainBusinessBundle:Profile:close }
+    options:
+        expose: true
+
+domain_business_profile_view:
+    path:     /b/{citySlug}/{slug}
+    defaults: { _controller: DomainBusinessBundle:Profile:view }
+
+domain_business_register_view:
+    path:     /register/view/{id}
+    defaults: { _controller: DomainBusinessBundle:Profile:registerView }
+    options:
+        expose: true

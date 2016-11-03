@@ -1,0 +1,67 @@
+label_yes: Yes
+label_no: No
+
+gender_female: Female
+gender_male: Male
+gender_unknown: Unknown
+
+list.label_id: Id
+list.label_firstname: First Name
+list.label_lastname: Last Name
+list.label__action: Actions
+list.label_role: Role
+list.label_role_name: Role
+list.label_is_active: Is Active
+list.label_description: Description
+
+form.label_role: Role
+form.label_firstname: First Name
+form.label_lastname: Last Name
+form.label_description: Description
+
+show.label_firstname: First Name
+show.label_lastname: Last Name
+show.label_role: Role
+show.label_enabled: Enabled
+show.label_name: Name
+show.label_description: Description
+
+filter.label_role: Role
+filter.label_yes: Yes
+filter.label_no: No
+filter.label_enabled: Enabled
+filter.label_is_active: Is Active
+filter.label_description: Description
+breadcrumb.link: Users
+
+groups: Roles
+
+user_block_profile: User Profile
+
+form.label_facebook_u_r_l: Facebook URL
+form.label_twitter_u_r_l: Twitter URL
+form.label_google_u_r_l: Google URL
+form.label_youtube_u_r_l: Youtube URL
+
+show.label_facebook_u_r_l: Facebook URL
+show.label_twitter_u_r_l: Twitter URL
+show.label_google_u_r_l: Google URL
+show.label_youtube_u_r_l: Youtube URL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

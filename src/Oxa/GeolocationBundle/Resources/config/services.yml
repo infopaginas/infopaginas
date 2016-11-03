@@ -1,0 +1,4 @@
+services:
+    oxa_geolocation.manager:
+        class: Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager
+        arguments: ['@doctrine.orm.entity_manager', "@oxa_config", '@domain_business.manager.locality']

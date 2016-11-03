@@ -1,0 +1,15 @@
+domain_business_local_videos_upload:
+    path:     /local/upload
+    defaults: { _controller: DomainBusinessBundle:Videos:localFileUpload }
+    options:
+        expose: true
+
+domain_business_remote_videos_upload:
+    path:     /remote/upload
+    defaults: { _controller: DomainBusinessBundle:Videos:remoteFileUpload }
+    options:
+        expose: true
+
+domain_business_video_list:
+    path:     /
+    defaults: { _controller: DomainBusinessBundle:Videos:index}
