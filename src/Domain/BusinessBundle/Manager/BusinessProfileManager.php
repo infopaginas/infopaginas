@@ -669,4 +669,22 @@ class BusinessProfileManager extends Manager
 
         return $objects;
     }
+
+    public function sortAutoCompleteResults($results)
+    {
+        $data    = [];
+        $sorting = [];
+
+        foreach ($results as $key => $value) {
+            $sorting[$key] = $value['name'];
+        }
+
+        asort($sorting);
+
+        foreach ($sorting as $key => $item) {
+            $data[] = $results[$key];
+        }
+
+        return $data;
+    }
 }
