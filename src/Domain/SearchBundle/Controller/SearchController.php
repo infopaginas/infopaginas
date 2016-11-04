@@ -80,6 +80,8 @@ class SearchController extends Controller
             $request->getLocale()
         );
 
+        $results = $businessProfileManager->sortAutoCompleteResults($results);
+
         return (new JsonResponse)->setData($results);
     }
 
