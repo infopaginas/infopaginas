@@ -10,17 +10,13 @@
             </div>
             <div class="modal-body">
                 <div class="terms">
-                    {% trans %}
-                        By joining Infopaginas you agree to our
-                    {% endtrans %}
+                    {% trans %}By joining Infopaginas you agree to our{% endtrans %}
 
                         <a href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Service{% endtrans %}</a>
                         {% trans %}and{% endtrans %}
                         <a href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Policy{% endtrans %}</a>.
                     
-                    {% trans %}
-                        We value your privacy, and will not post to your wall without your permission.
-                    {% endtrans %}
+                    {% trans %}We value your privacy, and will not post to your wall without your permission.{% endtrans %}
                 </div>
                 <div id="spin-container"></div>
                 <form class="form-horizontal login-form" id="registrationForm">

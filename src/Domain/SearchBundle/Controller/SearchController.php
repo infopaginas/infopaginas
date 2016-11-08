@@ -28,8 +28,10 @@ class SearchController extends Controller
 
         $searchData = $this->getSearchDataByRequest($request);
 
+        $locale = ucwords($request->getLocale());
+
         if ($searchDTO) {
-            $searchResultsDTO   = $searchManager->search($searchDTO);
+            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
             $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
 
             $this->getBusinessProfileManager()
@@ -73,7 +75,12 @@ class SearchController extends Controller
         $searchData = $this->getSearchDataByRequest($request);
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation($searchData['q']);
+        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation(
+            $searchData['q'],
+            $request->getLocale()
+        );
+
+        $results = $businessProfileManager->sortAutoCompleteResults($results);
 
         return (new JsonResponse)->setData($results);
     }
@@ -86,8 +93,10 @@ class SearchController extends Controller
 
         $searchData = $this->getSearchDataByRequest($request);
 
+        $locale = ucwords($request->getLocale());
+
         if ($searchDTO) {
-            $searchResultsDTO   = $searchManager->search($searchDTO);
+            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
 
             $businessProfileManager = $this->get('domain_business.manager.business_profile');
 
@@ -131,8 +140,10 @@ class SearchController extends Controller
 
         $searchData = $this->getSearchDataByRequest($request);
 
+        $locale = ucwords($request->getLocale());
+
         if ($searchDTO) {
-            $searchResultsDTO   = $searchManager->search($searchDTO);
+            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);

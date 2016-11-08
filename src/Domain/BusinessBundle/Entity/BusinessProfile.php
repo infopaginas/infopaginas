@@ -158,7 +158,7 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
-     * @Assert\Count(min = 1, minMessage = "At least 1 category should be selected")
+     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count")
      */
     protected $categories;
 
@@ -517,7 +517,7 @@ class BusinessProfile implements
      * @var string
      *
      * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
-     * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "You must choose a valid Service Area")
+     * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "business_profile.service_areas_type")
      */
     protected $serviceAreasType = 'area';
 

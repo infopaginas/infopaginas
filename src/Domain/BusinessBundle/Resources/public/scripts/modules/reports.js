@@ -126,7 +126,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
     {
         $(this.html.containers.businessOverviewChartContainerId).highcharts({
             title: {
-                text: 'Business Profile Views vs Impressions',
+                text: $(this.html.containers.businessOverviewChartContainerId).data( "title" ),
                 x: -20 //center
             },
             xAxis: {
@@ -134,7 +134,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
             },
             yAxis: {
                 title: {
-                    text: 'Count'
+                    text: $(this.html.containers.businessOverviewChartContainerId).data( "y-axis" )
                 },
                 plotLines: [{
                     value: 0,
@@ -150,11 +150,11 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
             },
             series: [
                 {
-                    name: 'Views',
+                    name: $(this.html.containers.businessOverviewChartContainerId).data( "series-name-views" ),
                     data: views
                 },
                 {
-                    name: 'Impressions',
+                    name: $(this.html.containers.businessOverviewChartContainerId).data( "series-name-imp" ),
                     data: impressions
                 }
             ]
@@ -168,7 +168,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 type: 'column'
             },
             title: {
-                text: 'Keywords Statistics'
+                text: $(this.html.containers.keywordChartContainerId.data( "title" ) )
             },
             xAxis: {
                 categories: keywords
@@ -177,7 +177,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: 'Number of searches'
+                    text: $(this.html.containers.keywordChartContainerId.data( "y-axis" ) )
                 }
             },
             tooltip: {
@@ -191,7 +191,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 }
             },
             series: [{
-                name: 'Searches',
+                name: $(this.html.containers.keywordChartContainerId).data( "series-name-search" ),
                 data: searches
             }]
         });

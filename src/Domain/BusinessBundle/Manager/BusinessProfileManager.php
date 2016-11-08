@@ -69,9 +69,6 @@ class BusinessProfileManager extends Manager
     /** @var ContainerInterface $container */
     private $container;
 
-    /** @var string */
-    private $locale;
-
     /**
      * Manager constructor.
      *
@@ -101,10 +98,6 @@ class BusinessProfileManager extends Manager
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
 
         $this->analytics = $container->get('google.analytics');
-
-        if ($container->isScopeActive('request')) {
-            $this->locale = ucwords($container->get('request')->getLocale());
-        }
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
@@ -119,10 +112,10 @@ class BusinessProfileManager extends Manager
         return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
     }
 
-    public function searchAutosuggestByPhraseAndLocation($query)
+    public function searchAutosuggestByPhraseAndLocation($query, $locale)
     {
-        $categories = $this->categoryManager->searchAutosuggestByName($query, $this->locale);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, $this->locale);
+        $categories = $this->categoryManager->searchAutosuggestByName($query, $locale);
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, ucwords($locale));
 
         $result = array_merge($categories, $businessProfiles);
 
@@ -174,9 +167,9 @@ class BusinessProfileManager extends Manager
         return json_encode($profilesArray);
     }
 
-    public function search(SearchDTO $searchParams)
+    public function search(SearchDTO $searchParams, string $locale)
     {
-        $searchResultsData = $this->getRepository()->search($searchParams, $this->locale);
+        $searchResultsData = $this->getRepository()->search($searchParams, $locale);
         $searchResultsData = array_map(function ($item) {
             return $item[0]->setDistance($item['distance']);
         }, $searchResultsData);
@@ -193,12 +186,10 @@ class BusinessProfileManager extends Manager
     {
         $business = $this->getRepository()->find($id);
 
-        if ($locale !== 'en') {
-            $this->getTranslatableListener()->setTranslatableLocale($locale);
-            $this->getTranslatableListener()->setTranslationFallback('');
+        $this->getTranslatableListener()->setTranslatableLocale($locale);
+        $this->getTranslatableListener()->setTranslationFallback('');
 
-            $this->getEntityManager()->refresh($business);
-        }
+        $this->getEntityManager()->refresh($business);
 
         return $business;
     }
@@ -516,11 +507,12 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $searchParams
+     * @param string    $locale
      * @return mixed
      */
-    public function countSearchResults(SearchDTO $searchParams)
+    public function countSearchResults(SearchDTO $searchParams, string $locale)
     {
-        return $this->getRepository()->countSearchResults($searchParams, $this->locale);
+        return $this->getRepository()->countSearchResults($searchParams, $locale);
     }
 
     /**
@@ -676,5 +668,23 @@ class BusinessProfileManager extends Manager
             ->getQuery()->getResult();
 
         return $objects;
+    }
+
+    public function sortAutoCompleteResults($results)
+    {
+        $data    = [];
+        $sorting = [];
+
+        foreach ($results as $key => $value) {
+            $sorting[$key] = $value['name'];
+        }
+
+        asort($sorting);
+
+        foreach ($sorting as $key => $item) {
+            $data[] = $results[$key];
+        }
+
+        return $data;
     }
 }
