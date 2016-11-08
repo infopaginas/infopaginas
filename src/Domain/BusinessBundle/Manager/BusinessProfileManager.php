@@ -352,7 +352,7 @@ class BusinessProfileManager extends Manager
                     if (isset($data->isPrimary)) {
                         $gallery->setIsPrimary($data->isPrimary[1]);
                     }
-                    
+
                     if (isset($data->type)) {
                         $gallery->setType($data->type[1]);
 
@@ -668,23 +668,5 @@ class BusinessProfileManager extends Manager
             ->getQuery()->getResult();
 
         return $objects;
-    }
-
-    public function sortAutoCompleteResults($results)
-    {
-        $data    = [];
-        $sorting = [];
-
-        foreach ($results as $key => $value) {
-            $sorting[$key] = $value['name'];
-        }
-
-        asort($sorting);
-
-        foreach ($sorting as $key => $item) {
-            $data[] = $results[$key];
-        }
-
-        return $data;
     }
 }
