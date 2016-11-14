@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\ArticleBundle\Repository;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
@@ -86,5 +87,19 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
             ->setFirstResult($offset);
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getActiveArticlesIterator()
+    {
+        $qb = $this->getArticlesQueryBuilder();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
     }
 }

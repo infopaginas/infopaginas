@@ -13,3 +13,8 @@ domain_business_remote_videos_upload:
 domain_business_video_list:
     path:     /
     defaults: { _controller: DomainBusinessBundle:Videos:index}
+    options:
+        sitemap:
+            priority: 0.7
+            changefreq: weekly
+            section: main
