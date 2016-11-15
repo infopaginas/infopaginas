@@ -94,6 +94,13 @@ services:
         calls:
             - [ setCurrentUser, [ '@session' ] ]
 
+    domain_business.form.type.business_profile_gallery:
+        class: Domain\BusinessBundle\Form\Type\BusinessGalleryType
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_gallery_form_type }
+
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
        arguments: ["@doctrine.orm.entity_manager"]

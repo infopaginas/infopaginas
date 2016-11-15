@@ -26,6 +26,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -36,7 +37,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 
 /**
  * Class BusinessProfileFormType
@@ -208,21 +211,27 @@ class BusinessProfileFormType extends AbstractType
             ->add('map', GoogleMapFrontType::class, [
                 'mapped' => false,
             ])
-            ->add('latitude', TextType::class, [
+            ->add('latitude', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'latitude.example.placeholder',
                 ],
                 'label' => 'Latitude',
                 'required' => false,
+                'constraints' => [
+                    new Type('float'),
+                ],
             ])
-            ->add('longitude', TextType::class, [
+            ->add('longitude', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'longitude.example.placeholder',
                 ],
                 'label' => 'Longitude',
                 'required' => false,
+                'constraints' => [
+                    new Type('float'),
+                ],
             ])
             ->add('country', EntityType::class, [
                 'attr' => [
@@ -540,6 +549,27 @@ class BusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'Slogan',
                 'required' => false,
+            ])
+            ->add(
+                'files',
+                'file',
+                [
+                    'attr' => [
+                        'style' => 'display:none',
+                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
+                            image/bmp, image/x-windows-bmp',
+                    ],
+                    'data_class' => null,
+                    'mapped' => false,
+                    'multiple' => true,
+                ]
+            )
+            ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
+                'entry_type' => BusinessGalleryType::class,
+                'required' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'allow_extra_fields' => true,
             ])
         ;
     }

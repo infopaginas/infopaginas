@@ -8,6 +8,8 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Form\Type\MediaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -25,6 +27,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BusinessGalleryType extends AbstractType
 {
+    protected $container;
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -53,11 +62,7 @@ class BusinessGalleryType extends AbstractType
                 'attr' => [
                     'class' => 'form-control select-control select-image-type',
                 ],
-                'choices' => [
-                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO => 'Logo',
-                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES => 'Photo',
-                    OxaMediaInterface::CONTEXT_BANNER => 'Banner Ad',
-                ],
+                'choices' => $this->getAllowedMediaTypes(),
                 'expanded' => false,
                 'label' => 'Type',
                 'multiple' => false,
@@ -82,5 +87,49 @@ class BusinessGalleryType extends AbstractType
     public function getName()
     {
         return 'domain_business_bundle_business_gallery_type';
+    }
+
+    protected function getRequest()
+    {
+        return $this->container->get('request');
+    }
+
+    protected function getBusinessProfileManager()
+    {
+        return $this->container->get('domain_business.manager.business_profile');
+    }
+
+    protected function getAllowedMediaTypes()
+    {
+        $businessProfileId = $this->getRequest()->get('id', false);
+
+        if (!$businessProfileId && 0) {
+            throw new \Exception(self::BUSINESS_NOT_FOUND_ERROR_MESSAGE);
+        }
+
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+
+        if (!$businessProfile) {
+            throw new \Exception(self::BUSINESS_NOT_FOUND_ERROR_MESSAGE);
+        }
+
+        $subscription = $businessProfile->getSubscriptionPlan();
+        if (!$subscription) {
+            throw new \Exception(self::BUSINESS_NOT_FOUND_ERROR_MESSAGE);
+        }
+
+        $options = [
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO => 'Logo',
+        ];
+
+        if (SubscriptionPlanInterface::CODE_PREMIUM_GOLD === $subscription->getCode()
+            ||
+            SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM === $subscription->getCode()
+        ){
+            $options[OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES]    = 'Photo';
+            $options[OxaMediaInterface::CONTEXT_BANNER]                     = 'Banner Ad';
+        }
+
+        return $options;
     }
 }
