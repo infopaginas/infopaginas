@@ -143,6 +143,11 @@ $side-padding-mb: 16px;
   top: $header-margin;
   width: 35px;
 
+  a {
+    align-items: center;
+    display: flex;
+  }
+
   .logo__icon {
     display: inline-block;
     position: relative;
@@ -260,6 +265,7 @@ $side-padding-mb: 16px;
     a, button {
       background: $green;
       color: $white;
+      border-radius: $button-radius;
     }
   }
 
@@ -281,6 +287,7 @@ $side-padding-mb: 16px;
       flex: 1 auto;
       margin: 5px;
       margin-right: 0;
+      border-radius: $button-radius;
     }
 
     a {
@@ -1131,8 +1138,12 @@ $thumb-width-mb: 60px;
       border: 0;
       color: $white;
       flex: 0 auto;
+      margin-bottom: 5px;
       margin-right: 0;
-      margin-bottom: 1px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       &:hover {
         background: $green;
@@ -1217,6 +1228,7 @@ $thumb-width-mb: 60px;
   
   img {
     width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -1330,7 +1342,7 @@ $thumb-width-mb: 60px;
 // profile
 
 .profile-body__container {
-  background: $grey--light;
+  background: $white;
 
   @media only screen and (min-width: 769px) {
     padding-bottom: 0;
@@ -1348,6 +1360,7 @@ $thumb-width-mb: 60px;
 }
 
 .profile__sidebar {
+  width: 100%;
   @media only screen and (min-width: 769px) {
     width: 30%;
     padding-left: 20px;
@@ -1356,8 +1369,8 @@ $thumb-width-mb: 60px;
 
 .index,
 .profile {
-
   .main-column {
+
     @media only screen and (min-width: 769px) {
       padding-bottom: 0;
       width: 70%;
@@ -1802,32 +1815,61 @@ $thumb-width-mb: 60px;
 .news__item {
   background: $white;
   border-radius: 3px;
-  box-shadow: 0 4px 8px transparentize($black, .97);
   color: $grey;
   display: block;
   overflow: hidden;
+  position: relative;
 
   &:hover {
     color: $grey;
+    box-shadow: 0 2px 4px transparentize($black, .8);
+  }
+
+  p {
+    padding: 0 10px;
+    margin: 0;
+    margin-bottom: 10px;
   }
 }
 
 .news__title {
   display: block;
-  float: left;
   font-weight: 400;
-  margin: 10px;
-  width: calc(60% - 20px);
+  font-size: 18px;
+  margin: 10px 0;
+  margin-top: 0;
+  padding: 0 10px;
+  padding-top: 20px;
+  width: 100%;
+
+  img {
+    display: block;
+    margin-bottom: 5px;
+    maxwidth: 100%;
+  }
 }
 
 .news__img {
-  float: right;
-  width: 40%;
+  width: 100%;
 }
 
-.tag {
+.news__icon {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+
+  img {
+    border: 4px solid $white;
+    border-radius: 50%;
+    width: 50px;
+  }
+
+}
+
+.tag,
+a.tag {
   background: $orange;
-  border-radius: 10px;
+  border-radius: 20px;
   color: $grey;
   display: inline-block;
   font-weight: 300;
@@ -2022,16 +2064,24 @@ $thumb-width-mb: 60px;
   position: static;
   z-index: 2;
 
+  img {
+    @media only screen and (min-width: 768px) {
+      box-shadow: 0 3px 6px transparentize($black, .6);
+    }
+  }
+
   @media only screen and (min-width: 769px) {
     position: absolute;
   }
 }
 
 .articles__container {
+  display: flex;
+  flex-wrap: wrap;
 
   .news__item {
     float: left;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     max-width: 100%;
     width: 100%;
 
@@ -2085,7 +2135,7 @@ $thumb-width-mb: 60px;
   }
 
   a {
-    background: $white;
+    background: $grey--light;
     border-radius: 3px;
     display: block;
     font-size: 12px;
@@ -2354,7 +2404,8 @@ $thumb-width-mb: 60px;
 
 .comparison__label-column {
   display: none;
-  background: lighten($blue--dark, 70%);
+  background: lighten($blue--dark, 75%);
+  border-right: 1px solid darken(#d3d7dd, 10%);
   box-shadow: none;
   color: $blue--dark;
   left: 0;
@@ -2425,9 +2476,9 @@ $thumb-width-mb: 60px;
 
 .compare-toolbar {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: row;
   width: 100%;
-  flex: 1 1 auto;
 
   .button {
     color: $white;
@@ -2442,6 +2493,7 @@ $thumb-width-mb: 60px;
   }
 
   @media only screen and (min-width: 769px) {
+    display: none;
     width: 270px;
   }
 }
@@ -2868,9 +2920,26 @@ a.button--login {
 
 .generic-page {
   .main {
+    overflow-y: visible;
     width: 100%;
   }
 }
+
+.has-sidebar {
+  .main-column,
+  .sidebar {
+    float: left;
+  }
+
+  .main {
+    @media only screen and (min-width: 769px) {
+      padding-bottom: 0;
+      width: 70%;
+    }
+  }
+}
+
+
 
 .empty-message {
   background: transparent;
@@ -3140,6 +3209,236 @@ li.active {
   }
 }
 
+.article {
+
+  a {
+    color: $orange;
+
+    &.button {
+      @extend .button--featured;
+    }
+
+    &.tag {
+      color: $grey;
+    }
+  }
+
+  .news__icon {
+    position: static;
+  }
+
+  h1 {
+    color: $blue;
+    font-size: 18px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+    text-align: left;
+
+    @media only screen and (min-width: 768px) {
+      font-size: 2.4em;
+    }
+  }
+
+  section {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+  }
+
+  .video {
+    margin: 30px -15px;
+
+    @media only screen and (min-width: 900px) {
+      margin: 30px 0;
+    }
+
+    @media only screen and (min-width: 1100px) {
+      margin: 30px -50px;
+    }
+  }
+}
+
+.article__header {
+  margin-bottom: 40px;
+}
+
+.article__footer {
+  border-top: 1px solid $blue;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.gallery {
+  margin-bottom: 30px;
+}
+
+.article__category {
+  align-items: center;
+  display: flex;
+}
+
+.slider-nav {
+  display: none !important;
+  margin-top: 20px;
+
+  .slider__item {
+    margin-right: 4px;
+    opacity: .7;
+
+    &.slick-current {
+      opacity: 1;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    display: block !important;
+  }
+}
+
+.slider {
+  position: repelative;
+
+  .arrow {
+    content: "\f104";
+    display: block;
+    font-family: fontAwesome;
+    height: 40px;
+    position: absolute;
+    top: calc(50% - 20px);
+    width: 40px;
+    z-index: 10;
+  }
+
+  .next {
+    content: "\f105";
+    left: auto;
+    right: 0;
+  }
+}
+
+.credits {
+  color: $grey--medium;
+  font-size: 14px;
+  margin-top: 10px;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    margin-right: 20px;
+  }
+
+  i {
+    color: $blue;
+    margin-right: 5px;
+  }
+}
+
+.author {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+
+  @media only screen and (min-width: 768px) {
+    justify-content: flex-end;
+  }
+
+  span {
+    color: $grey--medium;
+    font-size: 13px;
+  }
+
+  .avatar {
+    margin: 0;
+    margin-right: 10px;
+    flex: 0 0 auto;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  a {
+    font-style: italic;
+  }
+
+  .author__info {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.micro-profile__header {
+  margin-bottom: 15px;
+
+  .infopaginas {
+    align-items: center;
+    color: $grey--medium;
+
+    display: flex;
+
+    img {
+      margin-right: 5px;
+      width: 25px;
+    }
+
+    span {
+      font-size: 12px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.micro-profile {
+  background: $grey--light;
+  border-radius: 3px;
+  box-shadow: 0 3px 8px transparentize($black, .8);
+  margin-bottom: 20px;
+  padding: 10px;
+
+  .item__img {
+    width: 50px;
+  }
+
+  .item__content {
+    display: flex;
+  }
+
+  .item__summary {
+    margin-bottom: 10px;
+    float: none;
+  }
+
+  .item__actions {
+    max-width: 100%;
+    display: flex;
+  }
+
+  .item__primary-actions {
+    display: flex;
+    flex-direction: row;
+
+    a.button,
+    button {
+      flex: 1 1 auto;
+      margin-right: 2px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &:hover {
+    background: $white;
+  }
+}
 
 @import 'libs/selectize';
 
