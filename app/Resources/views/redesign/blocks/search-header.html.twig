@@ -1,0 +1,94 @@
+<header class="header">
+    <div class="logo">
+        <img class="logo__icon" src="/redesign/img/infopaginas.svg" width="52">
+        <img class="logo__iso" src="/redesign/img/infopaginas-iso.png">
+    </div>
+    <div class="header__search">
+        <div class="form__field field--search">
+            <input id="search-trigger" type="text" name="search" class="search-trigger" placeholder="What?">
+        </div>
+        <div class="form__field field--geo">
+            <input type="text" name="geo" class="search-geo" placeholder="Where?">
+        </div>
+        <div class="form__action">
+            <button id="search-button" type="submit" name="submit-search" class="button button--action button--search">
+                Buscar
+                <i class="fa fa-angle-right"></i>
+            </button>
+            <button id="close-search" type="button" class="button close-search button--text">
+                <i class="fa fa-remove"></i>
+            </button>
+        </div>
+    </div><!-- header__search -->
+
+    <button id="nav-toggle" type="button" class="nav__toggle button button--text">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <nav id="nav" class="main-nav">
+        <ul class="language-nav">
+            {% for language in languages %}
+                <li class="{% if language.active %}nav-current{% endif %}">
+                    <a href="{{ language.url }}">{{ language.title|raw }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <ul class="nav-user">
+            {% if (app.user) %}
+                {# todo #}
+                <li class="login-link desc-menu logged-home">
+                    <a href="{{ path('domain_site_user_profile') }}" class="login-button">
+                        <span class="welcome">{% trans %}Welcome{% endtrans %}, </span>
+                                        <span class="user-name">
+                                            {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
+                                        </span>
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="#"><i class="fa fa-user-plus"></i>Create account</a>
+                </li>
+                <li class="login-link desc-menu home">
+                    <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
+                        <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+
+
+        <ul class="nav-pages">
+            <li>
+                <a href="/"><i class="fa fa-home"></i>Home</a>
+            </li>
+            <li>
+                <a href="{{ url('domain_article_homepage') }}"><i class="fa fa-file-text-o"></i>Articles</a>
+            </li>
+            <li>
+                <a href="{{ url('domain_business_video_list') }}"><i class="fa fa-play"></i>Videos</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-search"></i>Common searches</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-sitemap"></i>Popular categories</a>
+            </li>
+        </ul>
+        <div class="about-infopaginas">
+            <div class="about__item copyright">
+            <span>
+              © 2016 <a href="/" target="_blank" title="Go to Infopaginas site">Infopáginas</a>
+            </span>
+            </div>
+            <div class="about__item address">
+            <span>
+              90 Calle San Martin, Rodval Bldg. Suite 201, Guaynabo, PR
+            </span>
+            </div>
+        </div>
+        <button id="nav-close" type="button" class="button--square nav-close">
+            <i class="fa fa-remove"></i>
+        </button>
+    </nav>
+</header>
