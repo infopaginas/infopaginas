@@ -61,6 +61,18 @@ class AdminManager extends DefaultManager
      */
     public function deletePhysicalEntity(DeleteableEntityInterface $entity)
     {
+        $existDependentFields = $this->checkExistDependentEntity($entity);
+
+        if ($existDependentFields) {
+            throw new \Exception($this->getContainer()->get('translator')->trans(
+                'flash_delete_error_rel',
+                array(
+                    '%fields%' => implode(', ', $existDependentFields),
+                ),
+                'SonataAdminBundle'
+            ));
+        }
+
         // execute query here (not in repository),
         // cuz a repository requires to be related on mapped entity
         // but here entity is not specified
