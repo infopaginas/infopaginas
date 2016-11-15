@@ -81,7 +81,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.geocoder.geocode({
             "address": address
         }, function(results) {
-            callback(results[0].geometry.location);
+            if (results[0]) {
+                callback(results[0].geometry.location);
+            } else {
+                console.log('results[0] is empty');
+            }
         });
     };
 
@@ -91,7 +95,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.geocoder.geocode({
             'location': latlng
         }, function(results) {
-            self.updateAddress(results[0].address_components);
+            if (results[0]) {
+                self.updateAddress(results[0].address_components);
+            } else {
+                console.log('results[0] is empty');
+            }
         });
     };
 
