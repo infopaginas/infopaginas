@@ -221,3 +221,4 @@ happyr_google_analytics:
 
 presta_sitemap:
     timetolive: 86400
+    items_by_set: 100
