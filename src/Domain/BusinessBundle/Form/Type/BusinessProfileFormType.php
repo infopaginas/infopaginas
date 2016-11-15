@@ -550,6 +550,27 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Slogan',
                 'required' => false,
             ])
+            ->add(
+                'files',
+                'file',
+                [
+                    'attr' => [
+                        'style' => 'display:none',
+                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
+                            image/bmp, image/x-windows-bmp',
+                    ],
+                    'data_class' => null,
+                    'mapped' => false,
+                    'multiple' => true,
+                ]
+            )
+            ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
+                'entry_type' => BusinessGalleryType::class,
+                'required' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'allow_extra_fields' => true,
+            ])
         ;
     }
 

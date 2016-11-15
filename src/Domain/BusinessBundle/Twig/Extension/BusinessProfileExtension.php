@@ -122,10 +122,11 @@ class BusinessProfileExtension extends \Twig_Extension
         $subscription = $businessProfile->getSubscriptionPlan();
 
         if ($subscription) {
+            $isPlusPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLUS;
             $isGoldPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_GOLD;
             $isPlatinumPlan = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM;
 
-            if ($isGoldPlan || $isPlatinumPlan) {
+            if ($isPlusPlan || $isGoldPlan || $isPlatinumPlan) {
                 return true;
             }
         }
