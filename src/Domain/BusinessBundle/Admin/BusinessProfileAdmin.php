@@ -76,7 +76,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])
             ->add('registrationDate')
-            ->add('isActive', null, ['editable' => true])
+            ->add('isActive')
         ;
 
         $this->addGridActions($listMapper);
