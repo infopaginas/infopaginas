@@ -106,11 +106,20 @@ class BusinessGalleryType extends AbstractType
         return $this->container->get('domain_business.manager.business_profile');
     }
 
+    protected function getProfileId()
+    {
+        $profileId = $this->getRequest()->get('businessProfileId', false);
+        if (!$profileId) {
+            $profileId = $this->getRequest()->get('id', false);
+        }
+        return $profileId;
+    }
+
     protected function getAllowedMediaTypes()
     {
-        $businessProfileId = $this->getRequest()->get('id', false);
+        $businessProfileId = $this->getProfileId();
 
-        if (!$businessProfileId && 0) {
+        if (!$businessProfileId) {
             throw new \Exception(self::BUSINESS_NOT_FOUND_ERROR_MESSAGE);
         }
 
