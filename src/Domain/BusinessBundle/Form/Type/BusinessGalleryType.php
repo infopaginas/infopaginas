@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Form\Type\MediaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -27,11 +28,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BusinessGalleryType extends AbstractType
 {
+    /** @var ContainerInterface $container */
     protected $container;
+
+    /**
+     * Gallery Type From constructor.
+     *
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-
     }
 
     /**
@@ -99,11 +106,20 @@ class BusinessGalleryType extends AbstractType
         return $this->container->get('domain_business.manager.business_profile');
     }
 
+    protected function getProfileId()
+    {
+        $profileId = $this->getRequest()->get('businessProfileId', false);
+        if (!$profileId) {
+            $profileId = $this->getRequest()->get('id', false);
+        }
+        return $profileId;
+    }
+
     protected function getAllowedMediaTypes()
     {
-        $businessProfileId = $this->getRequest()->get('id', false);
+        $businessProfileId = $this->getProfileId();
 
-        if (!$businessProfileId && 0) {
+        if (!$businessProfileId) {
             throw new \Exception(self::BUSINESS_NOT_FOUND_ERROR_MESSAGE);
         }
 
