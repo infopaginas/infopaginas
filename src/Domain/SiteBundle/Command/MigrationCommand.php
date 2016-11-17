@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -466,24 +467,43 @@ class MigrationCommand extends ContainerAwareCommand
             $valueEn = $valueSecondary;
         }
 
+        //search category as is
         $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
         if (!$entity) {
-            $entity = new Category();
-            $entity->setName($valuePrimary);
+            //search category as subcategory
+            $parentValue    = $this->parseCategoryName($valuePrimary);
+            $valuePrimary   = $this->parseSubcategoryName($valuePrimary);
+            $valueSecondary = $this->parseSubcategoryName($valueSecondary);
 
-            $entity->setSearchTextEn($valueEn);
-            $entity->setSearchTextEs($valueEs);
+            $valueEn = $this->parseSubcategoryName($valueEn);
+            $valueEs = $this->parseSubcategoryName($valueEs);
 
-            $entity = $this->saveEntity($entity);
+            $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
-            $className = 'Category';
+            if (!$entity) {
+                //get parent category
+                $parentEntity = $this->getParentCategory($parentValue);
 
-            $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+                if ($parentEntity) {
+                    $entity = new Category();
+                    $entity->setName($valuePrimary);
 
-            $translation = new $translationClassName();
+                    $entity->setSearchTextEn($valueEn);
+                    $entity->setSearchTextEs($valueEs);
+                    $entity->setParent($parentEntity);
 
-            $this->addTranslation($translation, $valueSecondary, $entity);
+                    $entity = $this->saveEntity($entity);
+
+                    $className = 'Category';
+
+                    $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+
+                    $translation = new $translationClassName();
+
+                    $this->addTranslation($translation, $valueSecondary, $entity);
+                }
+            }
         }
 
         return $entity;
@@ -610,6 +630,35 @@ class MigrationCommand extends ContainerAwareCommand
     {
         $this->em->persist($entity);
         $this->em->flush();
+
+        return $entity;
+    }
+
+    private function parseCategoryName($name)
+    {
+        //todo
+
+        return $name;
+    }
+
+    private function parseSubcategoryName($name)
+    {
+        //todo
+
+        return $name;
+    }
+
+    private function getParentCategory($parentName)
+    {
+        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $parentName]);
+
+        if (!$entity) {
+            $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(
+                [
+                    'slug' => strtolower(MenuModel::getMenuCategoriesNames()[MenuModel::CODE_UNDEFINED])
+                ]
+            );
+        }
 
         return $entity;
     }

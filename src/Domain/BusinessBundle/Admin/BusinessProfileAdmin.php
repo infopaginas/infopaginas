@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -23,6 +24,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Form\Type\BooleanType;
 use Sonata\CoreBundle\Form\Type\EqualType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -173,6 +175,9 @@ class BusinessProfileAdmin extends OxaAdmin
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
+        $category = $businessProfile->getCategory();
+        $subcategories = $businessProfile->getSubcategories();
+
         $formMapper
             ->tab('Profile')
                 ->with('General')
@@ -259,11 +264,22 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
-                        'multiple' => true,
+                        'multiple' => false,
                         'required' => true,
+                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
+                            return $rep->getAvailableParentCategoriesQb();
+                        },
+                        'data' => $category,
+                    ])
+                    ->add('subcategories', EntityType::class, [
+                        'multiple' => true,
+                        'required' => false,
                         'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
                             return $rep->getAvailableCategoriesQb();
                         },
+                        'data' => $subcategories,
+                        'mapped' => false,
+                        'class' => \Domain\BusinessBundle\Entity\Category::class,
                     ])
                     ->add('brands', null, ['required' => false])
                     ->add('areas', null, ['multiple' => true, 'required' => false])
@@ -454,6 +470,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('discount')
             ->add('coupons')
             ->add('categories')
+            ->add('subcategories')
             ->add('areas')
             ->add('localities')
             ->add('neighborhoods')
@@ -643,6 +660,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $entity = $this->setSearchValues($entity);
         $entity = $this->setVideoValue($entity);
+        $entity = $this->setSubcategories($entity);
     }
 
     private function setSearchValues($entity)
@@ -769,5 +787,21 @@ class BusinessProfileAdmin extends OxaAdmin
         $container = $this->getConfigurationPool()->getContainer();
 
         return $container->getParameter('videos_upload_path');
+    }
+
+    /**
+     * @param BusinessProfile $entity
+     *
+     * @return BusinessProfile
+     */
+    private function setSubcategories($entity)
+    {
+        $subcategories = $this->getForm()->get('subcategories')->getData();
+
+        foreach ($subcategories as $subcategory) {
+            $entity->addCategory($subcategory);
+        }
+
+        return $entity;
     }
 }

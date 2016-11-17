@@ -20,6 +20,7 @@ interface MenuInterface
     const CODE_BEAUTY_SALONS    = 10;
     const CODE_HAIRDRESSERS     = 11;
     const CODE_DOCTORS          = 12;
+    const CODE_UNDEFINED        = 99999;
 
     /**
      * @return integer

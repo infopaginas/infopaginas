@@ -7,6 +7,7 @@ stof_doctrine_extensions:
             translatable: true
             sluggable: true
             loggable: true
+            tree: true
 
 sonata_admin:
     extensions:

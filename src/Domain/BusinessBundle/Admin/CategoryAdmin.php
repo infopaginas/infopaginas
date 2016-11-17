@@ -18,6 +18,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
+            ->add('parent.name')
             ->add('name')
         ;
     }
@@ -29,6 +30,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
+            ->add('parent.name')
             ->add('name')
         ;
 
@@ -49,6 +51,18 @@ class CategoryAdmin extends OxaAdmin
                 'required' => false,
                 'by_reference' => false,
             ])
+            ->add('parent', 'sonata_type_model', [
+                'btn_add' => false,
+                'multiple' => false,
+                'required' => false,
+                'by_reference' => false,
+            ])
+            ->add('children', 'sonata_type_model', [
+                'btn_add' => false,
+                'multiple' => true,
+                'required' => false,
+                'by_reference' => false,
+            ])
         ;
     }
 
@@ -60,8 +74,8 @@ class CategoryAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('parent.name')
             ->add('slug')
-            ->add('businessProfiles')
         ;
     }
 

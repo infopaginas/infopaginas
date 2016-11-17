@@ -29,7 +29,8 @@ class MenuModel implements MenuInterface
             self::CODE_FLORISTS,
             self::CODE_BEAUTY_SALONS,
             self::CODE_HAIRDRESSERS,
-            self::CODE_DOCTORS
+            self::CODE_DOCTORS,
+            self::CODE_UNDEFINED,
         ];
     }
 
@@ -53,6 +54,7 @@ class MenuModel implements MenuInterface
             self::CODE_BEAUTY_SALONS   => 'Beauty salons',
             self::CODE_HAIRDRESSERS    => 'Hairdressers',
             self::CODE_DOCTORS         => 'Doctors',
+            self::CODE_UNDEFINED       => 'Undefined',
         ];
     }
 

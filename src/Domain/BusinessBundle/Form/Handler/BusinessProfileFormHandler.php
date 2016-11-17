@@ -76,6 +76,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
 
         if ($businessProfileId !== false) {
+            /* @var BusinessProfile $businessProfile */
             $businessProfile = $this->manager->find($businessProfileId);
 
             if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
@@ -103,6 +104,26 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             if ($this->form->isValid()) {
                 $post = $this->request->request->all()[$this->form->getName()];
+
+                //todo add to task
+                //fixme save doesn't work
+                $newCategoryIds = [];
+
+                if (isset($post['subcategories']) and $post['subcategories']) {
+                    $newCategoryIds = $post['subcategories'];
+                }
+
+                if (isset($post['categories']) and $post['categories']) {
+                    $newCategoryIds[] = $post['categories'];
+                }
+
+                if ($newCategoryIds) {
+                    $categories = $this->manager->getCategoriesByIds($newCategoryIds);
+
+                    foreach ($categories as $category) {
+                        $businessProfile->addCategory($category);
+                    }
+                }
 
                 //create new user entry for not-logged users
                 if (isset($post['firstname']) && isset($post['lastname'])) {

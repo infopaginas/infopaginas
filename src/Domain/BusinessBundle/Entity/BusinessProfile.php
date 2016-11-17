@@ -155,7 +155,8 @@ class BusinessProfile implements
      * @var Category[] - Business category
      * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category",
      *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     *     cascade={"persist"},
+     *     orphanRemoval=false
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
      * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count")
@@ -1262,6 +1263,58 @@ class BusinessProfile implements
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Domain\BusinessBundle\Entity\Category $category
+     *
+     * @return BusinessProfile
+     */
+    public function setCategories(\Domain\BusinessBundle\Entity\Category $category)
+    {
+        $this->categories->clear();
+
+        $this->addCategory($category);
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return Category
+     */
+    public function getCategory()
+    {
+        foreach ($this->categories as $category)
+        {
+            if (!$category->getParent()) {
+                return $category;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get subcategories
+     *
+     * @return Category[]
+     */
+    public function getSubcategories()
+    {
+        $categories = [];
+
+        foreach ($this->categories as $category)
+        {
+            if ($category->getParent() and $category->getLvl() === 2) {
+                $categories[] = $category;
+            }
+        }
+
+        return $categories;
     }
 
     /**
