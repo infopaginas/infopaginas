@@ -345,6 +345,10 @@ class BusinessProfileManager extends Manager
                     $data = json_decode($change->getNewValue());
                     $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
 
+                    if (!$gallery) {
+                        break;
+                    }
+
                     if (isset($data->description)) {
                         $gallery->setDescription($data->description[1]);
                     }

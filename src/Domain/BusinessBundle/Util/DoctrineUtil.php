@@ -172,9 +172,7 @@ class DoctrineUtil
                 }
             }
 
-            if ($changeSet) {
-                $entityChangeSets[$oid]     = $changeSet;
-            }
+            $entityChangeSets[$oid]     = $changeSet;
         }
 
         return $entityChangeSets[$oid];
