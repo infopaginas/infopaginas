@@ -86,7 +86,7 @@
 
                             <div class="col-xs-12 additional-info">
                                 {% include ':blocks/business:business_profile_info_icons.html.twig'
-                                    with { 'business': businessProfile } %}
+                                    with { 'business': businessProfile, 'photos': photos, 'advertisements': advertisements } %}
                             </div>
 
                             {% if businessProfile.getLogo() %}
