@@ -79,11 +79,11 @@ class BusinessGalleryType extends AbstractType
 
             $businessGallery = $event->getData();
 
-            $businessProfile = $businessGallery !== null ? $businessGallery->getBusinessProfile() : new BusinessProfile();
+            $businessProfile = $businessGallery ? $businessGallery->getBusinessProfile() : new BusinessProfile();
 
             $subscription = (new SubscriptionPlan())->setCode(SubscriptionPlanInterface::CODE_FREE);
 
-            if ($businessProfile !== null && $businessProfile->getSubscriptionPlan() !== null) {
+            if ($businessProfile->getSubscriptionPlan() !== null) {
                 $subscription = $businessProfile->getSubscriptionPlan();
             }
 
