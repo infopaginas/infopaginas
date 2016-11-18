@@ -13,12 +13,6 @@ $( document ).ready( function() {
                 withinMilesOfMyBusinessField.removeAttr( 'disabled' );
                 localitiesField.attr('disabled', 'disabled');
                 neighborhoodsField.attr('disabled', 'disabled');
-
-                withinMilesOfMyBusinessField.attr('required', 'required');
-
-                if ( !withinMilesOfMyBusinessLabel.hasClass( 'required' ) ) {
-                    withinMilesOfMyBusinessLabel.addClass( 'required' );
-                }
             } else {
                 localitiesField.removeAttr( 'disabled' );
                 neighborhoodsField.removeAttr( 'disabled' );
