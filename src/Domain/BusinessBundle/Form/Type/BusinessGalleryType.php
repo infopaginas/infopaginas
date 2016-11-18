@@ -34,19 +34,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BusinessGalleryType extends AbstractType
 {
-    /** @var ContainerInterface $container */
-    protected $container;
-
-    /**
-     * Gallery Type From constructor.
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options

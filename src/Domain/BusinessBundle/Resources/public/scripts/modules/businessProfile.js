@@ -46,6 +46,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             languageSelectorClass: '.language-selector',
             imagesTable: '.table-media-image',
             milesOfMyBusinessSpan: '.miles-of-business',
+            localitiesFieldSpan: '.locality-field',
             asteriskClass: 'i.fa-asterisk',
             asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>'
         };
@@ -332,24 +333,38 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         $( document ).on( 'change' , 'input[name="' + serviceAreasRadioName + '"]', function() {
             var $self = $(this);
             var milesOfMyBusinessAsteriskClass = that.html.milesOfMyBusinessSpan + ' ' + that.html.asteriskClass;
+            var localitiesFieldAsteriskClass = that.html.localitiesFieldSpan + ' ' + that.html.asteriskClass;
+            var html = '';
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
                 $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
 
-                if ( $( milesOfMyBusinessAsteriskClass ).length ) {
-                    $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
-                    $( milesOfMyBusinessAsteriskClass ).show();
-                } else {
-                    $( that.html.milesOfMyBusinessSpan ).append( that.html.asteriskTag );
+                if ( !$( milesOfMyBusinessAsteriskClass ).length ) {
+                    html = $( that.html.milesOfMyBusinessSpan ).text();
+                    var pos = html.indexOf( ':', 1 );
+                    html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
+                    $( that.html.milesOfMyBusinessSpan ).html( html );
                 }
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                $( milesOfMyBusinessAsteriskClass ).show();
+                $( localitiesFieldAsteriskClass ).hide();
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
 
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
+                if ( $( localitiesFieldAsteriskClass ).length ) {
+                    $( that.html.fields.localitiesFieldId ).attr('required', 'required');
+                    $( localitiesFieldAsteriskClass ).show();
+                } else {
+                    html = $( that.html.localitiesFieldSpan ).text();
+                    var pos = html.indexOf( ':', 1 );
+                    html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
+                    $( that.html.localitiesFieldSpan ).html( html );
+                }
                 $( milesOfMyBusinessAsteriskClass ).hide();
             }
 

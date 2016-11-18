@@ -1,5 +1,5 @@
 <div class="icons">
-    {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and business.getImages() | length > 0  %}
+    {% if hasSubscription(business, "CODE_PREMIUM_GOLD") and photos | length > 0  %}
         <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#photo">
             <i class="photo"></i>
         </a>
@@ -11,7 +11,7 @@
         </a>
     {% endif %}
 
-    {% if hasSubscription(business, "CODE_PRIORITY") and business.getImages() | length > 0 %}
+    {% if hasSubscription(business, "CODE_PRIORITY") and advertisements | length > 0 %}
         <a href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, 'slug' : business.getSlug() }) }}#ad">
             <i class="ad"></i>
         </a>

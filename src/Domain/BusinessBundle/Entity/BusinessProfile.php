@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -526,8 +527,9 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
      * @Assert\NotBlank(groups={"service_area_chosen"})
+     * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
-     * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
+     * 
      */
     protected $milesOfMyBusiness = 100;
 
@@ -538,6 +540,7 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_localities")
+     * @Assert\NotBlank()
      */
     protected $localities;
 

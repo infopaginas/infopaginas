@@ -418,10 +418,10 @@ class BusinessProfileFormType extends AbstractType
             'class' => 'Domain\BusinessBundle\Entity\Locality',
             'label' => 'Localities',
             'multiple' => true,
+            'required'      => true,
             'query_builder' => function (LocalityRepository $repository) {
                 return $repository->getAvailableLocalitiesQb();
             },
-            'required' => false,
         ];
 
         $neighborhoodsFieldOptions = [
@@ -441,15 +441,15 @@ class BusinessProfileFormType extends AbstractType
 
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+            $localitiesFieldOptions['required'] = false;
+
             $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
             $milesOfMyBusinessFieldOptions['required'] = false;
-
-            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         }
 
-        $form->add('milesOfMyBusiness', IntegerType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('milesOfMyBusiness', NumberType::class, $milesOfMyBusinessFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
         $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }
@@ -641,7 +641,9 @@ class BusinessProfileFormType extends AbstractType
                 $profile = $form->getData();
 
                 if (BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE == $profile->getServiceAreasType()) {
-                    return array('Default', 'service_area_chosen');
+                    return ['Default', 'service_area_chosen'];
+                } elseif (BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE == $profile->getServiceAreasType()) {
+                    return ['Default', 'service_locality_chosen'];
                 } else {
                     return ['Default'];
                 }
