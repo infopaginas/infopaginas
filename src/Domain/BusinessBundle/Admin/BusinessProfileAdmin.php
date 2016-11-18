@@ -142,12 +142,12 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
 
         $milesOfMyBusinessFieldOptions = [
-            'required' => false,
+            'required' => true,
         ];
 
         $localitiesFieldOptions = [
             'multiple' => true,
-            'required' => false,
+            'required' => true,
             'label' => 'Localities',
             'query_builder' => function (\Domain\BusinessBundle\Repository\LocalityRepository $rep) {
                 return $rep->getAvailableLocalitiesQb();
@@ -165,10 +165,12 @@ class BusinessProfileAdmin extends OxaAdmin
 
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+            $localitiesFieldOptions['required'] = false;
 
             $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
+            $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
         $formMapper
@@ -269,7 +271,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'choices' => BusinessProfile::getServiceAreasTypes(),
                         'multiple' => false,
                         'expanded' => true,
-                        'required' => false,
+                        'required' => true,
                     ])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)

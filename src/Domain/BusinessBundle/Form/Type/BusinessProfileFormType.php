@@ -198,7 +198,7 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Service Areas',
                 'multiple' => false,
                 'expanded' => true,
-                'required' => false,
+                'required' => true,
                 'choice_translation_domain' => true,
             ])
             ->add('streetAddress', TextType::class, [
@@ -406,7 +406,7 @@ class BusinessProfileFormType extends AbstractType
                 'placeholder' => '100',
             ],
             'label' => 'Within miles of my business',
-            'required' => false,
+            'required' => true,
         ];
 
         $localitiesFieldOptions = [

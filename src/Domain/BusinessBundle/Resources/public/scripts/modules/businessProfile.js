@@ -337,11 +337,19 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
                 $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
+
+                if ( $( milesOfMyBusinessAsteriskClass ).length ) {
+                    $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                    $( milesOfMyBusinessAsteriskClass ).show();
+                } else {
+                    $( that.html.milesOfMyBusinessSpan ).append( that.html.asteriskTag );
+                }
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
 
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
                 $( milesOfMyBusinessAsteriskClass ).hide();
             }
 
