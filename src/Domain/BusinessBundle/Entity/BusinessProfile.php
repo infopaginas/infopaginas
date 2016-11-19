@@ -540,7 +540,7 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_localities")
-     * @Assert\NotBlank()
+     * @Assert\Count(min="1", max="10", groups={"service_locality_chosen"})
      */
     protected $localities;
 

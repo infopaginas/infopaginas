@@ -417,7 +417,7 @@ class BusinessProfileFormType extends AbstractType
             ],
             'class' => 'Domain\BusinessBundle\Entity\Locality',
             'label' => 'Localities',
-            'multiple' => true,
+            'multiple'      => true,
             'required'      => true,
             'query_builder' => function (LocalityRepository $repository) {
                 return $repository->getAvailableLocalitiesQb();
