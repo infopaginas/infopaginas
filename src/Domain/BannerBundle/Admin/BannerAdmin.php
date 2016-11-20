@@ -33,7 +33,6 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('template')
-            ->add('allowedForBusinesses', null, [], null, $choiceOptions)
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
@@ -52,7 +51,6 @@ class BannerAdmin extends OxaAdmin
             ->add('type')
             ->add('size')
             ->add('template')
-            ->add('allowedForBusinesses')
             ->add('updatedAt')
             ->add('updatedUser')
         ;
@@ -77,10 +75,12 @@ class BannerAdmin extends OxaAdmin
             ->with('General')
                 ->add('title')
                 ->add('description')
-                ->add('allowedForBusinesses')
             ->end()
             ->with('Type')
-                ->add('type', 'sonata_type_model_list', [], [])
+                ->add('type', 'sonata_type_model_list', [
+                    'required' => false,
+                    'btn_add' => false,
+                ])
             ->end()
             ->with('Template')
                 ->add('template', 'sonata_type_model_list', [
@@ -102,7 +102,6 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('size')
-            ->add('allowedForBusinesses')
             ->add('image', null, [
                 'template' => 'DomainBannerBundle:Admin:show_image.html.twig'
             ])
@@ -119,10 +118,6 @@ class BannerAdmin extends OxaAdmin
     {
         $errorElement
             ->with('type')
-                ->assertNotBlank()
-                ->assertNotNull()
-            ->end()
-            ->with('image')
                 ->assertNotBlank()
                 ->assertNotNull()
             ->end()
