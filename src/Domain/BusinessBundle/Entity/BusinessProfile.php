@@ -478,28 +478,28 @@ class BusinessProfile implements
     /**
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $twitterURL;
 
     /**
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $facebookURL;
 
     /**
      * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $googleURL;
 
     /**
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $youtubeURL;
 
