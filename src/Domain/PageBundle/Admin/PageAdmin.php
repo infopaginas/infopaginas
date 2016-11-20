@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class PageAdmin extends OxaAdmin
 {
@@ -82,6 +83,11 @@ class PageAdmin extends OxaAdmin
                     )
                 ])
                 ->add('slug', null, ['read_only' => true, 'required' => false])
+                ->add('isPublished', CheckboxType::class,[
+                    'label'     => 'Status',
+                    'required'  => false,
+                    'help'      => 'Check to publish the page',
+                ])
             ->end()
             ->with('Body')
                 ->add('body', 'ckeditor')
