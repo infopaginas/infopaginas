@@ -202,10 +202,12 @@ class UserAdmin extends OxaAdmin
             ->end()
             ->with('Profile')
                 ->add('firstname', null, [
-                    'required' => true,
+                    'label'     => 'First Name',
+                    'required'  => true,
                 ])
                 ->add('lastname', null, [
-                    'required' => true
+                    'label'     => 'Last Name',
+                    'required'  => true,
                 ])
             ->end()
             ->with('Social')

@@ -36,13 +36,11 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
      */
     protected $firstname;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
      */
     protected $lastname;
 
