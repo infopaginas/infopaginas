@@ -527,7 +527,7 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
      * @Assert\NotBlank(groups={"service_area_chosen"})
-     * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
+     * @Assert\Type(type="integer", message="business_profile.integer_miles", groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
      * 
      */
