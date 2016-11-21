@@ -159,6 +159,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
 
     userProfile.prototype.handlePasswordUpdate = function() {
         var $saveButton = $( this.html.buttons.saveNewPasswordButtonId );
+        var $inputFields = $( this.html.forms.passwordUpdateFormId).find('input[type=password]');
         var that = this;
 
         $saveButton.on('click', function( event ) {
@@ -166,6 +167,13 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
             that.doRequest( that.urls.savePassword, serializedData );
 
             event.preventDefault();
+        });
+        $inputFields.keypress(function (e) {
+            var key = e.which;
+            if ( key == 13 ) {
+                $saveButton.click();
+                return false;  
+            }
         });
     };
 
