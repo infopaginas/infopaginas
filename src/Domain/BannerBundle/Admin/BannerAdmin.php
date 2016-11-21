@@ -44,15 +44,14 @@ class BannerAdmin extends OxaAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('id')
-            ->add('image', null, ['template' => 'DomainBannerBundle:Admin:list_image.html.twig'])
-            ->add('title')
-            ->add('description')
-            ->add('type')
-            ->add('size')
-            ->add('template')
-            ->add('updatedAt')
-            ->add('updatedUser')
+                ->add('id')
+                ->addIdentifier('title')
+                ->add('description')
+                ->add('type')
+                ->add('size')
+                ->add('template')
+                ->add('updatedAt')
+                ->add('updatedUser')
         ;
 
         $this->addGridActions($listMapper);
@@ -102,9 +101,6 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('size')
-            ->add('image', null, [
-                'template' => 'DomainBannerBundle:Admin:show_image.html.twig'
-            ])
             ->add('updatedAt')
             ->add('updatedUser')
         ;

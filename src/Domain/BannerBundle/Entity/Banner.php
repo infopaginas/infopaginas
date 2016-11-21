@@ -45,20 +45,11 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $title;
 
     /**
-     * @var Media - Media Logo
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="banners",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=false)
-     */
-    protected $image;
-
-    /**
      * @var string - Banner description
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=100)
+     * @Assert\NotBlank()
      */
     protected $description;
 
@@ -306,30 +297,6 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    /**
-     * Set image
-     *
-     * @param \Oxa\Sonata\MediaBundle\Entity\Media $image
-     *
-     * @return Banner
-     */
-    public function setImage(\Oxa\Sonata\MediaBundle\Entity\Media $image = null)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return \Oxa\Sonata\MediaBundle\Entity\Media
-     */
-    public function getImage()
-    {
-        return $this->image;
     }
 
     /**
