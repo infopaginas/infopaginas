@@ -1,0 +1,16 @@
+<h2>
+    {% trans %}Subcategories{% endtrans %}
+</h2>
+
+{% for subcategory in subcategories %}
+    {% if currentSubcategory %}
+        {% set is_selected = (subcategory.id == currentSubcategory.id) %}
+    {% else %}
+        {% set is_selected = false %}
+    {% endif %}
+
+    <a href="{{ url('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}">
+        {{ subcategory.getName() }}
+    </a>
+    |
+{% endfor %}

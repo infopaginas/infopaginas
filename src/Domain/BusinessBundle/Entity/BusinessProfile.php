@@ -159,7 +159,7 @@ class BusinessProfile implements
      *     orphanRemoval=false
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
-     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count")
+     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count", groups={"default"})
      */
     protected $categories;
 
@@ -717,6 +717,17 @@ class BusinessProfile implements
     {
         return $this->id;
     }
+
+    /**
+     * @var $catalogLocality - catalogLocality, Business is located in
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="locality_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank()
+     */
+    protected $catalogLocality;
 
     /**
      * Constructor
@@ -2626,5 +2637,29 @@ class BusinessProfile implements
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
+    }
+
+    /**
+     * Set catalogLocality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $catalogLocality
+     *
+     * @return BusinessProfile
+     */
+    public function setCatalogLocality(\Domain\BusinessBundle\Entity\Locality $catalogLocality = null)
+    {
+        $this->catalogLocality = $catalogLocality;
+
+        return $this;
+    }
+
+    /**
+     * Get catalogLocality
+     *
+     * @return \Domain\BusinessBundle\Entity\Locality
+     */
+    public function getCatalogLocality()
+    {
+        return $this->catalogLocality;
     }
 }

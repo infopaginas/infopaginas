@@ -28,6 +28,16 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb;
     }
 
+    public function getAvailableParentCategories()
+    {
+        $qb = $this->getAvailableParentCategoriesQb()
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $qb;
+    }
+
     public function getAvailableSubCategoriesQb($parent, $level = 2)
     {
         $qb = $this->getAvailableCategoriesQb()

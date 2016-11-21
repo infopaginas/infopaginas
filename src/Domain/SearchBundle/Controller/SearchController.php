@@ -3,6 +3,8 @@
 namespace Domain\SearchBundle\Controller;
 
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Manager\CategoryManager;
+use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\ReportBundle\Manager\SearchLogManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -187,17 +189,117 @@ class SearchController extends Controller
         return $this->get('domain_business.manager.business_profile');
     }
 
-    public function catalogAction(Request $request, $citySlug = '', $categorySlug = '')
+    /**
+     * @return \Domain\BusinessBundle\Manager\LocalityManager
+     */
+    protected function getLocalityManager() : LocalityManager
     {
-        //todo - replace with slugs
+        return $this->get('domain_business.manager.locality');
+    }
 
-        $q      = ucwords(str_replace('-', ' ', $categorySlug));
-        $geo    = ucwords(str_replace('-', ' ', $citySlug));
+    /**
+     * @return \Domain\BusinessBundle\Manager\CategoryManager
+     */
+    protected function getCategoryManager() : CategoryManager
+    {
+        return $this->get('domain_business.manager.category');
+    }
 
-        $request->attributes->set('q', $q);
-        $request->attributes->set('geo', $geo);
+    public function catalogAction(
+        Request $request,
+        $localitySlug = '',
+        $categorySlug = '',
+        $subcategorySlug = ''
+    ) {
+        $searchManager = $this->get('domain_search.manager.search');
 
-        return $this->indexAction($request);
+        $category    = false;
+        $subcategory = false;
+
+        $categories    = [];
+        $subcategories = [];
+
+        $localities = $this->getLocalityManager()->findAll();
+
+        $locality = $searchManager->searchCatalogLocality($localitySlug);
+
+        $request->attributes->set('geo', $localitySlug);
+        $request->attributes->set('q', $localitySlug);
+
+        if ($locality) {
+            $categories = $this->getCategoryManager()->getAvailableParentCategories();
+
+            $request->attributes->set('catalogLocality', $locality->getName());
+            $request->attributes->set('geo', $locality->getName());
+            $request->attributes->set('q', $locality->getName());
+
+            if ($categorySlug) {
+                $category = $searchManager->searchCatalogCategory($categorySlug);
+
+                $request->attributes->set('category', $category->getName());
+                $request->attributes->set('q', $category->getName());
+
+                if ($category) {
+                    $subcategories = $category->getChildren();
+                    $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
+
+                    if ($subcategory) {
+                        $request->attributes->set('subcategory', $subcategory->getName());
+                        $request->attributes->set('q', $subcategory->getName());
+                    }
+                }
+            }
+        }
+
+        $searchResultsDTO = null;
+        $dcDataDTO        = null;
+
+        $searchData = $this->getSearchDataByRequest($request);
+
+        $locale = ucwords($request->getLocale());
+
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_LEADERBOARD,
+                TypeInterface::CODE_PORTAL,
+            ]
+        );
+
+        $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $subcategory);
+
+        //locality lat and lan required
+        if ($searchDTO) {
+            $dcDataDTO = $searchManager->getDoubleClickData($searchDTO);
+            $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
+
+            $this->getBusinessProfileManager()
+                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+
+            $this->getSearchLogManager()
+                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+        }
+
+        // hardcode for catalog
+        $pageRouter = 'domain_search_index';
+
+        return $this->render(
+            'DomainSearchBundle:Search:catalog.html.twig',
+            [
+                'search'        => $searchDTO,
+                'results'       => $searchResultsDTO,
+                'bannerFactory' => $bannerFactory,
+                'dcDataDTO'     => $dcDataDTO,
+                'searchData'    => $searchData,
+                'pageRouter'    => $pageRouter,
+                'localities'    => $localities,
+                'categories'    => $categories,
+                'subcategories' => $subcategories,
+                'currentLocality' => $locality,
+                'currentCategory' => $category,
+                'currentSubcategory' => $subcategory,
+            ]
+        );
     }
 
     private function getSearchDataByRequest(Request $request)
@@ -207,6 +309,7 @@ class SearchController extends Controller
             'geo',
             'order',
             'category',
+            'subcategory',
             'neighborhood',
 
             // geo location

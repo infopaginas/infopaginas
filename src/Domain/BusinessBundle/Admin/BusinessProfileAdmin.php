@@ -53,6 +53,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('city')
             ->add('state')
             ->add('country')
+            ->add('catalogLocality')
             ->add('phones')
             ->add('subscriptions.subscriptionPlan', null, [
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
@@ -73,6 +74,11 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('city')
             ->add('state')
             ->add('country')
+            ->add('catalogLocality', null, [
+                'sortable' => true,
+                'sort_field_mapping'=> ['fieldName' => 'name'],
+                'sort_parent_association_mappings' => [['fieldName' => 'catalogLocality']]
+            ])
             ->add('phones')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
@@ -232,6 +238,11 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('state')
                     ->add('city', null, [
                         'required' => true
+                    ])
+                    ->add('catalogLocality', 'sonata_type_model_list', [
+                        'required' => true,
+                        'btn_delete' => false,
+                        'btn_add' => false,
                     ])
                     ->add('zipCode', null, [
                         'required' => true
@@ -469,8 +480,13 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('subscriptions')
             ->add('discount')
             ->add('coupons')
-            ->add('categories')
-            ->add('subcategories')
+            ->add('category', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_category.html.twig'
+            ])
+            ->add('subcategories', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_subcategories.html.twig'
+            ])
+            ->add('catalogLocality')
             ->add('areas')
             ->add('localities')
             ->add('neighborhoods')

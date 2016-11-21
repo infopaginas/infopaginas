@@ -30,8 +30,8 @@ class CategoryAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('parent.name')
-            ->add('name')
+            ->add('parent.name', null, ['label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())])
+            ->add('name', null, ['label' => $this->trans('business.list.subcategory_column', [], $this->getTranslationDomain())])
         ;
 
         $this->addGridActions($listMapper);

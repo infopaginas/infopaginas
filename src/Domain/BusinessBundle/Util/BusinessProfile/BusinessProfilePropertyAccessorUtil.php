@@ -45,6 +45,8 @@ class BusinessProfilePropertyAccessorUtil
             }
         }
 
+        $entityCollections[\Domain\BusinessBundle\Entity\Category::class] = 'categories';
+
         return $entityCollections;
     }
 

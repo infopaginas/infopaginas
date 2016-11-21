@@ -229,6 +229,14 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'State',
                 'required' => false,
             ])
+            ->add('catalogLocality', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control',
+                    'data-placeholder' => 'Select catalog locality',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Locality',
+                'label' => 'Catalog Locality',
+            ])
             ->add('city', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -609,6 +617,8 @@ class BusinessProfileFormType extends AbstractType
                     return $repository->getAvailableParentCategoriesQb();
                 },
                 'data' => $category,
+                'mapped' => false,
+                'validation_groups' => ['userBusinessProfile'],
             ])
             ->add('subcategories', EntityType::class, [
                 'attr' => [

@@ -21,6 +21,16 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    public function getAvailableLocalities()
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $qb;
+    }
+
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         $query = $this->getEntityManager()->createQueryBuilder()

@@ -75,11 +75,15 @@ $( document ).ready( function() {
 
             subcategories.val( null ).trigger( 'change.select2' );
 
+            var selectedValues = [];
+
             $.each( response.data, function ( key, value ) {
                 if ( value.selected ) {
-                    subcategories.val( value.id ).trigger( 'change' );
+                    selectedValues.push( value.id );
                 }
             });
+
+            subcategories.select2( 'val', selectedValues );
         });
     }
 

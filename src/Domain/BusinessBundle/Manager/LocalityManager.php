@@ -35,4 +35,22 @@ class LocalityManager extends Manager
 
         return $locality;
     }
+
+    public function getLocalityBySlug($localitySlug)
+    {
+        $locality = $this->getRepository()->findOneBy(
+            [
+                'slug' => $localitySlug
+            ]
+        );
+
+        return $locality;
+    }
+
+    public function findAll()
+    {
+        $locality = $this->getRepository()->getAvailableLocalities();
+
+        return $locality;
+    }
 }

@@ -290,6 +290,11 @@ class MigrationCommand extends ContainerAwareCommand
             $entity->setServiceAreasType('area');
         }
 
+        if (!$entity->getCatalogLocality()) {
+            $catalogLocality = $this->loadLocality($address);
+            $entity->setCatalogLocality($catalogLocality);
+        }
+
         if ($profile->headings) {
             // categories
 
@@ -308,7 +313,11 @@ class MigrationCommand extends ContainerAwareCommand
             }
 
             foreach ($pairs as $pair) {
-                $entity->addCategory($this->loadCategory($pair));
+                $category = $this->loadCategory($pair);
+
+                if ($category) {
+                    $entity = $this->addBusinessProfileCategory($entity, $category);
+                }
             }
         }
 
@@ -655,11 +664,39 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity) {
             $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(
                 [
-                    'slug' => strtolower(MenuModel::getMenuCategoriesNames()[MenuModel::CODE_UNDEFINED])
+                    'slug' => strtolower(MenuModel::getOtherCategoriesNames()[MenuModel::CODE_UNDEFINED]['en'])
                 ]
             );
         }
 
         return $entity;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param Category $category
+     *
+     * @return BusinessProfile
+     */
+    private function addBusinessProfileCategory(BusinessProfile $businessProfile, Category $category)
+    {
+        $businessProfileCategory = $businessProfile->getCategory();
+        $newParentCategory = $category->getParent();
+
+        if ($businessProfileCategory) {
+            if ($businessProfileCategory->getChildren()->contains($category) and
+                !$businessProfile->getCategories()->contains($category)
+            ) {
+                $businessProfile->addCategory($category);
+            }
+        } else {
+            if ($newParentCategory) {
+                $businessProfile->addCategory($newParentCategory);
+            }
+
+            $businessProfile->addCategory($category);
+        }
+
+        return $businessProfile;
     }
 }

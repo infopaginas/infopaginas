@@ -2,6 +2,7 @@
 
 namespace Domain\SearchBundle\Model\Manager;
 
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Doctrine\ORM\EntityManager;
@@ -109,6 +110,34 @@ class SearchManager extends Manager
         return $response;
     }
 
+    public function searchCatalog(SearchDTO $searchParams, $locale) : SearchResultsDTO
+    {
+        $results = $this->businessProfileManager->searchCatalog($searchParams, $locale);
+
+        if ($results) {
+            $categories    = [];
+            $totalResults  = $this->businessProfileManager->countCatalogSearchResults($searchParams, $locale);
+            $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+            $pagesCount    = ceil($totalResults/$searchParams->limit);
+        } else {
+            $totalResults  = 0;
+            $categories    = [];
+            $neighborhoods = [];
+            $pagesCount    = 0;
+        }
+
+        $response = SearchDataUtil::buildResponceDTO(
+            $results,
+            $totalResults,
+            $searchParams->page,
+            $pagesCount,
+            $categories,
+            $neighborhoods
+        );
+
+        return $response;
+    }
+
     public function getSearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
@@ -144,6 +173,47 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
+    public function getSearchCatalogDTO($request, $locality, $category, $subcategory)
+    {
+        $location = $this->geolocationManager->buildLocationValueFromRequest($request);
+
+        if (!$location) {
+            return null;
+        }
+
+        $query     = preg_replace("/[^a-zA-Z0-9\s]+/", "", SearchDataUtil::getQueryFromRequest($request));
+        $page      = SearchDataUtil::getPageFromRequest($request);
+
+        $limit     = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+        $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+
+        if ($category instanceof Category) {
+            $searchDTO->setCategory($category);
+        }
+
+        if ($subcategory instanceof Category) {
+            $searchDTO->setSubcategory($subcategory);
+        }
+
+        if ($locality) {
+            $searchDTO->setCatalogLocality($locality);
+        }
+
+        $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
+
+        if ($neighborhood) {
+            $searchDTO->setNeighborhood($neighborhood);
+        }
+
+        $orderBy = SearchDataUtil::getOrderByFromRequest($request);
+
+        if ($orderBy) {
+            $searchDTO->setOrderBy($orderBy);
+        }
+
+        return $searchDTO;
+    }
+
     public function getDoubleClickData(SearchDTO $searchDTO) : DCDataDTO
     {
         return new DCDataDTO(
@@ -151,5 +221,27 @@ class SearchManager extends Manager
             $searchDTO->locationValue->name,
             $searchDTO->getCategory()
         );
+    }
+
+    public function searchCatalogLocality($localitySlug)
+    {
+        $locality = null;
+
+        if ($localitySlug) {
+            $locality = $this->localityManager->getLocalityBySlug($localitySlug);
+        }
+
+        return $locality;
+    }
+
+    public function searchCatalogCategory($categorySlug)
+    {
+        $category = null;
+
+        if ($categorySlug) {
+            $category = $this->categoriesManager->getRepository()->findOneBy(['slug' => $categorySlug]);
+        }
+
+        return $category;
     }
 }

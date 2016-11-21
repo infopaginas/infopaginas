@@ -177,6 +177,17 @@ class BusinessProfileManager extends Manager
         return $searchResultsData;
     }
 
+    public function searchCatalog(SearchDTO $searchParams, string $locale)
+    {
+        $searchResultsData = $this->getRepository()->searchCatalog($searchParams, $locale);
+
+        $searchResultsData = array_map(function ($item) {
+            return $item[0]->setDistance($item['distance']);
+        }, $searchResultsData);
+
+        return $searchResultsData;
+    }
+
     /**
      * @param int $id
      * @param string $locale
@@ -513,6 +524,16 @@ class BusinessProfileManager extends Manager
     public function countSearchResults(SearchDTO $searchParams, string $locale)
     {
         return $this->getRepository()->countSearchResults($searchParams, $locale);
+    }
+
+    /**
+     * @param SearchDTO $searchParams
+     * @param string    $locale
+     * @return mixed
+     */
+    public function countCatalogSearchResults(SearchDTO $searchParams, string $locale)
+    {
+        return $this->getRepository()->countCatalogSearchResults($searchParams, $locale);
     }
 
     /**
