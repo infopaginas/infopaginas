@@ -116,6 +116,7 @@
                 <td>{{ object.updatedAt|date('d M, Y, H:i:s A') }}</td>
             </tr>
         {% endif %}
+        {% if object.reviewer %}
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Profile') }}</td>
             <td>
@@ -124,6 +125,7 @@
                 </a>
             </td>
         </tr>
+        {% endif %}
         </tbody>
     </table>
 </div>
