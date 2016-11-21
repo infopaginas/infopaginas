@@ -3,6 +3,23 @@
 {% block form %}
     {% if not form.vars.valid %}
         {% set htmlErrorToFlash = '<ul>' %}
+
+        {% set errors = form.vars.errors %}
+        {% if errors|length %}
+            {% set htmlErrorToFlash=htmlErrorToFlash~'<li>' %}
+
+            {% if errors is iterable %}
+                {% for e in errors %}
+                    {% set htmlErrorToFlash=htmlErrorToFlash~e.message~' ' %}
+                {% endfor %}
+            {% else %}
+                {% set htmlErrorToFlash=htmlErrorToFlash~errors %}
+            {% endif %}
+
+            {% set htmlErrorToFlash=htmlErrorToFlash~'</li>' %}
+        {% endif %}
+
+
         {% for item in form if not item.vars.valid %}
             {% set errors = {} %}
             {% if item.children is not empty %}
@@ -35,9 +52,15 @@
             {% set htmlErrorToFlash=htmlErrorToFlash~'</li>' %}
         {% endfor %}
         {% set htmlErrorToFlash=htmlErrorToFlash~'</ul>' %}
+
         <script type="text/javascript">
             $('.alert-danger').append('{{ htmlErrorToFlash|raw }}');
         </script>
+        <style>
+            .sonata-ba-form-error {
+                display: none;
+            }
+        </style>
     {% endif %}
     {{ block('parentForm') }}
 {% endblock %}
