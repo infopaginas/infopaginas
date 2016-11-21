@@ -564,30 +564,24 @@ class MigrationCommand extends ContainerAwareCommand
 
     private function loadLocality($item)
     {
-        $className = 'Locality';
+        $className  = 'Locality';
+        $repository = $this->em->getRepository('DomainBusinessBundle:' . $className);
 
-        // todo - change to both languages search
-        $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
+        $entity = $repository->getLocalityByName(trim($item->locality));
 
         if (!$entity) {
             $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
 
             $entity = new $classNameEntity();
             $entity->setName($item->locality);
-            $entity->setLongitude($item->coordinates[0]);
-            $entity->setLatitude($item->coordinates[1]);
 
             $entity = $this->saveEntity($entity);
-            $this->em->persist($entity);
-
             // todo - add area?
-        } else {
-            if (!$entity->getLongitude()) {
-                $entity->setLongitude($item->coordinates[0]);
-                $entity->setLatitude($item->coordinates[1]);
+        }
 
-                $this->em->persist($entity);
-            }
+        if (!$entity->getLongitude()) {
+            $entity->setLongitude($item->coordinates[0]);
+            $entity->setLatitude($item->coordinates[1]);
         }
 
         return $entity;
