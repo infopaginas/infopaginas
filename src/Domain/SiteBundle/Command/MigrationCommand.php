@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -289,6 +290,11 @@ class MigrationCommand extends ContainerAwareCommand
             $entity->setServiceAreasType('area');
         }
 
+        if (!$entity->getCatalogLocality()) {
+            $catalogLocality = $this->loadLocality($address);
+            $entity->setCatalogLocality($catalogLocality);
+        }
+
         if ($profile->headings) {
             // categories
 
@@ -307,7 +313,11 @@ class MigrationCommand extends ContainerAwareCommand
             }
 
             foreach ($pairs as $pair) {
-                $entity->addCategory($this->loadCategory($pair));
+                $category = $this->loadCategory($pair);
+
+                if ($category) {
+                    $entity = $this->addBusinessProfileCategory($entity, $category);
+                }
             }
         }
 
@@ -466,24 +476,43 @@ class MigrationCommand extends ContainerAwareCommand
             $valueEn = $valueSecondary;
         }
 
+        //search category as is
         $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
         if (!$entity) {
-            $entity = new Category();
-            $entity->setName($valuePrimary);
+            //search category as subcategory
+            $parentValue    = $this->parseCategoryName($valuePrimary);
+            $valuePrimary   = $this->parseSubcategoryName($valuePrimary);
+            $valueSecondary = $this->parseSubcategoryName($valueSecondary);
 
-            $entity->setSearchTextEn($valueEn);
-            $entity->setSearchTextEs($valueEs);
+            $valueEn = $this->parseSubcategoryName($valueEn);
+            $valueEs = $this->parseSubcategoryName($valueEs);
 
-            $entity = $this->saveEntity($entity);
+            $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
-            $className = 'Category';
+            if (!$entity) {
+                //get parent category
+                $parentEntity = $this->getParentCategory($parentValue);
 
-            $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+                if ($parentEntity) {
+                    $entity = new Category();
+                    $entity->setName($valuePrimary);
 
-            $translation = new $translationClassName();
+                    $entity->setSearchTextEn($valueEn);
+                    $entity->setSearchTextEs($valueEs);
+                    $entity->setParent($parentEntity);
 
-            $this->addTranslation($translation, $valueSecondary, $entity);
+                    $entity = $this->saveEntity($entity);
+
+                    $className = 'Category';
+
+                    $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+
+                    $translation = new $translationClassName();
+
+                    $this->addTranslation($translation, $valueSecondary, $entity);
+                }
+            }
         }
 
         return $entity;
@@ -535,30 +564,24 @@ class MigrationCommand extends ContainerAwareCommand
 
     private function loadLocality($item)
     {
-        $className = 'Locality';
+        $className  = 'Locality';
+        $repository = $this->em->getRepository('DomainBusinessBundle:' . $className);
 
-        // todo - change to both languages search
-        $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
+        $entity = $repository->getLocalityByName(trim($item->locality));
 
         if (!$entity) {
             $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
 
             $entity = new $classNameEntity();
             $entity->setName($item->locality);
-            $entity->setLongitude($item->coordinates[0]);
-            $entity->setLatitude($item->coordinates[1]);
 
             $entity = $this->saveEntity($entity);
-            $this->em->persist($entity);
-
             // todo - add area?
-        } else {
-            if (!$entity->getLongitude()) {
-                $entity->setLongitude($item->coordinates[0]);
-                $entity->setLatitude($item->coordinates[1]);
+        }
 
-                $this->em->persist($entity);
-            }
+        if (!$entity->getLongitude()) {
+            $entity->setLongitude($item->coordinates[0]);
+            $entity->setLatitude($item->coordinates[1]);
         }
 
         return $entity;
@@ -612,5 +635,62 @@ class MigrationCommand extends ContainerAwareCommand
         $this->em->flush();
 
         return $entity;
+    }
+
+    private function parseCategoryName($name)
+    {
+        //todo
+
+        return $name;
+    }
+
+    private function parseSubcategoryName($name)
+    {
+        //todo
+
+        return $name;
+    }
+
+    private function getParentCategory($parentName)
+    {
+        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $parentName]);
+
+        if (!$entity) {
+            $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(
+                [
+                    'slug' => strtolower(MenuModel::getOtherCategoriesNames()[MenuModel::CODE_UNDEFINED]['en'])
+                ]
+            );
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param Category $category
+     *
+     * @return BusinessProfile
+     */
+    private function addBusinessProfileCategory(BusinessProfile $businessProfile, Category $category)
+    {
+        $businessProfileCategory = $businessProfile->getCategory();
+        $newParentCategory = $category->getParent();
+
+        if ($businessProfileCategory) {
+            if ($businessProfileCategory->getChildren()->contains($category) and
+                !$businessProfile->getCategories()->contains($category)
+            ) {
+                $businessProfile->addCategory($category);
+            }
+        } else {
+            if ($newParentCategory) {
+                $businessProfile->addCategory($newParentCategory);
+            }
+
+            $businessProfile->addCategory($category);
+        }
+
+        return $businessProfile;
     }
 }

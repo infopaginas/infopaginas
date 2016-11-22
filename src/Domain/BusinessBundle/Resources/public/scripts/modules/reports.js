@@ -168,7 +168,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 type: 'column'
             },
             title: {
-                text: $(this.html.containers.keywordChartContainerId.data( "title" ) )
+                text: $( this.html.containers.keywordChartContainerId ).data( "title" )
             },
             xAxis: {
                 categories: keywords
@@ -177,7 +177,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: $(this.html.containers.keywordChartContainerId.data( "y-axis" ) )
+                    text: $( this.html.containers.keywordChartContainerId ).data( "y-axis" )
                 }
             },
             tooltip: {

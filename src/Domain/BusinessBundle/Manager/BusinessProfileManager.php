@@ -177,6 +177,17 @@ class BusinessProfileManager extends Manager
         return $searchResultsData;
     }
 
+    public function searchCatalog(SearchDTO $searchParams, string $locale)
+    {
+        $searchResultsData = $this->getRepository()->searchCatalog($searchParams, $locale);
+
+        $searchResultsData = array_map(function ($item) {
+            return $item[0]->setDistance($item['distance']);
+        }, $searchResultsData);
+
+        return $searchResultsData;
+    }
+
     /**
      * @param int $id
      * @param string $locale
@@ -520,6 +531,16 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param SearchDTO $searchParams
+     * @param string    $locale
+     * @return mixed
+     */
+    public function countCatalogSearchResults(SearchDTO $searchParams, string $locale)
+    {
+        return $this->getRepository()->countCatalogSearchResults($searchParams, $locale);
+    }
+
+    /**
      * @param BusinessProfile $businessProfile
      * @return int
      */
@@ -672,5 +693,66 @@ class BusinessProfileManager extends Manager
             ->getQuery()->getResult();
 
         return $objects;
+    }
+
+    public function getSubcategories($categoryId, $businessProfileId)
+    {
+        $data = [];
+        $checkedSubcategoryIds = [];
+
+        if ($businessProfileId) {
+            /* @var BusinessProfile $businessProfile */
+            $businessProfile       = $this->getRepository()->find($businessProfileId);
+            $checkedSubcategoryIds = $this->getBusinessProfileSubcategoryIds($businessProfile);
+        }
+
+        $subcategories = $this->getSubcategoriesForCategory($categoryId);
+
+        foreach ($subcategories as $key => $subcategory) {
+            $data[$key] = [
+                'id'       => $subcategory->getId(),
+                'name'     => $subcategory->getName(),
+                'selected' => false,
+            ];
+
+            if (in_array($subcategory->getId(), $checkedSubcategoryIds)) {
+                $data[$key]['selected'] = true;
+            }
+        }
+
+        return $data;
+    }
+
+    public function getSubcategoriesForCategory($categoryId)
+    {
+        $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
+            ->getAvailableSubCategories($categoryId);
+
+        return $subcategories;
+    }
+
+    public function getCategoriesByIds($ids)
+    {
+        $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
+            ->getAvailableCategoriesByIds($ids);
+
+        return $subcategories;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
+    public function getBusinessProfileSubcategoryIds(BusinessProfile $businessProfile)
+    {
+        $data = [];
+        $subcategories = $businessProfile->getSubcategories();
+
+        foreach ($subcategories as $subcategory) {
+            $data[] = $subcategory->getId();
+        }
+
+        return $data;
     }
 }

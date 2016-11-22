@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\ReportBundle\Manager\CategoryReportManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
@@ -174,6 +175,21 @@ class ProfileController extends Controller
         return $this->getFailureResponse(false);
     }
 
+    /**
+     * @param Request $request
+     * @param int     $categoryId
+     * @param int     $businessProfileId
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function subcategoryListAction(Request $request, $categoryId, $businessProfileId = null)
+    {
+        $businessProfilesManager = $this->getBusinessProfilesManager();
+
+        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId);
+
+        return new JsonResponse(['data' => $subcategories]);
+    }
     /**
      * @return \Symfony\Component\Form\Form
      */

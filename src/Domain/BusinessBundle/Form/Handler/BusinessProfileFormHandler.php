@@ -8,6 +8,7 @@
 
 namespace Domain\BusinessBundle\Form\Handler;
 
+use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
@@ -15,6 +16,7 @@ use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -74,8 +76,12 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $businessProfileId = $this->request->get('businessProfileId', false);
 
         $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
+        $post   = $this->request->request->all()[$this->form->getName()];
+
+        $oldCategories = [];
 
         if ($businessProfileId !== false) {
+            /* @var BusinessProfile $businessProfile */
             $businessProfile = $this->manager->find($businessProfileId);
 
             if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
@@ -83,6 +89,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             }
 
             $this->form->setData($businessProfile);
+
+            //workaround for category/subcategories update
+            $oldCategories = clone $businessProfile->getCategories();
         }
 
         if ($this->request->getMethod() == 'POST') {
@@ -101,9 +110,14 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $businessProfile->setIsSetVideo(true);
             }
 
-            if ($this->form->isValid()) {
-                $post = $this->request->request->all()[$this->form->getName()];
+            $newCategoryIds  = $this->getCategoriesIds($post);
+            $businessProfile = $this->handleCategoriesUpdate($businessProfile, $newCategoryIds);
 
+            if (!$newCategoryIds) {
+                $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
+            }
+
+            if ($this->form->isValid()) {
                 //create new user entry for not-logged users
                 if (isset($post['firstname']) && isset($post['lastname'])) {
                     if (!empty($post['firstname']) && !empty($post['lastname']) && !empty($post['email'])) {
@@ -114,7 +128,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                     }
                 }
 
-                $this->onSuccess($businessProfile);
+                $this->onSuccess($businessProfile, $oldCategories);
                 return true;
             }
         }
@@ -124,8 +138,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
     /**
      * @param BusinessProfile $businessProfile
+     * @param Collection      $oldCategories
      */
-    private function onSuccess(BusinessProfile $businessProfile)
+    private function onSuccess(BusinessProfile $businessProfile, $oldCategories)
     {
         if (!$businessProfile->getId()) {
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
@@ -138,7 +153,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
-            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile);
+            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
         }
     }
 
@@ -161,5 +176,54 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     private function getBusinessProfilesManager() : BusinessProfileManager
     {
         return $this->manager;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    private function getCategoriesIds($data)
+    {
+        $ids = [];
+
+        if (isset($data['categories']) and $data['categories']) {
+            $ids[] = $data['categories'];
+
+            if (isset($data['subcategories']) and $data['subcategories']) {
+                $ids = array_merge($ids, $data['subcategories']);
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param array           $newCategoryIds
+     * @return BusinessProfile
+     */
+    private function handleCategoriesUpdate($businessProfile, $newCategoryIds)
+    {
+        if ($newCategoryIds) {
+            foreach ($businessProfile->getCategories() as $item) {
+                $key = array_search($item->getId(), $newCategoryIds);
+
+                if ($key) {
+                    unset($newCategoryIds[$key]);
+                } else {
+                    $businessProfile->removeCategory($item);
+                }
+            }
+
+            if ($newCategoryIds) {
+                $categories = $this->manager->getCategoriesByIds($newCategoryIds);
+
+                foreach ($categories as $category) {
+                    $businessProfile->addCategory($category);
+                }
+            }
+        }
+
+        return $businessProfile;
     }
 }
