@@ -786,8 +786,8 @@ class BusinessProfileManager extends Manager
                     ];
 
                     if ($country->getShortName() === strtoupper(Country::PUERTO_RICO_SHORT_NAME)) {
-                        $schemaItem['address']['addressCountry'] = 'US';
-                        $schemaItem['address']['addressRegion'] = $country->getName();
+                        $schemaItem['address']['addressCountry'] = strtoupper(Country::USA_SHORT_NAME);
+                        $schemaItem['address']['addressRegion']  = $country->getName();
                     } else {
                         $schemaItem['address']['addressCountry'] = $country->getName();
                         $state = $businessProfile->getState();
@@ -855,8 +855,8 @@ class BusinessProfileManager extends Manager
                 }
             }
 
-            if ((isset($sameAs) and $sameAs)) {
-                if (isset($schemaItem['sameAs'])) {
+            if (!empty($sameAs)) {
+                if (!empty($schemaItem['sameAs'])) {
                     $sameAs[] = $schemaItem['sameAs'];
                     $schemaItem['sameAs'] = $sameAs;
                 }
@@ -968,13 +968,13 @@ class BusinessProfileManager extends Manager
      */
     private function getDefaultLocalBusinessImage($schemaItem)
     {
-        if (isset($schemaItem['image']) and $schemaItem['image']) {
+        if (!empty($schemaItem['image'])) {
             $image = $schemaItem['image'];
-        } elseif (isset($schemaItem['logo']) and $schemaItem['logo']) {
+        } elseif (!empty($schemaItem['logo'])) {
             $image = $schemaItem['logo'];
         } else {
             $request = $this->container->get('request');
-            $image   = 'https://' . $request->getHost() . '/assets/images/header-logo.png';
+            $image   = $request->getScheme() . '://' . $request->getHost() . '/assets/images/header-logo.png';
         }
 
         return $image;

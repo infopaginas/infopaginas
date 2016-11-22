@@ -22,11 +22,10 @@ class ArticleManager extends Manager
     /** @var ContainerInterface $container */
     private $container;
 
-    public function __construct(EntityManager $entityManager, ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-
-        parent::__construct($entityManager);
+        $this->em = $container->get('doctrine.orm.entity_manager');
     }
 
     public function fetchHomepageArticles()
@@ -145,7 +144,7 @@ class ArticleManager extends Manager
 
         $logo = [
             '@type'  => 'ImageObject',
-            'url'    => 'https://' . $request->getHost() . '/assets/images/header-logo.png',
+            'url'    => $request->getScheme() . '://' . $request->getHost() . '/assets/images/header-logo.png',
             'width'  => '221',
             'height' => '42',
         ];
