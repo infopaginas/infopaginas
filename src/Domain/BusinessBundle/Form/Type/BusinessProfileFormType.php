@@ -446,7 +446,7 @@ class BusinessProfileFormType extends AbstractType
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
-        $form->add('milesOfMyBusiness', NumberType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
         $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }

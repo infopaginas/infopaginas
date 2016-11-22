@@ -78,7 +78,7 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
                 'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
             ], [
                 'code' => TypeInterface::CODE_SERP_BOXED,
-                'name' => 'business-profile-secondary-300x250',
+                'name'      => 'business-profile-secondary-250x250',
                 'placement' => 'Business profile page',
                 'comment' => 'Shown if Business corresponds to search category and location.',
             ]
