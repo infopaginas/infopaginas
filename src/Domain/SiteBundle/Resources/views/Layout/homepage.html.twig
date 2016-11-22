@@ -13,6 +13,14 @@
     {% block doubleClickHeader %}
         {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
     {% endblock %}
+
+    {% block schemaJsonLD %}
+        {% if schemaJsonLD is defined and schemaJsonLD %}
+            <script type="application/ld+json">
+                {{ schemaJsonLD|raw }}
+            </script>
+        {% endif %}
+    {% endblock %}
 </head>
 <body>
 

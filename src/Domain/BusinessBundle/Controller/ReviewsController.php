@@ -48,9 +48,15 @@ class ReviewsController extends Controller
         $reviewsResultDTO = $this->getBusinessReviewsManager()
             ->getBusinessProfileReviewsResultDTO($businessProfile, $paramsDTO);
 
+        $schema = $this->getBusinessProfileManager()->buildBusinessProfileReviewsSchema(
+            $reviewsResultDTO->resultSet,
+            $businessProfile
+        );
+
         return $this->render('DomainBusinessBundle:Reviews:list.html.twig', [
             'businessProfile'  => $businessProfile,
             'reviewsResultDTO' => $reviewsResultDTO,
+            'schemaJsonLD'     => $schema,
         ]);
     }
 

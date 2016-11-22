@@ -129,17 +129,20 @@ class ProfileController extends Controller
             TypeInterface::CODE_SERP_BOXED,
         ));
 
+        $schema = $this->getBusinessProfilesManager()->buildBusinessProfilesSchema([$businessProfile], true);
+
         $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
         return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
-            'businessProfile'  => $businessProfile,
-            'seoData'          => $businessProfile,
-            'photos'           => $photos,
-            'advertisements'   => $advertisements,
-            'lastReview'       => $lastReview,
-            'reviewForm'       => $reviewForm->createView(),
-            'bannerFactory'    => $bannerFactory,
-            'dcDataDTO'        => $dcDataDTO,
+            'businessProfile' => $businessProfile,
+            'seoData'         => $businessProfile,
+            'photos'          => $photos,
+            'advertisements'  => $advertisements,
+            'lastReview'      => $lastReview,
+            'reviewForm'      => $reviewForm->createView(),
+            'bannerFactory'   => $bannerFactory,
+            'dcDataDTO'       => $dcDataDTO,
+            'schemaJsonLD'    => $schema,
         ]);
     }
 

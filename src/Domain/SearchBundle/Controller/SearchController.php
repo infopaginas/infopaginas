@@ -32,6 +32,8 @@ class SearchController extends Controller
 
         $locale = ucwords($request->getLocale());
 
+        $schema = false;
+
         if ($searchDTO) {
             $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
             $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
@@ -40,6 +42,8 @@ class SearchController extends Controller
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
             $this->getSearchLogManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+
+            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
             $dcDataDTO = null;
@@ -65,6 +69,7 @@ class SearchController extends Controller
                 'dcDataDTO'     => $dcDataDTO,
                 'searchData'    => $searchData,
                 'pageRouter'    => $pageRouter,
+                'schemaJsonLD'  => $schema,
             ]
         );
     }
@@ -253,6 +258,7 @@ class SearchController extends Controller
 
         $searchResultsDTO = null;
         $dcDataDTO        = null;
+        $schema = false;
 
         $searchData = $this->getSearchDataByRequest($request);
 
@@ -278,6 +284,8 @@ class SearchController extends Controller
 
             $this->getSearchLogManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+
+            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
         }
 
         // hardcode for catalog
@@ -298,6 +306,7 @@ class SearchController extends Controller
                 'currentLocality' => $locality,
                 'currentCategory' => $category,
                 'currentSubcategory' => $subcategory,
+                'schemaJsonLD' => $schema,
             ]
         );
     }
