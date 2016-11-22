@@ -119,6 +119,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
         if ( response.success ) {
             alertify.success( response.message );
             $( this.html.forms.passwordUpdateFormId )[0].reset();
+            $( this.modals.passwordUpdateModalId ).modal( 'hide' );
         } else {
             this.enableFieldsHighlight( response.errors );
             alertify.error( response.message );
