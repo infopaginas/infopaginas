@@ -142,11 +142,14 @@ class ArticleManager extends Manager
     {
         $request = $this->container->get('request');
 
+        $image = $this->container->getParameter('default_image');
+        $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['article']['image'];
+
         $logo = [
             '@type'  => 'ImageObject',
-            'url'    => $request->getScheme() . '://' . $request->getHost() . '/assets/images/header-logo.png',
-            'width'  => '221',
-            'height' => '42',
+            'url'    => $url,
+            'width'  => $image['article']['width'],
+            'height' => $image['article']['height'],
         ];
 
         return $logo;

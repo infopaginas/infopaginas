@@ -969,15 +969,17 @@ class BusinessProfileManager extends Manager
     private function getDefaultLocalBusinessImage($schemaItem)
     {
         if (!empty($schemaItem['image'])) {
-            $image = $schemaItem['image'];
+            $url = $schemaItem['image'];
         } elseif (!empty($schemaItem['logo'])) {
-            $image = $schemaItem['logo'];
+            $url = $schemaItem['logo'];
         } else {
             $request = $this->container->get('request');
-            $image   = $request->getScheme() . '://' . $request->getHost() . '/assets/images/header-logo.png';
+            $image   = $this->container->getParameter('default_image');
+
+            $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];
         }
 
-        return $image;
+        return $url;
     }
 
     /**
