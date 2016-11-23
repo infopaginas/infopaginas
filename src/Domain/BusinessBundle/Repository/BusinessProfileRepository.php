@@ -373,7 +373,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     protected function addCategoryFilterToQueryBuilder(QueryBuilder $queryBuilder, $category)
     {
         return $queryBuilder
-            ->andWhere('c.id = :categoryId')
+            ->innerJoin('bp.categories', 'cat')
+            ->andWhere('cat.id = :categoryId')
             ->setParameter('categoryId', $category)
         ;
     }

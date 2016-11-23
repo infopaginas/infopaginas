@@ -107,7 +107,7 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
             AND (
                 c.deleted_at IS NULL
             )
-            ORDER BY rank DESC';
+            ORDER BY rank DESC, name';
     }
 
     protected function splitPhraseToPlain(string $phrase)
@@ -136,11 +136,14 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
 
     public function getCategoryByBusinessesIds(array $businessIdList)
     {
-        $query = 'SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)';
-        $queryBuilder = $this->getEntityManager()->createQuery($query)
-            ->setParameter('ids', $businessIdList);
+        $queryBuilder = $this->getCategoryQueryBuilder()
+            ->join('c.businessProfiles', 'bp')
+            ->where('bp.id in (:ids)')
+            ->setParameter('ids', $businessIdList)
+            ->orderBy('c.name')
+        ;
 
-        $results = $queryBuilder->getResult();
+        $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
     }
