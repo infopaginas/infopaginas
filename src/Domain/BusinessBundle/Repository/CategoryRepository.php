@@ -82,7 +82,6 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
             (
                 $searchSQL
             ) as search
-            ORDER BY parent DESC, data
             LIMIT 5"
         );
 
@@ -99,7 +98,6 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
                 c.id AS id,
                 c.search_text_' . $locale . ' as name,
                 q,
-                c.parent_id as parent,
                 ts_rank(c.search_fts_' . $locale . ', q) AS rank
             FROM
                 category c,
@@ -109,7 +107,7 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
             AND (
                 c.deleted_at IS NULL
             )
-            ORDER BY rank DESC';
+            ORDER BY rank DESC, name';
     }
 
     protected function splitPhraseToPlain(string $phrase)
