@@ -82,6 +82,7 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
             (
                 $searchSQL
             ) as search
+            ORDER BY parent DESC, data
             LIMIT 5"
         );
 
@@ -98,6 +99,7 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
                 c.id AS id,
                 c.search_text_' . $locale . ' as name,
                 q,
+                c.parent_id as parent,
                 ts_rank(c.search_fts_' . $locale . ', q) AS rank
             FROM
                 category c,
@@ -136,11 +138,14 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
 
     public function getCategoryByBusinessesIds(array $businessIdList)
     {
-        $query = 'SELECT c FROM DomainBusinessBundle:Category c JOIN c.businessProfiles bp WHERE bp.id IN (:ids)';
-        $queryBuilder = $this->getEntityManager()->createQuery($query)
-            ->setParameter('ids', $businessIdList);
+        $queryBuilder = $this->getCategoryQueryBuilder()
+            ->join('c.businessProfiles', 'bp')
+            ->where('bp.id in (:ids)')
+            ->setParameter('ids', $businessIdList)
+            ->orderBy('c.name')
+        ;
 
-        $results = $queryBuilder->getResult();
+        $results = $queryBuilder->getQuery()->getResult();
 
         return $results;
     }
