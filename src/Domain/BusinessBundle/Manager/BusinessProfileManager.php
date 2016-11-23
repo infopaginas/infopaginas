@@ -851,7 +851,7 @@ class BusinessProfileManager extends Manager
                 }
             } else {
                 if (empty($schemaItem['image'])) {
-                    $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem);
+                    $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
                 }
             }
 
@@ -885,7 +885,7 @@ class BusinessProfileManager extends Manager
             $schemaItem['review'][] = $this->buildReviewItem($review);
         }
 
-        $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem);
+        $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
 
         return json_encode([$schemaItem], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
@@ -963,20 +963,29 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param array           $schemaItem
+     * @param BusinessProfile $businessProfile
      *
      * @return string
      */
-    private function getDefaultLocalBusinessImage($schemaItem)
+    private function getDefaultLocalBusinessImage($schemaItem, $businessProfile)
     {
         if (!empty($schemaItem['image'])) {
             $url = $schemaItem['image'];
         } elseif (!empty($schemaItem['logo'])) {
             $url = $schemaItem['logo'];
         } else {
-            $request = $this->container->get('request');
-            $image   = $this->container->getParameter('default_image');
+            $photos = $this->getBusinessProfilePhotoImages($businessProfile);
 
-            $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];
+            if ($photos) {
+                $photo = current($photos);
+
+                $schemaItem['image'] = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
+            } else {
+                $request = $this->container->get('request');
+                $image   = $this->container->getParameter('default_image');
+
+                $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];
+            }
         }
 
         return $url;
