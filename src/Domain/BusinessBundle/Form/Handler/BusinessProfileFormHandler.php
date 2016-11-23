@@ -128,6 +128,20 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                     }
                 }
 
+                if ($locale == 'en') {
+                    $businessProfile->setNameEn($businessProfile->getName());
+
+                    if (!$businessProfile->getNameEs()) {
+                        $businessProfile->setNameEs($businessProfile->getName());
+                    }
+                } else {
+                    $businessProfile->setNameEs($businessProfile->getName());
+
+                    if (!$businessProfile->getNameEn()) {
+                        $businessProfile->setNameEn($businessProfile->getName());
+                    }
+                }
+
                 $this->onSuccess($businessProfile, $oldCategories);
                 return true;
             }
