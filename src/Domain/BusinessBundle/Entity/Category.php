@@ -31,6 +31,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const TYPE_CATEGORY    = 'type_category';
+    const TYPE_SUBCATEGORY = 'type_subcategory';
+
     /**
      * @var int
      *
@@ -555,5 +558,10 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getChildren()
     {
         return $this->children;
+    }
+
+    public function getCategoryType()
+    {
+        return (bool)$this->getParent() ? self::TYPE_SUBCATEGORY : self::TYPE_CATEGORY;
     }
 }

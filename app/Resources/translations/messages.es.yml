@@ -282,7 +282,11 @@ Select category: Select category
 Select subcategories: Select subcategories
 Catalog Locality: Catalog Locality
 Select catalog locality: Select catalog locality
+Parent Category: Parent Category
 
 #admin panel
-business.list.category_column: Category
-business.list.subcategory_column: Subcategory
+business.list.category_column: Name
+business.list.parent_category_column: Parent Category
+business.list.category_type: Type
+type_category: Category
+type_subcategory: Subcategory
