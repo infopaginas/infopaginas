@@ -247,10 +247,10 @@ class SearchController extends Controller
             if ($categorySlug) {
                 $category = $searchManager->searchCatalogCategory($categorySlug);
 
-                $request->attributes->set('category', $category->getName());
-                $request->attributes->set('q', $category->getName());
-
                 if ($category) {
+                    $request->attributes->set('category', $category->getName());
+                    $request->attributes->set('q', $category->getName());
+
                     $subcategories = $category->getChildren();
                     $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 

@@ -19,6 +19,7 @@ use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
+use Domain\BusinessBundle\Util\SlugUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -225,10 +226,9 @@ class BusinessProfileManager extends Manager
      */
     public function findBySlug(string $slug)
     {
-        $businessProfile = $this->getRepository()->findOneBy([
-            'slug' => $slug,
-            'isActive' => true,
-        ]);
+        $customSlug = SlugUtil::convertSlug($slug);
+
+        $businessProfile = $this->getRepository()->findBySlug($slug, $customSlug);
 
         return $businessProfile;
     }

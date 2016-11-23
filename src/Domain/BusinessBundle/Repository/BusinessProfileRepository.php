@@ -647,4 +647,20 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             }
         }
     }
+
+    public function findBySlug($businessProfileSlug, $customSlug = false)
+    {
+        $query = $this->getQueryBuilder()
+            ->where('bp.slug = :businessProfileSlug')
+            ->setParameter('businessProfileSlug', $businessProfileSlug)
+        ;
+
+        if ($customSlug) {
+            $query->orWhere('bp.slug = :customSlug')
+                ->setParameter('customSlug', $customSlug)
+            ;
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }
