@@ -373,7 +373,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     protected function addCategoryFilterToQueryBuilder(QueryBuilder $queryBuilder, $category)
     {
         return $queryBuilder
-            ->andWhere('c.id = :categoryId')
+            ->innerJoin('bp.categories', 'cat')
+            ->andWhere('cat.id = :categoryId')
             ->setParameter('categoryId', $category)
         ;
     }
@@ -558,5 +559,92 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         return $qb;
+    }
+
+    /**
+     * Main search functionality
+     *
+     * @param SearchDTO $searchParams
+     * @param string    $locale
+     * @return array
+     */
+    public function searchCatalog(SearchDTO $searchParams, $locale)
+    {
+        if (!$searchParams->locationValue) {
+            return null;
+        }
+
+        $limit  = $searchParams->limit;
+        $offset = ($searchParams->page - 1) * $limit;
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
+        $this->addCatalogSearchQueryBuilder($queryBuilder, $searchParams);
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder);
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return $results;
+    }
+
+    protected function addSearchByCatalogCategoryQueryBuilder(QueryBuilder $queryBuilder, $category)
+    {
+        return $queryBuilder
+            ->join('bp.categories', 'c')
+            ->andWhere('c.id = :category')
+            ->setParameter('category', $category);
+    }
+
+    protected function addSearchByCatalogLocalityQueryBuilder(QueryBuilder $queryBuilder, $locality)
+    {
+        return $queryBuilder
+            ->andWhere('bp.catalogLocality = :locality')
+            ->setParameter('locality', $locality);
+    }
+
+    /**
+     * Counting search results
+     *
+     * @param SearchDTO $searchParams
+     *
+     * @return int
+     */
+    public function countCatalogSearchResults(SearchDTO $searchParams)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->addCatalogSearchQueryBuilder($queryBuilder, $searchParams);
+
+        $queryBuilder->select('count(bp.id) as rows');
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return count($results);
+    }
+
+    /**
+     * add catalog search query
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param SearchDTO    $searchParams
+     */
+    protected function addCatalogSearchQueryBuilder($queryBuilder, SearchDTO $searchParams)
+    {
+        $category        = $searchParams->getCategory();
+        $subcategory     = $searchParams->getSubcategory();
+        $catalogLocality = $searchParams->getCatalogLocality();
+
+        if ($catalogLocality) {
+            $this->addSearchByCatalogLocalityQueryBuilder($queryBuilder, $catalogLocality);
+
+            if ($category) {
+                if ($subcategory) {
+                    $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $subcategory);
+                } else {
+                    $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category);
+                }
+            }
+        }
     }
 }

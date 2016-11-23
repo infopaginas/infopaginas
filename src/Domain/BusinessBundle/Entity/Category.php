@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
+ * @Gedmo\Tree(type="materializedPath")
  */
 class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
@@ -36,6 +37,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Gedmo\TreePathSource
      */
     protected $id;
 
@@ -143,6 +145,50 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     protected $locale;
 
+    /**
+     * @Gedmo\TreePath
+     * @ORM\Column(length=3000, nullable=true)
+     */
+    private $path;
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $lft;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private $children;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -166,6 +212,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
@@ -437,5 +484,76 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getSearchFtsEs()
     {
         return $this->searchFtsEs;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    public function setLvl($level)
+    {
+        $this->lvl = $level;
+    }
+
+    public function getLvl()
+    {
+        return $this->lvl;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Add child category
+     *
+     * @param Category
+     *
+     * @return Category
+     */
+    public function addChild(Category $category)
+    {
+        $this->children[] = $category;
+        $category->setParent($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove child category
+     *
+     * @param Category $category
+     */
+    public function removeChild(Category $category)
+    {
+        $this->children->removeElement($category);
+        $category->setParent(null);
+    }
+
+    /**
+     * Get children
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChildren()
+    {
+        return $this->children;
     }
 }

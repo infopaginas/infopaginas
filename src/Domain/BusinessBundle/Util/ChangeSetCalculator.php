@@ -8,6 +8,7 @@
 
 namespace Domain\BusinessBundle\Util;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
@@ -34,11 +35,12 @@ class ChangeSetCalculator
     /**
      * @param EntityManagerInterface $em
      * @param $entity
+     * @param Collection $oldCategories
      * @return ChangeSet
      */
-    public static function getChangeSet(EntityManagerInterface $em, $entity) : ChangeSet
+    public static function getChangeSet(EntityManagerInterface $em, $entity, $oldCategories) : ChangeSet
     {
-        $collectionsChangeSet = ChangeSetCollectorUtil::getEntityCollectionsChangeSet($em, $entity);
+        $collectionsChangeSet = ChangeSetCollectorUtil::getEntityCollectionsChangeSet($em, $entity, $oldCategories);
         $fieldsChangeSet      = ChangeSetCollectorUtil::getEntityFieldsChangeSet($em, $entity);
         $videoChange          = ChangeSetCollectorUtil::getEntityVideoChangeSet($em, $entity);
 

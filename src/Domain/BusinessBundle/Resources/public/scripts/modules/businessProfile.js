@@ -34,7 +34,9 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 withinMilesOfMyBusinessFieldId: '#' + this.freeProfileFormName + '_milesOfMyBusiness',
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
                 neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
-                serviceAreaRadioName: '[serviceAreasType]'
+                serviceAreaRadioName: '[serviceAreasType]',
+                categoriesId: '#' + this.freeProfileFormName + '_categories',
+                subcategoriesId: '#' + this.freeProfileFormName + '_subcategories'
             },
             modals: {
                 closeBusinessProfileModalId: '#closeBusinessProfileModal'
@@ -500,6 +502,53 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         });
     };
 
+    businessProfile.prototype.handleBusinessProfileSubcategories = function () {
+        var self = this;
+
+        getSubcategories();
+
+        $( self.html.fields.categoriesId ).on( 'change', function( event ) {
+            getSubcategories();
+        });
+
+        function getSubcategories() {
+            var categoryId = $( self.html.fields.categoriesId ).val();
+            var subcategories = $( self.html.fields.subcategoriesId );
+
+            var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
+
+            subcategories.html( '' );
+            subcategories.val( null ).trigger('change.select2');
+            subcategories.attr( 'disabled', 'disabled' );
+
+            $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), function( response ) {
+                var html = '';
+
+                if ( response.data ) {
+                    $.each( response.data, function ( key, value ) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                }
+
+                subcategories.html( html );
+
+                if ( html ) {
+                    subcategories.attr( 'disabled', false );
+                } else {
+                    subcategories.attr( 'disabled', 'disabled' );
+                }
+
+                subcategories.val( null ).trigger( 'change.select2' );
+
+                $.each( response.data, function ( key, value ) {
+                    if ( value.selected ) {
+                        subcategories.val( value.id ).trigger( 'change' );
+                    }
+                });
+            });
+        }
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
@@ -509,6 +558,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.handleServiceAreaChange();
         this.handleFormChange();
         this.handleBusinessProfileClose();
+        this.handleBusinessProfileSubcategories();
 
         var that = this;
 

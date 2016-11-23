@@ -95,19 +95,6 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Phone number',
                 'required' => false,
             ])
-            ->add('categories', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Select categories',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'Categories',
-                'multiple' => true,
-                'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableCategoriesQb();
-                }
-            ])
             ->add('areas', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control select-control select-multiple',
@@ -250,6 +237,14 @@ class BusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'State',
                 'required' => false,
+            ])
+            ->add('catalogLocality', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control',
+                    'data-placeholder' => 'Select catalog locality',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Locality',
+                'label' => 'Catalog Locality',
             ])
             ->add('city', TextType::class, [
                 'attr' => [
@@ -395,6 +390,8 @@ class BusinessProfileFormType extends AbstractType
                 default:
                     $this->setupFreePlanFormFields($businessProfile, $event->getForm());
             }
+
+            $this->setupCategories($businessProfile, $event->getForm());
         });
     }
 
@@ -627,6 +624,46 @@ class BusinessProfileFormType extends AbstractType
                 'required' => false,
                 'read_only' => true,
                 'data' => $isMapSet,
+            ])
+        ;
+    }
+
+    private function setupCategories(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $category      = $businessProfile->getCategory();
+        $subcategories = $businessProfile->getSubcategories();
+
+        $form
+            ->add('categories', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control select-multiple',
+                    'data-placeholder' => 'Select category',
+                    'multiple' => false,
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Category',
+                'label' => 'Category',
+                'multiple' => false,
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->getAvailableParentCategoriesQb();
+                },
+                'data' => $category,
+                'mapped' => false,
+                'validation_groups' => ['userBusinessProfile'],
+            ])
+            ->add('subcategories', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control select-multiple',
+                    'data-placeholder' => 'Select subcategories',
+                    'multiple' => 'multiple',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Category',
+                'label' => 'Subcategory',
+                'multiple' => true,
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->getAvailableCategoriesQb();
+                },
+                'data' => $subcategories,
+                'mapped' => false,
             ])
         ;
     }

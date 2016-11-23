@@ -276,3 +276,13 @@ Building Contractors: Building Contractors
 homepage.article.building_contractors.text: There’s nothing like being home for the holidays to start noticing all the little annoying bits and pieces around the house that you’d really like to change. The kitchen is always top of the list when it comes to sprucing up.
 prev: prev
 next: next
+
+Subcategories: Subcategories
+Select category: Select category
+Select subcategories: Select subcategories
+Catalog Locality: Catalog Locality
+Select catalog locality: Select catalog locality
+
+#admin panel
+business.list.category_column: Category
+business.list.subcategory_column: Subcategory

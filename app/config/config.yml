@@ -32,6 +32,13 @@ parameters:
         url_part: 'admin'
         locale: 'en'
     videos_upload_path: %assetic.write_to%/uploads/videos
+    default_image:
+        path: '/assets/images/'
+        business_image: 'header-logo.png'
+        article:
+            image: 'header-logo.png'
+            width: '221'
+            height: '42'
 
 framework:
     #esi:             ~

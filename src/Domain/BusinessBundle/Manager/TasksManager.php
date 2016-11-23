@@ -82,6 +82,7 @@ class TasksManager
      *
      * @access public
      * @param BusinessProfile $businessProfile
+     * @param Collection      $oldCategories
      * @return array
      */
     public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile) : array
@@ -95,12 +96,13 @@ class TasksManager
      *
      * @access public
      * @param BusinessProfile $businessProfile
+     * @param Collection      $oldCategories
      * @return array
      */
-    public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile) : array
+    public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile, $oldCategories) : array
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
-        $task->setChangeSet(ChangeSetCalculator::getChangeSet($this->em, $businessProfile));
+        $task->setChangeSet(ChangeSetCalculator::getChangeSet($this->em, $businessProfile, $oldCategories));
         return $this->save($task, false);
     }
 

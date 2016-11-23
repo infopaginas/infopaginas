@@ -28,15 +28,15 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
     {
         $this->manager = $manager;
 
-        $data = MenuModel::getMenuCategoriesNames();
+        $data = MenuModel::getAllCategoriesNames();
 
         foreach ($data as $menuCode => $value) {
             $object = new Category();
-            $object->setName($value);
+            $object->setName($value['en']);
 
             // set to both locales
-            $object->setSearchTextEn($value);
-            $object->setSearchTextEs($value);
+            $object->setSearchTextEn($value['en']);
+            $object->setSearchTextEs($value['es']);
 
             $this->manager->persist($object);
 
