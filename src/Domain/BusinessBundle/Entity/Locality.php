@@ -105,6 +105,14 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $searchFts;
 
     /**
+     * @var string - Used to create human like url
+     *
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
+     * @ORM\Column(name="slug", type="string", length=100)
+     */
+    protected $slug;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -256,5 +264,29 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Category
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

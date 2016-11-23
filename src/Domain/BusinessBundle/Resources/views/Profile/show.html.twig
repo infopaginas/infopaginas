@@ -86,7 +86,7 @@
 
                             <div class="col-xs-12 additional-info">
                                 {% include ':blocks/business:business_profile_info_icons.html.twig'
-                                    with { 'business': businessProfile } %}
+                                    with { 'business': businessProfile, 'photos': photos, 'advertisements': advertisements } %}
                             </div>
 
                             {% if businessProfile.getLogo() %}
@@ -118,14 +118,26 @@
                             {% endif %}
                             <div class="row">
                                 <div class="col-xs-3 fields-item">
-                                    <span>{% trans %}Categories{% endtrans %}:</span>
+                                    <span>{% trans %}Category{% endtrans %}:</span>
                                 </div>
                                 <div class="col-xs-9 fields-item">
                                     <p>
-                                        {{ businessProfile.getCategories() | join(', ') }}.
+                                        {{ businessProfile.getCategory() }}.
                                     </p>
                                 </div>
                             </div>
+                            {% if businessProfile.getSubcategories() %}
+                            <div class="row">
+                                <div class="col-xs-3 fields-item">
+                                    <span>{% trans %}Subcategories{% endtrans %}:</span>
+                                </div>
+                                <div class="col-xs-9 fields-item">
+                                    <p>
+                                        {{ businessProfile.getSubcategories() | join(', ') }}.
+                                    </p>
+                                </div>
+                            </div>
+                            {% endif %}
                             {% if businessProfile.getWorkingHours() %}
                             <div class="row">
                                 <div class="col-xs-3 fields-item">

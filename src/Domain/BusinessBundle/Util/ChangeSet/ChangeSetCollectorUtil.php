@@ -8,6 +8,7 @@
 
 namespace Domain\BusinessBundle\Util\ChangeSet;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
@@ -15,6 +16,7 @@ use Domain\BusinessBundle\Model\DataType\ChangeSetCollectionDTO;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilePropertyAccessorUtil;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\DoctrineUtil;
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -28,9 +30,10 @@ class ChangeSetCollectorUtil
     /**
      * @param EntityManagerInterface $em
      * @param $entity
+     * @param Collection $oldCategories
      * @return array
      */
-    public static function getEntityCollectionsChangeSet(EntityManagerInterface $em, $entity) : array
+    public static function getEntityCollectionsChangeSet(EntityManagerInterface $em, $entity, $oldCategories) : array
     {
         $entityCollections = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertiesHavingCollectionType(
             $em,
@@ -40,7 +43,18 @@ class ChangeSetCollectorUtil
         $changeEntries = [];
 
         foreach ($entityCollections as $className => $property) {
-            if ($className !== BusinessGallery::class) {
+            if ($className === Category::class) {
+                $changeEntry = ChangeSetCollectorUtil::getChangeSetEntryForCategories(
+                    $entity,
+                    $property,
+                    $className,
+                    $oldCategories
+                );
+
+                if ($changeEntry !== false) {
+                    $changeEntries[] = $changeEntry;
+                }
+            } elseif ($className !== BusinessGallery::class) {
                 $changeEntry = ChangeSetCollectorUtil::getChangeSetEntryForRegularCollection(
                     $entity,
                     $property,
@@ -268,6 +282,45 @@ class ChangeSetCollectorUtil
     }
 
     /**
+     * @param $entity
+     * @param $property
+     * @param $className
+     * @param Collection $originalCollection
+     * @return bool|ChangeSetEntry
+     */
+    public static function getChangeSetEntryForCategories($entity, $property, $className, $originalCollection)
+    {
+        $collection = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertyValue(
+            $entity,
+            $property
+        );
+
+        if (self::checkCollectionUpdated($originalCollection, $collection)) {
+            $collection = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertyValue(
+                $entity,
+                $property
+            );
+
+            $newValue = (new ChangeSetCollectionDTO($collection))->getJSONContent();
+
+            $oldValue = (new ChangeSetCollectionDTO($originalCollection))
+                ->getJSONContent();
+
+            $changeEntry = self::buildChangeSetEntryObject(
+                $property,
+                $oldValue,
+                $newValue,
+                ChangeSetCalculator::PROPERTY_CHANGE,
+                $className
+            );
+
+            return $changeEntry;
+        }
+
+        return false;
+    }
+
+    /**
      * @param $fieldName
      * @param $oldValue
      * @param $newValue
@@ -285,5 +338,24 @@ class ChangeSetCollectorUtil
         $entry->setClassName($class);
 
         return $entry;
+    }
+
+    private static function checkCollectionUpdated($originalCollection, $collection)
+    {
+        $oldIds = self::getCollectionKeys($originalCollection);
+        $newIds = self::getCollectionKeys($collection);
+
+        return array_diff($oldIds, $newIds) or array_diff($newIds, $oldIds);
+    }
+
+    private static function getCollectionKeys($collection)
+    {
+        $ids = [];
+
+        foreach ($collection as $item) {
+            $ids[] = $item->getId();
+        }
+
+        return $ids;
     }
 }

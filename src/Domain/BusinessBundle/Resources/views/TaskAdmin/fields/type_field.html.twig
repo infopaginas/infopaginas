@@ -18,7 +18,7 @@
     <a href="{{ path('admin_domain_business_businessprofile_edit', {id: business.id}) }}">
         <span class="label {{ label_class }}">
             {{ dispatch_enum_value(object.type) }}
-        </span> &nbsp;
+        </span> &nbsp;&nbsp;&dash;&nbsp;
 
         {% set businessProfile = get_business_profile_by_uid(object.getBusinessProfileUid()) %}
 

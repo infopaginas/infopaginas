@@ -76,7 +76,7 @@
     </div>
     <div class="col-xs-12 additional-info">
         {% include ':blocks/business:business_profile_info_icons.html.twig'
-            with { 'business': item } %}
+            with { 'business': item, 'photos': get_business_profile_images(item), 'advertisements': get_business_profile_ads(item) } %}
     </div>
     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
         <div class="company-logo">

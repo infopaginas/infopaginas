@@ -29,3 +29,11 @@ domain_business_register_view:
     defaults: { _controller: DomainBusinessBundle:Profile:registerView }
     options:
         expose: true
+
+domain_business_get_subcaregories:
+    path:     /subcategories/list/{categoryId}/{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Profile:subcategoryList, businessProfileId: null }
+    requirements:
+        categoryId: \d+
+    options:
+        expose: true

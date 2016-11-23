@@ -21,6 +21,16 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    public function getAvailableLocalities()
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $qb;
+    }
+
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -32,6 +42,21 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('locale', $locale)
             ->getQuery()
             ->getOneOrNullResult();
+
+        return $query;
+    }
+
+    public function getLocalityByName($localityName)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('l')
+            ->from('DomainBusinessBundle:Locality', 'l')
+            ->leftJoin('l.translations', 't')
+            ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
+            ->setParameter('name', strtolower($localityName))
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
 
         return $query;
     }

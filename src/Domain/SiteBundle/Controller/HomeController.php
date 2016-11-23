@@ -52,15 +52,17 @@ class HomeController extends Controller
         $roleForGA = GoogleAnalyticsHelper::getUserRoleForAnalytics($userRoles);
 
         $this->get('google.analytics')->addCustomVariable(new CustomVariable('default', 'dimension1', $roleForGA));
+        $schema = $articleManager->buildArticlesSchema($articles);
 
         return $this->render(
             'DomainSiteBundle:Home:home.html.twig',
             [
-                'menuItems'                => $menuItems,
-                'bannerFactory'            => $bannerFactory,
-                'articles'                 => $articles,
-                'videos'                   => $videos,
-                'locale'                   => $locale,
+                'menuItems'     => $menuItems,
+                'bannerFactory' => $bannerFactory,
+                'articles'      => $articles,
+                'videos'        => $videos,
+                'locale'        => $locale,
+                'schemaJsonLD'  => $schema,
             ]
         );
     }

@@ -31,7 +31,7 @@
                                 <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
-                                <span>
+                                <span class="locality-field">
                                      {{ custom_form_label.widget(businessProfileForm.localities) }}
                                 </span>
                             </div>
@@ -41,6 +41,7 @@
                                         {{ form_widget(businessProfileForm.localities, {'attr': {'data-placeholder': attribute(businessProfileForm.children.localities.vars.attr, 'data-placeholder')|trans } }) }}
                                     </div>
                                 </div>
+                                <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">
                                 <span>
@@ -85,6 +86,17 @@
                             </div>
                             <div class="col-xs-8">
                                 {{ form_widget(businessProfileForm.state) }}
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-xs-4">
+                                {{ custom_form_label.widget(businessProfileForm.catalogLocality) }}
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="dropdown">
+                                    <div class="select-container">
+                                        {{ form_widget(businessProfileForm.catalogLocality, {'attr': {'data-placeholder': attribute(businessProfileForm.children.catalogLocality.vars.attr, 'data-placeholder')|trans } }) }}
+                                    </div>
+                                </div>
                                 <span class="help-block"></span>
                             </div>
                             <div class="col-xs-4">

@@ -27,4 +27,9 @@ class CategoryManager extends Manager
     {
         return $this->getRepository()->findOneBy(['slug' => $categorySlug]);
     }
+
+    public function getAvailableParentCategories()
+    {
+        return $this->getRepository()->getAvailableParentCategories();
+    }
 }

@@ -14,7 +14,7 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 class BannerManager extends Manager
 {
     /**
-     * factory-like methid for retrieving banners for different places
+     * factory-like method for retrieving banners for different places
      *
      * @param int $bannerType
      * @return string|object

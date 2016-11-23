@@ -26,6 +26,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -36,7 +37,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 
 /**
  * Class BusinessProfileFormType
@@ -91,19 +94,6 @@ class BusinessProfileFormType extends AbstractType
                 'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
-            ])
-            ->add('categories', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Select categories',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'Categories',
-                'multiple' => true,
-                'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableCategoriesQb();
-                }
             ])
             ->add('areas', EntityType::class, [
                 'attr' => [
@@ -208,21 +198,27 @@ class BusinessProfileFormType extends AbstractType
             ->add('map', GoogleMapFrontType::class, [
                 'mapped' => false,
             ])
-            ->add('latitude', TextType::class, [
+            ->add('latitude', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'latitude.example.placeholder',
                 ],
                 'label' => 'Latitude',
                 'required' => false,
+                'constraints' => [
+                    new Type('float'),
+                ],
             ])
-            ->add('longitude', TextType::class, [
+            ->add('longitude', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'longitude.example.placeholder',
                 ],
                 'label' => 'Longitude',
                 'required' => false,
+                'constraints' => [
+                    new Type('float'),
+                ],
             ])
             ->add('country', EntityType::class, [
                 'attr' => [
@@ -241,6 +237,14 @@ class BusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'State',
                 'required' => false,
+            ])
+            ->add('catalogLocality', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control',
+                    'data-placeholder' => 'Select catalog locality',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Locality',
+                'label' => 'Catalog Locality',
             ])
             ->add('city', TextType::class, [
                 'attr' => [
@@ -386,6 +390,8 @@ class BusinessProfileFormType extends AbstractType
                 default:
                     $this->setupFreePlanFormFields($businessProfile, $event->getForm());
             }
+
+            $this->setupCategories($businessProfile, $event->getForm());
         });
     }
 
@@ -408,11 +414,11 @@ class BusinessProfileFormType extends AbstractType
             ],
             'class' => 'Domain\BusinessBundle\Entity\Locality',
             'label' => 'Localities',
-            'multiple' => true,
+            'multiple'      => true,
+            'required'      => true,
             'query_builder' => function (LocalityRepository $repository) {
                 return $repository->getAvailableLocalitiesQb();
             },
-            'required' => false,
         ];
 
         $neighborhoodsFieldOptions = [
@@ -432,15 +438,15 @@ class BusinessProfileFormType extends AbstractType
 
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
+            $localitiesFieldOptions['required'] = false;
+
             $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
             $milesOfMyBusinessFieldOptions['required'] = false;
-
-            $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         }
 
-        $form->add('milesOfMyBusiness', IntegerType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
         $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }
@@ -541,6 +547,27 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Slogan',
                 'required' => false,
             ])
+            ->add(
+                'files',
+                'file',
+                [
+                    'attr' => [
+                        'style' => 'display:none',
+                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
+                            image/bmp, image/x-windows-bmp',
+                    ],
+                    'data_class' => null,
+                    'mapped' => false,
+                    'multiple' => true,
+                ]
+            )
+            ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
+                'entry_type' => BusinessGalleryType::class,
+                'required' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'allow_extra_fields' => true,
+            ])
         ;
     }
 
@@ -601,6 +628,46 @@ class BusinessProfileFormType extends AbstractType
         ;
     }
 
+    private function setupCategories(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $category      = $businessProfile->getCategory();
+        $subcategories = $businessProfile->getSubcategories();
+
+        $form
+            ->add('categories', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control select-multiple',
+                    'data-placeholder' => 'Select category',
+                    'multiple' => false,
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Category',
+                'label' => 'Category',
+                'multiple' => false,
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->getAvailableParentCategoriesQb();
+                },
+                'data' => $category,
+                'mapped' => false,
+                'validation_groups' => ['userBusinessProfile'],
+            ])
+            ->add('subcategories', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control select-multiple',
+                    'data-placeholder' => 'Select subcategories',
+                    'multiple' => 'multiple',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Category',
+                'label' => 'Subcategory',
+                'multiple' => true,
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->getAvailableCategoriesQb();
+                },
+                'data' => $subcategories,
+                'mapped' => false,
+            ])
+        ;
+    }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -611,7 +678,9 @@ class BusinessProfileFormType extends AbstractType
                 $profile = $form->getData();
 
                 if (BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE == $profile->getServiceAreasType()) {
-                    return array('Default', 'service_area_chosen');
+                    return ['Default', 'service_area_chosen'];
+                } elseif (BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE == $profile->getServiceAreasType()) {
+                    return ['Default', 'service_locality_chosen'];
                 } else {
                     return ['Default'];
                 }

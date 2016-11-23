@@ -12,6 +12,7 @@ $( document ).ready(function() {
     $( '#task-form' ).on( 'submit', function( event ) {
         if ( $( '#rejectReasonModal textarea').prop('required') && $( '#rejectReasonModal textarea' ).val().trim() == '' ) {
             $( '#rejectReasonModal textarea').closest( '.form-group' ).addClass( 'has-error' );
+            $( '#rejectReasonModal textarea').closest( '.form-group' ).find( '.help-block' ).remove();
             $( '#rejectReasonModal textarea').closest( '.form-group').append( '<div class="help-block">Field should not be empty.</div>' );
 
             return false;

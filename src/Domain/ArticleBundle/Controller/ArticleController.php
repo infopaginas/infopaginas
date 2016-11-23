@@ -18,10 +18,15 @@ class ArticleController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
+        $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
+
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO),
+            'articlesResultDTO' => $articlesResultDTO,
+            'schemaJsonLD'      => $schema,
         ];
 
         return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
@@ -33,8 +38,14 @@ class ArticleController extends Controller
      */
     public function viewAction(string $slug)
     {
+        $articleManager = $this->getArticlesManager();
+
+        $article = $articleManager->getArticleBySlug($slug);
+        $schema  = $articleManager->buildArticlesSchema([$article]);
+
         $params = [
-            'article' => $this->getArticlesManager()->getArticleBySlug($slug),
+            'article'      => $article,
+            'schemaJsonLD' => $schema,
         ];
 
         return $this->render('DomainArticleBundle:Default:view.html.twig', $params);
@@ -47,11 +58,17 @@ class ArticleController extends Controller
      */
     public function categoryAction(Request $request, string $categorySlug)
     {
+        $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $categorySlug);
+
+        $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
+
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO, $categorySlug),
-            'category' => $this->getCategoryManager()->getCategoryBySlug($categorySlug),
+            'articlesResultDTO' => $articlesResultDTO,
+            'category'          => $this->getCategoryManager()->getCategoryBySlug($categorySlug),
+            'schemaJsonLD'      => $schema,
         ];
 
         return $this->render('DomainArticleBundle:Default:index.html.twig', $params);

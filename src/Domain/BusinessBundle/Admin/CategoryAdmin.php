@@ -18,7 +18,12 @@ class CategoryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('parent.name', null, [
+                'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
+            ])
+            ->add('name', null, [
+                'label' => $this->trans('business.list.subcategory_column', [], $this->getTranslationDomain())
+            ])
         ;
     }
 
@@ -29,7 +34,8 @@ class CategoryAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name')
+            ->add('parent.name', null, ['label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())])
+            ->add('name', null, ['label' => $this->trans('business.list.subcategory_column', [], $this->getTranslationDomain())])
         ;
 
         $this->addGridActions($listMapper);
@@ -49,6 +55,18 @@ class CategoryAdmin extends OxaAdmin
                 'required' => false,
                 'by_reference' => false,
             ])
+            ->add('parent', 'sonata_type_model', [
+                'btn_add' => false,
+                'multiple' => false,
+                'required' => false,
+                'by_reference' => false,
+            ])
+            ->add('children', 'sonata_type_model', [
+                'btn_add' => false,
+                'multiple' => true,
+                'required' => false,
+                'by_reference' => false,
+            ])
         ;
     }
 
@@ -60,8 +78,8 @@ class CategoryAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
+            ->add('parent.name')
             ->add('slug')
-            ->add('businessProfiles')
         ;
     }
 

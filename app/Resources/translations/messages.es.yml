@@ -276,3 +276,13 @@ Building Contractors: Contratistas de construcción
 homepage.article.building_contractors.text: No hay nada como estar en casa para las vacaciones para empezar a notar todos los pequeños trozos y piezas molestas en la casa que realmente te gustaría cambiar. La cocina es siempre la parte superior de la lista cuando se trata de respiró ahí.
 prev: anterior
 next: siguiente
+
+Subcategories: Subcategorías
+Select category: Select category
+Select subcategories: Select subcategories
+Catalog Locality: Catalog Locality
+Select catalog locality: Select catalog locality
+
+#admin panel
+business.list.category_column: Category
+business.list.subcategory_column: Subcategory
