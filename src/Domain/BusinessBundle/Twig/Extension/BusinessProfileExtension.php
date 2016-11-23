@@ -78,6 +78,8 @@ class BusinessProfileExtension extends \Twig_Extension
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
             'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
+            'get_business_profile_images' => new \Twig_Function_Method($this, 'getBusinessProfileImages'),
+            'get_business_profile_ads' => new \Twig_Function_Method($this, 'getBusinessProfileAds'),
         ];
     }
 
@@ -197,6 +199,20 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         return false;
+    }
+
+    public function getBusinessProfileImages(BusinessProfile $businessProfile)
+    {
+        $photos = $this->getBusinessProfileManager()->getBusinessProfilePhotoImages($businessProfile);
+
+        return $photos;
+    }
+
+    public function getBusinessProfileAds(BusinessProfile $businessProfile)
+    {
+        $advertisements = $this->getBusinessProfileManager()->getBusinessProfileAdvertisementImages($businessProfile);
+
+        return $advertisements;
     }
 
     /**
