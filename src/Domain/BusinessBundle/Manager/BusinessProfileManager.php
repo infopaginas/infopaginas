@@ -27,6 +27,7 @@ use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Manager\WistiaMediaManager;
+use Domain\BusinessBundle\Entity\Address\Country;
 use Sonata\MediaBundle\Entity\MediaManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
@@ -754,5 +755,277 @@ class BusinessProfileManager extends Manager
         }
 
         return $data;
+    }
+
+    /**
+     * see https://developers.google.com/search/docs/data-types/local-businesses
+     * @param BusinessProfile[]  $businessProfiles
+     * @param bool               $showAll
+     *
+     * @return string
+     */
+    public function buildBusinessProfilesSchema($businessProfiles, $showAll = false)
+    {
+        $schema = [];
+
+        foreach ($businessProfiles as $businessProfile) {
+            $schemaItem = $this->buildBaseLocalBusinessSchema($businessProfile);
+
+            $email = $businessProfile->getEmail();
+            if ($email) {
+                $schemaItem['email'] = $email;
+            }
+
+            if (!$businessProfile->getHideAddress()) {
+                $customAddress = $businessProfile->getCustomAddress();
+
+                if (!$customAddress) {
+                    $country = $businessProfile->getCountry();
+
+                    $schemaItem['address'] = [
+                        '@type'           => 'PostalAddress',
+                        'addressLocality' => $businessProfile->getCity(),
+                        'streetAddress'   => $businessProfile->getStreetAddress(),
+                        'postalCode'      => $businessProfile->getZipCode(),
+                    ];
+
+                    if ($country->getShortName() === strtoupper(Country::PUERTO_RICO_SHORT_NAME)) {
+                        $schemaItem['address']['addressCountry'] = strtoupper(Country::USA_SHORT_NAME);
+                        $schemaItem['address']['addressRegion']  = $country->getName();
+                    } else {
+                        $schemaItem['address']['addressCountry'] = $country->getName();
+                        $state = $businessProfile->getState();
+
+                        if ($state) {
+                            $schemaItem['address']['addressRegion'] = $state;
+                        }
+                    }
+                }
+
+                $schemaItem['hasMap'] = 'https://maps.google.com/?q=' . $businessProfile->getLatLng();
+
+                $schemaItem['geo'] = [
+                    '@type'     => 'GeoCoordinates',
+                    'latitude'  => $businessProfile->getLatitude(),
+                    'longitude' => $businessProfile->getLongitude(),
+                ];
+            }
+
+            $openingHours = $businessProfile->getWorkingHours();
+            if ($openingHours) {
+                $schemaItem['openingHours'] = $openingHours;
+            }
+
+            $phones = $businessProfile->getPhones();
+            foreach ($phones as $phone) {
+                $schemaItem['telephone'] = $phone->getPhone();
+            }
+
+            if (!$businessProfile->getBusinessReviews()->isEmpty()) {
+                $schemaItem['aggregateRating'] = [
+                    '@type'       => 'AggregateRating',
+                    'worstRating' => BusinessReview::RATING_MIN_VALUE,
+                    'bestRating'  => BusinessReview::RATING_MAX_VALUE,
+                    'ratingValue' => $businessProfile->getBusinessReviewsAvgMark(),
+                    'ratingCount' => $businessProfile->getBusinessReviewsCount(),
+                ];
+            }
+
+            if ($showAll) {
+                $description = $businessProfile->getDescription();
+                if ($description) {
+                    $schemaItem['description'] = $description;
+                }
+
+                $sameAs = $this->addSameAsUrl([], $businessProfile->getFacebookURL());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTwitterURL());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getGoogleURL());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getYoutubeURL());
+
+                $photos = $this->getBusinessProfilePhotoImages($businessProfile);
+
+                foreach ($photos as $photo) {
+                    $schemaItem['image'][] = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
+                }
+
+                $lastReview = $this->getLastReviewForBusinessProfile($businessProfile);
+
+                if ($lastReview) {
+                    $schemaItem['review'] = $this->buildReviewItem($lastReview);
+                }
+            } else {
+                if (empty($schemaItem['image'])) {
+                    $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
+                }
+            }
+
+            if (!empty($sameAs)) {
+                if (!empty($schemaItem['sameAs'])) {
+                    $sameAs[] = $schemaItem['sameAs'];
+                    $schemaItem['sameAs'] = $sameAs;
+                }
+
+                $schemaItem['sameAs'] = $sameAs;
+            }
+
+            $schema[] = $schemaItem;
+        }
+
+        return json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * see https://developers.google.com/search/docs/data-types/reviews
+     * @param BusinessReview[] $reviews
+     * @param BusinessProfile $businessProfile
+     *
+     * @return string
+     */
+    public function buildBusinessProfileReviewsSchema($reviews, $businessProfile)
+    {
+        $schemaItem = $this->buildBaseLocalBusinessSchema($businessProfile);
+
+        foreach ($reviews as $review) {
+            $schemaItem['review'][] = $this->buildReviewItem($review);
+        }
+
+        $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
+
+        return json_encode([$schemaItem], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * @param Media  $media
+     * @param string $format
+     *
+     * @return string
+     */
+    public function getMediaPublicUrl($media, $format)
+    {
+        $provider = $this->container->get($media->getProviderName());
+        $format   = $provider->getFormatName($media, $format);
+        $url      = $provider->generatePublicUrl($media, $format);
+
+        return $url;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
+    private function buildBaseLocalBusinessSchema($businessProfile)
+    {
+        $schemaItem = [
+            '@context'   => 'http://schema.org',
+            '@type'      => 'LocalBusiness',
+            'name'       => $businessProfile->getName(),
+            'branchCode' => $businessProfile->getUid(),
+        ];
+
+        $logo = $businessProfile->getLogo();
+        if ($logo) {
+            $schemaItem['logo'] = $this->getMediaPublicUrl($logo, 'preview');
+        }
+
+        $url = $this->getBusinessProfileUrl($businessProfile);
+        if ($businessProfile->getWebsite()) {
+            $schemaItem['url']    = $businessProfile->getWebsiteLink();
+            $schemaItem['sameAs'] = $url;
+        } else {
+            $schemaItem['url'] = $url;
+        }
+
+        return $schemaItem;
+    }
+
+    /**
+     * @param BusinessReview $review
+     *
+     * @return array
+     */
+    private function buildReviewItem($review)
+    {
+        $item = [
+            '@type' => 'Review',
+            'author' => [
+                '@type' => 'Person',
+                'name'  => $review->getUsername(),
+            ],
+            'datePublished' => $review->getCreatedAt()->format('c'),
+            'description'   => $review->getContent(),
+            'reviewRating' => [
+                '@type'       => 'Rating',
+                'worstRating' => BusinessReview::RATING_MIN_VALUE,
+                'bestRating'  => BusinessReview::RATING_MAX_VALUE,
+                'ratingValue' => $review->getRating(),
+            ],
+        ];
+
+        return $item;
+    }
+
+    /**
+     * @param array           $schemaItem
+     * @param BusinessProfile $businessProfile
+     *
+     * @return string
+     */
+    private function getDefaultLocalBusinessImage($schemaItem, $businessProfile)
+    {
+        if (!empty($schemaItem['image'])) {
+            $url = $schemaItem['image'];
+        } elseif (!empty($schemaItem['logo'])) {
+            $url = $schemaItem['logo'];
+        } else {
+            $photos = $this->getBusinessProfilePhotoImages($businessProfile);
+
+            if ($photos) {
+                $photo = current($photos);
+
+                $schemaItem['image'] = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
+            } else {
+                $request = $this->container->get('request');
+                $image   = $this->container->getParameter('default_image');
+
+                $url = $request->getScheme() . '://' . $request->getHost() . $image['path'] . $image['business_image'];
+            }
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param array  $sameAs
+     * @param string $url
+     *
+     * @return string
+     */
+    private function addSameAsUrl($sameAs, $url)
+    {
+        if ($url) {
+            $sameAs[] = $url;
+        }
+
+        return $sameAs;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return string
+     */
+    public function getBusinessProfileUrl($businessProfile)
+    {
+        $url = $this->container->get('router')->generate(
+            'domain_business_profile_view',
+            [
+                'citySlug' => $businessProfile->getCitySlug(),
+                'slug'     => $businessProfile->getSlug(),
+            ],
+            true
+        );
+
+        return $url;
     }
 }
