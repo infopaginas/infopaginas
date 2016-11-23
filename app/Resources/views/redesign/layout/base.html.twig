@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}</title>
+
+        <meta name="description" content="{% if seoData is defined and seoData.seoDescription %}{{ seoData.seoDescription }}{% endif %}"/>
+        <meta name="keywords" content="{% if seoData is defined and seoData.seoKeywords %}{{ seoData.seoKeywords }}{% endif %}"/>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <meta http-equiv="cleartype" content="on">
+
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/redesign/img/touch/apple-touch-icon-144x144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/redesign/img/touch/apple-touch-icon-114x114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/redesign/img/touch/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="/redesign/img/touch/apple-touch-icon-57x57-precomposed.png">
+        <link rel="shortcut icon" sizes="196x196" href="/redesign/img/touch/touch-icon-196x196.png">
+        <link rel="shortcut icon" href="/redesign/img/touch/apple-touch-icon.png">
+
+        <!-- Tile icon for Win8 (144x144 + tile color) -->
+        <meta name="msapplication-TileImage" content="/img/touch/apple-touch-icon-144x144-precomposed.png">
+        <meta name="msapplication-TileColor" content="#222222">
+
+        <!-- SEO: If mobile URL is different from desktop URL, add a canonical link to the desktop page -->
+        <!--
+        <link rel="canonical" href="http://www.example.com/" >
+        -->
+
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <!-- For iOS web apps. Delete if not needed. https://github.com/h5bp/mobile-boilerplate/issues/94 -->
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}">
+
+
+        <!-- This script prevents links from opening in Mobile Safari. https://gist.github.com/1042026 -->
+
+        <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
+
+
+        {% block styles %}
+            <link rel="stylesheet" href="/redesign/css/normalize.css">
+            <link rel="stylesheet" href="/redesign/css/infopaginas.css">
+
+            <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700,700i" rel="stylesheet"> -->
+            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+        {% endblock %}
+
+        <script src="/redesign/js/vendor/modernizr-2.7.1.min.js"></script>
+
+        {% block doubleClickHeader %}
+            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
+        {% endblock %}
+
+        {% block schemaJsonLD %}
+            {% if schemaJsonLD is defined and schemaJsonLD %}
+                <script type="application/ld+json">
+                {{ schemaJsonLD|raw }}
+            </script>
+            {% endif %}
+        {% endblock %}
+    </head>
+    <body class="profile">
+
+        {% block searchHeader %}
+            {% include ':redesign/blocks:search-header.html.twig' %}
+        {% endblock %}
+
+        {% block body %}{% endblock %}
+
+        {% block modals %}
+            {% include ':redesign/blocks:login-form.html.twig' %}
+        {% endblock %}
+
+        <!-- Scripts -->
+        {% block scripts %}
+            {#<script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>#}
+            <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+            <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+            {#<script type="text/javascript">#}
+                {#requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {#}
+                    {#requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {#}
+                        {#var siteHomepage = new Homepage();#}
+                    {#})#}
+                {#})#}
+            {#</script>#}
+
+            <script src="/redesign/js/vendor/jquery-2.1.0.min.js"></script>
+            <script src="/redesign/js/vendor/min/velocity-min.js"></script>
+            <script src="/redesign/js/vendor/min/velocity-ui-min.js"></script>
+            <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
+            <script src="/redesign/js/vendor/min/selectize-min.js"></script>
+
+            <script src="/redesign/js/helper.js"></script>
+            <script src="/redesign/js/min/main-min.js"></script>
+            <script src="/redesign/js/min/profile-min.js"></script>
+
+            <script async defer
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnoCkv4WaSvCxWSds1kPJFOYX_vbV_jA4&callback=initMap">
+            </script>
+
+            <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+            <script>
+                (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+                        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+                    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+                    e.src='//www.google-analytics.com/analytics.js';
+                    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+                ga('create','UA-XXXXX-X');ga('send','pageview');
+            </script>
+        {% endblock %}
+
+    </body>
+</html>

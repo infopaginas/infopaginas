@@ -28,6 +28,21 @@
     </button>
 
     <nav id="nav" class="main-nav">
+        {% if (app.user) %}
+
+            <div class="user-logged">
+                <div class="user__tools">
+                    <button type="button" class="logout "><i class="fa fa-sign-out"></i> Logout</button>
+                </div>
+                <div class="user">
+                    <div class="avatar">
+                        <img src="/redesign/img/demo/vanessa.jpg">
+                    </div>
+                    <span>{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+                </div>
+            </div>
+        {% endif %}
+
         <ul class="language-nav">
             {% for language in languages %}
                 <li class="{% if language.active %}nav-current{% endif %}">
@@ -36,29 +51,18 @@
             {% endfor %}
         </ul>
 
-        <ul class="nav-user">
-            {% if (app.user) %}
-                {# todo #}
-                <li class="login-link desc-menu logged-home">
-                    <a href="{{ path('domain_site_user_profile') }}" class="login-button">
-                        <span class="welcome">{% trans %}Welcome{% endtrans %}, </span>
-                                        <span class="user-name">
-                                            {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
-                                        </span>
-                    </a>
-                </li>
-            {% else %}
+        {% if not app.user %}
+            <ul class="nav-user">
                 <li>
-                    <a href="#"><i class="fa fa-user-plus"></i>Create account</a>
+                    <button type="button" data-show-modal-id="register-modal"><i class="fa fa-user-plus"></i> Create account</button>
                 </li>
                 <li class="login-link desc-menu home">
-                    <a href="#" class="login-button" data-toggle="modal" data-target="#loginModal">
+                    <button type="button" data-show-modal-id="login-modal">
                         <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
-                    </a>
+                    </button>
                 </li>
-            {% endif %}
-        </ul>
-
+            </ul>
+        {% endif %}
 
         <ul class="nav-pages">
             <li>
@@ -79,14 +83,14 @@
         </ul>
         <div class="about-infopaginas">
             <div class="about__item copyright">
-            <span>
-              © 2016 <a href="/" target="_blank" title="Go to Infopaginas site">Infopáginas</a>
-            </span>
+                <span>
+                  © 2016 <a href="/" target="_blank" title="Go to Infopaginas site">Infopáginas</a>
+                </span>
             </div>
             <div class="about__item address">
-            <span>
-              90 Calle San Martin, Rodval Bldg. Suite 201, Guaynabo, PR
-            </span>
+                <span>
+                  {% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, {% trans %}PR{% endtrans %}
+                </span>
             </div>
         </div>
         <button id="nav-close" type="button" class="button--square nav-close">

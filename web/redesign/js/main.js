@@ -235,7 +235,62 @@ $(document).ready( function() {
 
   $('#select-from, #select-to').selectize({
     maxItems: 1
-});
+  });
+
+  var modal = $('.modal');
+  var modalContent = $('modal__content');
+  var modalOutside = $('.modal__outside');
+
+  var openModal = [
+      { e: modal, p: { top: 0 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false, display: "flex" } },
+      { e: modalOutside, p: { opacity: 1 }, o: { duration: 800, easing: "easeOuCubic", sequenceQueue: false, display: "block" } }
+  ];
+
+  var closeModal = [
+      { e: modal, p: { top: "100vh" }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false, display: "none" } },
+      { e: modalOutside, p: { opacity: 0 }, o: { duration: 300, easing: "easeOuCubic", sequenceQueue: false, display: "none" } }
+  ];
+
+  $.fn.modalFunc = function(options) {
+    $(this).each(function() {
+      var $this, settings;
+      $this = $(this);
+      settings = $.extend({
+      toggle: true,
+      close: false
+      }, options);
+      if ($this.is('.modal--opened')) {
+        $this.removeClass('modal--opened');
+        $('body').removeClass('body--no-scroll');
+      } else {
+        $this.addClass('modal--opened');
+        $('body').addClass('body--no-scroll');
+      }
+      if (settings.show) {
+        $this.addClass('modal--opened');
+        $('body').addClass('body--no-scroll');
+      }
+      if (settings.close) {
+        $this.removeClass('modal--opened');
+        $('body').removeClass('body--no-scroll');
+      }
+    });
+  };
+    
+  $(document).on('click', '[data-show-modal-id]', function() {
+    var $this, modal_id;
+    $this = $(this);
+    modal_id = $this.data('show-modal-id');
+
+    $("#" + modal_id + ".modal").modalFunc();
+    $this.siblings().removeClass('modal--opened');
+    return;
+  });
+
+  $(document).on('click', '.hide-modal, .modal__outside', function() {
+      $('.modal--opened').modalFunc({close: true});
+      return;
+  });
 
 });
 
@@ -357,61 +412,6 @@ comparisonListToggle.on( 'click', function() {
 
 comparisonListHide.on( 'click', function() {
   $( '.main' ).removeClass( 'comparison-list--active' );
-});
-
-var modal = $('.modal');
-var modalContent = $('modal__content');
-var modalOutside = $('.modal__outside');
-
-var openModal = [
-    { e: modal, p: { top: 0 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false, display: "flex" } },
-    { e: modalOutside, p: { opacity: 1 }, o: { duration: 800, easing: "easeOuCubic", sequenceQueue: false, display: "block" } }
-];
-
-var closeModal = [
-    { e: modal, p: { top: "100vh" }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false, display: "none" } },
-    { e: modalOutside, p: { opacity: 0 }, o: { duration: 300, easing: "easeOuCubic", sequenceQueue: false, display: "none" } }
-];
-
-$.fn.modalFunc = function(options) {
-  $(this).each(function() {
-    var $this, settings;
-    $this = $(this);
-    settings = $.extend({
-    toggle: true,
-    close: false
-    }, options);
-    if ($this.is('.modal--opened')) {
-      $this.removeClass('modal--opened');
-      $('body').removeClass('body--no-scroll');
-    } else {
-      $this.addClass('modal--opened');
-      $('body').addClass('body--no-scroll');
-    }
-    if (settings.show) {
-      $this.addClass('modal--opened');
-      $('body').addClass('body--no-scroll');
-    }
-    if (settings.close) {
-      $this.removeClass('modal--opened');
-      $('body').removeClass('body--no-scroll');
-    }
-  });
-};
-  
-$(document).on('click', '[data-show-modal-id]', function() {
-  var $this, modal_id;
-  $this = $(this);
-  modal_id = $this.data('show-modal-id');
-
-  $("#" + modal_id + ".modal").modalFunc();
-  $this.siblings().removeClass('modal--opened');
-  return;
-});
-
-$(document).on('click', '.hide-modal, .modal__outside', function() {
-    $('.modal--opened').modalFunc({close: true});
-    return;
 });
 
 var profileNav = $('.profile-nav');

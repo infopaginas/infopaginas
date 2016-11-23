@@ -1,0 +1,105 @@
+<div id="login-modal" class="modal modal--login">
+    <div class="modal__outside"></div>
+    <div class="modal__content">
+        <h2>Login</h2>
+        <div class="modal__section">
+            <form class="account-form login-form">
+                <div class="form__field field--user field-active">
+                    <label>Email</label>
+                    <input type="text" name="user">
+                </div>
+                <div class="form__field field--password">
+                    <label>Password</label>
+                    <input type="password" name="password">
+                </div>
+                <div class="form__actions">
+                    <a class="button button--small button--text" href="#">Forgot password?</a>
+                    <button type="submit" class="button button--action">Log In</button>
+                </div>
+            </form>
+        </div><!-- modal__section -->
+        <div class="modal__section">
+            <h2>or</h2>
+            <div class="social-login">
+                <a href="#" title="Log In with Facebook" class="button button--login button--facebook">
+                    <span>Log In with</span>
+                    <i class="fa fa-facebook"></i>
+                </a>
+
+                <a href="#" title="Log In with Facebook" class="button button--login button--google">
+                    <span>Log In with</span>
+                    <i class="fa fa-google"></i>
+                </a>
+            </div><!-- social-login -->
+        </div><!-- modal__section -->
+
+        <div class="modal__section login__footer">
+            <p>New to Infopáginas <a href="#" data-show-modal-id="register-modal">Create an account <i class="fa fa-angle-right"></i></a></p>
+        </div><!-- modal__section -->
+        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+    </div><!-- modal__content -->
+</div><!-- modal -->
+
+<div id="register-modal" class="modal modal--login modal--register">
+    <div class="modal__outside"></div>
+    <div class="modal__content">
+        <h2>Create account</h2>
+        <div class="modal__section disclosure">
+            <p>By joining Infopáginas you agree to our <a href="#">Terms of service</a> ans <a href="#">Privacy policy</a>. We value your privacy, and will not post your wall without your permission.</p>
+        </div>
+        <div class="modal__section">
+            <form class="account-form register-form">
+                <div class="form__row row--name clearfix">
+                    <div class="form__field field--name">
+                        <label>First name</label>
+                        <input type="text" name="name">
+                    </div>
+                    <div class="form__field field--name">
+                        <label>Last name</label>
+                        <input type="text" name="last-name">
+                    </div>
+                </div>
+                <div class="form__field field--user">
+                    <label>Email</label>
+                    <input type="text" name="user">
+                </div>
+                <div class="form__row row--passwords clearfix">
+                    <div class="form__field field--name field--password">
+                        <label>Password</label>
+                        <input type="password" name="password">
+                    </div>
+                    <div class="form__field field--name field--password">
+                        <label>Confirm password</label>
+                        <input type="password" name="password-confirm">
+                    </div>
+                </div>
+                <div class="form__field field--password">
+                    <label>City</label>
+                    <input type="text" name="city">
+                </div>
+                <div class="form__actions">
+                    <button type="submit" class="button button--action">Create account</button>
+                </div>
+            </form>
+        </div><!-- modal__section -->
+        <div class="modal__section">
+            <h2>or</h2>
+            <div class="social-login">
+                <a href="#" title="Log In with Facebook" class="button button--login button--facebook">
+                    <span>Log In with</span>
+                    <i class="fa fa-facebook"></i>
+                </a>
+
+                <a href="#" title="Log In with Facebook" class="button button--login button--google">
+                    <span>Log In with</span>
+                    <i class="fa fa-google"></i>
+                </a>
+            </div><!-- social-login -->
+        </div><!-- modal__section -->
+
+        <div class="modal__section login__footer">
+            <p>Already have an account? <a href="#" data-show-modal-id="login-modal">Log in <i class="fa fa-angle-right"></i></a></p>
+        </div><!-- modal__section -->
+        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+    </div><!-- modal__content -->
+</div><!-- modal -->

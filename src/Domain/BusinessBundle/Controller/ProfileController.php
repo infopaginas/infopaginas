@@ -133,8 +133,7 @@ class ProfileController extends Controller
 
         $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
-        //':redesign:business-profile.html.twig'
-        return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
+        return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,
             'seoData'         => $businessProfile,
             'photos'          => $photos,
