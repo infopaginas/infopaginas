@@ -132,11 +132,11 @@
 
     <div class="main__container main__container--centered">
         <div class="main">
-            <div class="container profile-header__container" style="background-image: url('/redesign/img/demo/profile-header.jpg')">
+            <div class="container profile-header__container">
 
                 <header class="page-section profile-header">
                     <div class="item__header container">
-                        <span class="now open">Open until 11:30pm</span>
+                        <span class="now open">N/A</span>{#  todo  #}
                         <div class="rank">
                             <div class="rank-ta rank-ta--5">
                             </div>
@@ -297,11 +297,11 @@
                         </section>
 
                         <section class="page-section payment-methods">
-                            <h3>Payment methods TODO</h3>
+                            <h3>Payment methods</h3>
                             <ul>
-                                <li><i class="fa fa-money"></i></li>
-                                <li><i class="fa fa-cc-mastercard"></i></li>
-                                <li><i class="fa fa-cc-visa"></i></li>
+                                {% for paymentMethod in businessProfile.paymentMethods %}
+                                    <li>{{ paymentMethod.getName }}</li>
+                                {% endfor %}
                             </ul>
                         </section>
 
@@ -340,6 +340,7 @@
                             </a>
                         </div>
 
+                        {# todo banner #}
                         {#<div class="ad ad-mobile">#}
                             {#<h5>Advertising</h5>#}
                             {#{% if bannerFactory is not null %}#}
@@ -349,8 +350,8 @@
                             {#{% endif %}#}
                         {#</div>#}
 
-
                         <section class="page-section profile-map">
+                            {# todo map #}
                             <div id="map2"></div>
                             <script type="text/javascript">
                                 var map;
@@ -362,7 +363,6 @@
                                 }
                             </script>
                         </section>
-
 
                     </article><!-- profile -->
 
@@ -395,41 +395,6 @@
                                 </div>
                             </div><!-- sidebar__section -->
                         {% endif %}
-
-                        <div class="sidebar__section section--featured">
-                            <h2 class="section__title">Featured in</h2>
-                            <ul>
-                                <li>
-                                    <a href="#" title="Go to read ..." class="news__item clearfix">
-                                        <span class="news__title">50 best restaurants to eat by the sea</span>
-                                        <img class="news__img" src="/redesign/img/demo/news-img-thumb.jpg">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div><!-- sidebar__section -->
-
-                        <div class="sidebar__section section--ad">
-                            <ul>
-                                <li>
-                                    <div class="ad ad-sidebar">
-                                        <a href="#" title="Go to read ...">
-                                            <img src="http://placehold.it/400x100&text=ad">
-                                        </a>
-                                    </div><!-- news__item -->
-                                </li>
-                            </ul>
-                        </div><!-- sidebar__section -->
-
-                        <div class="sidebar__section section--tags">
-                            <h2 class="section__title">Related searches</h2>
-                            <div class="tagcloud">
-                                <a href="#" class="tag" title="Go to ...">Restaurant</a>
-                                <a href="#" class="tag" title="Go to ...">Peruvian food</a>
-                                <a href="#" class="tag" title="Go to ...">Ceviche</a>
-                                <a href="#" class="tag" title="Go to ...">Food</a>
-                                <a href="#" class="tag" title="Go to ...">Eat</a>
-                            </div>
-                        </div><!-- sidebar__section -->
 
                     </aside>
                 </div><!-- container -->

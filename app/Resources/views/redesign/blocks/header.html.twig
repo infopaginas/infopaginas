@@ -32,7 +32,9 @@
 
             <div class="user-logged">
                 <div class="user__tools">
-                    <button type="button" class="logout "><i class="fa fa-sign-out"></i> Logout</button>
+                    <a href="{{ url('sonata_user_security_logout') }}">
+                        <button type="button" class="logout "><i class="fa fa-sign-out"></i> {% trans %}Logout{% endtrans %}</button>
+                    </a>
                 </div>
                 <div class="user">
                     <div class="avatar">
@@ -54,7 +56,7 @@
         {% if not app.user %}
             <ul class="nav-user">
                 <li>
-                    <button type="button" data-show-modal-id="register-modal"><i class="fa fa-user-plus"></i> Create account</button>
+                    <button type="button" data-show-modal-id="register-modal"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
                 </li>
                 <li class="login-link desc-menu home">
                     <button type="button" data-show-modal-id="login-modal">
@@ -75,21 +77,21 @@
                 <a href="{{ url('domain_business_video_list') }}"><i class="fa fa-play"></i>Videos</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-search"></i>Common searches</a>
+                <a href="#"><i class="fa fa-search"></i>Common searches N/A link</a>{# todo #}
             </li>
             <li>
-                <a href="#"><i class="fa fa-sitemap"></i>Popular categories</a>
+                <a href="{{ url('domain_search_catalog') }}"><i class="fa fa-sitemap"></i>Catalog</a>
             </li>
         </ul>
         <div class="about-infopaginas">
             <div class="about__item copyright">
                 <span>
-                  © 2016 <a href="/" target="_blank" title="Go to Infopaginas site">Infopáginas</a>
+                  © 2017 <a href="/" target="_blank" title="Go to Infopaginas site">{% trans %}Infopáginas{% endtrans %}</a>
                 </span>
             </div>
             <div class="about__item address">
                 <span>
-                  {% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, {% trans %}PR{% endtrans %}
+                    {% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, {% trans %}PR{% endtrans %}
                 </span>
             </div>
         </div>
