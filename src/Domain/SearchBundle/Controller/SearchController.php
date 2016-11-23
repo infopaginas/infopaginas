@@ -113,6 +113,8 @@ class SearchController extends Controller
 
             $this->getSearchLogManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+
+            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
             $locationMarkers = null;
@@ -133,6 +135,7 @@ class SearchController extends Controller
                 'bannerFactory' => $bannerFactory,
                 'searchData'    => $searchData,
                 'pageRouter'    => $pageRouter,
+                'schemaJsonLD'  => $schema,
             ]
         );
     }
@@ -155,6 +158,8 @@ class SearchController extends Controller
 
             $this->getSearchLogManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+
+            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
             $locationMarkers = null;
@@ -174,6 +179,7 @@ class SearchController extends Controller
                 'bannerFactory' => $bannerFactory,
                 'searchData'    => $searchData,
                 'pageRouter'    => $pageRouter,
+                'schemaJsonLD'  => $schema,
             ]
         );
     }
