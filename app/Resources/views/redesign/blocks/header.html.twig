@@ -1,6 +1,6 @@
 <header class="header">
     <div class="logo">
-        <a href="/">
+        <a href="href="{{ path('domain_site_home_index') }}"">
             <img class="logo__icon" src="/redesign/img/infopaginas.svg" width="52">
             <img class="logo__iso" src="/redesign/img/infopaginas-iso.png">
         </a>
@@ -55,10 +55,10 @@
         {% if not app.user %}
             <ul class="nav-user">
                 <li>
-                    <button type="button" data-show-modal-id="register-modal"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
+                    <button type="button" data-show-modal-id="regModal"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
                 </li>
                 <li class="login-link desc-menu home">
-                    <button type="button" data-show-modal-id="login-modal">
+                    <button type="button" data-show-modal-id="loginModal">
                         <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
                     </button>
                 </li>
@@ -67,7 +67,7 @@
 
         <ul class="nav-pages">
             <li>
-                <a href="/"><i class="fa fa-home"></i>Home</a>
+                <a href="{{ path('domain_site_home_index') }}"><i class="fa fa-home"></i>Home</a>
             </li>
             <li>
                 <a href="{{ path('domain_article_homepage') }}"><i class="fa fa-file-text-o"></i>{% trans %}Articles{% endtrans %}</a>
@@ -85,7 +85,7 @@
         <div class="about-infopaginas">
             <div class="about__item copyright">
                 <span>
-                  © 2017 <a href="/" target="_blank" title="Go to Infopaginas site">{% trans %}Infopáginas{% endtrans %}</a>
+                  © 2017 <a href="{{ path('domain_site_home_index') }}" target="_blank" title="Go to Infopaginas site">{% trans %}Infopáginas{% endtrans %}</a>
                 </span>
             </div>
             <div class="about__item address">

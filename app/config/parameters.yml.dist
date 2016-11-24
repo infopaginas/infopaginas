@@ -20,4 +20,4 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     # Sonata media files path storage
-    sonata_media.cdn.host: 'http://infopaginas-stage.oxagile.com/uploads/media'
+    sonata_media.cdn.host: 'https://infopaginas-stage.oxagile.com/uploads/media'

@@ -73,31 +73,23 @@
         {% block body %}{% endblock %}
 
         {% block modals %}
-            {% include ':redesign/blocks:login-form.html.twig' %}
+            {{ render(controller('DomainSiteBundle:Home:authModalRedesign')) }}
         {% endblock %}
 
         <!-- Scripts -->
         {% block scripts %}
-            {#<script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>#}
+            <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
             <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
             <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-            {#<script type="text/javascript">#}
-                {#requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {#}
-                    {#requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {#}
-                        {#var siteHomepage = new Homepage();#}
-                    {#})#}
-                {#})#}
-            {#</script>#}
-
-            <script src="/redesign/js/vendor/jquery-2.1.0.min.js"></script>
-            <script src="/redesign/js/vendor/min/velocity-min.js"></script>
-            <script src="/redesign/js/vendor/min/velocity-ui-min.js"></script>
-            <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
-            <script src="/redesign/js/vendor/min/selectize-min.js"></script>
+            <script type="text/javascript">
+                requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+                    requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+                        var siteHomepage = new Homepage();
+                    })
+                })
+            </script>
 
             <script src="/redesign/js/helper.js"></script>
-            <script src="/redesign/js/min/main-min.js"></script>
-            <script src="/redesign/js/min/profile-min.js"></script>
 
             {# todo replace with our map #}
             <script async defer
