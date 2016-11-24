@@ -818,7 +818,7 @@ class BusinessProfileManager extends Manager
 
             $phones = $businessProfile->getPhones();
             foreach ($phones as $phone) {
-                $schemaItem['telephone'] = $phone->getPhone();
+                $schemaItem['telephone'][] = $phone->getPhone();
             }
 
             if (!$businessProfile->getBusinessReviews()->isEmpty()) {
@@ -853,10 +853,10 @@ class BusinessProfileManager extends Manager
                 if ($lastReview) {
                     $schemaItem['review'] = $this->buildReviewItem($lastReview);
                 }
-            } else {
-                if (empty($schemaItem['image'])) {
-                    $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
-                }
+            }
+
+            if (empty($schemaItem['image'])) {
+                $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
             }
 
             if (!empty($sameAs)) {
