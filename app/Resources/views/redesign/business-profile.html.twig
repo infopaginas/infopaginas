@@ -3,131 +3,19 @@
 {% block body %}
     <div class="toolbar">
         <div class="toolbar__nav">
-            <button id="breadcrumb_location" type="button" class="button button--action button--location"><i class="fa fa-map-marker"></i> <span>San Juan</span></button>
-            <button id="category-toggle" type="button" class="button button--action category__toggle">
-                Restaurants
-            </button>
+            <a href="{{ path('domain_search_catalog', {'localitySlug':  businessProfile.catalogLocality.getSlug() }) }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location"><i class="fa fa-map-marker"></i> <span>{{ businessProfile.catalogLocality.name }}</span></button>
+            </a>
+            <a href="{{ path('domain_search_catalog', {'localitySlug':  businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug() }) }}">
+                <button id="category-toggle" type="button" class="button button--action category__toggle">
+                    {{ businessProfile.category.name }}
+                </button>
+            </a>
             <div class="breadcrumb">
-                <a href="results.html" title="Restaurants category" class="button categorie__item categorie__parent"><span>Peruvian</span></a>
-                <!-- <a href="results.html" title="Search for peruvian restaurants" class="button categorie__item categorie__current"><span>Peruvian</span></a> -->
+                {% set subcategory = businessProfile.subcategories|first %}
+                <a href="{{ path('domain_search_catalog', {'localitySlug':  businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" title="{{ subcategory.name }}" class="button categorie__item categorie__parent"><span>{{ subcategory.name }}</span></a>
             </div><!-- breadcrumb -->
         </div><!-- toolbar__nav -->
-
-        <div class="categories">
-
-            <div class="categories__list">
-                <ul>
-                    <li class="cat--restaurant">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-cutlery"></i>
-                            <span>Restaurants</span>
-                        </a>
-                    </li>
-                    <li class="cat--contractor">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-wrench"></i>
-                            <span>Contractors</span>
-                        </a>
-                    </li>
-                    <li class="cat--salon">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-scissors"></i>
-                            <span>Beauty salons</span>
-                        </a>
-                    </li>
-                    <li class="cat--plumber">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-tint"></i>
-                            <span>Plumbers</span>
-                        </a>
-                    </li>
-                    <li class="cat--restaurant">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-cutlery"></i>
-                            <span>Restaurants</span>
-                        </a>
-                    </li>
-                    <li class="cat--contractor">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-wrench"></i>
-                            <span>Contractors</span>
-                        </a>
-                    </li>
-                    <li class="cat--salon">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-scissors"></i>
-                            <span>Beauty salons</span>
-                        </a>
-                    </li>
-                    <li class="cat--plumber">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-tint"></i>
-                            <span>Plumbers</span>
-                        </a>
-                    </li>
-                    <li class="cat--salon">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-scissors"></i>
-                            <span>Beauty salons</span>
-                        </a>
-                    </li>
-                    <li class="cat--plumber">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-tint"></i>
-                            <span>Plumbers</span>
-                        </a>
-                    </li>
-                    <li class="cat--restaurant">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-cutlery"></i>
-                            <span>Restaurants</span>
-                        </a>
-                    </li>
-                    <li class="cat--contractor">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-wrench"></i>
-                            <span>Contractors</span>
-                        </a>
-                    </li>
-                    <li class="cat--salon">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-scissors"></i>
-                            <span>Beauty salons</span>
-                        </a>
-                    </li>
-                    <li class="cat--plumber">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-tint"></i>
-                            <span>Plumbers</span>
-                        </a>
-                    </li>
-                    <li class="cat--salon">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-scissors"></i>
-                            <span>Beauty salons</span>
-                        </a>
-                    </li>
-                    <li class="cat--plumber">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-tint"></i>
-                            <span>Plumbers</span>
-                        </a>
-                    </li>
-                    <li class="cat--restaurant">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-cutlery"></i>
-                            <span>Restaurants</span>
-                        </a>
-                    </li>
-                    <li class="cat--contractor">
-                        <a href="#" title="Category name">
-                            <i class="fa fa-wrench"></i>
-                            <span>Contractors</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div><!-- categories menu -->
     </div><!-- toolbar -->
 
     <div class="main__container main__container--centered">
@@ -262,7 +150,7 @@
 
                                 {% if businessProfile.getWorkingHours() %}
                                     <div class="highlights__item highlights__item--hours">
-                                        <h3>Business hours</h3>
+                                        <h3>{% trans %}Business hours{% endtrans %}</h3>
                                         <ul>
                                             <li>
                                                 {{ businessProfile.getWorkingHours() }} {# todo #}
@@ -271,20 +159,20 @@
                                     </div><!-- highlights__item -->
                                 {% endif %}
 
-                                <div class="highlights__item highlights__item--checklist">
-                                    <h3>Highlights</h3>
-                                    <ul>
-                                        {% for item in businessProfile.getCategories() %}
+                                {% if businessProfile.getBrands() %}
+                                    <div class="highlights__item highlights__item--checklist">
+                                        <h3>{% trans %}Brands{% endtrans %}</h3>
+                                        <ul>
                                             <li>
-                                                {{ item }}
+                                                {{ businessProfile.getBrands() }}
                                             </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div><!-- highlights__item -->
+                                        </ul>
+                                    </div><!-- highlights__item -->
+                                {% endif %}
 
                                 {% if businessProfile.getProduct() %}
                                     <div class="highlights__item">
-                                        <h3>Products or Services</h3>
+                                        <h3>{% trans %}Products or Services{% endtrans %}</h3>
                                         <ul>
                                             <li>
                                                 {{ businessProfile.getProduct() }}
@@ -297,7 +185,7 @@
                         </section>
 
                         <section class="page-section payment-methods">
-                            <h3>Payment methods</h3>
+                            <h3>{% trans %}Payment methods{% endtrans %}</h3>
                             <ul>
                                 {% for paymentMethod in businessProfile.paymentMethods %}
                                     <li>{{ paymentMethod.getName }}</li>
@@ -327,14 +215,14 @@
                             <section class="page-section photos slider section--slider">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        {% thumbnail photo.getMedia(), 'normal' %}
+                                        {% thumbnail photo.getMedia(), 'reference' %}
                                     </div>
                                 {% endfor %}
                             </section>
                         {% endif %}
 
                         <div class="ad ad-mobile">
-                            <h5>Advertising</h5>
+                            <h5>{% trans %}Advertising{% endtrans %}</h5>
                             <a href="#" target="_blank">
                                 <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
                             </a>
@@ -356,9 +244,17 @@
                             <script type="text/javascript">
                                 var map;
                                 function initMap() {
+                                    var myLatLng = {lat: {{ businessProfile.latitude }}, lng: {{ businessProfile.longitude }}};
+
                                     map = new google.maps.Map(document.getElementById('map2'), {
-                                        center: {lat: {{ businessProfile.latitude }}, lng: {{ businessProfile.longitude }}},
+                                        center: myLatLng,
                                         zoom: 12
+                                    });
+
+                                    var marker = new google.maps.Marker({
+                                        position: myLatLng,
+                                        map: map,
+                                        title: '{{ businessProfile.name }}'
                                     });
                                 }
                             </script>
@@ -373,13 +269,13 @@
                                 <li>
                                     <a href="" class="button button--facebook">
                                         <i class="fa fa-facebook"></i>
-                                        <span>Share on Facebook</span>
+                                        <span>{% trans %}Share on Facebook{% endtrans %}</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="" class="button button--twitter">
                                         <i class="fa fa-twitter"></i>
-                                        <span>Share on Twitter</span>
+                                        <span>{% trans %}Share on Twitter{% endtrans %}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -387,7 +283,7 @@
 
                         {% if businessProfile.subcategories|length > 0 %}
                             <div class="sidebar__section section--tags">
-                                <h2 class="section__title">Business categories</h2>
+                                <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
                                     {% for subcategory in businessProfile.subcategories %}
                                         <a href="{{ url('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" class="tag" title="Go to ...">{{ subcategory.name }}</a>
