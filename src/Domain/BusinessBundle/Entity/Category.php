@@ -188,7 +188,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
 
     /**
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
-     * @ORM\OrderBy({"lft" = "ASC"})
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     private $children;
 
