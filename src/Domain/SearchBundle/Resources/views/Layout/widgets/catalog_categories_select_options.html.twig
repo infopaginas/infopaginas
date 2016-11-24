@@ -9,6 +9,6 @@
         {% set is_selected = false %}
     {% endif %}
 
-    <a href="{{ url('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': category.getSlug() }) }}">{{ category.getName() }}</a>
+    <a href="{{ path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': category.getSlug() }) }}">{{ category.getName() }}</a>
     |
 {% endfor %}
