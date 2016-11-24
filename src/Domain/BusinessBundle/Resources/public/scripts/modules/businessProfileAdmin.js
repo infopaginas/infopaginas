@@ -56,7 +56,7 @@ $( document ).ready( function() {
         subcategories.val( null ).trigger('change.select2');
         subcategories.attr( 'disabled', 'disabled' );
 
-        $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), function( response ) {
+        $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), {'currentLocale': currentLocale}, function( response ) {
             var html = '';
 
             if ( response.data ) {

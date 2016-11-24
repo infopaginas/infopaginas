@@ -187,9 +187,11 @@ class ProfileController extends Controller
      */
     public function subcategoryListAction(Request $request, $categoryId, $businessProfileId = null)
     {
+        $locale = $request->request->get('currentLocale', null);
+
         $businessProfilesManager = $this->getBusinessProfilesManager();
 
-        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId);
+        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId, $locale);
 
         return new JsonResponse(['data' => $subcategories]);
     }
