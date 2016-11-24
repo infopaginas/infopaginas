@@ -244,4 +244,11 @@ class SearchManager extends Manager
 
         return $category;
     }
+
+    public function searchSubcategoryByCategory($category, $locale)
+    {
+        $category = $this->categoriesManager->searchSubcategoryByCategory($category, $locale);
+
+        return $category;
+    }
 }

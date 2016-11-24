@@ -696,7 +696,7 @@ class BusinessProfileManager extends Manager
         return $objects;
     }
 
-    public function getSubcategories($categoryId, $businessProfileId)
+    public function getSubcategories($categoryId, $businessProfileId, $locale)
     {
         $data = [];
         $checkedSubcategoryIds = [];
@@ -712,7 +712,7 @@ class BusinessProfileManager extends Manager
         foreach ($subcategories as $key => $subcategory) {
             $data[$key] = [
                 'id'       => $subcategory->getId(),
-                'name'     => $subcategory->getName(),
+                'name'     => $locale ? $subcategory->{'getSearchText' . ucfirst($locale)}() : $subcategory->getName(),
                 'selected' => false,
             ];
 
