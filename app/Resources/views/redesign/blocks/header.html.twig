@@ -1,0 +1,101 @@
+<header class="header">
+    <div class="logo">
+        <a href="/">
+            <img class="logo__icon" src="/redesign/img/infopaginas.svg" width="52">
+            <img class="logo__iso" src="/redesign/img/infopaginas-iso.png">
+        </a>
+    </div>
+    <div class="header__search">
+        <div class="form__field field--search">
+            <input id="search-trigger" type="text" name="search" class="search-trigger" placeholder="{% trans %}What?{% endtrans %}">
+        </div>
+        <div class="form__field field--geo">
+            <input type="text" name="geo" class="search-geo" placeholder="{% trans %}Where?{% endtrans %}">
+        </div>
+        <div class="form__action">
+            <button id="search-button" type="submit" name="submit-search" class="button button--action button--search">
+                Buscar
+                <i class="fa fa-angle-right"></i>
+            </button>
+            <button id="close-search" type="button" class="button close-search button--text">
+                <i class="fa fa-remove"></i>
+            </button>
+        </div>
+    </div><!-- header__search -->
+
+    <button id="nav-toggle" type="button" class="nav__toggle button button--text">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <nav id="nav" class="main-nav">
+        {% if (app.user) %}
+
+            <div class="user-logged">
+                <div class="user__tools">
+                    <a href="{{ path('sonata_user_security_logout') }}">
+                        <button type="button" class="logout "><i class="fa fa-sign-out"></i> {% trans %}Logout{% endtrans %}</button>
+                    </a>
+                </div>
+                <div class="user">
+                    <div class="avatar">
+                    </div>
+                    <span>{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+                </div>
+            </div>
+        {% endif %}
+
+        <ul class="language-nav">
+            {% for language in languages %}
+                <li class="{% if language.active %}nav-current{% endif %}">
+                    <a href="{{ language.url }}">{{ language.title|raw }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if not app.user %}
+            <ul class="nav-user">
+                <li>
+                    <button type="button" data-show-modal-id="register-modal"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
+                </li>
+                <li class="login-link desc-menu home">
+                    <button type="button" data-show-modal-id="login-modal">
+                        <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
+                    </button>
+                </li>
+            </ul>
+        {% endif %}
+
+        <ul class="nav-pages">
+            <li>
+                <a href="/"><i class="fa fa-home"></i>Home</a>
+            </li>
+            <li>
+                <a href="{{ path('domain_article_homepage') }}"><i class="fa fa-file-text-o"></i>{% trans %}Articles{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ path('domain_business_video_list') }}"><i class="fa fa-play"></i>{% trans %}Videos{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-search"></i>{% trans %}Common searches N/A link{% endtrans %}</a>{# todo #}
+            </li>
+            <li>
+                <a href="{{ path('domain_search_catalog') }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
+            </li>
+        </ul>
+        <div class="about-infopaginas">
+            <div class="about__item copyright">
+                <span>
+                  © 2017 <a href="/" target="_blank" title="Go to Infopaginas site">{% trans %}Infopáginas{% endtrans %}</a>
+                </span>
+            </div>
+            <div class="about__item address">
+                <span>
+                    {% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, {% trans %}PR{% endtrans %}
+                </span>
+            </div>
+        </div>
+        <button id="nav-close" type="button" class="button--square nav-close">
+            <i class="fa fa-remove"></i>
+        </button>
+    </nav>
+</header>
