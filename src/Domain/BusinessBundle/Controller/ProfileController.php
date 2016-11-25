@@ -103,16 +103,30 @@ class ProfileController extends Controller
 
     /**
      * @param Request $request
+     * @param string $citySlug
      * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction(Request $request, string $slug)
+    public function viewAction(Request $request, $citySlug, string $slug)
     {
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
         if (!$businessProfile) {
             throw $this->createNotFoundException('');
+        }
+
+        $catalogLocalitySlug = $businessProfile->getCatalogLocality()->getSlug();
+
+        if ($catalogLocalitySlug != $citySlug or $slug != $businessProfile->getSlug()) {
+            return $this->redirectToRoute(
+                'domain_business_profile_view',
+                [
+                    'citySlug' => $catalogLocalitySlug,
+                    'slug'     => $businessProfile->getSlug(),
+                ],
+                301
+            );
         }
 
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);

@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -206,6 +207,9 @@ class MigrationCommand extends ContainerAwareCommand
 
         //todo - set real slug !!!
         $entity->setSlug($business->slug);
+
+        $entity->setSlugEn($business->slug);
+        $entity->setSlugEs($itemSecond->business->slug);
 
         $entity->setRegistrationDate(new \DateTime($business->created_at));
 
@@ -497,6 +501,9 @@ class MigrationCommand extends ContainerAwareCommand
                 if ($parentEntity) {
                     $entity = new Category();
                     $entity->setName($valuePrimary);
+
+                    $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
+                    $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
 
                     $entity->setSearchTextEn($valueEn);
                     $entity->setSearchTextEs($valueEs);

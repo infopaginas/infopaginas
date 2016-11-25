@@ -5,6 +5,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -37,6 +38,9 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
             // set to both locales
             $object->setSearchTextEn($value['en']);
             $object->setSearchTextEs($value['es']);
+
+            $object->setSlugEn(SlugUtil::convertSlug($value['en']));
+            $object->setSlugEs(SlugUtil::convertSlug($value['es']));
 
             $this->manager->persist($object);
 

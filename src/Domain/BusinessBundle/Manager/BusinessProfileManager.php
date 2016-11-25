@@ -161,7 +161,7 @@ class BusinessProfileManager extends Manager
                 'rating'        => $this->calculateReviewsAvgRatingForBusinessProfile($profile),
                 "profileUrl"    => $this->container->get('router')->generate('domain_business_profile_view', [
                     'slug'          => $profile->getSlug(),
-                    'citySlug'      => $profile->getCitySlug(),
+                    'citySlug'      => $profile->getCatalogLocality()->getSlug(),
                 ]),
             ];
         }
@@ -1020,7 +1020,7 @@ class BusinessProfileManager extends Manager
         $url = $this->container->get('router')->generate(
             'domain_business_profile_view',
             [
-                'citySlug' => $businessProfile->getCitySlug(),
+                'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
                 'slug'     => $businessProfile->getSlug(),
             ],
             true

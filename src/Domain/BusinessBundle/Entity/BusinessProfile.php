@@ -328,6 +328,20 @@ class BusinessProfile implements
     protected $slug;
 
     /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_en", type="string", length=100, nullable=true)
+     */
+    protected $slugEn;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_es", type="string", length=100, nullable=true)
+     */
+    protected $slugEs;
+
+    /**
      * @var Task[]
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="businessProfile")
      */
@@ -2664,5 +2678,45 @@ class BusinessProfile implements
     public function getCatalogLocality()
     {
         return $this->catalogLocality;
+    }
+
+    /**
+     * @param string $slugEn
+     *
+     * @return Category
+     */
+    public function setSlugEn($slugEn)
+    {
+        $this->slugEn = $slugEn;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEn()
+    {
+        return $this->slugEn;
+    }
+
+    /**
+     * @param string $slugEs
+     *
+     * @return Category
+     */
+    public function setSlugEs($slugEs)
+    {
+        $this->slugEs = $slugEs;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEs()
+    {
+        return $this->slugEs;
     }
 }

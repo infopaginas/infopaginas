@@ -181,6 +181,8 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
 
         if ($customSlug) {
             $query->orWhere('c.slug = :customSlug')
+                ->orWhere('c.slugEn = :customSlug')
+                ->orWhere('c.slugEs = :customSlug')
                 ->setParameter('customSlug', $customSlug)
             ;
         }

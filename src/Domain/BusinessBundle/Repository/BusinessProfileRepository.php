@@ -657,6 +657,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         if ($customSlug) {
             $query->orWhere('bp.slug = :customSlug')
+                ->orWhere('bp.slugEn = :customSlug')
+                ->orWhere('bp.slugEs = :customSlug')
                 ->setParameter('customSlug', $customSlug)
             ;
         }

@@ -179,7 +179,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     {
         $path = $this->getRouter()->generate('domain_business_profile_view', [
             'slug'     => $businessProfile->getSlug(),
-            'citySlug' => $businessProfile->getCitySlug(),
+            'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
         ]);
 
         //only for dev env - remove app_dev.php from URL (GA doesn't track it)
