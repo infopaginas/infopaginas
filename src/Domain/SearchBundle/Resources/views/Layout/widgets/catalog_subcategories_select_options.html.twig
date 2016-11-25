@@ -1,7 +1,3 @@
-<h2>
-    {% trans %}Subcategories{% endtrans %}
-</h2>
-
 {% for subcategory in subcategories %}
     {% if currentSubcategory %}
         {% set is_selected = (subcategory.id == currentSubcategory.id) %}

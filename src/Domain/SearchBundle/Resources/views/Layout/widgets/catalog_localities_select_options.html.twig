@@ -1,7 +1,3 @@
-<h2>
-    {% trans %}Localities{% endtrans %}
-</h2>
-
 {% for locality in localities %}
     {% if currentCategory %}
         {% set is_selected = (locality.id == currentLocality.id) %}

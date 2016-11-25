@@ -1,6 +1,6 @@
 <header class="header">
     <div class="logo">
-        <a href="href="{{ path('domain_site_home_index') }}"">
+        <a href="{{ path('domain_site_home_index') }}">
             <img class="logo__icon" src="/redesign/img/infopaginas.svg" width="52">
             <img class="logo__iso" src="/redesign/img/infopaginas-iso.png">
         </a>
@@ -14,7 +14,7 @@
         </div>
         <div class="form__action">
             <button id="search-button" type="submit" name="submit-search" class="button button--action button--search">
-                Buscar
+                {% trans %}Search{% endtrans %}
                 <i class="fa fa-angle-right"></i>
             </button>
             <button id="close-search" type="button" class="button close-search button--text">
