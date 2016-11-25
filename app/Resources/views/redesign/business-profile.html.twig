@@ -1,33 +1,20 @@
 {% extends "redesign/layout/base.html.twig" %}
 
-{% block body %}
-    <div class="toolbar">
-        <div class="toolbar__nav">
-            <a href="{{ path('domain_search_catalog', {'localitySlug':  businessProfile.catalogLocality.getSlug() }) }}">
-                <button id="breadcrumb_location" type="button" class="button button--action button--location"><i class="fa fa-map-marker"></i> <span>{{ businessProfile.catalogLocality.name }}</span></button>
-            </a>
-            <a href="{{ path('domain_search_catalog', {'localitySlug':  businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug() }) }}">
-                <button id="category-toggle" type="button" class="button button--action category__toggle">
-                    {{ businessProfile.category.name }}
-                </button>
-            </a>
-            <div class="breadcrumb">
-                {% set subcategory = businessProfile.subcategories|first %}
-                <a href="{{ path('domain_search_catalog', {'localitySlug':  businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" title="{{ subcategory.name }}" class="button categorie__item categorie__parent"><span>{{ subcategory.name }}</span></a>
-            </div><!-- breadcrumb -->
-        </div><!-- toolbar__nav -->
-    </div><!-- toolbar -->
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.category, 'subcategory': businessProfile.subcategories|first} %}
+{% endblock %}
 
+{% block bodyClass %}profile{% endblock %}
+
+{% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
             <div class="container profile-header__container">
 
                 <header class="page-section profile-header">
                     <div class="item__header container">
-                        <span class="now open">N/A</span>{#  todo  #}
                         <div class="rank">
-                            <div class="rank-ta rank-ta--5">
-                            </div>
+                            <div class="rank-ta rank-ta--5"></div>
                             <div class="stars rank__item">
                                 {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
                                 {% if reviewsAvgRating|number_format(0) %}
@@ -184,14 +171,16 @@
                             </div><!-- container -->
                         </section>
 
-                        <section class="page-section payment-methods">
-                            <h3>{% trans %}Payment methods{% endtrans %}</h3>
-                            <ul>
-                                {% for paymentMethod in businessProfile.paymentMethods %}
-                                    <li>{{ paymentMethod.getName }}</li>
-                                {% endfor %}
-                            </ul>
-                        </section>
+                        {% if businessProfile.paymentMethods|length > 0 %}
+                            <section class="page-section payment-methods">
+                                <h3>{% trans %}Payment methods{% endtrans %}</h3>
+                                <ul>
+                                    {% for paymentMethod in businessProfile.paymentMethods %}
+                                        <li>{{ paymentMethod.getName }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </section>
+                        {% endif %}
 
                         {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <section class="page-section video">
@@ -299,3 +288,9 @@
         </div><!-- main -->
     </div><!-- main__container -->
 {% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}

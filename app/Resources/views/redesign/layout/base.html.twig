@@ -50,8 +50,6 @@
             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
         {% endblock %}
 
-        <script src="/redesign/js/vendor/modernizr-2.7.1.min.js"></script>
-
         {% block doubleClickHeader %}
             {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
         {% endblock %}
@@ -64,11 +62,13 @@
             {% endif %}
         {% endblock %}
     </head>
-    <body class="profile">
+    <body class="{% block bodyClass %}{% endblock %}">
 
         {% block searchHeader %}
             {% include ':redesign/blocks:header.html.twig' %}
         {% endblock %}
+
+        {% block breadcrumbs %}{% endblock %}
 
         {% block body %}{% endblock %}
 
@@ -81,6 +81,7 @@
             <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
             <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
             <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+            <script src="/redesign/js/vendor/modernizr-2.7.1.min.js"></script>
             <script type="text/javascript">
                 requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
                     requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {

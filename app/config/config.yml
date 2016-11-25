@@ -158,16 +158,16 @@ hwi_oauth:
     resource_owners:
         facebook:
             type:                facebook
-            client_id:           1092749047449814
-            client_secret:       dd4c134dfa083b580ee1d0fe2f2e0a97
+            client_id:           229778020787780
+            client_secret:       e8856b7872e7cbc138384aaae58bb4cd
             scope:         "email"
             infos_url:     "https://graph.facebook.com/me?fields=id,name,email,first_name,last_name"
             paths:
                 email:          email
         google:
             type:                google
-            client_id:           762185179500-76hu2nbchsk35h0vb8amh7d8m7t665uc.apps.googleusercontent.com
-            client_secret:       b44x5xaqKgt6iaPPmaAcqLrz
+            client_id:           1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com
+            client_secret:       MqwCsstQtzNrT_WTgWW5Styc
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
 
 fos_js_routing:

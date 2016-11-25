@@ -238,7 +238,7 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories = $this->getCategoryManager()->getAvailableParentCategories();
+            $categories = $this->getCategoryManager()->getAvailableParentCategories($request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
@@ -298,7 +298,7 @@ class SearchController extends Controller
         $pageRouter = 'domain_search_index';
 
         return $this->render(
-            'DomainSearchBundle:Search:catalog.html.twig',
+            ':redesign:catalog.html.twig',
             [
                 'search'        => $searchDTO,
                 'results'       => $searchResultsDTO,

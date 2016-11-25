@@ -1,0 +1,103 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory, 'subcategory': currentSubcategory} %}
+{% endblock %}
+
+{% block bodyClass %}results-list{% endblock %}
+
+{% block body %}
+    <div class="main__container">
+
+        <section class="main">
+            <div class="results">
+                {% if (currentLocality == '' and localities) or (currentCategory == '' and categories) or (currentSubcategory == '' and subcategories) %}
+                    <div class="results__item results__item--ad">
+                        {% if currentLocality == '' %}
+                            <div class="col-xs-12 list-block">
+                                {% include 'DomainSearchBundle:Layout/widgets:catalog_localities_select_options.html.twig' %}
+                            </div>
+                        {% endif %}
+                        {% if currentCategory == '' and categories %}
+                            <div class="col-xs-12 list-block">
+                                {% include 'DomainSearchBundle:Layout/widgets:catalog_categories_select_options.html.twig' %}
+                            </div>
+                        {% endif %}
+                        {% if currentSubcategory == '' and subcategories %}
+                            <div class="col-xs-12 list-block">
+                                {% include 'DomainSearchBundle:Layout/widgets:catalog_subcategories_select_options.html.twig' %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="ad ad-mobile">
+                    <a href="#" target="_blank">
+                        <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
+                    </a>
+                </div>
+
+                <div class="ad ad-desktop">
+                    <a href="#" target="_blank">
+                        <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
+                    </a>
+                </div>
+
+                {% if results.resultSet is defined and results.resultSet is not null %}
+                    {% for item in results.resultSet %}
+                        {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
+                    {% endfor %}
+                {% endif %}
+
+                <div class="ad ad-mobile">
+                    <a href="#" target="_blank">
+                        <img src="/redesign/img/demo/banner-mobile-3.jpg" title="Banner title">
+                    </a>
+                </div>
+
+                <button id="show-map" type="button" class="button button-round button--show-map button-">
+                    <i class="fa fa-map"></i>
+                    <span>{% trans %}Map view{% endtrans %}</span>
+                </button>
+
+                <button id="hide-map" type="button" class="button button-round button--hide-map">
+                    <i class="fa fa-list"></i>
+                    <span>{% trans %}List view{% endtrans %}</span>
+                </button>
+
+            </div><!-- results -->
+        </section><!-- main -->
+
+        {# todo #}
+
+        <section class="results-map">
+            <div id="map" class="map"></div>
+            <script type="text/javascript">
+                var map;
+                function initMap() {
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        center: {lat: 18.3848136, lng: -66.1283819},
+                        zoom: 12,
+                        disableDefaultUI: true
+                    });
+                }
+            </script>
+        </section><!-- results-map -->
+
+
+        <div class="ad ad-mobile ad--bottom ad--active">
+            <button id="ad-close" type="button" class="button-close-ad"><i class="fa fa-remove"></i></button>
+            <a href="#" target="_blank">
+                <img src="/redesign/img/demo/banner-mobile-2.jpg">
+            </a>
+        </div><!-- ad mobile -->
+
+    </div><!-- main container -->
+
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}
