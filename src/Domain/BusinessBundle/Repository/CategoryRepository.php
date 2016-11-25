@@ -162,4 +162,12 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
             ->getSingleScalarResult()
         ;
     }
+
+    public function searchSubcategoryByCategory($category, $locale)
+    {
+        $qb = $this->getAvailableSubCategoriesQb($category)
+            ->orderBy('c.searchText' . ucfirst($locale));
+
+        return $qb->getQuery()->getResult();
+    }
 }

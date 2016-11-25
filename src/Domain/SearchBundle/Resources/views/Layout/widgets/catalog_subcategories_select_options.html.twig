@@ -9,7 +9,7 @@
         {% set is_selected = false %}
     {% endif %}
 
-    <a href="{{ url('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}">
+    <a href="{{ path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}">
         {{ subcategory.getName() }}
     </a>
     |

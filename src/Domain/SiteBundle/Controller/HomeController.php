@@ -87,4 +87,25 @@ class HomeController extends Controller
             ]
         );
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function authModalRedesignAction()
+    {
+        $loginForm                = $this->createForm(new LoginType());
+        $registrationForm         = $this->createForm(new RegistrationType());
+        $resetPasswordRequestForm = $this->createForm(new ResetPasswordRequestType());
+        $resetPasswordForm        = $this->createForm(new ResetPasswordType());
+
+        return $this->render(
+            ':redesign/blocks:auth_modal.html.twig',
+            [
+                'loginForm'                => $loginForm->createView(),
+                'registrationForm'         => $registrationForm->createView(),
+                'resetPasswordRequestForm' => $resetPasswordRequestForm->createView(),
+                'resetPasswordForm'        => $resetPasswordForm->createView(),
+            ]
+        );
+    }
 }

@@ -36,7 +36,10 @@ requirejs.config({
         },
         'js-cookie' : {
             exports: 'Cookies'
-        }
+        },
+        'selectize' : {
+            deps: ['jquery']
+        },
     },
     paths: {
         modules         : 'domainsite/scripts/modules',
@@ -61,6 +64,13 @@ requirejs.config({
         'highcharts' : 'domainsite/scripts/vendors/highcharts',
 
         'business/modules' : 'domainbusiness/scripts/modules',
-        'business/tools'   : 'domainbusiness/scripts/modules/tools'
+        'business/tools'   : 'domainbusiness/scripts/modules/tools',
+
+        //redesign
+        'profile-redesign': '/redesign/js/profile',
+        'main-redesign': '/redesign/js/main',
+        'selectize': '/redesign/js/vendor/min/selectize-min',
+        'velocity': '/redesign/js/vendor/min/velocity-min',
+        'velocity-ui': '/redesign/js/vendor/min/velocity-ui-min'
     }
 });

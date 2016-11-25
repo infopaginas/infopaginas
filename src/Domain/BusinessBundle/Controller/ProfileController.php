@@ -133,7 +133,7 @@ class ProfileController extends Controller
 
         $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
-        return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
+        return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,
             'seoData'         => $businessProfile,
             'photos'          => $photos,
@@ -187,9 +187,11 @@ class ProfileController extends Controller
      */
     public function subcategoryListAction(Request $request, $categoryId, $businessProfileId = null)
     {
+        $locale = $request->request->get('currentLocale', null);
+
         $businessProfilesManager = $this->getBusinessProfilesManager();
 
-        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId);
+        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId, $locale);
 
         return new JsonResponse(['data' => $subcategories]);
     }
