@@ -228,25 +228,7 @@
                         {#</div>#}
 
                         <section class="page-section profile-map">
-                            {# todo map #}
-                            <div id="map2"></div>
-                            <script type="text/javascript">
-                                var map;
-                                function initMap() {
-                                    var myLatLng = {lat: {{ businessProfile.latitude }}, lng: {{ businessProfile.longitude }}};
-
-                                    map = new google.maps.Map(document.getElementById('map2'), {
-                                        center: myLatLng,
-                                        zoom: 12
-                                    });
-
-                                    var marker = new google.maps.Marker({
-                                        position: myLatLng,
-                                        map: map,
-                                        title: '{{ businessProfile.name }}'
-                                    });
-                                }
-                            </script>
+                            <div id="map"></div>
                         </section>
 
                     </article><!-- profile -->
@@ -291,6 +273,22 @@
 
 {% block scripts %}
     {{ parent() }}
+
+    <script type="text/javascript">
+        var map;
+
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
+                var mapSearchRedesignPage = mapSearchRedesignPage({
+                    {% if markers %}
+                        'markers' : {{ markers|raw }}
+                    {% else %}
+                        'markers': false
+                    {% endif %}
+                });
+            });
+        });
+    </script>
 
     {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
 {% endblock%}

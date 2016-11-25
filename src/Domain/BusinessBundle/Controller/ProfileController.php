@@ -123,6 +123,8 @@ class ProfileController extends Controller
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
 
+        $locationMarkers  = $this->getBusinessProfilesManager()->getLocationMarkersFromProfileData([$businessProfile]);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
         $bannerFactory->prepearBanners(array(
@@ -143,6 +145,7 @@ class ProfileController extends Controller
             'bannerFactory'   => $bannerFactory,
             'dcDataDTO'       => $dcDataDTO,
             'schemaJsonLD'    => $schema,
+            'markers'         => $locationMarkers,
         ]);
     }
 

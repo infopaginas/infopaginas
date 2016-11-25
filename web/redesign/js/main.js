@@ -1,4 +1,4 @@
-define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
+define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], function( $ ) {
     'use strict';
 
     var headerSearch = $( '#search-trigger' );
@@ -145,23 +145,23 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
         { e: adBottom, p: { translateY: 200 }, o: { duration: 400, easing: "easeOutCubic" } },
         { e: showMap, p: { translateY: 140 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false } },
         { e: resultsMap, p: { translateY: "-110vh" }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateY: -120 }, o: { duration: 200, easing: "easeOutCubic" } }
+        { e: hideMap, p: { translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
     ];
 
     var closeMapSequence = [
         { e: hideMap, p: { translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
         { e: resultsMap, p: { translateY: 0 }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: showMap, p: { translateY: 0 }, o: { duration: 300, easing: "easeOutCubic" } },
+        { e: showMap, p: { translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
     ];
 
     var openMapDeskSequence = [
         { e: showMap, p: { translateX: 500 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: -520 }, o: { duration: 200, easing: "easeOutCubic" } }
+        { e: hideMap, p: { translateX: -520 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
     ];
 
     var closeMapDeskSequence = [
         { e: hideMap, p: { translateX: 0 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: showMap, p: { translateX: 0 }, o: { duration: 300, easing: "easeOutCubic" } },
+        { e: showMap, p: { translateX: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
     ];
 
 
