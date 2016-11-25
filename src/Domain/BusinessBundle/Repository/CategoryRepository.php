@@ -28,14 +28,15 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb;
     }
 
-    public function getAvailableParentCategories()
+    public function getAvailableParentCategories($locale = false)
     {
-        $qb = $this->getAvailableParentCategoriesQb()
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->getAvailableParentCategoriesQb();
 
-        return $qb;
+        if ($locale) {
+            $qb->orderBy('c.searchText' . ucfirst($locale));
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function getAvailableSubCategoriesQb($parent, $level = 2)

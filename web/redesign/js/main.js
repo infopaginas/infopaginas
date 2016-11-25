@@ -377,8 +377,10 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
         for(var i = 0; i<sources.length;i++) {
             sources[i].setAttribute('src', sources[i].getAttribute('data-src'));
         }
-        video.load();
 
+        if (video) {
+            video.load();
+        }
 
     } else {
         showMap.on( 'click', function() {

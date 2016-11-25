@@ -39,7 +39,7 @@ requirejs.config({
         },
         'selectize' : {
             deps: ['jquery']
-        },
+        }
     },
     paths: {
         modules         : 'domainsite/scripts/modules',
