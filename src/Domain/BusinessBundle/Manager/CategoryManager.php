@@ -37,4 +37,9 @@ class CategoryManager extends Manager
     {
         return $this->getRepository()->getAvailableParentCategories();
     }
+
+    public function searchSubcategoryByCategory($category, $locale)
+    {
+        return $this->getRepository()->searchSubcategoryByCategory($category, $locale);
+    }
 }

@@ -251,7 +251,7 @@ class SearchController extends Controller
                     $request->attributes->set('category', $category->getName());
                     $request->attributes->set('q', $category->getName());
 
-                    $subcategories = $category->getChildren();
+                    $subcategories = $searchManager->searchSubcategoryByCategory($category, $request->getLocale());
                     $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 
                     if ($subcategory) {

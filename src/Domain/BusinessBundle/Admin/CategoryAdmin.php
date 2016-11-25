@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -18,11 +19,11 @@ class CategoryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('parent.name', null, [
+            ->add('name', null, [
                 'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
             ])
-            ->add('name', null, [
-                'label' => $this->trans('business.list.subcategory_column', [], $this->getTranslationDomain())
+            ->add('parent.name', null, [
+                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain())
             ])
         ;
     }
@@ -34,8 +35,19 @@ class CategoryAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('parent.name', null, ['label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())])
-            ->add('name', null, ['label' => $this->trans('business.list.subcategory_column', [], $this->getTranslationDomain())])
+            ->add('name', null, [
+                'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
+            ])
+            ->add('parent', null, [
+                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain()),
+                'sortable' => true,
+                'sort_field_mapping'=> ['fieldName' => 'name'],
+                'sort_parent_association_mappings' => [['fieldName' => 'parent']]
+            ])
+            ->add('categoryType', null, [
+                'label' => $this->trans('business.list.category_type', [], $this->getTranslationDomain()),
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_category_type.html.twig'
+            ])
         ;
 
         $this->addGridActions($listMapper);
@@ -46,6 +58,14 @@ class CategoryAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $category = $this->getSubject();
+
+        $parentQuery = $this->modelManager->createQuery(Category::class, 'c')
+            ->where('c.isActive = TRUE')
+            ->andWhere('c.parent IS NULL')
+            ->orderBy('c.name')
+        ;
+
         $formMapper
             ->add('name')
             ->add('slug', null, ['read_only' => true, 'required' => false])
@@ -60,12 +80,11 @@ class CategoryAdmin extends OxaAdmin
                 'multiple' => false,
                 'required' => false,
                 'by_reference' => false,
-            ])
-            ->add('children', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
-                'required' => false,
-                'by_reference' => false,
+                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain()),
+                'attr' => [
+                    'disabled' => $category->getChildren()->isEmpty() ? false : true,
+                ],
+                'query' => $parentQuery,
             ])
         ;
     }
@@ -77,8 +96,12 @@ class CategoryAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('name')
-            ->add('parent.name')
+            ->add('name', null, [
+                'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
+            ])
+            ->add('parent.name', null, [
+                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain())
+            ])
             ->add('slug')
         ;
     }
