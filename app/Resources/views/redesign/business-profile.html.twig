@@ -288,3 +288,9 @@
         </div><!-- main -->
     </div><!-- main__container -->
 {% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}
