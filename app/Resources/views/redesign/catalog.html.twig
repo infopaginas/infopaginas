@@ -49,6 +49,12 @@
                     {% endfor %}
                 {% endif %}
 
+                <div>
+                    {% block pagination %}
+                        {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                    {% endblock %}
+                </div>
+
                 <div class="ad ad-mobile">
                     <a href="#" target="_blank">
                         <img src="/redesign/img/demo/banner-mobile-3.jpg" title="Banner title">
