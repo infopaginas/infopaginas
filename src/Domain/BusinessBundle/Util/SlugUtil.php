@@ -10,8 +10,6 @@ class SlugUtil
     {
         $customSlug = Urlizer::transliterate($slug);
 
-        //todo
-
         if ($customSlug != $slug) {
             return $customSlug;
         }
