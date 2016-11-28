@@ -49,6 +49,12 @@
                     {% endfor %}
                 {% endif %}
 
+                <div>
+                    {% block pagination %}
+                        {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                    {% endblock %}
+                </div>
+
                 <div class="ad ad-mobile">
                     <a href="#" target="_blank">
                         <img src="/redesign/img/demo/banner-mobile-3.jpg" title="Banner title">
@@ -72,16 +78,6 @@
 
         <section class="results-map">
             <div id="map" class="map"></div>
-            <script type="text/javascript">
-                var map;
-                function initMap() {
-                    map = new google.maps.Map(document.getElementById('map'), {
-                        center: {lat: 18.3848136, lng: -66.1283819},
-                        zoom: 12,
-                        disableDefaultUI: true
-                    });
-                }
-            </script>
         </section><!-- results-map -->
 
 
@@ -98,6 +94,22 @@
 
 {% block scripts %}
     {{ parent() }}
+
+    <script type="text/javascript">
+        var map;
+
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
+                var mapSearchRedesignPage = mapSearchRedesignPage({
+                    {% if markers %}
+                        'markers' : {{ markers|raw }}
+                    {% else %}
+                        'markers': false
+                    {% endif %}
+                });
+            });
+        });
+    </script>
 
     {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
 {% endblock%}

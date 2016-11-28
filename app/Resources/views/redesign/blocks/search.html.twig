@@ -1,0 +1,37 @@
+{% if searchData is defined and searchData %}
+    {% set qValue = searchData.q %}
+    {% set geoValue = searchData.geo %}
+{% else %}
+    {% if app.request.query.get('q') is not null %}
+        {% set qValue = app.request.query.get('q') %}
+    {% else %}
+        {% set qValue = '' %}
+    {% endif %}
+
+    {% if app.request.query.get('geo') is not null %}
+        {% set geoValue = app.request.query.get('geo') %}
+    {% else %}
+        {% set geoValue = '' %}
+    {% endif %}
+{% endif %}
+
+<form class="header__search search-form" action="{{ path('domain_search_index')}}">
+    <div class="form__field field--search">
+        <input id="searchBox" type="text" name="q" value="{{ qValue }}" class="search-trigger" placeholder="{% trans %}What?{% endtrans %}">
+    </div>
+    <div class="form__field field--geo">
+        <input id='searchLocation' value="{{ geoValue }}" type="text" name="geo" class="search-geo" placeholder="{% trans %}Where?{% endtrans %}">
+    </div>
+    <div class="form__action">
+        <button id="searchButton" type="submit" name="submit-search" class="button button--action button--search">
+            {% trans %}Search{% endtrans %}
+            <i class="fa fa-angle-right"></i>
+        </button>
+        <button id="close-search" type="button" class="button close-search button--text">
+            <i class="fa fa-remove"></i>
+        </button>
+    </div>
+    <input type="hidden" id='searchLat' name='lat' value="">
+    <input type="hidden" id='searchLng' name='lng' value="">
+    <input type="hidden" id='searchLocationGeoLoc' name='geoLoc' value="">
+</form><!-- header__search -->#}

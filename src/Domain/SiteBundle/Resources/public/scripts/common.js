@@ -39,6 +39,9 @@ requirejs.config({
         },
         'selectize' : {
             deps: ['jquery']
+        },
+        'velocity-ui' : {
+            deps: ['velocity']
         }
     },
     paths: {
@@ -71,6 +74,7 @@ requirejs.config({
         'main-redesign': '/redesign/js/main',
         'selectize': '/redesign/js/vendor/min/selectize-min',
         'velocity': '/redesign/js/vendor/min/velocity-min',
-        'velocity-ui': '/redesign/js/vendor/min/velocity-ui-min'
+        'velocity-ui': '/redesign/js/vendor/min/velocity-ui-min',
+        'maps-redesign': '/redesign/js/mapsearchpage'
     }
 });

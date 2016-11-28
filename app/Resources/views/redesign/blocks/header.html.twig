@@ -5,23 +5,10 @@
             <img class="logo__iso" src="/redesign/img/infopaginas-iso.png">
         </a>
     </div>
-    <div class="header__search">
-        <div class="form__field field--search">
-            <input id="search-trigger" type="text" name="search" class="search-trigger" placeholder="{% trans %}What?{% endtrans %}">
-        </div>
-        <div class="form__field field--geo">
-            <input type="text" name="geo" class="search-geo" placeholder="{% trans %}Where?{% endtrans %}">
-        </div>
-        <div class="form__action">
-            <button id="search-button" type="submit" name="submit-search" class="button button--action button--search">
-                {% trans %}Search{% endtrans %}
-                <i class="fa fa-angle-right"></i>
-            </button>
-            <button id="close-search" type="button" class="button close-search button--text">
-                <i class="fa fa-remove"></i>
-            </button>
-        </div>
-    </div><!-- header__search -->
+
+    {% block searchBlock %}
+        {% include ':redesign/blocks:search.html.twig' %}
+    {% endblock %}
 
     <button id="nav-toggle" type="button" class="nav__toggle button button--text">
         <i class="fa fa-bars"></i>

@@ -265,6 +265,7 @@ class SearchController extends Controller
         $searchResultsDTO = null;
         $dcDataDTO        = null;
         $schema = false;
+        $locationMarkers = null;
 
         $searchData = $this->getSearchDataByRequest($request);
 
@@ -292,6 +293,8 @@ class SearchController extends Controller
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+
+            $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
         }
 
         // hardcode for catalog
@@ -313,6 +316,7 @@ class SearchController extends Controller
                 'currentCategory' => $category,
                 'currentSubcategory' => $subcategory,
                 'schemaJsonLD' => $schema,
+                'markers'       => $locationMarkers,
             ]
         );
     }
