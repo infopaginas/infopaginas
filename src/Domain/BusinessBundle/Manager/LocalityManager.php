@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Domain\BusinessBundle\Util\SlugUtil;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
@@ -38,11 +39,9 @@ class LocalityManager extends Manager
 
     public function getLocalityBySlug($localitySlug)
     {
-        $locality = $this->getRepository()->findOneBy(
-            [
-                'slug' => $localitySlug
-            ]
-        );
+        $customSlug = SlugUtil::convertSlug($localitySlug);
+
+        $locality = $this->getRepository()->getLocalityBySlug($localitySlug, $customSlug);
 
         return $locality;
     }

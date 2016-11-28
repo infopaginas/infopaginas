@@ -102,6 +102,20 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $slug;
 
     /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_en", type="string", length=100, nullable=true)
+     */
+    protected $slugEn;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_es", type="string", length=100, nullable=true)
+     */
+    protected $slugEs;
+
+    /**
      * @var CategoryTranslation[]
      *
      * @ORM\OneToMany(
@@ -563,5 +577,45 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getCategoryType()
     {
         return (bool)$this->getParent() ? self::TYPE_SUBCATEGORY : self::TYPE_CATEGORY;
+    }
+
+    /**
+     * @param string $slugEn
+     *
+     * @return Category
+     */
+    public function setSlugEn($slugEn)
+    {
+        $this->slugEn = $slugEn;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEn()
+    {
+        return $this->slugEn;
+    }
+
+    /**
+     * @param string $slugEs
+     *
+     * @return Category
+     */
+    public function setSlugEs($slugEs)
+    {
+        $this->slugEs = $slugEs;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEs()
+    {
+        return $this->slugEs;
     }
 }

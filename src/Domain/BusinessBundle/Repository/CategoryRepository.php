@@ -171,4 +171,22 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getCategoryBySlug($categorySlug, $customSlug = false)
+    {
+        $query = $this->getAvailableCategoriesQb()
+            ->where('c.slug = :categorySlug')
+            ->setParameter('categorySlug', $categorySlug)
+        ;
+
+        if ($customSlug) {
+            $query->orWhere('c.slug = :customSlug')
+                ->orWhere('c.slugEn = :customSlug')
+                ->orWhere('c.slugEs = :customSlug')
+                ->setParameter('customSlug', $customSlug)
+            ;
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

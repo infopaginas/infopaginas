@@ -238,6 +238,10 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
+            if ($localitySlug != $locality->getSlug()) {
+                return $this->handlePermanentRedirect($locality->getSlug());
+            }
+
             $categories = $this->getCategoryManager()->getAvailableParentCategories($request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
@@ -247,14 +251,26 @@ class SearchController extends Controller
             if ($categorySlug) {
                 $category = $searchManager->searchCatalogCategory($categorySlug);
 
-                $request->attributes->set('category', $category->getName());
-                $request->attributes->set('q', $category->getName());
-
                 if ($category) {
+                    if ($categorySlug != $category->getSlug()) {
+                        return $this->handlePermanentRedirect($locality->getSlug(), $category->getSlug());
+                    }
+
+                    $request->attributes->set('category', $category->getName());
+                    $request->attributes->set('q', $category->getName());
+
                     $subcategories = $searchManager->searchSubcategoryByCategory($category, $request->getLocale());
                     $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 
                     if ($subcategory) {
+                        if ($subcategorySlug != $subcategory->getSlug()) {
+                            return $this->handlePermanentRedirect(
+                                $locality->getSlug(),
+                                $category->getSlug(),
+                                $subcategory->getSlug()
+                            );
+                        }
+
                         $request->attributes->set('subcategory', $subcategory->getName());
                         $request->attributes->set('q', $subcategory->getName());
                     }
@@ -344,5 +360,18 @@ class SearchController extends Controller
         }
 
         return $searchData;
+    }
+
+    private function handlePermanentRedirect($localitySlug = null, $categorySlug = null, $subcategorySlug = null)
+    {
+        return $this->redirectToRoute(
+            'domain_search_catalog',
+            [
+                'localitySlug'    => $localitySlug,
+                'categorySlug'    => $categorySlug,
+                'subcategorySlug' => $subcategorySlug,
+            ],
+            301
+        );
     }
 }

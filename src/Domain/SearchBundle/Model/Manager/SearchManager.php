@@ -239,7 +239,7 @@ class SearchManager extends Manager
         $category = null;
 
         if ($categorySlug) {
-            $category = $this->categoriesManager->getRepository()->findOneBy(['slug' => $categorySlug]);
+            $category = $this->categoriesManager->getCategoryBySlug($categorySlug);
         }
 
         return $category;

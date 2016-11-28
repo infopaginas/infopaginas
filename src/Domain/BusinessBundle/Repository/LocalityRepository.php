@@ -60,4 +60,20 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
 
         return $query;
     }
+
+    public function getLocalityBySlug($localitySlug, $customSlug = false)
+    {
+        $query = $this->getAvailableLocalitiesQb()
+            ->where('l.slug = :localitySlug')
+            ->setParameter('localitySlug', $localitySlug)
+        ;
+
+        if ($customSlug) {
+            $query->orWhere('l.slug = :customSlug')
+                ->setParameter('customSlug', $customSlug)
+            ;
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

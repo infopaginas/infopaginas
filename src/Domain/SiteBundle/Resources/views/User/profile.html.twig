@@ -168,7 +168,7 @@
                                             {% for review in row %}
                                                 <div class="col-xs-12">
                                                     <span>
-                                                        <a href="{{ path('domain_business_profile_view', { 'citySlug' : review.business.getCitySlug(), slug: review.slug }) }}#reviews">
+                                                        <a href="{{ path('domain_business_profile_view', { 'citySlug' : review.business.catalogLocality.slug(), slug: review.slug }) }}#reviews">
                                                             {{ review.business.name }}
                                                         </a>
                                                     </span>
