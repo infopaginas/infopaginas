@@ -122,6 +122,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 },
                 complete: function() {
                     self.spinner.hide();
+                    $( self.html.modals.createReviewModalId ).hide();
                 }
             } );
 

@@ -4,6 +4,10 @@ define(
     'use strict';
 
         var mapSearchRedesignPage = function ( options ) {
+
+            var direct = new directions;
+            direct.bindEventsDirections();
+
             map = new google.maps.Map(  document.getElementById('map'), {
                 center: new google.maps.LatLng( 18.2208, -66.5901 ),
                 zoom: 8

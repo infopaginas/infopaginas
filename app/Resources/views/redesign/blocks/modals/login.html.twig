@@ -4,13 +4,13 @@
         <h2>{% trans %}Login{% endtrans %}</h2>
         <div class="modal__section">
             <form class="account-form login-form" id="loginForm">
-                <div class="form__field field--user field-active">
+                <div class="form__field field--user">
                     <label>{% trans %}Email{% endtrans %}</label>
-                    {{ form_widget(loginForm._username) }}
+                    {{ form_widget(loginForm._username, {'attr': {'placeholder':''}} ) }}
                 </div>
                 <div class="form__field field--password">
                     <label>{% trans %}Password{% endtrans %}</label>
-                    {{ form_widget(loginForm._password) }}
+                    {{ form_widget(loginForm._password, {'attr': {'placeholder':''}} ) }}
                 </div>
                 <div class="form__actions">
                     {{ form_rest(loginForm) }}
