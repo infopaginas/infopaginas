@@ -27,6 +27,8 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 
 class MigrationCommand extends ContainerAwareCommand
 {
+    const CATEGORY_SEPARATOR = ' / ';
+
     protected function configure()
     {
         $this->setName('data:migration');
@@ -486,11 +488,6 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity) {
             //search category as subcategory
             $parentValue    = $this->parseCategoryName($valuePrimary);
-            $valuePrimary   = $this->parseSubcategoryName($valuePrimary);
-            $valueSecondary = $this->parseSubcategoryName($valueSecondary);
-
-            $valueEn = $this->parseSubcategoryName($valueEn);
-            $valueEs = $this->parseSubcategoryName($valueEs);
 
             $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
@@ -499,14 +496,17 @@ class MigrationCommand extends ContainerAwareCommand
                 $parentEntity = $this->getParentCategory($parentValue);
 
                 if ($parentEntity) {
+                    $subcategoryNameEn = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEn());
+                    $subcategoryNameEs = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEs());
+
                     $entity = new Category();
                     $entity->setName($valuePrimary);
 
                     $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
                     $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
 
-                    $entity->setSearchTextEn($valueEn);
-                    $entity->setSearchTextEs($valueEs);
+                    $entity->setSearchTextEn($subcategoryNameEn);
+                    $entity->setSearchTextEs($subcategoryNameEs);
                     $entity->setParent($parentEntity);
 
                     $entity = $this->saveEntity($entity);
@@ -654,11 +654,27 @@ class MigrationCommand extends ContainerAwareCommand
             'es' => 'Automobiles',
         ];
 
-        $separators = [' - ', '/'];
+        $categories[] = [
+            'en' => 'Photograph',
+            'es' => 'Fotógrafos',
+        ];
+
+        $categories[] = [
+            'en' => 'Photograph',
+            'es' => 'Photographic',
+        ];
+
+        $categories[] = [
+            'en' => 'Clothing',
+            'es' => 'Ropa',
+        ];
+
+        $separators = $this->getCategorySeparators();
 
         foreach ($categories as $item) {
             foreach ($separators as $separator) {
-                if (strpos($name, $item['en'] . $separator) === 0 or  strpos($name, $item['es'] . $separator) === 0) {
+                if (strpos(strtolower($name), strtolower($item['en'] . $separator)) === 0 or
+                    strpos(strtolower($name), strtolower($item['es'] . $separator)) === 0) {
                     return $item['en'];
                 }
             }
@@ -667,11 +683,21 @@ class MigrationCommand extends ContainerAwareCommand
         return $name;
     }
 
-    private function parseSubcategoryName($name)
+    private function convertSubcategoryName($name, $parentName)
     {
-        //todo
+        $convertedName = $name;
+        $separators    = $this->getCategorySeparators();
 
-        return $name;
+        foreach ($separators as $separator) {
+            $convertedName = str_replace($parentName . $separator, '', $convertedName);
+        }
+
+        return $parentName . self::CATEGORY_SEPARATOR . $name;
+    }
+
+    private function getCategorySeparators()
+    {
+        return [' - ', ' / ', '/'];
     }
 
     private function getParentCategory($parentName)

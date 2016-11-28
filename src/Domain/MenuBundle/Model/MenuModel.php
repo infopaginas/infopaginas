@@ -76,11 +76,11 @@ class MenuModel implements MenuInterface
             ],
             self::CODE_FLORISTS => [
                 'en' => 'Florists',
-                'es' => 'Florists',
+                'es' => 'Floristerías',
             ],
             self::CODE_BEAUTY_SALONS => [
-                'en' => 'Beauty salons',
-                'es' => 'Beauty salons',
+                'en' => 'Beauty Salons',
+                'es' => 'Salones De Belleza',
             ],
             self::CODE_HAIRDRESSERS => [
                 'en' => 'Hairdressers',
@@ -88,7 +88,7 @@ class MenuModel implements MenuInterface
             ],
             self::CODE_DOCTORS => [
                 'en' => 'Doctors',
-                'es' => 'Doctors',
+                'es' => 'Médicos',
             ],
         ];
     }
@@ -229,6 +229,51 @@ class MenuModel implements MenuInterface
                 'en' => 'Wedding and Party',
                 'es' => 'Bodas y Fiestas',
             ],
+            self::CODE_FLOWERS => [
+                'en' => 'Flowers',
+                'es' => 'Flores',
+            ],
+            self::CODE_PHOTOGRAPHIC => [
+                'en' => 'Photograph',
+                'es' => 'Fotografía',
+            ],
+            self::CODE_FUNERALS => [
+                'en' => 'Funerals',
+                'es' => 'Funerarias',
+            ],
+            self::CODE_LAWYERS => [
+                'en' => 'Lawyers',
+                'es' => 'Abogados',
+            ],
+            self::CODE_GARDENING => [
+                'en' => 'Gardening',
+                'es' => 'Jardinería',
+            ],
+            self::CODE_BAKERY => [
+                'en' => 'Bakery',
+                'es' => 'Panaderías',
+            ],
+            self::CODE_BAKERY => [
+                'en' => 'Bakery',
+                'es' => 'Panaderías',
+            ],
+            self::CODE_BAKERIES => [
+                'en' => 'Bakeries',
+                'es' => 'Reposterías',
+            ],
+            self::CODE_BICYCLES => [
+                'en' => 'Bicycles',
+                'es' => 'Bicicletas',
+            ],
+            self::CODE_CHURCHES => [
+                'en' => 'Churches',
+                'es' => 'Iglesias',
+            ],
+            self::CODE_CONSULTANTS => [
+                'en' => 'Consultants',
+                'es' => 'Consultores',
+            ],
+
             self::CODE_UNDEFINED => [
                 'en' => 'Undefined',
                 'es' => 'Undefined',
