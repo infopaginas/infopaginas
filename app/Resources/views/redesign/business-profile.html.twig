@@ -45,19 +45,19 @@
                         {% if not businessProfile.getHideAddress() %}
                             <a href="#" class="get-dir button button--small button--featured" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
                                 <i class="fa fa-location-arrow"></i>
-                                <span>Directions</span>
+                                <span>{% trans %}Directions{% endtrans %}</span>
                             </a>
                         {% endif %}
                         {% if businessProfile.getPhones() | length > 0 %}
                             <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop">
                                 <i class="fa fa-phone"></i>
-                                <span>Call</span>
+                                <span>{% trans %}Call{% endtrans %}</span>
                             </a>
                         {% endif %}
                         {% if businessProfile.getWebsite() %}
                             <a class="button button--small button--featured" href="{{ businessProfile.getWebsiteLink() }}">
                                 <i class="fa fa-external-link"></i>
-                                <span>Web</span>
+                                <span>{% trans %}Web{% endtrans %}</span>
                             </a>
                         {% endif %}
                     </div><!-- header-actions -->
@@ -102,7 +102,7 @@
                             <div class="highlights container">
                                 {% if not businessProfile.getHideAddress() %}
                                     <div class="highlights__item">
-                                        <h3>Address</h3>
+                                        <h3>{% trans %}Address{% endtrans %}</h3>
                                         <ul>
                                             <li>
                                                 {% if businessProfile.getCustomAddress() %}
@@ -118,7 +118,7 @@
 
                                 {% if businessProfile.getPhones() | length > 0 %}
                                     <div class="highlights__item">
-                                        <h3>Phone</h3>
+                                        <h3>{% trans %}Phone{% endtrans %}</h3>
                                         <ul>
                                             {% for phone in businessProfile.getPhones() %}
                                                 <li>
