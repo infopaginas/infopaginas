@@ -15,14 +15,21 @@
                     <div class="item__header container">
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
-                            <div class="stars rank__item">
-                                {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
-                                {% if reviewsAvgRating|number_format(0) %}
-                                    {% for i in 1 .. reviewsAvgRating|number_format(0) %}
-                                        <i class="fa fa-star"></i>
+                            <a href="#" data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
+                                <div class="stars rank__item">
+                                    {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
+
+                                    {% for i in 1 .. 5 - reviewsAvgRating|number_format(0) %}
+                                        <i class="fa fa-star-o"></i>
                                     {% endfor %}
-                                {% endif %}
-                            </div>
+
+                                    {% if reviewsAvgRating|number_format(0) %}
+                                        {% for i in 1 .. reviewsAvgRating|number_format(0) %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </a>
                         </div>
                     </div><!-- item__header -->
                     {% if businessProfile.getLogo() %}
@@ -35,24 +42,22 @@
                         <p>&nbsp;{{ businessProfile.getSlogan() }}</p>
                     {% endif %}
                     <div class="header-actions">
-                        {#<a href="https://www.opentable.com.mx/astrid-y-gaston-reservations-mexico-city?restref=26797" class="button button--small button--opentable" target="_blank" title="Search for reservations on Open Table">#}
-                            {#<img src="/redesign/img/open-table.png">#}
-                            {#<span>Reserve now</span>#}
-                        {#</a>#}
                         {% if not businessProfile.getHideAddress() %}
-                            <a href="#" class="button button--small button--featured" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
+                            <a href="#" class="get-dir button button--small button--featured" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
                                 <i class="fa fa-location-arrow"></i>
-                                <span>Directions</span>
+                                <span>{% trans %}Directions{% endtrans %}</span>
                             </a>
                         {% endif %}
-                        <button type="button" class="button button--small button--featured">
-                            <i class="fa fa-phone"></i>
-                            <span>Call</span>
-                        </button>
+                        {% if businessProfile.getPhones() | length > 0 %}
+                            <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop">
+                                <i class="fa fa-phone"></i>
+                                <span>{% trans %}Call{% endtrans %}</span>
+                            </a>
+                        {% endif %}
                         {% if businessProfile.getWebsite() %}
                             <a class="button button--small button--featured" href="{{ businessProfile.getWebsiteLink() }}">
                                 <i class="fa fa-external-link"></i>
-                                <span>Web</span>
+                                <span>{% trans %}Web{% endtrans %}</span>
                             </a>
                         {% endif %}
                     </div><!-- header-actions -->
@@ -76,13 +81,13 @@
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getGoogleURL() %}
-                                <div class="share__item pinterest">
-                                    <a href="{{ businessProfile.getGoogleURL() }}" title="Visit business profile on ..."><i class="fa fa-pinterest"></i></a>
+                                <div class="share__item google-plus">
+                                    <a href="{{ businessProfile.getGoogleURL() }}" title="Visit business profile on ..."><i class="fa fa-google-plus"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getYoutubeURL() %}
-                                <div class="share__item pinterest">
-                                    <a href="{{ businessProfile.getYoutubeURL() }}" title="Visit business profile on ..."><i class="fa fa-pinterest"></i></a>
+                                <div class="share__item youtube">
+                                    <a href="{{ businessProfile.getYoutubeURL() }}" title="Visit business profile on ..."><i class="fa fa-youtube"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                         </div>
@@ -97,7 +102,7 @@
                             <div class="highlights container">
                                 {% if not businessProfile.getHideAddress() %}
                                     <div class="highlights__item">
-                                        <h3>Address</h3>
+                                        <h3>{% trans %}Address{% endtrans %}</h3>
                                         <ul>
                                             <li>
                                                 {% if businessProfile.getCustomAddress() %}
@@ -113,7 +118,7 @@
 
                                 {% if businessProfile.getPhones() | length > 0 %}
                                     <div class="highlights__item">
-                                        <h3>Phone</h3>
+                                        <h3>{% trans %}Phone{% endtrans %}</h3>
                                         <ul>
                                             {% for phone in businessProfile.getPhones() %}
                                                 <li>
@@ -269,6 +274,10 @@
 
         </div><!-- main -->
     </div><!-- main__container -->
+
+    <div class="card-item">
+        {% include ':redesign/blocks/modals:write_review.html.twig' with { 'reviewForm': reviewForm } %}
+    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -287,6 +296,11 @@
                     {% endif %}
                 });
             });
+            requirejs([
+                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'
+            ], function(businessProfileView, interactionsReport) {
+                var businessProfileView = new businessProfileView();
+            })
         });
     </script>
 

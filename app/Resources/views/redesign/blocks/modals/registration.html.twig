@@ -15,30 +15,30 @@
                 <div class="form__row row--name clearfix">
                     <div class="form__field field--name">
                         <label>{% trans %}First name{% endtrans %}</label>
-                        {{ form_widget(registrationForm.firstname) }}
+                        {{ form_widget(registrationForm.firstname, {'attr': {'placeholder':''}} ) }}
                     </div>
                     <div class="form__field field--name">
                         <label>{% trans %}Last name{% endtrans %}</label>
-                        {{ form_widget(registrationForm.lastname) }}
+                        {{ form_widget(registrationForm.lastname, {'attr': {'placeholder':''}} ) }}
                     </div>
                 </div>
                 <div class="form__field field--user">
                     <label>{% trans %}Email{% endtrans %}</label>
-                    {{ form_widget(registrationForm.email) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'placeholder':''}} ) }}
                 </div>
                 <div class="form__row row--passwords clearfix">
                     <div class="form__field field--name field--password">
                         <label>{% trans %}Password{% endtrans %}</label>
-                        {{ form_widget(registrationForm.plainPassword.first) }}
+                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {'placeholder':''}} ) }}
                     </div>
                     <div class="form__field field--name field--password">
                         <label>{% trans %}Confirm password{% endtrans %}</label>
-                        {{ form_widget(registrationForm.plainPassword.second) }}
+                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'placeholder':''}} ) }}
                     </div>
                 </div>
                 <div class="form__field field--password">
                     <label>{% trans %}City{% endtrans %}</label>
-                    {{ form_widget(registrationForm.location) }}
+                    {{ form_widget(registrationForm.location, {'attr': {'placeholder':''}} ) }}
                 </div>
                 <div class="form__actions">
                     {{ form_rest(registrationForm) }}

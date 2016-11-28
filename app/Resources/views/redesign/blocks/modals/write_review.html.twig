@@ -1,0 +1,44 @@
+<!--Modal review-->
+<div id="writeReviewModal" class="modal modal--review" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal__outside"></div>
+    <div class="modal__content">
+        <h2>{% trans %}Write a review{% endtrans %}</h2>
+        <div class="modal__section">
+            <form class="account-form login-form" id="createReviewForm">
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <label>
+                            {% trans %}Rating{% endtrans %}
+                        </label>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="reviews block-title-reviews">
+                            {% include ':blocks/business:review_rating_stars.html.twig' with {
+                            'rating': 0,
+                            'isSelectable': true,
+                            'input' : reviewForm.rating
+                            } %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form__field field--user">
+                    <label>{% trans %}Displayed Name{% endtrans %}</label>
+                    {{ form_widget(reviewForm.username, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__field field--text">
+                    <label>{% trans %}Review text{% endtrans %}</label>
+                    {{ form_widget(reviewForm.content, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__actions">
+                    {{ form_rest(reviewForm) }}
+                    <button type="button" class="button button--action" data-business-profile-id="{{ businessProfile.getId() }}" id="createReviewButton">{% trans %}Submit{% endtrans %}</button>
+                    <button type="button" class="button button--action  hide-modal">{% trans %}Cancel{% endtrans %}</button>
+                </div>
+            </form>
+        </div><!-- modal__section -->
+        <div class="modal__section login__footer"></div><!-- modal__section -->
+        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+    </div><!-- modal__content -->
+</div>
