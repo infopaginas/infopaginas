@@ -40,8 +40,14 @@ requirejs.config({
         'selectize' : {
             deps: ['jquery']
         },
+        'velocity' : {
+            deps: ['jquery']
+        },
         'velocity-ui' : {
             deps: ['velocity']
+        },
+        'iframetracker' : {
+            deps: ['jquery']
         }
     },
     paths: {

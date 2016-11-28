@@ -41,15 +41,16 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions">
-            {#<a href="https://www.opentable.com.mx/astrid-y-gaston-reservations-mexico-city?restref=26797" class="button button--small button--opentable" target="_blank" title="Search for reservations on Open Table">Reserve now</a>#}
-            <button type="button" class="button button--small button--featured">
+            <a href="#" class="get-dir button button--small button--featured" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
-            </button>
-            <button type="button" class="button button--small button--featured">
-                <i class="fa fa-phone"></i>
-                {% trans %}Call{% endtrans %}
-            </button>
+            </a>
+            {% if item.getPhones() | length > 0 %}
+                <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop">
+                    <i class="fa fa-phone"></i>
+                    {% trans %}Call{% endtrans %}
+                </a>
+            {% endif %}
         </div><!-- item__primary-actions -->
     </div>
 </div><!-- results__item -->
