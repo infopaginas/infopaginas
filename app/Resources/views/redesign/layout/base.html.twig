@@ -23,6 +23,18 @@
         <meta name="msapplication-TileImage" content="/img/touch/apple-touch-icon-144x144-precomposed.png">
         <meta name="msapplication-TileColor" content="#222222">
 
+        {% for language in languages %}
+            {% if language.active %}
+                <link rel="canonical" href="{{ language.url }}" />
+            {% else %}
+                {% if language.domain %}
+                    {% set code = language.domain %}
+                {% else %}
+                    {% set code = 'es' %}
+                {% endif %}
+                <link rel="alternate" href="{{ language.url }}" hreflang="{{ code }}" />
+            {% endif %}
+        {% endfor %}
         <!-- SEO: If mobile URL is different from desktop URL, add a canonical link to the desktop page -->
         <!--
         <link rel="canonical" href="http://www.example.com/" >
