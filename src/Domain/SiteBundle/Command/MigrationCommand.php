@@ -648,6 +648,22 @@ class MigrationCommand extends ContainerAwareCommand
     {
         //todo
 
+        $categories = MenuModel::getAllCategoriesNames();
+        $categories[] = [
+            'en' => 'Auto',
+            'es' => 'Automobiles',
+        ];
+
+        $separators = [' - ', '/'];
+
+        foreach ($categories as $item) {
+            foreach ($separators as $separator) {
+                if (strpos($name, $item['en'] . $separator) === 0 or  strpos($name, $item['es'] . $separator) === 0) {
+                    return $item['en'];
+                }
+            }
+        }
+
         return $name;
     }
 
