@@ -133,7 +133,7 @@
                                                 <div class="phone-add-wrap">
                                                     {{ form_widget(phoneField) }}
                                                     <span class="help-block phone-error-section-{{ loop.index }}"></span>
-                                                    {% if loop.index > 1 %}
+                                                    {% if loop.index >= 1 %}
                                                         <a class="pull-right remove-phone" href="#">X</a>
                                                     {% endif %}
                                                 </div>
