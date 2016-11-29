@@ -224,8 +224,8 @@ class SearchController extends Controller
     ) {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $category    = false;
-        $subcategory = false;
+        $category    = null;
+        $subcategory = null;
 
         $categories    = [];
         $subcategories = [];
@@ -238,50 +238,41 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            if ($localitySlug != $locality->getSlug()) {
-                return $this->handlePermanentRedirect($locality->getSlug());
-            }
-
             $categories = $this->getCategoryManager()->getAvailableParentCategories($request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
             $request->attributes->set('q', $locality->getName());
 
-            if ($categorySlug) {
-                $category = $searchManager->searchCatalogCategory($categorySlug);
+            $category = $searchManager->searchCatalogCategory($categorySlug);
 
-                if ($category) {
-                    if ($categorySlug != $category->getSlug()) {
-                        return $this->handlePermanentRedirect($locality->getSlug(), $category->getSlug());
-                    }
+            if ($category and !$category->getParent()) {
+                $request->attributes->set('category', $category->getName());
+                $request->attributes->set('q', $category->getName());
 
-                    $request->attributes->set('category', $category->getName());
-                    $request->attributes->set('q', $category->getName());
+                $subcategories = $searchManager->searchSubcategoryByCategory($category, $request->getLocale());
+                $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 
-                    $subcategories = $searchManager->searchSubcategoryByCategory($category, $request->getLocale());
-                    $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
-
-                    if ($subcategory) {
-                        if ($subcategorySlug != $subcategory->getSlug()) {
-                            return $this->handlePermanentRedirect(
-                                $locality->getSlug(),
-                                $category->getSlug(),
-                                $subcategory->getSlug()
-                            );
-                        }
-
-                        $request->attributes->set('subcategory', $subcategory->getName());
-                        $request->attributes->set('q', $subcategory->getName());
-                    }
+                if ($subcategory and $subcategory->getParent()) {
+                    $request->attributes->set('subcategory', $subcategory->getName());
+                    $request->attributes->set('q', $subcategory->getName());
                 }
             }
         }
 
+        if (!($this->checkSlug($localitySlug, $locality) and
+            $this->checkSlug($categorySlug, $category) and
+            $this->checkSlug($subcategorySlug, $subcategory) and
+            $this->checkCategory($category) and
+            $this->checkSubcategory($subcategory))) {
+
+            return $this->handlePermanentRedirect($locality, $category, $subcategory);
+        }
+
         $searchResultsDTO = null;
         $dcDataDTO        = null;
-        $schema = false;
-        $locationMarkers = null;
+        $schema           = null;
+        $locationMarkers  = null;
 
         $searchData = $this->getSearchDataByRequest($request);
 
@@ -313,26 +304,26 @@ class SearchController extends Controller
             $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
         }
 
+        $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $subcategories);
+
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
         return $this->render(
             ':redesign:catalog.html.twig',
             [
-                'search'        => $searchDTO,
-                'results'       => $searchResultsDTO,
-                'bannerFactory' => $bannerFactory,
-                'dcDataDTO'     => $dcDataDTO,
-                'searchData'    => $searchData,
-                'pageRouter'    => $pageRouter,
-                'localities'    => $localities,
-                'categories'    => $categories,
-                'subcategories' => $subcategories,
-                'currentLocality' => $locality,
-                'currentCategory' => $category,
+                'search'             => $searchDTO,
+                'results'            => $searchResultsDTO,
+                'bannerFactory'      => $bannerFactory,
+                'dcDataDTO'          => $dcDataDTO,
+                'searchData'         => $searchData,
+                'pageRouter'         => $pageRouter,
+                'currentLocality'    => $locality,
+                'currentCategory'    => $category,
                 'currentSubcategory' => $subcategory,
-                'schemaJsonLD' => $schema,
-                'markers'       => $locationMarkers,
+                'schemaJsonLD'       => $schema,
+                'markers'            => $locationMarkers,
+                'catalogLevelItems'  => $catalogLevelItems,
             ]
         );
     }
@@ -362,8 +353,31 @@ class SearchController extends Controller
         return $searchData;
     }
 
-    private function handlePermanentRedirect($localitySlug = null, $categorySlug = null, $subcategorySlug = null)
+    private function handlePermanentRedirect($locality = null, $category = null, $subcategory = null)
     {
+        $localitySlug    = null;
+        $categorySlug    = null;
+        $subcategorySlug = null;
+
+        if ($locality) {
+            $localitySlug = $locality->getSlug();
+
+            if ($category) {
+                $parentCategory = $category->getParent();
+
+                if ($parentCategory) {
+                    $categorySlug    = $parentCategory->getSlug();
+                    $subcategorySlug = $category->getSlug();
+                } else {
+                    $categorySlug    = $category->getSlug();
+
+                    if ($subcategory and $subcategory->getParent()) {
+                        $subcategorySlug = $subcategory->getSlug();
+                    }
+                }
+            }
+        }
+
         return $this->redirectToRoute(
             'domain_search_catalog',
             [
@@ -373,5 +387,28 @@ class SearchController extends Controller
             ],
             301
         );
+    }
+
+    private function checkCategory($category)
+    {
+        return !($category and $category->getParent());
+    }
+
+    private function checkSubcategory($subcategory)
+    {
+        return !($subcategory and !$subcategory->getParent());
+    }
+
+    private function checkSlug($requestSlug, $entity)
+    {
+        if ($requestSlug) {
+            if ($entity and $entity->getSlug() == $requestSlug) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

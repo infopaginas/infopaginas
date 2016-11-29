@@ -215,6 +215,37 @@
                             </section>
                         {% endif %}
 
+                        {% if businessProfile.getDiscount() is not null or businessProfile.getCoupons() | length > 0 %}
+                            <section class="page-section description-section">
+                                <div class="container">
+                                    <h3>{% trans %}Discounts{% endtrans %}</h3>
+                                    {{ businessProfile.getDiscount()| raw }}
+                                </div>
+                            </section>
+
+                            <section class="page-section highlights-section">
+                                <div class="highlights container">
+                                    {% if businessProfile.getCoupons() | length > 0 %}
+                                        <div class="highlights__item highlights__item--coupon">
+                                            <h3>{% trans %}Coupons{% endtrans %}</h3>
+                                            <ul>
+                                                {% for coupon in businessProfile.getCoupons %}
+                                                    {% set media = coupon.getImage() %}
+                                                    <li>
+                                                        {{ coupon.title }}
+                                                        <a href="{% path media, 'reference' %}" class="green-btn btn print-btn coupon">
+                                                            <i class="fa fa-print" aria-hidden="true"></i>
+                                                            <span>{% trans %}Print{% endtrans %}</span>
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </section>
+                        {% endif %}
+
                         <div class="ad ad-mobile">
                             <h5>{% trans %}Advertising{% endtrans %}</h5>
                             <a href="#" target="_blank">

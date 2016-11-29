@@ -21,6 +21,7 @@ use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Domain\BusinessBundle\Entity\Locality;
 
 class SearchManager extends Manager
 {
@@ -250,5 +251,38 @@ class SearchManager extends Manager
         $category = $this->categoriesManager->searchSubcategoryByCategory($category, $locale);
 
         return $category;
+    }
+
+    /**
+     * @param Locality[] $localities
+     * @param Category[] $categories
+     * @param Category[] $subcategories
+     *
+     * @return array();
+     */
+    public function sortCatalogItems($localities, $categories = [], $subcategories = [])
+    {
+        if ($subcategories) {
+            $data = $this->sortItems($subcategories);
+        } elseif($categories) {
+            $data = $this->sortItems($categories);
+        } else {
+            $data = $this->sortItems($localities);
+        }
+
+        return $data;
+    }
+
+    protected function sortItems($data)
+    {
+        $result = [];
+
+        foreach ($data as $item) {
+            $result[strtoupper(substr($item->getName(), 0, 1))][] = $item;
+        }
+
+        ksort($result);
+
+        return $result;
     }
 }
