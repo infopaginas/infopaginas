@@ -1,0 +1,80 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:article-breadcrumbs.html.twig' with {'articleCategory': article.category} %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+
+                <article class="article">
+                    <section class="article__header page-section">
+                        <h1><strong>{{ article.title }}</strong></h1>
+                        <div class="article__category">
+                            <div class="tagcloud">
+                                <a href="{{ path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() }) }}" class="tag">{{ article.getCategory().getName() }}</a>
+                            </div>
+                        </div>
+
+                        <div class="credits">
+                            <ul>
+                                <li><i class="fa fa-pencil"></i>{{ article.createdUser.fullName }}</li>
+                                <li><i class="fa fa-calendar"></i>{{ article.updatedAt|date('m d, Y') }}</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section class="article-body">
+
+                        <section class="gallery">
+                            <div class="photos slider section--slider">
+                                <div class="slider__item">
+                                    <img src="{% path article.getImage(), 'homepage' %}">
+                                </div>
+                            </div>
+                        </section>
+
+                        {{ article.getBody()|raw }}
+                    </section>
+
+                    {# todo replace with double click #}
+                    <div class="ad">
+                        <div class="ad ad-mobile">
+                            <a href="#" target="_blank">
+                                <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
+                            </a>
+                        </div>
+
+                        <div class="ad ad-desktop">
+                            <a href="#" target="_blank">
+                                <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
+                            </a>
+                        </div>
+                    </div><!-- home-ad -->
+                </article>
+            </div>
+
+            <aside class="profile__sidebar sidebar">
+                <div class="sidebar__section section--social">
+                    <ul>
+                        <li>
+                            <a href="#" class="button button-share--facebook">
+                                <i class="fa fa-facebook"></i>
+                                <span>Share on Facebook</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="button button-share--twitter">
+                                <i class="fa fa-twitter"></i>
+                                <span>Share on Twitter</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div><!-- sidebar__section -->
+            </aside>
+        </div>
+    </div>
+{% endblock %}

@@ -48,7 +48,7 @@ class ArticleController extends Controller
             'schemaJsonLD' => $schema,
         ];
 
-        return $this->render('DomainArticleBundle:Default:view.html.twig', $params);
+        return $this->render(':redesign:article-view.html.twig', $params);
     }
 
     /**
