@@ -41,7 +41,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
 
     userProfile.prototype.getCurrentFormId = function() {
         var $passwordUpdateModal = $( this.modals.passwordUpdateModalId );
-        if( $passwordUpdateModal.hasClass( 'in' ) ) {
+        if( $passwordUpdateModal.hasClass( 'in' ) || $passwordUpdateModal.hasClass( 'modal--opened' ) ) {
             return this.html.forms.passwordUpdateFormId;
         }
 
@@ -120,6 +120,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
             alertify.success( response.message );
             $( this.html.forms.passwordUpdateFormId )[0].reset();
             $( this.modals.passwordUpdateModalId ).modal( 'hide' );
+            $( this.modals.passwordUpdateModalId ).modalFunc({close: true});
         } else {
             this.enableFieldsHighlight( response.errors );
             alertify.error( response.message );

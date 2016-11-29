@@ -35,14 +35,14 @@ class UserProfileType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'Catalá',
                 ],
-                'label' => 'First Name',
+                'label' => 'First Name*',
             ])
             ->add('lastname', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Joyeros',
                 ],
-                'label' => 'Last Name',
+                'label' => 'Last Name*',
             ])
             ->add('location', TextType::class, [
                 'attr' => [
@@ -57,6 +57,7 @@ class UserProfileType extends AbstractType
                     'placeholder' => '11111111',
                 ],
                 'label' => 'Advertiser Id',
+                'required' => false,
             ])
             ->add('phone', TextType::class, [
                 'attr' => [
@@ -82,6 +83,7 @@ class UserProfileType extends AbstractType
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Twitter',
+                'required' => false,
             ])
             ->add('facebookURL', TextType::class, [
                 'attr' => [
@@ -93,6 +95,7 @@ class UserProfileType extends AbstractType
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Facebook',
+                'required' => false,
             ])
             ->add('googleURL', TextType::class, [
                 'attr' => [
@@ -104,6 +107,7 @@ class UserProfileType extends AbstractType
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Google Plus',
+                'required' => false,
             ])
             ->add('youtubeURL', TextType::class, [
                 'attr' => [
@@ -115,6 +119,7 @@ class UserProfileType extends AbstractType
                     new Length(['max' => 100]),
                 ],
                 'label' => 'Youtube',
+                'required' => false,
             ])
         ;
     }

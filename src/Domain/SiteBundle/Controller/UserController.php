@@ -40,7 +40,7 @@ class UserController extends Controller
         $userBusinessProfiles = $usersManager->getUserBusinessProfiles($user);
         $userReviews = $usersManager->getUserReviews($user);
 
-        return $this->render('DomainSiteBundle:User:profile.html.twig', [
+        return $this->render(':redesign:user-profile.html.twig', [
             'profileForm'          => $profileForm->createView(),
             'passwordUpdateForm'   => $passwordUpdateForm->createView(),
             'userBusinessProfiles' => $userBusinessProfiles,
