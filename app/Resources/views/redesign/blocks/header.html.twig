@@ -24,9 +24,9 @@
                     </a>
                 </div>
                 <div class="user">
-                    <div class="avatar">
-                    </div>
-                    <span>{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+                    <a href="{{ path('domain_site_user_profile') }}">
+                        <span>{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+                    </a>
                 </div>
             </div>
         {% endif %}

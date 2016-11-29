@@ -11,70 +11,60 @@
 
         <section class="main">
             <div class="results">
-                {% if (currentLocality == '' and localities) or (currentCategory == '' and categories) or (currentSubcategory == '' and subcategories) %}
-                    <div class="results__item results__item--ad">
-                        {% if currentLocality == '' %}
-                            <div class="col-xs-12 list-block">
-                                {% include 'DomainSearchBundle:Layout/widgets:catalog_localities_select_options.html.twig' %}
-                            </div>
-                        {% endif %}
-                        {% if currentCategory == '' and categories %}
-                            <div class="col-xs-12 list-block">
-                                {% include 'DomainSearchBundle:Layout/widgets:catalog_categories_select_options.html.twig' %}
-                            </div>
-                        {% endif %}
-                        {% if currentSubcategory == '' and subcategories %}
-                            <div class="col-xs-12 list-block">
-                                {% include 'DomainSearchBundle:Layout/widgets:catalog_subcategories_select_options.html.twig' %}
-                            </div>
-                        {% endif %}
+                {% if catalogLevelItems and not currentSubcategory %}
+                    <div class="catalog-list clearfix">
+                        {% for key, list in catalogLevelItems %}
+                            <div class="catalog-list__section">
+                                <div class="catalog-list__index">
+                                    {{ key }}
+                                </div><!-- index -->
+                                <ul>
+                                    {% for item in list %}
+                                        <li>
+                                            {% include ':redesign/blocks:catalog_link.html.twig' %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div><!-- catalog section -->
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="ad ad-mobile">
+                        <a href="#" target="_blank">
+                            <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
+                        </a>
+                    </div>
+
+                    <div class="ad ad-desktop">
+                        <a href="#" target="_blank">
+                            <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
+                        </a>
+                    </div>
+
+                    {% if results.resultSet is defined and results.resultSet is not null %}
+                        {% for item in results.resultSet %}
+                            {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
+                        {% endfor %}
+                    {% endif %}
+
+                    <div>
+                        {% block pagination %}
+                            {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                        {% endblock %}
                     </div>
                 {% endif %}
 
-                <div class="ad ad-mobile">
-                    <a href="#" target="_blank">
-                        <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
-                    </a>
-                </div>
-
-                <div class="ad ad-desktop">
-                    <a href="#" target="_blank">
-                        <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
-                    </a>
-                </div>
-
-                {% if results.resultSet is defined and results.resultSet is not null %}
-                    {% for item in results.resultSet %}
-                        {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
-                    {% endfor %}
-                {% endif %}
-
-                <div>
-                    {% block pagination %}
-                        {% include 'DomainSiteBundle:Layout:widgets/pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
-                    {% endblock %}
-                </div>
-
-                <div class="ad ad-mobile">
-                    <a href="#" target="_blank">
-                        <img src="/redesign/img/demo/banner-mobile-3.jpg" title="Banner title">
-                    </a>
-                </div>
-
-                <button id="show-map" type="button" class="button button-round button--show-map button-">
+                <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
                     <i class="fa fa-map"></i>
-                    <span>{% trans %}Map view{% endtrans %}</span>
+                    <span>Map view</span>
                 </button>
 
                 <button id="hide-map" type="button" class="button button-round button--hide-map">
                     <i class="fa fa-list"></i>
-                    <span>{% trans %}List view{% endtrans %}</span>
+                    <span>List view</span>
                 </button>
-
             </div><!-- results -->
         </section><!-- main -->
-
-        {# todo #}
 
         <section class="results-map">
             <div id="map" class="map"></div>
