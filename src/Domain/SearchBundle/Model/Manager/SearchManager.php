@@ -285,4 +285,40 @@ class SearchManager extends Manager
 
         return $result;
     }
+
+    public function checkCatalogRedirect($slugs, $entities)
+    {
+        return $this->checkCatalogSlug($slugs['locality'], $entities['locality']) and
+            $this->checkCatalogSlug($slugs['category'], $entities['category']) and
+            $this->checkCatalogSlug($slugs['subcategory'], $entities['subcategory']) and
+            $this->checkCatalogCategory($entities['category']) and
+            $this->checkCatalogSubcategory($entities['subcategory']);
+    }
+
+    private function checkCatalogCategory($category)
+    {
+        if ($category and $category->getParent()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkCatalogSubcategory($subcategory)
+    {
+        if ($subcategory and !$subcategory->getParent()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkCatalogSlug($requestSlug, $entity)
+    {
+        if ($requestSlug and !($entity and $entity->getSlug() == $requestSlug)) {
+            return false;
+        }
+
+        return true;
+    }
 }

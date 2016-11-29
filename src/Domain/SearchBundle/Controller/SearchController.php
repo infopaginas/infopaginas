@@ -260,12 +260,19 @@ class SearchController extends Controller
             }
         }
 
-        if (!($this->checkSlug($localitySlug, $locality) and
-            $this->checkSlug($categorySlug, $category) and
-            $this->checkSlug($subcategorySlug, $subcategory) and
-            $this->checkCategory($category) and
-            $this->checkSubcategory($subcategory))) {
+        $slugs = [
+            'locality'    => $localitySlug,
+            'category'    => $categorySlug,
+            'subcategory' => $subcategorySlug,
+        ];
 
+        $entities = [
+            'locality'    => $locality,
+            'category'    => $category,
+            'subcategory' => $subcategory,
+        ];
+
+        if (!$searchManager->checkCatalogRedirect($slugs, $entities)) {
             return $this->handlePermanentRedirect($locality, $category, $subcategory);
         }
 
@@ -387,28 +394,5 @@ class SearchController extends Controller
             ],
             301
         );
-    }
-
-    private function checkCategory($category)
-    {
-        return !($category and $category->getParent());
-    }
-
-    private function checkSubcategory($subcategory)
-    {
-        return !($subcategory and !$subcategory->getParent());
-    }
-
-    private function checkSlug($requestSlug, $entity)
-    {
-        if ($requestSlug) {
-            if ($entity and $entity->getSlug() == $requestSlug) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
