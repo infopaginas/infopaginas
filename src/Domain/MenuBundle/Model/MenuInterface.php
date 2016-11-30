@@ -55,6 +55,16 @@ interface MenuInterface
     const CODE_TRAVEL                 = 129;
     const CODE_UTILITIES              = 130;
     const CODE_WEDDING_AND_PARTY      = 131;
+    const CODE_FLOWERS                = 132;
+    const CODE_PHOTOGRAPHIC           = 133;
+    const CODE_FUNERALS               = 134;
+    const CODE_LAWYERS                = 135;
+    const CODE_GARDENING              = 136;
+    const CODE_BAKERY                 = 137;
+    const CODE_BAKERIES               = 138;
+    const CODE_BICYCLES               = 139;
+    const CODE_CHURCHES               = 140;
+    const CODE_CONSULTANTS            = 141;
 
     const CODE_UNDEFINED = 99999;
 
