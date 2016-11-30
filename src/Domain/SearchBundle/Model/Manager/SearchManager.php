@@ -21,6 +21,7 @@ use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Domain\BusinessBundle\Entity\Locality;
 
 class SearchManager extends Manager
 {
@@ -250,5 +251,74 @@ class SearchManager extends Manager
         $category = $this->categoriesManager->searchSubcategoryByCategory($category, $locale);
 
         return $category;
+    }
+
+    /**
+     * @param Locality[] $localities
+     * @param Category[] $categories
+     * @param Category[] $subcategories
+     *
+     * @return array();
+     */
+    public function sortCatalogItems($localities, $categories = [], $subcategories = [])
+    {
+        if ($subcategories) {
+            $data = $this->sortItems($subcategories);
+        } elseif($categories) {
+            $data = $this->sortItems($categories);
+        } else {
+            $data = $this->sortItems($localities);
+        }
+
+        return $data;
+    }
+
+    protected function sortItems($data)
+    {
+        $result = [];
+
+        foreach ($data as $item) {
+            $result[strtoupper(substr($item->getName(), 0, 1))][] = $item;
+        }
+
+        ksort($result);
+
+        return $result;
+    }
+
+    public function checkCatalogRedirect($slugs, $entities)
+    {
+        return $this->checkCatalogSlug($slugs['locality'], $entities['locality']) and
+            $this->checkCatalogSlug($slugs['category'], $entities['category']) and
+            $this->checkCatalogSlug($slugs['subcategory'], $entities['subcategory']) and
+            $this->checkCatalogCategory($entities['category']) and
+            $this->checkCatalogSubcategory($entities['subcategory']);
+    }
+
+    private function checkCatalogCategory($category)
+    {
+        if ($category and $category->getParent()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkCatalogSubcategory($subcategory)
+    {
+        if ($subcategory and !$subcategory->getParent()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkCatalogSlug($requestSlug, $entity)
+    {
+        if ($requestSlug and !($entity and $entity->getSlug() == $requestSlug)) {
+            return false;
+        }
+
+        return true;
     }
 }
