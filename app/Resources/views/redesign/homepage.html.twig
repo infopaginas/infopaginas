@@ -1,0 +1,59 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}index{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block searchBlock %}{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="main">
+            <div class="video-header__container" style="background-image: url('/redesign/img/demo/home-header.jpg')" data-mbg="">
+
+                {% block homePageSearch %}
+                    {% include ':redesign/blocks:homepage_search.html.twig' %}
+                {% endblock %}
+
+                <video id="bgvid" playsinline autoplay muted loop>
+                    <source data-src="/redesign/video/home-video.mp4" type="video/mp4">
+                </video>
+
+                {# todo double click#}
+                <div class="home-ad">
+                    <div class="ad ad-mobile">
+                        <a href="#" target="_blank">
+                            <img src="/redesign/img/demo/banner-att-mobile.jpg" title="Banner title">
+                        </a>
+                    </div>
+
+                    <div class="ad ad-desktop">
+                        <a href="#" target="_blank">
+                            <img src="/redesign/img/demo/banner-att.jpg" title="Banner title">
+                        </a>
+                    </div>
+                </div><!-- home-ad -->
+            </div><!-- container -->
+
+            <div class="profile-body__container">
+                <div class="container columns-container clearfix">
+                    <div class="main-column">
+                        <section class="page-section page-section--no-box">
+                            <h2 class="section__title">{% trans %}Categories{% endtrans %}</h2>
+                            {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
+                        </section>
+
+                        {% include ':redesign/blocks:homepage_article_list.html.twig' %}
+                    </div><!-- main-column -->
+
+                    {% include ':redesign/blocks:side-ads-block.html.twig' %}
+                </div><!-- container -->
+            </div><!-- body container -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}

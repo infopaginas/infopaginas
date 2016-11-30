@@ -273,6 +273,28 @@ class MenuModel implements MenuInterface
                 'en' => 'Consultants',
                 'es' => 'Consultores',
             ],
+            self::CODE_BOOKSTORES => [
+                'en' => 'Bookstores',
+                'es' => 'Librerías',
+            ],
+
+            //todo check category
+            self::CODE_FURNITURE => [
+                'en' => 'Furniture',
+                'es' => 'Mueblerías',
+            ],
+            self::CODE_VIDEO_GAME => [
+                'en' => 'Video - Games',
+                'es' => 'Video Juegos',
+            ],
+            self::CODE_VETERINARIANS => [
+                'en' => 'Veterinarians',
+                'es' => 'Veterinarios',
+            ],
+            self::CODE_SPORTS => [
+                'en' => 'Sports',
+                'es' => 'Deportes',
+            ],
 
             self::CODE_UNDEFINED => [
                 'en' => 'Undefined',

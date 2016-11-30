@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ArticleManager extends Manager
 {
-    const HOMEPAGE_ARTICLES_LIMIT = 2;
+    const HOMEPAGE_ARTICLES_LIMIT = 4;
 
     /** @var ContainerInterface $container */
     private $container;

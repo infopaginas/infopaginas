@@ -271,22 +271,9 @@
 
                     <aside class="profile__sidebar">
 
-                        <div class="sidebar__section section--social">
-                            <ul>
-                                <li>
-                                    <a href="" class="button button--facebook">
-                                        <i class="fa fa-facebook"></i>
-                                        <span>{% trans %}Share on Facebook{% endtrans %}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="" class="button button--twitter">
-                                        <i class="fa fa-twitter"></i>
-                                        <span>{% trans %}Share on Twitter{% endtrans %}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div><!-- sidebar__section -->
+                        {% include ':redesign/blocks:social-share.html.twig' %}
+
+                        {# todo add double click #}
 
                         {% if businessProfile.subcategories|length > 0 %}
                             <div class="sidebar__section section--tags">

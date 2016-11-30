@@ -29,6 +29,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
+                    {# todo double click#}
                     <div class="ad ad-mobile">
                         <a href="#" target="_blank">
                             <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
@@ -45,13 +46,13 @@
                         {% for item in results.resultSet %}
                             {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
                         {% endfor %}
-                    {% endif %}
 
-                    <div>
-                        {% block pagination %}
-                            {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
-                        {% endblock %}
-                    </div>
+                        <div>
+                            {% block pagination %}
+                                {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                            {% endblock %}
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">

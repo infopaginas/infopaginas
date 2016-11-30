@@ -41,7 +41,12 @@ class ArticleController extends Controller
         $articleManager = $this->getArticlesManager();
 
         $article = $articleManager->getArticleBySlug($slug);
-        $schema  = $articleManager->buildArticlesSchema([$article]);
+
+        if (!$article) {
+            throw $this->createNotFoundException();
+        }
+
+        $schema = $articleManager->buildArticlesSchema([$article]);
 
         $params = [
             'article'      => $article,

@@ -65,6 +65,11 @@ interface MenuInterface
     const CODE_BICYCLES               = 139;
     const CODE_CHURCHES               = 140;
     const CODE_CONSULTANTS            = 141;
+    const CODE_BOOKSTORES             = 142;
+    const CODE_FURNITURE              = 143;
+    const CODE_VIDEO_GAME             = 144;
+    const CODE_VETERINARIANS          = 145;
+    const CODE_SPORTS                 = 146;
 
     const CODE_UNDEFINED = 99999;
 

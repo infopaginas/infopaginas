@@ -1,0 +1,75 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:search-sorting.html.twig' %}
+{% endblock %}
+
+{% block bodyClass %}results-list{% endblock %}
+
+{% block body %}
+    <div class="main__container">
+
+        <section class="main">
+            <div class="results">
+
+                {% if results.resultSet is defined and results.resultSet is not null %}
+                    {% for item in results.resultSet %}
+                        {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
+                    {% endfor %}
+
+                    <div>
+                        {% block pagination %}
+                            {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                        {% endblock %}
+                    </div>
+                {% endif %}
+
+                <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
+                    <i class="fa fa-map"></i>
+                    <span>Map view</span>
+                </button>
+
+                <button id="hide-map" type="button" class="button button-round button--hide-map">
+                    <i class="fa fa-list"></i>
+                    <span>List view</span>
+                </button>
+            </div><!-- results -->
+        </section><!-- main -->
+
+        <section class="results-map">
+            <div id="map" class="map"></div>
+        </section><!-- results-map -->
+
+        {# todo double click #}
+        <div class="ad ad-mobile ad--bottom ad--active">
+            <button id="ad-close" type="button" class="button-close-ad"><i class="fa fa-remove"></i></button>
+            <a href="#" target="_blank">
+                <img src="/redesign/img/demo/banner-mobile-2.jpg">
+            </a>
+        </div><!-- ad mobile -->
+
+    </div><!-- main container -->
+
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        var map;
+
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
+                var mapSearchRedesignPage = mapSearchRedesignPage({
+                    {% if markers %}
+                        'markers' : {{ markers|raw }}
+                    {% else %}
+                        'markers': false
+                    {% endif %}
+                });
+            });
+        });
+    </script>
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}
