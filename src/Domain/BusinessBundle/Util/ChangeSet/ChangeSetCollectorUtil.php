@@ -171,6 +171,15 @@ class ChangeSetCollectorUtil
         );
 
         foreach ($originalCollection as $businessGallery) {
+            if ($collection->exists(
+                    function($key, $entry) use ($businessGallery) {
+                        return  ($entry->getId() == $businessGallery->getId());
+                    }
+                )
+            ) {
+                    continue;
+            }
+
             try {
                 $changeset[] = self::buildChangeSetEntryObject(
                     $property,

@@ -167,7 +167,10 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
-            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
+
+            if ($this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories)) {
+                $this->getBusinessProfilesManager()->saveProfile($businessProfile);
+            }
         }
     }
 
