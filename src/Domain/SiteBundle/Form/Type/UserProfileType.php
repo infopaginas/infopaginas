@@ -35,14 +35,14 @@ class UserProfileType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'Catalá',
                 ],
-                'label' => 'First Name*',
+                'label' => 'First Name',
             ])
             ->add('lastname', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Joyeros',
                 ],
-                'label' => 'Last Name*',
+                'label' => 'Last Name',
             ])
             ->add('location', TextType::class, [
                 'attr' => [

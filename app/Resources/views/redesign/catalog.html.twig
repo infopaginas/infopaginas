@@ -57,18 +57,19 @@
 
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
                     <i class="fa fa-map"></i>
-                    <span>Map view</span>
+                    <span>{% trans %}Map view{% endtrans %}</span>
                 </button>
 
                 <button id="hide-map" type="button" class="button button-round button--hide-map">
                     <i class="fa fa-list"></i>
-                    <span>List view</span>
+                    <span>{% trans %}List view{% endtrans %}</span>
                 </button>
             </div><!-- results -->
         </section><!-- main -->
 
         <section class="results-map">
             <div id="map" class="map"></div>
+            <span id="map-markers" hidden>{{ markers }}</span>
         </section><!-- results-map -->
 
 
@@ -86,18 +87,14 @@
 {% block scripts %}
     {{ parent() }}
 
+    {% include ':widgets:google_map_script.html.twig' %}
+
     <script type="text/javascript">
         var map;
 
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
-                var mapSearchRedesignPage = mapSearchRedesignPage({
-                    {% if markers %}
-                        'markers' : {{ markers|raw }}
-                    {% else %}
-                        'markers': false
-                    {% endif %}
-                });
+                var mapSearchRedesignPage = mapSearchRedesignPage();
             });
         });
     </script>

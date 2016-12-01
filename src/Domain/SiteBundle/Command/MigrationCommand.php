@@ -27,7 +27,7 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 
 class MigrationCommand extends ContainerAwareCommand
 {
-    const CATEGORY_SEPARATOR = ' / ';
+    const SYSTEM_CATEGORY_SEPARATOR = ' / ';
 
     protected function configure()
     {
@@ -669,7 +669,7 @@ class MigrationCommand extends ContainerAwareCommand
             'es' => 'Ropa',
         ];
 
-        $separators = $this->getCategorySeparators();
+        $separators = $this->getIncomeCategorySeparators();
 
         foreach ($categories as $item) {
             foreach ($separators as $separator) {
@@ -686,16 +686,16 @@ class MigrationCommand extends ContainerAwareCommand
     private function convertSubcategoryName($name, $parentName)
     {
         $convertedName = $name;
-        $separators    = $this->getCategorySeparators();
+        $separators    = $this->getIncomeCategorySeparators();
 
         foreach ($separators as $separator) {
             $convertedName = str_replace($parentName . $separator, '', $convertedName);
         }
 
-        return $parentName . self::CATEGORY_SEPARATOR . $name;
+        return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $name;
     }
 
-    private function getCategorySeparators()
+    private function getIncomeCategorySeparators()
     {
         return [' - ', ' / ', '/'];
     }

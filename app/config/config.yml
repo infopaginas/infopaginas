@@ -39,6 +39,7 @@ parameters:
             image: 'header-logo.png'
             width: '221'
             height: '42'
+    google_map_api_key: "AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw"
 
 framework:
     #esi:             ~
@@ -77,6 +78,8 @@ twig:
             - 'SonataCoreBundle:Form:datepicker.html.twig'
     form_themes:
         - 'DomainBusinessBundle:Form:fields.html.twig'
+    globals:
+        google_map_api_key: '%google_map_api_key%'
 # Doctrine Configuration
 doctrine:
     dbal:

@@ -15,7 +15,7 @@
     </div><!-- comparison-row -->
 
     <div class="comparison__row comparison__description">
-        <h1><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" title="{% trans %}Go to ...{% endtrans %}">{{ item.name }}</a></h1>
+        <h1><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a></h1>
         <p>
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                {{ item.slogan }}

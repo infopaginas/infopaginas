@@ -1,4 +1,4 @@
-define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], function( $ ) {
+define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
     'use strict';
 
     var headerSearch = $( '#searchBox' );

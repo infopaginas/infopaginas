@@ -41,6 +41,16 @@ class MenuModel implements MenuInterface
      */
     public static function getMenuCategoriesNames()
     {
+        return [];
+    }
+
+    /**
+     * Used to load default fixtures
+     *
+     * @return array
+     */
+    public static function getOtherCategoriesNames()
+    {
         return [
             self::CODE_SOLICITORS => [
                 'en' => 'Solicitors',
@@ -90,17 +100,6 @@ class MenuModel implements MenuInterface
                 'en' => 'Doctors',
                 'es' => 'Médicos',
             ],
-        ];
-    }
-
-    /**
-     * Used to load default fixtures
-     *
-     * @return array
-     */
-    public static function getOtherCategoriesNames()
-    {
-        return [
             self::CODE_AGRICULTURE => [
                 'en' => 'Agriculture',
                 'es' => 'Agricultura',
