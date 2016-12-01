@@ -3,8 +3,6 @@ domain_article_homepage:
     defaults: { _controller: DomainArticleBundle:Article:index }
     options:
         sitemap:
-            priority: 0.7
-            changefreq: weekly
             section: article
 
 domain_article_view:

@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Repository;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 
 /**
  * CategoryRepository
@@ -10,6 +11,8 @@ namespace Domain\BusinessBundle\Repository;
  */
 class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathRepository
 {
+    const SUBCATEGORY_LEVEL = 2;
+
     public function getAvailableCategoriesQb()
     {
         $qb = $this->createQueryBuilder('c')
@@ -39,7 +42,7 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb->getQuery()->getResult();
     }
 
-    public function getAvailableSubCategoriesQb($parent, $level = 2)
+    public function getAvailableSubCategoriesQb($parent, $level = self::SUBCATEGORY_LEVEL)
     {
         $qb = $this->getAvailableCategoriesQb()
             ->andWhere('c.parent = :parent')
@@ -51,7 +54,14 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb;
     }
 
-    public function getAvailableSubCategories($parent, $level = 2)
+    public function getAvailableCategories()
+    {
+        $qb = $this->getAvailableCategoriesQb();
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAvailableSubCategories($parent, $level = self::SUBCATEGORY_LEVEL)
     {
         $qb = $this->getAvailableSubCategoriesQb($parent, $level);
 
@@ -198,5 +208,47 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         ;
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAvailableCategoriesIterator()
+    {
+        $qb = $this->getAvailableCategoriesQb();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAvailableParentCategoriesIterator()
+    {
+        $qb = $this->getAvailableParentCategoriesQb();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    public function getAvailableSubcategoriesByCategoryIterator($category)
+    {
+        $qb = $this->getAvailableSubCategoriesQb($category);
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('parent', $category)
+            ->setParameter('lvl', self::SUBCATEGORY_LEVEL)
+        ;
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
     }
 }

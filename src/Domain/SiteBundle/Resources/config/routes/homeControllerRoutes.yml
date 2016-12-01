@@ -5,5 +5,4 @@ domain_site_home_index:
         expose: true
         sitemap:
             priority: 1
-            changefreq: weekly
             section: main

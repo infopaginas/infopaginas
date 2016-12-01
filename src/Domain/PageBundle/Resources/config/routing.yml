@@ -3,8 +3,6 @@ domain_page_view_contact:
     defaults: { _controller: DomainPageBundle:Default:viewContact }
     options:
         sitemap:
-            priority: 0.7
-            changefreq: weekly
             section: main
 
 domain_page_view_terms:
@@ -12,8 +10,6 @@ domain_page_view_terms:
     defaults: { _controller: DomainPageBundle:Default:viewTerms }
     options:
         sitemap:
-            priority: 0.7
-            changefreq: weekly
             section: main
 
 domain_page_view_privacy:
@@ -21,8 +17,6 @@ domain_page_view_privacy:
     defaults: { _controller: DomainPageBundle:Default:viewPrivacy }
     options:
         sitemap:
-            priority: 0.7
-            changefreq: weekly
             section: main
 
 domain_page_view_advertise:
@@ -30,8 +24,6 @@ domain_page_view_advertise:
     defaults: { _controller: DomainPageBundle:Default:viewAdvertise }
     options:
         sitemap:
-            priority: 0.7
-            changefreq: weekly
             section: main
 
 domain_page_view_features:
@@ -42,6 +34,4 @@ domain_page_view_features:
         permanent: true
     options:
         sitemap:
-            priority: 0.7
-            changefreq: weekly
             section: main
