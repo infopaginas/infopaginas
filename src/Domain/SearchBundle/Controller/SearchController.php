@@ -97,6 +97,7 @@ class SearchController extends Controller
 
     public function mapAction(Request $request)
     {
+//        todo remove this
         $searchManager = $this->get('domain_search.manager.search');
 
         $searchDTO = $searchManager->getSearchDTO($request);
@@ -167,7 +168,7 @@ class SearchController extends Controller
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
-            $locationMarkers = null;
+            $schema           = null;
         }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
@@ -178,7 +179,7 @@ class SearchController extends Controller
         $pageRouter = $this->container->get('request')->attributes->get('_route');
 
         return $this->render(
-            'DomainSearchBundle:Search:compare.html.twig',
+            ':redesign:search-results-compare.html.twig',
             [
                 'results'       => $searchResultsDTO,
                 'bannerFactory' => $bannerFactory,

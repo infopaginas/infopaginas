@@ -1,0 +1,96 @@
+{% set showLinkListView = true %}
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block bodyClass %}compare-view{% endblock %}
+
+{% block body %}
+    <div class="toolbar compare-toolbar">
+        <button id="comparison-list-toggle" type="button" class="button button--action category__toggle compare-show-list">
+            <i class="fa fa-plus-square"></i> {% trans %}Add to compare{% endtrans %}
+        </button>
+        <a href="{{ path('domain_search_index', app.request.query.all) }}" class="button button--action">{% trans %}List view{% endtrans %}</a>
+    </div>
+
+    <div class="main__container">
+
+        <section class="main">
+
+            <button id="comparison-list-hide" type="button" class="button button--action category__toggle list-hide">
+                <i class="fa fa-angle-left"></i> Close list
+            </button>
+
+            <div class="results">
+
+                {# todo double click #}
+                <div class="ad ad-desktop">
+                    <a href="#" target="_blank">
+                        <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
+                    </a>
+                </div>
+
+                <div class="ad ad-mobile ad--bottom ad--active">
+                    <button id="ad-close" type="button" class="button-close-ad"><i class="fa fa-remove"></i></button>
+                    <a href="#" target="_blank">
+                        <img src="/redesign/img/demo/banner-mobile-2.jpg">
+                    </a>
+                </div><!-- ad mobile -->
+
+                {% if results.resultSet is defined and results.resultSet is not null %}
+                    {% for item in results.resultSet %}
+                        {% include ':redesign/blocks:search_result_item_short.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
+                    {% endfor %}
+
+                    <div>
+                        {% block pagination %}
+                            {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                        {% endblock %}
+                    </div>
+                {% endif %}
+            </div><!-- results -->
+        </section><!-- main -->
+
+        <section class="comparison">
+            <div class="comparison__item comparison__label-column">
+                <div class="comparison__row comparison__rating">
+                    <span class="comparizon__label">{% trans %}Rating{% endtrans %}</span>
+                </div><!-- comparison-row -->
+
+                <div class="comparison__row comparison__description">
+                    <span class="comparizon__label">{% trans %}Basic info{% endtrans %}</span>
+                </div><!-- comparison-row -->
+
+
+                <div class="comparison__row comparison__highlights">
+                    <span class="comparizon__label">{% trans %}Highlights{% endtrans %}</span>
+                </div><!-- comparison-row -->
+
+                <div class="comparison__row comparison__actions">
+                    <span class="comparizon__label">{% trans %}Actions{% endtrans %}</span>
+                </div><!-- comparison-row -->
+            </div><!-- comparison__item -->
+
+
+            <div class="comparison__container clearfix">
+
+                <div class="comparison__scroll clearfix">
+
+                    {% if results.resultSet is defined and results.resultSet is not null %}
+                        {% for item in results.resultSet %}
+                            {% include ':redesign/blocks:search_result_item_compare.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
+                        {% endfor %}
+                    {% endif %}
+
+                </div><!-- comparison scroll -->
+            </div><!-- comparison__container -->
+        </section><!-- comparison -->
+    </div><!-- main container -->
+
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}

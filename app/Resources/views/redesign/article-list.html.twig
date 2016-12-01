@@ -1,0 +1,22 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:article-breadcrumbs.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                {% if articlesResultDTO %}
+                    {% include ':redesign/blocks:homepage_article_list.html.twig' with {'articles': articlesResultDTO.resultSet} %}
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : articlesResultDTO.page, 'pageCount' : articlesResultDTO.pageCount } %}
+                {% endif %}
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,9 +1,9 @@
 define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'], function( $ ) {
     'use strict';
 
-    var headerSearch = $( '#search-trigger' );
+    var headerSearch = $( '#searchBox' );
     var header = $( '.header' );
-    var searchButton = $( '#search-button' );
+    var searchButton = $( '#searchButton' );
     var logo = $( '.logo' );
     var navToggle = $( '.nav__toggle' );
     var searchField = $( '.field--search' );
@@ -77,14 +77,15 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'async!https://maps.go
         }
     };
 
+    if ( !headerSearch.parents( 'form' ).data( 'homepage' ) ) {
+        headerSearch.on( 'click', function() {
+            header.openSearch();
+        });
 
-    headerSearch.on( 'click', function() {
-        header.openSearch();
-    });
-
-    closeSearch.on( 'click', function() {
-        header.openSearch({close: true});
-    });
+        closeSearch.on( 'click', function() {
+            header.openSearch( {close: true} );
+        });
+    }
 
 //nav
     var nav = $('#nav');
@@ -199,9 +200,21 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'async!https://maps.go
         });
 
         var compareRemove = $('.remove-compare-item');
+        var compareAdd    = $('.add-compare-item');
 
         compareRemove.on( 'click', function() {
-            $(this).closest('.comparison__item').velocity({ opacity: 0, top: 100 }, { display: "none" });
+            var item = $( this ).closest( '.comparison__item' );
+            var itemId = item.attr( 'id' );
+
+            $( '[data-item-id = #' + itemId + ']' ).removeAttr( 'disabled' );
+
+            item.velocity( { opacity: 1, top: 100 }, { display: "none" } );
+        });
+
+        compareAdd.on( 'click', function() {
+            $( this ).attr( 'disabled', 'disabled' );
+            var itemId = $( this ).data( 'item-id' );
+            $( itemId ).velocity( { opacity: 1, top: 0 }, { display: "flex" } );
         });
 
         var formInput = $('.form__field input, .form__field textarea');

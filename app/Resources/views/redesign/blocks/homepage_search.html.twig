@@ -2,5 +2,5 @@
     <h1>{% trans %}We can find everything!{% endtrans %}</h1>
     <p>{% trans %}Search whatever you need and find it instantly{% endtrans %}</p>
 
-    {% include ':redesign/blocks:search.html.twig' %}
+    {% include ':redesign/blocks:search.html.twig' with {'isHomePage': true} %}
 </header>
