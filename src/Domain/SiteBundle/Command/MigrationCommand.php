@@ -669,7 +669,7 @@ class MigrationCommand extends ContainerAwareCommand
             'es' => 'Ropa',
         ];
 
-        $separators = $this->getIncomeCategorySeparators();
+        $separators = $this->getInputCategorySeparators();
 
         foreach ($categories as $item) {
             foreach ($separators as $separator) {
@@ -686,7 +686,7 @@ class MigrationCommand extends ContainerAwareCommand
     private function convertSubcategoryName($name, $parentName)
     {
         $convertedName = $name;
-        $separators    = $this->getIncomeCategorySeparators();
+        $separators    = $this->getInputCategorySeparators();
 
         foreach ($separators as $separator) {
             $convertedName = str_replace($parentName . $separator, '', $convertedName);
@@ -695,7 +695,7 @@ class MigrationCommand extends ContainerAwareCommand
         return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $name;
     }
 
-    private function getIncomeCategorySeparators()
+    private function getInputCategorySeparators()
     {
         return [' - ', ' / ', '/'];
     }
