@@ -46,6 +46,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
      * @var string - Script template header code
      *
      * @ORM\Column(name="header", type="text")
+     * @Assert\NotBlank()
      */
     protected $templateHeader;
 
@@ -53,6 +54,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
      * @var string - Script template body
      *
      * @ORM\Column(name="body", type="text")
+     * @Assert\NotBlank()
      */
     protected $body;
 

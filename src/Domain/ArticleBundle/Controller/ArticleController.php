@@ -18,13 +18,18 @@ class ArticleController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
+        $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
+
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO),
+            'articlesResultDTO' => $articlesResultDTO,
+            'schemaJsonLD'      => $schema,
         ];
 
-        return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
+        return $this->render(':redesign:article-list.html.twig', $params);
     }
 
     /**
@@ -33,11 +38,22 @@ class ArticleController extends Controller
      */
     public function viewAction(string $slug)
     {
+        $articleManager = $this->getArticlesManager();
+
+        $article = $articleManager->getArticleBySlug($slug);
+
+        if (!$article) {
+            throw $this->createNotFoundException();
+        }
+
+        $schema = $articleManager->buildArticlesSchema([$article]);
+
         $params = [
-            'article' => $this->getArticlesManager()->getArticleBySlug($slug),
+            'article'      => $article,
+            'schemaJsonLD' => $schema,
         ];
 
-        return $this->render('DomainArticleBundle:Default:view.html.twig', $params);
+        return $this->render(':redesign:article-view.html.twig', $params);
     }
 
     /**
@@ -47,14 +63,26 @@ class ArticleController extends Controller
      */
     public function categoryAction(Request $request, string $categorySlug)
     {
+        $category = $this->getCategoryManager()->getCategoryBySlug($categorySlug);
+
+        if ($category->getSlug() != $categorySlug) {
+            return $this->handlePermanentRedirect($category);
+        }
+
+        $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $categorySlug);
+
+        $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
+
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO, $categorySlug),
-            'category' => $this->getCategoryManager()->getCategoryBySlug($categorySlug),
+            'articlesResultDTO' => $articlesResultDTO,
+            'articleCategory'   => $category,
+            'schemaJsonLD'      => $schema,
         ];
 
-        return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
+        return $this->render(':redesign:article-list.html.twig', $params);
     }
 
     /**
@@ -83,5 +111,16 @@ class ArticleController extends Controller
     private function getCategoryManager() : CategoryManager
     {
         return $this->get('domain_business.manager.category');
+    }
+
+    private function handlePermanentRedirect($category)
+    {
+        return $this->redirectToRoute(
+            'domain_article_category',
+            [
+                'categorySlug' => $category->getSlug(),
+            ],
+            301
+        );
     }
 }

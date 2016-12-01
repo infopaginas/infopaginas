@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\ReportBundle\Manager\CategoryReportManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
@@ -102,16 +103,30 @@ class ProfileController extends Controller
 
     /**
      * @param Request $request
+     * @param string $citySlug
      * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction(Request $request, string $slug)
+    public function viewAction(Request $request, $citySlug, string $slug)
     {
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
         if (!$businessProfile) {
             throw $this->createNotFoundException('');
+        }
+
+        $catalogLocalitySlug = $businessProfile->getCatalogLocality()->getSlug();
+
+        if ($catalogLocalitySlug != $citySlug or $slug != $businessProfile->getSlug()) {
+            return $this->redirectToRoute(
+                'domain_business_profile_view',
+                [
+                    'citySlug' => $catalogLocalitySlug,
+                    'slug'     => $businessProfile->getSlug(),
+                ],
+                301
+            );
         }
 
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
@@ -122,23 +137,29 @@ class ProfileController extends Controller
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
 
+        $locationMarkers  = $this->getBusinessProfilesManager()->getLocationMarkersFromProfileData([$businessProfile]);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
         $bannerFactory->prepearBanners(array(
             TypeInterface::CODE_SERP_BOXED,
         ));
 
+        $schema = $this->getBusinessProfilesManager()->buildBusinessProfilesSchema([$businessProfile], true);
+
         $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
-        return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
-            'businessProfile'  => $businessProfile,
-            'seoData'          => $businessProfile,
-            'photos'           => $photos,
-            'advertisements'   => $advertisements,
-            'lastReview'       => $lastReview,
-            'reviewForm'       => $reviewForm->createView(),
-            'bannerFactory'    => $bannerFactory,
-            'dcDataDTO'        => $dcDataDTO,
+        return $this->render(':redesign:business-profile.html.twig', [
+            'businessProfile' => $businessProfile,
+            'seoData'         => $businessProfile,
+            'photos'          => $photos,
+            'advertisements'  => $advertisements,
+            'lastReview'      => $lastReview,
+            'reviewForm'      => $reviewForm->createView(),
+            'bannerFactory'   => $bannerFactory,
+            'dcDataDTO'       => $dcDataDTO,
+            'schemaJsonLD'    => $schema,
+            'markers'         => $locationMarkers,
         ]);
     }
 
@@ -174,6 +195,23 @@ class ProfileController extends Controller
         return $this->getFailureResponse(false);
     }
 
+    /**
+     * @param Request $request
+     * @param int     $categoryId
+     * @param int     $businessProfileId
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function subcategoryListAction(Request $request, $categoryId, $businessProfileId = null)
+    {
+        $locale = $request->request->get('currentLocale', null);
+
+        $businessProfilesManager = $this->getBusinessProfilesManager();
+
+        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId, $locale);
+
+        return new JsonResponse(['data' => $subcategories]);
+    }
     /**
      * @return \Symfony\Component\Form\Form
      */

@@ -107,6 +107,9 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 success: function( response ) {
                     if( response.success ) {
                         $( self.html.modals.createReviewModalId ).modal( 'hide' );
+                        $( self.html.forms.createReviewFormId ).find( '.star-rating .fa.fa-star-selected' ).each( function( idx, el ) {
+                            return $( this ).removeClass( 'fa-star-selected' ).addClass( 'fa-star' );
+                        });
                         alertify.success( response.message );
                         $( self.html.forms.createReviewFormId )[0].reset();
                     } else {
@@ -119,6 +122,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 },
                 complete: function() {
                     self.spinner.hide();
+                    $( self.html.modals.createReviewModalId ).modalFunc({close: true});
                 }
             } );
 

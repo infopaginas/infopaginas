@@ -1,0 +1,10 @@
+{% for category in categories %}
+    {% if currentCategory %}
+        {% set is_selected = (category.id == currentCategory.id) %}
+    {% else %}
+        {% set is_selected = false %}
+    {% endif %}
+
+    <a href="{{ path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': category.getSlug() }) }}">{{ category.getName() }}</a>
+    |
+{% endfor %}

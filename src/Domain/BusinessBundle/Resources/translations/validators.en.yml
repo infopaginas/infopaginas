@@ -1,4 +1,5 @@
 business_profile:
+  integer_miles: Please use only numbers
   max_length: Please use max {{ limit }} symbols
   phone:
     invalid: Max number of digits is 10. Only digits and dash are allowed
@@ -10,3 +11,5 @@ business_profile:
   category:
     min_count: At least {{ limit }} category should be selected
   service_areas_type: You must choose a valid Service Area
+  locality:
+    not_empty: You must choose a valid Locality

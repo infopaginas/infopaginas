@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Domain\BusinessBundle\Util\SlugUtil;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
@@ -32,6 +33,22 @@ class LocalityManager extends Manager
         } else {
             $locality = $this->getRepository()->getLocalityByNameAndLocale($localityName, $locale);
         }
+
+        return $locality;
+    }
+
+    public function getLocalityBySlug($localitySlug)
+    {
+        $customSlug = SlugUtil::convertSlug($localitySlug);
+
+        $locality = $this->getRepository()->getLocalityBySlug($localitySlug, $customSlug);
+
+        return $locality;
+    }
+
+    public function findAll()
+    {
+        $locality = $this->getRepository()->getAvailableLocalities();
 
         return $locality;
     }

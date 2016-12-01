@@ -92,7 +92,7 @@ class CategoryReportAdmin extends ReportAdmin
 
         $listMapper
             ->add('category')
-            ->add('total')
+            ->add('total', null, ['label' => 'Number of visited profiles'])
         ;
     }
 

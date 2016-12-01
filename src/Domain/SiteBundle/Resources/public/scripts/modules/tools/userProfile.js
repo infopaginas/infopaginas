@@ -41,7 +41,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
 
     userProfile.prototype.getCurrentFormId = function() {
         var $passwordUpdateModal = $( this.modals.passwordUpdateModalId );
-        if( $passwordUpdateModal.hasClass( 'in' ) ) {
+        if( $passwordUpdateModal.hasClass( 'in' ) || $passwordUpdateModal.hasClass( 'modal--opened' ) ) {
             return this.html.forms.passwordUpdateFormId;
         }
 
@@ -119,6 +119,8 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
         if ( response.success ) {
             alertify.success( response.message );
             $( this.html.forms.passwordUpdateFormId )[0].reset();
+            $( this.modals.passwordUpdateModalId ).modal( 'hide' );
+            $( this.modals.passwordUpdateModalId ).modalFunc({close: true});
         } else {
             this.enableFieldsHighlight( response.errors );
             alertify.error( response.message );
@@ -159,6 +161,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
 
     userProfile.prototype.handlePasswordUpdate = function() {
         var $saveButton = $( this.html.buttons.saveNewPasswordButtonId );
+        var $inputFields = $( this.html.forms.passwordUpdateFormId).find('input[type=password]');
         var that = this;
 
         $saveButton.on('click', function( event ) {
@@ -166,6 +169,13 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
             that.doRequest( that.urls.savePassword, serializedData );
 
             event.preventDefault();
+        });
+        $inputFields.keypress(function (e) {
+            var key = e.which;
+            if ( key == 13 ) {
+                $saveButton.click();
+                return false;  
+            }
         });
     };
 

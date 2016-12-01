@@ -78,6 +78,8 @@ class BusinessProfileExtension extends \Twig_Extension
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
             'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
+            'get_business_profile_images' => new \Twig_Function_Method($this, 'getBusinessProfileImages'),
+            'get_business_profile_ads' => new \Twig_Function_Method($this, 'getBusinessProfileAds'),
         ];
     }
 
@@ -122,10 +124,11 @@ class BusinessProfileExtension extends \Twig_Extension
         $subscription = $businessProfile->getSubscriptionPlan();
 
         if ($subscription) {
+            $isPlusPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLUS;
             $isGoldPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_GOLD;
             $isPlatinumPlan = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM;
 
-            if ($isGoldPlan || $isPlatinumPlan) {
+            if ($isPlusPlan || $isGoldPlan || $isPlatinumPlan) {
                 return true;
             }
         }
@@ -196,6 +199,20 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         return false;
+    }
+
+    public function getBusinessProfileImages(BusinessProfile $businessProfile)
+    {
+        $photos = $this->getBusinessProfileManager()->getBusinessProfilePhotoImages($businessProfile);
+
+        return $photos;
+    }
+
+    public function getBusinessProfileAds(BusinessProfile $businessProfile)
+    {
+        $advertisements = $this->getBusinessProfileManager()->getBusinessProfileAdvertisementImages($businessProfile);
+
+        return $advertisements;
     }
 
     /**

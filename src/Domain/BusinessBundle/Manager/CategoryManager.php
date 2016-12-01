@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Domain\BusinessBundle\Util\SlugUtil;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class CategoryManager extends Manager
@@ -25,6 +26,20 @@ class CategoryManager extends Manager
 
     public function getCategoryBySlug($categorySlug)
     {
-        return $this->getRepository()->findOneBy(['slug' => $categorySlug]);
+        $customSlug = SlugUtil::convertSlug($categorySlug);
+
+        $category = $this->getRepository()->getCategoryBySlug($categorySlug, $customSlug);
+
+        return $category;
+    }
+
+    public function getAvailableParentCategories($locale = false)
+    {
+        return $this->getRepository()->getAvailableParentCategories($locale);
+    }
+
+    public function searchSubcategoryByCategory($category, $locale)
+    {
+        return $this->getRepository()->searchSubcategoryByCategory($category, $locale);
     }
 }

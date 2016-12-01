@@ -37,12 +37,16 @@ class CRUDController extends SortableAdminController
         $object = $adminManager->getObjectByClassName($this->admin->getClass(), $objectId, true);
 
         if ($this->getRestMethod() == Request::METHOD_DELETE) {
-            $adminManager->deletePhysicalEntity($object);
-            $this->addFlash(
-                'sonata_flash_success',
-                $this->get('translator')
-                    ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
-            );
+            try {
+                $adminManager->deletePhysicalEntity($object);
+                $this->addFlash(
+                    'sonata_flash_success',
+                    $this->get('translator')
+                        ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
+                );
+            } catch (\Exception $e) {
+                $this->addFlash('sonata_flash_error', $e->getMessage());
+            }
 
             return $this->saveFilterResponse();
         }

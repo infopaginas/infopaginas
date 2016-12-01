@@ -54,6 +54,7 @@ sonata_media:
             formats:
                 preview:      { width: 150, height: 150, quality: 100}
                 homepage:     { width: 312, height: 260, quality: 100}
+                list:         { width: 500, height: 170, quality: 100}
     cdn:
         #define the public base url for the uploaded media
         server:

@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -155,10 +156,11 @@ class BusinessProfile implements
      * @var Category[] - Business category
      * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category",
      *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     *     cascade={"persist"},
+     *     orphanRemoval=false
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
-     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count")
+     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count", groups={"default"})
      */
     protected $categories;
 
@@ -326,6 +328,20 @@ class BusinessProfile implements
     protected $slug;
 
     /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_en", type="string", length=100, nullable=true)
+     */
+    protected $slugEn;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_es", type="string", length=100, nullable=true)
+     */
+    protected $slugEs;
+
+    /**
      * @var Task[]
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="businessProfile")
      */
@@ -477,28 +493,28 @@ class BusinessProfile implements
     /**
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $twitterURL;
 
     /**
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $facebookURL;
 
     /**
      * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $googleURL;
 
     /**
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $youtubeURL;
 
@@ -526,8 +542,9 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
      * @Assert\NotBlank(groups={"service_area_chosen"})
+     * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
-     * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
+     * 
      */
     protected $milesOfMyBusiness = 100;
 
@@ -538,6 +555,7 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="business_profile_localities")
+     * @Assert\Count(min="1", max="10", groups={"service_locality_chosen"})
      */
     protected $localities;
 
@@ -716,6 +734,17 @@ class BusinessProfile implements
     {
         return $this->id;
     }
+
+    /**
+     * @var $catalogLocality - catalogLocality, Business is located in
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="locality_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank()
+     */
+    protected $catalogLocality;
 
     /**
      * Constructor
@@ -1262,6 +1291,58 @@ class BusinessProfile implements
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Domain\BusinessBundle\Entity\Category $category
+     *
+     * @return BusinessProfile
+     */
+    public function setCategories(\Domain\BusinessBundle\Entity\Category $category)
+    {
+        $this->categories->clear();
+
+        $this->addCategory($category);
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return Category
+     */
+    public function getCategory()
+    {
+        foreach ($this->categories as $category)
+        {
+            if (!$category->getParent()) {
+                return $category;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get subcategories
+     *
+     * @return Category[]
+     */
+    public function getSubcategories()
+    {
+        $categories = [];
+
+        foreach ($this->categories as $category)
+        {
+            if ($category->getParent() and $category->getLvl() === 2) {
+                $categories[] = $category;
+            }
+        }
+
+        return $categories;
     }
 
     /**
@@ -2573,5 +2654,69 @@ class BusinessProfile implements
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
+    }
+
+    /**
+     * Set catalogLocality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $catalogLocality
+     *
+     * @return BusinessProfile
+     */
+    public function setCatalogLocality(\Domain\BusinessBundle\Entity\Locality $catalogLocality = null)
+    {
+        $this->catalogLocality = $catalogLocality;
+
+        return $this;
+    }
+
+    /**
+     * Get catalogLocality
+     *
+     * @return \Domain\BusinessBundle\Entity\Locality
+     */
+    public function getCatalogLocality()
+    {
+        return $this->catalogLocality;
+    }
+
+    /**
+     * @param string $slugEn
+     *
+     * @return Category
+     */
+    public function setSlugEn($slugEn)
+    {
+        $this->slugEn = $slugEn;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEn()
+    {
+        return $this->slugEn;
+    }
+
+    /**
+     * @param string $slugEs
+     *
+     * @return Category
+     */
+    public function setSlugEs($slugEs)
+    {
+        $this->slugEs = $slugEs;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEs()
+    {
+        return $this->slugEs;
     }
 }

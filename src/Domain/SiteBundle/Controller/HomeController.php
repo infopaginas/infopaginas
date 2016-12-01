@@ -30,14 +30,11 @@ class HomeController extends Controller
     {
         $locale         = $request->getLocale();
 
-        $menuManager    = $this->get('domain_menu.manager.menu');
         $articleManager = $this->get('domain_article.manager.article');
         $videoManager   = $this->get('domain_business.video');
 
         $articles       = $articleManager->fetchHomepageArticles();
         $videos         = $videoManager->fetchHomepageVideos();
-
-        $menuItems      = $menuManager->fetchAll();
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
@@ -52,15 +49,33 @@ class HomeController extends Controller
         $roleForGA = GoogleAnalyticsHelper::getUserRoleForAnalytics($userRoles);
 
         $this->get('google.analytics')->addCustomVariable(new CustomVariable('default', 'dimension1', $roleForGA));
+        $schema = $articleManager->buildArticlesSchema($articles);
 
         return $this->render(
-            'DomainSiteBundle:Home:home.html.twig',
+            ':redesign:homepage.html.twig',
             [
-                'menuItems'                => $menuItems,
-                'bannerFactory'            => $bannerFactory,
-                'articles'                 => $articles,
-                'videos'                   => $videos,
-                'locale'                   => $locale,
+                'bannerFactory' => $bannerFactory,
+                'articles'      => $articles,
+                'videos'        => $videos,
+                'locale'        => $locale,
+                'schemaJsonLD'  => $schema,
+                'hideHeaderSearch' => true,
+            ]
+        );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function popularMenuItemsAction()
+    {
+        $menuManager    = $this->get('domain_menu.manager.menu');
+        $menuItems      = $menuManager->getMenuItems();
+
+        return $this->render(
+            ':redesign/blocks:popular_menu_items.html.twig',
+            [
+                'menuItems' => $menuItems,
             ]
         );
     }
@@ -77,6 +92,27 @@ class HomeController extends Controller
 
         return $this->render(
             'DomainSiteBundle:Home:auth_modal.html.twig',
+            [
+                'loginForm'                => $loginForm->createView(),
+                'registrationForm'         => $registrationForm->createView(),
+                'resetPasswordRequestForm' => $resetPasswordRequestForm->createView(),
+                'resetPasswordForm'        => $resetPasswordForm->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function authModalRedesignAction()
+    {
+        $loginForm                = $this->createForm(new LoginType());
+        $registrationForm         = $this->createForm(new RegistrationType());
+        $resetPasswordRequestForm = $this->createForm(new ResetPasswordRequestType());
+        $resetPasswordForm        = $this->createForm(new ResetPasswordType());
+
+        return $this->render(
+            ':redesign/blocks:auth_modal.html.twig',
             [
                 'loginForm'                => $loginForm->createView(),
                 'registrationForm'         => $registrationForm->createView(),

@@ -129,9 +129,14 @@ class UserAdmin extends OxaAdmin
     {
         // define group zoning
         $formMapper
-            ->with('Profile', array('class' => 'col-md-6'))->end()
-            ->with('General', array('class' => 'col-md-6'))->end()
-            ->with('Social', array('class' => 'col-md-6'))->end()
+            ->tab('Profile')
+                ->with('Profile', array('class' => 'col-md-6'))->end()
+                ->with('General', array('class' => 'col-md-6'))->end()
+                ->with('Social', array('class' => 'col-md-6'))->end()
+            ->end()
+            ->tab('Reviews', array('class' => 'col-md-6'))
+                ->with('User Reviews')->end()
+            ->end()
         ;
 
         /* @var User $loggedUser */
@@ -175,44 +180,75 @@ class UserAdmin extends OxaAdmin
 
             // add to group zoning
             $formMapper
-                ->with('Security', array('class' => 'col-md-6'))->end()
+                ->tab('Profile')
+                    ->with('Security', array('class' => 'col-md-6'))
+                    ->end()
+                ->end()
             ;
 
             $formMapper
-                ->with('Security')
-                ->add('role', 'entity', [
-                    'class' => Group::class,
-                    'choices' => $roles
-                ])
-                ->add('enabled')
+                ->tab('Profile')
+                    ->with('Security')
+                        ->add('role', 'entity', [
+                            'class'   => Group::class,
+                            'choices' => $roles
+                        ])
+                        ->add('enabled')
+                    ->end()
                 ->end()
             ;
         }
 
         $formMapper
-            ->with('General')
-                ->add('email', 'email', [
-                    'required' => true,
-                    'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
-                ])
-                ->add('plainPassword', 'text', [
-                    'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                ])
-                ->add('phone')
+            ->tab('Profile')
+                ->with('General')
+                    ->add('email', 'email', [
+                        'required' => true,
+                        'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                    ])
+                    ->add('plainPassword', 'text', [
+                        'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                    ])
+                    ->add('phone')
+                    ->add('location', 'text', [
+                        'label'    => 'Location',
+                        'required' => false,
+                    ])
+                ->end()
+                ->with('Profile')
+                    ->add('firstname', null, [
+                        'label'     => 'First Name',
+                        'required'  => true,
+                    ])
+                    ->add('lastname', null, [
+                        'label'     => 'Last Name',
+                        'required'  => true,
+                    ])
+                ->end()
+                ->with('Social')
+                    ->add('facebookURL')
+                    ->add('twitterURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                ->end()
             ->end()
-            ->with('Profile')
-                ->add('firstname', null, [
-                    'required' => true,
-                ])
-                ->add('lastname', null, [
-                    'required' => true
-                ])
-            ->end()
-            ->with('Social')
-                ->add('facebookURL')
-                ->add('twitterURL')
-                ->add('googleURL')
-                ->add('youtubeURL')
+            ->tab('Reviews')
+                ->with('User Reviews')
+                    ->add('businessReviews', 'sonata_type_collection', [
+                        'label'        => 'Businesses Reviews',
+                        'by_reference' => true,
+                        'mapped'       => true,
+                        'btn_add'      => false,
+                        'disabled'     => true,
+                        'type_options' => [
+                            'delete' => false,
+                        ]
+                        ], [
+                        'edit'         => 'inline',
+                        'inline'       => 'table',
+                        'allow_delete' => false,
+                    ])
+                ->end()
             ->end()
         ;
     }
@@ -221,7 +257,7 @@ class UserAdmin extends OxaAdmin
     {
         $errorElement
             ->with('twitterURL')
-                ->addConstraint(new ConstraintUrlExpanded())
+            ->addConstraint(new ConstraintUrlExpanded())
             ->end()
             ->with('facebookURL')
                 ->addConstraint(new ConstraintUrlExpanded())

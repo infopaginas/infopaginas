@@ -36,13 +36,11 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
      */
     protected $firstname;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
      */
     protected $lastname;
 
@@ -103,7 +101,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     protected $tasks;
 
     /**
-     * @var BusinessProfile[]
+     * @var BusinessReview[]
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview",

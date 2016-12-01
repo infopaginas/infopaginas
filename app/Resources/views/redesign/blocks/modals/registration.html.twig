@@ -1,0 +1,69 @@
+<div id="regModal" class="modal modal--login modal--register" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal__outside"></div>
+    <div class="modal__content">
+        <h2>{% trans %}Create account{% endtrans %}</h2>
+        <div class="modal__section disclosure">
+            <p>{% trans %}By joining Infopaginas you agree to our{% endtrans %}
+                <a href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Service{% endtrans %}</a>
+                {% trans %}and{% endtrans %}
+                <a href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Policy{% endtrans %}</a>.
+                {% trans %}We value your privacy, and will not post to your wall without your permission.{% endtrans %}
+            </p>
+        </div>
+        <div class="modal__section">
+            <form class="account-form register-form" id="registrationForm">
+                <div class="form__row row--name clearfix">
+                    <div class="form__field field--name">
+                        <label>{% trans %}First name{% endtrans %}</label>
+                        {{ form_widget(registrationForm.firstname, {'attr': {'placeholder':''}} ) }}
+                    </div>
+                    <div class="form__field field--name">
+                        <label>{% trans %}Last name{% endtrans %}</label>
+                        {{ form_widget(registrationForm.lastname, {'attr': {'placeholder':''}} ) }}
+                    </div>
+                </div>
+                <div class="form__field field--user">
+                    <label>{% trans %}Email{% endtrans %}</label>
+                    {{ form_widget(registrationForm.email, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__row row--passwords clearfix">
+                    <div class="form__field field--name field--password">
+                        <label>{% trans %}Password{% endtrans %}</label>
+                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {'placeholder':''}} ) }}
+                    </div>
+                    <div class="form__field field--name field--password">
+                        <label>{% trans %}Confirm password{% endtrans %}</label>
+                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'placeholder':''}} ) }}
+                    </div>
+                </div>
+                <div class="form__field field--password">
+                    <label>{% trans %}City{% endtrans %}</label>
+                    {{ form_widget(registrationForm.location, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__actions">
+                    {{ form_rest(registrationForm) }}
+                    <button type="button" class="button button--action" id="registrationButton">{% trans %}Create account{% endtrans %}</button>
+                </div>
+            </form>
+        </div><!-- modal__section -->
+        <div class="modal__section">
+            <h2>or</h2>
+            <div class="social-login">
+                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook">
+                    <span>{% trans %}Log In with{% endtrans %}</span>
+                    <i class="fa fa-facebook"></i>
+                </a>
+
+                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google">
+                    <span>{% trans %}Log In with{% endtrans %}</span>
+                    <i class="fa fa-google"></i>
+                </a>
+            </div><!-- social-login -->
+        </div><!-- modal__section -->
+
+        <div class="modal__section login__footer">
+            <p>{% trans %}Already have an account?{% endtrans %} <a href="#" data-change-modal-id="loginModal">{% trans %}Log in{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
+        </div><!-- modal__section -->
+        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+    </div><!-- modal__content -->
+</div><!-- modal -->

@@ -21,6 +21,16 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    public function getAvailableLocalities()
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $qb;
+    }
+
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -34,5 +44,36 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->getOneOrNullResult();
 
         return $query;
+    }
+
+    public function getLocalityByName($localityName)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('l')
+            ->from('DomainBusinessBundle:Locality', 'l')
+            ->leftJoin('l.translations', 't')
+            ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
+            ->setParameter('name', strtolower($localityName))
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        return $query;
+    }
+
+    public function getLocalityBySlug($localitySlug, $customSlug = false)
+    {
+        $query = $this->getAvailableLocalitiesQb()
+            ->where('l.slug = :localitySlug')
+            ->setParameter('localitySlug', $localitySlug)
+        ;
+
+        if ($customSlug) {
+            $query->orWhere('l.slug = :customSlug')
+                ->setParameter('customSlug', $customSlug)
+            ;
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 }

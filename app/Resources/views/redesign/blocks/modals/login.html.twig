@@ -1,0 +1,42 @@
+<div id="loginModal" class="modal modal--login" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal__outside"></div>
+    <div class="modal__content">
+        <h2>{% trans %}Login{% endtrans %}</h2>
+        <div class="modal__section">
+            <form class="account-form login-form" id="loginForm">
+                <div class="form__field field--user">
+                    <label>{% trans %}Email{% endtrans %}</label>
+                    {{ form_widget(loginForm._username, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__field field--password">
+                    <label>{% trans %}Password{% endtrans %}</label>
+                    {{ form_widget(loginForm._password, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__actions">
+                    {{ form_rest(loginForm) }}
+                    <a class="button button--small button--text" href="#" data-change-modal-id="forgottenPasswordModal">{% trans %}Forgot password?{% endtrans %}</a>
+                    <button type="button" class="button button--action" id="loginButton">{% trans %}Log In{% endtrans %}</button>
+                </div>
+            </form>
+        </div><!-- modal__section -->
+        <div class="modal__section">
+            <h2>or</h2>
+            <div class="social-login">
+                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook">
+                    <span>{% trans %}Log In with{% endtrans %}</span>
+                    <i class="fa fa-facebook"></i>
+                </a>
+
+                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google">
+                    <span>{% trans %}Log In with{% endtrans %}</span>
+                    <i class="fa fa-google"></i>
+                </a>
+            </div><!-- social-login -->
+        </div><!-- modal__section -->
+
+        <div class="modal__section login__footer">
+            <p>{% trans %}New to Infopáginas{% endtrans %} <a href="#" data-change-modal-id="regModal">{% trans %}Create an account{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
+        </div><!-- modal__section -->
+        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+    </div><!-- modal__content -->
+</div><!-- modal -->

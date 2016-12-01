@@ -1,0 +1,37 @@
+<div class="toolbar">
+    <div class="toolbar__nav">
+        <a href="{{ path('domain_search_catalog') }}" title="{% trans %}Catalog{% endtrans %}">
+            <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}Catalog{% endtrans %}</span>
+            </button>
+        </a>
+
+        {% if catalogLocality %}
+            <a href="{{ path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug() }) }}" title="{{ catalogLocality.name }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                    <i class="fa fa-map-marker"></i>
+                    <span>{{ catalogLocality.name|truncate }}</span>
+                </button>
+            </a>
+
+            {% if category %}
+                <a href="{{ path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug(), 'categorySlug': category.getSlug() }) }}" title="{{ category.name }}">
+                    <button id="category-toggle" type="button" class="button button--action category__toggle">
+                        {{ category.name|truncate }}
+                    </button>
+                </a>
+
+                {% if subcategory %}
+                    <div class="breadcrumb">
+                        <a href="{{ path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug(), 'categorySlug': category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" title="{{ subcategory.name }}" class="button categorie__item categorie__parent">
+                            <span>{{ subcategory.name|truncate }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        <!-- breadcrumb -->
+    </div><!-- toolbar__nav -->
+</div><!-- toolbar -->

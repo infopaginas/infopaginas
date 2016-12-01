@@ -1,0 +1,10 @@
+{% for locality in localities %}
+    {% if currentCategory %}
+        {% set is_selected = (locality.id == currentLocality.id) %}
+    {% else %}
+        {% set is_selected = false %}
+    {% endif %}
+
+    <a href="{{ path('domain_search_catalog', {'localitySlug': locality.getSlug()}) }}">{{ locality.getName() }}</a>
+    |
+{% endfor %}

@@ -1,0 +1,103 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory, 'subcategory': currentSubcategory} %}
+{% endblock %}
+
+{% block bodyClass %}results-list{% endblock %}
+
+{% block body %}
+    <div class="main__container">
+
+        <section class="main">
+            <div class="results">
+                {% if catalogLevelItems and not currentSubcategory %}
+                    <div class="catalog-list clearfix">
+                        {% for key, list in catalogLevelItems %}
+                            <div class="catalog-list__section">
+                                <div class="catalog-list__index">
+                                    {{ key }}
+                                </div><!-- index -->
+                                <ul>
+                                    {% for item in list %}
+                                        <li>
+                                            {% include ':redesign/blocks:catalog_link.html.twig' %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div><!-- catalog section -->
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {# todo double click#}
+                    <div class="ad ad-mobile">
+                        <a href="#" target="_blank">
+                            <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
+                        </a>
+                    </div>
+
+                    <div class="ad ad-desktop">
+                        <a href="#" target="_blank">
+                            <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
+                        </a>
+                    </div>
+
+                    {% if results.resultSet is defined and results.resultSet is not null %}
+                        {% for item in results.resultSet %}
+                            {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
+                        {% endfor %}
+
+                        <div>
+                            {% block pagination %}
+                                {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
+                    <i class="fa fa-map"></i>
+                    <span>{% trans %}Map view{% endtrans %}</span>
+                </button>
+
+                <button id="hide-map" type="button" class="button button-round button--hide-map">
+                    <i class="fa fa-list"></i>
+                    <span>{% trans %}List view{% endtrans %}</span>
+                </button>
+            </div><!-- results -->
+        </section><!-- main -->
+
+        <section class="results-map">
+            <div id="map" class="map"></div>
+            <span id="map-markers" hidden>{{ markers }}</span>
+        </section><!-- results-map -->
+
+
+        <div class="ad ad-mobile ad--bottom ad--active">
+            <button id="ad-close" type="button" class="button-close-ad"><i class="fa fa-remove"></i></button>
+            <a href="#" target="_blank">
+                <img src="/redesign/img/demo/banner-mobile-2.jpg">
+            </a>
+        </div><!-- ad mobile -->
+
+    </div><!-- main container -->
+
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    {% include ':widgets:google_map_script.html.twig' %}
+
+    <script type="text/javascript">
+        var map;
+
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
+                var mapSearchRedesignPage = mapSearchRedesignPage();
+            });
+        });
+    </script>
+
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}

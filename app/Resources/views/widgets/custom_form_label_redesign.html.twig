@@ -1,0 +1,9 @@
+{% macro widget(field) %}
+    {% set label = field.vars.label %}
+    {% set required = field.vars.required %}
+    {% set translation_domain = field.vars.translation_domain %}
+
+    <label for="{{ field.vars.id }}">
+        {{ label|trans({}, translation_domain) }}{% if required %}*{% endif %}
+    </label>
+{% endmacro %}

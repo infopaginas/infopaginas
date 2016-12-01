@@ -34,7 +34,9 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 withinMilesOfMyBusinessFieldId: '#' + this.freeProfileFormName + '_milesOfMyBusiness',
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
                 neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
-                serviceAreaRadioName: '[serviceAreasType]'
+                serviceAreaRadioName: '[serviceAreasType]',
+                categoriesId: '#' + this.freeProfileFormName + '_categories',
+                subcategoriesId: '#' + this.freeProfileFormName + '_subcategories'
             },
             modals: {
                 closeBusinessProfileModalId: '#closeBusinessProfileModal'
@@ -46,6 +48,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             languageSelectorClass: '.language-selector',
             imagesTable: '.table-media-image',
             milesOfMyBusinessSpan: '.miles-of-business',
+            localitiesFieldSpan: '.locality-field',
             asteriskClass: 'i.fa-asterisk',
             asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>'
         };
@@ -81,7 +84,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.geocoder.geocode({
             "address": address
         }, function(results) {
-            callback(results[0].geometry.location);
+            if (results[0]) {
+                callback(results[0].geometry.location);
+            } else {
+                console.log('results[0] is empty');
+            }
         });
     };
 
@@ -91,7 +98,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.geocoder.geocode({
             'location': latlng
         }, function(results) {
-            self.updateAddress(results[0].address_components);
+            if (results[0]) {
+                self.updateAddress(results[0].address_components);
+            } else {
+                console.log('results[0] is empty');
+            }
         });
     };
 
@@ -324,24 +335,38 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         $( document ).on( 'change' , 'input[name="' + serviceAreasRadioName + '"]', function() {
             var $self = $(this);
             var milesOfMyBusinessAsteriskClass = that.html.milesOfMyBusinessSpan + ' ' + that.html.asteriskClass;
+            var localitiesFieldAsteriskClass = that.html.localitiesFieldSpan + ' ' + that.html.asteriskClass;
+            var html = '';
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
                 $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
 
-                if ( $( milesOfMyBusinessAsteriskClass ).length ) {
-                    $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
-                    $( milesOfMyBusinessAsteriskClass ).show();
-                } else {
-                    $( that.html.milesOfMyBusinessSpan ).append( that.html.asteriskTag );
+                if ( !$( milesOfMyBusinessAsteriskClass ).length ) {
+                    html = $( that.html.milesOfMyBusinessSpan ).text();
+                    var pos = html.indexOf( ':', 1 );
+                    html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
+                    $( that.html.milesOfMyBusinessSpan ).html( html );
                 }
+                $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                $( milesOfMyBusinessAsteriskClass ).show();
+                $( localitiesFieldAsteriskClass ).hide();
             } else {
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
 
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
+                if ( $( localitiesFieldAsteriskClass ).length ) {
+                    $( that.html.fields.localitiesFieldId ).attr('required', 'required');
+                    $( localitiesFieldAsteriskClass ).show();
+                } else {
+                    html = $( that.html.localitiesFieldSpan ).text();
+                    var pos = html.indexOf( ':', 1 );
+                    html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
+                    $( that.html.localitiesFieldSpan ).html( html );
+                }
                 $( milesOfMyBusinessAsteriskClass ).hide();
             }
 
@@ -477,6 +502,53 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         });
     };
 
+    businessProfile.prototype.handleBusinessProfileSubcategories = function () {
+        var self = this;
+
+        getSubcategories();
+
+        $( self.html.fields.categoriesId ).on( 'change', function( event ) {
+            getSubcategories();
+        });
+
+        function getSubcategories() {
+            var categoryId = $( self.html.fields.categoriesId ).val();
+            var subcategories = $( self.html.fields.subcategoriesId );
+
+            var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
+
+            subcategories.html( '' );
+            subcategories.val( null ).trigger('change.select2');
+            subcategories.attr( 'disabled', 'disabled' );
+
+            $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), function( response ) {
+                var html = '';
+
+                if ( response.data ) {
+                    $.each( response.data, function ( key, value ) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                }
+
+                subcategories.html( html );
+
+                if ( html ) {
+                    subcategories.attr( 'disabled', false );
+                } else {
+                    subcategories.attr( 'disabled', 'disabled' );
+                }
+
+                subcategories.val( null ).trigger( 'change.select2' );
+
+                $.each( response.data, function ( key, value ) {
+                    if ( value.selected ) {
+                        subcategories.val( value.id ).trigger( 'change' );
+                    }
+                });
+            });
+        }
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
@@ -486,6 +558,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.handleServiceAreaChange();
         this.handleFormChange();
         this.handleBusinessProfileClose();
+        this.handleBusinessProfileSubcategories();
 
         var that = this;
 

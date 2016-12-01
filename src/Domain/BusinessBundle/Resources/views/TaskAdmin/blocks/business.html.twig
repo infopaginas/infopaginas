@@ -66,15 +66,15 @@
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Description') }}</td>
-            <td>{{ business.getDescription()|raw }}</td>
+            <td>{{ business.getDescription() }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Working Hours') }}</td>
-            <td>{{ business.getWorkingHours()|raw }}</td>
+            <td>{{ business.getWorkingHours() }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Products') }}</td>
-            <td>{{ business.getProduct()|raw }}</td>
+            <td>{{ business.getProduct() }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Tags') }}</td>
@@ -86,7 +86,7 @@
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Brands') }}</td>
-            <td>{{ business.getBrands()|raw }}</td>
+            <td>{{ business.getBrands() }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Payment methods') }}</td>
@@ -116,14 +116,16 @@
                 <td>{{ object.updatedAt|date('d M, Y, H:i:s A') }}</td>
             </tr>
         {% endif %}
+        {% if object.reviewer %}
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Profile') }}</td>
             <td>
-                <a target="_blank" href="{{ path('domain_business_profile_view', { 'citySlug' : business.citySlug, slug: business.slug }) }}">
+                <a target="_blank" href="{{ path('domain_business_profile_view', { 'citySlug' : business.catalogLocality.slug, slug: business.slug }) }}">
                     {{ admin.trans('View') }}
                 </a>
             </td>
         </tr>
+        {% endif %}
         </tbody>
     </table>
 </div>
