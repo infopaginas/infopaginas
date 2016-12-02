@@ -112,6 +112,8 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                         });
 
                         $( self.html.forms.createReviewFormId )[0].reset();
+                        $( self.html.modals.createReviewModalId ).find( 'div.form__field' ).removeClass( 'field-active' ).removeClass( 'field-filled' );
+                        $( self.html.modals.createReviewModalId ).find( 'label.label-active' ).removeClass( 'label-active' );
                         $( self.html.modals.createReviewModalId ).modalFunc({close: true});
                     } else {
                         if ( !$.isEmptyObject( response.errors ) ) {

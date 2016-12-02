@@ -19,13 +19,17 @@
                                 <div class="stars rank__item">
                                     {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
 
-                                    {% for i in 1 .. 5 - reviewsAvgRating|number_format(0) %}
-                                        <i class="fa fa-star-o"></i>
-                                    {% endfor %}
-
                                     {% if reviewsAvgRating|number_format(0) %}
                                         {% for i in 1 .. reviewsAvgRating|number_format(0) %}
                                             <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% set emptyStars = 5 - reviewsAvgRating|number_format(0) %}
+
+                                    {% if emptyStars %}
+                                        {% for i in 1 .. emptyStars %}
+                                            <i class="fa fa-star-o"></i>
                                         {% endfor %}
                                     {% endif %}
                                 </div>
