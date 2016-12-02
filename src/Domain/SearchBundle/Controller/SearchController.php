@@ -232,6 +232,8 @@ class SearchController extends Controller
 
         $category    = null;
         $subcategory = null;
+        $showResults = null;
+        $showCatalog = true;
 
         $categories    = [];
         $subcategories = [];
@@ -259,9 +261,17 @@ class SearchController extends Controller
                 $subcategories = $searchManager->searchSubcategoryByCategory($category, $request->getLocale());
                 $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 
+                $showResults = true;
+
                 if ($subcategory and $subcategory->getParent()) {
                     $request->attributes->set('subcategory', $subcategory->getName());
                     $request->attributes->set('q', $subcategory->getName());
+
+                    $showCatalog = false;
+                }
+
+                if (!$subcategories) {
+                    $showCatalog = false;
                 }
             }
         }
@@ -338,6 +348,8 @@ class SearchController extends Controller
                 'schemaJsonLD'       => $schema,
                 'markers'            => $locationMarkers,
                 'catalogLevelItems'  => $catalogLevelItems,
+                'showResults'        => $showResults,
+                'showCatalog'        => $showCatalog,
             ]
         );
     }

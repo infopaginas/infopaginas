@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
  * Class VideoManager
@@ -36,6 +38,28 @@ class VideoManager
         $videos = $this->getRepository()->getVideos();
 
         return $videos;
+    }
+
+    public function getBusinessProfilesByVideosUpdate($searchParams)
+    {
+        $videos = $this->getRepository()->getBusinessProfilesByVideosUpdate($searchParams);
+
+        return $videos;
+    }
+
+    /**
+     * @param AbstractDTO $paramsDTO
+     * @return ReviewsResultsDTO
+     */
+    public function getVideosResultDTO(AbstractDTO $paramsDTO)
+    {
+        $results = $this->getRepository()->getBusinessProfilesByVideosUpdate($paramsDTO);
+
+        $totalResults = $this->getRepository()->countBusinessProfilesByVideosUpdate();
+
+        $pagesCount = ceil($totalResults/$paramsDTO->limit);
+
+        return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
 
     private function getRepository()

@@ -669,6 +669,56 @@ class MigrationCommand extends ContainerAwareCommand
             'es' => 'Ropa',
         ];
 
+        $categories[] = [
+            'en' => 'Furniture',
+            'es' => 'Muebles',
+        ];
+
+        $categories[] = [
+            'en' => 'Air Conditioner',
+            'es' => 'Air Conditioning',
+        ];
+
+        $categories[] = [
+            'en' => 'Exterminator',
+            'es' => 'Exterminators',
+        ];
+
+        $categories[] = [
+            'en' => 'Lawyers',
+            'es' => 'Lawyers By Practice',
+        ];
+
+        $categories[] = [
+            'en' => 'Wedding and Party',
+            'es' => 'Weddings & Birthdays',
+        ];
+
+        $categories[] = [
+            'en' => 'Radio Communication',
+            'es' => 'Radiocomunicación-Compañías',
+        ];
+
+        $categories[] = [
+            'en' => 'Psychologist',
+            'es' => 'Psychologists',
+        ];
+
+        $categories[] = [
+            'en' => 'Medical',
+            'es' => 'Medicine',
+        ];
+
+        $categories[] = [
+            'en' => 'Jewelers',
+            'es' => 'Joyas',
+        ];
+
+        $categories[] = [
+            'en' => 'Television',
+            'es' => 'Televisores',
+        ];
+
         $separators = $this->getInputCategorySeparators();
 
         foreach ($categories as $item) {
@@ -692,7 +742,7 @@ class MigrationCommand extends ContainerAwareCommand
             $convertedName = str_replace($parentName . $separator, '', $convertedName);
         }
 
-        return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $name;
+        return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $convertedName;
     }
 
     private function getInputCategorySeparators()

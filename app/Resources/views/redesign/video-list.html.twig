@@ -1,0 +1,22 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:video-breadcrumbs.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                {% if videoResultDTO %}
+                    {% include ':redesign/blocks:video_list.html.twig' with {'businessProfiles': videoResultDTO.resultSet} %}
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : videoResultDTO.page, 'pageCount' : videoResultDTO.pageCount } %}
+                {% endif %}
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

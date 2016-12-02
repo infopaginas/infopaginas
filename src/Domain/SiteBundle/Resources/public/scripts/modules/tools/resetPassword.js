@@ -1,4 +1,4 @@
-define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify, Spin ) {
+define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
     'use strict';
 
     //init resetPassword object variables
@@ -61,12 +61,11 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
                 //check for "repeated" fields or embed forms
                 if (Array.isArray(errors[field])) {
                     var $field = $(this.getFormFieldId( prefix, field ));
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next('.help-block');
+                    $field.parent().addClass( 'field--not-valid' );
 
                     for (var key in errors[field]) {
-                        $errorSection.append(errors[field][key]);
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId(prefix, field) );
@@ -79,9 +78,10 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
     resetPassword.prototype.disableFieldsHighlight = function() {
         var $modal = this.getActiveModal();
         var $form = $modal.find( 'form' );
-        $form.find( 'input' ).removeClass('error');
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     //serialize form data
@@ -111,7 +111,6 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
     //actions on ajax success
     resetPassword.prototype.successHandler = function( response ) {
         if( response.success ) {
-            alertify.success( response.message );
 
             //if current form == reset password form
             var activeModal = '#' + this.getActiveModal().find('form').attr('id');
@@ -124,15 +123,17 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
                 $( this.modals.loginModalId ).modal( 'show' );
             }
         } else {
-            this.enableFieldsHighlight( response.errors );
-            alertify.error( response.message );
+            if ( !$.isEmptyObject( response.errors ) ) {
+                this.enableFieldsHighlight( response.errors );
+            } else {
+                this.enableFieldsHighlight( { 'plainPassword': [response.message] } );
+            }
         }
     };
 
     //actions on ajax failure
     resetPassword.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        this.enableFieldsHighlight();
-        alertify.error( errorThrown );
+        this.enableFieldsHighlight( { 'plainPassword': [errorThrown] } );
     };
 
     //ajax request

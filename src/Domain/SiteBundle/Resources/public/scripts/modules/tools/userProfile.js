@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], function( $, bootstrap, alertify, Spin, Geolocation ) {
+define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, bootstrap, Spin, Geolocation ) {
     'use strict';
 
     //init userProfile object variables
@@ -76,12 +76,11 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
                 //check for "repeated" fields or embed forms
                 if (Array.isArray(errors[field])) {
                     var $field = $(this.getFormFieldId( prefix, field ));
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next('.help-block');
+                    $field.parent().addClass( 'field--not-valid' );
 
                     for (var key in errors[field]) {
-                        $errorSection.append(errors[field][key]);
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId(prefix, field) );
@@ -93,9 +92,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
     //remove "error" highlighting
     userProfile.prototype.disableFieldsHighlight = function() {
         var $form = $( this.getCurrentFormId() );
-        $form.find( 'input' ).removeClass('error');
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     //actions before ajax send
@@ -117,19 +117,22 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/geolocation'], f
     //actions on ajax success
     userProfile.prototype.successHandler = function( response ) {
         if ( response.success ) {
-            alertify.success( response.message );
             $( this.html.forms.passwordUpdateFormId )[0].reset();
             $( this.modals.passwordUpdateModalId ).modal( 'hide' );
             $( this.modals.passwordUpdateModalId ).modalFunc({close: true});
         } else {
-            this.enableFieldsHighlight( response.errors );
-            alertify.error( response.message );
+            if ( !$.isEmptyObject( response.errors ) ) {
+                this.enableFieldsHighlight( response.errors );
+            } else {
+                this.enableFieldsHighlight( { 'oldPassword': [response.message] } );
+                this.enableFieldsHighlight( { 'firstname': [response.message] } );
+            }
         }
     };
 
     //actions on ajax failure
     userProfile.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        alertify.error( errorThrown );
+        this.enableFieldsHighlight( { 'oldPassword': [errorThrown] } );
     };
 
     //ajax request

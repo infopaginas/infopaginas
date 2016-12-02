@@ -11,7 +11,7 @@
 
         <section class="main">
             <div class="results">
-                {% if catalogLevelItems and not currentSubcategory %}
+                {% if catalogLevelItems and showCatalog %}
                     <div class="catalog-list clearfix">
                         {% for key, list in catalogLevelItems %}
                             <div class="catalog-list__section">
@@ -28,7 +28,8 @@
                             </div><!-- catalog section -->
                         {% endfor %}
                     </div>
-                {% else %}
+                {% endif %}
+                {% if showResults %}
                     {# todo double click#}
                     <div class="ad ad-mobile">
                         <a href="#" target="_blank">

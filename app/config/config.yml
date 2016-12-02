@@ -40,6 +40,7 @@ parameters:
             width: '221'
             height: '42'
     google_map_api_key: "AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw"
+    google_map_default_center: '18.2208, -66.5901'
 
 framework:
     #esi:             ~
@@ -80,6 +81,7 @@ twig:
         - 'DomainBusinessBundle:Form:fields.html.twig'
     globals:
         google_map_api_key: '%google_map_api_key%'
+        google_map_default_center: '%google_map_default_center%'
 # Doctrine Configuration
 doctrine:
     dbal:
