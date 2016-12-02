@@ -324,10 +324,15 @@ Save changes: Save changes
 
 Go to read...: Go to read...
 Search whatever you need and find it instantly: Search whatever you need and find it instantly
-We couldn´t find the business you were looking for.: We couldn´t find the business you were looking for.
-It´s possible that the page is temporarily unavailable, has been removed or the URL is incorrect.: It´s possible that the page is temporarily unavailable, has been removed or the URL is incorrect.
-Please search again: Please search again
-Our browse our catalog: Our browse our catalog
+error.404.title: We couldn´t find the business you were looking for.
+error.404.message: It´s possible that the page is temporarily unavailable, has been removed or the URL is incorrect.
+error.404.search.text: Please search again
+error.404.search.catalog: Or browse our catalog
+
+error.403.title: Error 403 - Forbidden.
+error.403.message: I are not allowed to access this page.
+error.403.search.text: Please search something else
+error.403.search.catalog: Or browse our catalog
 
 List view: List view
 Add to compare: Add to compare
