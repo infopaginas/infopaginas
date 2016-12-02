@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ArticleManager extends Manager
 {
-    const HOMEPAGE_ARTICLES_LIMIT = 2;
+    const HOMEPAGE_ARTICLES_LIMIT = 4;
 
     /** @var ContainerInterface $container */
     private $container;
@@ -46,7 +46,7 @@ class ArticleManager extends Manager
 
         $totalResults = count($this->getRepository()->getPublishedArticles($categorySlug));
 
-        $pagesCount = ceil($totalResults/$paramsDTO->limit);
+        $pagesCount = ceil( $totalResults / $paramsDTO->limit );
 
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }

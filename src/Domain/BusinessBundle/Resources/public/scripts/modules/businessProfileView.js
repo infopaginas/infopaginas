@@ -1,5 +1,5 @@
-define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'alertify', 'tools/spin', 'tools/resetPassword',
-    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, directions, rating, alertify, Spin ) {
+define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'tools/spin', 'tools/resetPassword',
+    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, directions, rating, Spin ) {
     'use strict';
 
     var businessProfileView = function() {
@@ -62,11 +62,11 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 //check for "repeated" fields or embed forms
                 if (Array.isArray( errors[field]) ) {
                     var $field = $( this.getFormFieldId( prefix, field ) );
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next( '.help-block' );
+                    $field.parent().addClass( 'field--not-valid' );
+
                     for (var key in errors[field]) {
-                        $errorSection.append( errors[field][key] );
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId( prefix, field ) );
@@ -78,10 +78,10 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
     //remove "error" highlighting
     businessProfileView.prototype.disableFieldsHighlight = function( formId ) {
         var $form = $( formId );
-        $form.find( 'input' ).removeClass( 'error' );
-        $form.find( '.form-group' ).removeClass( 'has-error' );
-        $form.find( '.help-block' ).html( '' );
-        $form.find( '.error' ).removeClass( 'error' );
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
+        $form.find( '.form-group' ).removeClass('has-error');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     businessProfileView.prototype.handleReviewCreation = function() {
@@ -110,19 +110,22 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                         $( self.html.forms.createReviewFormId ).find( '.star-rating .fa.fa-star-selected' ).each( function( idx, el ) {
                             return $( this ).removeClass( 'fa-star-selected' ).addClass( 'fa-star' );
                         });
-                        alertify.success( response.message );
+
                         $( self.html.forms.createReviewFormId )[0].reset();
+                        $( self.html.modals.createReviewModalId ).modalFunc({close: true});
                     } else {
-                        alertify.error( response.message );
-                        self.enableFieldsHighlight( self.html.forms.createReviewFormId, response.errors )
+                        if ( !$.isEmptyObject( response.errors ) ) {
+                            self.enableFieldsHighlight( self.html.forms.createReviewFormId, response.errors )
+                        } else {
+                            this.enableFieldsHighlight( { 'username': [errorThrown] } );
+                        }
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
-                    alertify.error( errorThrown );
+                    this.enableFieldsHighlight( { 'username': [errorThrown] } );
                 },
                 complete: function() {
                     self.spinner.hide();
-                    $( self.html.modals.createReviewModalId ).hide();
                 }
             } );
 

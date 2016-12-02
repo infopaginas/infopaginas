@@ -55,6 +55,6 @@ class DefaultController extends Controller
             'seoData'   => $page,
         ];
 
-        return $this->render('DomainPageBundle:Default:view.html.twig', $params);
+        return $this->render(':redesign:static-page-view.html.twig', $params);
     }
 }

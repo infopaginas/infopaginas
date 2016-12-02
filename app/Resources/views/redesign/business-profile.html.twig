@@ -265,35 +265,23 @@
 
                         <section class="page-section profile-map">
                             <div id="map"></div>
+                            <span id="map-markers" hidden>{{ markers }}</span>
                         </section>
 
                     </article><!-- profile -->
 
                     <aside class="profile__sidebar">
 
-                        <div class="sidebar__section section--social">
-                            <ul>
-                                <li>
-                                    <a href="" class="button button--facebook">
-                                        <i class="fa fa-facebook"></i>
-                                        <span>{% trans %}Share on Facebook{% endtrans %}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="" class="button button--twitter">
-                                        <i class="fa fa-twitter"></i>
-                                        <span>{% trans %}Share on Twitter{% endtrans %}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div><!-- sidebar__section -->
+                        {% include ':redesign/blocks:social-share.html.twig' %}
+
+                        {# todo add double click #}
 
                         {% if businessProfile.subcategories|length > 0 %}
                             <div class="sidebar__section section--tags">
                                 <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
                                     {% for subcategory in businessProfile.subcategories %}
-                                        <a href="{{ url('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" class="tag" title="Go to ...">{{ subcategory.name }}</a>
+                                        <a href="{{ url('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ subcategory.name }}</a>
                                     {% endfor %}
                                 </div>
                             </div><!-- sidebar__section -->
@@ -314,18 +302,14 @@
 {% block scripts %}
     {{ parent() }}
 
+    {% include ':widgets:google_map_script.html.twig' %}
+
     <script type="text/javascript">
         var map;
 
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
             require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
-                var mapSearchRedesignPage = mapSearchRedesignPage({
-                    {% if markers %}
-                        'markers' : {{ markers|raw }}
-                    {% else %}
-                        'markers': false
-                    {% endif %}
-                });
+                var mapSearchRedesignPage = mapSearchRedesignPage();
             });
             requirejs([
                 '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'

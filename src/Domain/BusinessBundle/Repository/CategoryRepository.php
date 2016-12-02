@@ -189,4 +189,14 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
 
         return $query->getQuery()->getOneOrNullResult();
     }
+
+    public function getCategoriesBySlugs($categoriesSlugs)
+    {
+        $query = $this->getAvailableCategoriesQb()
+            ->where('c.slug IN (:categoriesSlugs)')
+            ->setParameter('categoriesSlugs', $categoriesSlugs)
+        ;
+
+        return $query->getQuery()->getResult();
+    }
 }

@@ -41,6 +41,16 @@ class MenuModel implements MenuInterface
      */
     public static function getMenuCategoriesNames()
     {
+        return [];
+    }
+
+    /**
+     * Used to load default fixtures
+     *
+     * @return array
+     */
+    public static function getOtherCategoriesNames()
+    {
         return [
             self::CODE_SOLICITORS => [
                 'en' => 'Solicitors',
@@ -52,7 +62,7 @@ class MenuModel implements MenuInterface
             ],
             self::CODE_PHARMACIES => [
                 'en' => 'Pharmacies',
-                'es' => 'Pharmacies',
+                'es' => 'Farmacias',
             ],
             self::CODE_ELECTRICIANS => [
                 'en' => 'Electricians',
@@ -76,11 +86,11 @@ class MenuModel implements MenuInterface
             ],
             self::CODE_FLORISTS => [
                 'en' => 'Florists',
-                'es' => 'Florists',
+                'es' => 'Floristerías',
             ],
             self::CODE_BEAUTY_SALONS => [
-                'en' => 'Beauty salons',
-                'es' => 'Beauty salons',
+                'en' => 'Beauty Salons',
+                'es' => 'Salones De Belleza',
             ],
             self::CODE_HAIRDRESSERS => [
                 'en' => 'Hairdressers',
@@ -88,19 +98,8 @@ class MenuModel implements MenuInterface
             ],
             self::CODE_DOCTORS => [
                 'en' => 'Doctors',
-                'es' => 'Doctors',
+                'es' => 'Médicos',
             ],
-        ];
-    }
-
-    /**
-     * Used to load default fixtures
-     *
-     * @return array
-     */
-    public static function getOtherCategoriesNames()
-    {
-        return [
             self::CODE_AGRICULTURE => [
                 'en' => 'Agriculture',
                 'es' => 'Agricultura',
@@ -229,6 +228,307 @@ class MenuModel implements MenuInterface
                 'en' => 'Wedding and Party',
                 'es' => 'Bodas y Fiestas',
             ],
+            self::CODE_FLOWERS => [
+                'en' => 'Flowers',
+                'es' => 'Flores',
+            ],
+            self::CODE_PHOTOGRAPHIC => [
+                'en' => 'Photograph',
+                'es' => 'Fotografía',
+            ],
+            self::CODE_FUNERALS => [
+                'en' => 'Funerals',
+                'es' => 'Funerarias',
+            ],
+            self::CODE_LAWYERS => [
+                'en' => 'Lawyers',
+                'es' => 'Abogados',
+            ],
+            self::CODE_GARDENING => [
+                'en' => 'Gardening',
+                'es' => 'Jardinería',
+            ],
+            self::CODE_BAKERY => [
+                'en' => 'Bakery',
+                'es' => 'Panaderías',
+            ],
+            self::CODE_BAKERY => [
+                'en' => 'Bakery',
+                'es' => 'Panaderías',
+            ],
+            self::CODE_BAKERIES => [
+                'en' => 'Bakeries',
+                'es' => 'Reposterías',
+            ],
+            self::CODE_BICYCLES => [
+                'en' => 'Bicycles',
+                'es' => 'Bicicletas',
+            ],
+            self::CODE_CHURCHES => [
+                'en' => 'Churches',
+                'es' => 'Iglesias',
+            ],
+            self::CODE_CONSULTANTS => [
+                'en' => 'Consultants',
+                'es' => 'Consultores',
+            ],
+            self::CODE_BOOKSTORES => [
+                'en' => 'Bookstores',
+                'es' => 'Librerías',
+            ],
+            self::CODE_ART => [
+                'en' => 'Art',
+                'es' => 'Arte',
+            ],
+            self::CODE_ASSOCIATIONS => [
+                'en' => 'Associations',
+                'es' => 'Asociaciones',
+            ],
+            self::CODE_ASTROLOGY => [
+                'en' => 'Astrology',
+                'es' => 'Astrología',
+            ],
+            self::CODE_BANKS => [
+                'en' => 'Banks',
+                'es' => 'Bancos',
+            ],
+            self::CODE_BOATS => [
+                'en' => 'Boats',
+                'es' => 'Botes',
+            ],
+            self::CODE_TRUCKS => [
+                'en' => 'Trucks',
+                'es' => 'Camiones',
+            ],
+            self::CODE_COMPUTERS => [
+                'en' => 'Computers',
+                'es' => 'Computadoras',
+            ],
+            self::CODE_COPYING_MACHINES => [
+                'en' => 'Copying Machines',
+                'es' => 'Copiadoras',
+            ],
+            self::CODE_CANVAS_CURTAINS => [
+                'en' => 'Canvas Curtains',
+                'es' => 'Cortinas',
+            ],
+            self::CODE_ELEVATORS => [
+                'en' => 'Elevators',
+                'es' => 'Elevadores',
+            ],
+            self::CODE_EXTERMINATOR => [
+                'en' => 'Exterminator',
+                'es' => 'Exterminadores',
+            ],
+            self::CODE_TOOLS => [
+                'en' => 'Tools',
+                'es' => 'Herramientas',
+            ],
+            self::CODE_ICE => [
+                'en' => 'Ice',
+                'es' => 'Hielo',
+            ],
+            self::CODE_HOSPITALS => [
+                'en' => 'Hospitals',
+                'es' => 'Hospitales',
+            ],
+            self::CODE_HOTELS => [
+                'en' => 'Hotels',
+                'es' => 'Hoteles',
+            ],
+            self::CODE_PRINTERS => [
+                'en' => 'Printers',
+                'es' => 'Imprentas',
+            ],
+            self::CODE_INTERNET => [
+                'en' => 'Internet',
+                'es' => 'Internet',
+            ],
+            self::CODE_LABORATORIES => [
+                'en' => 'Laboratories',
+                'es' => 'Laboratorios',
+            ],
+            self::CODE_LAUNDRIES => [
+                'en' => 'Laundries',
+                'es' => 'Lavanderías',
+            ],
+            self::CODE_CLEANING => [
+                'en' => 'Cleaning',
+                'es' => 'Limpieza',
+            ],
+            self::CODE_MACHINERY => [
+                'en' => 'Machinery',
+                'es' => 'Maquinaria',
+            ],
+            self::CODE_TYPEWRITERS => [
+                'en' => 'Typewriters',
+                'es' => 'Maquinillas',
+            ],
+            self::CODE_MARINAS => [
+                'en' => 'Marinas',
+                'es' => 'Marinas',
+            ],
+            self::CODE_FURNITURE => [
+                'en' => 'Furniture',
+                'es' => 'Mueblerías',
+            ],
+            self::CODE_HOME => [
+                'en' => 'Home',
+                'es' => 'Hogar',
+            ],
+            self::CODE_ENGINES => [
+                'en' => 'Engines',
+                'es' => 'Motores',
+            ],
+            self::CODE_PLUMBING => [
+                'en' => 'Plumbing',
+                'es' => 'Plomería',
+            ],
+            self::CODE_DOORS => [
+                'en' => 'Doors',
+                'es' => 'Puertas',
+            ],
+            self::CODE_SIGNS => [
+                'en' => 'Signs',
+                'es' => 'Rótulos',
+            ],
+            self::CODE_SECURITY => [
+                'en' => 'Security',
+                'es' => 'Seguridad',
+            ],
+            self::CODE_UPHOLSTERERS => [
+                'en' => 'Upholsterers',
+                'es' => 'Tapicerías',
+            ],
+            self::CODE_CARDS => [
+                'en' => 'Cards',
+                'es' => 'Tarjetas',
+            ],
+            self::CODE_WINDOWS => [
+                'en' => 'Windows',
+                'es' => 'Ventanas',
+            ],
+            self::CODE_VETERINARIANS => [
+                'en' => 'Veterinarians',
+                'es' => 'Veterinarios',
+            ],
+            self::CODE_VIDEO => [
+                'en' => 'Video',
+                'es' => 'Video',
+            ],
+            self::CODE_Fences => [
+                'en' => 'Fences',
+                'es' => 'Verjas Y Portones',
+            ],
+            self::CODE_TRAILERS => [
+                'en' => 'Trailers',
+                'es' => 'Trailers',
+            ],
+            self::CODE_WATER => [
+                'en' => 'Water',
+                'es' => 'Agua',
+            ],
+            self::CODE_AIR_CONDITIONER => [
+                'en' => 'Air Conditioner',
+                'es' => 'Aire Acondicionado',
+            ],
+            self::CODE_JEWELERS => [
+                'en' => 'Jewelers',
+                'es' => 'Joyerías',
+            ],
+            self::CODE_THERAPY => [
+                'en' => 'Therapy',
+                'es' => 'Terapia',
+            ],
+            self::CODE_DIVERS => [
+                'en' => 'Divers',
+                'es' => 'Buzos',
+            ],
+            self::CODE_SWIMMING_POOLS => [
+                'en' => 'Swimming Pools',
+                'es' => 'Piscinas',
+            ],
+            self::CODE_PHYSICIANS_AND_SURGEONS => [
+                'en' => 'Physicians And Surgeons',
+                'es' => 'Medicos Especialistas',
+            ],
+            self::CODE_HANDBAGS => [
+                'en' => 'Handbags',
+                'es' => 'Carteras',
+            ],
+            self::CODE_UNIFORMS => [
+                'en' => 'Uniforms',
+                'es' => 'Uniformes',
+            ],
+            self::CODE_TELEVISION => [
+                'en' => 'Television',
+                'es' => 'Televisión',
+            ],
+            self::CODE_TELECOMMUNICATION => [
+                'en' => 'Telecommunication',
+                'es' => 'Telecomunicaciones',
+            ],
+            self::CODE_SPRINKLERS => [
+                'en' => 'Sprinklers',
+                'es' => 'Rociadores',
+            ],
+            self::CODE_SERVICE_STATIONS => [
+                'en' => 'Service Stations',
+                'es' => 'Estaciones De Servicio',
+            ],
+            self::CODE_SCHOOLS => [
+                'en' => 'Schools',
+                'es' => 'Escuelas',
+            ],
+            self::CODE_REFRIGERATING_EQUIPMENT => [
+                'en' => 'Refrigerating Equipment',
+                'es' => 'Refrigeración',
+            ],
+            self::CODE_RADIO_COMMUNICATION => [
+                'en' => 'Radio Communication',
+                'es' => 'Radiocomunicación',
+            ],
+            self::CODE_PUMPS => [
+                'en' => 'Pumps',
+                'es' => 'Bombas',
+            ],
+            self::CODE_PSYCHOLOGIST => [
+                'en' => 'Psychologist',
+                'es' => 'Sicólogos Por Especialidad',
+            ],
+            self::CODE_OPTICIANS => [
+                'en' => 'Opticians',
+                'es' => 'Opticas',
+            ],
+            self::CODE_MUSIC => [
+                'en' => 'Music',
+                'es' => 'Música',
+            ],
+            self::CODE_HEAVY_EQUIPMENT => [
+                'en' => 'Heavy Equipment',
+                'es' => 'Equipo Pesado',
+            ],
+            self::CODE_GROCERY_STORE => [
+                'en' => 'Grocery Store',
+                'es' => 'Colmados',
+            ],
+            self::CODE_GAS => [
+                'en' => 'Gas',
+                'es' => 'Gases',
+            ],
+            self::CODE_FISH_SEAFOOD => [
+                'en' => 'Fish & Seafood',
+                'es' => 'Pescados Y Mariscos',
+            ],
+            self::CODE_VIDEO_GAME => [
+                'en' => 'Video - Games',
+                'es' => 'Video Juegos',
+            ],
+            self::CODE_SPORTS => [
+                'en' => 'Sports',
+                'es' => 'Deportes',
+            ],
+
             self::CODE_UNDEFINED => [
                 'en' => 'Undefined',
                 'es' => 'Undefined',
