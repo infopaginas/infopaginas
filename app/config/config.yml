@@ -230,3 +230,7 @@ happyr_google_analytics:
         view_id: 129461101
         cache_service: 'cache.provider.my_file_system'
         cache_lifetime: 3600
+
+presta_sitemap:
+    timetolive: 86400
+    items_by_set: 100

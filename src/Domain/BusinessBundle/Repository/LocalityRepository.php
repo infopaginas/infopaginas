@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
@@ -75,5 +76,19 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAvailableLocalitiesIterator()
+    {
+        $qb = $this->getAvailableLocalitiesQb();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
     }
 }
