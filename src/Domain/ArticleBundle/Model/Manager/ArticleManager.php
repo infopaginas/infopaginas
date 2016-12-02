@@ -46,7 +46,7 @@ class ArticleManager extends Manager
 
         $totalResults = count($this->getRepository()->getPublishedArticles($categorySlug));
 
-        $pagesCount = ceil($totalResults/$paramsDTO->limit);
+        $pagesCount = ceil( $totalResults / $paramsDTO->limit );
 
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
