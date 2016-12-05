@@ -1,0 +1,31 @@
+<section class="page-section">
+    <h3 class="language-title">{% trans %}Chart{% endtrans %}</h3>{#Business profile views vs impressions#}
+    <div class="form__section">
+        <div id="businessOverviewChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto" data-title="{% trans %}Business Profile Views vs Impressions{% endtrans %}" data-y-axis="{% trans %}Count{% endtrans %}" data-series-name-views="{% trans %}Views{% endtrans %}" data-series-name-imp="{% trans %}Impressions{% endtrans %}"></div>
+    </div><!-- form-section -->
+</section><!-- page-section -->
+
+<section class="page-section">
+    <h3 class="language-title">{% trans %}Statistics{% endtrans %}</h3>
+
+    <div class="form__section">
+        <table>
+            <thead>
+            <tr>
+                <th>{% trans %}Date{% endtrans %}</th>
+                <th>{% trans %}Views{% endtrans %}</th>
+                <th>{% trans %}Impressions{% endtrans %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in overviewData.results %}
+                <tr>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.views }}</td>
+                    <td>{{ row.impressions }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div><!-- form-section -->
+</section>
