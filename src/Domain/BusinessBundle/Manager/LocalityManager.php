@@ -60,7 +60,6 @@ class LocalityManager extends Manager
 
         /** @var Locality $locality */
         foreach ($localities as $locality) {
-
             if ($locality->getLatitude() and $locality->getLongitude()) {
                 $data[] = [
                     'id'        => $locality->getId(),
