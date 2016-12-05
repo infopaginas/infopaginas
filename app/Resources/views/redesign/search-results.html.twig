@@ -10,8 +10,8 @@
 {% block body %}
     <div class="main__container">
 
-        <section class="main">
-            <div class="results" id="searchResults">
+        <section class="main" id="searchResults">
+            <div class="results">
 
                 {% if results.resultSet is defined and results.resultSet is not null %}
                     {% for item in results.resultSet %}
@@ -63,8 +63,8 @@
         var map;
 
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
-                var mapSearchRedesignPage = mapSearchRedesignPage();
+            require(['{{asset("/bundles/domainsite/scripts/modules/mapsearchpage.js")}}'], function(mapSearchPage) {
+                var mapSearchPage = new mapSearchPage();
             });
         });
     </script>
