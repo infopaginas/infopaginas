@@ -127,7 +127,48 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
 
 //sort
 
+    var sortToggle = $( '#sort-toggle' );
+    var filterToggle = $( '#filter-toggle' );
+    var sort = $( '.sort' );
+    var filter = $( '.filter' );
     var sortButton = $( '.sort-button' );
+
+    $.fn.toggleSorting = function () {
+        if ( sortToggle.is( '.active' ) ) {
+            sortToggle.removeClass( 'active' );
+            sort.removeClass( 'sort--on' );
+        } else {
+            filterToggle.removeClass( 'active' );
+            filter.removeClass( 'filter--on' );
+            sortToggle.addClass( 'active' );
+            sort.addClass( 'sort--on' );
+        }
+    };
+
+    sortToggle.on( 'click', function () {
+        $( this ).toggleSorting()
+    });
+
+    $.fn.toggleFiltering = function () {
+        if ( filterToggle.is( '.active' ) ) {
+            filterToggle.removeClass( 'active' );
+            filter.removeClass( 'filter--on' );
+        } else {
+            sortToggle.removeClass( 'active' );
+            sort.removeClass( 'sort--on' );
+            filterToggle.addClass( 'active' );
+            filter.addClass( 'filter--on' );
+        }
+    };
+
+    filterToggle.on( 'click', function () {
+        $( this ).toggleFiltering()
+    });
+
+    sortButton.on( 'click', function () {
+        $( this ).addClass( 'sort--active' );
+        $( this ).siblings().removeClass( 'sort--active' );
+    });
 
 
     sortButton.on( 'click', function() {

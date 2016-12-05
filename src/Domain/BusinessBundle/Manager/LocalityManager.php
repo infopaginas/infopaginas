@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
@@ -51,5 +52,25 @@ class LocalityManager extends Manager
         $locality = $this->getRepository()->getAvailableLocalities();
 
         return $locality;
+    }
+
+    public function getLocationMarkersFromLocalityData($localities)
+    {
+        $data = [];
+
+        /** @var Locality $locality */
+        foreach ($localities as $locality) {
+
+            if ($locality->getLatitude() and $locality->getLongitude()) {
+                $data[] = [
+                    'id'        => $locality->getId(),
+                    'name'      => $locality->getName(),
+                    'latitude'  => $locality->getLatitude(),
+                    'longitude' => $locality->getLongitude(),
+                ];
+            }
+        }
+
+        return json_encode($data);
     }
 }

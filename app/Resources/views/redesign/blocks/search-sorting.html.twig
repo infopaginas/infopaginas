@@ -7,20 +7,52 @@
             </button>
         </a>
 
-        <div class="sort-bar button-group">
-            <a href="{{ path(pageRouter, searchData|merge({'order': 'relevance'})) }}">
-                <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == 'relevance' %}sort--active{% endif %}">
-                    {% trans %}Best match{% endtrans %}
-                    <i class="fa fa-sort-amount-desc"></i>
-                </button>
-            </a>
-            <a href="{{ path(pageRouter, searchData|merge({'order': 'distance'})) }}">
-                <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == 'distance' %}sort--active{% endif %}">
-                    {% trans %}Distance{% endtrans %}
-                    <i class="fa fa-location-arrow"></i>
-                </button>
-            </a>
-        </div><!-- sort-bar -->
+        <div class="sort-bar">
+            {# todo style links #}
+            <a href="{{ path('domain_search_compare', app.request.query.all) }}" class="button button--action">{% trans %}Compare view{% endtrans %}</a>
+            <button id="sort-toggle" class="button sort-bar__button" type="button">
+                <i class="fa fa-sort"></i>
+                <span>{% trans %}Sort{% endtrans %}</span>
+            </button>
+            <button id="filter-toggle" class="button sort-bar__button active" type="button">
+                <i class="fa fa-filter"></i>
+                <span>{% trans %}Filter{% endtrans %}</span>
+            </button>
+
+            <div class="sort__options sort">
+                <a href="{{ path(pageRouter, searchData|merge({'order': 'relevance'})) }}">
+                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == 'relevance' %}sort--active{% endif %}">
+                        {% trans %}Best match{% endtrans %}
+                        <i class="fa fa-sort-amount-desc"></i>
+                    </button>
+                </a>
+                <a href="{{ path(pageRouter, searchData|merge({'order': 'distance'})) }}">
+                    <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == 'distance' %}sort--active{% endif %}">
+                        {% trans %}Distance{% endtrans %}
+                        <i class="fa fa-location-arrow"></i>
+                    </button>
+                </a>
+            </div><!-- sort -->
+
+            <div class=" sort__options filter filter--on">
+                <form class="form">
+                    <div class="filter__item">
+                        <div class="form__field field-filter-category">
+                            <select id="filter-category" name="filter-1">
+                                {% include 'DomainSearchBundle:Layout/widgets:categories_select_options.html.twig' %}
+                            </select>
+                        </div><!-- form-field -->
+                    </div><!-- filter__item -->
+                    <div class="filter__item">
+                        <div class="form__field field-filter-neighborhoods">
+                            <select id="filter-Neighborhood" name="filter-2">
+                                {% include 'DomainSearchBundle:Layout/widgets:neighborhood_locations_select_options.html.twig' %}
+                            </select>
+                        </div><!-- form-field -->
+                    </div><!-- filter__item -->
+                </form>
+            </div><!-- filter -->
+        </div>
 
         <!-- breadcrumb -->
     </div><!-- toolbar__nav -->

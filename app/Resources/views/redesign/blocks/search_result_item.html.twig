@@ -1,4 +1,4 @@
-<div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}">
+<div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}" id="{{ item.id }}">
     <div class="item__content clearfix">
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
