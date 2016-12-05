@@ -1,0 +1,10 @@
+@mixin transition-opacity() {
+  transition-duration: .3s;
+  transition-property: opacity;
+}
+
+@mixin ellipsis() {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
