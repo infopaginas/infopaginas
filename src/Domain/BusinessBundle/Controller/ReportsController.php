@@ -45,7 +45,7 @@ class ReportsController extends Controller
 
         $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
 
-        return $this->render('DomainBusinessBundle:Reports:index.html.twig', [
+        return $this->render(':redesign:business-profile-report.html.twig', [
             'overviewData'      => $overviewData,
             'filtersForm'       => $filtersForm->createView(),
             'businessProfileId' => $businessProfileId,

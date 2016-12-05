@@ -1,0 +1,49 @@
+{# todo move to style css #}
+<style type="text/css">
+    .tab-content > .tab-pane {
+        display: none;
+    }
+    .tab-content > .active {
+        display: block;
+    }
+</style>
+
+<div class="profile-nav">
+    <nav>
+        <ul class="clearfix">
+            <li>
+                <a href="{{ path('domain_business_profile_view', { 'citySlug' : businessProfile.catalogLocality.slug, slug: businessProfile.getSlug() }) }}">
+                    <i class="fa fa-eye"></i>
+                    {% trans %}Profile{% endtrans %}
+                </a>
+                {% block profileSubTab %}{% endblock %}
+            </li>
+            <li>
+                <a href="https://www.google.com/dfp/">
+                    <i class="fa fa-newspaper-o"></i>
+                    {% trans %}Manage Ads{% endtrans %}
+                </a>
+            </li>
+            <li {% if activeTab is defined and activeTab == 'report' %}class="active"{% endif %}>
+                <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}">
+                    <i class="fa fa-pie-chart"></i>
+                    {% trans %}Reports{% endtrans %}
+                </a>
+                {% block reportSubTab %}{% endblock %}
+            </li>
+            <li>
+                <a href="{{ path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() }) }}">
+                    <i class="fa fa-star"></i>
+                    {% trans %}Reviews{% endtrans %}
+                </a>
+            </li>
+            <li>
+                <a href="#" data-change-modal-id="closeBusinessProfileModal">
+                    <i class="fa fa-remove"></i>
+                    {% trans %}Close profile{% endtrans %}
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <button class="profile-toggle"><i class="fa fa-caret-down"></i></button>
+</div><!-- profile-nav -->

@@ -48,6 +48,12 @@ requirejs.config({
         },
         'iframetracker' : {
             deps: ['jquery']
+        },
+        'highcharts' : {
+            deps: ['jquery']
+        },
+        'jquery-ui' : {
+            deps: ['jquery']
         }
     },
     paths: {

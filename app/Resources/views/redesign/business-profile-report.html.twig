@@ -1,0 +1,123 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page user-profile{% endblock %}
+
+{% block breakcrumbs %}{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="main">
+            <div class="container clearfix">
+                {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'report'} %}
+                    {% block reportSubTab %}
+                        {% include ':redesign/blocks/businessProfile/subTabs/report:nav_subtab.html.twig' %}
+                    {% endblock %}
+                {% endembed %}
+
+                <div class="section-filters">
+                    <form>
+                        <div class="form__row">
+                            <label class="title-label">{% trans %}Date period{% endtrans %}</label>
+                            <div class="form__field">
+                                {{ form_widget(filtersForm.dateRange) }}
+                            </div><!-- form-field -->
+                        </div><!-- form__row -->
+
+                        <div class="form__row" id="keywordsLimitContainer" style="display: none;">
+                            <label class="title-label">{% trans %}Keywords Count{% endtrans %}</label>
+                            <div class="form__field">
+                                {{ form_widget(filtersForm.limit) }}
+                            </div><!-- form-field -->
+                        </div><!-- form__row -->
+
+                        <div class="form__row" id="customDatesContainer" style="display: none;">
+
+                            <div class="form__row">
+                                <label class="title-label">{% trans %}Date Start{% endtrans %}</label>
+                                <div class="form__field">
+                                    {{ form_widget(filtersForm.start) }}
+                                </div><!-- form-field -->
+
+                                <label class="title-label">{% trans %}Date End{% endtrans %}</label>
+                                <div class="form__field">
+                                    {{ form_widget(filtersForm.end) }}
+                                </div><!-- form-field -->
+                            </div>
+                        </div><!-- form__row -->
+                        <input type="hidden" id="businessProfileId" value="{{ businessProfileId }}">
+                    </form>
+                </div>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="overview" role="tabpanel">
+                        {% include ':redesign/blocks/businessProfile/subTabs/report:overview.html.twig' %}
+                    </div>
+
+                    {% if ad_usage_allowed_for_business(businessProfile) %}
+                        <div class="tab-pane" id="ad_usage" role="tabpanel">
+                            {% include ':redesign/blocks/businessProfile/subTabs/report:ad_usage.html.twig' %}
+                        </div>
+                    {% endif %}
+
+                    <div class="tab-pane" id="keywords" role="tabpanel">
+                        {% include ':redesign/blocks/businessProfile/subTabs/report:keywords.html.twig' %}
+                    </div>
+
+                    <div class="tab-pane" id="interactions" role="tabpanel">
+                        {% include ':redesign/blocks/businessProfile/subTabs/report:interactions.html.twig' %}
+                    </div>
+                </div>
+
+                <div class="section-filters">
+                    <h3 class="language-title">{% trans %}Export{% endtrans %}</h3>
+
+                    <div class="form__section">
+                        <div class="form-btn">
+                            {% set pdfExportURL = path('domain_business_reports_pdf_export') %}
+                            <button type="button" href="{{ pdfExportURL }}" id="export-pdf" class="btn green-btn">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                {% trans %}PDF{% endtrans %}
+                            </button>
+                            {% set excelExportURL = path('domain_business_reports_excel_export') %}
+                            <button type="button" href="{{ excelExportURL }}" id="export-excel" class="btn green-btn">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                {% trans %}Excel{% endtrans %}
+                            </button>
+                            <button type="button" id="print" class="btn green-btn">
+                                <i class="fa fa-print" aria-hidden="true"></i>
+                                {% trans %}Print{% endtrans %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- main -->
+    </div><!-- main__container -->
+{% endblock %}
+
+{% block modals %}
+    {{ parent() }}
+    {% if closeBusinessProfileForm is defined %}
+        {% include ':redesign/blocks/modals:close_business_profile.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script>
+        var overviewDataDates       = {{ overviewData['dates']|json_encode|raw }};
+        var overviewDataViews       = {{ overviewData['views']|json_encode|raw }};
+        var overviewDataImpressions = {{ overviewData['impressions']|json_encode|raw }};
+    </script>
+
+    <script type="text/javascript">
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/reports.js")}}'], function(Reports) {
+                var reports = new Reports();
+            })
+        })
+    </script>
+{% endblock%}
+
