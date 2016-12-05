@@ -292,6 +292,7 @@ class SearchController extends Controller
             return $this->handlePermanentRedirect($locality, $category, $subcategory);
         }
 
+        $searchDTO        = null;
         $searchResultsDTO = null;
         $dcDataDTO        = null;
         $schema           = null;
@@ -309,23 +310,29 @@ class SearchController extends Controller
             ]
         );
 
-        $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $subcategory);
+        if (!$locality) {
+            $locationMarkers = $this->getLocalityManager()->getLocationMarkersFromLocalityData($localities);
+        } elseif (!$category) {
+            $locationMarkers = $this->getLocalityManager()->getLocationMarkersFromLocalityData([$locality]);
+        } else {
+            $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $subcategory);
 
-        //locality lat and lan required
-        if ($searchDTO) {
-            $dcDataDTO = $searchManager->getDoubleClickData($searchDTO);
-            $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
+            //locality lat and lan required
+            if ($searchDTO) {
+                $dcDataDTO = $searchManager->getDoubleClickData($searchDTO);
+                $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
 
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+                $this->getBusinessProfileManager()
+                    ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-            $this->getSearchLogManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+                $this->getSearchLogManager()
+                    ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
-            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+                $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
-            $locationMarkers = $this->getBusinessProfileManager()
-                ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+                $locationMarkers = $this->getBusinessProfileManager()
+                    ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+            }
         }
 
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $subcategories);
