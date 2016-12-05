@@ -1,0 +1,32 @@
+$white: #fff;
+$black: #000;
+$grey: #2d3237;
+$grey--light: lighten(#d3d7dd, 10%);
+$grey--medium: darken(#707377, 5%);
+$green: #acc02f;
+$blue: saturate(#284c78, 12%);
+$blue--dark: saturate(lighten(#1f2e42, 1%), 15%);
+$orange: darken(#ffc80a, 5%);
+$red: #d63a46;
+
+$facebook: #3a5998;
+$twitter: #1da1f2;
+$google: #E8453C;
+
+$h-margin-mb: .7em;
+$v-margin-mb: .1em;
+$padding-mb: 5px;
+
+$bar-height-mb: 45px;
+
+//radius
+$general-radius: 2px;
+$button-radius: $general-radius;
+
+//input
+$input-height-mb: 50px;
+$input-padding-mb: 0 10px;
+$input-radius: $general-radius;
+
+//toolbar
+$toolbar-height-mb: 37px;
