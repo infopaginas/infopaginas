@@ -312,8 +312,8 @@
         var map;
 
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
-                var mapSearchRedesignPage = mapSearchRedesignPage();
+            require(['{{asset("/bundles/domainsite/scripts/modules/mapsearchpage.js")}}'], function(mapSearchPage) {
+                var mapSearchPage = new mapSearchPage();
             });
             requirejs([
                 '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'

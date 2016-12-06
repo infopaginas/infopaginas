@@ -9,7 +9,7 @@
 {% block body %}
     <div class="main__container">
 
-        <section class="main">
+        <section class="main" id="searchResults">
             <div class="results">
                 {% if catalogLevelItems and showCatalog %}
                     <div class="catalog-list clearfix">
@@ -20,7 +20,7 @@
                                 </div><!-- index -->
                                 <ul>
                                     {% for item in list %}
-                                        <li>
+                                        <li id="{{ item.id }}">
                                             {% include ':redesign/blocks:catalog_link.html.twig' %}
                                         </li>
                                     {% endfor %}
@@ -94,8 +94,8 @@
         var map;
 
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            require(['{{asset("/redesign/js/mapsearchpage.js")}}'], function(mapSearchRedesignPage) {
-                var mapSearchRedesignPage = mapSearchRedesignPage();
+            require(['{{asset("/bundles/domainsite/scripts/modules/mapsearchpage.js")}}'], function(mapSearchPage) {
+                var mapSearchPage = new mapSearchPage();
             });
         });
     </script>
