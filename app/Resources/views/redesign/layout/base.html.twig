@@ -45,8 +45,12 @@
 
 
         {% block styles %}
-            <link rel="stylesheet" href="/redesign/css/normalize.css">
-            <link rel="stylesheet" href="/redesign/css/infopaginas.css">
+            {% stylesheets filter="scssphp" output="css/app.css"
+                "redesign/css/normalize.css"
+                "../sass/_scss/infopaginas.scss"
+            %}
+                <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
 
             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
         {% endblock %}
