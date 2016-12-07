@@ -78,7 +78,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
         $post   = $this->request->request->all()[$this->form->getName()];
 
-        $oldCategories = [];
+        $oldCategories  = [];
+        $oldImages      = [];
 
         if ($businessProfileId !== false) {
             /* @var BusinessProfile $businessProfile */

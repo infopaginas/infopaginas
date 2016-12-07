@@ -137,17 +137,15 @@ class ChangeSetCollectorUtil
     {
         $collection = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertyValue($entity, $property);
 
-        $insertDiff = $collection->getInsertDiff();
-        foreach($insertDiff as $key => $value) {
-            if ((int)$key) {
-                unset($insertDiff[$key]);
-            }
-        }
-        $deleteDiff = $collection->getDeleteDiff();
+        $insertDiffVar = $collection->getInsertDiff();
+        $deleteDiffVar = $collection->getDeleteDiff();
+
+        $insertDiff = [];
+        $deleteDiff = [];
 
         $changeset = [];
         /** @var BusinessGallery $newBusinessGalleryObject */
-        foreach ($insertDiff as $idFromPost => $newBusinessGalleryObject) {
+        foreach ($insertDiffVar as $idFromPost => $newBusinessGalleryObject) {
             if (self::checkDuplicatesInsertDelete($deleteDiff, $newBusinessGalleryObject)) {
                 continue;
             }
@@ -158,12 +156,11 @@ class ChangeSetCollectorUtil
                 ChangeSetCalculator::IMAGE_ADD,
                 Media::class
             );
+            $insertDiff[$idFromPost] = $newBusinessGalleryObject;
         }
 
-dump($insertDiff);
-dump($deleteDiff);
         /** @var BusinessGallery $removedBusinessGalleryObject */
-        foreach ($deleteDiff as $removedBusinessGalleryObject) {
+        foreach ($deleteDiffVar as $removedBusinessGalleryObject) {
             if (self::checkDuplicatesInsertDelete($insertDiff, $removedBusinessGalleryObject, true)) {
                 continue;
             }
@@ -174,6 +171,7 @@ dump($deleteDiff);
                 ChangeSetCalculator::IMAGE_REMOVE,
                 $className
             );
+            $deleteDiff[] = $removedBusinessGalleryObject;
         }
 
         $originalCollection = BusinessProfilePropertyAccessorUtil::getOriginalBusinessProfileCollectionValues(
@@ -213,7 +211,7 @@ dump($deleteDiff);
                 continue;
             }
         }
-dump($entity->getImages());
+
         return $changeset;
     }
 

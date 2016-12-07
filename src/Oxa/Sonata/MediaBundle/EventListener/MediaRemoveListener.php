@@ -39,19 +39,15 @@ class MediaRemoveListener extends MediaEventSubscriber
      */
     public function postUpdate(EventArgs $args)
     {
-logger(__METHOD__);
         if (!($provider = $this->getProvider($args))) {
-logger('empty provider', 'error');
             return false;
         }
 
         $media = $this->getMedia($args);
 
-logger($media->getContext());
         if (!$media->getBinaryContent() instanceof \SplFileInfo
             || $media->getBinaryContent() === null
         ) {
-logger('empty binary content', 'error');
             return false;
         }
 
@@ -71,8 +67,7 @@ logger('empty binary content', 'error');
 
         $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
         $file = $provider->getFilesystem()->get($filepath, true);
-logger($filepath);
-logger(' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ');
+
         $contents = $media->getBinaryContent()->getRealPath();
 
         $file->setContent(file_get_contents($contents));

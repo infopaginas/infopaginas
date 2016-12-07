@@ -268,15 +268,12 @@ class BusinessProfileManager extends Manager
             $businessProfile->setLocale($locale);
         }
 
-dump($businessProfile->getImages());
         foreach ($businessProfile->getImages() as $gallery) {
             $businessProfile->removeImage($gallery);
             $gallery->setBusinessProfile($businessProfile);
             $this->getEntityManager()->persist($gallery);
             $businessProfile->addImage($gallery);
         }
-dump($businessProfile->getImages());
-die;
         $this->commit($businessProfile);
     }
 
@@ -390,7 +387,6 @@ die;
                     }elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
                         $businessProfile->setBackground($media);
                     }
-logger(ChangeSetCalculator::PROPERTY_IMAGE_UPDATE);
 
                     $this->getEntityManager()->persist($media);
                     break;
@@ -414,7 +410,7 @@ logger(ChangeSetCalculator::PROPERTY_IMAGE_UPDATE);
                     }elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
                         $businessProfile->setBackground($media);
                     }
-logger(ChangeSetCalculator::PROPERTY_IMAGE_UPDATE);
+
                     $this->getEntityManager()->persist($media);
                     break;
                 case ChangeSetCalculator::IMAGE_ADD:
@@ -475,20 +471,19 @@ logger(ChangeSetCalculator::PROPERTY_IMAGE_UPDATE);
                         if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO 
                                 && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
                                 ) {
-                            $media = $this->makePhotoFromLogo($gallery->getMedia());
+                            $media = $this->setMediaContentAndProvider($media, $data->context);
                             $gallery->setMedia($media);
                             $businessProfile->addImage($gallery);
                         }
                         if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
                                 && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
                                 ) {
-                            $media = $this->makePhotoFromBackground($gallery->getMedia());
+                            $media = $this->setMediaContentAndProvider($media, $data->context);
                             $gallery->setMedia($media);
                             $businessProfile->addImage($gallery);
                         }
                     }
-dump($gallery);
-die;
+
                     $this->getEntityManager()->persist($gallery);
                     break;
                 case ChangeSetCalculator::VIDEO_ADD:
