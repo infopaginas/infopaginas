@@ -30,14 +30,11 @@ class HomeController extends Controller
     {
         $locale         = $request->getLocale();
 
-        $menuManager    = $this->get('domain_menu.manager.menu');
         $articleManager = $this->get('domain_article.manager.article');
         $videoManager   = $this->get('domain_business.video');
 
         $articles       = $articleManager->fetchHomepageArticles();
         $videos         = $videoManager->fetchHomepageVideos();
-
-        $menuItems      = $menuManager->fetchAll();
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
@@ -55,14 +52,30 @@ class HomeController extends Controller
         $schema = $articleManager->buildArticlesSchema($articles);
 
         return $this->render(
-            'DomainSiteBundle:Home:home.html.twig',
+            ':redesign:homepage.html.twig',
             [
-                'menuItems'     => $menuItems,
                 'bannerFactory' => $bannerFactory,
                 'articles'      => $articles,
                 'videos'        => $videos,
                 'locale'        => $locale,
                 'schemaJsonLD'  => $schema,
+                'hideHeaderSearch' => true,
+            ]
+        );
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function popularMenuItemsAction()
+    {
+        $menuManager    = $this->get('domain_menu.manager.menu');
+        $menuItems      = $menuManager->getMenuItems();
+
+        return $this->render(
+            ':redesign/blocks:popular_menu_items.html.twig',
+            [
+                'menuItems' => $menuItems,
             ]
         );
     }

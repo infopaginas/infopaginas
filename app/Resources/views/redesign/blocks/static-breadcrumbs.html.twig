@@ -1,0 +1,16 @@
+<div class="toolbar">
+    <div class="toolbar__nav">
+        <a href="{{ path('domain_site_home_index') }}" title="{% trans %}Home{% endtrans %}">
+            <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}Homepage{% endtrans %}</span>
+            </button>
+        </a>
+
+        <div class="breadcrumb">
+            <a href="#" title="{{ page.title }}" class="button categorie__item categorie__parent">
+                <span>{{ page.title|truncate }}</span>
+            </a>
+        </div>
+    </div><!-- toolbar__nav -->
+</div><!-- toolbar -->

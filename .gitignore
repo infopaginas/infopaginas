@@ -16,6 +16,8 @@
 /web/css/
 *.php~
 /components
+/web/sitemap.*
+/composer.lock
 
 # OS generated files #
 ######################

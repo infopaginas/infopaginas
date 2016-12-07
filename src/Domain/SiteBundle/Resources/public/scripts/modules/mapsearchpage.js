@@ -1,79 +1,48 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'],
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating'],
     function ( $, view, _, directions, select ) {
     'use strict';
 
-    var mapSearchPage = function ( options ) {
-        options.selector = options.selector || 'body';
-        this.$ = function( selector ) {
-            return $( options.selector ).find( selector );
-        };
-
+    var mapSearchPage = function () {
         this.events = {
-            '.map-address click'        : 'showMarker',
-            ".order-by-select change"   : "changeSearchData",
+            '.map-address click' : 'showMarker' //todo
         };
 
-        this.mapSize = {
-            mapWrapper: '#search-results-map',
-            mapImage: '#map-canvas',
-            mapLeftMargin: 515,
-            mapMediaWidth: 992,
-            marginTop: 120
-        };
-
-        this.init( options );
-        this.bindEvents();
-
-        $( document ).ready( function(){
-            this.resizeMap();
-        }.bind( this ) );
+        this.init();
+        this.bindFilterEvents();
 
         return this;
     };
 
     mapSearchPage.prototype = new view;
 
-    mapSearchPage.prototype.init = function ( options ) {
+    mapSearchPage.prototype.init = function () {
         this.map = null;
         this.markers = [];
         this.options = {
-            itemsListScrollable : '.map-view-aside',
-            mapContainer : 'map-canvas',
+            itemsListScrollable : '#searchResults',
+            mapContainer : 'map',
             mapOptions   : {
-                center: new google.maps.LatLng( 18.2208, -66.5901 ),
+                center: new google.maps.LatLng( googleMapDefaultCenter ),
                 zoom: 8
             },
-            cards       : '.card-item',
             directions: new directions
         };
 
-        $.extend( this.options, options );
+        var markersBlock = $( '#map-markers' );
+        if ( markersBlock.html() ) {
+            this.options.markers = JSON.parse( markersBlock.html() );
+        }
 
         new select();
 
-        this.initMap(this.options);
-        this.setDefaultHeighForCards(
-            this.$( this.options.cards )
-        )
-    };
+        this.options.directions.bindEventsDirections();
 
-    mapSearchPage.prototype.resizeMap = function(){
-        var mapWrapperWidth = $( this.mapSize.mapWrapper ).width(),
-            mapWrapperHeight = $( this.mapSize.mapWrapper ).height();
-        if( mapWrapperWidth < this.mapSize.mapMediaWidth ){
-            $( this.mapSize.mapImage ).width( mapWrapperWidth );
-            $( this.mapSize.mapImage ).height( mapWrapperHeight - this.mapSize.marginTop );
-        } else{
-            $( this.mapSize.mapImage ).width( mapWrapperWidth - this.mapSize.mapLeftMargin );
-            $( this.mapSize.mapImage ).height( mapWrapperHeight - this.mapSize.marginTop );
-        }
+        this.initMap(this.options);
     };
 
     mapSearchPage.prototype.initMap = function ( options ) {
         this.map = new google.maps.Map( document.getElementById( options.mapContainer ), this.options.mapOptions );
-
-        $( window ).resize(this.resizeMap.bind( this ));
 
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers( this.options.markers );
@@ -138,12 +107,17 @@ define(
     mapSearchPage.prototype.scrollTo = function ( elementId )
     {
         var card = this.$( '#' + elementId );
-        var offset = card.offset().top;
-        this.$( this.options.itemsListScrollable).first()
-            .animate({
-                scrollTop : offset
-            }, 1500);
-        this.highlightCard( elementId );
+
+        if ( card.offset() ) {
+            var offset = card.offset().top + $( this.options.itemsListScrollable ).scrollTop()
+                - $( this.options.itemsListScrollable ).height()/2 + card.height()/2;
+
+            this.$( this.options.itemsListScrollable ).first()
+                .animate({
+                    scrollTop : offset
+                }, 1500);
+            this.highlightCard( elementId );
+        }
     };
 
     mapSearchPage.prototype.showMarker = function ( event )
@@ -179,25 +153,31 @@ define(
         var directionLink = this.options.directions.getDirection(null, latitude + ',' + longitude);
 
         var template = "<div class='business-info'>" +
-            "<div>" + name + "</div>" +
-            "<div>" + address + "</div>" +
-            "<a href='" + directionLink + "' target='_blank'>Get Direction <span>&#187;</span></a>"+
-                "<div class=\"reviews\">" +
-                    "<div class=\"star-rating\">";
-                    for ( var i = 1; i < 6; i++ ) {
-                        if ( i <= avgMark ) {
-                            var additionClass = ' fa-star-selected';
-                        } else {
-                            additionClass = '';
-                        }
+            "<div>" + name + "</div>";
 
-                        template += "<span class='fa fa-star-o" + additionClass + "' data-rating=\"" + i + "\"></span>";
-                    }
-                        template += "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
-                    "</div>" +
-                    "<a href='" + profileUrl + "#reviews' target='_blank'><span class=\"reviews-value\">" + reviewsCount + " Reviews</span></a>" +
+        if ( address ) {
+            template += "<div>" + address + "</div>" +
+            "<a href='" + directionLink + "' target='_blank'>Get Direction <span>&#187;</span></a>";
+        }
+
+        if ( reviewsCount ) {
+            template += "<div class=\"reviews\"><div class=\"star-rating\">";
+
+            for ( var i = 1; i < 6; i++ ) {
+                if ( i <= avgMark ) {
+                    var additionClass = ' fa-star-selected';
+                } else {
+                    additionClass = '';
+                }
+
+                template += "<span class='fa fa-star-o" + additionClass + "' data-rating=\"" + i + "\"></span>";
+            }
+            template += "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
                 "</div>" +
-            "</div>";
+                "<a href='" + profileUrl + "#reviews' target='_blank'><span class=\"reviews-value\">" + reviewsCount + " Reviews</span></a>" +
+                "</div>" +
+                "</div>";
+        }
 
         if ( !_.isUndefined(icon) && !_.isNull(icon) ) {
             template += "<div class='business-logo'>" +
@@ -208,18 +188,13 @@ define(
         return template;
     };
 
-    mapSearchPage.prototype.setDefaultHeighForCards = function ( cards )
-    {
-        _.each( cards, function ( card ) {
-            $(card).data( 'default-offset', $( card ).offset().top )
-        })
+    mapSearchPage.prototype.bindFilterEvents = function () {
+        $( '#filter-category, #filter-Neighborhood' ).on( 'change', function( e ) {
+            var route = $( e.currentTarget ).find( 'option:selected' ).data( 'route' );
+
+            window.location = route;
+        });
     };
-
-    mapSearchPage.prototype.changeSearchData = function ( e ) {
-        var route = $(e.currentTarget).find('option:selected').data('route');
-
-        window.location = route;
-    }
 
     return mapSearchPage;
 });

@@ -7,8 +7,11 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\VideoManager;
+use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
+use Domain\SearchBundle\Util\SearchDataUtil;
+use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Form\Handler\FileUploadFormHandler;
 use Oxa\WistiaBundle\Form\Handler\RemoteFileUploadFormHandler;
@@ -104,13 +107,33 @@ class VideosController extends Controller
         }
     }
 
-    public function indexAction()
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction(Request $request)
     {
+        $paramsDTO = $this->geVideoListQueryParamsDTO($request);
+
+        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
+
         $params = [
-            'videos' => $this->getVideoManager()->getActiveVideos(),
+            'videoResultDTO' => $videoResultDTO,
         ];
 
-        return $this->render('DomainBusinessBundle:Videos:list.html.twig', $params);
+        return $this->render(':redesign:video-list.html.twig', $params);
+    }
+
+    /**
+     * @param Request $request
+     * @return ReviewsListQueryParamsDTO
+     */
+    private function geVideoListQueryParamsDTO(Request $request) : ReviewsListQueryParamsDTO
+    {
+        $limit = (int)$this->get('oxa_config')->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+        $page = SearchDataUtil::getPageFromRequest($request);
+
+        return new ReviewsListQueryParamsDTO($limit, $page);
     }
 
     /**

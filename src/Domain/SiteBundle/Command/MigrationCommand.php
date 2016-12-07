@@ -27,6 +27,8 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 
 class MigrationCommand extends ContainerAwareCommand
 {
+    const SYSTEM_CATEGORY_SEPARATOR = ' / ';
+
     protected function configure()
     {
         $this->setName('data:migration');
@@ -486,11 +488,6 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity) {
             //search category as subcategory
             $parentValue    = $this->parseCategoryName($valuePrimary);
-            $valuePrimary   = $this->parseSubcategoryName($valuePrimary);
-            $valueSecondary = $this->parseSubcategoryName($valueSecondary);
-
-            $valueEn = $this->parseSubcategoryName($valueEn);
-            $valueEs = $this->parseSubcategoryName($valueEs);
 
             $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
@@ -499,14 +496,17 @@ class MigrationCommand extends ContainerAwareCommand
                 $parentEntity = $this->getParentCategory($parentValue);
 
                 if ($parentEntity) {
+                    $subcategoryNameEn = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEn());
+                    $subcategoryNameEs = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEs());
+
                     $entity = new Category();
                     $entity->setName($valuePrimary);
 
                     $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
                     $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
 
-                    $entity->setSearchTextEn($valueEn);
-                    $entity->setSearchTextEs($valueEs);
+                    $entity->setSearchTextEn($subcategoryNameEn);
+                    $entity->setSearchTextEs($subcategoryNameEs);
                     $entity->setParent($parentEntity);
 
                     $entity = $this->saveEntity($entity);
@@ -648,14 +648,106 @@ class MigrationCommand extends ContainerAwareCommand
     {
         //todo
 
+        $categories = MenuModel::getAllCategoriesNames();
+        $categories[] = [
+            'en' => 'Auto',
+            'es' => 'Automobiles',
+        ];
+
+        $categories[] = [
+            'en' => 'Photograph',
+            'es' => 'Fotógrafos',
+        ];
+
+        $categories[] = [
+            'en' => 'Photograph',
+            'es' => 'Photographic',
+        ];
+
+        $categories[] = [
+            'en' => 'Clothing',
+            'es' => 'Ropa',
+        ];
+
+        $categories[] = [
+            'en' => 'Furniture',
+            'es' => 'Muebles',
+        ];
+
+        $categories[] = [
+            'en' => 'Air Conditioner',
+            'es' => 'Air Conditioning',
+        ];
+
+        $categories[] = [
+            'en' => 'Exterminator',
+            'es' => 'Exterminators',
+        ];
+
+        $categories[] = [
+            'en' => 'Lawyers',
+            'es' => 'Lawyers By Practice',
+        ];
+
+        $categories[] = [
+            'en' => 'Wedding and Party',
+            'es' => 'Weddings & Birthdays',
+        ];
+
+        $categories[] = [
+            'en' => 'Radio Communication',
+            'es' => 'Radiocomunicación-Compañías',
+        ];
+
+        $categories[] = [
+            'en' => 'Psychologist',
+            'es' => 'Psychologists',
+        ];
+
+        $categories[] = [
+            'en' => 'Medical',
+            'es' => 'Medicine',
+        ];
+
+        $categories[] = [
+            'en' => 'Jewelers',
+            'es' => 'Joyas',
+        ];
+
+        $categories[] = [
+            'en' => 'Television',
+            'es' => 'Televisores',
+        ];
+
+        $separators = $this->getInputCategorySeparators();
+
+        foreach ($categories as $item) {
+            foreach ($separators as $separator) {
+                if (strpos(strtolower($name), strtolower($item['en'] . $separator)) === 0 or
+                    strpos(strtolower($name), strtolower($item['es'] . $separator)) === 0) {
+                    return $item['en'];
+                }
+            }
+        }
+
         return $name;
     }
 
-    private function parseSubcategoryName($name)
+    private function convertSubcategoryName($name, $parentName)
     {
-        //todo
+        $convertedName = $name;
+        $separators    = $this->getInputCategorySeparators();
 
-        return $name;
+        foreach ($separators as $separator) {
+            $convertedName = str_replace($parentName . $separator, '', $convertedName);
+        }
+
+        return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $convertedName;
+    }
+
+    private function getInputCategorySeparators()
+    {
+        return [' - ', ' / ', '/'];
     }
 
     private function getParentCategory($parentName)

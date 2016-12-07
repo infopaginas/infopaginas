@@ -31,7 +31,7 @@ class BusinessReportFilterType extends AbstractType
         $builder
             ->add('dateRange', ChoiceType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
+                    'class' => 'select--medium',
                 ],
                 'choices' => DatesUtil::getReportDataRanges(),
                 'data' => DatesUtil::RANGE_DEFAULT,
@@ -50,7 +50,7 @@ class BusinessReportFilterType extends AbstractType
             ))
             ->add('limit', ChoiceType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
+                    'class' => 'select--medium',
                 ],
                 'choices' => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
                 'data' => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,

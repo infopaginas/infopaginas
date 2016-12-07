@@ -1,0 +1,43 @@
+<div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}">
+    <div class="item__content clearfix">
+
+        <div class="item__summary">
+            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
+                <div class="item__header">
+                    <div class="rank">
+                        <div class="rank-ta rank-ta--5"></div>
+                        <div class="stars rank__item">
+                            {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(item) %}
+                            {% if reviewsAvgRating|number_format(0) %}
+                                {% for i in 1 .. reviewsAvgRating|number_format(0) %}
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="item__info">
+                    <h2>{{ item.name }}</h2>
+                    {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
+                        <p>{{ item.slogan }}</p>
+                    {% endif %}
+                    {% if not item.getHideAddress() %}
+                        <address>
+                            {% if item.getCustomAddress() %}
+                                {{ item.getCustomAddress() }}
+                            {% else %}
+                                {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                            {% endif %}
+                        </address>
+                    {% endif %}
+                </div>
+            </a>
+        </div><!-- item__summary -->
+    </div><!-- item__content -->
+    <div class="item__actions">
+        <button type="button" class="button button--small button--line add-compare-item" data-item-id="#business-{{ item.id }}" disabled>
+            <i class="fa fa-plus-square"></i>
+            {% trans %}Add to compare{% endtrans %} {# todo change button text #}
+        </button>
+    </div>
+</div><!-- results__item -->

@@ -1,0 +1,109 @@
+<div class="comparison__item" id="business-{{ item.id }}">
+    <div class="comparison__row comparison__rating">
+        <div class="rank">
+            <div class="rank-ta rank-ta--5">
+            </div>
+            <div class="stars rank__item">
+                {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(item) %}
+                {% if reviewsAvgRating|number_format(0) %}
+                    {% for i in 1 .. reviewsAvgRating|number_format(0) %}
+                        <i class="fa fa-star"></i>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div><!-- comparison-row -->
+
+    <div class="comparison__row comparison__description">
+        <h1><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a></h1>
+        <p>
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
+               {{ item.slogan }}
+            {% endif %}
+        </p>
+        <div class="detail-link">
+            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" class="button button--small button--text">{% trans %}Details{% endtrans %} <i class="fa fa-angle-right"></i></a>
+        </div>
+    </div><!-- comparison-row -->
+
+    <div class="comparison__row comparison__highlights">
+        <div class="highlights container">
+            {% if not item.getHideAddress() %}
+                <div class="highlights__item">
+                    <h3>{% trans %}Address{% endtrans %}</h3>
+                    <ul>
+                        <li>
+                            {% if item.getCustomAddress() %}
+                                {{ item.getCustomAddress() }}
+                            {% else %}
+                                <strong>{{ item.getStreetAddress() }}</strong>,
+                                {{ item.getCity() }}, {{ item.getCountry() }} {{ item.getZipCode() }}
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div><!-- highlights__item -->
+            {% endif %}
+
+            {% if item.getPhones()|length > 0 %}
+                <div class="highlights__item">
+                    <h3>{% trans %}Phone{% endtrans %}</h3>
+                    <ul>
+                        {% for phone in item.getPhones() %}
+                            <li>
+                                <i class="fa fa-phone"></i> {{ phone.getPhone() }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div><!-- highlights__item -->
+            {% endif %}
+
+            {% if item.getBrands() %}
+                <div class="highlights__item highlights__item--checklist">
+                    <h3>{% trans %}Brands{% endtrans %}</h3>
+                    <ul>
+                        <li>
+                            {{ item.getBrands() }}
+                        </li>
+                    </ul>
+                </div><!-- highlights__item -->
+            {% endif %}
+
+            {% if item.getWorkingHours() %}
+                <div class="highlights__item highlights__item--hours">
+                    <h3>{% trans %}Business hours{% endtrans %}</h3>
+                    <ul>
+                        <li>
+                            {{ item.getWorkingHours() }}
+                        </li>
+                    </ul>
+                </div><!-- highlights__item -->
+            {% endif %}
+        </div><!-- container -->
+    </div><!-- comparison-row -->
+
+    <div class="comparison__row comparison__actions">
+        <section class="page-section actions-section">
+            <div class="header-actions">
+                {% if not item.getHideAddress() %}
+                    <a href="#" class="get-dir button button--small button--featured" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+                        <i class="fa fa-location-arrow"></i>
+                        <span>{% trans %}Directions{% endtrans %}</span>
+                    </a>
+                {% endif %}
+                {% if item.getPhones()|length > 0 %}
+                    <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop">
+                        <i class="fa fa-phone"></i>
+                        <span>{% trans %}Call{% endtrans %}</span>
+                    </a>
+                {% endif %}
+                {% if item.getWebsite() %}
+                    <a class="button button--small button--featured" href="{{ item.getWebsiteLink() }}">
+                        <i class="fa fa-external-link"></i>
+                        <span>{% trans %}Web{% endtrans %}</span>
+                    </a>
+                {% endif %}
+            </div><!-- header-actions -->
+        </section>
+    </div><!-- comparison-row -->
+    <button class="button--remove remove-compare-item"><i class="fa fa-remove"></i></button>
+</div><!-- comparison__item -->

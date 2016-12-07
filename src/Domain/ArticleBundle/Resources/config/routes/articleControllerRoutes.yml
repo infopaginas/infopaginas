@@ -1,6 +1,9 @@
 domain_article_homepage:
     path:     /
     defaults: { _controller: DomainArticleBundle:Article:index }
+    options:
+        sitemap:
+            section: article
 
 domain_article_view:
     path:     /article/{slug}

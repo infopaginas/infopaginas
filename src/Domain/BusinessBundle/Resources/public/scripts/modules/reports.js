@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], function( $, bootstrap, highcharts, Spin, select ) {
+define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jquery-ui'], function( $, bootstrap, highcharts, Spin, select ) {
     'use strict';
 
     //init reports object variables
