@@ -78,6 +78,9 @@ class AppKernel extends Kernel
             new Oxa\Sonata\DoctrineORMAdminBundle\OxaSonataDoctrineORMAdminBundle(),
             new Oxa\WistiaBundle\OxaWistiaBundle(),
             new Oxa\DfpBundle\OxaDfpBundle(),
+
+            //SiteMap bundle
+            new Presta\SitemapBundle\PrestaSitemapBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

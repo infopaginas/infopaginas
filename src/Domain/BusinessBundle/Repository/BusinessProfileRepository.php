@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -561,6 +562,46 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    public function getBusinessProfilesByVideosUpdateQb()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('bp')
+            ->from(BusinessProfile::class, 'bp')
+            ->innerJoin('bp.subscriptions', 'bp_s')
+            ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
+            ->innerJoin(WistiaMedia::class, 'v', Join::WITH, 'bp.video = v')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bps_p.code = :platinumPlanCode')
+            ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
+        ;
+
+        return $queryBuilder;
+    }
+
+    public function getBusinessProfilesByVideosUpdate($searchParams)
+    {
+        $limit  = $searchParams->limit;
+        $offset = ($searchParams->page - 1) * $limit;
+
+        $queryBuilder = $this->getBusinessProfilesByVideosUpdateQb();
+        $queryBuilder->orderBy('v.updatedAt', 'DESC');
+
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function countBusinessProfilesByVideosUpdate()
+    {
+        $queryBuilder = $this->getBusinessProfilesByVideosUpdateQb();
+
+        $queryBuilder->select('count(bp.id) as rows');
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return count($results);
+    }
+
     /**
      * Main search functionality
      *
@@ -664,5 +705,19 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getActiveBusinessProfilesIterator()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
     }
 }

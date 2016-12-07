@@ -156,3 +156,11 @@ services:
         arguments: [ @service_container, @router, @twig ]
         tags:
             - { name: kernel.event_subscriber }
+
+    sitemap.dynamic_urls_subscriber:
+        class: Domain\SiteBundle\EventListener\SitemapSubscriber
+        arguments:
+            - "@router"
+            - "@doctrine.orm.entity_manager"
+        tags:
+            - { name: "kernel.event_subscriber", priority: 100 }

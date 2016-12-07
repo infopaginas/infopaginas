@@ -1,5 +1,5 @@
-define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
-    'use strict'
+define(['jquery', 'tools/spin'], function( $, Spin ) {
+    'use strict';
 
     var login = function() {
         this.urls = {
@@ -20,14 +20,18 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
         this.spinner = new Spin();
     };
 
-    login.prototype.enableFieldsHighlight = function() {
-        $( this.html.fields.emailInputId ).addClass( 'error' );
-        $( this.html.fields.passwordInputId ).addClass( 'error' );
+    login.prototype.enableFieldsHighlight = function( message ) {
+        $( this.html.fields.emailInputId ).parent().addClass( 'field--not-valid' );
+        $( this.html.fields.passwordInputId ).parent().addClass( 'field--not-valid' );
+
+        $( this.html.fields.emailInputId ).after( "<span data-error-message class='error'>" + message + "</span>" );
     };
 
     login.prototype.disableFieldsHighlight = function() {
-        $( this.html.fields.emailInputId ).removeClass( 'error' );
-        $( this.html.fields.passwordInputId ).removeClass( 'error' );
+        $( this.html.fields.emailInputId ).parent().removeClass( 'field--not-valid' );
+        $( this.html.fields.passwordInputId ).parent().removeClass( 'field--not-valid' );
+
+        $( this.html.forms.loginFormId ).find( 'span[data-error-message]' ).remove();
     };
 
     login.prototype.getSerializedFormData = function() {
@@ -45,7 +49,6 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
 
     login.prototype.successHandler = function( response ) {
         if( response.success ) {
-            alertify.success( response.message );
 
             if ( response.redirect ) {
                 document.location.href = response.redirect;
@@ -53,14 +56,12 @@ define(['jquery', 'alertify', 'tools/spin'], function( $, alertify, Spin ) {
                 document.location.href = this.urls.home;
             }
         } else {
-            this.enableFieldsHighlight();
-            alertify.error( response.message );
+            this.enableFieldsHighlight( response.message );
         }
     };
 
     login.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        this.enableFieldsHighlight();
-        alertify.error( errorThrown );
+        this.enableFieldsHighlight( errorThrown );
     };
 
     login.prototype.doRequest = function ( ajaxURL, data ) {

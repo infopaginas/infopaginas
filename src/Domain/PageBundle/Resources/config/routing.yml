@@ -1,18 +1,30 @@
 domain_page_view_contact:
     path:     /contact-us
     defaults: { _controller: DomainPageBundle:Default:viewContact }
+    options:
+        sitemap:
+            section: main
 
 domain_page_view_terms:
     path:     /terms
     defaults: { _controller: DomainPageBundle:Default:viewTerms }
+    options:
+        sitemap:
+            section: main
 
 domain_page_view_privacy:
     path:     /privacy
     defaults: { _controller: DomainPageBundle:Default:viewPrivacy }
+    options:
+        sitemap:
+            section: main
 
 domain_page_view_advertise:
     path:     /advertise
     defaults: { _controller: DomainPageBundle:Default:viewAdvertise }
+    options:
+        sitemap:
+            section: main
 
 domain_page_view_features:
     path:     /features
@@ -20,3 +32,6 @@ domain_page_view_features:
         _controller: FrameworkBundle:Redirect:redirect
         route: domain_page_view_advertise
         permanent: true
+    options:
+        sitemap:
+            section: main

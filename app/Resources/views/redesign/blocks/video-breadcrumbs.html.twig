@@ -1,0 +1,18 @@
+<div class="toolbar">
+    <div class="toolbar__nav">
+        <a href="{{ path('domain_site_home_index') }}" title="{% trans %}Homepage{% endtrans %}">
+            <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}Homepage{% endtrans %}</span>
+            </button>
+        </a>
+
+        <div class="breadcrumb">
+            <a href="{{ path('domain_business_video_list') }}" title="{% trans %}Videos{% endtrans %}" class="button categorie__item categorie__parent">
+                <span>{% trans %}Videos{% endtrans %}</span>
+            </a>
+        </div>
+
+        <!-- breadcrumb -->
+    </div><!-- toolbar__nav -->
+</div><!-- toolbar -->

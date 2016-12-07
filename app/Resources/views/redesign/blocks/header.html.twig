@@ -6,9 +6,11 @@
         </a>
     </div>
 
-    {% block searchBlock %}
-        {% include ':redesign/blocks:search.html.twig' %}
-    {% endblock %}
+    {% if hideHeaderSearch is not defined or not hideHeaderSearch %}
+        {% block searchBlock %}
+            {% include ':redesign/blocks:search.html.twig' %}
+        {% endblock %}
+    {% endif %}
 
     <button id="nav-toggle" type="button" class="nav__toggle button button--text">
         <i class="fa fa-bars"></i>
@@ -63,10 +65,22 @@
                 <a href="{{ path('domain_business_video_list') }}"><i class="fa fa-play"></i>{% trans %}Videos{% endtrans %}</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-search"></i>{% trans %}Common searches N/A link{% endtrans %}</a>{# todo #}
+                <a href="{{ path('domain_search_catalog') }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
             </li>
             <li>
-                <a href="{{ path('domain_search_catalog') }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
+                <a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="https://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ path('domain_page_view_contact') }}">{% trans %}Contact Us{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Statement{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Use{% endtrans %}</a>
             </li>
         </ul>
         <div class="about-infopaginas">

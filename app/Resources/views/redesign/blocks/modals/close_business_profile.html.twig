@@ -1,0 +1,24 @@
+<!--Modal review-->
+<div id="closeBusinessProfileModal" class="modal modal--review" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal__outside"></div>
+    <div class="modal__content">
+        <h2>{% trans %}Close Business Profile Request{% endtrans %}</h2>
+        <div class="modal__section">
+            <form class="account-form login-form" id="closeBusinessProfileForm">
+                <div class="form__field field--user">
+                    {{ form_label(closeBusinessProfileForm.reason) }}
+                    {{ form_widget(closeBusinessProfileForm.reason, {'attr': {'placeholder':''}} ) }}
+                </div>
+                <div class="form__actions">
+                    {{ form_rest(reviewForm) }}
+                    <button type="button" class="button button--action" data-business-profile-id="{{ businessProfile.getId() }}" id="closeBusinessProfileButton">
+                        {% trans %}Submit{% endtrans %}
+                    </button>
+                    <button type="button" class="button button--action  hide-modal">{% trans %}Cancel{% endtrans %}</button>
+                </div>
+            </form>
+        </div><!-- modal__section -->
+        <div class="modal__section login__footer"></div><!-- modal__section -->
+        <button type="button" class="button--remove hide-modal"><i class="fa fa-remove"></i></button>
+    </div><!-- modal__content -->
+</div>

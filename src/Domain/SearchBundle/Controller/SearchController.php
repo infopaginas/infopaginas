@@ -35,8 +35,8 @@ class SearchController extends Controller
         $schema = false;
 
         if ($searchDTO) {
-            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
-            $dcDataDTO          = $searchManager->getDoubleClickData($searchDTO);
+            $searchResultsDTO = $searchManager->search($searchDTO, $locale);
+            $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
@@ -44,9 +44,13 @@ class SearchController extends Controller
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+
+            $locationMarkers = $this->getBusinessProfileManager()
+                ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
-            $dcDataDTO = null;
+            $dcDataDTO        = null;
+            $locationMarkers  = null;
         }
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
@@ -61,7 +65,7 @@ class SearchController extends Controller
         $pageRouter = 'domain_search_index';
 
         return $this->render(
-            'DomainSearchBundle:Search:index.html.twig',
+            ':redesign:search-results.html.twig',
             [
                 'search'        => $searchDTO,
                 'results'       => $searchResultsDTO,
@@ -70,6 +74,7 @@ class SearchController extends Controller
                 'searchData'    => $searchData,
                 'pageRouter'    => $pageRouter,
                 'schemaJsonLD'  => $schema,
+                'markers'       => $locationMarkers,
             ]
         );
     }
@@ -92,6 +97,7 @@ class SearchController extends Controller
 
     public function mapAction(Request $request)
     {
+//        todo remove this
         $searchManager = $this->get('domain_search.manager.search');
 
         $searchDTO = $searchManager->getSearchDTO($request);
@@ -162,7 +168,7 @@ class SearchController extends Controller
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
-            $locationMarkers = null;
+            $schema           = null;
         }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
@@ -173,7 +179,7 @@ class SearchController extends Controller
         $pageRouter = $this->container->get('request')->attributes->get('_route');
 
         return $this->render(
-            'DomainSearchBundle:Search:compare.html.twig',
+            ':redesign:search-results-compare.html.twig',
             [
                 'results'       => $searchResultsDTO,
                 'bannerFactory' => $bannerFactory,
@@ -226,6 +232,8 @@ class SearchController extends Controller
 
         $category    = null;
         $subcategory = null;
+        $showResults = null;
+        $showCatalog = true;
 
         $categories    = [];
         $subcategories = [];
@@ -253,9 +261,17 @@ class SearchController extends Controller
                 $subcategories = $searchManager->searchSubcategoryByCategory($category, $request->getLocale());
                 $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 
+                $showResults = true;
+
                 if ($subcategory and $subcategory->getParent()) {
                     $request->attributes->set('subcategory', $subcategory->getName());
                     $request->attributes->set('q', $subcategory->getName());
+
+                    $showCatalog = false;
+                }
+
+                if (!$subcategories) {
+                    $showCatalog = false;
                 }
             }
         }
@@ -276,6 +292,7 @@ class SearchController extends Controller
             return $this->handlePermanentRedirect($locality, $category, $subcategory);
         }
 
+        $searchDTO        = null;
         $searchResultsDTO = null;
         $dcDataDTO        = null;
         $schema           = null;
@@ -293,22 +310,29 @@ class SearchController extends Controller
             ]
         );
 
-        $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $subcategory);
+        if (!$locality) {
+            $locationMarkers = $this->getLocalityManager()->getLocationMarkersFromLocalityData($localities);
+        } elseif (!$category) {
+            $locationMarkers = $this->getLocalityManager()->getLocationMarkersFromLocalityData([$locality]);
+        } else {
+            $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $subcategory);
 
-        //locality lat and lan required
-        if ($searchDTO) {
-            $dcDataDTO = $searchManager->getDoubleClickData($searchDTO);
-            $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
+            //locality lat and lan required
+            if ($searchDTO) {
+                $dcDataDTO = $searchManager->getDoubleClickData($searchDTO);
+                $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
 
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+                $this->getBusinessProfileManager()
+                    ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-            $this->getSearchLogManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+                $this->getSearchLogManager()
+                    ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
-            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+                $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
-            $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+                $locationMarkers = $this->getBusinessProfileManager()
+                    ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+            }
         }
 
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $subcategories);
@@ -331,6 +355,8 @@ class SearchController extends Controller
                 'schemaJsonLD'       => $schema,
                 'markers'            => $locationMarkers,
                 'catalogLevelItems'  => $catalogLevelItems,
+                'showResults'        => $showResults,
+                'showCatalog'        => $showCatalog,
             ]
         );
     }
