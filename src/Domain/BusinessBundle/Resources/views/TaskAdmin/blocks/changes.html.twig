@@ -33,7 +33,9 @@
 
                     <td>{{ normalize_task_changeaction_label(row.action) }}</td>
 
-                    {% if row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_UPDATE') %}
+                    {% if row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_UPDATE')
+                        or
+                        row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::PROPERTY_IMAGE_UPDATE') %}
                         {% set newData = get_business_profile_image_changes(row.newValue) %}
                         {% set changes = prepare_image_diff(newData) %}
                         <td>
@@ -77,11 +79,17 @@
                                 {% endfor %}
                             </td>
                         {% endif %}
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_REMOVE') %}
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_REMOVE')
+                        or
+                        row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::PROPERTY_IMAGE_REMOVE')
+                     %}
                         {% set changes = get_business_profile_image_changes(row.oldValue) %}
                         <td> {{ changes.name }} </td>
                         <td>-</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_ADD') %}
+                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_ADD')
+                        or
+                        row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::PROPERTY_IMAGE_ADD')
+                      %}
                         {% set changes = get_business_profile_image_changes(row.newValue) %}
                         <td>-</td>
                         <td> {{ changes.name }} </td>

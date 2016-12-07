@@ -4,6 +4,7 @@ page: Page
 banner: Banner
 business_profile_images: Business Profile Images
 business_profile_logo: Business Profile Logo
+business_profile_иackground: Business Profile Background
 sonata.media.provider.image: Image
 
 

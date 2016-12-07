@@ -24,6 +24,10 @@ class ChangeSetCalculator
     const PROPERTY_ADD    = 'PROPERTY_ADD';
     const PROPERTY_REMOVE = 'PROPERTY_REMOVE';
 
+    const PROPERTY_IMAGE_ADD    = 'PROPERTY_IMAGE_ADD';
+    const PROPERTY_IMAGE_REMOVE = 'PROPERTY_IMAGE_REMOVE';
+    const PROPERTY_IMAGE_UPDATE = 'PROPERTY_IMAGE_UPDATE';
+
     const IMAGE_ADD    = 'IMAGE_ADD';
     const IMAGE_REMOVE = 'IMAGE_REMOVE';
     const IMAGE_UPDATE = 'IMAGE_UPDATE';
@@ -40,6 +44,7 @@ class ChangeSetCalculator
      */
     public static function getChangeSet(EntityManagerInterface $em, $entity, $oldCategories) : ChangeSet
     {
+        $imageFields          = ChangeSetCollectorUtil::getEntityLogoAndBackgroundChangeSet($em, $entity);
         $collectionsChangeSet = ChangeSetCollectorUtil::getEntityCollectionsChangeSet($em, $entity, $oldCategories);
         $fieldsChangeSet      = ChangeSetCollectorUtil::getEntityFieldsChangeSet($em, $entity);
         $videoChange          = ChangeSetCollectorUtil::getEntityVideoChangeSet($em, $entity);
@@ -55,6 +60,12 @@ class ChangeSetCalculator
 
         /** @var ChangeSetEntry $entry */
         foreach ($collectionsChangeSet as $entry) {
+            $entry->setChangeSet($changeSet);
+            $changeSet->addEntry($entry);
+            $em->persist($entry);
+        }
+
+        foreach($imageFields as $entry) {
             $entry->setChangeSet($changeSet);
             $changeSet->addEntry($entry);
             $em->persist($entry);

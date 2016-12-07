@@ -386,6 +386,16 @@ class BusinessProfile implements
     protected $logo;
 
     /**
+     * @var Media - Media Background Image
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="background_id", referencedColumnName="id", nullable=true)
+     */
+    protected $background;
+
+    /**
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer", nullable=false)
      */
@@ -1579,6 +1589,30 @@ class BusinessProfile implements
     }
 
     /**
+     * Set background
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\Media $background
+     *
+     * @return BusinessProfile
+     */
+    public function setBackground($background = null)
+    {
+        $this->background = $background;
+
+        return $this;
+    }
+
+    /**
+     * Get background
+     *
+     * @return \Oxa\Sonata\MediaBundle\Entity\Media
+     */
+    public function getBackground()
+    {
+        return $this->background;
+    }
+
+    /**
      * Add image
      *
      * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
@@ -1592,6 +1626,8 @@ class BusinessProfile implements
 
         if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
             $this->setLogo($image->getMedia());
+        }elseif ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+            $this->setBackground($image->getMedia());
         }
 
         return $this;

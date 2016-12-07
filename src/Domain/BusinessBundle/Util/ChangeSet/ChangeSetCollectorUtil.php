@@ -18,6 +18,7 @@ use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\DoctrineUtil;
 use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\MediaBundle\Entity\Media;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -137,12 +138,19 @@ class ChangeSetCollectorUtil
         $collection = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertyValue($entity, $property);
 
         $insertDiff = $collection->getInsertDiff();
+        foreach($insertDiff as $key => $value) {
+            if ((int)$key) {
+                unset($insertDiff[$key]);
+            }
+        }
         $deleteDiff = $collection->getDeleteDiff();
 
         $changeset = [];
-
         /** @var BusinessGallery $newBusinessGalleryObject */
-        foreach ($insertDiff as $newBusinessGalleryObject) {
+        foreach ($insertDiff as $idFromPost => $newBusinessGalleryObject) {
+            if (self::checkDuplicatesInsertDelete($deleteDiff, $newBusinessGalleryObject)) {
+                continue;
+            }
             $changeset[] = self::buildChangeSetEntryObject(
                 $property,
                 '',
@@ -152,8 +160,13 @@ class ChangeSetCollectorUtil
             );
         }
 
+dump($insertDiff);
+dump($deleteDiff);
         /** @var BusinessGallery $removedBusinessGalleryObject */
         foreach ($deleteDiff as $removedBusinessGalleryObject) {
+            if (self::checkDuplicatesInsertDelete($insertDiff, $removedBusinessGalleryObject, true)) {
+                continue;
+            }
             $changeset[] = self::buildChangeSetEntryObject(
                 $property,
                 ChangeSetSerializerUtil::serializeBusinessGalleryObject($removedBusinessGalleryObject),
@@ -173,7 +186,15 @@ class ChangeSetCollectorUtil
         foreach ($originalCollection as $businessGallery) {
             if ($collection->exists(
                     function($key, $entry) use ($businessGallery) {
-                        return  ($entry->getId() == $businessGallery->getId());
+                        return  (
+                                $entry->getMedia()->getId() == $businessGallery->getMedia()->getId()
+                                &&
+                                $entry->getIsPrimary() == $businessGallery->getIsPrimary()
+                                &&
+                                $entry->getDescription() == $businessGallery->getDescription()
+                                &&
+                                $entry->getType() == $businessGallery->getType()
+                                );
                     }
                 )
             ) {
@@ -192,8 +213,21 @@ class ChangeSetCollectorUtil
                 continue;
             }
         }
-
+dump($entity->getImages());
         return $changeset;
+    }
+
+    protected function checkDuplicatesInsertDelete($collectionEntryies, $gallery, $useCollectionKeysAsId = false)
+    {
+        foreach($collectionEntryies as $id => $entry) {
+            if (!$useCollectionKeysAsId && $gallery->getMedia()->getId() == $entry->getMedia()->getId()
+                    ||
+                $useCollectionKeysAsId && $id == $gallery->getId()
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -208,7 +242,7 @@ class ChangeSetCollectorUtil
         $changeEntries = [];
 
         foreach ($fieldsChanges as $field => $change) {
-            if (!is_array($change) || $field == 'video') {
+            if (!is_array($change) || $field == 'video' || $field == 'logo' || $field == 'background') {
                 continue;
             }
 
@@ -220,6 +254,10 @@ class ChangeSetCollectorUtil
                 $action = ChangeSetCalculator::PROPERTY_REMOVE;
             }
 
+            
+            if (!is_object($change[0]) && !is_object($change[1]) && $change[0] == $change[1]) {
+                continue;
+            }
             $oldValue = $change[0] === null ? '-' : $change[0];
             $newValue = $change[1] === null ? '-' : $change[1];
 
@@ -288,6 +326,58 @@ class ChangeSetCollectorUtil
         }
 
         return false;
+    }
+
+
+    /**
+     * @param $em
+     * @param $entity
+     * @return bool|ChangeSetEntry
+     */
+    public static function getEntityLogoAndBackgroundChangeSet($em, $entity)
+    {
+        try {
+            $profileDiff = DoctrineUtil::diffDoctrineObject($em, $entity);
+        } catch (ContextErrorException $e) {
+            return false;
+        }
+
+        $fields = ['logo', 'background'];
+        $context = [
+            'logo'          => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+            'background'    => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+        ];
+
+        $entries = [];
+        foreach($fields as $field) {
+            $entry = new ChangeSetEntry();
+            $entry->setFieldName($field);
+
+            if (!isset($profileDiff[$field])) {
+                continue;
+            }
+
+            $diff = $profileDiff[$field];
+            if (is_array($diff) && count($diff) == 2) {
+                if ($diff[0] == null) {
+                    $entry->setOldValue('');
+                    $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[1], $context[$field]));
+                    $entry->setAction(ChangeSetCalculator::PROPERTY_IMAGE_ADD);
+                } elseif($diff[1] == null) {
+                    $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[0], $context[$field]));
+                    $entry->setNewValue('');
+                    $entry->setAction(ChangeSetCalculator::PROPERTY_IMAGE_REMOVE);
+                } else {
+                    $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[0], $context[$field]));
+                    $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[1], $context[$field]));
+                    $entry->setAction(ChangeSetCalculator::PROPERTY_IMAGE_UPDATE);
+                }
+
+                $entries[] = $entry;
+            }
+        }
+
+        return $entries;
     }
 
     /**

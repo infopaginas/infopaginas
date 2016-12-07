@@ -124,16 +124,27 @@ class BusinessGalleryManager
      * @param Media $media
      * @return BusinessProfile
      */
-    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media, bool $isLogo = false) : BusinessProfile
+    public function addNewItemToBusinessProfileGallery(
+            BusinessProfile $businessProfile, 
+            Media $media, 
+            bool $isLogo = false, 
+            bool $isBackground = false) : BusinessProfile
     {
         $businessGallery = new BusinessGallery();
         $businessGallery->setMedia($media);
-        $businessProfile->addImage($businessGallery);
+        $businessGallery->setType($media->getContext());
 
         if ($isLogo) {
             $businessProfile->setLogo($media);
+            $businessGallery->setType(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO);
         }
 
+        if ($isBackground) {
+            $businessProfile->setBackground($media);
+            $businessGallery->setType(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND);
+        }
+
+        $businessProfile->addImage($businessGallery);
         return $businessProfile;
     }
 
@@ -148,6 +159,22 @@ class BusinessGalleryManager
         foreach ($businessProfile->getImages() as $image) {
             if ($image->getType() === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
                 $businessProfile->setLogo($image->getMedia());
+                $this->getEntityManager()->persist($businessProfile);
+            }
+        }
+    }
+
+    /**
+     * Go through business profile images and setup profile logo, if found
+     *
+     * @access public
+     * @param BusinessProfile $businessProfile
+     */
+    public function setupBusinessProfileBackground(BusinessProfile $businessProfile)
+    {
+        foreach ($businessProfile->getImages() as $image) {
+            if ($image->getType() === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                $businessProfile->setBackground($image->getMedia());
                 $this->getEntityManager()->persist($businessProfile);
             }
         }
