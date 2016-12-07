@@ -34,3 +34,17 @@ monolog:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+
+
+knp_gaufrette:
+    adapters:
+        video:
+            amazon_s3:
+                amazon_s3_id:   amazonS3
+                bucket_name:    infopaginas-dev
+                options:
+                    create:     true
+                    directory:  video
+    filesystems:
+        ipgn:
+            adapter:    ipgn

@@ -5,3 +5,12 @@ parameters:
 services:
     dynamicDomainSessionStorage:
         class: Domain\SiteBundle\Utils\DynamicDomainSessionStorage
+    acme.aws_s3.client:
+        class: Aws\S3\S3Client
+        factory_class: Aws\S3\S3Client
+        factory_method: 'factory'
+        arguments:
+            -
+                key:    AKIAJNXO2HSEBOJIFU7A
+                secret: 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
+                region: us-east-1
