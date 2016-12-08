@@ -57,6 +57,9 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
+    const BUSINESS_PROFILE_FIELD_LOGO       = 'logo';
+    const BUSINESS_PROFILE_FIELD_BACKGROUND = 'background';
+
     const DEFAULT_LOCALE = 'en';
 
     /**
@@ -376,6 +379,8 @@ class BusinessProfile implements
     protected $images;
 
     /**
+     * Logo Field. Related to class constant BUSINESS_PROFILE_FIELD_LOGO
+     *
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
      *     inversedBy="businessProfiles",
@@ -384,6 +389,18 @@ class BusinessProfile implements
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
      */
     protected $logo;
+
+    /**
+     * Background Field. Related to class constant BUSINESS_PROFILE_FIELD_BACKGROUND
+     *
+     * @var Media - Media Background Image
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="background_id", referencedColumnName="id", nullable=true)
+     */
+    protected $background;
 
     /**
      * @Gedmo\SortablePosition
@@ -1579,6 +1596,30 @@ class BusinessProfile implements
     }
 
     /**
+     * Set background
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\Media $background
+     *
+     * @return BusinessProfile
+     */
+    public function setBackground($background = null)
+    {
+        $this->background = $background;
+
+        return $this;
+    }
+
+    /**
+     * Get background
+     *
+     * @return \Oxa\Sonata\MediaBundle\Entity\Media
+     */
+    public function getBackground()
+    {
+        return $this->background;
+    }
+
+    /**
      * Add image
      *
      * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
@@ -1592,6 +1633,8 @@ class BusinessProfile implements
 
         if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
             $this->setLogo($image->getMedia());
+        } elseif ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+            $this->setBackground($image->getMedia());
         }
 
         return $this;

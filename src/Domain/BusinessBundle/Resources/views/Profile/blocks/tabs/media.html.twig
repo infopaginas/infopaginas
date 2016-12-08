@@ -33,7 +33,7 @@
                             <div id="images-spin-container"></div>
 
                             <div class="col-xs-12 table-responsive table-media-image">
-                                <table class="table" {% if businessProfileForm.images | length <= 0 %}style="display: none"{% endif %}>
+                                <table class="table" {% if businessProfileForm.images | length <= 0 and not businessProfile.background and not businessProfile.logo %}style="display: none"{% endif %}>
                                     <tr>
                                         <th></th>
                                         <th>{% trans %}PRIMARY{% endtrans %}</th>
@@ -41,7 +41,7 @@
                                         <th>{% trans %}DESCRIPTION{% endtrans %}</th>
                                         <th>{% trans %}REMOVE{% endtrans %}</th>
                                     </tr>
-                                    <tbody id="gallery">
+                                    <tbody id="gallery" {% if businessProfileForm.images | length <= 0 %}style="display: none"{% endif %}>
                                         {%
                                             include 'DomainBusinessBundle:Images/blocks:gallery.html.twig'
                                             with { 'images': businessProfileForm.images }

@@ -101,8 +101,14 @@ class TasksManager
      */
     public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile, $oldCategories) : array
     {
+        $changeSet = ChangeSetCalculator::getChangeSet($this->em, $businessProfile, $oldCategories);
+
+        if ($changeSet->getEntries()->isEmpty()) {
+            return [];
+        }
+
         $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
-        $task->setChangeSet(ChangeSetCalculator::getChangeSet($this->em, $businessProfile, $oldCategories));
+        $task->setChangeSet($changeSet);
         return $this->save($task, false);
     }
 

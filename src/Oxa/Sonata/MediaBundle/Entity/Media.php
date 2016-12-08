@@ -141,10 +141,11 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public static function getContexts() : array
     {
         return [
-            self::CONTEXT_DEFAULT                   => self::CONTEXT_DEFAULT,
-            self::CONTEXT_BUSINESS_PROFILE_IMAGES   => self::CONTEXT_BUSINESS_PROFILE_IMAGES,
-            self::CONTEXT_BUSINESS_PROFILE_LOGO     => self::CONTEXT_BUSINESS_PROFILE_LOGO,
-            self::CONTEXT_BANNER                    => self::CONTEXT_BANNER,
+            self::CONTEXT_DEFAULT                       => self::CONTEXT_DEFAULT,
+            self::CONTEXT_BUSINESS_PROFILE_IMAGES       => self::CONTEXT_BUSINESS_PROFILE_IMAGES,
+            self::CONTEXT_BUSINESS_PROFILE_LOGO         => self::CONTEXT_BUSINESS_PROFILE_LOGO,
+            self::CONTEXT_BUSINESS_PROFILE_BACKGROUND   => self::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+            self::CONTEXT_BANNER                        => self::CONTEXT_BANNER,
         ];
     }
 

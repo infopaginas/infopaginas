@@ -1,4 +1,9 @@
 {% for image in images %}
+    {% if image.vars.data.id is empty %}
+        {% set id = 'media_' ~ image.vars.data.media.id %}
+    {% else %}
+        {% set id = image.vars.data.id %}
+    {% endif %}
     <tr id="images-form-{{ image.vars.data.media.id }}" class="image-row">
         <td>
             <div class="image-wrap">
@@ -7,22 +12,22 @@
         </td>
         <td>
             <div class="checkbox">
-                {{ form_widget(image.isPrimary) }}
+                {{ form_widget(image.isPrimary, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_isPrimary', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][isPrimary]' }) }}
             </div>
         </td>
         <td>
             <div class="dropdown-col ">
                 <div class="dropdown">
                     <div class="select-container">
-                        {{ form_widget(image.type) }}
+                        {{ form_widget(image.type, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_type', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][type]' }) }}
                     </div>
                 </div>
             </div>
         </td>
         <td>
-            {{ form_widget(image.description) }}
+            {{ form_widget(image.description, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_description', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][description]' }) }}
         </td>
-        {{ form_widget(image.media) }}
+        {{ form_widget(image.media, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_media', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][media]' }) }}
         <td>
             <a href="#" class="media-close remove-image-link" data-id="{{ image.vars.data.media.id }}">X</a>
         </td>
@@ -33,5 +38,6 @@
     <script>
         var logoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO') }}';
         var photoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES') }}';
+        var backgroundTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND') }}';
     </script>
 {% endblock %}

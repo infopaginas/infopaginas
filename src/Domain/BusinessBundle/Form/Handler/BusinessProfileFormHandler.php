@@ -78,7 +78,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
         $post   = $this->request->request->all()[$this->form->getName()];
 
-        $oldCategories = [];
+        $oldCategories  = [];
+        $oldImages      = [];
 
         if ($businessProfileId !== false) {
             /* @var BusinessProfile $businessProfile */
@@ -157,6 +158,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     private function onSuccess(BusinessProfile $businessProfile, $oldCategories)
     {
         if (!$businessProfile->getId()) {
+            $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
 
             if ($this->currentUser instanceof User) {
@@ -165,9 +167,13 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             $this->getBusinessProfilesManager()->saveProfile($businessProfile);
         } else {
+            $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
-            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
+
+            if ($this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories)) {
+                $this->getBusinessProfilesManager()->saveProfile($businessProfile);
+            }
         }
     }
 

@@ -1,0 +1,10 @@
+
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field%}
+    {% if object.background is not null %}
+        <a href="{{ path('admin_sonata_media_media_edit', {'id' : object.background|sonata_urlsafeid }) }}">
+            <img src="{% path object.background, 'admin' %}" alt="{{ object.background.name }}">
+        </a>
+    {% endif %}
+{% endblock %}

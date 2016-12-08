@@ -200,6 +200,12 @@ class BusinessProfileAdmin extends OxaAdmin
                         'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
                         'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                     ]])
+                    ->add('background', 'sonata_type_model_list', [
+                        'required' => false
+                    ], ['link_parameters' => [
+                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                    ]])
                     ->add('website')
                     ->add('email', EmailType::class, [
                         'required' => false,
@@ -472,6 +478,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->add('logo', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_image.html.twig'
+            ])
+            ->add('background', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_background.html.twig'
             ])
             ->add('name')
             ->add('images')

@@ -16,6 +16,7 @@ use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\BusinessBundle\Repository\TagRepository;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\Sonata\MediaBundle\Entity\Media as SonataMedia;
 use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;

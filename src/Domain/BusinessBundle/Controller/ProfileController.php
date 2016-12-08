@@ -60,6 +60,7 @@ class ProfileController extends Controller
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
+        $businessProfile = $this->getBusinessProfilesManager()->addLogoAndBackgroundToGallery($businessProfile);
 
         $this->checkBusinessProfileAccess($businessProfile);
 

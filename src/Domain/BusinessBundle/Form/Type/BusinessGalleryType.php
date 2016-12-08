@@ -34,12 +34,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BusinessGalleryType extends AbstractType
 {
+    const SET_DEFAULT_FEILDS = 'business_gallery_form_set_default_fields';
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $options = [
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES      => 'Photo',
+                OxaMediaInterface::CONTEXT_BANNER                       => 'Banner Ad',
+            ];
 
         $builder
             ->add('media', EntityHiddenType::class, [
@@ -59,8 +67,19 @@ class BusinessGalleryType extends AbstractType
                 ],
                 'label' => 'Description',
             ])
+            ->add('type', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'form-control select-control select-image-type',
+                ],
+                'choices'  => $options,
+                'expanded' => false,
+                'label'    => 'Type',
+                'multiple' => false,
+            ])
+
         ;
 
+        return ;
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var BusinessProfile $businessProfile */
 
@@ -74,16 +93,22 @@ class BusinessGalleryType extends AbstractType
                 $subscription = $businessProfile->getSubscriptionPlan();
             }
 
-            switch ($subscription->getCode()) {
+            $code = $subscription->getCode();
+            if (!$businessGallery) {
+                $code = self::SET_DEFAULT_FEILDS;
+            }
+            switch ($code) {
                case SubscriptionPlanInterface::CODE_PREMIUM_PLUS:
-                    $this->setupPremiumPlusPlanFormFields($businessProfile, $event->getForm());
+                    $this->setupPremiumPlusPlanFormFields($event->getForm());
                     break;
                 case SubscriptionPlanInterface::CODE_PREMIUM_GOLD:
-                    $this->setupPremiumGoldPlanFormFields($businessProfile, $event->getForm());
+                    $this->setupPremiumGoldPlanFormFields($event->getForm());
                     break;
                 case SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM:
-                    $this->setupPremiumPlatinumPlanFormFields($businessProfile, $event->getForm());
+                    $this->setupPremiumPlatinumPlanFormFields($event->getForm());
                     break;
+               case self::SET_DEFAULT_FEILDS:
+                   $this->setupPremiumPlatinumPlanFormFields($event->getForm());
                 default:
             }
         });
@@ -109,10 +134,11 @@ class BusinessGalleryType extends AbstractType
         return 'domain_business_bundle_business_gallery_type';
     }
 
-    protected function setupPremiumPlusPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    protected function setupPremiumPlusPlanFormFields(FormInterface $form)
     {
         $options = [
-                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO    => 'Logo',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
             ];
         $form
             ->add('type', ChoiceType::class, [
@@ -129,12 +155,15 @@ class BusinessGalleryType extends AbstractType
         return $options;
     }
 
-    protected function setupPremiumGoldPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    protected function setupPremiumGoldPlanFormFields(FormInterface $form)
     {
+        $this->setupPremiumPlusPlanFormFields($form);
+
         $options = [
-                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES  => 'Photo',
-                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO    => 'Logo',
-                OxaMediaInterface::CONTEXT_BANNER                   => 'Banner Ad',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES      => 'Photo',
+                OxaMediaInterface::CONTEXT_BANNER                       => 'Banner Ad',
             ];
         $form
             ->add('type', ChoiceType::class, [
@@ -151,8 +180,8 @@ class BusinessGalleryType extends AbstractType
         return $options;
     }
 
-    protected function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    protected function setupPremiumPlatinumPlanFormFields(FormInterface $form)
     {
-        $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
+        $this->setupPremiumGoldPlanFormFields($form);
     }
 }
