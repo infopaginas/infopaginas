@@ -250,22 +250,7 @@
                             </section>
                         {% endif %}
 
-                        <div class="ad ad-mobile">
-                            <h5>{% trans %}Advertising{% endtrans %}</h5>
-                            <a href="#" target="_blank">
-                                <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
-                            </a>
-                        </div>
-
-                        {# todo banner #}
-                        {#<div class="ad ad-mobile">#}
-                            {#<h5>Advertising</h5>#}
-                            {#{% if bannerFactory is not null %}#}
-                                {#{% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with { 'banner' :#}
-                                {#bannerFactory.retrieve(constant('Domain\\BannerBundle\\Model\\TypeInterface::CODE_SERP_BOXED'))  }#}
-                                {#%}#}
-                            {#{% endif %}#}
-                        {#</div>#}
+                        {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
 
                         <section class="page-section profile-map">
                             <div id="map"></div>
@@ -278,7 +263,7 @@
 
                         {% include ':redesign/blocks:social-share.html.twig' %}
 
-                        {# todo add double click #}
+                        {% include ':redesign/blocks/banners:side-block.html.twig' %}
 
                         {% if businessProfile.subcategories|length > 0 %}
                             <div class="sidebar__section section--tags">

@@ -2,6 +2,8 @@
 
 namespace Domain\PageBundle\Controller;
 
+use Domain\BannerBundle\Model\TypeInterface;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
@@ -50,9 +52,19 @@ class DefaultController extends Controller
     {
         $page = $this->get('domain_page.manager.page')->getPageByCode($slug);
 
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
+
         $params = [
-            'page'      => $page,
-            'seoData'   => $page,
+            'page'          => $page,
+            'seoData'       => $page,
+            'bannerFactory' => $bannerFactory,
         ];
 
         return $this->render(':redesign:static-page-view.html.twig', $params);

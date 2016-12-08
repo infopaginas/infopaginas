@@ -4,7 +4,9 @@ namespace Domain\ArticleBundle\Model\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,6 +35,36 @@ class ArticleManager extends Manager
         $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT);
 
         return $homepageArticles;
+    }
+
+    public function getArticleDoubleClickData(Article $article) : DCDataDTO
+    {
+        return new DCDataDTO(
+            [],
+            '',
+            [$article->getCategory()->getName()],
+            $article->getSlug()
+        );
+    }
+
+    public function getAllArticleDoubleClickData() : DCDataDTO
+    {
+        return new DCDataDTO(
+            [],
+            '',
+            [],
+            ''
+        );
+    }
+
+    public function getArticleCategoryListDoubleClickData(Category $category) : DCDataDTO
+    {
+        return new DCDataDTO(
+            [],
+            '',
+            [$category->getName()],
+            ''
+        );
     }
 
     /**

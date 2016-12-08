@@ -3,6 +3,7 @@
 namespace Domain\ArticleBundle\Controller;
 
 use Domain\ArticleBundle\Model\Manager\ArticleManager;
+use Domain\BannerBundle\Model\TypeInterface;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -24,9 +25,21 @@ class ArticleController extends Controller
         $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
+
+        $dcDataDTO = $articleManager->getAllArticleDoubleClickData();
+
         $params = [
             'articlesResultDTO' => $articlesResultDTO,
             'schemaJsonLD'      => $schema,
+            'bannerFactory'     => $bannerFactory,
+            'dcDataDTO'         => $dcDataDTO,
         ];
 
         return $this->render(':redesign:article-list.html.twig', $params);
@@ -48,9 +61,21 @@ class ArticleController extends Controller
 
         $schema = $articleManager->buildArticlesSchema([$article]);
 
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
+
+        $dcDataDTO = $articleManager->getArticleDoubleClickData($article);
+
         $params = [
-            'article'      => $article,
-            'schemaJsonLD' => $schema,
+            'article'       => $article,
+            'schemaJsonLD'  => $schema,
+            'bannerFactory' => $bannerFactory,
+            'dcDataDTO'     => $dcDataDTO,
         ];
 
         return $this->render(':redesign:article-view.html.twig', $params);
@@ -76,10 +101,22 @@ class ArticleController extends Controller
 
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
+
+        $dcDataDTO = $articleManager->getArticleCategoryListDoubleClickData($category);
+
         $params = [
             'articlesResultDTO' => $articlesResultDTO,
             'articleCategory'   => $category,
             'schemaJsonLD'      => $schema,
+            'bannerFactory'     => $bannerFactory,
+            'dcDataDTO'         => $dcDataDTO,
         ];
 
         return $this->render(':redesign:article-list.html.twig', $params);

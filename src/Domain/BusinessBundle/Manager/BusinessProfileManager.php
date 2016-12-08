@@ -681,7 +681,7 @@ class BusinessProfileManager extends Manager
 
     public function getSlugDcDataDTO(BusinessProfile $profile) : DCDataDTO
     {
-        return new DCDataDTO(array(), '', array(), $profile->getSlug());
+        return new DCDataDTO([], '', [$profile->getCategory()->getName()], $profile->getSlug());
     }
 
     private function getEntitiesByIds($class, $ids)

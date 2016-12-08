@@ -56,8 +56,8 @@ class SearchController extends Controller
         $bannerFactory = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
-                TypeInterface::CODE_PORTAL_LEADERBOARD,
-                TypeInterface::CODE_PORTAL,
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
             ]
         );
 
@@ -172,9 +172,12 @@ class SearchController extends Controller
         }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL
-        ));
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
+            ]
+        );
 
         $pageRouter = $this->container->get('request')->attributes->get('_route');
 
@@ -305,8 +308,8 @@ class SearchController extends Controller
         $bannerFactory = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
-                TypeInterface::CODE_PORTAL_LEADERBOARD,
-                TypeInterface::CODE_PORTAL,
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
             ]
         );
 

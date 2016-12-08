@@ -1,0 +1,11 @@
+<div class="sidebar__section section--ad">
+    <ul>
+        <li>
+            <div class="ad ad-sidebar">
+                {% if bannerFactory is not null %}
+                    {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with {'banner': bannerFactory.getRightBlock()} %}
+                {% endif %}
+            </div>
+        </li>
+    </ul>
+</div>

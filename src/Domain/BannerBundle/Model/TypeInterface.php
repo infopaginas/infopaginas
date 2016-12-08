@@ -14,29 +14,18 @@ namespace Domain\BannerBundle\Model;
  */
 interface TypeInterface
 {
-    const CODE_HOME                 = 1;
-    const CODE_PORTAL               = 2;
-    const CODE_PORTAL_LEFT          = 10;
-    const CODE_PORTAL_RIGHT         = 11;
+    const CODE_HOME_VERTICAL        = 1;
+    const CODE_PORTAL_RIGHT         = 2;
+    const CODE_SEARCH_PAGE_BOTTOM   = 3;
+    const CODE_SEARCH_PAGE_TOP      = 4;
+    const CODE_STATIC_BOTTOM        = 5;
 
-    const CODE_PORTAL_LEFT_MOBILE   = 12;
-    const CODE_PORTAL_RIGHT_MOBILE  = 13;
-
-    const CODE_PORTAL_LEADERBOARD   = 3;
-    const CODE_SERP_BANNER          = 4;
-    const CODE_SERP_BOXED           = 5;
-    const CODE_SERP_FEATUREAD       = 6;
-    const CODE_SERP_MOBILE_TOP      = 7;
-
-    const SIZE_120_420 = '120x420';
     const SIZE_300_250 = '300x250';
-    const SIZE_250_250 = '250x250';
-    const SIZE_728_90  = '728x90';
+    const SIZE_AUTO_SEARCH = '320x50, 468x60';
+    const SIZE_AUTO_STATIC = '320x50, 728x90';
 
     const MEDIA_FORMAT_HOME         = 'home';
     const MEDIA_FORMAT_PORTAL       = 'portal';
-    const MEDIA_FORMAT_SERP         = 'serp';
-    const MEDIA_FORMAT_SERP_BOXED   = 'serp_boxed';
 
     /**
      * @return integer

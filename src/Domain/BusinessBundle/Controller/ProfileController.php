@@ -141,9 +141,12 @@ class ProfileController extends Controller
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_SERP_BOXED,
-        ));
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
 
         $schema = $this->getBusinessProfilesManager()->buildBusinessProfilesSchema([$businessProfile], true);
 
