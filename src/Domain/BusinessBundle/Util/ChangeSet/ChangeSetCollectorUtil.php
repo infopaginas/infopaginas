@@ -10,6 +10,7 @@ namespace Domain\BusinessBundle\Util\ChangeSet;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Model\DataType\ChangeSetCollectionDTO;
@@ -240,7 +241,7 @@ class ChangeSetCollectorUtil
         $changeEntries = [];
 
         foreach ($fieldsChanges as $field => $change) {
-            if (!is_array($change) || $field == 'video' || $field == 'logo' || $field == 'background') {
+            if (!is_array($change) || $field == 'video' || $field == BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO || $field == BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND) {
                 continue;
             }
 

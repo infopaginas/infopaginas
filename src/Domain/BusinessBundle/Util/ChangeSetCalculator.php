@@ -65,7 +65,7 @@ class ChangeSetCalculator
             $em->persist($entry);
         }
 
-        foreach($imageFields as $entry) {
+        foreach ($imageFields as $entry) {
             $entry->setChangeSet($changeSet);
             $changeSet->addEntry($entry);
             $em->persist($entry);

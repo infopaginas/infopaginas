@@ -57,6 +57,9 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
+    const BUSINESS_PROFILE_FIELD_LOGO       = 'logo';
+    const BUSINESS_PROFILE_FIELD_BACKGROUND = 'background';
+
     const DEFAULT_LOCALE = 'en';
 
     /**
@@ -376,6 +379,8 @@ class BusinessProfile implements
     protected $images;
 
     /**
+     * Logo Field. Related to class constant BUSINESS_PROFILE_FIELD_LOGO
+     *
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
      *     inversedBy="businessProfiles",
@@ -386,6 +391,8 @@ class BusinessProfile implements
     protected $logo;
 
     /**
+     * Background Field. Related to class constant BUSINESS_PROFILE_FIELD_BACKGROUND
+     *
      * @var Media - Media Background Image
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
      *     inversedBy="businessProfiles",
@@ -1626,7 +1633,7 @@ class BusinessProfile implements
 
         if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
             $this->setLogo($image->getMedia());
-        }elseif ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+        } elseif ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
             $this->setBackground($image->getMedia());
         }
 
