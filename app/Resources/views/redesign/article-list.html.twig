@@ -14,6 +14,8 @@
                     {% include ':redesign/blocks:homepage_article_list.html.twig' with {'articles': articlesResultDTO.resultSet} %}
                     {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : articlesResultDTO.page, 'pageCount' : articlesResultDTO.pageCount } %}
                 {% endif %}
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
             </div>
 
             {% include ':redesign/blocks:side-ads-block.html.twig' %}

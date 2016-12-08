@@ -14,19 +14,19 @@
     {% endfor %}
     {% if dcDataDTO is defined and dcDataDTO is not null %}
         {% if dcDataDTO.searchKeywords is not empty %}
-            googletag.pubads().setTargeting("search", {{ dcDataDTO.searchKeywords|json_encode|raw }})
+            googletag.pubads().setTargeting("search", {{ dcDataDTO.searchKeywords|json_encode|raw }});
         {% endif %}
 
         {% if dcDataDTO.locationName is not empty %}
-            googletag.pubads().setTargeting("location", "{{ dcDataDTO.locationName }}")
+            googletag.pubads().setTargeting("location", "{{ dcDataDTO.locationName }}");
         {% endif %}
 
         {% if dcDataDTO.categories is not empty %}
-            googletag.pubads().setTargeting("categories", {{ dcDataDTO.categories|json_encode|raw }})
+            googletag.pubads().setTargeting("categories", {{ dcDataDTO.categories|json_encode|raw }});
         {% endif %}
 
         {% if dcDataDTO.slug is not empty %}
-            googletag.pubads().setTargeting("slug", "{{ dcDataDTO.slug }}")
+            googletag.pubads().setTargeting("slug", "{{ dcDataDTO.slug }}");
         {% endif %}
     {% endif %}
     googletag.pubads().enableSingleRequest();

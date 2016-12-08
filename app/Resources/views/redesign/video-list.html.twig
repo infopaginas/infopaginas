@@ -14,6 +14,8 @@
                     {% include ':redesign/blocks:video_list.html.twig' with {'businessProfiles': videoResultDTO.resultSet} %}
                     {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : videoResultDTO.page, 'pageCount' : videoResultDTO.pageCount } %}
                 {% endif %}
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
             </div>
 
             {% include ':redesign/blocks:side-ads-block.html.twig' %}

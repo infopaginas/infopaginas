@@ -38,11 +38,8 @@ class HomeController extends Controller
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_SERP_BANNER,
-            TypeInterface::CODE_PORTAL_LEFT,
-            TypeInterface::CODE_PORTAL_RIGHT,
-            TypeInterface::CODE_PORTAL_LEFT_MOBILE,
-            TypeInterface::CODE_PORTAL_RIGHT_MOBILE,
+            TypeInterface::CODE_HOME_VERTICAL,
+            TypeInterface::CODE_PORTAL_RIGHT
         ));
 
         $userRoles = $this->get('security.token_storage')->getToken()->getRoles();
