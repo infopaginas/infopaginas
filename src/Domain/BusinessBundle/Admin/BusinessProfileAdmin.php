@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
@@ -444,8 +445,8 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
                 ->with('SEO')
-                    ->add('seoTitle')
-                    ->add('seoDescription')
+                    ->add('seoTitle', null, ['read_only' => true])
+                    ->add('seoDescription', null, ['read_only' => true])
                     ->add('seoKeywords')
                 ->end()
             ->end()
@@ -686,6 +687,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $entity = $this->setSearchValues($entity);
         $entity = $this->setVideoValue($entity);
         $entity = $this->setSubcategories($entity);
+        $entity = $this->setSeoDate($entity);
     }
 
     private function setSearchValues($entity)
@@ -826,6 +828,25 @@ class BusinessProfileAdmin extends OxaAdmin
         foreach ($subcategories as $subcategory) {
             $entity->addCategory($subcategory);
         }
+
+        return $entity;
+    }
+
+    /**
+     * @param BusinessProfile $entity
+     *
+     * @return BusinessProfile
+     */
+    private function setSeoDate($entity)
+    {
+        /** @var ContainerInterface $container */
+        $container    = $this->getConfigurationPool()->getContainer();
+
+        $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $container);
+        $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $container);
+
+        $entity->setSeoTitle($seoTitle);
+        $entity->setSeoDescription($seoDescription);
 
         return $entity;
     }

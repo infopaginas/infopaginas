@@ -155,6 +155,7 @@ services:
             - '@validator'
             - '@security.token_storage'
             - '@oxa.manager.users'
+            - '@service_container'
 
     domain_business.form.handler.review:
         class: Domain\BusinessBundle\Form\Handler\ReviewFormHandler

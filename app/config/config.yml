@@ -41,6 +41,10 @@ parameters:
             height: '42'
     google_map_api_key: "AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw"
     google_map_default_center: '18.2208, -66.5901'
+    seo_custom_settings:
+        company_name: 'Infopáginas'
+        title_max_length: 60
+        description_max_length: 160
 
 framework:
     #esi:             ~
