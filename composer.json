@@ -60,8 +60,8 @@
         "leafo/scssphp": "^0.6.6",
         "patchwork/jsqueeze": "^2.0",
         "knplabs/gaufrette": "dev-master",
-        "knplabs/knp-gaufrette-bundle": "dev-master",
-        "amazonwebservices/aws-sdk-for-php": "dev-master"
+        "knplabs/knp-gaufrette-bundle": "~0.3",
+	"amazonwebservices/aws-sdk-for-php": "1.6.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

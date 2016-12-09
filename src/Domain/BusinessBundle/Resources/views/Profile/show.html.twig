@@ -346,7 +346,7 @@
                                     </span>
                                 </div>
                                 <div class="col-xs-9 fields-item businessProfileVideo" data-id="{{ businessProfile.getId() }}">
-                                    {{ render_wistia_embed(businessProfile.getVideo(), {width: 320, height: 220}) | raw }}
+                                    {{ render_video_embed(businessProfile.getVideo(), {width: 320, height: 220}) | raw }}
                                 </div>
                             </div>
                         {% endif %}

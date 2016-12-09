@@ -12,12 +12,12 @@ use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ConfigBundle\Model\ConfigInterface;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
-use Oxa\WistiaBundle\Form\Handler\FileUploadFormHandler;
-use Oxa\WistiaBundle\Form\Handler\RemoteFileUploadFormHandler;
-use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
-use Oxa\WistiaBundle\Manager\WistiaManager;
-use Oxa\WistiaBundle\Manager\WistiaMediaManager;
+use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Form\Handler\FileUploadFormHandler;
+use Oxa\VideoBundle\Form\Handler\RemoteFileUploadFormHandler;
+use Oxa\VideoBundle\Form\Type\VideoMediaType;
+use Oxa\VideoBundle\Manager\VideoManager as OxaVideoManager;
+use Oxa\VideoBundle\Manager\VideoMediaManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Form\FormInterface;
@@ -60,7 +60,7 @@ class VideosController extends Controller
 
             list($videoPathOnLocalServer, $filename) = $this->uploadVideoToLocalServer($files);
 
-            $media = $this->getWistiaAPIManager()->uploadLocalFile($videoPathOnLocalServer, ['name' => $filename]);
+            $media = $this->getVideoAPIManager()->uploadLocalFile($videoPathOnLocalServer, ['name' => $filename]);
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
@@ -85,7 +85,7 @@ class VideosController extends Controller
 
         try {
             $url = $request->get('url');
-            $media = $this->getWistiaAPIManager()->uploadRemoteFile($url);
+            $media = $this->getVideoAPIManager()->uploadRemoteFile($url);
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
@@ -183,19 +183,19 @@ class VideosController extends Controller
     }
 
     /**
-     * @return WistiaManager
+     * @return OxaVideoManager
      */
-    private function getWistiaAPIManager() : WistiaManager
+    private function getVideoAPIManager() : OxaVideoManager
     {
-        return $this->get('oxa.manager.wistia');
+        return $this->get('oxa.manager.video');
     }
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param WistiaMedia $media
+     * @param VideoMedia $media
      * @return FormInterface
      */
-    private function getEditVideoForm(BusinessProfile $businessProfile, WistiaMedia $media) : FormInterface
+    private function getEditVideoForm(BusinessProfile $businessProfile, VideoMedia $media) : FormInterface
     {
         $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
         $videoForm = $form->get('video')->setData($media);

@@ -26,8 +26,8 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
-use Oxa\WistiaBundle\Manager\WistiaMediaManager;
+use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Manager\VideoMediaManager;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Sonata\MediaBundle\Entity\MediaManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -59,8 +59,8 @@ class BusinessProfileManager extends Manager
     /** @var FormFactory */
     private $formFactory;
 
-    /** @var WistiaMediaManager */
-    private $wistiaMediaManager;
+    /** @var VideoMediaManager */
+    private $videoMediaManager;
 
     /** @var Analytics $analytics */
     private $analytics;
@@ -95,7 +95,7 @@ class BusinessProfileManager extends Manager
 
         $this->formFactory = $container->get('form.factory');
 
-        $this->wistiaMediaManager = $container->get('oxa.manager.wistia_media');
+        $this->videoMediaManager = $container->get('oxa.manager.video_media');
 
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
 
@@ -394,7 +394,7 @@ class BusinessProfileManager extends Manager
                     break;
                 case ChangeSetCalculator::VIDEO_ADD:
                     $data = json_decode($change->getNewValue());
-                    $video = $this->getEntityManager()->getRepository(WistiaMedia::class)->find($data->id);
+                    $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
                     $businessProfile->setVideo($video);
                     break;
                 case ChangeSetCalculator::VIDEO_REMOVE:
@@ -404,7 +404,7 @@ class BusinessProfileManager extends Manager
                     $data = json_decode($change->getNewValue());
                     //if video was replaced
                     if (!empty($change->getOldValue())) {
-                        $video = $this->getEntityManager()->getRepository(WistiaMedia::class)->find($data->id);
+                        $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
                         $businessProfile->setVideo($video);
                     } else {
                         if (isset($data->description)) {
@@ -438,7 +438,7 @@ class BusinessProfileManager extends Manager
     public function checkBusinessProfileVideo(BusinessProfile $businessProfile)
     {
         if ($businessProfile->getVideo()) {
-            $video = $this->getWistiaMediaManager()->updateNameAndDescriptionByWistiaID($businessProfile->getVideo());
+            $video = $this->getVideoMediaManager()->updateNameAndDescriptionByVideoID($businessProfile->getVideo());
             $businessProfile->setVideo($video);
         }
 
@@ -643,11 +643,11 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @return WistiaMediaManager
+     * @return VideoMediaManager
      */
-    private function getWistiaMediaManager() : WistiaMediaManager
+    private function getVideoMediaManager() : VideoMediaManager
     {
-        return $this->wistiaMediaManager;
+        return $this->videoMediaManager;
     }
 
     private function getGoogleAnalytics()

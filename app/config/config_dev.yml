@@ -2,6 +2,10 @@ imports:
     - { resource: config.yml }
 parameters:
     domain: 'localhost'
+    amazon_aws_key:         AKIAJNXO2HSEBOJIFU7A
+    amazon_aws_secret_key:  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
+    amazon_s3_base_url:     infopaginas-dev.s3-website-us-east-1.amazonaws.com
+    amazon_s3_bucket_name:  infopaginas-dev
 
 framework:
     router:
@@ -14,12 +18,19 @@ web_profiler:
     intercept_redirects: false
 
 monolog:
+    channels:
+        ['foo']
     handlers:
         main:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
             channels: [!event]
+        glogen:
+            type: stream
+            path: "%kernel.logs_dir%/glogen.log"
+            level: debug
+            channels: 'foo'
         console:
             type:   console
             channels: [!event, !doctrine]
@@ -35,16 +46,3 @@ monolog:
 #swiftmailer:
 #    delivery_address: me@example.com
 
-
-knp_gaufrette:
-    adapters:
-        video:
-            amazon_s3:
-                amazon_s3_id:   amazonS3
-                bucket_name:    infopaginas-dev
-                options:
-                    create:     true
-                    directory:  video
-    filesystems:
-        ipgn:
-            adapter:    ipgn

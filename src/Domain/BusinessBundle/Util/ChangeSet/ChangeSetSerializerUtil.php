@@ -11,7 +11,7 @@ namespace Domain\BusinessBundle\Util\ChangeSet;
 use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Util\DoctrineUtil;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
+use Oxa\VideoBundle\Entity\VideoMedia;
 
 /**
  * Class ChangeSetSerializerUtil
@@ -54,10 +54,10 @@ class ChangeSetSerializerUtil
     }
 
     /**
-     * @param WistiaMedia $video
+     * @param VideoMedia $video
      * @return string
      */
-    public static function serializeBusinessProfileVideo(WistiaMedia $video) : string
+    public static function serializeBusinessProfileVideo(VideoMedia $video) : string
     {
         $businessVideoRequiredData = [
             'id'   => $video->getId(),

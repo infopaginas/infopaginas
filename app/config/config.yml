@@ -237,3 +237,23 @@ happyr_google_analytics:
 presta_sitemap:
     timetolive: 86400
     items_by_set: 100
+
+knp_gaufrette:
+    adapters:
+        video_storage:
+            amazon_s3:
+                amazon_s3_id:   'oxa_storage.amazon_s3'
+                bucket_name:    'infopaginas-dev'
+                create:         false
+                options:
+                    create:     true
+                    directory:  'video'
+    filesystems:
+        ipgn:
+            adapter:    video_storage
+
+oxa_storage:
+    amazon_s3:
+        aws_key:        %amazon_aws_key%
+        aws_secret_key: %amazon_aws_secret_key%
+        base_url:       %amazon_s3_base_url%

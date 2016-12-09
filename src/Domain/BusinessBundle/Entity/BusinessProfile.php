@@ -587,7 +587,7 @@ class BusinessProfile implements
     protected $uid;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\WistiaBundle\Entity\WistiaMedia", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia", cascade={"persist"})
      */
     protected $video;
 

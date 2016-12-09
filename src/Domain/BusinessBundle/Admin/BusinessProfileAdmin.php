@@ -13,8 +13,8 @@ use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
-use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
+use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Form\Type\VideoMediaType;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -341,8 +341,8 @@ class BusinessProfileAdmin extends OxaAdmin
                         'mapped' => false,
                         'required' => false,
                     ])
-                    ->add('video', WistiaMediaType::class, [
-                        'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
+                    ->add('video', VideoMediaType::class, [
+                        'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
                         'by_reference' => false,
                         'required' => false,
                     ])
@@ -750,7 +750,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     $wistiaMediaData['description'] = $video->getDescription();
                 }
 
-                $wistiaMedia = new WistiaMedia($wistiaMediaData);
+                $wistiaMedia = new VideoMedia($wistiaMediaData);
 
                 $entity->setVideo($wistiaMedia);
             }

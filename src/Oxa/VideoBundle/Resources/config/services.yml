@@ -1,0 +1,130 @@
+parameters:
+    oxa.video.default_project_id: 2394117
+    oxa.video.use_project_id: true
+    oxa.video.api_password: 'ddd4273a9f4408e692633fea2bee70620d8982774ee82c44c9452263596e4d8c'
+
+services:
+    #services section
+    oxa.service.http_client:
+        class: GuzzleHttp\Client
+
+    oxa.service.video_data_api_client:
+        class: Oxa\VideoBundle\Service\VideoDataAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    oxa.service.video_upload_api_client:
+        class: Oxa\VideoBundle\Service\VideoUploadAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    oxa.service.video_embed_api_client:
+        class: Oxa\VideoBundle\Service\VideoEmbedAPIClient
+        arguments: ['@oxa.service.http_client']
+
+    #file uploaders section
+    oxa.uploader.video_local_file_uploader:
+        class: Oxa\VideoBundle\Uploader\VideoLocalFileUploader
+        arguments:
+            - '@oxa.service.video_upload_api_client'
+            - %oxa.video.api_password%
+            - %oxa.video.default_project_id%
+            - %oxa.video.use_project_id%
+
+    oxa.uploader.video_remote_file_uploader:
+        class: Oxa\VideoBundle\Uploader\VideoRemoteFileUploader
+        arguments:
+            - '@oxa.service.video_upload_api_client'
+            - %oxa.video.api_password%
+            - %oxa.video.default_project_id%
+            - %oxa.video.use_project_id%
+
+    #managers section
+    oxa.manager.video_api_projects:
+        class: Oxa\VideoBundle\Manager\VideoProjectAPIManager
+        arguments: ['@oxa.service.video_data_api_client', %oxa.video.api_password%]
+
+    oxa.manager.video_api_medias:
+        class: Oxa\VideoBundle\Manager\VideoMediaAPIManager
+        arguments: ['@oxa.service.video_data_api_client', %oxa.video.api_password%]
+
+    oxa.manager.video_api_embed:
+        class: Oxa\VideoBundle\Manager\VideoEmbedAPIManager
+        arguments: ['@oxa.service.video_embed_api_client', %oxa.video.api_password%]
+
+    oxa.manager.video_media:
+        class: Oxa\VideoBundle\Manager\VideoMediaManager
+        arguments: ['@doctrine.orm.entity_manager']
+
+    oxa.manager.video_media_embed:
+        class: Oxa\VideoBundle\Manager\VideoMediaEmbedManager
+        arguments: ['@doctrine.orm.entity_manager', '@oxa.manager.video_api_embed']
+
+    oxa.manager.video:
+        class: Oxa\VideoBundle\Manager\VideoManager
+        arguments:
+            - '@oxa.manager.video_api_projects'
+            - '@oxa.manager.video_api_medias'
+            - '@oxa.uploader.video_local_file_uploader'
+            - '@oxa.uploader.video_remote_file_uploader'
+            - '@oxa.manager.video_media'
+            - '@oxa.manager.video_api_embed'
+
+    #twig extensions section
+    oxa.twig_extension.video_media_thumbnail:
+        class: Oxa\VideoBundle\Twig\Extension\VideoMediaThumbnailExtension
+        public: false
+        tags:
+            -  { name: twig.extension }
+
+    oxa.twig_extension.video_media_embed:
+        class: Oxa\VideoBundle\Twig\Extension\VideoMediaEmbedExtension
+        arguments: ['@oxa.manager.video_media_embed']
+        public: false
+        tags:
+            -  { name: twig.extension }
+
+    #form types section
+    oxa_video.form.type.local_file_upload:
+        class: Oxa\VideoBundle\Form\Type\FileUploadType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: oxa_video_bundle_file_upload_form_type }
+
+    oxa_video.form.type.url_file_upload:
+        class: Oxa\VideoBundle\Form\Type\UrlUploadType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: oxa_video_bundle_url_upload_form_type }
+
+    #forms section
+    domain_business.form.local_file_upload:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'oxa_video_bundle_file_upload_form_type'
+            - 'oxa_video_bundle_file_upload_form_type'
+
+    domain_business.form.url_file_upload:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'oxa_video_bundle_url_upload_form_type'
+            - 'oxa_video_bundle_url_upload_form_type'
+
+    #form handlers section
+    domain_business.form.handler.local_file_upload:
+        class: Oxa\VideoBundle\Form\Handler\FileUploadFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.local_file_upload'
+            - '@request'
+            - '@oxa.manager.video'
+
+    domain_business.form.handler.url_file_upload:
+        class: Oxa\VideoBundle\Form\Handler\RemoteFileUploadFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.url_file_upload'
+            - '@request'
+            - '@oxa.manager.video'
