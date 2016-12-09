@@ -30,6 +30,7 @@ use Oxa\WistiaBundle\Entity\WistiaMedia;
 use Oxa\WistiaBundle\Manager\WistiaMediaManager;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Sonata\MediaBundle\Entity\MediaManager;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -1179,5 +1180,39 @@ class BusinessProfileManager extends Manager
         );
 
         return $url;
+    }
+
+    public function getBusinessProfileSearchSeoData($locality = null, $category = null, $subcategory = null)
+    {
+        $translator  = $this->container->get('translator');
+        $seoSettings = $this->container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $translator->trans('Search');
+
+        if ($locality) {
+            $seoTitle = $seoTitle . ' - ' . $locality;
+        }
+
+        if ($category) {
+            $seoTitle = $seoTitle . ' - ' . $category;
+        }
+
+        if ($subcategory) {
+            $seoTitle = $seoTitle . ' - ' . $subcategory;
+        }
+
+        $seoTitle = $seoTitle . ' | ' . $companyName;
+
+        $seoData = [
+            'seoTitle' => substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => substr($seoTitle, 0, $descriptionMaxLength),
+            'seoKeywords' => '',
+        ];
+
+        return $seoData;
     }
 }
