@@ -9,7 +9,7 @@
             {% endif %}
 
             <li>
-              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}" aria-label="Previous">
+              <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" aria-label="Previous">
                 <span aria-hidden="true">&larr; &nbsp;{% trans %}prev{% endtrans %}</span>
               </a>
             </li>
@@ -23,7 +23,7 @@
             {% if page == pageItem %}
                 class="active"
             {% endif %}
-            ><a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}">{{ pageItem }}</a></li>
+            ><a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}">{{ pageItem }}</a></li>
         {% endfor %}
         {% if page < pageCount %}
             {% if routeParams is defined %}
@@ -31,7 +31,7 @@
             {% endif %}
 
             <li>
-              <a href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}" aria-label="Next">
+              <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" aria-label="Next">
                 <span aria-hidden="true">{% trans %}next{% endtrans %}&nbsp; &rarr;</span>
               </a>
             </li>

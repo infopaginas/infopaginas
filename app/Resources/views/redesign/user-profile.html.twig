@@ -106,7 +106,7 @@
                                         {% for review in row %}
                                             <div class="col-xs-12">
                                                 <span>
-                                                    <a href="{{ path('domain_business_profile_view', { 'citySlug' : review.business.catalogLocality.slug(), slug: review.slug }) }}#reviews">
+                                                    <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : review.business.catalogLocality.slug(), slug: review.slug })) }}#reviews">
                                                         {{ review.business.name }}
                                                     </a>
                                                 </span>
@@ -135,7 +135,7 @@
                                             <div class="col-xs-12">
                                                 <span>
                                                     {% if business.getIsActive() %}
-                                                        <a href="{{ path('domain_business_profile_edit', {id: business.getId()}) }}">
+                                                        <a href="{{ absolute_url(path('domain_business_profile_edit', {id: business.getId()})) }}">
                                                                 {{ business.getName() }}
                                                         </a>
                                                     {% else %}
@@ -159,7 +159,7 @@
                             {% endif %}
                             <div class="form__row">
                                 <div class="empty-message">
-                                    <a class="btn green-btn request" href="{{ path('domain_business_profile_create') }}">
+                                    <a class="btn green-btn request" href="{{ absolute_url(path('domain_business_profile_create')) }}">
                                         {% trans %}Request Business Profile{% endtrans %}
                                     </a>
                                 </div><!-- empty-message -->
@@ -188,8 +188,8 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            requirejs(['{{asset("/bundles/domainsite/scripts/modules/tools/userProfile.js")}}'], function(userProfile) {
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/tools/userProfile.js")) }}'], function(userProfile) {
                 var siteHomepage = new userProfile();
             })
         })

@@ -5,13 +5,13 @@
         <div class="container">
             <div class="row">
                 <div class="crumbs">
-                    <a href="{{ path('domain_search_catalog') }}">Catalog</a>
+                    <a href="{{ absolute_url(path('domain_search_catalog')) }}">Catalog</a>
                     &nbsp;
                     {% if currentLocality %}
                         <span>&nbsp; »</span>
 
                         {% if currentCategory %}
-                            <a href="{{ path('domain_search_catalog', {'localitySlug': currentLocality.getSlug() }) }}">{{ currentLocality.getName() }}</a>
+                            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': currentLocality.getSlug() })) }}">{{ currentLocality.getName() }}</a>
                         {% else %}
                             <span>{{ currentLocality.getName() }}</span>
                         {% endif %}
@@ -20,7 +20,7 @@
                             <span>&nbsp; »</span>
 
                             {% if currentSubcategory %}
-                                <a href="{{ path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug() }) }}">{{ currentCategory.getName() }}</a>
+                                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug() })) }}">{{ currentCategory.getName() }}</a>
                             {% else %}
                                 <span>{{ currentCategory.getName() }}</span>
                             {% endif %}
@@ -121,8 +121,8 @@
 {% block scripts %}
     {{ parent() }}
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            require(['{{asset("/bundles/domainsite/scripts/modules/searchpage.js")}}'], function(searchpage){
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/searchpage.js")) }}'], function(searchpage){
                 var searchPage = new searchpage;
             })
         })

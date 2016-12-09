@@ -17,7 +17,7 @@
         {% include 'DomainSiteBundle:Home:widgets/language_widget.html.twig' %}
         {% if (app.user) %}
             <li class="login-link desc-menu logged">
-                <a href="{{ path('domain_site_user_profile') }}" class="login-button">
+                <a href="{{ absolute_url(path('domain_site_user_profile')) }}" class="login-button">
                     <span class="welcome">
                         {% trans %}Welcome{% endtrans %},
                     </span>
@@ -35,7 +35,7 @@
         {% endif %}
 
         <li class="ad mobile-menu">
-            <a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a>
+            <a href="{{ absolute_url(path('domain_page_view_advertise')) }}">{% trans %}Advertise with us{% endtrans %}</a>
         </li>
     </ul>
 {% endblock %}
@@ -76,7 +76,7 @@
                     <div class="section-title">
                         <h1 class="blue-c">{% trans %}Articles{% endtrans %}</h1>
                         <hr>
-                        <a href="{{ path('domain_article_homepage') }}" class="btn">{% trans %}View more articles{% endtrans %}</a>
+                        <a href="{{ absolute_url(path('domain_article_homepage')) }}" class="btn">{% trans %}View more articles{% endtrans %}</a>
                     </div>
                     {% include 'DomainSiteBundle:Home:widgets/articles_widget.html.twig' %}
                 </div>
@@ -84,7 +84,7 @@
                     <div class="section-title">
                         <h1 class="blue-c">{% trans %}Videos{% endtrans %}</h1>
                         <hr>
-                        <a href="{{ path('domain_business_video_list') }}" class="btn">{% trans %}View more videos{% endtrans %}</a>
+                        <a href="{{ absolute_url(path('domain_business_video_list')) }}" class="btn">{% trans %}View more videos{% endtrans %}</a>
                     </div>
                     {% include 'DomainSiteBundle:Home:widgets/videos_widget.html.twig' with {'width': 320, 'height': 220} %}
                 </div>
@@ -126,8 +126,8 @@
     {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
 
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+        requirejs(['./{{ asset("bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
                 var siteHomepage = new Homepage({
                     'locale'       : '{{ locale }}'
                 });

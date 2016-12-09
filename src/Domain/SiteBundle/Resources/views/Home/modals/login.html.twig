@@ -31,13 +31,13 @@
                                 <span class="alternative-login">{% trans %}or{% endtrans %}</span>
                             </div>
                             <div class="col-xs-12 social-buttons">
-                                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" class="facebook-btn btn">
+                                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'facebook' })) }}" class="facebook-btn btn">
                                     <span>
                                         {% trans %}Log In with{% endtrans %}
                                     </span>
                                     <i class="fa fa-facebook" aria-hidden="true"></i>
                                 </a>
-                                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" class="google-btn btn">
+                                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'google' })) }}" class="google-btn btn">
                                     <span>
                                         {% trans %}Log In with{% endtrans %}
                                     </span>

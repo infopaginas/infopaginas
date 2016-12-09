@@ -10,7 +10,7 @@
         <button id="comparison-list-toggle" type="button" class="button button--action category__toggle compare-show-list">
             <i class="fa fa-plus-square"></i> {% trans %}Add to compare{% endtrans %}
         </button>
-        <a href="{{ path('domain_search_index', app.request.query.all) }}" class="button button--action">{% trans %}List view{% endtrans %}</a>
+        <a href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button button--action">{% trans %}List view{% endtrans %}</a>
     </div>
 
     <div class="main__container">
