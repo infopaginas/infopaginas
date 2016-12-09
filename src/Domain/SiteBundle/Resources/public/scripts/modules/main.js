@@ -283,16 +283,22 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
             }
         });
 
-        $('#select-cat, #select-area, #select-payments, #tags, #select-days').selectize({
+        var Selectize = require('selectize');
+        Selectize.define( 'no-delete', function( options ) {
+            this.deleteSelection = function() {};
+        });
+
+        $('#domain_business_bundle_business_profile_form_type_subcategories, #domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
             plugins: ['remove_button'],
             delimiter: ',',
+            persist: false
+        });
+
+        $('#domain_business_bundle_business_profile_form_type_categories, #domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality').selectize({
+            plugins: ['remove_button', 'no-delete'],
+            delimiter: ',',
             persist: false,
-            create: function(input) {
-                return {
-                    value: input,
-                    text: input
-                }
-            }
+            allowEmptyOption: false
         });
 
         $('#select-from, #select-to').selectize({

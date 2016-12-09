@@ -98,12 +98,15 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('areas', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Select areas',
+                    'class' => 'form-control selectize-control select-multiple',
+                    'placeholder' => 'Select areas',
                     'multiple' => 'multiple',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Area',
                 'label' => 'Areas',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
                 'multiple' => true,
                 'query_builder' => function (AreaRepository $repository) {
                     return $repository->getAvailableAreasQb();
@@ -137,12 +140,15 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('tags', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Advertising, Cafeterias, Grooming, Restaurants',
+                    'class' => 'form-control selectize-control select-multiple',
+                    'placeholder' => 'Advertising, Cafeterias, Grooming, Restaurants',
                     'multiple' => 'multiple',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Tag',
                 'label' => 'Tags',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
                 'multiple' => true,
                 'query_builder' => function (TagRepository $repository) {
                     return $repository->getAvailableTagsQb();
@@ -160,12 +166,15 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('paymentMethods', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Select payment methods',
-                    'multiple' => 'multiple',
+                    'class' => 'form-control selectize-control select-multiple',
+                    'placeholder' => 'Select payment methods',
+                    'multiple' => true,
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\PaymentMethod',
                 'label' => 'Payment methods',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
                 'multiple' => true,
                 'query_builder' => function (PaymentMethodRepository $repository) {
                     return $repository->getAvailablePaymentMethodsQb();
@@ -198,6 +207,10 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('map', GoogleMapFrontType::class, [
                 'mapped' => false,
+                'label'  => 'Map',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
             ])
             ->add('latitude', NumberType::class, [
                 'attr' => [
@@ -223,11 +236,14 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('country', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
-                    'data-placeholder' => 'Select country',
+                    'class' => 'form-control selectize-control',
+                    'placeholder' => 'Select country',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Address\Country',
                 'label' => 'Country',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
                 'query_builder' => function (CountryRepository $repository) {
                     return $repository->getAvailableCountriesQb();
                 }
@@ -241,11 +257,14 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('catalogLocality', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
-                    'data-placeholder' => 'Select catalog locality',
+                    'class' => 'form-control selectize-control',
+                    'placeholder' => 'Select catalog locality',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Locality',
                 'label' => 'Catalog Locality',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
             ])
             ->add('city', TextType::class, [
                 'attr' => [
@@ -409,12 +428,15 @@ class BusinessProfileFormType extends AbstractType
 
         $localitiesFieldOptions = [
             'attr' => [
-                'class' => 'form-control select-control',
-                'data-placeholder' => 'Select Localities',
-                'multiple' => 'multiple',
+                'class' => 'form-control selectize-control',
+                'placeholder' => 'Select Localities',
+                'multiple' => true,
             ],
             'class' => 'Domain\BusinessBundle\Entity\Locality',
             'label' => 'Localities',
+            'label_attr' => [
+                'class' => 'title-label'
+            ],
             'multiple'      => true,
             'required'      => true,
             'query_builder' => function (LocalityRepository $repository) {
@@ -424,12 +446,15 @@ class BusinessProfileFormType extends AbstractType
 
         $neighborhoodsFieldOptions = [
             'attr' => [
-                'class' => 'form-control select-control',
-                'data-placeholder' => 'Select Neighborhoods',
-                'multiple' => 'multiple',
+                'class' => 'form-control selectize-control',
+                'placeholder' => 'Select Neighborhoods',
+                'multiple' => true,
             ],
             'class' => 'Domain\BusinessBundle\Entity\Neighborhood',
             'label' => 'Neighborhoods',
+            'label_attr' => [
+                'class' => 'title-label'
+            ],
             'multiple' => true,
             'query_builder' => function (NeighborhoodRepository $repository) {
                 return $repository->getAvailableNeighborhoodsQb();
@@ -637,12 +662,15 @@ class BusinessProfileFormType extends AbstractType
         $form
             ->add('categories', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Select category',
+                    'class' => 'form-control selectize-control select-multiple',
+                    'placeholder' => 'Select category',
                     'multiple' => false,
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Category',
                 'label' => 'Category',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
                 'multiple' => false,
                 'query_builder' => function (CategoryRepository $repository) {
                     return $repository->getAvailableParentCategoriesQb();
@@ -653,12 +681,15 @@ class BusinessProfileFormType extends AbstractType
             ])
             ->add('subcategories', EntityType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control select-multiple',
-                    'data-placeholder' => 'Select subcategories',
+                    'class' => 'form-control selectize-control select-multiple',
+                    'placeholder' => 'Select subcategories',
                     'multiple' => 'multiple',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Category',
                 'label' => 'Subcategory',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
                 'multiple' => true,
                 'query_builder' => function (CategoryRepository $repository) {
                     return $repository->getAvailableCategoriesQb();

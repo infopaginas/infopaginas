@@ -7,12 +7,12 @@
         display: block;
     }
 </style>
-
+{#todo#}
 <div class="profile-nav">
     <nav>
         <ul class="clearfix">
-            <li>
-                <a href="{{ path('domain_business_profile_view', { 'citySlug' : businessProfile.catalogLocality.slug, slug: businessProfile.getSlug() }) }}">
+            <li {% if activeTab is defined and activeTab == 'profile' %}class="active"{% endif %}>
+                <a {% if activeTab is defined and activeTab == 'profile' %} href="#" {% else %}href="{{ path('domain_business_profile_edit', {'id': businessProfile.getId()}) }}"{% endif %}>
                     <i class="fa fa-eye"></i>
                     {% trans %}Profile{% endtrans %}
                 </a>
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li {% if activeTab is defined and activeTab == 'report' %}class="active"{% endif %}>
-                <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}">
+                <a {% if activeTab is defined and activeTab == 'report' %}href="#"{% else %}href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}"{% endif %}>
                     <i class="fa fa-pie-chart"></i>
                     {% trans %}Reports{% endtrans %}
                 </a>

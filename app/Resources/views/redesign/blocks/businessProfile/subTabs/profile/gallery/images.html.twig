@@ -1,0 +1,47 @@
+{% for image in images %}
+
+    {% if image.vars.data.id is empty %}
+        {% set id = 'media_' ~ image.vars.data.media.id %}
+    {% else %}
+        {% set id = image.vars.data.id %}
+    {% endif %}
+
+    <div class="media__item">
+        <div class="media__item--left">
+            <div class="media__field media__thumbnail">
+                {% thumbnail image.vars.data.media, 'preview' %}
+            </div>
+        </div>
+        <!-- item__left -->
+
+        <div class="media__item--right">
+            <div class="media__field">
+                <div class="form__field">
+                    {{ form_widget(image.type, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_type', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][type]' }) }}
+                </div>
+            </div>
+            <!-- media__field -->
+            <div class="media__field">
+                <div class="form__field">
+                    {{ form_label(image.description) }}
+                    {{ form_widget(image.description, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_description', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][description]' }) }}
+                </div>
+            </div>
+            <!-- media__field -->
+            <div class="media__field media__check">
+                <div class="form__field checkbox-field">
+                    {{ form_widget(image.isPrimary, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_isPrimary', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][isPrimary]' }) }}
+                    <label>{% trans %}Primary{% endtrans %}</label>
+                </div>
+            </div>
+            <!-- media__field -->
+            <div class="media__field remove">
+                <button type="button" class="button button--text remove-image-link" data-id="{{ image.vars.data.media.id }}">
+                    <i class="fa fa-remove"></i>
+                    {% trans %}Remove{% endtrans %}
+                </button>
+            </div>
+        </div>
+        <!-- item--right -->
+    </div>
+{% endfor %}

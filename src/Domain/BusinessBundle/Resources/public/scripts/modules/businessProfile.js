@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones'], function( $, bootstrap, alertify, FormHandler, Spin, select ) {
+define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones', 'selectize'], function( $, bootstrap, alertify, FormHandler, Spin, select ) {
     'use strict';
 
     //init businessProfile object variables
@@ -338,10 +338,22 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             var localitiesFieldAsteriskClass = that.html.localitiesFieldSpan + ' ' + that.html.asteriskClass;
             var html = '';
 
+            var withinMiles = $( that.html.fields.withinMilesOfMyBusinessFieldId );
+            var localities = $( that.html.fields.localitiesFieldId );
+            var neighborhoods = $( that.html.fields.neighborhoodsFieldId );
+
+            var withinMilesSelectize    = withinMiles.selectize()[0].selectize;
+            var localitiesSelectize     = localities.selectize()[0].selectize;
+            var neighborhoodsSelectize  = neighborhoods.selectize()[0].selectize;
+
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
                 $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
+
+                withinMilesSelectize.enable();
+                localitiesSelectize.disable();
+                neighborhoodsSelectize.disable();
 
                 if ( !$( milesOfMyBusinessAsteriskClass ).length ) {
                     html = $( that.html.milesOfMyBusinessSpan ).text();
@@ -356,6 +368,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+
+                withinMilesSelectize.disable();
+                localitiesSelectize.enable();
+                neighborhoodsSelectize.enable();
 
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
                 if ( $( localitiesFieldAsteriskClass ).length ) {
@@ -514,19 +530,31 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         function getSubcategories() {
             var categoryId = $( self.html.fields.categoriesId ).val();
             var subcategories = $( self.html.fields.subcategoriesId );
-
             var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
 
+            var selectOptions = [];
+            var selectBlock = subcategories.selectize();
+            var selectize = selectBlock[0].selectize;
+
             subcategories.html( '' );
-            subcategories.val( null ).trigger('change.select2');
-            subcategories.attr( 'disabled', 'disabled' );
+            selectize.disable();
 
             $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), function( response ) {
                 var html = '';
+                var selected = [];
 
                 if ( response.data ) {
                     $.each( response.data, function ( key, value ) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
+
+                        selectOptions.push({
+                            text: value.name,
+                            value: value.id
+                        });
+
+                        if ( value.selected ) {
+                            selected.push( value.id );
+                        }
                     });
                 }
 
@@ -534,17 +562,20 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
                 if ( html ) {
                     subcategories.attr( 'disabled', false );
+                    selectize.enable();
                 } else {
                     subcategories.attr( 'disabled', 'disabled' );
+                    selectize.disable();
                 }
 
-                subcategories.val( null ).trigger( 'change.select2' );
-
-                $.each( response.data, function ( key, value ) {
-                    if ( value.selected ) {
-                        subcategories.val( value.id ).trigger( 'change' );
-                    }
+                selectize.clear();
+                selectize.clearOptions();
+                selectize.renderCache = {};
+                selectize.load( function ( callback ) {
+                    callback( selectOptions );
                 });
+
+                selectize.setValue( selected );
             });
         }
     };
@@ -564,6 +595,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
             that.initGoogleMap();
+            //console.log(1);
         } );
 
         new select();

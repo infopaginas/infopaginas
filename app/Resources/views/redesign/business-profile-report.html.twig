@@ -9,6 +9,11 @@
         <div class="main">
             <div class="container clearfix">
                 {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'report'} %}
+                    {#todo#}
+                    {#{% block profileSubTab %}#}
+                        {#{% include ':redesign/blocks/businessProfile/subTabs/profile:nav_subtab.html.twig' %}#}
+                    {#{% endblock %}#}
+
                     {% block reportSubTab %}
                         {% include ':redesign/blocks/businessProfile/subTabs/report:nav_subtab.html.twig' %}
                     {% endblock %}
