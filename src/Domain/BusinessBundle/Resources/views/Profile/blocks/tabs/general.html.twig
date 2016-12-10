@@ -65,7 +65,7 @@
                                 <span>
                                     {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
                                         {{ businessProfile.getSubscriptionPlan().getName() }},
-                                        {{ businessProfile.getSubscriptions()|first.getStartDate()|date("Y-m-d") }} - {{ businessProfile.getSubscriptions()|first.getEndDate()|date("Y-m-d") }}
+                                        {{ businessProfile.getSubscriptions()|first.getStartDate()|date(subscription_date_format) }} - {{ businessProfile.getSubscriptions()|first.getEndDate()|date(subscription_date_format) }}
                                     {% else %}
                                         {% trans %}Free{% endtrans %}
                                     {% endif %}
@@ -168,9 +168,9 @@
                             </div>
                             <div class="col-xs-8">
                                 {% if businessProfile is defined %}
-                                    <span>{{ businessProfile.getCreatedAt() | date("Y-m-d") }}</span>
+                                    <span>{{ businessProfile.getCreatedAt() | date(business_date_format) }}</span>
                                 {% else %}
-                                    <span>{{ "now"|date("Y-m-d") }}</span>
+                                    <span>{{ "now"|date(business_date_format) }}</span>
                                 {% endif %}
                             </div>
                         </div>

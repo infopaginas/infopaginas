@@ -113,7 +113,7 @@
             </tr>
             <tr class="sonata-ba-view-container">
                 <td>{{ admin.trans('Submitted on') }}</td>
-                <td>{{ object.updatedAt|date('d M, Y, H:i:s A') }}</td>
+                <td>{{ object.updatedAt|date(task_date_format) }}</td>
             </tr>
         {% endif %}
         {% if object.reviewer %}

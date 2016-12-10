@@ -106,7 +106,7 @@
                                         {% for review in row %}
                                             <div class="col-xs-12">
                                                 <span>
-                                                    <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : review.business.catalogLocality.slug(), slug: review.slug })) }}#reviews">
+                                                    <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: review.business.id })) }}">
                                                         {{ review.business.name }}
                                                     </a>
                                                 </span>
@@ -167,7 +167,6 @@
                         </div><!-- form section -->
 
                         <div class="form__actions">
-                            <button type="button" class="button button--text">{% trans %}Cancel{% endtrans %} TODO</button>
                             <button type="button" class="button button--action" id="saveProfile">{% trans %}Save changes{% endtrans %}</button>
                         </div><!-- form-actions -->
                         {{ form_rest(profileForm) }}

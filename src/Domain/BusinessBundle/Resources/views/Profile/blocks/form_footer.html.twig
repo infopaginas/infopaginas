@@ -5,7 +5,7 @@
             <span>
                 {% trans %}Last date of profile update{% endtrans %}:
                 <span>
-                    {{ businessProfile.getUpdatedAt() | date("Y-m-d") }} {% trans %}by{% endtrans %}
+                    {{ businessProfile.getUpdatedAt() | date(business_date_format) }} {% trans %}by{% endtrans %}
                     {{ updatedBy.getFirstname() }} {{ updatedBy.getLastname() }}
                 </span>
             </span>

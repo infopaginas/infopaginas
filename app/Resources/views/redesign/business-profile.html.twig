@@ -16,23 +16,13 @@
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
                             <a href="#" data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
-                                <div class="stars rank__item">
-                                    {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
-
-                                    {% if reviewsAvgRating|number_format(0) %}
-                                        {% for i in 1 .. reviewsAvgRating|number_format(0) %}
-                                            <i class="fa fa-star"></i>
-                                        {% endfor %}
-                                    {% endif %}
-
-                                    {% set emptyStars = 5 - reviewsAvgRating|number_format(0) %}
-
-                                    {% if emptyStars %}
-                                        {% for i in 1 .. emptyStars %}
-                                            <i class="fa fa-star-o"></i>
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
+                                {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
+                                {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
+                            </a>
+                        </div>
+                        <div class="reviews">
+                            <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.id })) }}">
+                                {% trans %}View{% endtrans %}
                             </a>
                         </div>
                     </div><!-- item__header -->

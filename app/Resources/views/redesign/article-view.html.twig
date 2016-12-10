@@ -23,7 +23,7 @@
                         <div class="credits">
                             <ul>
                                 <li><i class="fa fa-pencil"></i>{{ article.createdUser.fullName }}</li>
-                                <li><i class="fa fa-calendar"></i>{{ article.updatedAt|date('m d, Y') }}</li>
+                                <li><i class="fa fa-calendar"></i>{{ article.updatedAt|date(article_date_format) }}</li>
                             </ul>
                         </div>
                     </section>

@@ -286,7 +286,7 @@
                                         {% include ':blocks/business:review_rating_stars.html.twig'
                                             with { 'rating': lastReview.getRating() } %}
                                     </div>
-                                    <span class="review-date">{{ lastReview.getCreatedAt() | date('d M Y H:i') }}</span>
+                                    <span class="review-date">{{ lastReview.getCreatedAt() | date(review_date_format) }}</span>
                                 </div>
                                 <div class="col-xs-9 fields-item review-col">
                                     <p>{{ lastReview.getContent() }}</p>
