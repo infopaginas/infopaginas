@@ -168,7 +168,7 @@
                             </div>
                             <div class="col-xs-8">
                                 {% if businessProfile is defined %}
-                                    <span>{{ businessProfile.getCreatedAt() | date(business_date_format) }}</span>
+                                    <span>{{ businessProfile.getCreatedAt()|date(business_date_format) }}</span>
                                 {% else %}
                                     <span>{{ "now"|date(business_date_format) }}</span>
                                 {% endif %}
