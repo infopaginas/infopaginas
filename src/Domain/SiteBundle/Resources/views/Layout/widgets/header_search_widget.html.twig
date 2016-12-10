@@ -38,9 +38,9 @@
     <span class="searchCloseSection">Cancel section<span>
 </div>
 
-<script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
+<script type="text/javascript" src="{{ absolute_url(asset('bundles/domainsite/scripts/require.js')) }}"></script>
 <script type="text/javascript">
-    requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+    requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
         requirejs(['tools/search'], function(Search) {
             var headerSearch = new Search({
                 'searchSelector'     : '#headerSearch',

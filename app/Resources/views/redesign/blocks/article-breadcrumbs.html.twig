@@ -1,6 +1,6 @@
 <div class="toolbar">
     <div class="toolbar__nav">
-        <a href="{{ path('domain_article_homepage') }}" title="{% trans %}Articles{% endtrans %}">
+        <a href="{{ absolute_url(path('domain_article_homepage')) }}" title="{% trans %}Articles{% endtrans %}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
                 <i class="fa fa-list"></i>
                 <span>{% trans %}Articles{% endtrans %}</span>
@@ -8,7 +8,7 @@
         </a>
 
         {% if articleCategory is defined %}
-            <a href="{{ path('domain_article_category', {'categorySlug':  articleCategory.getSlug() }) }}" title="{{ articleCategory.name }}">
+            <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  articleCategory.getSlug() })) }}" title="{{ articleCategory.name }}">
                 <button id="breadcrumb_location" type="button" class="button button--action button--location">
                     <span>{{ articleCategory.name|truncate }}</span>
                 </button>
@@ -16,7 +16,7 @@
 
             {% if article is defined %}
                 <div class="breadcrumb">
-                    <a href="{{ path('domain_article_view', {'slug':article.slug}) }}" title="{{ article.title }}" class="button categorie__item categorie__parent">
+                    <a href="{{ absolute_url(path('domain_article_view', {'slug':article.slug})) }}" title="{{ article.title }}" class="button categorie__item categorie__parent">
                         <span>{{ article.title|truncate }}</span>
                     </a>
                 </div>

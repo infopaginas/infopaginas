@@ -6,12 +6,12 @@
     <div class="card-title">
         <label class="control-label card-label" for="card-check">
             <span class="card-number">{{ iterator }}.</span>
-            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}">
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}">
                 <h1 class="card-name">{{ item.name }}</h1>
             </a>
                 &nbsp;
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
-                <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}">
+                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}">
                     <span class="card-slogan">{{ item.slogan }}</span>
                 </a>
             {% endif %}
@@ -20,7 +20,7 @@
     <div class="col-xs-5 schedule">
         <div class="address">
             {% if not item.getHideAddress() %}
-                <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}#address" class="address-link">
+                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}#address" class="address-link">
                     <span class="address-info">
                         {% if item.getCustomAddress() %}
                             {{ item.getCustomAddress() }}
@@ -48,11 +48,11 @@
     <div class="col-xs-7 company-contact">
         <ul class="company-info">
             {% if item.website is not null %}
-                <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
+                <li><a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}#website"><i class="fa fa-home" aria-hidden="true"></i><span>{{ item.website }}</span></a>
                 </li>
             {% endif %}
             {% if item.email is not null %}
-                <li><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}#email"><i class="fa fa-envelope"
+                <li><a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}#email"><i class="fa fa-envelope"
                                                                 aria-hidden="true"></i><span>{{ item.email }}</span></a>
                 </li>
             {% endif %}

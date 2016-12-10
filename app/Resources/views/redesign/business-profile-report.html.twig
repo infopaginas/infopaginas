@@ -78,12 +78,12 @@
 
                     <div class="form__section">
                         <div class="form-btn">
-                            {% set pdfExportURL = path('domain_business_reports_pdf_export') %}
+                            {% set pdfExportURL = absolute_url(path('domain_business_reports_pdf_export')) %}
                             <button type="button" href="{{ pdfExportURL }}" id="export-pdf" class="btn green-btn">
                                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                 {% trans %}PDF{% endtrans %}
                             </button>
-                            {% set excelExportURL = path('domain_business_reports_excel_export') %}
+                            {% set excelExportURL = absolute_url(path('domain_business_reports_excel_export')) %}
                             <button type="button" href="{{ excelExportURL }}" id="export-excel" class="btn green-btn">
                                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 {% trans %}Excel{% endtrans %}
@@ -118,8 +118,8 @@
     </script>
 
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/reports.js")}}'], function(Reports) {
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/reports.js")) }}'], function(Reports) {
                 var reports = new Reports();
             })
         })

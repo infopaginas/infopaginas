@@ -82,8 +82,8 @@
 {% block scripts %}
     {{ parent() }}
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            require(['{{asset("/bundles/domainsite/scripts/modules/searchpage.js")}}'], function(searchpage){
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/searchpage.js")) }}'], function(searchpage){
                 var searchPage = new searchpage;
             })
         })

@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -27,6 +28,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use SeoTrait;
 
     /**
      * @var int

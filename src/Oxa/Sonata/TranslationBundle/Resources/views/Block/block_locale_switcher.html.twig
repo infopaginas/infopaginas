@@ -16,7 +16,7 @@
                 <a href="{{ admin.generateUrl(locale_switcher_route, {'id': admin.id(object), 'tl': locale}) }}" accesskey=""
                    class=" {% if (object.locale == locale) %} active {% endif %}"
                    title="{{ 'admin.locale_switcher.tooltip' |trans([], 'SonataTranslationBundle') }}">
-                    <img src="{{ asset('bundles/sonatatranslation/img/flags/' ~ locale ~ '.png')}}" />
+                    <img src="{{ absolute_url(asset('bundles/sonatatranslation/img/flags/' ~ locale ~ '.png')) }}" />
                 </a>
             {% endfor %}
         {% endspaceless %}

@@ -15,14 +15,14 @@
     </div><!-- comparison-row -->
 
     <div class="comparison__row comparison__description">
-        <h1><a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a></h1>
+        <h1><a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a></h1>
         <p>
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                {{ item.slogan }}
             {% endif %}
         </p>
         <div class="detail-link">
-            <a href="{{ path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug }) }}" class="button button--small button--text">{% trans %}Details{% endtrans %} <i class="fa fa-angle-right"></i></a>
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" class="button button--small button--text">{% trans %}Details{% endtrans %} <i class="fa fa-angle-right"></i></a>
         </div>
     </div><!-- comparison-row -->
 

@@ -12,15 +12,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
         <meta http-equiv="cleartype" content="on">
 
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/redesign/img/touch/apple-touch-icon-144x144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/redesign/img/touch/apple-touch-icon-114x114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/redesign/img/touch/apple-touch-icon-72x72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" href="/redesign/img/touch/apple-touch-icon-57x57-precomposed.png">
-        <link rel="shortcut icon" sizes="196x196" href="/redesign/img/touch/touch-icon-196x196.png">
-        <link rel="shortcut icon" href="/redesign/img/touch/apple-touch-icon.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-144x144-precomposed.png')) }}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-114x114-precomposed.png')) }}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-72x72-precomposed.png')) }}">
+        <link rel="apple-touch-icon-precomposed" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-57x57-precomposed.png')) }}">
+        <link rel="shortcut icon" sizes="196x196" href="{{ absolute_url(asset('redesign/img/touch/touch-icon-196x196.png')) }}">
+        <link rel="shortcut icon" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon.png')) }}">
 
         <!-- Tile icon for Win8 (144x144 + tile color) -->
-        <meta name="msapplication-TileImage" content="/img/touch/apple-touch-icon-144x144-precomposed.png">
+        <meta name="msapplication-TileImage" content="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-144x144-precomposed.png')) }}">
         <meta name="msapplication-TileColor" content="#222222">
 
         {% for key, language in languages %}
@@ -49,7 +49,7 @@
                 "redesign/css/normalize.css"
                 "../sass/_scss/infopaginas.scss"
             %}
-                <link rel="stylesheet" href="{{ asset_url }}" />
+                <link rel="stylesheet" href="{{ absolute_url(asset_url) }}" />
             {% endstylesheets %}
 
             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
@@ -83,19 +83,24 @@
 
         <!-- Scripts -->
         {% block scripts %}
-            <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
-            <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-            <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-            <script src="/bundles/domainsite/scripts/vendors/modernizr-2.7.1.min.js"></script>
+            {% javascripts filter="?jsqueeze" output="js/app.js"
+                'bundles/domainsite/scripts/require.js'
+                'bundles/fosjsrouting/js/router.js'
+                'bundles/domainsite/scripts/vendors/modernizr-2.7.1.min.js'
+                'bundles/domainsite/scripts/modules/helper.js'
+            %}
+                <script src="{{ absolute_url(asset_url) }}"></script>
+            {% endjavascripts %}
+
+            <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
+
             <script type="text/javascript">
-                requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-                    requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+                requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+                    requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/homepage.js")) }}'], function(Homepage) {
                         var siteHomepage = new Homepage();
                     })
                 })
             </script>
-
-            <script src="/bundles/domainsite/scripts/modules/helper.js"></script>
         {% endblock %}
 
     </body>
