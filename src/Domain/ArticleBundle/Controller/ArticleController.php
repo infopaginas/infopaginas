@@ -36,7 +36,7 @@ class ArticleController extends Controller
         $dcDataDTO = $articleManager->getAllArticleDoubleClickData();
 
         $params = [
-            'articlesResultDTO' => $articlesResultDTO,
+            'results'           => $articlesResultDTO,
             'schemaJsonLD'      => $schema,
             'bannerFactory'     => $bannerFactory,
             'dcDataDTO'         => $dcDataDTO,
@@ -112,7 +112,7 @@ class ArticleController extends Controller
         $dcDataDTO = $articleManager->getArticleCategoryListDoubleClickData($category);
 
         $params = [
-            'articlesResultDTO' => $articlesResultDTO,
+            'results'           => $articlesResultDTO,
             'articleCategory'   => $category,
             'schemaJsonLD'      => $schema,
             'bannerFactory'     => $bannerFactory,

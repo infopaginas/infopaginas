@@ -1,0 +1,23 @@
+{% for key, language in languages %}
+    {% if language.active %}
+<link rel="canonical" href="{{ language.url }}" />
+    {% else %}
+<link rel="alternate" href="{{ language.url }}" hreflang="{{ key }}" />
+    {% endif %}
+{% endfor %}
+{% if app.request.get('order') and app.request.get('order') != constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::DEFAULT_ORDER_BY_VALUE') %}
+<meta name="robots" content="noindex">
+{%endif%}
+{% if results.resultSet is defined and results.resultSet is not null %}
+    {% if results.pageCount > 1 %}
+        {% if results.page > 1 and app.request.attributes is defined %}
+            {% set routeParams = app.request.attributes|merge({'page': (results.page - 1) }) %}
+<link rel="next" href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}">
+        {% endif %}
+
+        {% if results.page < results.pageCount and app.request.attributes is defined %}
+            {% set routeParams = app.request.attributes|merge({'page': (results.page + 1) }) %}
+<link rel="next" href="{{ path(app.request.get('_route'), app.request.query.all|merge(routeParams)) }}">
+        {% endif %}
+    {% endif %}
+{% endif %}
