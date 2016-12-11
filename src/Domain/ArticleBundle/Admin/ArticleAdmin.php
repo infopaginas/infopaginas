@@ -2,6 +2,7 @@
 
 namespace Domain\ArticleBundle\Admin;
 
+use Domain\ArticleBundle\Entity\Article;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Admin\Admin;
@@ -9,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ArticleAdmin extends OxaAdmin
@@ -68,6 +70,7 @@ class ArticleAdmin extends OxaAdmin
         $formMapper
             ->with('General', array('class' => 'col-md-4'))->end()
             ->with('Content', array('class' => 'col-md-8'))->end()
+            ->with('SEO', array('class' => 'col-md-12'))->end()
         ;
 
         $formMapper
@@ -100,6 +103,11 @@ class ArticleAdmin extends OxaAdmin
                     'required' => true
                 ])
             ->end()
+            ->with('SEO')
+                ->add('seoTitle', null, ['read_only' => true])
+                ->add('seoDescription', null, ['read_only' => true])
+                ->add('seoKeywords')
+            ->end()
         ;
     }
 
@@ -125,6 +133,55 @@ class ArticleAdmin extends OxaAdmin
             ->add('slug')
             ->add('updatedAt')
             ->add('updatedUser')
+            ->add('seoTitle')
+            ->add('seoDescription')
+            ->add('seoKeywords')
         ;
+    }
+
+
+    public function prePersist($entity)
+    {
+        $this->preSave($entity);
+    }
+
+    public function preUpdate($entity)
+    {
+        /** @var Page $entity */
+        $this->preSave($entity);
+    }
+
+    private function preSave($entity)
+    {
+        $entity = $this->setSeoDate($entity);
+    }
+
+    /**
+     * @param Article $entity
+     *
+     * @return Article
+     */
+    private function setSeoDate($entity)
+    {
+
+        /** @var ContainerInterface $container */
+        $container = $this->getConfigurationPool()->getContainer();
+
+        $seoSettings = $container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $entity->getTitle() . ' | ' . $companyName;
+        $seoDescription = strip_tags($entity->getBody());
+
+        $seoTitle       = substr($seoTitle, 0, $titleMaxLength);
+        $seoDescription = substr($seoDescription, 0, $descriptionMaxLength);
+
+        $entity->setSeoTitle($seoTitle);
+        $entity->setSeoDescription($seoDescription);
+
+        return $entity;
     }
 }

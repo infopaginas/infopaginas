@@ -186,4 +186,32 @@ class ArticleManager extends Manager
 
         return $logo;
     }
+
+    public function getArticleListSeoData($category = null)
+    {
+        $translator  = $this->container->get('translator');
+        $seoSettings = $this->container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $translator->trans('Articles');
+
+        if ($category) {
+            $seoTitle = $seoTitle . ' - ' . $category;
+        }
+
+        $seoDescription = $seoTitle;
+
+        $seoTitle = $seoTitle . ' | ' . $companyName;
+
+        $seoData = [
+            'seoTitle' => substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => substr($seoDescription, 0, $descriptionMaxLength),
+            'seoKeywords' => '',
+        ];
+
+        return $seoData;
+    }
 }

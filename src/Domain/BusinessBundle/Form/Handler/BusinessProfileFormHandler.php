@@ -12,10 +12,12 @@ use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +59,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         TasksManager $tasksManager,
         ValidatorInterface $validator,
         TokenStorageInterface $tokenStorage,
-        UsersManager $userManager
+        UsersManager $userManager,
+        ContainerInterface $container
     ) {
         $this->form               = $form;
         $this->request            = $request;
@@ -66,6 +69,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $this->validator          = $validator;
         $this->currentUser        = $tokenStorage->getToken()->getUser();
         $this->userManager        = $userManager;
+        $this->container          = $container;
     }
 
     /**
@@ -128,6 +132,14 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                         $businessProfile->setUser($user);
                     }
                 }
+
+                //todo change locale logic https://jira.oxagile.com/browse/INFT-45
+                $seoTitle       = BusinessProfileUtil::seoTitleBuilder($businessProfile, $this->container);
+                $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($businessProfile, $this->container);
+
+                $businessProfile->setSeoTitle($seoTitle);
+                $businessProfile->setSeoDescription($seoDescription);
+                $businessProfile->setLocale($locale);
 
                 if ($locale == 'en') {
                     $businessProfile->setNameEn($businessProfile->getName());

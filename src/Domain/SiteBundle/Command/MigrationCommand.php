@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -401,16 +402,13 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        // process seo data
-
-        $seoTitle = $name . ' - ' . $entity->getCity();
-
-        if ($entity->getZipCode()) {
-            $seoTitle .= ', ' . $entity->getZipCode();
-        }
+        //todo change locality logic https://jira.oxagile.com/browse/INFT-50
+        //https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/translatable.md
+        $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $this->getContainer());
+        $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $this->getContainer());
 
         $entity->setSeoTitle($seoTitle);
-        $entity->setSeoDescription($name);
+        $entity->setSeoDescription($seoDescription);
 
         // set translation vectors
 
