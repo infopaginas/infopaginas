@@ -19,7 +19,11 @@
                     {% trans %}Date of registration{% endtrans %}
                 </span>
                 <span class="info__content">
-                    {{ businessProfile.createdAt|date("Y-m-d") }}
+                    {% if businessProfile is defined %}
+                        {{ businessProfile.createdAt|date(business_date_format) }}
+                    {% else %}
+                        {{ "now"|date(business_date_format) }}
+                    {% endif %}
                 </span>
             </li>
             <li>
@@ -40,7 +44,7 @@
                 </span>
                 <span class="info__content">
                     {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
-                        {{ businessProfile.getSubscriptions()|first.getEndDate()|date("Y-m-d") }}
+                        {{ businessProfile.getSubscriptions()|first.getEndDate()|date(subscription_date_format) }}
                     {% else %}
                         {% trans %}Unlimited{% endtrans %}
                     {% endif %}
@@ -49,136 +53,8 @@
         </ul>
     </div>
 
-    <div class="form__column column--english">
-        <h3 class="language-title">{% trans %}English{% endtrans %}</h3>
-
-        <div class="form__section">
-            <h2>{% trans %}General{% endtrans %}</h2>
-
-            <div class="form__row">
-                <div class="form__field field--name">
-                    {{ form_label(businessProfileForm.name) }}
-                    {{ form_widget(businessProfileForm.name) }}
-                </div>
-            </div>
-        </div>
-
-        <div class="form__section">
-            <h2>{% trans %}Business Description{% endtrans %}</h2>
-
-            <div class="form__row">
-                <div class="form__field field--slogan">
-                    {{ form_label(businessProfileForm.slogan) }}
-                    {{ form_widget(businessProfileForm.slogan) }}
-                    <small class="field__description">
-                        {# todo #}
-                        {% trans %}Maximum 140 characters.{% endtrans %}
-                    </small>
-                </div>
-            </div>
-            <div class="form__row">
-                <div class="form__field field--description">
-                    {{ form_label(businessProfileForm.description) }}
-                    {{ form_widget(businessProfileForm.description) }}
-                </div>
-            </div>
-            <div class="form__row">
-                <div class="form__field field--products">
-                    {{ form_label(businessProfileForm.product) }}
-                    {{ form_widget(businessProfileForm.product) }}
-                </div>
-            </div>
-            <div class="form__row">
-                <div class="form__field field--brands">
-                    {{ form_label(businessProfileForm.brands) }}
-                    {{ form_widget(businessProfileForm.brands, {'attr': {'placeholder': ''}}) }}
-                </div>
-            </div>
-            <div class="form__row">
-                <div class="form__field field--working-hours">
-                    {{ form_label(businessProfileForm.workingHours) }}
-                    {{ form_widget(businessProfileForm.workingHours) }}
-                </div>
-            </div>
-        </div>
-    </div>
-    {# todo #}
-    <div class="form__column column--english">
-        <h3 class="language-title">{% trans %}Español{% endtrans %}</h3>
-
-        <div class="form__section">
-            <h2>{% trans %}General{% endtrans %}</h2>
-
-            <div class="form__row">
-                <div class="form__field field--name-sp">
-                    <label>Nombre del negocio*</label>
-                    <input type="text" name="name-sp" required>
-                </div>
-                <!-- form-field -->
-            </div>
-            <!-- form__row -->
-            <div class="form__row">
-                <div class="form__field field--website-sp">
-                    <label>Sitio web</label>
-                    <input type="text" name="website-sp" required>
-                </div>
-                <!-- form-field -->
-            </div>
-            <!-- form__row -->
-            <div class="form__row">
-                <div class="form__field field--email">
-                    <label>Email</label>
-                    <input type="email" name="email-sp" required>
-                </div>
-                <!-- form-field -->
-            </div>
-            <!-- form__row -->
-            <div class="form__row vertical__row">
-                <div class="form__field field--phone">
-                    <label>Teléfono</label>
-                    <input type="text" name="phone-sp" required>
-                </div>
-                <!-- form-field -->
-                <button class="button button--small"><i class="fa fa-plus-square"></i> Add phone</button>
-            </div>
-            <!-- form__row -->
-
-        </div>
-        <!-- *** End general ************************************** -->
-
-        <div class="form__section">
-            <h2>Descripción del negocio</h2>
-
-            <div class="form__row">
-                <div class="form__field field--slogan">
-                    <label>Eslogan</label>
-                    <input type="text" name="slogan-sp" maxlength="140">
-                    <small class="field__description">Máximo 140 caracteres.</small>
-                </div>
-                <!-- form-field -->
-            </div>
-            <!-- form__row -->
-            <div class="form__row">
-                <div class="form__field field--description">
-                    <label>Descripción</label>
-                    <textarea name="description-sp"></textarea>
-                </div>
-                <!-- form-field -->
-            </div>
-            <!-- form__row -->
-            <div class="form__row">
-                <div class="form__field field--products">
-                    <label>Productos</label>
-                    <textarea name="products-sp"></textarea>
-                </div>
-                <!-- form-field -->
-            </div>
-            <!-- form__row -->
-        </div>
-        <!-- *** End Business description ************************************** -->
-    </div>
-    <!-- form__column -->
-
+    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'English', 'langPostfix': 'En'} %}
+    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'Spanish', 'langPostfix': 'Es'} %}
 </div>
 
 <h3 class="language-title">{% trans %}Common for english and spanish{% endtrans %}</h3>
@@ -188,7 +64,7 @@
             <div class="form__row vertical__row">
                 <div class="form__field field--email">
                     {{ form_label(businessProfileForm.email) }}
-                    {{ form_widget(businessProfileForm.email) }}
+                    {{ form_widget(businessProfileForm.email, {'attr': {'placeholder': ''}} ) }}
                 </div>
             </div>
 
@@ -252,4 +128,6 @@
             </div>
         </div>
     </div>
+
+    {# todo fulness block #}
 </div>

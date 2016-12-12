@@ -44,7 +44,7 @@ class ProfileController extends Controller
     {
         $businessProfileForm = $this->getBusinessProfileForm();
 
-        return $this->render('DomainBusinessBundle:Profile:edit.html.twig', [
+        return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm' => $businessProfileForm->createView(),
         ]);
     }
@@ -78,6 +78,9 @@ class ProfileController extends Controller
 
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
 
+//        dump($businessProfileForm);
+//        die();
+
         return $this->render($template, [
             'businessProfileForm' => $businessProfileForm->createView(),
             'businessProfile'     => $businessProfile,
@@ -93,6 +96,8 @@ class ProfileController extends Controller
         $formHandler = $this->getBusinessProfileFormHandler();
 
         try {
+            return $this->getFailureResponse('sss', [], Response::HTTP_INTERNAL_SERVER_ERROR);
+
             if ($formHandler->process()) {
                 return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
             }

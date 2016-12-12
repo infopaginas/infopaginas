@@ -6,7 +6,7 @@
         {% set id = image.vars.data.id %}
     {% endif %}
 
-    <div class="media__item">
+    <div class="media__item image-item" id="images-form-{{ image.vars.data.media.id }}">
         <div class="media__item--left">
             <div class="media__field media__thumbnail">
                 {% thumbnail image.vars.data.media, 'preview' %}
@@ -41,6 +41,7 @@
                     {% trans %}Remove{% endtrans %}
                 </button>
             </div>
+            {{ form_widget(image.media, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_media', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][media]' }) }}
         </div>
         <!-- item--right -->
     </div>

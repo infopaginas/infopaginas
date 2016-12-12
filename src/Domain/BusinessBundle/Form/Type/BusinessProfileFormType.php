@@ -74,13 +74,6 @@ class BusinessProfileFormType extends AbstractType
 
 
         $builder
-            ->add('name', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Sons Notebook',
-                ],
-                'label' => 'Name',
-            ])
             ->add('website', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -120,24 +113,6 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Email',
                 'constraints' => $emailConstraints,
             ])
-            ->add('brands', TextareaType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Organize, store, plan, prioritize',
-                    'rows' => 3,
-                ],
-                'label' => 'Brands',
-                'required' => false,
-            ])
-            ->add('description', TextareaType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'business.add.description.placeholder',
-                    'rows' => 5,
-                ],
-                'label' => 'Description',
-                'required' => false,
-            ])
             ->add('tags', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',
@@ -155,15 +130,6 @@ class BusinessProfileFormType extends AbstractType
                 },
                 'required' => false,
             ])
-            ->add('product', TextareaType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'business.add.product.placeholder',
-                    'rows' => 3,
-                ],
-                'label' => 'Products',
-                'required' => false,
-            ])
             ->add('paymentMethods', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',
@@ -179,15 +145,6 @@ class BusinessProfileFormType extends AbstractType
                 'query_builder' => function (PaymentMethodRepository $repository) {
                     return $repository->getAvailablePaymentMethodsQb();
                 },
-                'required' => false,
-            ])
-            ->add('workingHours', TextareaType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'business.add.workingHours.placeholder',
-                    'rows' => 3,
-                ],
-                'label' => 'Working hours',
                 'required' => false,
             ])
             ->add('serviceAreasType', ChoiceType::class, [
@@ -412,6 +369,9 @@ class BusinessProfileFormType extends AbstractType
             }
 
             $this->setupCategories($businessProfile, $event->getForm());
+
+            $this->addTranslationBlock($event->getForm(), $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
+            $this->addTranslationBlock($event->getForm(), $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
         });
     }
 
@@ -565,14 +525,6 @@ class BusinessProfileFormType extends AbstractType
                 'read_only' => true,
                 'data' => $isSloganSet,
             ])
-            ->add('slogan', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Organize, store, plan, prioritize',
-                ],
-                'label' => 'Slogan',
-                'required' => false,
-            ])
             ->add(
                 'files',
                 'file',
@@ -595,6 +547,9 @@ class BusinessProfileFormType extends AbstractType
                 'allow_extra_fields' => true,
             ])
         ;
+
+        $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
+        $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
     }
 
     private function setupPriorityPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
@@ -698,6 +653,64 @@ class BusinessProfileFormType extends AbstractType
                 'mapped' => false,
             ])
         ;
+    }
+
+    private function addTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
+    {
+        $form
+            ->add('name' . $locale, TextType::class, [
+                'label'    => 'Name',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation('name', strtolower($locale)),
+            ])
+            ->add('description' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 5,
+                ],
+                'label'    => 'Description',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation('description', strtolower($locale)),
+            ])
+            ->add('product' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 3,
+                ],
+                'label'    => 'Products',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation('product', strtolower($locale)),
+            ])
+            ->add('brands' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 3,
+                ],
+                'label'    => 'Brands',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation('brands', strtolower($locale)),
+            ])
+            ->add('workingHours' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 3,
+                ],
+                'label'    => 'Working hours',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation('workingHours', strtolower($locale)),
+            ])
+        ;
+    }
+
+    private function addSloganTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
+    {
+        $form->add('slogan' . $locale, TextType::class, [
+            'label' => 'Slogan',
+            'required' => false,
+            'mapped'   => false,
+            'data'     => $businessProfile->getTranslation('slogan', strtolower($locale)),
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

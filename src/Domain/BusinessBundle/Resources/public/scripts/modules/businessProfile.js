@@ -16,7 +16,8 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             buttons: {
                 geocodeButtonId: '#geocodeButton',
                 newProfileSaveButtonId: '#newProfileRequestButton',
-                closeBusinessProfileButtonId: '#closeBusinessProfileButton'
+                closeBusinessProfileButtonId: '#closeBusinessProfileButton',
+                fileUploadButton: '.file-upload-button'
             },
             forms: {
                 newProfileRequestFormId: '#businessProfileRequestForm',
@@ -597,6 +598,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             that.initGoogleMap();
             //console.log(1);
         } );
+
+        $( this.html.buttons.fileUploadButton ).on( 'click', function() {
+            $( this ).parent().find( 'input' ).click();
+        });
 
         new select();
     };

@@ -9,11 +9,15 @@
             {% trans %}Business Address{% endtrans %}
         </a>
     </li>
-    <li>
-        <a href="#media" aria-controls="media" role="tab" data-toggle="tab">
-            {% trans %}Media{% endtrans %}
-        </a>
-    </li>
+    {% if businessProfile is defined %}
+        {% if media_tab_allowed_for_business(businessProfile) %}
+            <li>
+                <a href="#media" aria-controls="media" role="tab" data-toggle="tab">
+                    {% trans %}Media{% endtrans %}
+                </a>
+            </li>
+        {% endif %}
+    {% endif %}
     <li>
         <a href="#socialNetworks" aria-controls="socialNetworks" role="tab" data-toggle="tab">
             {% trans %}Social networks{% endtrans %}

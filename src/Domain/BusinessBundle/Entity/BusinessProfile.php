@@ -60,7 +60,20 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_LOGO       = 'logo';
     const BUSINESS_PROFILE_FIELD_BACKGROUND = 'background';
 
+    const BUSINESS_PROFILE_FIELD_NAME          = 'name';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION   = 'description';
+    const BUSINESS_PROFILE_FIELD_PRODUCT       = 'product';
+    const BUSINESS_PROFILE_FIELD_BRANDS        = 'brands';
+    const BUSINESS_PROFILE_FIELD_WORKING_HOURS = 'workingHours';
+    const BUSINESS_PROFILE_FIELD_SLOGAN        = 'slogan';
+
+    const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
+    const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
+
     const DEFAULT_LOCALE = 'en';
+
+    const TRANSLATION_LANG_EN = 'En';
+    const TRANSLATION_LANG_ES = 'Es';
 
     /**
      * @var int
@@ -72,11 +85,12 @@ class BusinessProfile implements
     protected $id;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_NAME
      * @var string - Business name
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank()
+
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $name;
@@ -204,6 +218,7 @@ class BusinessProfile implements
     protected $areas;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_SLOGAN
      * @var string - Slogan of a Business
      *
      * @Gedmo\Translatable(fallback=true)
@@ -223,6 +238,7 @@ class BusinessProfile implements
     protected $tags;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_DESCRIPTION
      * @var string - Description of Business
      *
      * @Gedmo\Translatable(fallback=true)
@@ -246,6 +262,7 @@ class BusinessProfile implements
     protected $descriptionEs;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_PRODUCT
      * @var string - Products of Business
      *
      * @Gedmo\Translatable(fallback=true)
@@ -255,6 +272,7 @@ class BusinessProfile implements
     protected $product;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS
      * @var string - Operational Hours
      *
      * @Gedmo\Translatable(fallback=true)
@@ -263,6 +281,7 @@ class BusinessProfile implements
     protected $workingHours;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS
      * @var string Brands - Brands, Business works with
      *
      * @Gedmo\Translatable(fallback=true)

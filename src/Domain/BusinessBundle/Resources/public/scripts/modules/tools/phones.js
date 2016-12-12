@@ -44,7 +44,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                 }
             });
 
-            console.log($newWidget[0].outerHTML);
+            //console.log($newWidget[0].outerHTML);
 
             phonesCount++;
 

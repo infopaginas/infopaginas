@@ -49,8 +49,17 @@
                             </div>
                         </div>
 
+                        {# todo last updated #}
 
+                        <div style="display:none;">
+                            {{ form_rest(businessProfileForm) }}
+                        </div>
 
+                        <div class="form__actions">
+                            <button type="reset" class="button button--text">{% trans %}Reset{% endtrans %}</button>
+                            <button type="submit" class="button button--action" id="saveBusinessProfile">{% trans %}Save changes{% endtrans %}</button>
+                        </div><!-- form-actions -->
+                        {#{{ form_rest(businessProfile) }}#}
                     </form>
                 </section>
 
@@ -70,8 +79,8 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfile.js")}}'], function(businessProfile) {
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/businessProfile.js")) }}'], function(businessProfile) {
                 var profile = new businessProfile();
             })
         })
