@@ -30,6 +30,7 @@ use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Manager\VideoMediaManager;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Sonata\MediaBundle\Entity\MediaManager;
+use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -150,12 +151,22 @@ class BusinessProfileManager extends Manager
                 $logoPath = $provider->generatePublicUrl($logo, 'admin');
             }
 
+            $backgndPath = null;
+            $backgnd = $profile->getBackground();
+
+            if ($backgnd) {
+                $provider = $this->container->get($backgnd->getProviderName());
+
+                $backgndPath = $provider->generatePublicUrl($backgnd, 'admin');
+            }
+
             $profilesArray[] = [
                 "id"            => $profile->getId(),
                 "name"          => $profile->getName(),
                 "address"       => $profile->getShortAddress(),
                 "reviewsCount"  => $profile->getBusinessReviewsCount(),
                 "logo"          => $logoPath,
+                "background"    => $backgndPath,
                 "latitude"      => $profile->getLatitude(),
                 "longitude"     => $profile->getLongitude(),
                 'rating'        => $this->calculateReviewsAvgRatingForBusinessProfile($profile),
@@ -258,13 +269,45 @@ class BusinessProfileManager extends Manager
             $businessProfile->setLocale($locale);
         }
 
-        foreach ($businessProfile->getImages() as $image) {
-            $clonedImage = clone $image;
-            $clonedImage->setBusinessProfile($businessProfile);
-            $this->getEntityManager()->persist($clonedImage);
+        foreach ($businessProfile->getImages() as $gallery) {
+            $businessProfile->removeImage($gallery);
+            $gallery->setBusinessProfile($businessProfile);
+            $this->getEntityManager()->persist($gallery);
+            $businessProfile->addImage($gallery);
+        }
+        $this->commit($businessProfile);
+    }
+
+    public function preSaveProfile(BusinessProfile $businessProfile)
+    {
+        $logoEmpty = $backgroundEmpty = true;
+
+        foreach ($businessProfile->getImages() as $gallery) {
+            if ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                $media = $gallery->getMedia();
+
+                $businessProfile->setLogo($media);
+                $businessProfile->removeImage($gallery);
+                $logoEmpty = false;
+                continue;
+            }elseif ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                $media = $gallery->getMedia();
+
+                $businessProfile->setBackground($media);
+                $businessProfile->removeImage($gallery);
+                $backgroundEmpty = false;
+                continue;
+            }
+        }
+        if ($logoEmpty && $businessProfile->getLogo()) {
+            $businessProfile->setLogo();
         }
 
-        $this->commit($businessProfile);
+        if ($backgroundEmpty && $businessProfile->getBackground()) {
+            $businessProfile->setBackground();
+        }
+
+        return $businessProfile;
     }
 
     /**
@@ -293,7 +336,6 @@ class BusinessProfileManager extends Manager
     {
         $this->drop($businessProfile);
     }
-
 
     public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet, $locale = 'en')
     {
@@ -335,16 +377,58 @@ class BusinessProfileManager extends Manager
                         }
                     }
                     break;
+                case ChangeSetCalculator::PROPERTY_IMAGE_ADD:
+                    $data   = json_decode($change->getNewValue());
+
+                    $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
+                    $media = $this->setMediaContentAndProvider($media, $data->context);
+
+                    if ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                        $businessProfile->setLogo($media);
+                    }elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                        $businessProfile->setBackground($media);
+                    }
+
+                    $this->getEntityManager()->persist($media);
+                    break;
+                case ChangeSetCalculator::PROPERTY_IMAGE_REMOVE:
+                    $data   = json_decode($change->getOldValue());
+
+                    if ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                        $businessProfile->setLogo();
+                    }elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                        $businessProfile->setBackground();
+                    }
+                    break;
+                case ChangeSetCalculator::PROPERTY_IMAGE_UPDATE:
+                    $data   = json_decode($change->getNewValue());
+
+                    $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
+                    $media = $this->setMediaContentAndProvider($media, $data->context);
+
+                    if ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                        $businessProfile->setLogo($media);
+                    }elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                        $businessProfile->setBackground($media);
+                    }
+
+                    $this->getEntityManager()->persist($media);
+                    break;
                 case ChangeSetCalculator::IMAGE_ADD:
                     $data = json_decode($change->getNewValue());
                     $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
-                    if ($data->type == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+
+                    if ($media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                        $media = $this->setMediaContentAndProvider($media, $data->type);
                         $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
-                        $businessProfile->setLogo($media);
+                    } elseif ($media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                        $media = $this->setMediaContentAndProvider($media, $data->type);
+                        $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
                     } else {
                         $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
                         $this->getSonataMediaManager()->save($media, false);
                     }
+
                     break;
                 case ChangeSetCalculator::IMAGE_REMOVE:
                     $data = json_decode($change->getOldValue());
@@ -372,24 +456,35 @@ class BusinessProfileManager extends Manager
                     if (isset($data->type)) {
                         $gallery->setType($data->type[1]);
 
-                        if ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-                            $media = $this->makeLogoFromPhoto($gallery->getMedia());
-                            $businessProfile->setLogo($media);
-                            $gallery->setMedia($media);
-                        } else {
-                            $media = $gallery->getMedia();
+                        $media = $gallery->getMedia();
 
-                            if ($data->type[0] != $data->type[1]) {
+                        $context = '';
+                        if ($data->type[0] != $data->type[1]) {
+                            if ($data->type[0] === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                                $context = OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO;
                                 $businessProfile->setLogo(null);
-                            }
-
-                            if ($media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-                                $media = $this->makePhotoFromLogo($gallery->getMedia());
-                                $gallery->setMedia($media);
-                                $businessProfile->addImage($gallery);
+                            } elseif ($data->type[0] === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                                $context = OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND;
+                                $businessProfile->setBackground(null);
                             }
                         }
+
+                        if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO 
+                                && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
+                                ) {
+                            $media = $this->setMediaContentAndProvider($media, $data->context);
+                            $gallery->setMedia($media);
+                            $businessProfile->addImage($gallery);
+                        }
+                        if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
+                                && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
+                                ) {
+                            $media = $this->setMediaContentAndProvider($media, $data->context);
+                            $gallery->setMedia($media);
+                            $businessProfile->addImage($gallery);
+                        }
                     }
+
                     $this->getEntityManager()->persist($gallery);
                     break;
                 case ChangeSetCalculator::VIDEO_ADD:
@@ -614,6 +709,59 @@ class BusinessProfileManager extends Manager
         return $media;
     }
 
+    protected function makeBackgroundFromPhoto(Media $media)
+    {
+        $media = clone $media;
+        $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND);
+        $this->getSonataMediaManager()->save($media, false);
+
+        return $media;
+    }
+
+    protected function makePhotoFromBackground(Media $media)
+    {
+        $media = clone $media;
+        $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES);
+        $this->getSonataMediaManager()->save($media, false);
+
+        return $media;
+    }
+
+    protected function setMediaContentAndProvider(Media $media, $newContext)
+    {
+        $provider = $this->container->get('sonata.media.pool')->getProvider($media->getProviderName());
+
+        $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
+        $file = $provider->getFilesystem()->getAdapter()->getDirectory().DIRECTORY_SEPARATOR.$filepath;
+
+        $media->setBinaryContent($file);
+        $media->setProviderReference($media->getPreviousProviderReference());
+
+        $media->getContext($newContext);
+        $provider->transform($media);
+
+        return $media;
+    }
+
+    public function addLogoAndBackgroundToGallery($businessProfile)
+    {
+        $galleryManager = $this->getBusinessGalleryManager();
+
+        $media = $businessProfile->getLogo();
+        if ($media) {
+            $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO);
+            $galleryManager->addNewItemToBusinessProfileGallery($businessProfile, $media);
+        }
+
+        $media = $businessProfile->getBackground();
+        if ($media) {
+            $media->setContext(OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND);
+            $galleryManager->addNewItemToBusinessProfileGallery($businessProfile, $media);
+        }
+
+        return $businessProfile;
+    }
+
     /**
      * Persist & flush
      *
@@ -632,6 +780,11 @@ class BusinessProfileManager extends Manager
     protected function getSonataMediaManager() : MediaManager
     {
         return $this->sonataMediaManager;
+    }
+
+    protected function getBusinessGalleryManager() : BusinessGalleryManager
+    {
+        return $this->container->get('domain_business.manager.business_gallery');
     }
 
     /**
@@ -681,7 +834,7 @@ class BusinessProfileManager extends Manager
 
     public function getSlugDcDataDTO(BusinessProfile $profile) : DCDataDTO
     {
-        return new DCDataDTO(array(), '', array(), $profile->getSlug());
+        return new DCDataDTO([], '', [$profile->getCategory()->getName()], $profile->getSlug());
     }
 
     private function getEntitiesByIds($class, $ids)
@@ -1027,5 +1180,39 @@ class BusinessProfileManager extends Manager
         );
 
         return $url;
+    }
+
+    public function getBusinessProfileSearchSeoData($locality = null, $category = null, $subcategory = null)
+    {
+        $translator  = $this->container->get('translator');
+        $seoSettings = $this->container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $translator->trans('Search');
+
+        if ($locality) {
+            $seoTitle = $seoTitle . ' - ' . $locality;
+        }
+
+        if ($category) {
+            $seoTitle = $seoTitle . ' - ' . $category;
+        }
+
+        if ($subcategory) {
+            $seoTitle = $seoTitle . ' - ' . $subcategory;
+        }
+
+        $seoTitle = $seoTitle . ' | ' . $companyName;
+
+        $seoData = [
+            'seoTitle' => substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => substr($seoTitle, 0, $descriptionMaxLength),
+            'seoKeywords' => '',
+        ];
+
+        return $seoData;
     }
 }

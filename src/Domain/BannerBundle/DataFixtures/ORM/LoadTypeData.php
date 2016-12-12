@@ -42,46 +42,35 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
     {
         return [
             [
-                'code' => TypeInterface::CODE_SERP_BANNER,
-                'name' => 'homepage-main-728x90',
-                'placement' => 'Homepage big top banner',
-                'comment' => 'Shown if Business corresponds to search category and location.',
-            ], [
-                'code' => TypeInterface::CODE_PORTAL_LEFT,
-                'name' => 'homepage-bottom-left-300x250',
-                'placement' => 'Home page banner at the bottom. left one',
-                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
-            ], [
-                'code' => TypeInterface::CODE_PORTAL_RIGHT,
-                'name' => 'homepage-bottom-right-300x250',
-                'placement' => 'Home page banner at the bottom. right one',
-                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
-            ],[
-                'code' => TypeInterface::CODE_PORTAL_LEFT_MOBILE,
-                'name' => 'homepage-bottom-left-mobile-300x250',
-                'placement' => 'Home page banner at the bottom. left one. Mobile',
-                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
-            ], [
-                'code' => TypeInterface::CODE_PORTAL_RIGHT_MOBILE,
-                'name' => 'homepage-bottom-right-mobile-300x250',
-                'placement' => 'Home page banner at the bottom. left one. Mobile',
-                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
-            ], [
-                'code' => TypeInterface::CODE_PORTAL_LEADERBOARD,
-                'name' => 'search-page-main-728x90',
-                'placement' => 'Search results page big banner',
-                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
-            ], [
-                'code' => TypeInterface::CODE_PORTAL,
-                'name' => 'search-page-secondary-300x250',
-                'placement' => 'Search results page. Secondary banner',
-                'comment' => 'By default are used for Google AdSence or Infopaginas advertising',
-            ], [
-                'code' => TypeInterface::CODE_SERP_BOXED,
-                'name'      => 'business-profile-secondary-250x250',
-                'placement' => 'Business profile page',
-                'comment' => 'Shown if Business corresponds to search category and location.',
-            ]
+                'code'      => TypeInterface::CODE_HOME_VERTICAL,
+                'name'      => 'homepage-320x50-728x90',
+                'placement' => 'Homepage page',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising, (should be set up for both sizes)',
+            ],
+            [
+                'code'      => TypeInterface::CODE_STATIC_BOTTOM,
+                'name'      => 'static-auto-bottom-320x50-728x90',
+                'placement' => 'Bottom banner of static pages, auto size',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising (should be set up for both sizes)',
+            ],
+            [
+                'code'      => TypeInterface::CODE_PORTAL_RIGHT,
+                'name'      => 'common-side-right-300x250',
+                'placement' => 'Static pages, and business profile view',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising',
+            ],
+            [
+                'code'      => TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                'name'      => 'search-auto-bottom-468x60-320x50',
+                'placement' => 'Search, compare and catalog pages, auto size',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising (should be set up for both sizes)',
+            ],
+            [
+                'code'      => TypeInterface::CODE_SEARCH_PAGE_TOP,
+                'name'      => 'search-auto-up-468x60-320x50',
+                'placement' => 'Search, compare and catalog pages',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising (should be set up for both sizes)',
+            ],
         ];
     }
 

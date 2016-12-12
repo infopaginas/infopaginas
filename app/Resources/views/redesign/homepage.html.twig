@@ -19,20 +19,7 @@
                     <source data-src="/redesign/video/home-video.mp4" type="video/mp4">
                 </video>
 
-                {# todo double click#}
-                <div class="home-ad">
-                    <div class="ad ad-mobile">
-                        <a href="#" target="_blank">
-                            <img src="/redesign/img/demo/banner-att-mobile.jpg" title="Banner title">
-                        </a>
-                    </div>
-
-                    <div class="ad ad-desktop">
-                        <a href="#" target="_blank">
-                            <img src="/redesign/img/demo/banner-att.jpg" title="Banner title">
-                        </a>
-                    </div>
-                </div><!-- home-ad -->
+                {% include ':redesign/blocks/banners:homepage.html.twig' %}
             </div><!-- container -->
 
             <div class="profile-body__container">

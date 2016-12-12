@@ -13,7 +13,7 @@ trait SeoTrait
      * @var string
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="seo_title", type="string", length=100, nullable=true)
+     * @ORM\Column(name="seo_title", type="string", length=255, nullable=true)
      */
     protected $seoTitle;
 
@@ -21,7 +21,7 @@ trait SeoTrait
      * @var string
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="seo_description", type="string", length=100, nullable=true)
+     * @ORM\Column(name="seo_description", type="string", length=255, nullable=true)
      */
     protected $seoDescription;
 
@@ -29,7 +29,7 @@ trait SeoTrait
      * @var string
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="seo_keywords", type="string", length=100, nullable=true)
+     * @ORM\Column(name="seo_keywords", type="string", length=255, nullable=true)
      */
     protected $seoKeywords;
 

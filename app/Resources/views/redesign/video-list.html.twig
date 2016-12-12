@@ -10,10 +10,12 @@
     <div class="main__container main__container--centered">
         <div class="container clearfix">
             <div class="main main-column">
-                {% if videoResultDTO %}
-                    {% include ':redesign/blocks:video_list.html.twig' with {'businessProfiles': videoResultDTO.resultSet} %}
-                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : videoResultDTO.page, 'pageCount' : videoResultDTO.pageCount } %}
+                {% if results %}
+                    {% include ':redesign/blocks:video_list.html.twig' with {'businessProfiles': results.resultSet} %}
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
                 {% endif %}
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
             </div>
 
             {% include ':redesign/blocks:side-ads-block.html.twig' %}

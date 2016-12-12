@@ -40,20 +40,7 @@
                         {{ article.getBody()|raw }}
                     </section>
 
-                    {# todo replace with double click #}
-                    <div class="ad">
-                        <div class="ad ad-mobile">
-                            <a href="#" target="_blank">
-                                <img src="/redesign/img/demo/banner-mobile-1.jpg" title="Banner title">
-                            </a>
-                        </div>
-
-                        <div class="ad ad-desktop">
-                            <a href="#" target="_blank">
-                                <img src="/redesign/img/demo/banner-desktop-1.jpg" title="Banner title">
-                            </a>
-                        </div>
-                    </div><!-- home-ad -->
+                    {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
                 </article>
             </div>
 

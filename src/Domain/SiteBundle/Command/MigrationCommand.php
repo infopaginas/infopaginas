@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -28,6 +29,7 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 class MigrationCommand extends ContainerAwareCommand
 {
     const SYSTEM_CATEGORY_SEPARATOR = ' / ';
+    const CATEGORY_NAME_MAX_LENGTH = 250;
 
     protected function configure()
     {
@@ -401,16 +403,16 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        // process seo data
+        //todo change locality logic https://jira.oxagile.com/browse/INFT-50
+        //https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/translatable.md
+        $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $this->getContainer());
+        $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $this->getContainer());
 
-        $seoTitle = $name . ' - ' . $entity->getCity();
-
-        if ($entity->getZipCode()) {
-            $seoTitle .= ', ' . $entity->getZipCode();
-        }
+        $seoTitle       = mb_convert_encoding($seoTitle, 'UTF-8');
+        $seoDescription = mb_convert_encoding($seoDescription, 'UTF-8');
 
         $entity->setSeoTitle($seoTitle);
-        $entity->setSeoDescription($name);
+        $entity->setSeoDescription($seoDescription);
 
         // set translation vectors
 
@@ -487,7 +489,7 @@ class MigrationCommand extends ContainerAwareCommand
 
         if (!$entity) {
             //search category as subcategory
-            $parentValue    = $this->parseCategoryName($valuePrimary);
+            $parentValue = $this->parseCategoryName($valuePrimary);
 
             $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
 
@@ -497,27 +499,32 @@ class MigrationCommand extends ContainerAwareCommand
 
                 if ($parentEntity) {
                     $subcategoryNameEn = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEn());
-                    $subcategoryNameEs = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEs());
+                    $subcategoryNameEs = $this->convertSubcategoryName($valueEs, $parentEntity->getSearchTextEs());
 
-                    $entity = new Category();
-                    $entity->setName($valuePrimary);
+                    $entity = $this->em->getRepository('DomainBusinessBundle:Category')
+                        ->findOneBy(['name' => $subcategoryNameEn]);
 
-                    $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
-                    $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
+                    if (!$entity) {
+                        $entity = new Category();
+                        $entity->setName($subcategoryNameEn);
 
-                    $entity->setSearchTextEn($subcategoryNameEn);
-                    $entity->setSearchTextEs($subcategoryNameEs);
-                    $entity->setParent($parentEntity);
+                        $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
+                        $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
 
-                    $entity = $this->saveEntity($entity);
+                        $entity->setSearchTextEn($subcategoryNameEn);
+                        $entity->setSearchTextEs($subcategoryNameEs);
+                        $entity->setParent($parentEntity);
 
-                    $className = 'Category';
+                        $entity = $this->saveEntity($entity);
 
-                    $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
+                        $className = 'Category';
 
-                    $translation = new $translationClassName();
+                        $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
 
-                    $this->addTranslation($translation, $valueSecondary, $entity);
+                        $translation = new $translationClassName();
+
+                        $this->addTranslation($translation, $subcategoryNameEs, $entity);
+                    }
                 }
             }
         }
@@ -741,6 +748,10 @@ class MigrationCommand extends ContainerAwareCommand
         foreach ($separators as $separator) {
             $convertedName = str_replace($parentName . $separator, '', $convertedName);
         }
+
+        $subcategoryMaxLength = self::CATEGORY_NAME_MAX_LENGTH - strlen($parentName . self::SYSTEM_CATEGORY_SEPARATOR);
+
+        $convertedName = substr($convertedName, 0, $subcategoryMaxLength);
 
         return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $convertedName;
     }

@@ -118,7 +118,7 @@ class VideosController extends Controller
         $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
 
         $params = [
-            'videoResultDTO' => $videoResultDTO,
+            'results'    => $videoResultDTO,
         ];
 
         return $this->render(':redesign:video-list.html.twig', $params);

@@ -28,6 +28,14 @@ sonata_media:
             formats:
                 preview:   { width: 150, height: 150, quality: 100}
                 normal:    { width: 500, height: 500, quality: 100}
+        business_profile_background:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:   { width: 150, height: 150, quality: 100}
+                normal:    { width: 500, height: 500, quality: 100}
         coupon:
             download:
                 mode: http

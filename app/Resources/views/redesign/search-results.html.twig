@@ -12,6 +12,7 @@
 
         <section class="main" id="searchResults">
             <div class="results">
+                {% include ':redesign/blocks/banners:search-page-top.html.twig' %}
 
                 {% if results.resultSet is defined and results.resultSet is not null %}
                     {% for item in results.resultSet %}
@@ -24,6 +25,8 @@
                         {% endblock %}
                     </div>
                 {% endif %}
+
+                {% include ':redesign/blocks/banners:search-page-down.html.twig' %}
 
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
                     <i class="fa fa-map"></i>
@@ -41,14 +44,6 @@
             <div id="map" class="map"></div>
             <span id="map-markers" hidden>{{ markers }}</span>
         </section><!-- results-map -->
-
-        {# todo double click #}
-        <div class="ad ad-mobile ad--bottom ad--active">
-            <button id="ad-close" type="button" class="button-close-ad"><i class="fa fa-remove"></i></button>
-            <a href="#" target="_blank">
-                <img src="/redesign/img/demo/banner-mobile-2.jpg">
-            </a>
-        </div><!-- ad mobile -->
 
     </div><!-- main container -->
 

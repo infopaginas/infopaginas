@@ -85,8 +85,10 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         //hide table if no images exists
         if( $galleryContainer.find( 'tr' ).length > 0 ) {
             $galleryContainer.parent().show();
+            $galleryContainer.show();
         } else {
             $galleryContainer.parent().hide();
+            $galleryContainer.hide();
         }
     };
 
@@ -272,6 +274,22 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
                 $.each( $( self.html.imageTypeSelectClassname ), function() {
                     if ( $( this ).val() == logoTypeConstant &&
+                        $( triggeredSelect ).closest( '.image-row' ).children('.hidden-media').val() != $( this ).closest( '.image-row' ).children('.hidden-media').val()
+                    ) {
+                        $( this ).val( photoTypeConstant );
+
+                        new select;
+                    }
+                } );
+            }
+        } );
+
+        $(document).on( 'change', this.html.imageTypeSelectClassname, function() {
+            if ( typeof backgroundTypeConstant !== undefined && $( this ).val() == backgroundTypeConstant ) {
+                var triggeredSelect = this;
+
+                $.each( $( self.html.imageTypeSelectClassname ), function() {
+                    if ( $( this ).val() == backgroundTypeConstant &&
                         $( triggeredSelect ).closest( '.image-row' ).children('.hidden-media').val() != $( this ).closest( '.image-row' ).children('.hidden-media').val()
                     ) {
                         $( this ).val( photoTypeConstant );

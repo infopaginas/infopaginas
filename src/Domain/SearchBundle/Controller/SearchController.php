@@ -32,7 +32,9 @@ class SearchController extends Controller
 
         $locale = ucwords($request->getLocale());
 
-        $schema = false;
+        $schema       = false;
+        $locationName = false;
+        $query        = false;
 
         if ($searchDTO) {
             $searchResultsDTO = $searchManager->search($searchDTO, $locale);
@@ -47,6 +49,14 @@ class SearchController extends Controller
 
             $locationMarkers = $this->getBusinessProfileManager()
                 ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+
+            if ($searchDTO->locationValue) {
+                $locationName = $searchDTO->locationValue->name;
+            }
+
+            if ($searchDTO->query) {
+                $query = $searchDTO->query;
+            }
         } else {
             $searchResultsDTO = null;
             $dcDataDTO        = null;
@@ -56,10 +66,12 @@ class SearchController extends Controller
         $bannerFactory = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
-                TypeInterface::CODE_PORTAL_LEADERBOARD,
-                TypeInterface::CODE_PORTAL,
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
             ]
         );
+
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $query);
 
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
@@ -69,6 +81,7 @@ class SearchController extends Controller
             [
                 'search'        => $searchDTO,
                 'results'       => $searchResultsDTO,
+                'seoData'       => $seoData,
                 'bannerFactory' => $bannerFactory,
                 'dcDataDTO'     => $dcDataDTO,
                 'searchData'    => $searchData,
@@ -156,6 +169,9 @@ class SearchController extends Controller
 
         $locale = ucwords($request->getLocale());
 
+        $locationName = false;
+        $query        = false;
+
         if ($searchDTO) {
             $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
 
@@ -166,22 +182,36 @@ class SearchController extends Controller
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+
+            if ($searchDTO->locationValue) {
+                $locationName = $searchDTO->locationValue->name;
+            }
+
+            if ($searchDTO->query) {
+                $query = $searchDTO->query;
+            }
         } else {
             $searchResultsDTO = null;
             $schema           = null;
         }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL
-        ));
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
+            ]
+        );
 
         $pageRouter = $this->container->get('request')->attributes->get('_route');
+
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $query);
 
         return $this->render(
             ':redesign:search-results-compare.html.twig',
             [
                 'results'       => $searchResultsDTO,
+                'seoData'       => $seoData,
                 'bannerFactory' => $bannerFactory,
                 'searchData'    => $searchData,
                 'pageRouter'    => $pageRouter,
@@ -235,6 +265,10 @@ class SearchController extends Controller
         $showResults = null;
         $showCatalog = true;
 
+        $seoLocationName    = null;
+        $seoCategoryName    = null;
+        $seoSubcategoryName = null;
+
         $categories    = [];
         $subcategories = [];
 
@@ -253,6 +287,7 @@ class SearchController extends Controller
             $request->attributes->set('q', $locality->getName());
 
             $category = $searchManager->searchCatalogCategory($categorySlug);
+            $seoLocationName = $locality->getName();
 
             if ($category and !$category->getParent()) {
                 $request->attributes->set('category', $category->getName());
@@ -262,12 +297,14 @@ class SearchController extends Controller
                 $subcategory   = $searchManager->searchCatalogCategory($subcategorySlug);
 
                 $showResults = true;
+                $seoCategoryName = $category->getName();
 
                 if ($subcategory and $subcategory->getParent()) {
                     $request->attributes->set('subcategory', $subcategory->getName());
                     $request->attributes->set('q', $subcategory->getName());
 
                     $showCatalog = false;
+                    $seoSubcategoryName = $subcategory->getName();
                 }
 
                 if (!$subcategories) {
@@ -305,8 +342,8 @@ class SearchController extends Controller
         $bannerFactory = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
-                TypeInterface::CODE_PORTAL_LEADERBOARD,
-                TypeInterface::CODE_PORTAL,
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
             ]
         );
 
@@ -337,6 +374,9 @@ class SearchController extends Controller
 
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $subcategories);
 
+        $seoData = $this->getBusinessProfileManager()
+            ->getBusinessProfileSearchSeoData($seoLocationName, $seoCategoryName, $seoSubcategoryName);
+
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
@@ -345,6 +385,7 @@ class SearchController extends Controller
             [
                 'search'             => $searchDTO,
                 'results'            => $searchResultsDTO,
+                'seoData'            => $seoData,
                 'bannerFactory'      => $bannerFactory,
                 'dcDataDTO'          => $dcDataDTO,
                 'searchData'         => $searchData,

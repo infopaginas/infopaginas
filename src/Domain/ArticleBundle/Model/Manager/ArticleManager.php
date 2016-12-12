@@ -4,7 +4,9 @@ namespace Domain\ArticleBundle\Model\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,6 +35,36 @@ class ArticleManager extends Manager
         $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT);
 
         return $homepageArticles;
+    }
+
+    public function getArticleDoubleClickData(Article $article) : DCDataDTO
+    {
+        return new DCDataDTO(
+            [],
+            '',
+            [$article->getCategory()->getName()],
+            $article->getSlug()
+        );
+    }
+
+    public function getAllArticleDoubleClickData() : DCDataDTO
+    {
+        return new DCDataDTO(
+            [],
+            '',
+            [],
+            ''
+        );
+    }
+
+    public function getArticleCategoryListDoubleClickData(Category $category) : DCDataDTO
+    {
+        return new DCDataDTO(
+            [],
+            '',
+            [$category->getName()],
+            ''
+        );
     }
 
     /**
@@ -153,5 +185,33 @@ class ArticleManager extends Manager
         ];
 
         return $logo;
+    }
+
+    public function getArticleListSeoData($category = null)
+    {
+        $translator  = $this->container->get('translator');
+        $seoSettings = $this->container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $translator->trans('Articles');
+
+        if ($category) {
+            $seoTitle = $seoTitle . ' - ' . $category;
+        }
+
+        $seoDescription = $seoTitle;
+
+        $seoTitle = $seoTitle . ' | ' . $companyName;
+
+        $seoData = [
+            'seoTitle' => substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => substr($seoDescription, 0, $descriptionMaxLength),
+            'seoKeywords' => '',
+        ];
+
+        return $seoData;
     }
 }

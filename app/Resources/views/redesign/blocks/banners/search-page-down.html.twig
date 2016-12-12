@@ -1,0 +1,5 @@
+<div class="ad">
+    {% if bannerFactory is not null %}
+        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with {'banner': bannerFactory.getSearchPageBottom()} %}
+    {% endif %}
+</div>
