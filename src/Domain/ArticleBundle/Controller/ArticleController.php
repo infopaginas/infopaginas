@@ -37,7 +37,7 @@ class ArticleController extends Controller
         $seoData   = $articleManager->getArticleListSeoData();
 
         $params = [
-            'articlesResultDTO' => $articlesResultDTO,
+            'results'           => $articlesResultDTO,
             'seoData'           => $seoData,
             'schemaJsonLD'      => $schema,
             'bannerFactory'     => $bannerFactory,
@@ -116,7 +116,7 @@ class ArticleController extends Controller
         $seoData   = $articleManager->getArticleListSeoData($category->getName());
 
         $params = [
-            'articlesResultDTO' => $articlesResultDTO,
+            'results'           => $articlesResultDTO,
             'seoData'           => $seoData,
             'articleCategory'   => $category,
             'schemaJsonLD'      => $schema,

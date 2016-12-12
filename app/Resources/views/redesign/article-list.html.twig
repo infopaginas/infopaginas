@@ -10,9 +10,9 @@
     <div class="main__container main__container--centered">
         <div class="container clearfix">
             <div class="main main-column">
-                {% if articlesResultDTO %}
-                    {% include ':redesign/blocks:homepage_article_list.html.twig' with {'articles': articlesResultDTO.resultSet} %}
-                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : articlesResultDTO.page, 'pageCount' : articlesResultDTO.pageCount } %}
+                {% if results %}
+                    {% include ':redesign/blocks:homepage_article_list.html.twig' with {'articles': results.resultSet} %}
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
                 {% endif %}
 
                 {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}

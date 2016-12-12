@@ -9,8 +9,9 @@ use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
 class SearchDataUtil
 {
-    const ORDER_BY_RELEVANCE = 'relevance';
-    const ORDER_BY_DISTANCE  = 'distance';
+    const ORDER_BY_RELEVANCE        = 'relevance';
+    const ORDER_BY_DISTANCE         = 'distance';
+    const DEFAULT_ORDER_BY_VALUE    = 'relevance';
 
     public static function buildResponceDTO(
         $resutlSet,
