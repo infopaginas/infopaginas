@@ -48,7 +48,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @var string - Category name
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
      */
     protected $name;
@@ -56,14 +56,14 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     /**
      * @var string
      *
-     * @ORM\Column(name="search_text_en", type="string", length=100, nullable=true)
+     * @ORM\Column(name="search_text_en", type="string", length=255, nullable=true)
      */
     protected $searchTextEn;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="search_text_es", type="string", length=100, nullable=true)
+     * @ORM\Column(name="search_text_es", type="string", length=255, nullable=true)
      */
     protected $searchTextEs;
 
@@ -97,21 +97,21 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"}, updatable=false)
-     * @ORM\Column(name="slug", type="string", length=100)
+     * @ORM\Column(name="slug", type="string", length=255)
      */
     protected $slug;
 
     /**
      * @var string - Used to create human like url en
      *
-     * @ORM\Column(name="slug_en", type="string", length=100, nullable=true)
+     * @ORM\Column(name="slug_en", type="string", length=255, nullable=true)
      */
     protected $slugEn;
 
     /**
      * @var string - Used to create human like url en
      *
-     * @ORM\Column(name="slug_es", type="string", length=100, nullable=true)
+     * @ORM\Column(name="slug_es", type="string", length=255, nullable=true)
      */
     protected $slugEs;
 

@@ -80,12 +80,14 @@ class KeywordRepository extends \Doctrine\ORM\EntityRepository
         $newKeywords = $this->getNewKeywordValues($existingKeywords, $values);
 
         foreach ($newKeywords as $value) {
-            $keyword = new Keyword();
-            $keyword->setValue($value);
+            if ($value <= Keyword::KEYWORD_MAX_LENGTH) {
+                $keyword = new Keyword();
+                $keyword->setValue($value);
 
-            $this->getEntityManager()->persist($keyword);
+                $this->getEntityManager()->persist($keyword);
 
-            $keywords->add($keyword);
+                $keywords->add($keyword);
+            }
         }
 
         foreach ($existingKeywords as $existingKeyword) {
