@@ -16,14 +16,14 @@
                         <h1><strong>{{ article.title }}</strong></h1>
                         <div class="article__category">
                             <div class="tagcloud">
-                                <a href="{{ path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() }) }}" class="tag">{{ article.getCategory().getName() }}</a>
+                                <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() })) }}" class="tag">{{ article.getCategory().getName() }}</a>
                             </div>
                         </div>
 
                         <div class="credits">
                             <ul>
                                 <li><i class="fa fa-pencil"></i>{{ article.createdUser.fullName }}</li>
-                                <li><i class="fa fa-calendar"></i>{{ article.updatedAt|date('m d, Y') }}</li>
+                                <li><i class="fa fa-calendar"></i>{{ article.updatedAt|date(article_date_format) }}</li>
                             </ul>
                         </div>
                     </section>

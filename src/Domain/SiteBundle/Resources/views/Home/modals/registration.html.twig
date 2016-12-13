@@ -12,9 +12,9 @@
                 <div class="terms">
                     {% trans %}By joining Infopaginas you agree to our{% endtrans %}
 
-                        <a href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Service{% endtrans %}</a>
+                        <a href="{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Terms of Service{% endtrans %}</a>
                         {% trans %}and{% endtrans %}
-                        <a href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Policy{% endtrans %}</a>.
+                        <a href="{{ absolute_url(path('domain_page_view_privacy')) }}">{% trans %}Privacy Policy{% endtrans %}</a>.
                     
                     {% trans %}We value your privacy, and will not post to your wall without your permission.{% endtrans %}
                 </div>
@@ -51,13 +51,13 @@
                                 <span class="alternative-login">{% trans %}or{% endtrans %}</span>
                             </div>
                             <div class="col-xs-12 social-buttons">
-                                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" class="facebook-btn btn">
+                                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'facebook' })) }}" class="facebook-btn btn">
                                     <span>
                                         {% trans %}Log In with{% endtrans %}
                                     </span>
                                     <i class="fa fa-facebook" aria-hidden="true"></i>
                                 </a>
-                                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" class="google-btn btn">
+                                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'google' })) }}" class="google-btn btn">
                                     <span>
                                         {% trans %}Log In with{% endtrans %}
                                     </span>

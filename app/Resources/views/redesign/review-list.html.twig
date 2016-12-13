@@ -1,0 +1,43 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:static-breadcrumbs.html.twig' with { 'page': {'title': 'Reviews'}} %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+
+                {% if reviewsResultDTO %}
+                    <section class="page-section page-section--no-box articles-section">
+                        <h2 class="section__title">{% trans %}Reviews{% endtrans %}</h2>
+                        <div class="articles__container clearfix">
+                            {% for review in reviewsResultDTO.resultSet %}
+                                <section class="news__item">
+                                    <h3 class="news__title">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        {{ review.getUsername() }}
+                                    </h3>
+                                    <p>{{ review.getCreatedAt()|date(review_date_format) }}</p>
+                                    <div class="rank">
+                                        {% include ':widgets:rating.html.twig' with { 'ratingValue': review.getRating() } %}
+                                    </div>
+                                    <p>{{ review.getContent() }}</p>
+                                </section>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : reviewsResultDTO.page, 'pageCount' : reviewsResultDTO.pageCount } %}
+                {% endif %}
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

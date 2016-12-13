@@ -26,7 +26,7 @@
                             {% set totalImpressions = totalImpressions + stats.impressions %}
                             <tr>
                                 <td>
-                                    {{ date|date('d.m.Y') }}
+                                    {{ date|date(ads_stat_date_format) }}
                                 </td>
                                 <td>
                                     {{ stats.clicks }}

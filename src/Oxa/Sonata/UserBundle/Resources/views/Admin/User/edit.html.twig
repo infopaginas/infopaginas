@@ -20,7 +20,7 @@
                                 <ul>
                                     {% for businessProfile in businessProfiles %}
                                         <li>
-                                            <a href="{{ path('domain_business_profile_view', { 'citySlug' : businessProfile.catalogLocality.slug, slug: businessProfile.getSlug() }) }}" target="_blank">
+                                            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : businessProfile.catalogLocality.slug, slug: businessProfile.getSlug() })) }}" target="_blank">
                                                 {{ businessProfile.getName() }}
                                             </a>
                                         </li>

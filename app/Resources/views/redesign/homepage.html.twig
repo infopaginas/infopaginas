@@ -9,14 +9,14 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
-            <div class="video-header__container" style="background-image: url('/redesign/img/home-header.jpg')" data-mbg="">
+            <div class="video-header__container" style="background-image: url('{{ absolute_url(asset('redesign/img/home-header.jpg')) }}')" data-mbg="">
 
                 {% block homePageSearch %}
                     {% include ':redesign/blocks:homepage_search.html.twig' %}
                 {% endblock %}
 
                 <video id="bgvid" playsinline autoplay muted loop>
-                    <source data-src="/redesign/video/home-video.mp4" type="video/mp4">
+                    <source data-src="{{ absolute_url(asset('redesign/video/home-video.mp4')) }}" type="video/mp4">
                 </video>
 
                 {% include ':redesign/blocks/banners:homepage.html.twig' %}
