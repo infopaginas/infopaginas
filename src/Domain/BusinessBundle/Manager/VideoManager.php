@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class VideoManager
@@ -60,6 +61,29 @@ class VideoManager
         $pagesCount = ceil( $totalResults / $paramsDTO->limit );
 
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
+    }
+
+    public function getVideosSeoData(ContainerInterface $container)
+    {
+        $translator  = $container->get('translator');
+        $seoSettings = $container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $translator->trans('Videos');
+
+        $seoDescription = $seoTitle;
+
+        $seoTitle = $seoTitle . ' | ' . $companyName;
+
+        $seoData = [
+            'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
+        ];
+
+        return $seoData;
     }
 
     private function getRepository()
