@@ -11,11 +11,6 @@
                     {% block profileSubTab %}
                         {% include ':redesign/blocks/businessProfile/subTabs/profile:nav_subtab.html.twig' %}
                     {% endblock %}
-
-                    {#todo#}
-                    {#{% block reportSubTab %}#}
-                        {#{% include ':redesign/blocks/businessProfile/subTabs/report:nav_subtab.html.twig' %}#}
-                    {#{% endblock %}#}
                 {% endembed %}
 
                 <section class="page-section" id="profile-user">
@@ -59,7 +54,6 @@
                             <button type="reset" class="button button--text">{% trans %}Reset{% endtrans %}</button>
                             <button type="submit" class="button button--action" id="saveBusinessProfile">{% trans %}Save changes{% endtrans %}</button>
                         </div><!-- form-actions -->
-                        {#{{ form_rest(businessProfile) }}#}
                     </form>
                 </section>
 

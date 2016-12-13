@@ -44,12 +44,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                 }
             });
 
-            //console.log($newWidget[0].outerHTML);
-
             phonesCount++;
-
-            // create a new list element and add it to the list
-            //var newLi = $('<li></li>').html($newWidget[0].outerHTML);
 
             $newWidget.appendTo(phonesList);
 

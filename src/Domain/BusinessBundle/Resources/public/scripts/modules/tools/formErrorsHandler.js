@@ -38,8 +38,6 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                             for (var phoneFieldItem in errors[field][phoneField]) {
                                 phoneFieldId = phoneFieldId + '_' + phoneFieldItem;
 
-                                console.log( phoneFieldId );
-
                                 $field = $( phoneFieldId );
 
                                 $field.parent().addClass( 'field--not-valid' );

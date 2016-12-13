@@ -36,6 +36,7 @@ define(
         //actions on ajax success
         form.prototype.onRequestSuccess = function( response ) {
             if( response.success ) {
+                //todo
                 //alertify.success( response.message );
                 document.location.href = this.userProfilePageURL;
             } else {

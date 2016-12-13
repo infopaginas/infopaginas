@@ -66,6 +66,7 @@ class ProfileController extends Controller
 
         $businessProfileForm = $this->getBusinessProfileForm($businessProfile);
 
+//        todo recheck this ajax call
         //return form-only for AJAX requests
 //        if (!$request->isXmlHttpRequest()) {
 //            $template = 'DomainBusinessBundle:Profile:edit.html.twig';
@@ -74,12 +75,8 @@ class ProfileController extends Controller
 //        }
 
         $template = ':redesign:business-profile-edit.html.twig';
-//        $template = 'DomainBusinessBundle:Profile:edit.html.twig';
 
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
-
-//        dump($businessProfileForm);
-//        die();
 
         return $this->render($template, [
             'businessProfileForm' => $businessProfileForm->createView(),

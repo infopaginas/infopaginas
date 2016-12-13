@@ -596,7 +596,7 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
             that.initGoogleMap();
-            //console.log(1);
+        //todo
         } );
 
         $( this.html.buttons.fileUploadButton ).on( 'click', function() {
