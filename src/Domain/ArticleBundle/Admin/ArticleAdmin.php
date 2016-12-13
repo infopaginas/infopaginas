@@ -70,7 +70,6 @@ class ArticleAdmin extends OxaAdmin
         $formMapper
             ->with('General', array('class' => 'col-md-4'))->end()
             ->with('Content', array('class' => 'col-md-8'))->end()
-            ->with('SEO', array('class' => 'col-md-12'))->end()
         ;
 
         $formMapper
@@ -103,11 +102,6 @@ class ArticleAdmin extends OxaAdmin
                     'required' => true
                 ])
             ->end()
-            ->with('SEO')
-                ->add('seoTitle', null, ['read_only' => true])
-                ->add('seoDescription', null, ['read_only' => true])
-                ->add('seoKeywords')
-            ->end()
         ;
     }
 
@@ -133,9 +127,6 @@ class ArticleAdmin extends OxaAdmin
             ->add('slug')
             ->add('updatedAt')
             ->add('updatedUser')
-            ->add('seoTitle')
-            ->add('seoDescription')
-            ->add('seoKeywords')
         ;
     }
 
@@ -176,8 +167,8 @@ class ArticleAdmin extends OxaAdmin
         $seoTitle = $entity->getTitle() . ' | ' . $companyName;
         $seoDescription = strip_tags($entity->getBody());
 
-        $seoTitle       = substr($seoTitle, 0, $titleMaxLength);
-        $seoDescription = substr($seoDescription, 0, $descriptionMaxLength);
+        $seoTitle       = mb_substr($seoTitle, 0, $titleMaxLength);
+        $seoDescription = mb_substr($seoDescription, 0, $descriptionMaxLength);
 
         $entity->setSeoTitle($seoTitle);
         $entity->setSeoDescription($seoDescription);

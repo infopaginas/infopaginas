@@ -10,7 +10,6 @@
         <div class="sort-bar">
             {# todo style links #}
             <a href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button button--action sort__compare-view">{% trans %}Compare view{% endtrans %}</a>
-            <a href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button button--action">{% trans %}Compare view{% endtrans %}</a>
             <button id="sort-toggle" class="button sort-bar__button" type="button">
                 <i class="fa fa-sort"></i>
                 <span>{% trans %}Sort{% endtrans %}</span>
@@ -21,16 +20,14 @@
             </button>
 
             <div class="sort__options sort">
-                {% set noFollow = constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::ORDER_BY_RELEVANCE') != constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::DEFAULT_ORDER_BY_VALUE') %}
-                <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': 'relevance'}))) }}" {% if noFollow %} rel="nofollow"{% endif %}>
-                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::ORDER_BY_RELEVANCE') %}sort--active{% endif %}">
+                <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchRelevance}))) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %}>
+                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == searchRelevance %}sort--active{% endif %}">
                         {% trans %}Best match{% endtrans %}
                         <i class="fa fa-sort-amount-desc"></i>
                     </button>
                 </a>
-                {% set noFollow = constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::ORDER_BY_DISTANCE') != constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::DEFAULT_ORDER_BY_VALUE') %}
-                <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': 'distance'}))) }}" {% if noFollow %} rel="nofollow"{% endif %}>
-                    <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::ORDER_BY_DISTANCE') %}sort--active{% endif %}">
+                <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchDistance}))) }}" {% if noFollowDistance %} rel="nofollow"{% endif %}>
+                    <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == searchDistance %}sort--active{% endif %}">
                         {% trans %}Distance{% endtrans %}
                         <i class="fa fa-location-arrow"></i>
                     </button>

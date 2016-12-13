@@ -751,7 +751,7 @@ class MigrationCommand extends ContainerAwareCommand
 
         $subcategoryMaxLength = self::CATEGORY_NAME_MAX_LENGTH - strlen($parentName . self::SYSTEM_CATEGORY_SEPARATOR);
 
-        $convertedName = substr($convertedName, 0, $subcategoryMaxLength);
+        $convertedName = mb_substr($convertedName, 0, $subcategoryMaxLength);
 
         return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $convertedName;
     }

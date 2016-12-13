@@ -203,7 +203,7 @@
                             <section class="page-section photos slider section--slider">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        {% thumbnail photo.getMedia(), 'reference' %}
+                                        {% thumbnail photo.getMedia(), 'reference' with {'alt': photo.description} %}
                                     </div>
                                 {% endfor %}
                             </section>

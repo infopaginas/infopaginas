@@ -70,6 +70,8 @@ class LoadPageData extends OxaAbstractFixture
         $this->addTranslation(new PageTranslation(), 'description', sprintf('Spain %s', $data['description']), $object);
         $this->addTranslation(new PageTranslation(), 'body', sprintf('Spain %s', $data['body']), $object);
 
+        $object = $this->container->get('domain_page.manager.page')->setPageSeoData($object, $this->container);
+
         $this->manager->persist($object);
 
         return $object;

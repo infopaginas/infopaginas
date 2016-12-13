@@ -71,9 +71,10 @@ class BusinessGalleryAdmin extends OxaAdmin
                 'allow_switch_context' => false
             ]])
             ->add('description', null, ['attr' => [
-                'rows' => 2,
-                'cols' => 100,
-                'style' => 'resize: none'
+                'rows'          => 2,
+                'cols'          => 100,
+                'style'         => 'resize: none',
+                'placeholder'   => 'Create an image description as if you were describing the image to someone who cannot see it',
             ]])
             ->add('type', ChoiceType::class, [
                 'choices' => [

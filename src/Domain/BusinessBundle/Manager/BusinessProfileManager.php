@@ -1192,7 +1192,12 @@ class BusinessProfileManager extends Manager
         return $url;
     }
 
-    public function getBusinessProfileSearchSeoData($locality = null, $category = null, $subcategory = null)
+    public function getBusinessProfileSearchSeoData(
+        $locality = null,
+        $category = null,
+        $subcategory = null,
+        $isCatalog = false
+    )
     {
         $translator  = $this->container->get('translator');
         $seoSettings = $this->container->getParameter('seo_custom_settings');
@@ -1201,26 +1206,30 @@ class BusinessProfileManager extends Manager
         $titleMaxLength       = $seoSettings['title_max_length'];
         $descriptionMaxLength = $seoSettings['description_max_length'];
 
-        $seoTitle = $translator->trans('Search');
+        if ($isCatalog) {
+            $seoTitle = $translator->trans('Catalog');
+        } else {
+            $seoTitle = $translator->trans('Search');
+        }
 
         if ($locality) {
-            $seoTitle = $seoTitle . ' - ' . $locality;
+            $seoTitle = $seoTitle . ' ' . $translator->trans('in') . ' ' . $locality;
         }
 
         if ($category) {
-            $seoTitle = $seoTitle . ' - ' . $category;
+            $seoTitle = $seoTitle . ' ' . $translator->trans('for') . ' ' . $category;
         }
 
         if ($subcategory) {
             $seoTitle = $seoTitle . ' - ' . $subcategory;
         }
 
-        $seoTitle = $seoTitle . ' | ' . $companyName;
+        $seoDescription = $seoTitle;
+        $seoTitle       = $seoTitle . ' | ' . $companyName;
 
         $seoData = [
-            'seoTitle' => substr($seoTitle, 0, $titleMaxLength),
-            'seoDescription' => substr($seoTitle, 0, $descriptionMaxLength),
-            'seoKeywords' => '',
+            'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
         ];
 
         return $seoData;
