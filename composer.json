@@ -61,7 +61,7 @@
         "patchwork/jsqueeze": "^2.0",
         "knplabs/gaufrette": "dev-master",
         "knplabs/knp-gaufrette-bundle": "~0.3",
-	"amazonwebservices/aws-sdk-for-php": "1.6.2"
+	"aws/aws-sdk-php": "~3.20"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
