@@ -23,13 +23,10 @@
         <meta name="msapplication-TileImage" content="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-144x144-precomposed.png')) }}">
         <meta name="msapplication-TileColor" content="#222222">
 
-        {% for key, language in languages %}
-            {% if language.active %}
-                <link rel="canonical" href="{{ language.url }}" />
-            {% else %}
-                <link rel="alternate" href="{{ language.url }}" hreflang="{{ key }}" />
-            {% endif %}
-        {% endfor %}
+        {% include ':redesign/blocks:seo_links.html.twig' %}
+
+        {%block next_page_seolink %}{%endblock%}
+        {%block prev_page_seolink %}{%endblock%}
 
         <meta name="mobile-web-app-capable" content="yes">
 
@@ -55,6 +52,10 @@
             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
         {% endblock %}
 
+        {% block googleTagManagerScript %}
+            {% include ':widgets:google_tag_manager_script.html.twig' %}
+        {% endblock %}
+
         {% block doubleClickHeader %}
             {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
         {% endblock %}
@@ -68,6 +69,9 @@
         {% endblock %}
     </head>
     <body class="{% block bodyClass %}{% endblock %}">
+        {% block googleTagManagerNoScript %}
+            {% include ':widgets:google_tag_manager_no_script.html.twig' %}
+        {% endblock %}
 
         {% block searchHeader %}
             {% include ':redesign/blocks:header.html.twig' %}
