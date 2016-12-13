@@ -37,7 +37,6 @@ class VideoMediaType extends AbstractType
                 ],
                 'label' => 'Description',
             ])
-            ->add('videoId', HiddenType::class, [])
         ;
     }
 

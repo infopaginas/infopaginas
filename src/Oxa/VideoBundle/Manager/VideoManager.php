@@ -9,6 +9,7 @@ use Oxa\VideoBundle\Uploader\VideoRemoteFileUploader;
 
 class VideoManager
 {
+    private $filesystem;
     private $videoProjectAPIManager;
     private $videoMediaAPIManager;
     private $videoLocalFileUploader;
@@ -19,21 +20,11 @@ class VideoManager
     private $videoEmbedAPIManager;
 
     public function __construct(
-        VideoProjectAPIManager $projectManager,
-        VideoMediaAPIManager $mediaManager,
-        VideoLocalFileUploader $localFileUploader,
-        VideoRemoteFileUploader $remoteFileUploader,
-        VideoMediaManager $videoMediaManager,
-        VideoEmbedAPIManager $videoEmbedAPIManager
+        Filesystem $filesystem,
+        VideoMediaManager $videoMediaManager
     ) {
-        $this->videoProjectAPIManager     = $projectManager;
-        $this->videoMediaAPIManager       = $mediaManager;
-        $this->videoLocalFileUploader     = $localFileUploader;
-        $this->videoRemoteFileUploader    = $remoteFileUploader;
-
+        $this->filesystem = $filesystem;
         $this->videoMediaManager = $videoMediaManager;
-
-        $this->videoEmbedAPIManager = $videoEmbedAPIManager;
     }
 
     public function listProjects() : array
@@ -96,15 +87,28 @@ class VideoManager
         return $this->videoMediaAPIManager->stats($hash);
     }
 
-    public function uploadLocalFile(string $filePath, array $data = []) : VideoMedia
+    public function uploadLocalFile(UploadedFile $file, array $data = []) : VideoMedia
     {
-        $videoMediaData = $this->uploadLocalFileData($filePath, $data);
+        $videoMediaData = $this->uploadLocalFileData($file, $data);
 
         return $this->videoMediaManager->save($videoMediaData);
     }
 
-    public function uploadLocalFileData(string $filePath, array $data = []) : array
+    public function uploadLocalFileData(UploadedFile $file, array $data = []) : array
     {
+        // Check if the file's mime type is in the list of allowed mime types.
+        if (!in_array($file->getClientMimeType(), self::$allowedMimeTypes)) {
+            throw new \InvalidArgumentException(sprintf('Files of type %s are not allowed.', $file->getClientMimeType()));
+        }
+
+        // Generate a unique filename based on the date and add file extension of the uploaded file
+        $filename = sprintf('%s/%s/%s/%s.%s', date('Y'), date('m'), date('d'), uniqid(), $file->getClientOriginalExtension());
+
+        $adapter = $this->filesystem->getAdapter();
+        $adapter->setMetadata($filename, array('contentType' => $file->getClientMimeType()));
+        $adapter->write($filename, file_get_contents($file->getPathname()));
+
+        return $filename;
         $uploaderRequestData = ['file' => $filePath];
         $fileUploader = $this->videoLocalFileUploader->setData(array_merge($uploaderRequestData, $data));
 

@@ -61,12 +61,9 @@ services:
     oxa.manager.video:
         class: Oxa\VideoBundle\Manager\VideoManager
         arguments:
-            - '@oxa.manager.video_api_projects'
-            - '@oxa.manager.video_api_medias'
-            - '@oxa.uploader.video_local_file_uploader'
-            - '@oxa.uploader.video_remote_file_uploader'
+            - '@video_storage_filesystem'
             - '@oxa.manager.video_media'
-            - '@oxa.manager.video_api_embed'
+
 
     #twig extensions section
     oxa.twig_extension.video_media_thumbnail:

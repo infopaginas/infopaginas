@@ -69,7 +69,9 @@ class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterf
         $filename = $file->getClientOriginalName();
         $path = $file->getRealPath();
 
-        $this->getVideoManager()->uploadLocalFile($path, ['name' => $filename]);
+        $res = $this->getVideoManager()->uploadLocalFile($file, ['name' => $filename]);
+
+        dump($res);
     }
 
     /**

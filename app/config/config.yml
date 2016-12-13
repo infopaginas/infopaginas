@@ -255,6 +255,7 @@ knp_gaufrette:
     filesystems:
         ipgn:
             adapter:    video_storage
+            alias:      video_storage_filesystem
 
 oxa_storage:
     amazon_s3:
