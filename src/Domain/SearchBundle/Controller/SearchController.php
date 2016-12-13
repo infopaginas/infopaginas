@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\ReportBundle\Manager\SearchLogManager;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,15 +80,19 @@ class SearchController extends Controller
         return $this->render(
             ':redesign:search-results.html.twig',
             [
-                'search'        => $searchDTO,
-                'results'       => $searchResultsDTO,
-                'seoData'       => $seoData,
-                'bannerFactory' => $bannerFactory,
-                'dcDataDTO'     => $dcDataDTO,
-                'searchData'    => $searchData,
-                'pageRouter'    => $pageRouter,
-                'schemaJsonLD'  => $schema,
-                'markers'       => $locationMarkers,
+                'search'            => $searchDTO,
+                'results'           => $searchResultsDTO,
+                'seoData'           => $seoData,
+                'bannerFactory'     => $bannerFactory,
+                'dcDataDTO'         => $dcDataDTO,
+                'searchData'        => $searchData,
+                'pageRouter'        => $pageRouter,
+                'schemaJsonLD'      => $schema,
+                'markers'           => $locationMarkers,
+                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
     }
@@ -210,12 +215,16 @@ class SearchController extends Controller
         return $this->render(
             ':redesign:search-results-compare.html.twig',
             [
-                'results'       => $searchResultsDTO,
-                'seoData'       => $seoData,
-                'bannerFactory' => $bannerFactory,
-                'searchData'    => $searchData,
-                'pageRouter'    => $pageRouter,
-                'schemaJsonLD'  => $schema,
+                'results'           => $searchResultsDTO,
+                'seoData'           => $seoData,
+                'bannerFactory'     => $bannerFactory,
+                'searchData'        => $searchData,
+                'pageRouter'        => $pageRouter,
+                'schemaJsonLD'      => $schema,
+                'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
     }
@@ -398,6 +407,10 @@ class SearchController extends Controller
                 'catalogLevelItems'  => $catalogLevelItems,
                 'showResults'        => $showResults,
                 'showCatalog'        => $showCatalog,
+                'noFollowRelevance'  => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'noFollowDistance'   => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
     }
