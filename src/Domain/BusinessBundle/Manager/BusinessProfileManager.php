@@ -21,6 +21,7 @@ use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
+use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -368,14 +369,14 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-//                        } elseif ($change->getClassName() === BusinessProfileTranslation::class) {
-//                            $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
-//                                $change,
-//                                $businessProfile,
-//                                $this->getEntityManager()
-//                            );
-//
-//                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        } elseif ($change->getClassName() === BusinessProfileTranslation::class) {
+                            $collection = TranslationChangeSetUtil::getTranslationCollectionsFromChangeSet(
+                                $change,
+                                $businessProfile,
+                                $this->getEntityManager()
+                            );
+
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
                         } else {
                             $ids = array_map(function($element) {
                                 return $element->id;

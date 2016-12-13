@@ -27,6 +27,12 @@ class BusinessProfileTranslation extends AbstractPersonalTranslation
 
     public function __toString()
     {
-        return $this->getContent() ?: '';
+        $data = [
+            'locale' => $this->getLocale(),
+            'field' => $this->getField(),
+            'value' => $this->getContent(),
+        ];
+
+        return json_encode($data) ?: '';
     }
 }

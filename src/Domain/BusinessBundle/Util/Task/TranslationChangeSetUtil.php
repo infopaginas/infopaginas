@@ -24,27 +24,42 @@ class TranslationChangeSetUtil
      * @param EntityManagerInterface $entityManager
      * @return ArrayCollection
      */
-    public static function getPhonesCollectionsFromChangeSet(
+    public static function getTranslationCollectionsFromChangeSet(
         ChangeSetEntry $change,
         BusinessProfile $businessProfile,
         EntityManagerInterface $entityManager
     ) : ArrayCollection {
         $collection = new ArrayCollection();
 
-        $phones = json_decode($change->getNewValue());
-        if ($phones) {
-            foreach ($phones as $item) {
+        $translations = json_decode($change->getNewValue());
+        if ($translations) {
+            foreach ($translations as $item) {
+                $value = json_decode($item->value);
+
                 if (!$item->id) {
-                    $phone = new BusinessProfileTranslation();
-                    $phone->setPhone($item->value);
-                    $phone->setBusinessProfile($businessProfile);
-                    $entityManager->persist($phone);
+                    $translation = $entityManager->getRepository(BusinessProfileTranslation::class)->findOneBy(
+                        [
+                            'locale' => $value->locale,
+                            'field'  => $value->field,
+                            'object' => $businessProfile,
+                        ]
+                    );
+
+                    if (!$translation) {
+                        $translation = new BusinessProfileTranslation();
+                    }
+
+                    $translation->setField($value->field);
+                    $translation->setLocale($value->locale);
+                    $translation->setContent($value->value);
+                    $translation->setObject($businessProfile);
+                    $entityManager->persist($translation);
                 } else {
-                    $phone = $entityManager->getRepository(BusinessProfilePhone::class)->find($item->id);
-                    $phone->setPhone($item->value);
+                    $translation = $entityManager->getRepository(BusinessProfileTranslation::class)->find($item->id);
+                    $translation->setContent($value->value);
                 }
 
-                $collection->add($phone);
+                $collection->add($translation);
             }
         }
 

@@ -142,6 +142,12 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                     }
                 }
 
+                $translations = $businessProfile->getTranslations();
+
+                foreach ($translations as $item) {
+                    $businessProfile->removeTranslation($item);
+                }
+
                 $businessProfile = $this->handleTranslationBlock($businessProfile, $post);
 
                 //todo seo translate
@@ -298,16 +304,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     {
         $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
         $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
-
-//        todo esp translation on update
-
-        $translations = $businessProfile->getTranslations();
-
-        foreach ($translations as $item) {
-            $businessProfile->removeTranslation($item);
-        }
-
-        //todo
 
         if (property_exists($businessProfile, $property)) {
             if (!empty($post[$propertyEn])) {
