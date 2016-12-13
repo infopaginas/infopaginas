@@ -1,5 +1,5 @@
 <section class="page-section page-section--no-box articles-section">
-    <h2 class="section__title">{% trans %}Videos{% endtrans %}</h2>
+    <h1 class="section__title">{% trans %}Videos{% endtrans %}</h1>
     <div class="articles__container clearfix">
         {% for item in businessProfiles %}
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to watch...{% endtrans %}" class="news__item clearfix">

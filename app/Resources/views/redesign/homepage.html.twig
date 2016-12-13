@@ -30,7 +30,11 @@
                             {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
                         </section>
 
-                        {% include ':redesign/blocks:homepage_article_list.html.twig' %}
+                        {% embed ':redesign/blocks:homepage_article_list.html.twig' %}
+                            {% block titleTag %}
+                                <h2 class="section__title">{% trans %}Articles{% endtrans %}</h2>
+                            {% endblock %}
+                        {% endembed %}
                     </div><!-- main-column -->
 
                     {% include ':redesign/blocks:side-ads-block.html.twig' %}

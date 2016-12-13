@@ -278,7 +278,7 @@ class SearchManager extends Manager
         $result = [];
 
         foreach ($data as $item) {
-            $result[strtoupper(substr($item->getName(), 0, 1))][] = $item;
+            $result[strtoupper(mb_substr($item->getName(), 0, 1))][] = $item;
         }
 
         ksort($result);
