@@ -64,6 +64,7 @@ class BusinessGalleryType extends AbstractType
                 'attr' => [
                     'class' => 'form-control textarea-control',
                     'rows' => 3,
+                    'placeholder' => 'Create an image description as if you were describing the image to someone who cannot see it',
                 ],
                 'label' => 'Description',
             ])
