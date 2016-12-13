@@ -1,0 +1,83 @@
+{% extends "redesign/layout/base.html.twig" %}
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+{% block bodyClass %}generic-page user-profile{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="main">
+            <div class="container clearfix">
+                {% embed ':redesign/blocks/businessProfile/tabs:nav_tab.html.twig' with {'activeTab': 'profile'} %}
+                    {% block profileSubTab %}
+                        {% include ':redesign/blocks/businessProfile/subTabs/profile:nav_subtab.html.twig' %}
+                    {% endblock %}
+                {% endembed %}
+
+                <section class="page-section" id="profile-user">
+                    <form class="form user-profile-form"
+                          id="businessProfileRequestForm"
+                          novalidate="novalidate"
+                          name="{{ businessProfileForm.vars.name }}"
+                          {% if businessProfileForm.vars.value %}data-id="{{ businessProfileForm.vars.value.getId() }}"{% endif %}>
+
+                        {# todo #}
+                        <div id="new-profile-loading-spinner-container-id"></div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="general">
+                                {% include ':redesign/blocks/businessProfile/subTabs/profile:general.html.twig' %}
+                            </div>
+                            <div class="tab-pane" id="businessAddress">
+                                {% include ':redesign/blocks/businessProfile/subTabs/profile:address.html.twig' %}
+                            </div>
+
+                            {% if businessProfile is defined %}
+                                {% if media_tab_allowed_for_business(businessProfile) %}
+                                    <div class="tab-pane" id="media">
+                                        {% include ':redesign/blocks/businessProfile/subTabs/profile:media.html.twig' %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+
+                            <div class="tab-pane" id="socialNetworks">
+                                {% include ':redesign/blocks/businessProfile/subTabs/profile:social.html.twig' %}
+                            </div>
+                        </div>
+
+                        {# todo last updated #}
+
+                        <div style="display:none;">
+                            {{ form_rest(businessProfileForm) }}
+                        </div>
+
+                        <div class="form__actions">
+                            <button type="reset" class="button button--text">{% trans %}Reset{% endtrans %}</button>
+                            <button type="submit" class="button button--action" id="saveBusinessProfile">{% trans %}Save changes{% endtrans %}</button>
+                        </div><!-- form-actions -->
+                    </form>
+                </section>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modals %}
+    {{ parent() }}
+    {% if closeBusinessProfileForm is defined %}
+        {% include ':redesign/blocks/modals:close_business_profile.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/businessProfile.js")) }}'], function(businessProfile) {
+                var profile = new businessProfile();
+            })
+        })
+    </script>
+{% endblock%}
+

@@ -68,7 +68,7 @@ class VideosController extends Controller
 
         $editVideoForm = $this->getEditVideoForm($business, $media);
 
-        $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+        $response = $this->renderView(':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig', [
             'media' => $media,
             'form' => $editVideoForm->createView(),
         ]);
@@ -94,7 +94,7 @@ class VideosController extends Controller
         if ($media) {
             $editVideoForm = $this->getEditVideoForm($business, $media);
 
-            $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+            $response = $this->renderView(':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig', [
                 'media' => $media,
                 'form' => $editVideoForm->createView(),
             ]);

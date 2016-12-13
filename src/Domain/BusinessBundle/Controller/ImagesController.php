@@ -44,7 +44,7 @@ class ImagesController extends Controller
 
         $imagesForm = $this->getImagesForm($business);
 
-        return $this->render('DomainBusinessBundle:Images/blocks:gallery.html.twig', [
+        return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
             'images' => $imagesForm->createView(),
         ]);
     }
@@ -70,7 +70,7 @@ class ImagesController extends Controller
         if ($business) {
             $imagesForm = $this->getImagesForm($business);
 
-            return $this->render('DomainBusinessBundle:Images/blocks:gallery.html.twig', [
+            return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
                 'images' => $imagesForm->createView(),
             ]);
         } else {

@@ -1,0 +1,140 @@
+<div class="form-column__container clearfix">
+    <h3 class="language-title">{% trans %}Service Areas{% endtrans %}</h3>
+    <div class="form__section">
+        <div class="form-column__container clearfix">
+            <div class="form__column">
+                <div class="form__row vertical__row">
+                    {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
+                        <div>
+                            {{ form_label(serviceType) }}
+                            {{ form_widget(serviceType) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form__column">
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.milesOfMyBusiness) }}
+                        {{ form_widget(businessProfileForm.milesOfMyBusiness, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    {{ form_label(businessProfileForm.localities) }}
+                    {{ form_widget(businessProfileForm.localities) }}
+                </div>
+
+                <div class="form__row vertical__row">
+                    {{ form_label(businessProfileForm.neighborhoods) }}
+                    {{ form_widget(businessProfileForm.neighborhoods) }}
+                </div>
+            </div>
+        </div>
+        <!-- column container -->
+    </div><!-- form-section -->
+
+    <h3 class="language-title">{% trans %}Address{% endtrans %}</h3>
+    <div class="form__section">
+        <div class="form-column__container clearfix">
+            <div class="form__column">
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.streetAddress) }}
+                        {{ form_widget(businessProfileForm.streetAddress, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    {{ form_label(businessProfileForm.country) }}
+                    {{ form_widget(businessProfileForm.country) }}
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.state) }}
+                        {{ form_widget(businessProfileForm.state, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    {{ form_label(businessProfileForm.catalogLocality) }}
+                    {{ form_widget(businessProfileForm.catalogLocality) }}
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.city) }}
+                        {{ form_widget(businessProfileForm.city, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.zipCode) }}
+                        {{ form_widget(businessProfileForm.zipCode, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.extendedAddress) }}
+                        {{ form_widget(businessProfileForm.extendedAddress, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.crossStreet) }}
+                        {{ form_widget(businessProfileForm.crossStreet, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.customAddress) }}
+                        {{ form_widget(businessProfileForm.customAddress, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.hideAddress) }}
+                        {{ form_widget(businessProfileForm.hideAddress) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form__column">
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.latitude) }}
+                        {{ form_widget(businessProfileForm.latitude) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.longitude) }}
+                        {{ form_widget(businessProfileForm.longitude) }}
+                    </div>
+                </div>
+
+                {#todo#}
+                <div class="form__row vertical__row">
+                    {{ form_label(businessProfileForm.map) }}
+                    {{ form_widget(businessProfileForm.map) }}
+                </div>
+
+                <div class="form__row vertical__row">
+                    <a href="#" class="btn green-btn geo-btn" id="geocodeButton">
+                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        {% trans %}Geocode{% endtrans %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- column container -->
+    </div><!-- form-section -->
+</div>

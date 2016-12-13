@@ -15,7 +15,8 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
             remoteImageURLInputId:       '#remote-image-url',
-            imageTypeSelectClassname:    '.select-image-type'
+            imageTypeSelectClassname:    '.select-image-type',
+            imageRowContainer:           'div.media__item.image-item'
         };
 
         this.urls = {
@@ -83,11 +84,11 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         var $galleryContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
         //hide table if no images exists
-        if( $galleryContainer.find( 'tr' ).length > 0 ) {
-            $galleryContainer.parent().show();
+        if( $galleryContainer.find( this.html.imageRowContainer ).length > 0 ) {
+            $galleryContainer.parent().find( '.blank__message' ).hide();
             $galleryContainer.show();
         } else {
-            $galleryContainer.parent().hide();
+            $galleryContainer.parent().find( '.blank__message' ).show();
             $galleryContainer.hide();
         }
     };
@@ -97,18 +98,16 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         if ( response.success === false ) {
             this.imageErrorHandler( response.message );
         } else {
-            var $response = $( '<table>' + response + '</table>' );
+            var $response = $( response );
 
             var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
-            var $responseImages = $response.find( 'tr' );
-
-            $responseImages.each(function() {
-                var $imageRow = $(this);
+            $response.each(function() {
+                var $imageRow = $( this );
 
                 var imageId = $imageRow.attr( 'id' );
 
-                if( !$(document).find( '#' + imageId ).length > 0 ) {
+                if( !$( document ).find( '#' + imageId ).length > 0 ) {
                     $imagesContainer.append( $imageRow );
                 }
             });
@@ -167,7 +166,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
                 return false;
             }
 
-            that.doRequest( $this.parent().data( 'url' ) );
+            that.doRequest( $this.parent().find( 'button.file-upload-button' ).data( 'url' ) );
         } );
 
         $(document).on( 'click', '#' + this.html.buttons.fileInputId, function() {

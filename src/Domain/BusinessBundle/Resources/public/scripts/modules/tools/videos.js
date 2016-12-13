@@ -10,7 +10,8 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
             },
             videoContainerId: '#video',
             removeVideoLinkId: '#remove-video',
-            remoteVideoURLInputId: '#remote-video-url'
+            remoteVideoURLInputId: '#remote-video-url',
+            videoRowContainer: 'div.media__item.video-item'
         };
 
         this.urls = {
@@ -124,7 +125,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
                 return false;
             }
 
-            that.doRequest( $this.parent().data( 'url' ) );
+            that.doRequest( $this.parent().find( 'button.file-upload-button' ).data( 'url' ) );
         });
 
         //reset input
