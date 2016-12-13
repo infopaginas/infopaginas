@@ -375,7 +375,7 @@ class SearchController extends Controller
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $subcategories);
 
         $seoData = $this->getBusinessProfileManager()
-            ->getBusinessProfileSearchSeoData($seoLocationName, $seoCategoryName, $seoSubcategoryName);
+            ->getBusinessProfileSearchSeoData($seoLocationName, $seoCategoryName, $seoSubcategoryName, true);
 
         // hardcode for catalog
         $pageRouter = 'domain_search_index';

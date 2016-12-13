@@ -55,7 +55,6 @@ class PageAdmin extends OxaAdmin
             ->with('General', array('class' => 'col-md-6'))->end()
             ->with('Status', array('class' => 'col-md-6'))->end()
             ->with('Body', array('class' => 'col-md-12'))->end()
-            ->with('SEO', array('class' => 'col-md-12'))->end()
         ;
 
         $formMapper
@@ -94,11 +93,6 @@ class PageAdmin extends OxaAdmin
             ->with('Body')
                 ->add('body', 'ckeditor')
             ->end()
-            ->with('SEO')
-                ->add('seoTitle', null, ['read_only' => true])
-                ->add('seoDescription', null, ['read_only' => true])
-                ->add('seoKeywords')
-            ->end()
         ;
     }
 
@@ -115,9 +109,6 @@ class PageAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('slug')
-            ->add('seoTitle')
-            ->add('seoDescription')
-            ->add('seoKeywords')
         ;
     }
 
@@ -163,20 +154,7 @@ class PageAdmin extends OxaAdmin
         /** @var ContainerInterface $container */
         $container = $this->getConfigurationPool()->getContainer();
 
-        $seoSettings = $container->getParameter('seo_custom_settings');
-
-        $companyName          = $seoSettings['company_name'];
-        $titleMaxLength       = $seoSettings['title_max_length'];
-        $descriptionMaxLength = $seoSettings['description_max_length'];
-
-        $seoTitle = $entity->getTitle() . ' | ' . $companyName;
-        $seoDescription = $entity->getDescription();
-
-        $seoTitle       = substr($seoTitle, 0, $titleMaxLength);
-        $seoDescription = substr($seoDescription, 0, $descriptionMaxLength);
-
-        $entity->setSeoTitle($seoTitle);
-        $entity->setSeoDescription($seoDescription);
+        $entity = $container->get('domain_page.manager.page')->setPageSeoData($entity, $container);
 
         return $entity;
     }
