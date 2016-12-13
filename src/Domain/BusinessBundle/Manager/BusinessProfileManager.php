@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
@@ -367,6 +368,14 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+//                        } elseif ($change->getClassName() === BusinessProfileTranslation::class) {
+//                            $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
+//                                $change,
+//                                $businessProfile,
+//                                $this->getEntityManager()
+//                            );
+//
+//                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
                         } else {
                             $ids = array_map(function($element) {
                                 return $element->id;

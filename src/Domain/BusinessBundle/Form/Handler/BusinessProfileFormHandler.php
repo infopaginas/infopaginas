@@ -178,7 +178,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             //create 'Update Business Profile' Task for Admin / CM
 
             if ($this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories)) {
-                $this->getBusinessProfilesManager()->saveProfile($businessProfile);
+//                $this->getBusinessProfilesManager()->saveProfile($businessProfile);
             }
         }
     }
@@ -301,11 +301,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
 //        todo esp translation on update
 
-//        $translations = $businessProfile->getTranslations();
-//
-//        foreach ($translations as $item) {
-//            $businessProfile->removeTranslation($item);
-//        }
+        $translations = $businessProfile->getTranslations();
+
+        foreach ($translations as $item) {
+            $businessProfile->removeTranslation($item);
+        }
 
         //todo
 

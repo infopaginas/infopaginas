@@ -96,8 +96,6 @@ class ProfileController extends Controller
         $formHandler = $this->getBusinessProfileFormHandler();
 
         try {
-            return $this->getFailureResponse('sss', [], Response::HTTP_INTERNAL_SERVER_ERROR);
-
             if ($formHandler->process()) {
                 return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
             }
