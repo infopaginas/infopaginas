@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Keyword
 {
+    const KEYWORD_MAX_LENGTH = 50;
+
     /**
      * @var int
      *
@@ -22,6 +24,7 @@ class Keyword
     private $id;
 
     /**
+     * Related to KEYWORD_MAX_LENGTH const
      * @var string
      *
      * @ORM\Column(name="value", type="string", length=50, nullable=true)
