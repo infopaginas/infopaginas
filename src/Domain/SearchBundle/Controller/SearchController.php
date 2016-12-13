@@ -91,6 +91,8 @@ class SearchController extends Controller
                 'markers'           => $locationMarkers,
                 'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
     }
@@ -221,6 +223,8 @@ class SearchController extends Controller
                 'schemaJsonLD'      => $schema,
                 'noFollowRelevance' => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
     }
@@ -405,6 +409,8 @@ class SearchController extends Controller
                 'showCatalog'        => $showCatalog,
                 'noFollowRelevance'  => SearchDataUtil::ORDER_BY_RELEVANCE != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'noFollowDistance'   => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
+                'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
+                'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
     }

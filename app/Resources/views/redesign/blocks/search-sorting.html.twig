@@ -20,14 +20,14 @@
             </button>
 
             <div class="sort__options sort">
-                <a href="{{ path(pageRouter, searchData|merge({'order': 'relevance'})) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %}>
-                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == 'relevance' %}sort--active{% endif %}">
+                <a href="{{ path(pageRouter, searchData|merge({'order': searchRelevance})) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %}>
+                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == searchRelevance %}sort--active{% endif %}">
                         {% trans %}Best match{% endtrans %}
                         <i class="fa fa-sort-amount-desc"></i>
                     </button>
                 </a>
-                <a href="{{ path(pageRouter, searchData|merge({'order': 'distance'})) }}" {% if noFollowDistance %} rel="nofollow"{% endif %}>
-                    <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == 'distance') %}sort--active{% endif %}">
+                <a href="{{ path(pageRouter, searchData|merge({'order': searchDistance})) }}" {% if noFollowDistance %} rel="nofollow"{% endif %}>
+                    <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == searchDistance %}sort--active{% endif %}">
                         {% trans %}Distance{% endtrans %}
                         <i class="fa fa-location-arrow"></i>
                     </button>
