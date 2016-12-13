@@ -207,9 +207,8 @@ class ArticleManager extends Manager
         $seoTitle = $seoTitle . ' | ' . $companyName;
 
         $seoData = [
-            'seoTitle' => substr($seoTitle, 0, $titleMaxLength),
-            'seoDescription' => substr($seoDescription, 0, $descriptionMaxLength),
-            'seoKeywords' => '',
+            'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
+            'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
         ];
 
         return $seoData;

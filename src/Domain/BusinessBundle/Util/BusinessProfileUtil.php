@@ -21,8 +21,20 @@ class BusinessProfileUtil
 
         $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
 
-        $seoTitle = $businessProfile->getName() . ' - ' . $catalogLocalityName . ' | ' . $companyName;
-        $seoTitle = substr($seoTitle, 0, $titleMaxLength);
+        $translator = $container->get('translator');
+
+        $seoTitle = $translator->trans(
+            'business_profile.seoTitle',
+            [
+                'name'     => $businessProfile->getName(),
+                'location' => $catalogLocalityName,
+                'company'  => $companyName,
+            ],
+            'messages',
+            $businessProfile->getLocale()
+        );
+
+        $seoTitle = mb_substr($seoTitle, 0, $titleMaxLength);
 
         return $seoTitle;
     }
@@ -33,7 +45,54 @@ class BusinessProfileUtil
 
         $descriptionMaxLength = $seoSettings['description_max_length'];
 
-        $seoDescription = substr($businessProfile->getDescription(), 0, $descriptionMaxLength);
+        $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
+
+        $translator = $container->get('translator');
+
+        $seoDescription = $translator->trans(
+            'business_profile.seoDescription.main',
+            [
+                'name'     => $businessProfile->getName(),
+                'location' => $catalogLocalityName,
+            ],
+            'messages',
+            $businessProfile->getLocale()
+        );
+
+        if ($businessProfile->getWorkingHours() and strlen($seoDescription) < $descriptionMaxLength) {
+            $seoDescription .= ' ' . $translator->trans(
+                'business_profile.seoDescription.open',
+                [
+                    'hours' => $businessProfile->getWorkingHours(),
+                ],
+                'messages',
+                $businessProfile->getLocale()
+            );
+        }
+
+        if ($businessProfile->getWebsite() and strlen($seoDescription) < $descriptionMaxLength) {
+            $seoDescription .= ' ' . $translator->trans(
+                'business_profile.seoDescription.link',
+                [
+                    'link' => $businessProfile->getWebsiteLink(),
+                ],
+                'messages',
+                $businessProfile->getLocale()
+            );
+        }
+
+        if (!$businessProfile->getPhones()->isEmpty() and strlen($seoDescription) < $descriptionMaxLength) {
+            $seoDescription .= ' ' . $translator->trans(
+                'business_profile.seoDescription.phone',
+                [
+                    'phone' => $businessProfile->getPhones()->first()->getPhone(),
+                ],
+                'messages',
+                $businessProfile->getLocale()
+            );
+        }
+
+        $seoDescription = mb_substr($seoDescription, 0, $descriptionMaxLength);
 
         return $seoDescription;
     }
