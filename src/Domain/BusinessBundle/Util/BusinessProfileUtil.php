@@ -88,7 +88,7 @@ class BusinessProfileUtil
             $businessProfile->getLocale()
         );
 
-        if ($businessProfile->getWorkingHours() and strlen($seoDescription) < $descriptionMaxLength) {
+        if ($businessProfile->getWorkingHours() and mb_strlen($seoDescription) < $descriptionMaxLength) {
 
 
             $seoDescription .= ' ' . $translator->trans(
@@ -101,7 +101,7 @@ class BusinessProfileUtil
             );
         }
 
-        if ($businessProfile->getWebsite() and strlen($seoDescription) < $descriptionMaxLength) {
+        if ($businessProfile->getWebsite() and mb_strlen($seoDescription) < $descriptionMaxLength) {
             $seoDescription .= ' ' . $translator->trans(
                 'business_profile.seoDescription.link',
                 [
@@ -112,7 +112,7 @@ class BusinessProfileUtil
             );
         }
 
-        if (!$businessProfile->getPhones()->isEmpty() and strlen($seoDescription) < $descriptionMaxLength) {
+        if (!$businessProfile->getPhones()->isEmpty() and mb_strlen($seoDescription) < $descriptionMaxLength) {
             $seoDescription .= ' ' . $translator->trans(
                 'business_profile.seoDescription.phone',
                 [
