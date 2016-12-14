@@ -155,8 +155,10 @@
 {% endblock %}
 
 {% block scripts %}
+    <link href="//vjs.zencdn.net/5.8.8/video-js.css" rel="stylesheet">
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="//vjs.zencdn.net/5.8.8/video.js"></script>
     <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
     <script type="text/javascript">
         requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
@@ -164,5 +166,9 @@
                 var profile = new businessProfile();
             })
         })
+
+        window.videojs = videojs;
+
     </script>
 {% endblock%}
+

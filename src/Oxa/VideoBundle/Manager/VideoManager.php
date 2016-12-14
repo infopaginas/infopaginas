@@ -3,12 +3,18 @@
 namespace Oxa\VideoBundle\Manager;
 
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
+use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Uploader\VideoLocalFileUploader;
 use Oxa\VideoBundle\Uploader\VideoRemoteFileUploader;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VideoManager
 {
+    private static $allowedMimeTypes = array(
+        'video/mp4',
+    );
+
     private $filesystem;
     private $videoProjectAPIManager;
     private $videoMediaAPIManager;
@@ -89,9 +95,9 @@ class VideoManager
 
     public function uploadLocalFile(UploadedFile $file, array $data = []) : VideoMedia
     {
-        $videoMediaData = $this->uploadLocalFileData($file, $data);
+        $uploadedFileData = $this->uploadLocalFileData($file, $data);
 
-        return $this->videoMediaManager->save($videoMediaData);
+        return $this->videoMediaManager->save($uploadedFileData);
     }
 
     public function uploadLocalFileData(UploadedFile $file, array $data = []) : array
@@ -102,19 +108,24 @@ class VideoManager
         }
 
         // Generate a unique filename based on the date and add file extension of the uploaded file
-        $filename = sprintf('%s/%s/%s/%s.%s', date('Y'), date('m'), date('d'), uniqid(), $file->getClientOriginalExtension());
+        $path = sprintf('%s/%s/', date('Y'), date('m'));
+        $filename = sprintf('%s.%s', date('Y'), date('m'), uniqid(), $file->getClientOriginalExtension());
 
         $adapter = $this->filesystem->getAdapter();
-        $adapter->setMetadata($filename, array('contentType' => $file->getClientMimeType()));
-        $adapter->write($filename, file_get_contents($file->getPathname()));
+        $adapter->setMetadata($path.$filename, array('contentType' => $file->getClientMimeType()));
+        $uploadedSize = $adapter->write($path.$filename, file_get_contents($file->getPathname()));
 
-        return $filename;
-        $uploaderRequestData = ['file' => $filePath];
-        $fileUploader = $this->videoLocalFileUploader->setData(array_merge($uploaderRequestData, $data));
+        if ($uploadedSize) {
+            throw new \InvalidArgumentException(sprintf('File '.$filename.' is not uploaded. Please contact administrator'));
+        }
 
-        $videoMediaData = $fileUploader->upload();
+        $video = [
+            'filename'  => $filename,
+            'type'      => $file->getClientMimeType(),
+            'filepath'  => $filepath,
+        ];
 
-        return $videoMediaData;
+        return $video;
     }
 
     public function uploadRemoteFile(string $url, array $data = [])

@@ -50,6 +50,12 @@ services:
         class: Oxa\VideoBundle\Manager\VideoEmbedAPIManager
         arguments: ['@oxa.service.video_embed_api_client', %oxa.video.api_password%]
 
+    oxa.manager.video:
+        class: Oxa\VideoBundle\Manager\VideoManager
+        arguments:
+            - '@video_storage_filesystem'
+            - '@oxa.manager.video_media'
+
     oxa.manager.video_media:
         class: Oxa\VideoBundle\Manager\VideoMediaManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -57,12 +63,6 @@ services:
     oxa.manager.video_media_embed:
         class: Oxa\VideoBundle\Manager\VideoMediaEmbedManager
         arguments: ['@doctrine.orm.entity_manager', '@oxa.manager.video_api_embed']
-
-    oxa.manager.video:
-        class: Oxa\VideoBundle\Manager\VideoManager
-        arguments:
-            - '@video_storage_filesystem'
-            - '@oxa.manager.video_media'
 
 
     #twig extensions section
@@ -74,7 +74,7 @@ services:
 
     oxa.twig_extension.video_media_embed:
         class: Oxa\VideoBundle\Twig\Extension\VideoMediaEmbedExtension
-        arguments: ['@oxa.manager.video_media_embed']
+        arguments: ['@oxa.manager.video_media_embed', '@service_container']
         public: false
         tags:
             -  { name: twig.extension }
@@ -125,3 +125,4 @@ services:
             - '@domain_business.form.url_file_upload'
             - '@request'
             - '@oxa.manager.video'
+

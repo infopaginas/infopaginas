@@ -56,6 +56,7 @@ class VideoMediaEmbedManager
     {
         $autoDimensions = true;
 
+        if (0) {
         if (empty($dimensions)) {
             $embedObject = $this->getRepository()->findByMediaObjectWithoutDimensions($videoMedia);
         } elseif (!isset($dimensions['width']) && isset($dimensions['height'])) {
@@ -71,7 +72,9 @@ class VideoMediaEmbedManager
                 $dimensions['height']
             );
         }
+        }
 
+        return 1;
         if ($embedObject !== null) {
             return $embedObject->getHTML();
         } else {
@@ -85,6 +88,7 @@ class VideoMediaEmbedManager
         }
 
         return $embedObject->getHtml();
+
     }
 
     /**

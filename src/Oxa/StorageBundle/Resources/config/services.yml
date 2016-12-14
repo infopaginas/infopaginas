@@ -1,5 +1,0 @@
-services:
-    oxa_storage.amazon_s3:
-        class: AmazonS3
-        arguments: [ key:    %oxa_storage.amazon_s3.aws_key%, secret: %oxa_storage.amazon_s3.aws_secret_key% ]
-

@@ -2,10 +2,6 @@ imports:
     - { resource: config.yml }
 parameters:
     domain: 'localhost'
-    amazon_aws_key:         AKIAJNXO2HSEBOJIFU7A
-    amazon_aws_secret_key:  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
-    amazon_s3_base_url:     infopaginas-dev.s3-website-us-east-1.amazonaws.com
-    amazon_s3_bucket_name:  infopaginas-dev
 
 framework:
     router:

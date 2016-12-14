@@ -245,10 +245,9 @@ presta_sitemap:
 knp_gaufrette:
     adapters:
         video_storage:
-            amazon_s3:
-                amazon_s3_id:   'oxa_storage.amazon_s3'
-                bucket_name:    'infopaginas-dev'
-                create:         false
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
                 options:
                     create:     true
                     directory:  'video'
@@ -257,8 +256,12 @@ knp_gaufrette:
             adapter:    video_storage
             alias:      video_storage_filesystem
 
-oxa_storage:
-    amazon_s3:
-        aws_key:        %amazon_aws_key%
-        aws_secret_key: %amazon_aws_secret_key%
-        base_url:       %amazon_s3_base_url%
+aws:
+    version:    '2006-03-01'
+    region:     %amazon_aws_region%
+    credentials:
+        key:    %amazon_aws_key%
+        secret: %amazon_aws_secret_key%
+    S3:
+        version:    '2006-03-01'
+    

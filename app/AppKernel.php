@@ -59,6 +59,7 @@ class AppKernel extends Kernel
             new Cache\AdapterBundle\CacheAdapterBundle(),
             new Happyr\GoogleSiteAuthenticatorBundle\HappyrGoogleSiteAuthenticatorBundle(),
             new Happyr\GoogleAnalyticsBundle\HappyrGoogleAnalyticsBundle(),
+            new Aws\Symfony\AwsBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
@@ -77,7 +78,6 @@ class AppKernel extends Kernel
             new Domain\SearchBundle\DomainSearchBundle(),
             new Domain\ReportBundle\DomainReportBundle(),
             new Oxa\Sonata\DoctrineORMAdminBundle\OxaSonataDoctrineORMAdminBundle(),
-            new Oxa\StorageBundle\OxaStorageBundle(),
             new Oxa\VideoBundle\OxaVideoBundle(),
             new Oxa\DfpBundle\OxaDfpBundle(),
 

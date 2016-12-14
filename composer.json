@@ -61,7 +61,8 @@
         "patchwork/jsqueeze": "^2.0",
         "knplabs/gaufrette": "dev-master",
         "knplabs/knp-gaufrette-bundle": "~0.3",
-	"aws/aws-sdk-php": "~3.20"
+	"aws/aws-sdk-php": "~3.20",
+	"aws/aws-sdk-php-symfony": "~1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

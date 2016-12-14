@@ -22,13 +22,6 @@ class VideoMedia
     private $id;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="wistia_id", type="integer")
-     */
-    private $videoId;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -41,6 +34,20 @@ class VideoMedia
      * @ORM\Column(name="type", type="string", length=255)
      */
     private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filename", type="string", length=255, nullable=true)
+     */
+    private $filename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filepath", type="string", length=255, nullable=true)
+     */
+    private $filepath;
 
     /**
      * @var \DateTime
@@ -59,37 +66,9 @@ class VideoMedia
     /**
      * @var string
      *
-     * @ORM\Column(name="hashed_id", type="string", length=255)
-     */
-    private $hashedId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
-    private $description;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="progress", type="float")
-     */
-    private $progress;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="status", type="string", length=255)
      */
     private $status;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="account_id", type="integer")
-     */
-    private $accountId;
 
     /**
      * @ORM\OneToOne(targetEntity="VideoMediaThumbnail", cascade={"persist", "remove"})
@@ -97,24 +76,15 @@ class VideoMedia
      */
     private $thumbnail;
 
-    /**
-     * @ORM\OneToMany(targetEntity="VideoMediaEmbed", mappedBy="media")
-     */
-    private $mediaEmbeds;
-
     public function __construct(array $videoMediaData = [])
     {
         if (!empty($videoMediaData)) {
-            $this->setVideoId($videoMediaData['id']);
             $this->setName($videoMediaData['name']);
             $this->setType($videoMediaData['type']);
             $this->setCreatedAt(new \DateTime($videoMediaData['created']));
             $this->setUpdatedAt(new \DateTime($videoMediaData['updated']));
-            $this->setHashedId($videoMediaData['hashed_id']);
             $this->setDescription($videoMediaData['description']);
-            $this->setProgress($videoMediaData['progress']);
             $this->setStatus($videoMediaData['status']);
-            $this->setAccountId($videoMediaData['account_id']);
 
             $thumbnail = new VideoMediaThumbnail($videoMediaData['thumbnail']);
             $this->setThumbnail($thumbnail);
@@ -131,30 +101,6 @@ class VideoMedia
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set VideoId
-     *
-     * @param integer $VideoId
-     *
-     * @return VideoMedia
-     */
-    public function setVideoId($videoId)
-    {
-        $this->videoId = $videoId;
-
-        return $this;
-    }
-
-    /**
-     * Get VideoId
-     *
-     * @return integer
-     */
-    public function getVideoId()
-    {
-        return $this->videoId;
     }
 
     /**
@@ -206,6 +152,52 @@ class VideoMedia
     }
 
     /**
+     * Set filename
+     *
+     * @param string $filename
+     *
+     * @return VideoMedia
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     *
+     * @return VideoMedia
+     */
+    public function setFilepath($filepath)
+    {
+        $this->filepath = $filepath;
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilepath()
+    {
+        return $this->filepath;
+    }
+
+    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
@@ -254,78 +246,6 @@ class VideoMedia
     }
 
     /**
-     * Set hashedId
-     *
-     * @param string $hashedId
-     *
-     * @return VideoMedia
-     */
-    public function setHashedId($hashedId)
-    {
-        $this->hashedId = $hashedId;
-
-        return $this;
-    }
-
-    /**
-     * Get hashedId
-     *
-     * @return string
-     */
-    public function getHashedId()
-    {
-        return $this->hashedId;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return VideoMedia
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set progress
-     *
-     * @param float $progress
-     *
-     * @return VideoMedia
-     */
-    public function setProgress($progress)
-    {
-        $this->progress = $progress;
-
-        return $this;
-    }
-
-    /**
-     * Get progress
-     *
-     * @return float
-     */
-    public function getProgress()
-    {
-        return $this->progress;
-    }
-
-    /**
      * Set status
      *
      * @param string $status
@@ -350,30 +270,6 @@ class VideoMedia
     }
 
     /**
-     * Set accountId
-     *
-     * @param integer $accountId
-     *
-     * @return VideoMedia
-     */
-    public function setAccountId($accountId)
-    {
-        $this->accountId = $accountId;
-
-        return $this;
-    }
-
-    /**
-     * Get accountId
-     *
-     * @return integer
-     */
-    public function getAccountId()
-    {
-        return $this->accountId;
-    }
-
-    /**
      * Set thumbnail
      *
      * @param \Oxa\VideoBundle\Entity\VideoMediaThumbnail $thumbnail
@@ -395,39 +291,5 @@ class VideoMedia
     public function getThumbnail()
     {
         return $this->thumbnail;
-    }
-
-    /**
-     * Add mediaEmbed
-     *
-     * @param \Oxa\VideoBundle\Entity\VideoMediaEmbed $mediaEmbed
-     *
-     * @return VideoMedia
-     */
-    public function addMediaEmbed(\Oxa\VideoBundle\Entity\VideoMediaEmbed $mediaEmbed)
-    {
-        $this->mediaEmbeds[] = $mediaEmbed;
-
-        return $this;
-    }
-
-    /**
-     * Remove mediaEmbed
-     *
-     * @param \Oxa\VideoBundle\Entity\VideoMediaEmbed $mediaEmbed
-     */
-    public function removeMediaEmbed(\Oxa\VideoBundle\Entity\VideoMediaEmbed $mediaEmbed)
-    {
-        $this->mediaEmbeds->removeElement($mediaEmbed);
-    }
-
-    /**
-     * Get mediaEmbeds
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getMediaEmbeds()
-    {
-        return $this->mediaEmbeds;
     }
 }

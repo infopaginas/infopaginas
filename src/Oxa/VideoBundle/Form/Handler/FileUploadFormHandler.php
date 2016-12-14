@@ -38,8 +38,8 @@ class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterf
      */
     public function __construct(FormInterface $form, Request $request, VideoManager $videoManager)
     {
-        $this->form          = $form;
-        $this->request       = $request;
+        $this->form         = $form;
+        $this->request      = $request;
         $this->videoManager = $videoManager;
     }
 
@@ -66,12 +66,7 @@ class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterf
      */
     private function onSuccess(UploadedFile $file)
     {
-        $filename = $file->getClientOriginalName();
-        $path = $file->getRealPath();
-
-        $res = $this->getVideoManager()->uploadLocalFile($file, ['name' => $filename]);
-
-        dump($res);
+        $res = $this->getVideoManager()->uploadLocalFile($file);
     }
 
     /**

@@ -58,9 +58,9 @@ class VideosController extends Controller
                 $this->throwVideoFileIsNotProvidedException();
             }
 
-            list($videoPathOnLocalServer, $filename) = $this->uploadVideoToLocalServer($files);
+//            list($videoPathOnLocalServer, $filename) = $this->uploadVideoToLocalServer($files);
 
-            $media = $this->getVideoAPIManager()->uploadLocalFile($videoPathOnLocalServer, ['name' => $filename]);
+            $media = $this->getVideoAPIManager()->uploadLocalFile(current($files), ['name' => '']);
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
