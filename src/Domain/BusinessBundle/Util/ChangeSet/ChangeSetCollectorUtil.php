@@ -263,8 +263,8 @@ class ChangeSetCollectorUtil
                 $newValue = (new ChangeSetCollectionDTO([$change[1]]))->getJSONContent();
                 $class = get_class($change[1]);
             } else {
-                $oldValue = $change[0] === null ? '-' : $change[0];
-                $newValue = $change[1] === null ? '-' : $change[1];
+                $oldValue = $change[0] ?? '-';
+                $newValue = $change[1] ?? '-';
                 $class = null;
             }
 
