@@ -10,7 +10,7 @@
                     {{ form_widget(closeBusinessProfileForm.reason, {'attr': {'placeholder':''}} ) }}
                 </div>
                 <div class="form__actions">
-                    {{ form_rest(reviewForm) }}
+                    {{ form_rest(closeBusinessProfileForm) }}
                     <button type="button" class="button button--action" data-business-profile-id="{{ businessProfile.getId() }}" id="closeBusinessProfileButton">
                         {% trans %}Submit{% endtrans %}
                     </button>

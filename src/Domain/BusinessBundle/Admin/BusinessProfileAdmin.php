@@ -123,7 +123,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Subscriptions')->end()
                 ->with('Coupons', array('class' => 'col-md-6'))->end()
                 ->with('Discount', array('class' => 'col-md-6'))->end()
-                ->with('SEO', array('class' => 'col-md-12'))->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
@@ -444,11 +443,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                     ])
                 ->end()
-                ->with('SEO')
-                    ->add('seoTitle', null, ['read_only' => true])
-                    ->add('seoDescription', null, ['read_only' => true])
-                    ->add('seoKeywords')
-                ->end()
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
@@ -526,9 +520,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('isActive')
-            ->add('seoTitle')
-            ->add('seoDescription')
-            ->add('seoKeywords')
         ;
     }
 

@@ -338,10 +338,12 @@ class MigrationCommand extends ContainerAwareCommand
             }
 
             foreach ($phones as $item) {
-                $phone = new BusinessProfilePhone();
-                $phone->setPhone($item);
+                if (mb_strlen($item) <= BusinessProfilePhone::MAX_PHONE_LENGTH) {
+                    $phone = new BusinessProfilePhone();
+                    $phone->setPhone($item);
 
-                $entity->addPhone($phone);
+                    $entity->addPhone($phone);
+                }
             }
         }
 
@@ -749,9 +751,9 @@ class MigrationCommand extends ContainerAwareCommand
             $convertedName = str_replace($parentName . $separator, '', $convertedName);
         }
 
-        $subcategoryMaxLength = self::CATEGORY_NAME_MAX_LENGTH - strlen($parentName . self::SYSTEM_CATEGORY_SEPARATOR);
+        $subcategoryMaxLength = self::CATEGORY_NAME_MAX_LENGTH - mb_strlen($parentName . self::SYSTEM_CATEGORY_SEPARATOR);
 
-        $convertedName = substr($convertedName, 0, $subcategoryMaxLength);
+        $convertedName = mb_substr($convertedName, 0, $subcategoryMaxLength);
 
         return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $convertedName;
     }

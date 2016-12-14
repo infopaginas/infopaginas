@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row">
                 <div class="crumbs">
-                    <a href="{{ path('domain_site_home_index') }}">
+                    <a href="{{ absolute_url(path('domain_site_home_index')) }}">
                         {% trans %}Home{% endtrans %}
                         <span>&nbsp; &raquo;</span>
                     </a>
@@ -13,7 +13,7 @@
                     {% if category is not defined %}
                         <span>{% trans %}Articles{% endtrans %}</span>
                     {% else %}
-                        <a href="{{ path('domain_article_homepage') }}">
+                        <a href="{{ absolute_url(path('domain_article_homepage')) }}">
                             {% trans %}Articles{% endtrans %}
                             <span>&nbsp; &raquo;</span>
                         </a>

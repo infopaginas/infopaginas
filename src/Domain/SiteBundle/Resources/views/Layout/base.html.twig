@@ -10,9 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     {% block styles %}
-        <link rel="stylesheet" href="{{ asset('/assets/styles/style.min.css')}}" />
-        <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.core.css')}}" />
-        <link rel="stylesheet" href="{{ asset('/assets/styles/alertify.default.css')}}"/>
+        <link rel="stylesheet" href="{{ absolute_url(asset('/assets/styles/style.min.css')) }}" />
+        <link rel="stylesheet" href="{{ absolute_url(asset('/assets/styles/alertify.core.css')) }}" />
+        <link rel="stylesheet" href="{{ absolute_url(asset('/assets/styles/alertify.default.css')) }}"/>
     {% endblock %}
 
     {% block doubleClickHeader %}
@@ -43,10 +43,10 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a href="{{ path('domain_site_home_index')}}" class="logo-header"></a>
+                        <a href="{{ absolute_url(path('domain_site_home_index')) }}" class="logo-header"></a>
 
                         <div class="header-form">
-                            <form class="form-horizontal search-form" action="{{ path('domain_search_index')}}">
+                            <form class="form-horizontal search-form" action="{{ absolute_url(path('domain_search_index')) }}">
 
                                 <div class="form-group row">
                                     {% block headerSearch %}
@@ -56,7 +56,7 @@
                             </form>
                         </div>
                         <ul class="menu-nav">
-                            <li class="ad desc-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
+                            <li class="ad desc-menu"><a href="{{ absolute_url(path('domain_page_view_advertise')) }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
                     </div>
 
@@ -76,7 +76,7 @@
                             </li>
                             {% if (app.user) %}
                                  <li class="login-link desc-menu logged-home">
-                                    <a href="{{ path('domain_site_user_profile') }}" class="login-button">
+                                    <a href="{{ absolute_url(path('domain_site_user_profile')) }}" class="login-button">
                                         <span class="welcome">{% trans %}Welcome{% endtrans %}, </span>
                                     <span class="user-name">
                                         {{ app.user.getFirstname() }} {{ app.user.getLastname() }}
@@ -91,7 +91,7 @@
                                 </li>
                             {% endif %}
 
-                            <li class="ad mobile-menu"><a href="{{ path('domain_page_view_advertise') }}">{% trans %}Advertise with us{% endtrans %}</a></li>
+                            <li class="ad mobile-menu"><a href="{{ absolute_url(path('domain_page_view_advertise')) }}">{% trans %}Advertise with us{% endtrans %}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -144,11 +144,11 @@
             <div class="col-xs-6 footer-menu">
                 <ul class="footer-links green-c">
                     <li><a class="green-c" href="http://www.infopaginasmedia.com/">{% trans %}About Us{% endtrans %}</a></li>
-                    <li><a class="green-c" href="{{ path('domain_page_view_contact') }}">{% trans %}Contact Us{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ absolute_url(path('domain_page_view_contact')) }}">{% trans %}Contact Us{% endtrans %}</a></li>
                 </ul>
                 <ul class="footer-links column">
-                    <li><a class="green-c" href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Statement{% endtrans %}</a></li>
-                    <li><a class="green-c" href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Use{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ absolute_url(path('domain_page_view_privacy')) }}">{% trans %}Privacy Statement{% endtrans %}</a></li>
+                    <li><a class="green-c" href="{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Terms of Use{% endtrans %}</a></li>
                 </ul>
                 <ul class="social-icons">
                     <li><a class="white-c" href="{{ config(constant('Oxa\\ConfigBundle\\Model\\ConfigInterface::SOCIAL_FACEBOOK_PROFILE')) }}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -182,12 +182,12 @@
 
 <!-- Scripts -->
 {% block scripts %}
-    <script type="text/javascript" src="{{ asset('/bundles/domainsite/scripts/require.js')}}"></script>
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ absolute_url(asset('bundles/domainsite/scripts/require.js')) }}"></script>
+    <script src="{{ absolute_url(asset('bundles/fosjsrouting/js/router.js')) }}"></script>
+    <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            requirejs(['{{asset("/bundles/domainsite/scripts/modules/homepage.js")}}'], function(Homepage) {
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/homepage.js")) }}'], function(Homepage) {
                 var siteHomepage = new Homepage();
             })
         })

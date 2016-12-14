@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Controller;
 
+use Domain\BannerBundle\Model\TypeInterface;
 use Domain\BusinessBundle\Form\Handler\ReviewFormHandler;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\BusinessReviewManager;
@@ -53,10 +54,19 @@ class ReviewsController extends Controller
             $businessProfile
         );
 
-        return $this->render('DomainBusinessBundle:Reviews:list.html.twig', [
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
+
+        return $this->render(':redesign:review-list.html.twig', [
             'businessProfile'  => $businessProfile,
             'reviewsResultDTO' => $reviewsResultDTO,
             'schemaJsonLD'     => $schema,
+            'bannerFactory'    => $bannerFactory,
         ]);
     }
 

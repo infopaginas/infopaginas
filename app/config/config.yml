@@ -86,6 +86,14 @@ twig:
     globals:
         google_map_api_key: '%google_map_api_key%'
         google_map_default_center: '%google_map_default_center%'
+
+#       todo confirm date formats
+        review_date_format:       'd M Y H:i'
+        article_date_format:      'd M Y H:i'
+        business_date_format:     'Y-m-d'
+        subscription_date_format: 'Y-m-d'
+        ads_stat_date_format:     'd.m.Y'
+        task_date_format:         'd M, Y, H:i:s A'
 # Doctrine Configuration
 doctrine:
     dbal:

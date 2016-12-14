@@ -16,3 +16,5 @@ business_profile:
   category:
     min_count: En la categoría {{ limit }} mínimo debe seleccionarse
   service_areas_type: Usted debe elegir un área de servicio válido
+  locality:
+      not_empty: Debe elegir una Localidad válida

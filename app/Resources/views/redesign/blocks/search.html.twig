@@ -15,7 +15,7 @@
     {% endif %}
 {% endif %}
 
-<form class="header__search search-form" action="{{ path('domain_search_index')}}" {% if isHomePage is defined and isHomePage %}data-homepage="1"{% endif %}>
+<form class="header__search search-form" action="{{ absolute_url(path('domain_search_index')) }}" {% if isHomePage is defined and isHomePage %}data-homepage="1"{% endif %}>
     <div class="form__field field--search">
         <input id="searchBox" type="text" name="q" value="{{ qValue }}" class="search-trigger" placeholder="{% trans %}What?{% endtrans %}">
     </div>
@@ -38,12 +38,12 @@
 
 {% if showLinkListView is defined and showLinkListView %}
     <div class="views">
-        <a href="{{ path('domain_search_index', app.request.query.all) }}" class="button">{% trans %}List view{% endtrans %}</a>
+        <a href="{{ absolute_url(path('domain_search_index', app.request.query.all)) }}" class="button">{% trans %}List view{% endtrans %}</a>
     </div><!-- views -->
 {% endif %}
 
 {% if showLinkCompareView is defined and showLinkCompareView %}
     <div class="views">
-        <a href="{{ path('domain_search_compare', app.request.query.all) }}" class="button">{% trans %}Compare&nbspview{% endtrans %}</a>
+        <a href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button">{% trans %}Compare&nbspview{% endtrans %}</a>
     </div><!-- views -->
 {% endif %}

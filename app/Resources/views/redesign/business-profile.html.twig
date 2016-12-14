@@ -16,23 +16,13 @@
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
                             <a href="#" data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
-                                <div class="stars rank__item">
-                                    {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
-
-                                    {% if reviewsAvgRating|number_format(0) %}
-                                        {% for i in 1 .. reviewsAvgRating|number_format(0) %}
-                                            <i class="fa fa-star"></i>
-                                        {% endfor %}
-                                    {% endif %}
-
-                                    {% set emptyStars = 5 - reviewsAvgRating|number_format(0) %}
-
-                                    {% if emptyStars %}
-                                        {% for i in 1 .. emptyStars %}
-                                            <i class="fa fa-star-o"></i>
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
+                                {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
+                                {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
+                            </a>
+                        </div>
+                        <div class="reviews">
+                            <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.id })) }}">
+                                {% trans %}View{% endtrans %}
                             </a>
                         </div>
                     </div><!-- item__header -->
@@ -149,7 +139,7 @@
                                         <h3>{% trans %}Business hours{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                {{ businessProfile.getWorkingHours() }} {# todo #}
+                                                {{ businessProfile.getWorkingHours() }}
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -213,7 +203,7 @@
                             <section class="page-section photos slider section--slider">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        {% thumbnail photo.getMedia(), 'reference' %}
+                                        {% thumbnail photo.getMedia(), 'reference' with {'alt': photo.description} %}
                                     </div>
                                 {% endfor %}
                             </section>
@@ -270,7 +260,7 @@
                                 <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
                                     {% for subcategory in businessProfile.subcategories %}
-                                        <a href="{{ url('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() }) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ subcategory.name }}</a>
+                                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'subcategorySlug': subcategory.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ subcategory.name }}</a>
                                     {% endfor %}
                                 </div>
                             </div><!-- sidebar__section -->
@@ -296,12 +286,12 @@
     <script type="text/javascript">
         var map;
 
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
-            require(['{{asset("/bundles/domainsite/scripts/modules/mapsearchpage.js")}}'], function(mapSearchPage) {
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/mapsearchpage.js")) }}'], function(mapSearchPage) {
                 var mapSearchPage = new mapSearchPage();
             });
             requirejs([
-                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'
+                '{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/businessProfileView.js")) }}'
             ], function(businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
             })

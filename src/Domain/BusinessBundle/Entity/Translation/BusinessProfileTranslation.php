@@ -24,4 +24,15 @@ class BusinessProfileTranslation extends AbstractPersonalTranslation
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $object;
+
+    public function __toString()
+    {
+        $data = [
+            'locale' => $this->getLocale(),
+            'field' => $this->getField(),
+            'value' => $this->getContent(),
+        ];
+
+        return json_encode($data) ?: '';
+    }
 }

@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones'], function( $, bootstrap, alertify, FormHandler, Spin, select ) {
+define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones', 'selectize'], function( $, bootstrap, FormHandler, Spin, select ) {
     'use strict';
 
     //init businessProfile object variables
@@ -16,7 +16,8 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             buttons: {
                 geocodeButtonId: '#geocodeButton',
                 newProfileSaveButtonId: '#newProfileRequestButton',
-                closeBusinessProfileButtonId: '#closeBusinessProfileButton'
+                closeBusinessProfileButtonId: '#closeBusinessProfileButton',
+                fileUploadButton: '.file-upload-button'
             },
             forms: {
                 newProfileRequestFormId: '#businessProfileRequestForm',
@@ -179,7 +180,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         var that = this;
 
         this.getLatLngByAddress(address, function(latlng) {
-
             var map = that.getGoogleMapObject(latlng);
 
             google.maps.event.trigger(map, 'resize');
@@ -279,54 +279,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         });
     };
 
-    businessProfile.prototype.handleLocaleChange = function() {
-        var that = this;
-
-        $( this.html.languageSelectorClass ).on( 'click', function( event ) {
-            $( document).find( that.html.languageSelectorClass ).removeClass( 'selected' );
-            $(this).addClass( 'selected' );
-
-            var locale = $( that.html.languageSelectorClass + '.selected' ).data( 'locale' );
-            var isLeave = that.beforeUnload();
-
-            if ( isLeave || isLeave === undefined ) {
-                that.isDirty = false;
-                that.formSubmitting = false;
-                that.currentLocale = locale;
-
-                var businessProfileId = $( that.html.forms.newProfileRequestFormId ).data( 'id' );
-
-                $.ajax({
-                    url: Routing.generate( 'domain_business_profile_edit', {
-                        id: businessProfileId
-                    } ),
-                    method: 'POST',
-                    data: { 'locale': locale },
-                    beforeSend: function() {
-                        that.spinner.show( that.html.newProfileRequestSpinnerContainerId );
-                    },
-                    success: function( response ) {
-                        $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
-
-                        var activeTab = $( '.tabs-block li.active' );
-                        activeTab.removeClass( 'active' );
-                        activeTab.find( 'a' ).click();
-
-                        new select();
-                    },
-                    error: function( jqXHR, textStatus, errorThrown ) {
-                        alertify.error( errorThrown );
-                    }
-                });
-            } else {
-                $( document ).find( that.html.languageSelectorClass).not(this).addClass( 'selected' );
-                $(this).removeClass( 'selected' );
-            }
-
-            event.preventDefault();
-        } );
-    };
-
     businessProfile.prototype.handleServiceAreaChange = function() {
         var that = this;
 
@@ -338,10 +290,22 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
             var localitiesFieldAsteriskClass = that.html.localitiesFieldSpan + ' ' + that.html.asteriskClass;
             var html = '';
 
+            var withinMiles = $( that.html.fields.withinMilesOfMyBusinessFieldId );
+            var localities = $( that.html.fields.localitiesFieldId );
+            var neighborhoods = $( that.html.fields.neighborhoodsFieldId );
+
+            var withinMilesSelectize    = withinMiles.selectize()[0].selectize;
+            var localitiesSelectize     = localities.selectize()[0].selectize;
+            var neighborhoodsSelectize  = neighborhoods.selectize()[0].selectize;
+
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
                 $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
+
+                withinMilesSelectize.enable();
+                localitiesSelectize.disable();
+                neighborhoodsSelectize.disable();
 
                 if ( !$( milesOfMyBusinessAsteriskClass ).length ) {
                     html = $( that.html.milesOfMyBusinessSpan ).text();
@@ -356,6 +320,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+
+                withinMilesSelectize.disable();
+                localitiesSelectize.enable();
+                neighborhoodsSelectize.enable();
 
                 $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
                 if ( $( localitiesFieldAsteriskClass ).length ) {
@@ -423,9 +391,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
     //remove "error" highlighting
     businessProfile.prototype.disableFieldsHighlight = function( formId ) {
         var $form = $( formId );
-        $form.find( 'input' ).removeClass('error');
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     //"error" fields highlighting
@@ -446,12 +415,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 //check for "repeated" fields or embed forms
                 if (Array.isArray( errors[field]) ) {
                     var $field = $( this.getFormFieldId( prefix, field ) );
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next( '.help-block' );
+                    $field.parent().addClass( 'field--not-valid' );
 
                     for (var key in errors[field]) {
-                        $errorSection.append( errors[field][key] );
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId( prefix, field ) );
@@ -483,15 +451,17 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 success: function( response ) {
                     if( response.success ) {
                         $( self.html.modals.closeBusinessProfileModalId ).modal('hide');
-                        alertify.success( response.message );
                         $( self.html.forms.closeBusinessProfileFormId )[0].reset();
                     } else {
-                        alertify.error( response.message );
-                        self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors )
+                        if ( !$.isEmptyObject( response.errors ) ) {
+                            self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors );
+                        } else {
+                            self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, { 'reason': [response.message] } );
+                        }
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
-                    alertify.error( errorThrown );
+                    this.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, { 'reason': [errorThrown] } );
                 },
                 complete: function() {
                     self.spinner.hide();
@@ -514,19 +484,31 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         function getSubcategories() {
             var categoryId = $( self.html.fields.categoriesId ).val();
             var subcategories = $( self.html.fields.subcategoriesId );
-
             var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
 
+            var selectOptions = [];
+            var selectBlock = subcategories.selectize();
+            var selectize = selectBlock[0].selectize;
+
             subcategories.html( '' );
-            subcategories.val( null ).trigger('change.select2');
-            subcategories.attr( 'disabled', 'disabled' );
+            selectize.disable();
 
             $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), function( response ) {
                 var html = '';
+                var selected = [];
 
                 if ( response.data ) {
                     $.each( response.data, function ( key, value ) {
                         html += '<option value="' + value.id + '">' + value.name + '</option>';
+
+                        selectOptions.push({
+                            text: value.name,
+                            value: value.id
+                        });
+
+                        if ( value.selected ) {
+                            selected.push( value.id );
+                        }
                     });
                 }
 
@@ -534,17 +516,20 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
                 if ( html ) {
                     subcategories.attr( 'disabled', false );
+                    selectize.enable();
                 } else {
                     subcategories.attr( 'disabled', 'disabled' );
+                    selectize.disable();
                 }
 
-                subcategories.val( null ).trigger( 'change.select2' );
-
-                $.each( response.data, function ( key, value ) {
-                    if ( value.selected ) {
-                        subcategories.val( value.id ).trigger( 'change' );
-                    }
+                selectize.clear();
+                selectize.clearOptions();
+                selectize.renderCache = {};
+                selectize.load( function ( callback ) {
+                    callback( selectOptions );
                 });
+
+                selectize.setValue( selected );
             });
         }
     };
@@ -554,7 +539,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.handleGeocodeSearch();
         this.moveMarker();
         this.handleProfileSave();
-        this.handleLocaleChange();
         this.handleServiceAreaChange();
         this.handleFormChange();
         this.handleBusinessProfileClose();
@@ -565,6 +549,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
             that.initGoogleMap();
         } );
+
+        $( this.html.buttons.fileUploadButton ).on( 'click', function() {
+            $( this ).parent().find( 'input' ).click();
+        });
 
         new select();
     };

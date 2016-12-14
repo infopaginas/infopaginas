@@ -1,0 +1,129 @@
+<div class="form-column__container clearfix">
+    <section class="page-section">
+        <h3 class="language-title">{% trans %}Images upload{% endtrans %}</h3>
+
+        <div class="form__section clearfix">
+            <div class="section__sidebar">
+                <p>{% trans %}Select and upload images to show on your business profile{% endtrans %}</p>
+
+                <div class="form__row row--full">
+                    <div class="form__field">
+                        <button type="button" class="button button--featured file-upload-button" data-url="{{ path('domain_business_images_upload') }}">
+                            <i class="fa fa-upload"></i>
+                            {% trans %}Browse{% endtrans %}
+                        </button>
+                        {{ form_widget(businessProfileForm.files) }}
+                    </div>
+                </div>
+                <!-- row -->
+
+                <div class="form__row row--full">
+                    <span class="or">{% trans %}or{% endtrans %}</span>
+                </div>
+                <!-- row -->
+
+                <div class="form__row vertical__row row--full">
+                    <div class="form__field">
+                        <label for="image-url">{% trans %}url{% endtrans %}</label>
+                        <input type="text"
+                               name="image-url"
+                               id="remote-image-url"
+                               data-error-count-limit="{% trans %}business_profile.image_count_limit{% endtrans %} "
+                               data-error-size-limit="{% trans %}business_profile.size_limit{% endtrans %}"
+                               data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}">
+                    </div>
+                    <div class="form__field">
+                        <button type="button" class="button button--featured" id="start-remote-image-upload">
+                            <i class="fa fa-link"></i>
+                            {% trans %}Upload from url{% endtrans %}
+                        </button>
+                    </div>
+                </div>
+                <!-- row -->
+            </div>
+            <!-- section__sidebar -->
+
+
+            <div class="section__main-content">
+                <div class="blank__message" {% if businessProfileForm.images | length > 0 or businessProfile.background or businessProfile.logo %}style="display: none"{% endif %}>
+                    <p>{% trans %}You have no images{% endtrans %}</p>
+                </div>
+                <div class="media-table" id="gallery" {% if businessProfileForm.images | length <= 0 and not businessProfile.background and not businessProfile.logo %}style="display: none"{% endif %}>
+                    <h3>{% trans %}Your photos{% endtrans %}</h3>
+
+                    {% include ':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig' with {'images': businessProfileForm.images} %}
+                </div>
+            </div>
+            <!-- section__main-content -->
+        </div>
+        <!-- form-section -->
+    </section>
+
+    {% if businessProfileForm.video is defined %}
+        <section class="page-section">
+            <h3 class="language-title">{% trans %}Video upload{% endtrans %}</h3>
+
+            <div class="form__section clearfix">
+                <div class="section__sidebar">
+                    <p>{% trans %}Select and upload videos to show on your business profile{% endtrans %}</p>
+
+                    <div class="form__row row--full">
+                        <div class="form__field">
+                            <button type="button" class="button button--featured file-upload-button" data-url="{{ path('domain_business_local_videos_upload') }}">
+                                <i class="fa fa-upload"></i>
+                                {% trans %}Browse{% endtrans %}
+                            </button>
+                            {{ form_widget(businessProfileForm.videoFile) }}
+                        </div>
+                    </div>
+                    <!-- row -->
+
+                    <div class="form__row row--full">
+                        <span class="or">{% trans %}or{% endtrans %}</span>
+                    </div>
+                    <!-- row -->
+
+                    <div class="form__row vertical__row row--full">
+                        <div class="form__field">
+                            <label for="video-url">{% trans %}url{% endtrans %}</label>
+                            <input type="text"
+                                   name="video-url"
+                                   id="remote-video-url"
+                                   data-error-count-limit="{% trans %}business_profile.video_count_limit{% endtrans %} "
+                                   data-error-size-limit="{% trans %}business_profile.size_limit{% endtrans %}"
+                                   data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}">
+                        </div>
+                        <div class="form__field">
+                            <button type="button" class="button button--featured" id="start-remote-video-upload">
+                                <i class="fa fa-link"></i>
+                                {% trans %}Upload from url{% endtrans %}
+                            </button>
+                        </div>
+                    </div>
+                    <!-- row -->
+                </div>
+                <!-- section__sidebar -->
+
+                <div class="section__main-content">
+
+                    {% if not businessProfile.video %}
+                        <div class="blank__message">
+                            <p>{% trans %}You have no videos{% endtrans %}</p>
+                        </div>
+                    {% else %}
+                        <div class="media-table">
+                            <h3>{% trans %}Your videos{% endtrans %}</h3>
+
+                            <div id="video">
+                                {% include ':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig' with {'form': businessProfileForm.video, 'media': businessProfile.video} %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- section__main-content -->
+            </div>
+            {% do businessProfileForm.video.setRendered %}
+            <!-- form-section -->
+        </section>
+    {% endif %}
+</div>

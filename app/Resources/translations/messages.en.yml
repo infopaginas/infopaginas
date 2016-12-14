@@ -351,3 +351,46 @@ Map view: Map view
 Close list: Close list
 Go to watch...: Go to watch...
 Sort: Sort
+View: View
+
+business_profile.seoTitle: name in location | company
+business_profile.seoDescription.main: name in location
+business_profile.seoDescription.open: is open hours.
+business_profile.seoDescription.link: For more information, visit link
+business_profile.seoDescription.phone: or call phone
+
+in: in
+for: for
+
+Close profile: Close profile
+Subscription expire date: Subscription expire date
+English: English
+Name: Name
+Maximum 255 characters: Maximum 255 characters
+Spanish: Spanish
+Common for english and spanish: Common for english and spanish
+Subcategory: Subcategory
+Remove phone: Remove phone
+Add phone: Add phone
+Images upload: Images upload
+Select and upload images to show on your business profile: Select and upload images to show on your business profile
+Browse: Browse
+url: url
+Upload from url: Upload from url
+You have no images: You have no images
+Your photos: Your photos
+Video upload: Video upload
+Select and upload videos to show on your business profile: Select and upload videos to show on your business profile
+You have no videos: You have no videos
+Background: Background
+Reset: Reset
+Reason: Reason
+Remove: Remove
+
+business_profile.names_blank: Name field should be filled for at least one language
+business_profile.image_count_limit: Error: too much images added. Max files count =
+business_profile.size_limit: Sorry. Maximum allowed filesize is 10Mb.
+business_profile.url.empty: Error: URL field should not be empty.
+business_profile.video_count_limit: Error: too much videos added. Max files count =
+Updated By: Updated By
+

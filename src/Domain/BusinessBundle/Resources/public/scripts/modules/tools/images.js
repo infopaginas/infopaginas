@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], function( $, bootstrap, alertify, Spin, select ) {
+define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, bootstrap, Spin, select ) {
     'use strict';
 
     //handle "media" business profile tab here
@@ -15,7 +15,8 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
             remoteImageURLInputId:       '#remote-image-url',
-            imageTypeSelectClassname:    '.select-image-type'
+            imageTypeSelectClassname:    '.select-image-type',
+            imageRowContainer:           'div.media__item.image-item'
         };
 
         this.urls = {
@@ -46,7 +47,9 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
             var file = files[i];
 
             if( file.size > this.maxAllowedFileSize ) {
-                alertify.error( 'Sorry. Maximum allowed filesize is 10Mb.' );
+                var error = $( this.html.remoteImageURLInputId ).data( 'error-size-limit' );
+
+                this.imageErrorHandler( error );
                 return false;
             }
         }
@@ -57,12 +60,14 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
     //max allowed files count: 10
     images.prototype.checkMaxAllowedFilesCount = function( files ) {
         var filesSelected = files.length;
-        var filesAlreadyAdded = $( document ).find( '.' + this.html.imageContainerClassname ).length;
+        var filesAlreadyAdded = $( document ).find( this.html.imageRowContainer ).length;
 
         var filesAdded = filesSelected + filesAlreadyAdded;
 
         if( filesAdded > this.maxAllowedFilesCount ) {
-            alertify.error( 'Error: too much images added. Max files count = ' + this.maxAllowedFilesCount );
+            var error = $( this.html.remoteImageURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+
+            this.imageErrorHandler( error );
             return false;
         }
 
@@ -71,6 +76,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
 
     //actions before ajax start: show loader / etc
     images.prototype.beforeRequestHandler = function () {
+        this.removeImageErrors();
         $( document ).find( '.' + this.html.imageEditFormClassname ).hide();
         this.spinner.show( this.spinnerContainerId );
     };
@@ -83,11 +89,11 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         var $galleryContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
         //hide table if no images exists
-        if( $galleryContainer.find( 'tr' ).length > 0 ) {
-            $galleryContainer.parent().show();
+        if( $galleryContainer.find( this.html.imageRowContainer ).length > 0 ) {
+            $galleryContainer.parent().find( '.blank__message' ).hide();
             $galleryContainer.show();
         } else {
-            $galleryContainer.parent().hide();
+            $galleryContainer.parent().find( '.blank__message' ).show();
             $galleryContainer.hide();
         }
     };
@@ -97,18 +103,17 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         if ( response.success === false ) {
             this.imageErrorHandler( response.message );
         } else {
-            var $response = $( '<table>' + response + '</table>' );
+            this.removeImageErrors();
+            var $response = $( response );
 
             var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
 
-            var $responseImages = $response.find( 'tr' );
-
-            $responseImages.each(function() {
-                var $imageRow = $(this);
+            $response.each(function() {
+                var $imageRow = $( this );
 
                 var imageId = $imageRow.attr( 'id' );
 
-                if( !$(document).find( '#' + imageId ).length > 0 ) {
+                if( !$( document ).find( '#' + imageId ).length > 0 ) {
                     $imagesContainer.append( $imageRow );
                 }
             });
@@ -167,7 +172,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
                 return false;
             }
 
-            that.doRequest( $this.parent().data( 'url' ) );
+            that.doRequest( $this.parent().find( 'button.file-upload-button' ).data( 'url' ) );
         } );
 
         $(document).on( 'click', '#' + this.html.buttons.fileInputId, function() {
@@ -182,15 +187,15 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
         var that = this;
 
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
+            that.removeImageErrors();
+
             if ( !$remoteImageURLInput.val() ) {
-                that.imageErrorHandler( 'Error: URL field should not be empty.' );
+                var error = $( that.html.remoteImageURLInputId ).data( 'error-empty' );
+
+                that.imageErrorHandler( error );
             } else {
                 if( that.checkMaxAllowedFilesCount( [$remoteImageURLInput.val()] ) == false ) {
                     return false;
-                }
-
-                if ( $remoteImageURLInput.hasClass( 'error' ) ) {
-                    $remoteImageURLInput.removeClass( 'error' );
                 }
 
                 var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
@@ -256,10 +261,19 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select'], functi
     };
 
     images.prototype.imageErrorHandler = function( error ) {
-        var $remoteImageURLInput = $(this.html.remoteImageURLInputId);
+        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
 
-        $remoteImageURLInput.addClass('error');
-        alertify.error(error);
+        $remoteImageURLInput.parent().addClass( 'field--not-valid' );
+        $remoteImageURLInput.after( "<span data-error-message class='error'>" + error + "</span>" );
+
+        return false;
+    };
+
+    images.prototype.removeImageErrors = function() {
+        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
+
+        $remoteImageURLInput.parent().removeClass( 'field--not-valid' );
+        $remoteImageURLInput.parent().find( 'span[data-error-message]' ).remove();
 
         return false;
     };

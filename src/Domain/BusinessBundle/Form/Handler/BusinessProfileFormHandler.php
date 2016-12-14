@@ -10,6 +10,7 @@ namespace Domain\BusinessBundle\Form\Handler;
 
 use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
@@ -78,8 +79,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     public function process()
     {
         $businessProfileId = $this->request->get('businessProfileId', false);
-
-        $locale = $this->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
         $post   = $this->request->request->all()[$this->form->getName()];
 
         $oldCategories  = [];
@@ -88,10 +87,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         if ($businessProfileId !== false) {
             /* @var BusinessProfile $businessProfile */
             $businessProfile = $this->manager->find($businessProfileId);
-
-            if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
-                $businessProfile->setLocale($locale);
-            }
 
             $this->form->setData($businessProfile);
 
@@ -122,6 +117,15 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
             }
 
+            if (!$this->checkTranslationBlock($post)) {
+                $translator = $this->container->get('translator');
+
+                $formError = new FormError($translator->trans('business_profile.names_blank'));
+
+                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_EN))->addError($formError);
+                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_ES))->addError($formError);
+            }
+
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
                 if (isset($post['firstname']) && isset($post['lastname'])) {
@@ -133,27 +137,14 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                     }
                 }
 
-                //todo change locale logic https://jira.oxagile.com/browse/INFT-45
-                $seoTitle       = BusinessProfileUtil::seoTitleBuilder($businessProfile, $this->container);
-                $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($businessProfile, $this->container);
+                $translations = $businessProfile->getTranslations();
 
-                $businessProfile->setSeoTitle($seoTitle);
-                $businessProfile->setSeoDescription($seoDescription);
-                $businessProfile->setLocale($locale);
-
-                if ($locale == 'en') {
-                    $businessProfile->setNameEn($businessProfile->getName());
-
-                    if (!$businessProfile->getNameEs()) {
-                        $businessProfile->setNameEs($businessProfile->getName());
-                    }
-                } else {
-                    $businessProfile->setNameEs($businessProfile->getName());
-
-                    if (!$businessProfile->getNameEn()) {
-                        $businessProfile->setNameEn($businessProfile->getName());
-                    }
+                foreach ($translations as $item) {
+                    $businessProfile->removeTranslation($item);
                 }
+
+                $businessProfile = $this->handleTranslationBlock($businessProfile, $post);
+                $businessProfile = $this->handleSeoBlockUpdate($businessProfile);
 
                 $this->onSuccess($businessProfile, $oldCategories);
                 return true;
@@ -183,9 +174,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
 
-            if ($this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories)) {
-                $this->getBusinessProfilesManager()->saveProfile($businessProfile);
-            }
+            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
         }
     }
 
@@ -257,5 +246,145 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         }
 
         return $businessProfile;
+    }
+
+    private function handleTranslationBlock(BusinessProfile $businessProfile, $post)
+    {
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
+            $post
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+            $post
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT,
+            $post
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS,
+            $post
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
+            $post
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN,
+            $post
+        );
+
+        return $businessProfile;
+    }
+
+    private function handleTranslationSet(BusinessProfile $businessProfile, $property, $post)
+    {
+        $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
+        $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
+
+        if (property_exists($businessProfile, $property)) {
+            if (!empty($post[$propertyEn])) {
+                $businessProfile->{'set' . $property}($post[$propertyEn]);
+
+                $translation = new BusinessProfileTranslation(
+                    strtolower(BusinessProfile::TRANSLATION_LANG_EN),
+                    $property,
+                    $post[$propertyEn]
+                );
+
+                $businessProfile->addTranslation($translation);
+
+                if (property_exists($businessProfile, $propertyEn)) {
+                    $businessProfile->{'set' . $propertyEn}($post[$propertyEn]);
+                }
+            } elseif (!empty($post[$propertyEs])) {
+                $businessProfile->{'set' . $property}($post[$propertyEs]);
+            }
+
+            if (!empty($post[$propertyEs])) {
+                $translation = new BusinessProfileTranslation(
+                    strtolower(BusinessProfile::TRANSLATION_LANG_ES),
+                    $property,
+                    $post[$propertyEs]
+                );
+
+                $businessProfile->addTranslation($translation);
+
+                if (property_exists($businessProfile, $propertyEs)) {
+                    $businessProfile->{'set' . $propertyEs}($post[$propertyEs]);
+                }
+            }
+        }
+
+        return $businessProfile;
+    }
+
+    private function handleSeoBlockUpdate(BusinessProfile $businessProfile)
+    {
+        $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
+            $businessProfile,
+            $this->container,
+            BusinessProfile::TRANSLATION_LANG_EN
+        );
+
+        $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
+            $businessProfile,
+            $this->container,
+            BusinessProfile::TRANSLATION_LANG_ES
+        );
+
+        $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
+            $businessProfile,
+            $this->container,
+            BusinessProfile::TRANSLATION_LANG_EN
+        );
+
+        $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
+            $businessProfile,
+            $this->container,
+            BusinessProfile::TRANSLATION_LANG_ES
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
+            [
+                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
+                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_ES => $seoTitleEs,
+            ]
+        );
+
+        $businessProfile = $this->handleTranslationSet(
+            $businessProfile,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
+            [
+                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN => $seoDescriptionEn,
+                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES => $seoDescriptionEs,
+            ]
+        );
+
+        return $businessProfile;
+    }
+
+    private function checkTranslationBlock($post)
+    {
+        if (empty($post['name' . BusinessProfile::TRANSLATION_LANG_EN]) and
+            empty($post['name' . BusinessProfile::TRANSLATION_LANG_ES])) {
+            return false;
+        }
+
+        return true;
     }
 }

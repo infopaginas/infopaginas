@@ -113,14 +113,14 @@
             </tr>
             <tr class="sonata-ba-view-container">
                 <td>{{ admin.trans('Submitted on') }}</td>
-                <td>{{ object.updatedAt|date('d M, Y, H:i:s A') }}</td>
+                <td>{{ object.updatedAt|date(task_date_format) }}</td>
             </tr>
         {% endif %}
         {% if object.reviewer %}
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Profile') }}</td>
             <td>
-                <a target="_blank" href="{{ path('domain_business_profile_view', { 'citySlug' : business.catalogLocality.slug, slug: business.slug }) }}">
+                <a target="_blank" href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.catalogLocality.slug, slug: business.slug })) }}">
                     {{ admin.trans('View') }}
                 </a>
             </td>

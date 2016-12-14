@@ -1,0 +1,152 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+{% macro phone_prototype(phoneField) %}
+    <div class="form__row vertical__row">
+        <div class="form__field field--website">
+            {{ form_label(phoneField.phone) }}
+            {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
+        </div>
+        <button class="button button--small remove-phone">
+            <i class="fa fa-minus-square"></i>
+            {% trans %}Remove phone{% endtrans %}
+        </button>
+    </div>
+{% endmacro %}
+
+<div class="form-column__container clearfix">
+    <div class="info-box">
+        <ul class="clearfix">
+            <li>
+                <span class="info__label">
+                    {% trans %}Date of registration{% endtrans %}
+                </span>
+                <span class="info__content">
+                    {% if businessProfile is defined %}
+                        {{ businessProfile.createdAt|date(business_date_format) }}
+                    {% else %}
+                        {{ "now"|date(business_date_format) }}
+                    {% endif %}
+                </span>
+            </li>
+            <li>
+                <span class="info__label">
+                    {% trans %}Subscription{% endtrans %}
+                </span>
+                <span class="info__content">
+                    {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
+                        {{ businessProfile.getSubscriptionPlan().getName() }}
+                    {% else %}
+                        {% trans %}Free{% endtrans %}
+                    {% endif %}
+                </span>
+            </li>
+            <li>
+                <span class="info__label">
+                    {% trans %}Subscription expire date{% endtrans %}
+                </span>
+                <span class="info__content">
+                    {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
+                        {{ businessProfile.getSubscriptions()|first.getEndDate()|date(subscription_date_format) }}
+                    {% else %}
+                        {% trans %}Unlimited{% endtrans %}
+                    {% endif %}
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'English', 'langPostfix': 'En'} %}
+    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'Spanish', 'langPostfix': 'Es'} %}
+</div>
+
+<h3 class="language-title">{% trans %}Common for english and spanish{% endtrans %}</h3>
+<div class="form__section">
+    <div class="form-column__container clearfix">
+        <div class="form__column">
+            {%  if not app.user %}
+                <div class="form__row vertical__row">
+                    <div class="form__field field--firstname">
+                        {{ custom_form_label.widget(businessProfileForm.firstname) }}
+                        {{ form_widget(businessProfileForm.firstname, {'attr': {'placeholder': ''}} ) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--email">
+                    {{ custom_form_label.widget(businessProfileForm.email) }}
+                    {{ form_widget(businessProfileForm.email, {'attr': {'placeholder': ''}} ) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessProfileForm.categories) }}
+                {{ form_widget(businessProfileForm.categories) }}
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessProfileForm.subcategories) }}
+                {{ form_widget(businessProfileForm.subcategories) }}
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessProfileForm.paymentMethods) }}
+                {{ form_widget(businessProfileForm.paymentMethods) }}
+            </div>
+        </div>
+
+        <div class="form__column">
+            {%  if not app.user %}
+                <div class="form__row vertical__row">
+                    <div class="form__field field--lastname">
+                        {{ custom_form_label.widget(businessProfileForm.lastname) }}
+                        {{ form_widget(businessProfileForm.lastname, {'attr': {'placeholder': ''}} ) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--website">
+                    {{ custom_form_label.widget(businessProfileForm.website) }}
+                    {{ form_widget(businessProfileForm.website, {'attr': {'placeholder': ''}}) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessProfileForm.areas) }}
+                {{ form_widget(businessProfileForm.areas) }}
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessProfileForm.tags) }}
+                {{ form_widget(businessProfileForm.tags) }}
+            </div>
+
+            <div id="phone-fields-list"
+                 data-length="{{ businessProfileForm.phones|length }}"
+                 data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
+                {% for phoneField in businessProfileForm.phones %}
+                    <div class="form__row vertical__row">
+                        <div class="form__field field--website">
+                            {{ form_label(phoneField.phone) }}
+                            {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
+                        </div>
+                        <button class="button button--small remove-phone">
+                            <i class="fa fa-minus-square"></i>
+                            {% trans %}Remove phone{% endtrans %}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="form__row vertical__row">
+                <button class="button button--small" id="add-another-phone">
+                    <i class="fa fa-plus-square"></i>
+                    {% trans %}Add phone{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# todo fulness block #}
+</div>

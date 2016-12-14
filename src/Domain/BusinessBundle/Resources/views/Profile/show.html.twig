@@ -286,13 +286,13 @@
                                         {% include ':blocks/business:review_rating_stars.html.twig'
                                             with { 'rating': lastReview.getRating() } %}
                                     </div>
-                                    <span class="review-date">{{ lastReview.getCreatedAt() | date('d M Y H:i') }}</span>
+                                    <span class="review-date">{{ lastReview.getCreatedAt()|date(review_date_format) }}</span>
                                 </div>
                                 <div class="col-xs-9 fields-item review-col">
                                     <p>{{ lastReview.getContent() }}</p>
                                 </div>
                                 <a
-                                    href="{{ path('domain_business_reviews_list', { businessProfileId: businessProfile.getId()}) }}"
+                                    href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.getId()})) }}"
                                     class="more-reviews blue-c">
                                         {% trans %}View more reviews{% endtrans %}
                                 </a>
@@ -369,15 +369,15 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
+    <script src="{{ absolute_url(asset('bundles/fosjsrouting/js/router.js')) }}"></script>
+    <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
+    <script type="text/javascript" src="{{ absolute_url(asset('assets/scripts/require.js')) }}"></script>
 
     {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
     <script type="text/javascript">
-        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
             requirejs([
-                '{{asset("/bundles/domainbusiness/scripts/modules/businessProfileView.js")}}'
+                '{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/businessProfileView.js")) }}'
             ], function(businessProfileView, interactionsReport) {
                 var businessProfileView = new businessProfileView();
             })

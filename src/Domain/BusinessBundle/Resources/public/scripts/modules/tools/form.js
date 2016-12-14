@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'business/tools/formErrorsHandler', 'business/tools/images', 'business/tools/videos'],
-    function( $, bootstrap, alertify, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
+    ['jquery', 'bootstrap', 'tools/spin', 'tools/select', 'business/tools/formErrorsHandler', 'business/tools/images', 'business/tools/videos'],
+    function( $, bootstrap, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
 
         'use strict';
 
@@ -36,16 +36,20 @@ define(
         //actions on ajax success
         form.prototype.onRequestSuccess = function( response ) {
             if( response.success ) {
-                alertify.success( response.message );
                 document.location.href = this.userProfilePageURL;
             } else {
-                this.errorHandler.enableFieldsHighlight( response.errors );
-                if ( this.errorHandler.tabSwitchRequired() ) {
-                    var $tab = $( this.formId ).find( '.error' ).parents( '.tab-pane' );
-                    var tabId = $tab.attr( 'id' );
-                    $( 'a[href="#' + tabId + '"]' ).click();
+
+                // todo
+                if ( !$.isEmptyObject( response.errors ) ) {
+                    this.errorHandler.enableFieldsHighlight( response.errors );
+                    if ( this.errorHandler.tabSwitchRequired() ) {
+                        var $tab = $( this.formId ).find( '.error' ).parents( '.tab-pane' );
+                        var tabId = $tab.attr( 'id' );
+                        $( 'a[href="#' + tabId + '"]' ).click();
+                    }
+                } else {
+                    this.errorHandler.enableFieldsHighlight( { 'nameEn': [response.message] } );
                 }
-                alertify.error( response.message );
             }
         };
 
@@ -63,7 +67,7 @@ define(
                 var message = errorThrown;
             }
 
-            alertify.error( message );
+            this.errorHandler.enableFieldsHighlight( { 'nameEn': [message] } );
         };
 
         //ajax request

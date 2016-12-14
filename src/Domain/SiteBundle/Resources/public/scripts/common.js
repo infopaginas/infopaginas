@@ -54,6 +54,9 @@ requirejs.config({
         },
         'jquery-ui' : {
             deps: ['jquery']
+        },
+        'main-redesign' : {
+            deps: ['selectize']
         }
     },
     paths: {

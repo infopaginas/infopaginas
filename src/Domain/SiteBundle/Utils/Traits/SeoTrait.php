@@ -26,14 +26,6 @@ trait SeoTrait
     protected $seoDescription;
 
     /**
-     * @var string
-     *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="seo_keywords", type="string", length=255, nullable=true)
-     */
-    protected $seoKeywords;
-
-    /**
      * Set seoTitle
      *
      * @param string $seoTitle
@@ -75,27 +67,5 @@ trait SeoTrait
     public function getSeoDescription()
     {
         return $this->seoDescription;
-    }
-
-    /**
-     * Set seoKeywords
-     *
-     * @param string $seoKeywords
-     */
-    public function setSeoKeywords($seoKeywords)
-    {
-        $this->seoKeywords = $seoKeywords;
-
-        return $this;
-    }
-
-    /**
-     * Get seoKeywords
-     *
-     * @return string
-     */
-    public function getSeoKeywords()
-    {
-        return $this->seoKeywords;
     }
 }

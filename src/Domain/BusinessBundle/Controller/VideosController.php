@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\ORM\NoResultException;
+use Domain\BannerBundle\Model\TypeInterface;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
@@ -67,7 +68,7 @@ class VideosController extends Controller
 
         $editVideoForm = $this->getEditVideoForm($business, $media);
 
-        $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+        $response = $this->renderView(':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig', [
             'media' => $media,
             'form' => $editVideoForm->createView(),
         ]);
@@ -93,7 +94,7 @@ class VideosController extends Controller
         if ($media) {
             $editVideoForm = $this->getEditVideoForm($business, $media);
 
-            $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+            $response = $this->renderView(':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig', [
                 'media' => $media,
                 'form' => $editVideoForm->createView(),
             ]);
@@ -117,8 +118,20 @@ class VideosController extends Controller
 
         $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
 
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_PORTAL_RIGHT,
+                TypeInterface::CODE_STATIC_BOTTOM,
+            ]
+        );
+
+        $seoData = $this->getVideoManager()->getVideosSeoData($this->container);
+
         $params = [
-            'results'    => $videoResultDTO,
+            'results'       => $videoResultDTO,
+            'seoData'       => $seoData,
+            'bannerFactory' => $bannerFactory,
         ];
 
         return $this->render(':redesign:video-list.html.twig', $params);

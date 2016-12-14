@@ -4,9 +4,9 @@
         <h2>{% trans %}Create account{% endtrans %}</h2>
         <div class="modal__section disclosure">
             <p>{% trans %}By joining Infopaginas you agree to our{% endtrans %}
-                <a href="{{ path('domain_page_view_terms') }}">{% trans %}Terms of Service{% endtrans %}</a>
+                <a href="{{ absolute_url(path('domain_page_view_terms')) }}">{% trans %}Terms of Service{% endtrans %}</a>
                 {% trans %}and{% endtrans %}
-                <a href="{{ path('domain_page_view_privacy') }}">{% trans %}Privacy Policy{% endtrans %}</a>.
+                <a href="{{ absolute_url(path('domain_page_view_privacy')) }}">{% trans %}Privacy Policy{% endtrans %}</a>.
                 {% trans %}We value your privacy, and will not post to your wall without your permission.{% endtrans %}
             </p>
         </div>
@@ -49,12 +49,12 @@
         <div class="modal__section">
             <h2>or</h2>
             <div class="social-login">
-                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'facebook' }) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook">
+                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'facebook' })) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook">
                     <span>{% trans %}Log In with{% endtrans %}</span>
                     <i class="fa fa-facebook"></i>
                 </a>
 
-                <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google">
+                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'google' })) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google">
                     <span>{% trans %}Log In with{% endtrans %}</span>
                     <i class="fa fa-google"></i>
                 </a>

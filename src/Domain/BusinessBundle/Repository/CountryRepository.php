@@ -33,7 +33,10 @@ class CountryRepository extends \Doctrine\ORM\EntityRepository
     public function getAvailableCountriesQb()
     {
         $qb = $this->createQueryBuilder('c');
-        $qb->where('c.isActive = TRUE');
+        $qb
+            ->where('c.isActive = TRUE')
+            ->orderBy('c.name')
+        ;
 
         return $qb;
     }

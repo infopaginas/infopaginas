@@ -24,7 +24,7 @@
         var MARKER_VALUE = '{{ value }}';
     </script>
 
-    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/google_map_admin.js') }}"></script>
+    <script type="text/javascript" src="{{ absolute_url(asset('bundles/domainbusiness/scripts/google_map_admin.js')) }}"></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places&callback=initAutocomplete&language={{ language }}"
             async defer
