@@ -89,7 +89,7 @@ twig:
 
 #       todo confirm date formats
         review_date_format:       'd M Y H:i'
-        article_date_format:      'd M Y H:i'
+        article_date_format:      'M d, Y'
         business_date_format:     'Y-m-d'
         subscription_date_format: 'Y-m-d'
         ads_stat_date_format:     'd.m.Y'
