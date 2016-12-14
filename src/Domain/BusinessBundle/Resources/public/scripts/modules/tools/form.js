@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'bootstrap', 'alertify', 'tools/spin', 'tools/select', 'business/tools/formErrorsHandler', 'business/tools/images', 'business/tools/videos'],
-    function( $, bootstrap, alertify, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
+    ['jquery', 'bootstrap', 'tools/spin', 'tools/select', 'business/tools/formErrorsHandler', 'business/tools/images', 'business/tools/videos'],
+    function( $, bootstrap, Spin, select, FormErrorsHandler, ImagesUploader, VideosUploader) {
 
         'use strict';
 
@@ -36,8 +36,6 @@ define(
         //actions on ajax success
         form.prototype.onRequestSuccess = function( response ) {
             if( response.success ) {
-                //todo
-                //alertify.success( response.message );
                 document.location.href = this.userProfilePageURL;
             } else {
 

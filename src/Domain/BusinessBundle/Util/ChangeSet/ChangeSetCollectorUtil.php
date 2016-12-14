@@ -257,10 +257,18 @@ class ChangeSetCollectorUtil
             if (!is_object($change[0]) && !is_object($change[1]) && $change[0] == $change[1]) {
                 continue;
             }
-            $oldValue = $change[0] === null ? '-' : $change[0];
-            $newValue = $change[1] === null ? '-' : $change[1];
 
-            $changeEntries[] = self::buildChangeSetEntryObject($field, $oldValue, $newValue, $action);
+            if (is_object($change[0]) && is_object($change[1])) {
+                $oldValue = (new ChangeSetCollectionDTO([$change[0]]))->getJSONContent();
+                $newValue = (new ChangeSetCollectionDTO([$change[1]]))->getJSONContent();
+                $class = get_class($change[1]);
+            } else {
+                $oldValue = $change[0] === null ? '-' : $change[0];
+                $newValue = $change[1] === null ? '-' : $change[1];
+                $class = null;
+            }
+
+            $changeEntries[] = self::buildChangeSetEntryObject($field, $oldValue, $newValue, $action, $class);
         }
 
         return $changeEntries;

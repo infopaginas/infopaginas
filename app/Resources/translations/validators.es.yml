@@ -18,4 +18,3 @@ business_profile:
   service_areas_type: Usted debe elegir un área de servicio válido
   locality:
       not_empty: Debe elegir una Localidad válida
-  names_blank: El campo de nombre debe ser llenado para al menos un idioma

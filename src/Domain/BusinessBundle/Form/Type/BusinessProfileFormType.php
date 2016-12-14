@@ -100,6 +100,7 @@ class BusinessProfileFormType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label'
                 ],
+                'required' => false,
                 'multiple' => true,
                 'query_builder' => function (AreaRepository $repository) {
                     return $repository->getAvailableAreasQb();
@@ -222,6 +223,9 @@ class BusinessProfileFormType extends AbstractType
                 'label_attr' => [
                     'class' => 'title-label'
                 ],
+                'query_builder' => function (LocalityRepository $repository) {
+                    return $repository->getAvailableLocalitiesQb();
+                },
             ])
             ->add('city', TextType::class, [
                 'attr' => [
@@ -641,7 +645,7 @@ class BusinessProfileFormType extends AbstractType
                     'multiple' => 'multiple',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'Subcategory',
+                'label' => 'Subcategories',
                 'label_attr' => [
                     'class' => 'title-label'
                 ],
@@ -651,6 +655,7 @@ class BusinessProfileFormType extends AbstractType
                 },
                 'data' => $subcategories,
                 'mapped' => false,
+                'required' => false,
             ])
         ;
     }

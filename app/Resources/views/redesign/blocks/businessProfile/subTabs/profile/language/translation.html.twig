@@ -1,3 +1,5 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
 <div class="form__column column--english">
     <h3 class="language-title">{{ blockTitle|trans }}</h3>
 
@@ -6,7 +8,7 @@
 
         <div class="form__row">
             <div class="form__field field--name">
-                {{ form_label(businessProfileForm['name' ~ langPostfix]) }}
+                {{ custom_form_label.widget(businessProfileForm['name' ~ langPostfix]) }}
                 {{ form_widget(businessProfileForm['name' ~ langPostfix]) }}
             </div>
         </div>
@@ -18,11 +20,10 @@
         {% if businessProfileForm['slogan' ~ langPostfix] is defined %}
             <div class="form__row">
                 <div class="form__field field--slogan">
-                    {{ form_label(businessProfileForm['slogan' ~ langPostfix]) }}
+                    {{ custom_form_label.widget(businessProfileForm['slogan' ~ langPostfix]) }}
                     {{ form_widget(businessProfileForm['slogan' ~ langPostfix]) }}
                     <small class="field__description">
-                        {# todo #}
-                        {% trans %}Maximum 140 characters.{% endtrans %}
+                        {% trans %}Maximum 255 characters{% endtrans %}.
                     </small>
                 </div>
             </div>
@@ -30,25 +31,25 @@
 
         <div class="form__row">
             <div class="form__field field--description">
-                {{ form_label(businessProfileForm['description' ~ langPostfix]) }}
+                {{ custom_form_label.widget(businessProfileForm['description' ~ langPostfix]) }}
                 {{ form_widget(businessProfileForm['description' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
         <div class="form__row">
             <div class="form__field field--products">
-                {{ form_label(businessProfileForm['product' ~ langPostfix]) }}
+                {{ custom_form_label.widget(businessProfileForm['product' ~ langPostfix]) }}
                 {{ form_widget(businessProfileForm['product' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
         <div class="form__row">
             <div class="form__field field--brands">
-                {{ form_label(businessProfileForm['brands' ~ langPostfix]) }}
+                {{ custom_form_label.widget(businessProfileForm['brands' ~ langPostfix]) }}
                 {{ form_widget(businessProfileForm['brands' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
             </div>
         </div>
         <div class="form__row">
             <div class="form__field field--working-hours">
-                {{ form_label(businessProfileForm['workingHours' ~ langPostfix]) }}
+                {{ custom_form_label.widget(businessProfileForm['workingHours' ~ langPostfix]) }}
                 {{ form_widget(businessProfileForm['workingHours' ~ langPostfix], {'attr': {'placeholder': ''}}) }}
             </div>
         </div>

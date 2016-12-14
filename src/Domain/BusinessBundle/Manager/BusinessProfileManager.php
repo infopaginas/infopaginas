@@ -11,6 +11,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
@@ -21,6 +22,7 @@ use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
+use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -377,6 +379,16 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        } elseif ($change->getClassName() === Locality::class or
+                            $change->getClassName() === Country::class) {
+
+                            $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
+                                $change,
+                                $this->getEntityManager()
+                            );
+
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $item);
+
                         } else {
                             $ids = array_map(function($element) {
                                 return $element->id;

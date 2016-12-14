@@ -1,3 +1,5 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
 {% macro phone_prototype(phoneField) %}
     <div class="form__row vertical__row">
         <div class="form__field field--website">
@@ -61,48 +63,65 @@
 <div class="form__section">
     <div class="form-column__container clearfix">
         <div class="form__column">
+            {%  if not app.user %}
+                <div class="form__row vertical__row">
+                    <div class="form__field field--firstname">
+                        {{ custom_form_label.widget(businessProfileForm.firstname) }}
+                        {{ form_widget(businessProfileForm.firstname, {'attr': {'placeholder': ''}} ) }}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="form__row vertical__row">
                 <div class="form__field field--email">
-                    {{ form_label(businessProfileForm.email) }}
+                    {{ custom_form_label.widget(businessProfileForm.email) }}
                     {{ form_widget(businessProfileForm.email, {'attr': {'placeholder': ''}} ) }}
                 </div>
             </div>
 
             <div class="form__row vertical__row">
-                {{ form_label(businessProfileForm.categories) }}
+                {{ custom_form_label.widget(businessProfileForm.categories) }}
                 {{ form_widget(businessProfileForm.categories) }}
             </div>
 
             <div class="form__row vertical__row">
-                {{ form_label(businessProfileForm.subcategories) }}
+                {{ custom_form_label.widget(businessProfileForm.subcategories) }}
                 {{ form_widget(businessProfileForm.subcategories) }}
             </div>
 
             <div class="form__row vertical__row">
-                {{ form_label(businessProfileForm.paymentMethods) }}
+                {{ custom_form_label.widget(businessProfileForm.paymentMethods) }}
                 {{ form_widget(businessProfileForm.paymentMethods) }}
             </div>
         </div>
 
         <div class="form__column">
+            {%  if not app.user %}
+                <div class="form__row vertical__row">
+                    <div class="form__field field--lastname">
+                        {{ custom_form_label.widget(businessProfileForm.lastname) }}
+                        {{ form_widget(businessProfileForm.lastname, {'attr': {'placeholder': ''}} ) }}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="form__row vertical__row">
                 <div class="form__field field--website">
-                    {{ form_label(businessProfileForm.website) }}
+                    {{ custom_form_label.widget(businessProfileForm.website) }}
                     {{ form_widget(businessProfileForm.website, {'attr': {'placeholder': ''}}) }}
                 </div>
             </div>
 
             <div class="form__row vertical__row">
-                {{ form_label(businessProfileForm.areas) }}
+                {{ custom_form_label.widget(businessProfileForm.areas) }}
                 {{ form_widget(businessProfileForm.areas) }}
             </div>
 
             <div class="form__row vertical__row">
-                {{ form_label(businessProfileForm.tags) }}
+                {{ custom_form_label.widget(businessProfileForm.tags) }}
                 {{ form_widget(businessProfileForm.tags) }}
             </div>
 
-            {#todo styles#}
             <div id="phone-fields-list"
                  data-length="{{ businessProfileForm.phones|length }}"
                  data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
