@@ -20,7 +20,6 @@
                           name="{{ businessProfileForm.vars.name }}"
                           {% if businessProfileForm.vars.value %}data-id="{{ businessProfileForm.vars.value.getId() }}"{% endif %}>
 
-                        {# todo #}
                         <div id="new-profile-loading-spinner-container-id"></div>
 
                         <div class="tab-content">
@@ -49,6 +48,34 @@
                         <div style="display:none;">
                             {{ form_rest(businessProfileForm) }}
                         </div>
+
+                        {% if businessProfile is defined %}
+                            {% set updatedBy = businessProfile.getUpdatedUser() %}
+                            {% if updatedBy %}
+                                <div class="form-column__container clearfix">
+                                    <div class="info-box">
+                                        <ul class="clearfix">
+                                            <li>
+                                                <span class="info__label">
+                                                    {% trans %}Last date of profile update{% endtrans %}
+                                                </span>
+                                                <span class="info__content">
+                                                    {{ businessProfile.getUpdatedAt()|date(business_date_format) }}
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="info__label">
+                                                    {% trans %}Updated By{% endtrans %}
+                                                </span>
+                                                <span class="info__content">
+                                                    {{ updatedBy.getFirstname() }} {{ updatedBy.getLastname() }}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
 
                         <div class="form__actions">
                             <button type="reset" class="button button--text">{% trans %}Reset{% endtrans %}</button>

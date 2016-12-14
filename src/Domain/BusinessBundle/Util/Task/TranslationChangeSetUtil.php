@@ -5,7 +5,6 @@ namespace Domain\BusinessBundle\Util\Task;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 

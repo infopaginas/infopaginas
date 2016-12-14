@@ -118,11 +118,12 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             }
 
             if (!$this->checkTranslationBlock($post)) {
-                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_EN))
-                    ->addError(new FormError('business_profile.names_blank'));
+                $translator = $this->container->get('translator');
 
-                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_ES))
-                    ->addError(new FormError('business_profile.names_blank'));
+                $formError = new FormError($translator->trans('business_profile.names_blank'));
+
+                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_EN))->addError($formError);
+                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_ES))->addError($formError);
             }
 
             if ($this->form->isValid()) {
@@ -143,8 +144,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 }
 
                 $businessProfile = $this->handleTranslationBlock($businessProfile, $post);
-
-                //todo seo translate
                 $businessProfile = $this->handleSeoBlockUpdate($businessProfile);
 
                 $this->onSuccess($businessProfile, $oldCategories);
@@ -175,10 +174,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             $businessProfile = $this->getBusinessProfilesManager()->checkBusinessProfileVideo($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
 
-            if ($this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories)) {
-//                todo
-//                $this->getBusinessProfilesManager()->saveProfile($businessProfile);
-            }
+            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
         }
     }
 

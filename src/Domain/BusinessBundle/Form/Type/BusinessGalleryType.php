@@ -54,17 +54,10 @@ class BusinessGalleryType extends AbstractType
                 'class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
                 'attr' => ['class' => 'hidden-media'],
             ])
-            ->add('isPrimary', CheckboxType::class, [
-                'attr' => [
-                    'class' => 'is-primary',
-                ],
-                'label' => 'Primary'
-            ])
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'class' => 'form-control textarea-control',
                     'rows' => 3,
-                    'placeholder' => 'Create an image description as if you were describing the image to someone who cannot see it',
                 ],
                 'label' => 'Description',
             ])

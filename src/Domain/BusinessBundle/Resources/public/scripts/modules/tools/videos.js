@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap, alertify, Spin ) {
+define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     'use strict';
 
     //handle "media" business profile tab here
@@ -33,12 +33,14 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
     //only 1 video allowed
     videos.prototype.checkMaxAllowedFilesCount = function( files ) {
         var filesSelected = files.length;
-        var filesAlreadyAdded = $( document ).find( '.' + this.html.imageContainerClassname ).length;
+        var filesAlreadyAdded = $( document ).find( this.html.videoRowContainer ).length;
 
         var filesAdded = filesSelected + filesAlreadyAdded;
 
         if( filesAdded > this.maxAllowedFilesCount ) {
-            alertify.error( 'Error: too much images added. Max files count = ' + this.maxAllowedFilesCount );
+            var error = $( this.html.remoteVideoURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+
+            this.videoErrorHandler( error );
             return false;
         }
 
@@ -48,6 +50,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
     //show loader spinner
     videos.prototype.beforeRequestHandler = function () {
         this.spinner.show( this.spinnerContainerId );
+        this.removeVideoErrors();
     };
 
     //hide loader spinner on complete
@@ -61,18 +64,12 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         if( response.success ) {
             $( this.html.videoContainerId ).html( response.message );
         } else {
-            var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
-
-            $remoteVideoURLInput.addClass('error');
-            alertify.error( response.message );
+            this.videoErrorHandler( response.message );
         }
     };
 
     videos.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
-
-        $remoteVideoURLInput.addClass('error');
-        alertify.error( errorThrown );
+        this.videoErrorHandler( errorThrown );
     };
 
     //ajax request
@@ -93,7 +90,7 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         });
     };
 
-    //get images from form
+    //get video from form
     videos.prototype.getRequestData = function() {
         var formData = new FormData;
 
@@ -122,6 +119,9 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
             var files = document.getElementById( that.html.buttons.fileInputId ).files;
 
             if( that.checkMaxAllowedFilesCount( files ) == false ) {
+                var error = $( that.html.remoteVideoURLInputId ).data( 'error-size-limit' );
+
+                this.videoErrorHandler( error );
                 return false;
             }
 
@@ -143,31 +143,35 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
             var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
 
-            if ( $remoteVideoURLInput.hasClass( 'error' ) ) {
-                $remoteVideoURLInput.removeClass( 'error' );
+            if ( !$remoteVideoURLInput.val() ) {
+                var error = $( that.html.remoteVideoURLInputId ).data( 'error-empty' );
+
+                that.videoErrorHandler( error );
+            } else {
+                that.removeVideoErrors();
+
+                var data = {
+                    url: $remoteVideoURLInput.val(),
+                    businessProfileId: businessProfileId
+                };
+
+                $.ajax( {
+                    url: that.urls.uploadByURL,
+                    type: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    beforeSend: $.proxy( that.beforeRequestHandler, that ),
+                    complete: $.proxy( that.completeHandler, that ),
+                    success: $.proxy( that.onRequestSuccess, that ),
+                    error: $.proxy( that.errorHandler, that )
+                } );
+
+                event.preventDefault();
             }
-
-            var data = {
-                url: $remoteVideoURLInput.val(),
-                businessProfileId: businessProfileId
-            };
-
-            $.ajax( {
-                url: that.urls.uploadByURL,
-                type: 'POST',
-                data: data,
-                dataType: 'JSON',
-                beforeSend: $.proxy( that.beforeRequestHandler, that ),
-                complete: $.proxy( that.completeHandler, that ),
-                success: $.proxy( that.onRequestSuccess, that ),
-                error: $.proxy( that.errorHandler, that )
-            } );
-
-            event.preventDefault();
         } );
     };
 
-    //remove image by click on "remove" link
+    //remove video by click on "remove" link
     videos.prototype.handleClickOnRemoveLink = function() {
         var videoContainerId = this.html.videoContainerId;
 
@@ -175,6 +179,24 @@ define(['jquery', 'bootstrap', 'alertify', 'tools/spin'], function( $, bootstrap
             $( document ).find( videoContainerId ).html( '' );
             event.preventDefault();
         } );
+    };
+
+    videos.prototype.videoErrorHandler = function( error ) {
+        var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
+
+        $remoteVideoURLInput.parent().addClass( 'field--not-valid' );
+        $remoteVideoURLInput.after( "<span data-error-message class='error'>" + error + "</span>" );
+
+        return false;
+    };
+
+    videos.prototype.removeVideoErrors = function() {
+        var $remoteVideoURLInput = $( this.html.remoteVideoURLInputId );
+
+        $remoteVideoURLInput.parent().removeClass( 'field--not-valid' );
+        $remoteVideoURLInput.parent().find( 'span[data-error-message]' ).remove();
+
+        return false;
     };
 
     return videos;

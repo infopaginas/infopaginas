@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones', 'selectize'], function( $, bootstrap, alertify, FormHandler, Spin, select ) {
+define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones', 'selectize'], function( $, bootstrap, FormHandler, Spin, select ) {
     'use strict';
 
     //init businessProfile object variables
@@ -180,7 +180,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         var that = this;
 
         this.getLatLngByAddress(address, function(latlng) {
-
             var map = that.getGoogleMapObject(latlng);
 
             google.maps.event.trigger(map, 'resize');
@@ -278,54 +277,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
             event.preventDefault();
         });
-    };
-
-    businessProfile.prototype.handleLocaleChange = function() {
-        var that = this;
-
-        $( this.html.languageSelectorClass ).on( 'click', function( event ) {
-            $( document).find( that.html.languageSelectorClass ).removeClass( 'selected' );
-            $(this).addClass( 'selected' );
-
-            var locale = $( that.html.languageSelectorClass + '.selected' ).data( 'locale' );
-            var isLeave = that.beforeUnload();
-
-            if ( isLeave || isLeave === undefined ) {
-                that.isDirty = false;
-                that.formSubmitting = false;
-                that.currentLocale = locale;
-
-                var businessProfileId = $( that.html.forms.newProfileRequestFormId ).data( 'id' );
-
-                $.ajax({
-                    url: Routing.generate( 'domain_business_profile_edit', {
-                        id: businessProfileId
-                    } ),
-                    method: 'POST',
-                    data: { 'locale': locale },
-                    beforeSend: function() {
-                        that.spinner.show( that.html.newProfileRequestSpinnerContainerId );
-                    },
-                    success: function( response ) {
-                        $( that.html.forms.newProfileRequestFormId ).replaceWith( $( response ) );
-
-                        var activeTab = $( '.tabs-block li.active' );
-                        activeTab.removeClass( 'active' );
-                        activeTab.find( 'a' ).click();
-
-                        new select();
-                    },
-                    error: function( jqXHR, textStatus, errorThrown ) {
-                        alertify.error( errorThrown );
-                    }
-                });
-            } else {
-                $( document ).find( that.html.languageSelectorClass).not(this).addClass( 'selected' );
-                $(this).removeClass( 'selected' );
-            }
-
-            event.preventDefault();
-        } );
     };
 
     businessProfile.prototype.handleServiceAreaChange = function() {
@@ -440,9 +391,10 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
     //remove "error" highlighting
     businessProfile.prototype.disableFieldsHighlight = function( formId ) {
         var $form = $( formId );
-        $form.find( 'input' ).removeClass('error');
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     //"error" fields highlighting
@@ -463,12 +415,11 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 //check for "repeated" fields or embed forms
                 if (Array.isArray( errors[field]) ) {
                     var $field = $( this.getFormFieldId( prefix, field ) );
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next( '.help-block' );
+                    $field.parent().addClass( 'field--not-valid' );
 
                     for (var key in errors[field]) {
-                        $errorSection.append( errors[field][key] );
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId( prefix, field ) );
@@ -500,15 +451,17 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
                 success: function( response ) {
                     if( response.success ) {
                         $( self.html.modals.closeBusinessProfileModalId ).modal('hide');
-                        alertify.success( response.message );
                         $( self.html.forms.closeBusinessProfileFormId )[0].reset();
                     } else {
-                        alertify.error( response.message );
-                        self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors )
+                        if ( !$.isEmptyObject( response.errors ) ) {
+                            self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors );
+                        } else {
+                            self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, { 'reason': [response.message] } );
+                        }
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
-                    alertify.error( errorThrown );
+                    this.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, { 'reason': [errorThrown] } );
                 },
                 complete: function() {
                     self.spinner.hide();
@@ -586,7 +539,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
         this.handleGeocodeSearch();
         this.moveMarker();
         this.handleProfileSave();
-        this.handleLocaleChange();
         this.handleServiceAreaChange();
         this.handleFormChange();
         this.handleBusinessProfileClose();
@@ -596,7 +548,6 @@ define(['jquery', 'bootstrap', 'alertify', 'business/tools/form', 'tools/spin', 
 
         $( 'a[href="#businessAddress"]').on('shown.bs.tab', function(){
             that.initGoogleMap();
-        //todo
         } );
 
         $( this.html.buttons.fileUploadButton ).on( 'click', function() {

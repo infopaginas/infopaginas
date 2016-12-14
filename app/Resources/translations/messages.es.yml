@@ -361,3 +361,34 @@ business_profile.seoDescription.phone: o llamar phone
 
 in: en
 for: la
+
+Close profile: Cerrar perfil
+Subscription expire date: Fecha de expiración de la suscripción
+English: Inglés
+Name: Nombre
+Maximum 255 characters: Máximo 255 caracteres
+Spanish: Español
+Common for english and spanish: Común para Inglés y Español
+Remove phone: Quite el teléfono
+Add phone: Añadir teléfono
+Images upload: Subida de imágenes
+Select and upload images to show on your business profile: Selecciona y sube imágenes para mostrarlas en tu perfil comercial
+Browse: Vistazo
+url: url
+Upload from url: Subir desde url
+You have no images: No tienes imágenes
+Your photos: Tus fotos
+Video upload: Subida de video
+Select and upload videos to show on your business profile: Selecciona y sube vídeos para mostrar en tu perfil de empresa
+You have no videos: No tienes videos
+Background: Fondo
+Reset: Reiniciar
+Reason: Razón
+Remove: Retirar
+
+business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
+business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =
+business_profile.size_limit: Lo siento. El tamaño máximo permitido es de 10Mb.
+business_profile.url.empty: Error: el campo URL no debe estar vacío.
+business_profile.video_count_limit: Error: demasiados videos agregados. Máximo conteo de archivos =
+Updated By: Actualizado por

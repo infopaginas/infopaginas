@@ -13,4 +13,3 @@ business_profile:
   service_areas_type: You must choose a valid Service Area
   locality:
     not_empty: You must choose a valid Locality
-  names_blank: Name field should be filled for at least one language

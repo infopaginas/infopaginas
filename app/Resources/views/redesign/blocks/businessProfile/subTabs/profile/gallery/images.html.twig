@@ -28,13 +28,6 @@
                 </div>
             </div>
             <!-- media__field -->
-            <div class="media__field media__check">
-                <div class="form__field checkbox-field">
-                    {{ form_widget(image.isPrimary, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_isPrimary', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][isPrimary]' }) }}
-                    <label>{% trans %}Primary{% endtrans %}</label>
-                </div>
-            </div>
-            <!-- media__field -->
             <div class="media__field remove">
                 <button type="button" class="button button--text remove-image-link" data-id="{{ image.vars.data.media.id }}">
                     <i class="fa fa-remove"></i>

@@ -1,3 +1,5 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
 <div class="form-column__container clearfix">
     <h3 class="language-title">{% trans %}Service Areas{% endtrans %}</h3>
     <div class="form__section">
@@ -41,59 +43,59 @@
             <div class="form__column">
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.streetAddress) }}
+                        {{ custom_form_label.widget(businessProfileForm.streetAddress) }}
                         {{ form_widget(businessProfileForm.streetAddress, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
-                    {{ form_label(businessProfileForm.country) }}
+                    {{ custom_form_label.widget(businessProfileForm.country) }}
                     {{ form_widget(businessProfileForm.country) }}
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.state) }}
+                        {{ custom_form_label.widget(businessProfileForm.state) }}
                         {{ form_widget(businessProfileForm.state, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
-                    {{ form_label(businessProfileForm.catalogLocality) }}
+                    {{ custom_form_label.widget(businessProfileForm.catalogLocality) }}
                     {{ form_widget(businessProfileForm.catalogLocality) }}
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.city) }}
+                        {{ custom_form_label.widget(businessProfileForm.city) }}
                         {{ form_widget(businessProfileForm.city, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.zipCode) }}
+                        {{ custom_form_label.widget(businessProfileForm.zipCode) }}
                         {{ form_widget(businessProfileForm.zipCode, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.extendedAddress) }}
+                        {{ custom_form_label.widget(businessProfileForm.extendedAddress) }}
                         {{ form_widget(businessProfileForm.extendedAddress, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.crossStreet) }}
+                        {{ custom_form_label.widget(businessProfileForm.crossStreet) }}
                         {{ form_widget(businessProfileForm.crossStreet, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.customAddress) }}
+                        {{ custom_form_label.widget(businessProfileForm.customAddress) }}
                         {{ form_widget(businessProfileForm.customAddress, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>
@@ -109,19 +111,18 @@
             <div class="form__column">
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.latitude) }}
+                        {{ custom_form_label.widget(businessProfileForm.latitude) }}
                         {{ form_widget(businessProfileForm.latitude) }}
                     </div>
                 </div>
 
                 <div class="form__row vertical__row">
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.longitude) }}
+                        {{ custom_form_label.widget(businessProfileForm.longitude) }}
                         {{ form_widget(businessProfileForm.longitude) }}
                     </div>
                 </div>
 
-                {#todo#}
                 <div class="form__row vertical__row">
                     {{ form_label(businessProfileForm.map) }}
                     {{ form_widget(businessProfileForm.map) }}
