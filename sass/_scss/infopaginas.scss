@@ -255,6 +255,7 @@ $side-padding-mb: 16px;
     align-items: stretch;
     display: flex;
     flex: 0 auto;
+    min-height: 80px;
 
     li {
       display: flex;
@@ -280,6 +281,7 @@ $side-padding-mb: 16px;
     justify-content: center;
     margin: 10px 0;
     margin-bottom: 5px;
+    min-height: 40px;
 
     li {
       border: 0;
@@ -377,6 +379,7 @@ $side-padding-mb: 16px;
       display: flex;
       flex: 0 auto;
       width: 100%;
+      min-height: 30px;
     }
   }
 }
@@ -389,6 +392,7 @@ $side-padding-mb: 16px;
   padding: 5px;
   padding-bottom: 20px;
   text-align: center;
+  min-height: 60px;
 
   @media only screen and (min-width: 805px) {
     padding: 10px;
@@ -4350,7 +4354,7 @@ table {
 }
 
 .ui-autocomplete.ui-menu {
-  z-index: 10;
+  z-index: 101;
   width: 500px !important;
   max-width: 85vw;
   background-color: rgba(122, 122, 122, 0.95) !important;
