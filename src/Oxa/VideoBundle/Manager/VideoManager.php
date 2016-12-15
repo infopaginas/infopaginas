@@ -5,20 +5,23 @@ namespace Oxa\VideoBundle\Manager;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
-use Oxa\VideoBundle\Uploader\VideoLocalFileUploader;
-use Oxa\VideoBundle\Uploader\VideoRemoteFileUploader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VideoManager
 {
-    private static $allowedMimeTypes = array(
+    private static $allowedMimeTypes = [
         'video/mp4',
         'video/webm',
-    );
+        'video/ogg',
+    ];
+    
+    private $mimeExtensions = [
+        'video/mp4'     => '.mp4',
+        'video/webm'    => '.webm',
+        'video/ogg'     => '.ogv',
+    ];
 
     private $filesystem;
-    private $videoLocalFileUploader;
-    private $videoRemoteFileUploader;
 
     private $videoMediaManager;
 
@@ -43,40 +46,46 @@ class VideoManager
 
     public function uploadLocalFile(UploadedFile $file, array $data = []) : VideoMedia
     {
-        $uploadedFileData = $this->uploadLocalFileData($file, $data);
+        $fileData = [
+            'name'      => $file->getClientOriginalName(),
+            'type'      => $file->getClientMimeType(),
+            'ext'       => $file->getClientOriginalExtension(),
+            'path'      => $file->getPathname(),
+        ];
+
+        $uploadedFileData = $this->uploadLocalFileData($fileData);
 
         return $this->videoMediaManager->save($uploadedFileData);
     }
 
-    public function uploadLocalFileData(UploadedFile $file, array $data = []) : array
+    public function uploadLocalFileData(array $data) : array
     {
         // Check if the file's mime type is in the list of allowed mime types.
-        if (!in_array($file->getClientMimeType(), self::$allowedMimeTypes)) {
-            throw new \InvalidArgumentException(sprintf('Files of type %s are not allowed.', $file->getClientMimeType()));
+        if (!in_array($data['type'], self::$allowedMimeTypes)) {
+            throw new \InvalidArgumentException(sprintf('Files of type %s are not allowed.', $data['type']));
         }
 
         $adapter = $this->filesystem->getAdapter();
 
-        // Generate a unique filename based on the date and add file extension of the uploaded file
         $path = sprintf('%s/%s/', date('Y'), date('m'));
         do {
-            $filename = sprintf('%s.%s', uniqid('', 1), $file->getClientOriginalExtension());
+            $filename = sprintf('%s.%s', uniqid('', 1), $data['ext']);
         } while ($adapter->exists($path.$filename));
  
         $adapter->setMetadata($path.$filename, [
-            'contentType'   => $file->getClientMimeType(),
+            'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path.$filename, file_get_contents($file->getPathname()));
+        $uploadedSize = $adapter->write($path.$filename, file_get_contents($data['path']));
 
         if (!$uploadedSize) {
             throw new \InvalidArgumentException(sprintf('File '.$filename.' is not uploaded. Please contact administrator'));
         }
 
         $video = [
-            'name'      => $file->getClientOriginalName(),
+            'name'      => $data['name'],
             'filename'  => $filename,
-            'type'      => $file->getClientMimeType(),
+            'type'      => $data['type'],
             'filepath'  => $path,
         ];
 
@@ -87,20 +96,35 @@ class VideoManager
     {
         $headers = SiteHelper::checkUrlExistence($url);
 
-        if ($headers && in_array($headers['content_type'], SiteHelper::$videoContentTypes)) {
-            $uploaderRequestData = ['url' => $url];
-            $fileUploader = $this->videoRemoteFileUploader->setData(array_merge($uploaderRequestData, $data));
+        $fileData = [
+            'name'      => $this->generateFilenameForUrl($url),
+            'ext'       => $this->getExtensionByMime($headers['content_type']),
+            'type'      => $headers['content_type'],
+            'path'      => $url,
+        ];
 
-            $videoMediaData = $fileUploader->upload();
+        $uploadedFileData = $this->uploadLocalFileData($fileData);
 
-            return $this->videoMediaManager->save($videoMediaData);
-        }
-
-        return false;
+        return $this->videoMediaManager->save($uploadedFileData);
     }
 
-    public function getEmbedCode(string $hash, array $dimensions = [])
+    protected function getExtensionByMime(string $type)
     {
-        return $this->videoEmbedAPIManager->get($hash, $dimensions);
+        if (isset($this->mimeExtensions[$type])) {
+            return $this->mimeExtensions[$type];
+        }
+        return '.mp4';
+    }
+    
+    protected function generateFilenameForUrl($url)
+    {
+        $domain = str_ireplace('www.', '', parse_url($url, PHP_URL_HOST));
+        if (240 < strlen($domain)) {
+            $domain = substr($domain, 0, 240);
+        }
+
+        $date = new \DateTime();
+        $domain .= '-'.$date->format('YmdHis');
+        return $domain;
     }
 }
