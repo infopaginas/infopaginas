@@ -369,7 +369,6 @@ Name: Name
 Maximum 255 characters: Maximum 255 characters
 Spanish: Spanish
 Common for english and spanish: Common for english and spanish
-Subcategory: Subcategory
 Remove phone: Remove phone
 Add phone: Add phone
 Images upload: Images upload
@@ -393,4 +392,4 @@ business_profile.size_limit: Sorry. Maximum allowed filesize is 10Mb.
 business_profile.url.empty: Error: URL field should not be empty.
 business_profile.video_count_limit: Error: too much videos added. Max files count =
 Updated By: Updated By
-
+Back to Business Profile: Back to Business Profile
