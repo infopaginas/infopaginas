@@ -628,6 +628,17 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
             }
         }
+
+        if (empty(trim($object->getName()))) {
+            $errorElement->with('name')
+                ->addViolation($this->getTranslator()->trans(
+                    'form.name.required',
+                    [],
+                    $this->getTranslationDomain()
+                ))
+                ->end()
+            ;
+        }
     }
 
     /**

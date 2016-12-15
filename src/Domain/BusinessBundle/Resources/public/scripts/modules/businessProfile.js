@@ -158,6 +158,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         }, function(results) {
             that.updateAddress(results[0].address_components);
             that.updateLatLngFields(latlng);
+            that.updateFieldSelectionFocus();
         });
     };
 
@@ -195,6 +196,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             marker.addListener('dragend', $.proxy(that.onMarkerPositionChange, that));
 
             that.updateLatLngFields(latlng);
+            that.updateFieldSelectionFocus();
         });
     };
 
@@ -294,16 +296,14 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             var localities = $( that.html.fields.localitiesFieldId );
             var neighborhoods = $( that.html.fields.neighborhoodsFieldId );
 
-            var withinMilesSelectize    = withinMiles.selectize()[0].selectize;
             var localitiesSelectize     = localities.selectize()[0].selectize;
             var neighborhoodsSelectize  = neighborhoods.selectize()[0].selectize;
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
-                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'disabled' );
-                $( that.html.fields.localitiesFieldId ).attr('disabled', 'disabled');
-                $( that.html.fields.neighborhoodsFieldId ).attr('disabled', 'disabled');
+                withinMiles.removeAttr( 'disabled' );
+                localities.attr('disabled', 'disabled');
+                neighborhoods.attr('disabled', 'disabled');
 
-                withinMilesSelectize.enable();
                 localitiesSelectize.disable();
                 neighborhoodsSelectize.disable();
 
@@ -313,21 +313,20 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                     html = html.slice( 0, pos ) + that.html.asteriskTag + ' ' + html.slice( pos );
                     $( that.html.milesOfMyBusinessSpan ).html( html );
                 }
-                $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr('required', 'required');
+                withinMiles.attr('required', 'required');
                 $( milesOfMyBusinessAsteriskClass ).show();
                 $( localitiesFieldAsteriskClass ).hide();
             } else {
-                $( that.html.fields.localitiesFieldId ).removeAttr( 'disabled' );
-                $( that.html.fields.neighborhoodsFieldId ).removeAttr( 'disabled' );
-                $( that.html.fields.withinMilesOfMyBusinessFieldId ).attr( 'disabled', 'disabled' );
+                localities.removeAttr( 'disabled' );
+                neighborhoods.removeAttr( 'disabled' );
+                withinMiles.attr( 'disabled', 'disabled' );
 
-                withinMilesSelectize.disable();
                 localitiesSelectize.enable();
                 neighborhoodsSelectize.enable();
 
-                $( that.html.fields.withinMilesOfMyBusinessFieldId ).removeAttr( 'required' );
+                withinMiles.removeAttr( 'required' );
                 if ( $( localitiesFieldAsteriskClass ).length ) {
-                    $( that.html.fields.localitiesFieldId ).attr('required', 'required');
+                    localities.attr('required', 'required');
                     $( localitiesFieldAsteriskClass ).show();
                 } else {
                     html = $( that.html.localitiesFieldSpan ).text();
@@ -532,6 +531,20 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 selectize.setValue( selected );
             });
         }
+    };
+
+    businessProfile.prototype.updateFieldSelectionFocus = function () {
+        $( '.form input, .form textarea' ).each(function() {
+            var $this;
+
+            $this = $( this );
+            if ($this.prop( 'value' ).length !== 0){
+                $this.parent().addClass( 'field-active' );
+            } else {
+                $this.parent().removeClass( 'field-active field-filled' );
+                $this.parent().find( 'label' ).removeClass( 'label-active' );
+            }
+        });
     };
 
     //setup required "listeners"

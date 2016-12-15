@@ -296,34 +296,34 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
         if (property_exists($businessProfile, $property)) {
             if (!empty($post[$propertyEn])) {
-                $businessProfile->{'set' . $property}($post[$propertyEn]);
+                $businessProfile->{'set' . $property}(trim($post[$propertyEn]));
 
                 $translation = new BusinessProfileTranslation(
                     strtolower(BusinessProfile::TRANSLATION_LANG_EN),
                     $property,
-                    $post[$propertyEn]
+                    trim($post[$propertyEn])
                 );
 
                 $businessProfile->addTranslation($translation);
 
                 if (property_exists($businessProfile, $propertyEn)) {
-                    $businessProfile->{'set' . $propertyEn}($post[$propertyEn]);
+                    $businessProfile->{'set' . $propertyEn}(trim($post[$propertyEn]));
                 }
             } elseif (!empty($post[$propertyEs])) {
-                $businessProfile->{'set' . $property}($post[$propertyEs]);
+                $businessProfile->{'set' . $property}(trim($post[$propertyEs]));
             }
 
             if (!empty($post[$propertyEs])) {
                 $translation = new BusinessProfileTranslation(
                     strtolower(BusinessProfile::TRANSLATION_LANG_ES),
                     $property,
-                    $post[$propertyEs]
+                    trim($post[$propertyEs])
                 );
 
                 $businessProfile->addTranslation($translation);
 
                 if (property_exists($businessProfile, $propertyEs)) {
-                    $businessProfile->{'set' . $propertyEs}($post[$propertyEs]);
+                    $businessProfile->{'set' . $propertyEs}(trim($post[$propertyEs]));
                 }
             }
         }
@@ -380,8 +380,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
     private function checkTranslationBlock($post)
     {
-        if (empty($post['name' . BusinessProfile::TRANSLATION_LANG_EN]) and
-            empty($post['name' . BusinessProfile::TRANSLATION_LANG_ES])) {
+        if (empty(trim($post['name' . BusinessProfile::TRANSLATION_LANG_EN])) and
+            empty(trim($post['name' . BusinessProfile::TRANSLATION_LANG_ES]))) {
             return false;
         }
 

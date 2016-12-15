@@ -35,7 +35,10 @@ class CountryRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('c');
         $qb
             ->where('c.isActive = TRUE')
-            ->orderBy('c.name')
+            ->addSelect('CASE WHEN c.shortName = :defaultCountry THEN 1 ELSE 0 END AS HIDDEN sortCondition')
+            ->addOrderBy('sortCondition', 'DESC')
+            ->addOrderBy('c.name')
+            ->setParameter('defaultCountry', strtoupper(Country::PUERTO_RICO_SHORT_NAME))
         ;
 
         return $qb;

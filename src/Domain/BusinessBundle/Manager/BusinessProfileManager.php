@@ -379,8 +379,8 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        } elseif ($change->getClassName() === Locality::class or
-                            $change->getClassName() === Country::class) {
+                        } elseif ($change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_COUNTRY or
+                            $change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY) {
 
                             $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
                                 $change,
