@@ -45,6 +45,7 @@ parameters:
         company_name: 'Infopáginas'
         title_max_length: 60
         description_max_length: 160
+    image_back_up_path: '/../web/imageBackUp/'
 
 framework:
     #esi:             ~
