@@ -205,3 +205,7 @@ services:
     domain_business.video:
         class: Domain\BusinessBundle\Manager\VideoManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    oxa_video.manager.video_media:
+        class: Oxa\VideoBundle\Manager\VideoMediaManager
+        arguments: ['@doctrine.orm.entity_manager']

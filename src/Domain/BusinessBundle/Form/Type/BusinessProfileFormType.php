@@ -314,7 +314,7 @@ class BusinessProfileFormType extends AbstractType
             ])
         ;
 
-        if ($this->isUserSectionRequired) {
+        if ($this->isUserSectionRequired && 0) {
             $builder
                 ->add('firstname', TextType::class, [
                     'attr' => [

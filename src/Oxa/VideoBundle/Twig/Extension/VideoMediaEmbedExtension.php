@@ -2,9 +2,11 @@
 
 namespace Oxa\VideoBundle\Twig\Extension;
 
+use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Manager\VideoEmbedAPIManager;
 use Oxa\VideoBundle\Manager\VideoMediaEmbedManager;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -16,18 +18,19 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     /**
      * @var VideoMediaEmbedManager
      */
-    private $videoEmbedManager;
+    private $templating;
+    private $filesystem;
 
     /**
      * VideoMediaEmbedExtension constructor.
      * @param VideoMediaEmbedManager $videoMediaEmbedManager
      */
     public function __construct(
-            VideoMediaEmbedManager $videoMediaEmbedManager,
-            ContainerInterface $container
+            EngineInterface $templating,
+            Filesystem $filesystem
     ) {
-        $this->videoEmbedManager = $videoMediaEmbedManager;
-        $this->container = $container;
+        $this->templating        = $templating;
+        $this->filesystem        = $filesystem;
     }
 
     /**
@@ -46,20 +49,25 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     public function renderVideoEmbed(VideoMedia $media, array $dimensions = []) : string
     {
         if (empty($dimensions['height'])) {
-            $dimensions['height'] = 400;
+            $dimensions['height'] = 480;
         }
         if (empty($dimensions['width'])) {
-            $dimensions['width'] = 600;
+            $dimensions['width'] = 640;
         }
-        $html = $this->container->get('templating')
+
+        $expires = new \DateTime();
+        $expires->modify('+ 600 seconds');
+
+
+        $url = $this->filesystem->getAdapter()->getUrl($media->getFilepath().$media->getFilename(),['expires' => $expires->getTimestamp()]);
+        $html = $this->templating
                 ->render(
-                    "Oxa_Video:VideoMedia/video_embed.html.twig", [
-                        'media'     => $media,
-                        'dimesions' => $dimensions,
+                    ":redesign/blocks/video:video_embed.html.twig", [
+                        'media'         => $media,
+                        'dimensions'    => $dimensions,
+                        'url'           => $url,
                     ]
                 );
-        return $html;
-        $html = $this->videoEmbedManager->getHTML($media, $dimensions);
         return $html;
     }
 

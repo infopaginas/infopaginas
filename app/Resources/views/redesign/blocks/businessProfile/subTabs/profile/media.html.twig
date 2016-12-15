@@ -105,20 +105,20 @@
                 <!-- section__sidebar -->
 
                 <div class="section__main-content">
-
-                    {% if not businessProfile.video %}
-                        <div class="blank__message">
-                            <p>{% trans %}You have no videos{% endtrans %}</p>
-                        </div>
-                    {% else %}
-                        <div class="media-table">
+                    <div class="media-table">
+                        <div id="video">
+                            {% if not businessProfile.video %}
+                                <div class="blank__message">
+                                    <p>{% trans %}You have no videos{% endtrans %}</p>
+                                </div>
+                            {% else %}
                             <h3>{% trans %}Your videos{% endtrans %}</h3>
-
                             <div id="video">
                                 {% include ':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig' with {'form': businessProfileForm.video, 'media': businessProfile.video} %}
                             </div>
+                        {% endif %}
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
                 <!-- section__main-content -->
             </div>

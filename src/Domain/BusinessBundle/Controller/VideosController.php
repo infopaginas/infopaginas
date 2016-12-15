@@ -59,8 +59,6 @@ class VideosController extends Controller
                 $this->throwVideoFileIsNotProvidedException();
             }
 
-//            list($videoPathOnLocalServer, $filename) = $this->uploadVideoToLocalServer($files);
-
             $media = $this->getVideoAPIManager()->uploadLocalFile(current($files), ['name' => '']);
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
@@ -211,6 +209,7 @@ class VideosController extends Controller
     private function getEditVideoForm(BusinessProfile $businessProfile, VideoMedia $media) : FormInterface
     {
         $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
+
         $videoForm = $form->get('video')->setData($media);
 
         return $videoForm;

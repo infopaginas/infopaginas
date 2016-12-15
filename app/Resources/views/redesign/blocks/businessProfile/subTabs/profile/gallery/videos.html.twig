@@ -1,13 +1,13 @@
 <div class="media__item video-item">
     <div class="media__item--left">
         <div class="media__field media__thumbnail">
-            {{ render_wistia_embed(media, {width: 300, height: 200}) | raw }}
+            {{ render_video_embed(media, {width: 300, height: 200}) | raw }}
         </div>
     </div>
     <div class="media__item--right">
         <div class="media__field">
             <div class="form__field">
-                {{ form_widget(form.wistiaId) }}
+                {{ form_widget(form.id) }}
             </div>
         </div>
         <div class="media__field">
@@ -18,8 +18,6 @@
         </div>
         <div class="media__field">
             <div class="form__field">
-                {{ form_label(form.description) }}
-                {{ form_widget(form.description) }}
             </div>
         </div>
         <div class="media__field remove">

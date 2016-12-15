@@ -340,8 +340,8 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Video')
                     ->add('videoFile', FileType::class, [
                         'attr' => [
-                            'accept' => 'mov, avi, mp4, wmv, flv, video/quicktime, application/x-troff-msvideo,
-                            video/avi, video/msvideo, video/x-msvideo, video/mp4, video/x-ms-wmv, video/x-flv',
+                            'accept' => 'mov, avi, mp4, video/quicktime, application/x-troff-msvideo,
+                            video/avi, video/msvideo, video/x-msvideo, video/mp4',
                         ],
                         'data_class' => null,
                         'mapped' => false,
@@ -368,11 +368,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'attr' => [
                             'value' => $businessProfile->getVideo()->getName(),
                         ],
-                    ])
-                    ->add('videoDescription', TextareaType::class, [
-                        'mapped' => false,
-                        'required' => false,
-                        'data' => $businessProfile->getVideo()->getDescription(),
                     ])
                     ->end()
                     ->end();
@@ -737,6 +732,7 @@ class BusinessProfileAdmin extends OxaAdmin
     private function setVideoValue($entity)
     {
         $form = $this->getForm();
+        $container = $this->getConfigurationPool()->getContainer();
 
         /** @var Request $request */
         $request = Request::createFromGlobals();
@@ -744,27 +740,26 @@ class BusinessProfileAdmin extends OxaAdmin
 
         if ($files) {
             $video = $entity->getVideo();
-            $wistiaMediaData = $this->uploadVideo($entity);
+            $videoMediaData = $this->uploadVideo($entity);
 
-            if ($wistiaMediaData) {
+            if ($videoMediaData) {
                 if ($video) {
-                    $wistiaMediaData['name']        = $video->getName();
-                    $wistiaMediaData['description'] = $video->getDescription();
+                    $videoMediaData['name']        = $video->getName();
                 }
 
-                $wistiaMedia = new VideoMedia($wistiaMediaData);
+                $videoMedia = new VideoMedia($videoMediaData);
 
-                $entity->setVideo($wistiaMedia);
+                $entity->setVideo($videoMedia);
             }
         } else {
             if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
+                $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
                 $video = null;
             } else {
                 $video = $entity->getVideo();
 
                 if ($video) {
-                    $video->setName($form->get('videoTitle')->getData());
-                    $video->setDescription($form->get('videoDescription')->getData());
+                    $video->setName($form->get('name')->getData());
                 }
             }
 
@@ -791,9 +786,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 return $media;
             }
 
-            list($videoPath, $filename) = $this->uploadVideoToLocalServer($files);
-
-            $media = $container->get('oxa.manager.wistia')->uploadLocalFileData($videoPath, ['name' => $filename]);
+            $media = $container->get('oxa.manager.video')->uploadLocalFileData(current($files));
         }
 
         return $media;

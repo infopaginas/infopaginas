@@ -27,16 +27,12 @@ class VideoMediaType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class'     => 'form-control',
+                    'disabled'  => true,
                 ],
-                'label' => 'Title',
+                'label' => 'Name',
             ])
-            ->add('description', TextareaType::class, [
-                'attr' => [
-                    'class' => 'form-control media-description',
-                ],
-                'label' => 'Description',
-            ])
+            ->add('id', HiddenType::class, [])
         ;
     }
 

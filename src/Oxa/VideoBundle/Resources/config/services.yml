@@ -8,48 +8,7 @@ services:
     oxa.service.http_client:
         class: GuzzleHttp\Client
 
-    oxa.service.video_data_api_client:
-        class: Oxa\VideoBundle\Service\VideoDataAPIClient
-        arguments: ['@oxa.service.http_client']
-
-    oxa.service.video_upload_api_client:
-        class: Oxa\VideoBundle\Service\VideoUploadAPIClient
-        arguments: ['@oxa.service.http_client']
-
-    oxa.service.video_embed_api_client:
-        class: Oxa\VideoBundle\Service\VideoEmbedAPIClient
-        arguments: ['@oxa.service.http_client']
-
-    #file uploaders section
-    oxa.uploader.video_local_file_uploader:
-        class: Oxa\VideoBundle\Uploader\VideoLocalFileUploader
-        arguments:
-            - '@oxa.service.video_upload_api_client'
-            - %oxa.video.api_password%
-            - %oxa.video.default_project_id%
-            - %oxa.video.use_project_id%
-
-    oxa.uploader.video_remote_file_uploader:
-        class: Oxa\VideoBundle\Uploader\VideoRemoteFileUploader
-        arguments:
-            - '@oxa.service.video_upload_api_client'
-            - %oxa.video.api_password%
-            - %oxa.video.default_project_id%
-            - %oxa.video.use_project_id%
-
     #managers section
-    oxa.manager.video_api_projects:
-        class: Oxa\VideoBundle\Manager\VideoProjectAPIManager
-        arguments: ['@oxa.service.video_data_api_client', %oxa.video.api_password%]
-
-    oxa.manager.video_api_medias:
-        class: Oxa\VideoBundle\Manager\VideoMediaAPIManager
-        arguments: ['@oxa.service.video_data_api_client', %oxa.video.api_password%]
-
-    oxa.manager.video_api_embed:
-        class: Oxa\VideoBundle\Manager\VideoEmbedAPIManager
-        arguments: ['@oxa.service.video_embed_api_client', %oxa.video.api_password%]
-
     oxa.manager.video:
         class: Oxa\VideoBundle\Manager\VideoManager
         arguments:
@@ -60,11 +19,6 @@ services:
         class: Oxa\VideoBundle\Manager\VideoMediaManager
         arguments: ['@doctrine.orm.entity_manager']
 
-    oxa.manager.video_media_embed:
-        class: Oxa\VideoBundle\Manager\VideoMediaEmbedManager
-        arguments: ['@doctrine.orm.entity_manager', '@oxa.manager.video_api_embed']
-
-
     #twig extensions section
     oxa.twig_extension.video_media_thumbnail:
         class: Oxa\VideoBundle\Twig\Extension\VideoMediaThumbnailExtension
@@ -74,7 +28,9 @@ services:
 
     oxa.twig_extension.video_media_embed:
         class: Oxa\VideoBundle\Twig\Extension\VideoMediaEmbedExtension
-        arguments: ['@oxa.manager.video_media_embed', '@service_container']
+        arguments:
+            - '@templating'
+            - '@video_storage_filesystem'
         public: false
         tags:
             -  { name: twig.extension }

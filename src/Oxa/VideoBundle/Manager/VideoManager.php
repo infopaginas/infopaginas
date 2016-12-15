@@ -13,17 +13,14 @@ class VideoManager
 {
     private static $allowedMimeTypes = array(
         'video/mp4',
+        'video/webm',
     );
 
     private $filesystem;
-    private $videoProjectAPIManager;
-    private $videoMediaAPIManager;
     private $videoLocalFileUploader;
     private $videoRemoteFileUploader;
 
     private $videoMediaManager;
-
-    private $videoEmbedAPIManager;
 
     public function __construct(
         Filesystem $filesystem,
@@ -33,64 +30,15 @@ class VideoManager
         $this->videoMediaManager = $videoMediaManager;
     }
 
-    public function listProjects() : array
+    public function removeMedia($id)
     {
-        return $this->videoProjectAPIManager->list();
-    }
+        $media = $this->videoMediaManager->find($id);
 
-    public function showProject(string $hash) : array
-    {
-        return $this->videoProjectAPIManager->show($hash);
-    }
+        if ($this->filesystem->getAdapter()->exists($media->getFilepath().$media->getFilename())) {
+            return $this->filesystem->delete($media->getFilepath().$media->getFilename());
+        }
 
-    public function createProject(array $data) : array
-    {
-        return $this->videoProjectAPIManager->create($data);
-    }
-
-    public function updateProject(string $hash, array $data) : array
-    {
-        return $this->videoProjectAPIManager->update($hash, $data);
-    }
-
-    public function removeProject(string $hash) : array
-    {
-        return $this->videoProjectAPIManager->remove($hash);
-    }
-
-    public function copyProject(string $hash) : array
-    {
-        return $this->videoProjectAPIManager->copy($hash);
-    }
-
-    public function listMedia() : array
-    {
-        return $this->videoMediaAPIManager->list();
-    }
-
-    public function showMedia(string $hash) : array
-    {
-        return $this->videoMediaAPIManager->show($hash);
-    }
-
-    public function updateMedia(string $hash, array $data) : array
-    {
-        return $this->videoMediaAPIManager->update($hash, $data);
-    }
-
-    public function removeMedia(string $hash) : array
-    {
-        return $this->videoMediaAPIManager->remove($hash);
-    }
-
-    public function copyMedia(string $hash) : array
-    {
-        return $this->videoMediaAPIManager->copy($hash);
-    }
-
-    public function statsMedia(string $hash) : array
-    {
-        return $this->videoMediaAPIManager->stats($hash);
+        return true;
     }
 
     public function uploadLocalFile(UploadedFile $file, array $data = []) : VideoMedia
@@ -107,22 +55,29 @@ class VideoManager
             throw new \InvalidArgumentException(sprintf('Files of type %s are not allowed.', $file->getClientMimeType()));
         }
 
+        $adapter = $this->filesystem->getAdapter();
+
         // Generate a unique filename based on the date and add file extension of the uploaded file
         $path = sprintf('%s/%s/', date('Y'), date('m'));
-        $filename = sprintf('%s.%s', date('Y'), date('m'), uniqid(), $file->getClientOriginalExtension());
-
-        $adapter = $this->filesystem->getAdapter();
-        $adapter->setMetadata($path.$filename, array('contentType' => $file->getClientMimeType()));
+        do {
+            $filename = sprintf('%s.%s', uniqid('', 1), $file->getClientOriginalExtension());
+        } while ($adapter->exists($path.$filename));
+ 
+        $adapter->setMetadata($path.$filename, [
+            'contentType'   => $file->getClientMimeType(),
+            'ACL'           => 'public-read',
+        ]);
         $uploadedSize = $adapter->write($path.$filename, file_get_contents($file->getPathname()));
 
-        if ($uploadedSize) {
+        if (!$uploadedSize) {
             throw new \InvalidArgumentException(sprintf('File '.$filename.' is not uploaded. Please contact administrator'));
         }
 
         $video = [
+            'name'      => $file->getClientOriginalName(),
             'filename'  => $filename,
             'type'      => $file->getClientMimeType(),
-            'filepath'  => $filepath,
+            'filepath'  => $path,
         ];
 
         return $video;

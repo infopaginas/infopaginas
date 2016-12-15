@@ -70,7 +70,7 @@ class ChangeSetSerializerUtil
     }
 
     /**
-     * @param WistiaMedia $video
+     * @param VideoMedia $video
      * @return string
      */
     public static function serializeBusinessProfileMedia(Media $media, $context) : string

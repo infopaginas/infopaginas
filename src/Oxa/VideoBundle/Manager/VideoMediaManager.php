@@ -44,14 +44,11 @@ class VideoMediaManager
     public function updateNameAndDescriptionByVideoID(VideoMedia $media)
     {
         /** @var VideoMedia $videoMedia */
-        $videoMedia = $this->getRepository()->findOneBy(['videoId' => $media->getVideoId()]);
+        $videoMedia = $this->getRepository()->findOneBy(['id' => $media->getId()]);
 
         if (!$videoMedia) {
             throw new NotFoundHttpException('Mediafile is not found');
         }
-
-        $videoMedia->setName($media->getName());
-        $videoMedia->setDescription($media->getDescription());
 
         $this->em->persist($videoMedia);
 

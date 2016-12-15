@@ -81,13 +81,17 @@ class VideoMedia
         if (!empty($videoMediaData)) {
             $this->setName($videoMediaData['name']);
             $this->setType($videoMediaData['type']);
-            $this->setCreatedAt(new \DateTime($videoMediaData['created']));
-            $this->setUpdatedAt(new \DateTime($videoMediaData['updated']));
-            $this->setDescription($videoMediaData['description']);
-            $this->setStatus($videoMediaData['status']);
+            $this->setFilename($videoMediaData['filename']);
+            $this->setFilepath($videoMediaData['filepath']);
 
-            $thumbnail = new VideoMediaThumbnail($videoMediaData['thumbnail']);
-            $this->setThumbnail($thumbnail);
+            $this->setCreatedAt(new \DateTime());
+            $this->setUpdatedAt(new \DateTime());
+            $this->setStatus('');
+
+            if (isset($videoMediaData['thumbnail'])) {
+                $thumbnail = new VideoMediaThumbnail($videoMediaData['thumbnail']);
+                $this->setThumbnail($thumbnail);
+            }
         }
 
         return $this;
@@ -101,6 +105,16 @@ class VideoMedia
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id
+     *
+     * @return int
+     */
+    public function setId($id)
+    {
+        return $this->id = $id;
     }
 
     /**

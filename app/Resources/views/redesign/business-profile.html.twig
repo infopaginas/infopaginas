@@ -183,7 +183,7 @@
 
                         {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <section class="page-section video">
-                                {{ render_wistia_embed(businessProfile.getVideo(), {width: 320, height: 220})|raw }}
+                                {{ render_video_embed(businessProfile.getVideo(), {width: 960, height: 720})|raw }}
                             </section>
                         {% endif %}
 
