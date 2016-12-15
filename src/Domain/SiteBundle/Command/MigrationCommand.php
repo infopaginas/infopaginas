@@ -237,7 +237,6 @@ class MigrationCommand extends ContainerAwareCommand
 
         $entity->setCity(trim($address->locality));
         $entity->setStreetAddress(trim($address->street_address));
-        $entity->setZipCode(trim($address->postal_code));
         $entity->setExtendedAddress(trim($address->extended_address));
         $entity->setCrossStreet(trim($address->cross_street));
         $entity->setLongitude(trim($address->coordinates[0]));
@@ -308,6 +307,20 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity->getCatalogLocality()) {
             $catalogLocality = $this->loadLocality($address);
             $entity->setCatalogLocality($catalogLocality);
+        }
+
+        if ($address->postal_code) {
+            $entity->setZipCode(trim($address->postal_code));
+        } elseif ($entity->getCatalogLocality()) {
+            $neighborhoods = $entity->getCatalogLocality()->getNeighborhoods();
+
+            if ($neighborhoods) {
+                $zipCodes = current($neighborhoods)->getZips();
+
+                if ($zipCodes) {
+                    $entity->setZipCode(current($zipCodes)->getZipCode());
+                }
+            }
         }
 
         if ($profile->headings) {
@@ -686,6 +699,10 @@ class MigrationCommand extends ContainerAwareCommand
             'en' => 'Lawyers',
             'es' => 'Lawyers By Practice',
         ];
+        $categories[] = [
+            'en' => 'Lawyers',
+            'es' => 'Lawyer',
+        ];
 
         $categories[] = [
             'en' => 'Wedding and Party',
@@ -769,6 +786,11 @@ class MigrationCommand extends ContainerAwareCommand
         $categories[] = [
             'en' => 'Air Conditioning',
             'es' => 'Air Conditioner',
+        ];
+
+        $categories[] = [
+            'en' => 'Accounting',
+            'es' => 'Accountants',
         ];
 
         $separators = $this->getInputCategorySeparators();

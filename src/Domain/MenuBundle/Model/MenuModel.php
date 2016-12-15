@@ -121,7 +121,7 @@ class MenuModel implements MenuInterface
                 'es' => 'Vestimentas',
             ],
             self::CODE_COMMUNICATION => [
-                'en' => 'Communication',
+                'en' => 'Communications',
                 'es' => 'Comunicaciones',
             ],
             self::CODE_COMMUNITY => [
@@ -559,6 +559,22 @@ class MenuModel implements MenuInterface
             self::CODE_MOTORCYCLES => [
                 'en' => 'Motorcycles',
                 'es' => 'Motocicletas',
+            ],
+            self::CODE_ACCOUNTING => [
+                'en' => 'Accounting',
+                'es' => 'Contabilidad',
+            ],
+            self::CODE_BOOKS => [
+                'en' => 'Books',
+                'es' => 'Libros',
+            ],
+            self::CODE_FLOORS => [
+                'en' => 'Floors',
+                'es' => 'Pisos',
+            ],
+            self::CODE_PAINT => [
+                'en' => 'Paint',
+                'es' => 'Pintura',
             ],
 
             self::CODE_UNDEFINED => [

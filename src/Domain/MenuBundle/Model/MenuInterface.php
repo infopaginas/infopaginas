@@ -138,6 +138,10 @@ interface MenuInterface
     const CODE_FOOD                    = 213;
     const CODE_FREIGHT                 = 214;
     const CODE_MOTORCYCLES             = 215;
+    const CODE_ACCOUNTING              = 216;
+    const CODE_BOOKS                   = 217;
+    const CODE_FLOORS                  = 218;
+    const CODE_PAINT                   = 219;
 
     const CODE_UNDEFINED = 99999;
 
