@@ -1144,6 +1144,7 @@ $thumb-width-mb: 60px;
 .item__header {
   align-items: center;
   display: flex;
+  flex-direction: column;
   margin-bottom: 5px;
 
   span {
@@ -1152,7 +1153,7 @@ $thumb-width-mb: 60px;
   }
 
   .rank {
-    margin-left: auto;
+    margin-left: 0;
   }
 }
 
@@ -1174,7 +1175,7 @@ $thumb-width-mb: 60px;
 
 .stars {
   font-size: .74em;
-  margin-left: 10px;
+  margin-left: 0;
 
   i {
     width: .75em;
@@ -1666,7 +1667,7 @@ $thumb-width-mb: 60px;
     margin-bottom: 20px;
 
     @media only screen and (min-width: 805px) {
-      margin-bottom: 40px;
+      margin-bottom: 20px;
     }
   }
 
@@ -4359,6 +4360,10 @@ table {
   max-width: 85vw;
   background-color: rgba(122, 122, 122, 0.95) !important;
   padding: 10px 30px;
+}
+
+.fa-star, fa-star-o {
+  cursor: pointer;
 }
 
 @import '../libs/selectize';
