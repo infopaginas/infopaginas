@@ -314,11 +314,11 @@ class MigrationCommand extends ContainerAwareCommand
         } elseif ($entity->getCatalogLocality()) {
             $neighborhoods = $entity->getCatalogLocality()->getNeighborhoods();
 
-            if ($neighborhoods) {
-                $zipCodes = current($neighborhoods)->getZips();
+            if (!$neighborhoods->isEmpty()) {
+                $zipCodes = $neighborhoods->first()->getZips();
 
-                if ($zipCodes) {
-                    $entity->setZipCode(current($zipCodes)->getZipCode());
+                if (!$zipCodes->isEmpty()) {
+                    $entity->setZipCode($zipCodes->first()->getZipCode());
                 }
             }
         }
