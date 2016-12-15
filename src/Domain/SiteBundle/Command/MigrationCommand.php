@@ -261,17 +261,28 @@ class MigrationCommand extends ContainerAwareCommand
 
         if (!$this->skipImages and $profile->images) {
             $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
+            $container = $this->getContainer();
+
+            $pathWeb = $container->get('kernel')->getRootDir() .
+                $container->getParameter('image_back_up_path') .
+                $business->id;
 
             foreach ($profile->images as $image) {
-                $path = 'http://assets3.drxlive.com' . $image->image->url;
-
                 if ($image->label == 'logo') {
                     $isLogo = true;
                 } else {
                     $isLogo = false;
                 }
 
-                $managerGallery->createNewEntryFromRemoteFile($entity, $path, $isLogo);
+                $path = $pathWeb . substr($image->image->url, strrpos($image->image->url, '/'));
+
+                if (file_exists($path)) {
+                    $managerGallery->createNewEntryFromLocalFile($entity, $path, $isLogo);
+                } else {
+                    $path = 'http://assets3.drxlive.com' . $image->image->url;
+
+                    $managerGallery->createNewEntryFromRemoteFile($entity, $path, $isLogo);
+                }
             }
         }
 

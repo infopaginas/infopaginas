@@ -104,6 +104,30 @@ class BusinessGalleryManager
     }
 
     /**
+     * @param BusinessProfile $businessProfile
+     * @param string $url
+     * @param bool $isLogo
+     * @return BusinessProfile
+     * @throws \Exception
+     */
+    public function createNewEntryFromLocalFile(BusinessProfile $businessProfile, string $url, bool $isLogo = false)
+    {
+        $isExist = file_exists($url);
+
+        if ($isExist && in_array(mime_content_type($url), SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
+            $uploadedFile = new UploadedFile($url, $url, null, null, null, true);
+
+            $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile);
+
+            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media, $isLogo);
+
+            return $businessProfile;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @param UploadedFile $file
      * @return Media
      */
