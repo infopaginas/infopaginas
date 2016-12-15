@@ -22,7 +22,7 @@ class MenuModel implements MenuInterface
             self::CODE_BUILDERS,
             self::CODE_PHARMACIES,
             self::CODE_ELECTRICIANS,
-            self::CODE_PLUMBERS,
+            self::CODE_PLUMBING,
             self::CODE_MECHANICS,
             self::CODE_DENTISTS,
             self::CODE_RESTAURANTS,
@@ -57,8 +57,8 @@ class MenuModel implements MenuInterface
                 'es' => 'Solicitors',
             ],
             self::CODE_BUILDERS => [
-                'en' => 'Builders',
-                'es' => 'Builders',
+                'en' => 'Buildings',
+                'es' => 'Edificios',
             ],
             self::CODE_PHARMACIES => [
                 'en' => 'Pharmacies',
@@ -67,10 +67,6 @@ class MenuModel implements MenuInterface
             self::CODE_ELECTRICIANS => [
                 'en' => 'Electricians',
                 'es' => 'Electricians',
-            ],
-            self::CODE_PLUMBERS => [
-                'en' => 'Plumbers',
-                'es' => 'Plumbers',
             ],
             self::CODE_MECHANICS => [
                 'en' => 'Mechanics',
@@ -169,8 +165,8 @@ class MenuModel implements MenuInterface
                 'es' => 'Manufactura',
             ],
             self::CODE_MEDICAL => [
-                'en' => 'Medical',
-                'es' => 'Salud',
+                'en' => 'Medicine',
+                'es' => 'Medicina',
             ],
             self::CODE_NIGHTLIFE => [
                 'en' => 'Nightlife',
@@ -317,7 +313,7 @@ class MenuModel implements MenuInterface
                 'es' => 'Elevadores',
             ],
             self::CODE_EXTERMINATOR => [
-                'en' => 'Exterminator',
+                'en' => 'Exterminators',
                 'es' => 'Exterminadores',
             ],
             self::CODE_TOOLS => [
@@ -335,10 +331,6 @@ class MenuModel implements MenuInterface
             self::CODE_HOTELS => [
                 'en' => 'Hotels',
                 'es' => 'Hoteles',
-            ],
-            self::CODE_PRINTERS => [
-                'en' => 'Printers',
-                'es' => 'Imprentas',
             ],
             self::CODE_INTERNET => [
                 'en' => 'Internet',
@@ -429,7 +421,7 @@ class MenuModel implements MenuInterface
                 'es' => 'Agua',
             ],
             self::CODE_AIR_CONDITIONER => [
-                'en' => 'Air Conditioner',
+                'en' => 'Air Conditioning',
                 'es' => 'Aire Acondicionado',
             ],
             self::CODE_JEWELERS => [
@@ -527,6 +519,46 @@ class MenuModel implements MenuInterface
             self::CODE_SPORTS => [
                 'en' => 'Sports',
                 'es' => 'Deportes',
+            ],
+            self::CODE_ADVERTISING => [
+                'en' => 'Advertising',
+                'es' => 'Publicidad',
+            ],
+            self::CODE_VIDEO_RECORDING => [
+                'en' => 'Video Recording',
+                'es' => 'Video Grabaciones',
+            ],
+            self::CODE_BABY => [
+                'en' => 'Baby',
+                'es' => 'Bebés',
+            ],
+            self::CODE_ALARM_SYSTEMS => [
+                'en' => 'Alarm Systems',
+                'es' => 'Alarmas',
+            ],
+            self::CODE_APARTMENTS => [
+                'en' => 'Apartments',
+                'es' => 'Apartamentos',
+            ],
+            self::CODE_APPLIANCES => [
+                'en' => 'Appliances',
+                'es' => 'Enseres',
+            ],
+            self::CODE_ENGINEERS => [
+                'en' => 'Engineers',
+                'es' => 'Ingenieros',
+            ],
+            self::CODE_FOOD => [
+                'en' => 'Food',
+                'es' => 'Alimentos',
+            ],
+            self::CODE_FREIGHT => [
+                'en' => 'Freight',
+                'es' => 'Carga',
+            ],
+            self::CODE_MOTORCYCLES => [
+                'en' => 'Motorcycles',
+                'es' => 'Motocicletas',
             ],
 
             self::CODE_UNDEFINED => [

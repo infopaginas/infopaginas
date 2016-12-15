@@ -130,7 +130,7 @@ class MigrationCommand extends ContainerAwareCommand
                             }
                         }
 
-                        $radius = $item->radius_served;
+                        $radius = empty($item->radius_served) ? 100: $item->radius_served;
 
                         $this->addBusinessProfileByApiData(
                             $itemPrimary,
@@ -207,11 +207,9 @@ class MigrationCommand extends ContainerAwareCommand
         // populate profile
 
         $entity->setUid($business->id);
-        $entity->setName($name);
+        $entity->setName(trim($name));
 
-        //todo - set real slug !!!
         $entity->setSlug($business->slug);
-
         $entity->setSlugEn($business->slug);
         $entity->setSlugEs($itemSecond->business->slug);
 
@@ -227,23 +225,23 @@ class MigrationCommand extends ContainerAwareCommand
         $profile = $business->profile;
         $profileSecond = $itemSecond->business->profile;
 
-        $entity->setEmail($profile->email);
-        $entity->setSlogan($profile->slogan);
-        $entity->setDescription($profile->description);
-        $entity->setProduct($profile->products);
-        $entity->setWorkingHours($profile->hours_opr);
+        $entity->setEmail(trim($profile->email));
+        $entity->setSlogan(trim($profile->slogan));
+        $entity->setDescription(trim($profile->description));
+        $entity->setProduct(trim($profile->products));
+        $entity->setWorkingHours(trim($profile->hours_opr));
 
 #        $entity->setPosition(?);
 
         $address = $business->address;
 
-        $entity->setCity($address->locality);
-        $entity->setStreetAddress($address->street_address);
-        $entity->setZipCode($address->postal_code);
-        $entity->setExtendedAddress($address->extended_address);
-        $entity->setCrossStreet($address->cross_street);
-        $entity->setLongitude($address->coordinates[0]);
-        $entity->setLatitude($address->coordinates[1]);
+        $entity->setCity(trim($address->locality));
+        $entity->setStreetAddress(trim($address->street_address));
+        $entity->setZipCode(trim($address->postal_code));
+        $entity->setExtendedAddress(trim($address->extended_address));
+        $entity->setCrossStreet(trim($address->cross_street));
+        $entity->setLongitude(trim($address->coordinates[0]));
+        $entity->setLatitude(trim($address->coordinates[1]));
 
         $entity->setCountry($country);
 
@@ -253,13 +251,11 @@ class MigrationCommand extends ContainerAwareCommand
 
 #        $entity->setGoogleAddress(?);
 
-        $entity->setFacebookURL($profile->facebook_page_url);
-        $entity->setWebsite($profile->website);
+        $entity->setFacebookURL(trim($profile->facebook_page_url));
+        $entity->setWebsite(trim($profile->website));
 
-        $entity->setGoogleURL($profile->google_plus_url);
-        $entity->setYoutubeURL($profile->yt_url);
-
-#        $entity->setActualBusinessProfile(?);
+        $entity->setGoogleURL(trim($profile->google_plus_url));
+        $entity->setYoutubeURL(trim($profile->yt_url));
 
         // process assigned items
 
@@ -405,8 +401,6 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        //todo change locality logic https://jira.oxagile.com/browse/INFT-50
-        //https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/translatable.md
         $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $this->getContainer());
         $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $this->getContainer());
 
@@ -492,41 +486,35 @@ class MigrationCommand extends ContainerAwareCommand
         if (!$entity) {
             //search category as subcategory
             $parentValue = $this->parseCategoryName($valuePrimary);
+            $parentEntity = $this->getParentCategory($parentValue);
 
-            $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
+            if ($parentEntity) {
+                $subcategoryNameEn = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEn());
+                $subcategoryNameEs = $this->convertSubcategoryName($valueEs, $parentEntity->getSearchTextEs());
 
-            if (!$entity) {
-                //get parent category
-                $parentEntity = $this->getParentCategory($parentValue);
+                $entity = $this->em->getRepository('DomainBusinessBundle:Category')
+                    ->findOneBy(['name' => $subcategoryNameEn]);
 
-                if ($parentEntity) {
-                    $subcategoryNameEn = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEn());
-                    $subcategoryNameEs = $this->convertSubcategoryName($valueEs, $parentEntity->getSearchTextEs());
+                if (!$entity) {
+                    $entity = new Category();
+                    $entity->setName($subcategoryNameEn);
 
-                    $entity = $this->em->getRepository('DomainBusinessBundle:Category')
-                        ->findOneBy(['name' => $subcategoryNameEn]);
+                    $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
+                    $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
 
-                    if (!$entity) {
-                        $entity = new Category();
-                        $entity->setName($subcategoryNameEn);
+                    $entity->setSearchTextEn($subcategoryNameEn);
+                    $entity->setSearchTextEs($subcategoryNameEs);
+                    $entity->setParent($parentEntity);
 
-                        $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
-                        $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
+                    $entity = $this->saveEntity($entity);
 
-                        $entity->setSearchTextEn($subcategoryNameEn);
-                        $entity->setSearchTextEs($subcategoryNameEs);
-                        $entity->setParent($parentEntity);
+                    $className = 'Category';
 
-                        $entity = $this->saveEntity($entity);
+                    $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
 
-                        $className = 'Category';
+                    $translation = new $translationClassName();
 
-                        $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
-
-                        $translation = new $translationClassName();
-
-                        $this->addTranslation($translation, $subcategoryNameEs, $entity);
-                    }
+                    $this->addTranslation($translation, $subcategoryNameEs, $entity);
                 }
             }
         }
@@ -583,7 +571,7 @@ class MigrationCommand extends ContainerAwareCommand
         $className  = 'Locality';
         $repository = $this->em->getRepository('DomainBusinessBundle:' . $className);
 
-        $entity = $repository->getLocalityByName(trim($item->locality));
+        $entity = $repository->getLocalityBySlug(SlugUtil::convertSlug(trim($item->locality)));
 
         if (!$entity) {
             $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
@@ -684,16 +672,6 @@ class MigrationCommand extends ContainerAwareCommand
         ];
 
         $categories[] = [
-            'en' => 'Air Conditioner',
-            'es' => 'Air Conditioning',
-        ];
-
-        $categories[] = [
-            'en' => 'Exterminator',
-            'es' => 'Exterminators',
-        ];
-
-        $categories[] = [
             'en' => 'Lawyers',
             'es' => 'Lawyers By Practice',
         ];
@@ -701,6 +679,10 @@ class MigrationCommand extends ContainerAwareCommand
         $categories[] = [
             'en' => 'Wedding and Party',
             'es' => 'Weddings & Birthdays',
+        ];
+        $categories[] = [
+            'en' => 'Wedding and Party',
+            'es' => 'Party',
         ];
 
         $categories[] = [
@@ -714,8 +696,8 @@ class MigrationCommand extends ContainerAwareCommand
         ];
 
         $categories[] = [
-            'en' => 'Medical',
-            'es' => 'Medicine',
+            'en' => 'Medicine',
+            'es' => 'Medical',
         ];
 
         $categories[] = [
@@ -724,8 +706,58 @@ class MigrationCommand extends ContainerAwareCommand
         ];
 
         $categories[] = [
+            'en' => 'Jewelers',
+            'es' => 'Jewels',
+        ];
+
+        $categories[] = [
             'en' => 'Television',
             'es' => 'Televisores',
+        ];
+
+        $categories[] = [
+            'en' => 'Churches',
+            'es' => 'Church',
+        ];
+
+        $categories[] = [
+            'en' => 'Refrigerating Equipment',
+            'es' => 'Refrigeration',
+        ];
+
+        $categories[] = [
+            'en' => 'Lawn and Garden',
+            'es' => 'Lawn',
+        ];
+
+        $categories[] = [
+            'en' => 'Pets and Animals',
+            'es' => 'Animals',
+        ];
+
+        $categories[] = [
+            'en' => 'Jobs',
+            'es' => 'Employment',
+        ];
+
+        $categories[] = [
+            'en' => 'Alarm Systems',
+            'es' => 'Alarms',
+        ];
+
+        $categories[] = [
+            'en' => 'Printing',
+            'es' => 'Printers',
+        ];
+
+        $categories[] = [
+            'en' => 'Printing',
+            'es' => 'Impresión',
+        ];
+
+        $categories[] = [
+            'en' => 'Air Conditioning',
+            'es' => 'Air Conditioner',
         ];
 
         $separators = $this->getInputCategorySeparators();
@@ -733,7 +765,9 @@ class MigrationCommand extends ContainerAwareCommand
         foreach ($categories as $item) {
             foreach ($separators as $separator) {
                 if (strpos(strtolower($name), strtolower($item['en'] . $separator)) === 0 or
-                    strpos(strtolower($name), strtolower($item['es'] . $separator)) === 0) {
+                    strpos(strtolower($name), strtolower($item['es'] . $separator)) === 0 or
+                    trim(strtolower($name)) === strtolower($item['en']) or
+                    trim(strtolower($name)) === strtolower($item['es'])) {
                     return $item['en'];
                 }
             }

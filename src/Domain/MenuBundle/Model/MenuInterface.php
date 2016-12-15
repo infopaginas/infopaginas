@@ -13,7 +13,7 @@ interface MenuInterface
     const CODE_BUILDERS         = 2;
     const CODE_PHARMACIES       = 3;
     const CODE_ELECTRICIANS     = 4;
-    const CODE_PLUMBERS         = 5;
+    const CODE_PLUMBING         = 5;
     const CODE_MECHANICS        = 6;
     const CODE_DENTISTS         = 7;
     const CODE_RESTAURANTS      = 8;
@@ -95,7 +95,6 @@ interface MenuInterface
     const CODE_MARINAS                = 169;
     const CODE_HOME                   = 170;
     const CODE_ENGINES                = 171;
-    const CODE_PLUMBING               = 172;
     const CODE_DOORS                  = 173;
     const CODE_SIGNS                  = 174;
     const CODE_SECURITY               = 175;
@@ -129,6 +128,16 @@ interface MenuInterface
     const CODE_GROCERY_STORE           = 203;
     const CODE_GAS                     = 204;
     const CODE_FISH_SEAFOOD            = 205;
+    const CODE_ADVERTISING             = 206;
+    const CODE_VIDEO_RECORDING         = 207;
+    const CODE_BABY                    = 208;
+    const CODE_ALARM_SYSTEMS           = 209;
+    const CODE_APARTMENTS              = 210;
+    const CODE_APPLIANCES              = 211;
+    const CODE_ENGINEERS               = 212;
+    const CODE_FOOD                    = 213;
+    const CODE_FREIGHT                 = 214;
+    const CODE_MOTORCYCLES             = 215;
 
     const CODE_UNDEFINED = 99999;
 
