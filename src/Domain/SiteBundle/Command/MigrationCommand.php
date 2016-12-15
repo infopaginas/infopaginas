@@ -130,7 +130,7 @@ class MigrationCommand extends ContainerAwareCommand
                             }
                         }
 
-                        $radius = empty($item->radius_served) ? 100: $item->radius_served;
+                        $radius = empty($item->radius_served) ? 100 : $item->radius_served;
 
                         $this->addBusinessProfileByApiData(
                             $itemPrimary,
