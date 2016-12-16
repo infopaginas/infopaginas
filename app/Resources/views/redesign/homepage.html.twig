@@ -35,6 +35,12 @@
                                 <h2 class="section__title">{% trans %}Articles{% endtrans %}</h2>
                             {% endblock %}
                         {% endembed %}
+
+                        <section class="section__title">
+                            <a href="{{ absolute_url(path('domain_article_homepage')) }}">
+                                {% trans %}View more articles{% endtrans %}
+                            </a>
+                        </section>
                     </div><!-- main-column -->
 
                     {% include ':redesign/blocks:side-ads-block.html.twig' %}
