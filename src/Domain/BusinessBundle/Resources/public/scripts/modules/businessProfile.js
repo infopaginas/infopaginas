@@ -1,11 +1,10 @@
-define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/phones', 'selectize'], function( $, bootstrap, FormHandler, Spin, select ) {
+define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'business/tools/phones', 'selectize'], function( $, bootstrap, FormHandler, Spin, select, businessProfileClose ) {
     'use strict';
 
     //init businessProfile object variables
     var businessProfile = function() {
         this.urls = {
-            saveBusinessProfile: Routing.generate('domain_business_profile_save'),
-            closeBusinessProfileURL: Routing.generate('domain_business_profile_close')
+            saveBusinessProfile: Routing.generate('domain_business_profile_save')
         };
 
         this.serviceAreasAreaChoiceValue = 'area';
@@ -16,13 +15,10 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             buttons: {
                 geocodeButtonId: '#geocodeButton',
                 newProfileSaveButtonId: '#newProfileRequestButton',
-                closeBusinessProfileButtonId: '#closeBusinessProfileButton',
                 fileUploadButton: '.file-upload-button'
             },
             forms: {
-                newProfileRequestFormId: '#businessProfileRequestForm',
-                closeBusinessProfileFormId: '#closeBusinessProfileForm',
-                closeBusinessProfileFormPrefix: 'domain_business_bundle_business_close_request_type'
+                newProfileRequestFormId: '#businessProfileRequestForm'
             },
             fields: {
                 countrySelectId: '#' + this.freeProfileFormName + '_country',
@@ -38,9 +34,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 serviceAreaRadioName: '[serviceAreasType]',
                 categoriesId: '#' + this.freeProfileFormName + '_categories',
                 subcategoriesId: '#' + this.freeProfileFormName + '_subcategories'
-            },
-            modals: {
-                closeBusinessProfileModalId: '#closeBusinessProfileModal'
             },
             closeBusinessProfileLoadingSpinnerContainerId: 'close-business-profile-spinner-container',
             loadingSpinnerContainerClass: '.spinner-container',
@@ -60,6 +53,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         });
 
         this.geocoder = new google.maps.Geocoder();
+        this.businessProfileClose = new businessProfileClose;
 
         this.spinner = new Spin();
 
@@ -387,90 +381,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         return prefix + '_' + field;
     };
 
-    //remove "error" highlighting
-    businessProfile.prototype.disableFieldsHighlight = function( formId ) {
-        var $form = $( formId );
-        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
-        $form.find( '.form-group' ).removeClass('has-error');
-
-        $form.find( 'span[data-error-message]' ).remove();
-    };
-
-    //"error" fields highlighting
-    businessProfile.prototype.enableFieldsHighlight = function( formId, errors, prefix ) {
-        var $form = $( formId );
-        var $formGroupElement = $form.find( '.form-group' );
-
-        if (!$formGroupElement.hasClass('has-error')) {
-            $formGroupElement.addClass('has-error');
-        }
-
-        if ( typeof prefix === 'undefined' ) {
-            prefix =  '#' + this.html.forms.closeBusinessProfileFormPrefix;
-        }
-
-        if ( typeof errors !== 'undefined' ) {
-            for (var field in errors) {
-                //check for "repeated" fields or embed forms
-                if (Array.isArray( errors[field]) ) {
-                    var $field = $( this.getFormFieldId( prefix, field ) );
-
-                    $field.parent().addClass( 'field--not-valid' );
-
-                    for (var key in errors[field]) {
-                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
-                    }
-                } else {
-                    this.enableFieldsHighlight( errors[field], this.getFormFieldId( prefix, field ) );
-                }
-            }
-        }
-    };
-
-    businessProfile.prototype.handleBusinessProfileClose = function () {
-        var self = this;
-
-        $( document ).on( 'click', this.html.buttons.closeBusinessProfileButtonId, function( event ) {
-
-            var data = $( self.html.forms.closeBusinessProfileFormId ).serializeArray();
-            data.push({
-                'name': 'businessProfileId',
-                'value': $(this).data('business-profile-id')
-            });
-
-            $.ajax({
-                url: self.urls.closeBusinessProfileURL,
-                method: 'POST',
-                data: data,
-                dataType: 'JSON',
-                beforeSend: function() {
-                    self.disableFieldsHighlight( self.html.forms.closeBusinessProfileFormId );
-                    self.spinner.show( self.html.closeBusinessProfileLoadingSpinnerContainerId );
-                },
-                success: function( response ) {
-                    if( response.success ) {
-                        $( self.html.modals.closeBusinessProfileModalId ).modal('hide');
-                        $( self.html.forms.closeBusinessProfileFormId )[0].reset();
-                    } else {
-                        if ( !$.isEmptyObject( response.errors ) ) {
-                            self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors );
-                        } else {
-                            self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, { 'reason': [response.message] } );
-                        }
-                    }
-                },
-                error: function( jqXHR, textStatus, errorThrown ) {
-                    this.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, { 'reason': [errorThrown] } );
-                },
-                complete: function() {
-                    self.spinner.hide();
-                }
-            });
-
-            event.preventDefault();
-        });
-    };
-
     businessProfile.prototype.handleBusinessProfileSubcategories = function () {
         var self = this;
 
@@ -554,7 +464,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         this.handleProfileSave();
         this.handleServiceAreaChange();
         this.handleFormChange();
-        this.handleBusinessProfileClose();
         this.handleBusinessProfileSubcategories();
 
         var that = this;

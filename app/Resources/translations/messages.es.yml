@@ -393,3 +393,7 @@ business_profile.url.empty: Error: el campo URL no debe estar vacío.
 business_profile.video_count_limit: Error: demasiados videos agregados. Máximo conteo de archivos =
 Updated By: Actualizado por
 Back to Business Profile: Volver al perfil del negocio
+Create Profile: Crear perfil
+Unlimited: Ilimitado
+Edit Profile: Editar perfil
+View profile: Ver perfil
