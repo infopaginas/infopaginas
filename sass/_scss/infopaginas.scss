@@ -17,7 +17,7 @@ body {
   &.results-list {
     padding-top: $bar-height-mb + $toolbar-height-mb;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding-top: 45px;
     }
   }
@@ -69,7 +69,7 @@ h2 {
   transition-property: font-size;
   transition-timing-function: ease-in-out;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     font-size: 1.1em;
     margin-bottom: .2em;
   }
@@ -97,7 +97,7 @@ h5 {
   margin: 0 auto;
   max-width: 92%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-left: auto;
     margin-right: auto;
     max-width: 1500px;
@@ -120,7 +120,7 @@ h5 {
   width: 100%;
   z-index: 100;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     align-items: center;
     height: 60px;
     justify-content: space-between;
@@ -153,7 +153,7 @@ $side-padding-mb: 16px;
     top: .4em;
     width: 100%;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       margin-right: 3px;
       top: 0;
       width: 30%;
@@ -163,7 +163,7 @@ $side-padding-mb: 16px;
   .logo__iso {
     display: none;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       display: inline-block;
       position: relative;
       top: 1px;
@@ -171,7 +171,7 @@ $side-padding-mb: 16px;
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 0 auto;
     margin-right: auto;
     padding-left: 0;
@@ -192,7 +192,7 @@ $side-padding-mb: 16px;
   width: calc(#{$bar-height-mb} + #{$header-margin});
   z-index: 2;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-left: auto;
     position: static;
     transform: translateX(0) !important;
@@ -216,7 +216,7 @@ $side-padding-mb: 16px;
   width: 60%;
   z-index: 99999999;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     box-shadow: -5px 0 10px transparentize($black, .5);
   }
 
@@ -245,7 +245,7 @@ $side-padding-mb: 16px;
       width: 1em;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       font-size: 14px;
     }
   }
@@ -255,6 +255,7 @@ $side-padding-mb: 16px;
     align-items: stretch;
     display: flex;
     flex: 0 auto;
+    min-height: 80px;
 
     li {
       display: flex;
@@ -280,6 +281,7 @@ $side-padding-mb: 16px;
     justify-content: center;
     margin: 10px 0;
     margin-bottom: 5px;
+    min-height: 40px;
 
     li {
       border: 0;
@@ -377,6 +379,7 @@ $side-padding-mb: 16px;
       display: flex;
       flex: 0 auto;
       width: 100%;
+      min-height: 30px;
     }
   }
 }
@@ -389,8 +392,9 @@ $side-padding-mb: 16px;
   padding: 5px;
   padding-bottom: 20px;
   text-align: center;
+  min-height: 60px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding: 10px;
     padding-bottom: 20px;
   }
@@ -421,7 +425,7 @@ $side-padding-mb: 16px;
   transition-timing-function: cubic-bezier(0, 0, .290, .960);
   width: calc(100% - 120px);
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: flex;
     flex: 1 1 auto;
     flex-direction: row;
@@ -438,7 +442,7 @@ $side-padding-mb: 16px;
     padding-top: 0 !important;
     width: 100%;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       width: auto;
     }
   }
@@ -447,7 +451,7 @@ $side-padding-mb: 16px;
     position: absolute;
     top: 130px;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       align-items: center;
       display: flex;
       position: relative;
@@ -468,7 +472,7 @@ $side-padding-mb: 16px;
     margin-right: 0;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: block;
   }
 }
@@ -478,7 +482,7 @@ $side-padding-mb: 16px;
   flex: 1 1 100%;
   position: relative;
   flex-wrap: wrap;
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 1 1 auto;
   }
 }
@@ -503,14 +507,14 @@ $side-padding-mb: 16px;
     top: .16em;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     position: relative;
     top: auto;
   }
 
   input {
     padding-left: 50px;
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       border-radius: $button-radius 0 0 $button-radius;
       border-right: 1px solid $blue--dark;
     }
@@ -527,7 +531,7 @@ $side-padding-mb: 16px;
     transform: scale(.5);
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     position: relative !important;
     top: auto;
     transform: translateY(0) !important;
@@ -555,7 +559,7 @@ $side-padding-mb: 16px;
       margin-left: 10px;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       background: $green;
       border-radius: 0 $button-radius $button-radius 0;
       flex: 0 0 auto;
@@ -564,13 +568,13 @@ $side-padding-mb: 16px;
       right: auto;
       width: auto;
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         transform: translateX(0) !important;
       }
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 0 0 auto;
     position: relative;
     width: auto;
@@ -588,7 +592,7 @@ $side-padding-mb: 16px;
       font-size: 1.5em;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       display: none;
     }
   }
@@ -617,7 +621,7 @@ $side-padding-mb: 16px;
   box-shadow: 0 4px 7px transparentize($black, .7);
   padding: 0 10px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     background: $blue--dark;
     box-shadow: none;
     height: 60px !important;
@@ -629,12 +633,12 @@ $side-padding-mb: 16px;
     input {
       height: $input-height-mb;
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         height: 38px;
       }
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
 
     }
   }
@@ -644,12 +648,12 @@ $side-padding-mb: 16px;
 
     &::before {
       top: .4em;
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         top: .13em;
       }
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       top: 0;
     }
   }
@@ -661,7 +665,7 @@ $side-padding-mb: 16px;
       width: 100%;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       width: auto;
     }
   }
@@ -690,7 +694,7 @@ $side-padding-mb: 16px;
     padding: 0 10px;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     top: 60px;
     width: 60%;
   }
@@ -860,7 +864,7 @@ select {
   top: -246px;
   z-index: 80;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     width: 60%;
   }
 }
@@ -881,7 +885,7 @@ select {
   li {
     flex: 0 0 50%;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       flex: 0 0 33.3%;
     }
   }
@@ -981,7 +985,7 @@ select {
   transition-timing-function: easeOutCubic;
   transition-timing-function: ease-in-out;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     transform: translateY(343px) !important;
   }
 }
@@ -989,7 +993,7 @@ select {
 //main container
 
 .main__container {
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: flex;
     max-height: 100vh;
   }
@@ -997,7 +1001,7 @@ select {
 
 .main__container--centered {
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin: 00 auto;
     max-width: 2000px;
     width: 100%;
@@ -1014,7 +1018,7 @@ select {
   transition-property: width;
   transition-timing-function: ease-in-out;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     height: calc(100vh - 45px);
     overflow-y: auto;
     padding-top: 40px;
@@ -1031,7 +1035,7 @@ select {
   transition-duration: .4s;
 
 transition-timing-function: ease-in-out;
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     border-color: darken($grey--light, 5%);
     display: flex;
     padding: 15px 25px;
@@ -1091,7 +1095,7 @@ $thumb-width-mb: 60px;
     width: 100%;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     width: 80px;
   }
 }
@@ -1113,7 +1117,7 @@ $thumb-width-mb: 60px;
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     width: calc(100% - 80px);
   }
 }
@@ -1140,6 +1144,7 @@ $thumb-width-mb: 60px;
 .item__header {
   align-items: center;
   display: flex;
+  flex-direction: column;
   margin-bottom: 5px;
 
   span {
@@ -1148,7 +1153,7 @@ $thumb-width-mb: 60px;
   }
 
   .rank {
-    margin-left: auto;
+    margin-left: 0;
   }
 }
 
@@ -1170,7 +1175,7 @@ $thumb-width-mb: 60px;
 
 .stars {
   font-size: .74em;
-  margin-left: 10px;
+  margin-left: 0;
 
   i {
     width: .75em;
@@ -1198,7 +1203,7 @@ $thumb-width-mb: 60px;
 
 .item__content {
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding-right: 20px;
     flex: 1 auto;
   }
@@ -1211,11 +1216,11 @@ $thumb-width-mb: 60px;
     margin: 0;
     margin-bottom: $v-margin-mb;
 
-    @media only screen and (max-width: 769px) {
+    @media only screen and (max-width: 805px) {
       @include ellipsis();
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
     }
   }
 
@@ -1227,7 +1232,7 @@ $thumb-width-mb: 60px;
       font-weight: 700;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       margin-top: .5em;
     }
   }
@@ -1246,7 +1251,7 @@ $thumb-width-mb: 60px;
   .item__primary-actions {
     display: none;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       display: flex;
       flex-direction: column;
     }
@@ -1320,7 +1325,7 @@ $thumb-width-mb: 60px;
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     align-items: stretch;
     display: flex;
     flex-direction: column;
@@ -1358,7 +1363,7 @@ $thumb-width-mb: 60px;
     margin-left: 5px;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none !important;
   }
 }
@@ -1370,7 +1375,7 @@ $thumb-width-mb: 60px;
   margin: 3px auto;
   text-align: center;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin: 5px auto;
   }
 
@@ -1392,7 +1397,7 @@ $thumb-width-mb: 60px;
   width: 100%;
   display: none;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: inline-block;
   }
 }
@@ -1400,7 +1405,7 @@ $thumb-width-mb: 60px;
 .ad-mobile {
   width: 320px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
   }
 }
@@ -1415,7 +1420,7 @@ $thumb-width-mb: 60px;
     box-shadow: 0 2px 5px transparentize($black, .2);
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
   }
 }
@@ -1454,7 +1459,7 @@ $thumb-width-mb: 60px;
   transition-timing-function: ease-in-out;
   z-index: 90;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     bottom: 0 !important;
     height: calc(100vh - 45px);
     left: auto;
@@ -1492,7 +1497,7 @@ $thumb-width-mb: 60px;
     box-shadow: 0 1px 2px transparentize($black, .9), 0 2px 4px transparentize($black, .8);
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     align-items: center;
     border-radius: 3px;
     bottom: auto;
@@ -1525,14 +1530,14 @@ $thumb-width-mb: 60px;
 .button--hide-map {
   bottom: -100px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     bottom: auto !important;
     right: -500px;
   }
 }
 
 .button--show-map {
-  @media only screen and (max-width: 769px) {
+  @media only screen and (max-width: 805px) {
     display: none;
   }
 }
@@ -1562,7 +1567,7 @@ $thumb-width-mb: 60px;
 .profile-body__container {
   background: $white;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding-bottom: 0;
   }
 }
@@ -1571,7 +1576,7 @@ $thumb-width-mb: 60px;
   article,
   .main-column,
   .profile__sidebar {
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       float: left;
     }
   }
@@ -1579,7 +1584,7 @@ $thumb-width-mb: 60px;
 
 .profile__sidebar {
   width: 100%;
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     width: 30%;
     padding-left: 20px;
   }
@@ -1589,7 +1594,7 @@ $thumb-width-mb: 60px;
 .profile {
   .main-column {
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding-bottom: 0;
       width: 70%;
     }
@@ -1604,7 +1609,7 @@ $thumb-width-mb: 60px;
     overflow: visible;
     padding-bottom: 100px;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       margin-top: 0;
       padding-top: 0;
       width: 100%;
@@ -1625,13 +1630,13 @@ $thumb-width-mb: 60px;
 
     h2 {
       font-size: 1.5em;
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         font-size: 1.5em;
         margin-bottom: 1em;
       }
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       background: $white;
       border-radius: 3px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
@@ -1643,7 +1648,7 @@ $thumb-width-mb: 60px;
       background: transparent;
       box-shadow: none;
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         padding: 0;
       }
     }
@@ -1661,8 +1666,8 @@ $thumb-width-mb: 60px;
   .item__header {
     margin-bottom: 20px;
 
-    @media only screen and (min-width: 769px) {
-      margin-bottom: 40px;
+    @media only screen and (min-width: 805px) {
+      margin-bottom: 20px;
     }
   }
 
@@ -1676,7 +1681,7 @@ $thumb-width-mb: 60px;
   background-size: 0 0;
   background-position: -100% -100%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     align-items: center;
     background: lighten($blue--dark, 70%);
     background-size: cover;
@@ -1696,7 +1701,7 @@ $thumb-width-mb: 60px;
 .profile-header {
   z-index: 10;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     background: transparentize($white, .05);
     box-shadow: 0 4px 8px transparentize($black, .85);
     margin: 0 auto;
@@ -1707,7 +1712,7 @@ $thumb-width-mb: 60px;
 
 .profile-map {
   height: 250px;
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     height: auto;
   }
 }
@@ -1716,14 +1721,14 @@ $thumb-width-mb: 60px;
   height: 250px;
   width: 100%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     height: 450px;
   }
 }
 
 .highlights-section {
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-top: 10px !important;
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
@@ -1743,7 +1748,7 @@ $thumb-width-mb: 60px;
     padding: 0;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding: 0 20px;
   }
 }
@@ -1753,7 +1758,7 @@ $thumb-width-mb: 60px;
   margin-bottom: 10px;
   padding-right: 10px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 0 0 33.3%;
     padding-right: 30px;
   }
@@ -1882,7 +1887,7 @@ $thumb-width-mb: 60px;
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     background: $white;
     justify-content: center;
     width: 100%;
@@ -1897,7 +1902,7 @@ $thumb-width-mb: 60px;
 }
 
 .header-actions {
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     position: relative;
 
     .button {
@@ -1973,7 +1978,7 @@ $thumb-width-mb: 60px;
   }
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 805px) {
   .results--map-view {
 
     h2 {
@@ -2057,7 +2062,7 @@ $thumb-width-mb: 60px;
     margin-bottom: 5px;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin: 15px 0;
 
     &:first-child {
@@ -2207,7 +2212,7 @@ a.tag {
   }
 
   .logo {
-    @media only screen and (max-width: 769px) {
+    @media only screen and (max-width: 805px) {
       flex: 0 auto;
       margin-left: 5px;
       margin-right: auto;
@@ -2219,7 +2224,7 @@ a.tag {
   }
 
   .logo__icon {
-    @media only screen and (max-width: 769px) {
+    @media only screen and (max-width: 805px) {
       margin-right: 3px;
       top: 0;
       width: 30%;
@@ -2227,7 +2232,7 @@ a.tag {
   }
 
   .logo__iso {
-    @media only screen and (max-width: 769px) {
+    @media only screen and (max-width: 805px) {
       display: inline-block;
       position: relative;
       top: 1px;
@@ -2248,7 +2253,7 @@ a.tag {
   padding-top: 20px;
   width: 100%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     align-items: center;
     flex-direction: row;
     height: auto;
@@ -2269,7 +2274,7 @@ a.tag {
     width: 100%;
     display: none;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       display: block;
     }
   }
@@ -2295,12 +2300,12 @@ a.tag {
     p {
       color: darken($white, 30%);
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         margin-top: 5px;
       }
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       left: calc(50% - 360px);
       padding: 20px;
       position: absolute;
@@ -2334,7 +2339,7 @@ a.tag {
   }
 
   .form__field {
-    @media only screen and (max-width: 769px) {
+    @media only screen and (max-width: 805px) {
       margin-bottom: 10px;
     }
 
@@ -2343,7 +2348,7 @@ a.tag {
     }
 
     input {
-      @media only screen and (max-width: 769px) {
+      @media only screen and (max-width: 805px) {
         border-radius: 3px !important;
       }
     }
@@ -2355,7 +2360,7 @@ a.tag {
     transform: translateY(0) !important;
     width: 100%;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       width: auto
     }
 
@@ -2375,12 +2380,12 @@ a.tag {
   z-index: 2;
 
   img {
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       box-shadow: 0 3px 6px transparentize($black, .6);
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     position: absolute;
   }
 }
@@ -2418,7 +2423,7 @@ a.tag {
 
 
 .hide-desktop {
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none !important;
   }
 }
@@ -2433,7 +2438,7 @@ a.tag {
       padding-right: 0;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       &:nth-child(2n+2) {
         padding-right: 5px;
       }
@@ -2474,7 +2479,7 @@ a.tag {
     transition-duration: .3s;
     overflow-y: auto;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       border-right: 4px solid $blue--dark;
       display: flex;
       height: calc(100vh - 60px);
@@ -2499,7 +2504,7 @@ a.tag {
     flex-direction: column;
     border-bottom-color: $white;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding: 10px;
       border-bottom-color: darken($grey--light, 10%);
     }
@@ -2554,7 +2559,7 @@ a.tag {
   overflow-y: auto;
   position: relative;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     height: calc(100vh - 60px);
     margin-top: 15px;
     padding: 20px;
@@ -2575,7 +2580,7 @@ a.tag {
   overflow-x: auto;
   padding-bottom: 0;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-left: 130px;
   }
 }
@@ -2594,7 +2599,7 @@ a.tag {
   position: relative;
   width: 50%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-right: 0;
     flex: 0 0 auto;
     padding: 20px;
@@ -2619,7 +2624,7 @@ a.tag {
       border-bottom: 0;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding-left: 20px;
       padding-right: 20px;
     }
@@ -2656,7 +2661,7 @@ a.tag {
     flex-direction: column;
     position: static;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       flex-direction: row;
       flex-wrap: wrap;
     }
@@ -2681,7 +2686,7 @@ a.tag {
         top: 0;
       }
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         flex: 0 0 48%;
         flex-direction: row;
         padding-top: 0;
@@ -2729,7 +2734,7 @@ a.tag {
   width: 150px;
   z-index: 2;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: block;
   }
 }
@@ -2798,20 +2803,20 @@ a.tag {
     justify-content: center;
     text-align: center;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       flex: 0 0 auto;
       margin-right: 1px;
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
     width: 270px;
   }
 }
 
 .compare-show-list {
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
   }
 }
@@ -2822,7 +2827,7 @@ a.tag {
   top: 0;
   left: 0;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
   }
 }
@@ -2845,7 +2850,7 @@ a.tag {
   width: auto;
   z-index: 2;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     width: 100%;
   }
 }
@@ -2875,7 +2880,7 @@ a.tag {
     margin-right: 5px;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: flex;
   }
 }
@@ -2886,7 +2891,7 @@ a.tag {
   flex: 0 0 auto;
   justify-content: center;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 1 1 auto;
   }
 
@@ -2956,7 +2961,7 @@ a.tag {
   width: 90%;
   z-index: 999999;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     width: 50%;
   }
 
@@ -3008,7 +3013,7 @@ a.tag {
   padding: 10px;
   margin-bottom: 10px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding: 20px;
   }
 }
@@ -3064,7 +3069,7 @@ input[type='checkbox'] {
 .form__column {
   width: 100%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     float: left;
     margin-right: 30px;
     width: calc(50% - 15px);
@@ -3079,7 +3084,7 @@ input[type='checkbox'] {
   display: flex;
   margin-bottom: 10px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-bottom: 20px;
   }
 
@@ -3206,7 +3211,7 @@ input[type='checkbox'] {
   justify-content: center;
   flex-direction: column;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex-direction: row;
   }
 }
@@ -3227,7 +3232,7 @@ a.button--login {
     margin-left: 10px;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 0 0 auto;
     margin-bottom: 0;
     width: auto;
@@ -3266,7 +3271,7 @@ a.button--login {
   }
 
   .main {
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding-bottom: 0;
       width: 70%;
     }
@@ -3358,7 +3363,7 @@ a.button--login {
     background: darken($grey--light, 10%);
     width: 100%;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       width: auto;
     }
   }
@@ -3380,7 +3385,7 @@ a.button--login {
 .info-box {
   margin-bottom: 10px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-bottom: 20px;
   }
 
@@ -3392,7 +3397,7 @@ a.button--login {
     margin: 0;
     padding: 0;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       font-size: 14px;
     }
   }
@@ -3404,7 +3409,7 @@ a.button--login {
     flex-direction: column;
     margin-bottom: 5px;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding-right: 10px;
     }
 
@@ -3433,7 +3438,7 @@ a.button--login {
   position: relative;
 
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     background: $white;
     margin-bottom: 80px;
   }
@@ -3447,7 +3452,7 @@ a.button--login {
   li {
     display: none;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       float: left;
       display: block;
     }
@@ -3469,7 +3474,7 @@ a.button--login {
       background: $grey--light;
     }
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       padding: .5em 1em;
     }
 
@@ -3487,7 +3492,7 @@ a.button--login {
       position: absolute;
       width: 100%;
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
       }
     }
   }
@@ -3499,7 +3504,7 @@ a.button--login {
     margin-bottom: 0;
     position: static;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       background: darken($grey--light, 10%);
       flex-direction: row;
       left: 0;
@@ -3510,7 +3515,7 @@ a.button--login {
 
     li {
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         flex: 1 1 auto;
         padding-left: 0;
         text-align: center;
@@ -3541,12 +3546,12 @@ li.active {
   display: block;
   a {
       color: $white;
-      @media only screen and (max-width: 769px) {
+      @media only screen and (max-width: 805px) {
         padding-left: 10px;
       }
       &:before {
 
-        @media only screen and (min-width: 769px) {
+        @media only screen and (min-width: 805px) {
           display: none;
         }
       }
@@ -3568,7 +3573,7 @@ li.active {
   top: 0;
   width: 32px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
   }
 }
@@ -3600,7 +3605,7 @@ li.active {
     margin-top: 20px;
     text-align: left;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       font-size: 2.4em;
     }
   }
@@ -3656,7 +3661,7 @@ li.active {
     }
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: block !important;
   }
 }
@@ -3710,7 +3715,7 @@ li.active {
   display: flex;
   justify-content: flex-start;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     justify-content: flex-end;
   }
 
@@ -3810,7 +3815,7 @@ li.active {
   display: flex;
   flex-wrap: wrap;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding-top: 15px;
   }
 
@@ -3820,7 +3825,7 @@ li.active {
     padding: 10px;
     width: 100%;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       align-items: center;
       display: flex;
       flex-wrap: wrap;
@@ -3924,7 +3929,7 @@ li.active {
     padding-right: 2px;
 
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       flex: 1 1 33%;
       max-width: 33%;
     }
@@ -3935,7 +3940,7 @@ li.active {
   .catalog-list--with-images {
     li {
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         flex: 1 1 100%;
         max-width: 100%;
 
@@ -4001,7 +4006,7 @@ li.active {
 .results-list {
   .pagination {
     margin-bottom: 0;
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       position: fixed;
       width: 60%;
     }
@@ -4012,7 +4017,7 @@ li.active {
 
 .results--map-view {
   .pagination {
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       position: fixed;
       width: 25%;
     }
@@ -4055,7 +4060,7 @@ li.active {
   .field--search {
     margin-bottom: 10px;
 
-    @media only screen and (min-width: 769px) {
+    @media only screen and (min-width: 805px) {
       margin-bottom: 0;
     }
   }
@@ -4075,7 +4080,7 @@ li.active {
       margin-top: 10px;
       position: static;
 
-      @media only screen and (min-width: 769px) {
+      @media only screen and (min-width: 805px) {
         margin-top: 0;
       }
     }
@@ -4103,7 +4108,7 @@ li.active {
 }
 
 .featured-categories {
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: flex;
     flex-wrap: wrap;
     margin-left: auto;
@@ -4125,7 +4130,7 @@ li.active {
     width: 33.3%;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 0 0 auto;
     padding-left: 10px;
     padding-right: 10px;
@@ -4138,10 +4143,7 @@ li.active {
   }
 
   h3 {
-    font-weight: 400;
-    letter-spacing: .1em;
     text-align: left;
-    text-transform: uppercase;
   }
   ul {
     list-style-type: none;
@@ -4157,7 +4159,6 @@ li.active {
 
 
     a {
-      background: $grey--light;
       border-radius: 3px;
       color: $blue;
       display: block;
@@ -4218,7 +4219,7 @@ table {
 .section__sidebar {
   width: 100%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding-right: 20px;
     width: 300px;
   }
@@ -4227,7 +4228,7 @@ table {
 .section__main-content {
   width: 100%;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     padding-left: 20px;
     width: calc(100% - 300px);
   }
@@ -4268,7 +4269,7 @@ table {
   display: flex;
   padding: 10px 0;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     align-items: center;
   }
 
@@ -4292,7 +4293,7 @@ table {
 }
 
 .media__check {
-  @media only screen and (max-width: 769px) {
+  @media only screen and (max-width: 805px) {
     flex: 0 0 auto;
   }
 }
@@ -4300,7 +4301,7 @@ table {
 .media__thumbnail {
   width: 60px;
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     flex: 0 0 auto;
     width: 100px;
   }
@@ -4322,7 +4323,7 @@ table {
     margin-bottom: 10px;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     margin-bottom: 0;
   }
 }
@@ -4337,7 +4338,7 @@ table {
 
 .sort-bar .sort__compare-view {
   color: $white;
-  @media only screen and (min-width: 769px) {
+  @media only screen and (min-width: 805px) {
     display: none;
   }
 }
@@ -4347,6 +4348,22 @@ table {
   letter-spacing: 0;
   padding: 0 8px;
   margin-right: 15px;
+}
+
+.ui-helper-hidden-accessible {
+  display:none;
+}
+
+.ui-autocomplete.ui-menu {
+  z-index: 101;
+  width: 500px !important;
+  max-width: 85vw;
+  background-color: rgba(122, 122, 122, 0.95) !important;
+  padding: 10px 30px;
+}
+
+.fa-star, fa-star-o {
+  cursor: pointer;
 }
 
 @import '../libs/selectize';

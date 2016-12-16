@@ -28,9 +28,9 @@ define(['jquery'], function ($) {
             return starRating.each(function() {
                 if( $( this ).parent().hasClass( 'active' ) ){
                     if (parseInt( $(this).siblings( 'input.rating-value' ).val()) >= parseInt( $( this ).data( 'rating' ))) {
-                        return $( this ).removeClass( 'fa-star' ).addClass( 'fa-star-selected' );
+                        return $( this ).removeClass( 'fa-star-o' ).addClass( 'fa-star-selected fa-star' );
                     } else {
-                        return $( this ).removeClass( 'fa-star-selected' ).addClass( 'fa-star' );
+                        return $( this ).removeClass( 'fa-star-selected fa-star' ).addClass( 'fa-star-o' );
                     }
                 }
            });
