@@ -1,4 +1,8 @@
 <div class="comparison__item" id="business-{{ item.id }}">
+    <div class="comparison__row comparison__where">
+        <span class="where">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
+    </div>
+
     <div class="comparison__row comparison__rating">
         <div class="rank">
             <div class="rank-ta rank-ta--5">
@@ -77,6 +81,17 @@
                         </li>
                     </ul>
                 </div><!-- highlights__item -->
+            {% endif %}
+
+            {% if item.paymentMethods|length > 0 %}
+                <div class="highlights__item highlights__item--checklist">
+                    <h3>{% trans %}Payment methods{% endtrans %}</h3>
+                    <ul>
+                        {% for paymentMethod in item.paymentMethods %}
+                            <li>{{ paymentMethod.getName }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% endif %}
         </div><!-- container -->
     </div><!-- comparison-row -->
