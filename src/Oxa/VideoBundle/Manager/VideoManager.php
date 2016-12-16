@@ -5,10 +5,15 @@ namespace Oxa\VideoBundle\Manager;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VideoManager
 {
+    const DEFAULT_URI_UPLOAD_FILE_EXTENSION = '.mp4';
+
+    const MAX_FILENAME_LENGTH = 240;
+
     private static $allowedMimeTypes = [
         'video/mp4',
         'video/webm',
@@ -27,18 +32,20 @@ class VideoManager
 
     public function __construct(
         Filesystem $filesystem,
-        VideoMediaManager $videoMediaManager
+        VideoMediaManager $videoMediaManager,
+        ContainerInterface $container
     ) {
         $this->filesystem = $filesystem;
         $this->videoMediaManager = $videoMediaManager;
+        $this->container = $container;
     }
 
     public function removeMedia($id)
     {
         $media = $this->videoMediaManager->find($id);
 
-        if ($this->filesystem->getAdapter()->exists($media->getFilepath().$media->getFilename())) {
-            return $this->filesystem->delete($media->getFilepath().$media->getFilename());
+        if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+            return $this->filesystem->delete($media->getFilepath() . $media->getFilename());
         }
 
         return true;
@@ -62,7 +69,8 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            throw new \InvalidArgumentException(sprintf('Files of type %s are not allowed.', $data['type']));
+            $message = $this->container->get('translator')->trans('Files of type %s are not allowed', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
         $adapter = $this->filesystem->getAdapter();
@@ -70,16 +78,17 @@ class VideoManager
         $path = sprintf('%s/%s/', date('Y'), date('m'));
         do {
             $filename = sprintf('%s.%s', uniqid('', 1), $data['ext']);
-        } while ($adapter->exists($path.$filename));
+        } while ($adapter->exists($path . $filename));
  
-        $adapter->setMetadata($path.$filename, [
+        $adapter->setMetadata($path . $filename, [
             'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path.$filename, file_get_contents($data['path']));
+        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
 
         if (!$uploadedSize) {
-            throw new \InvalidArgumentException(sprintf('File '.$filename.' is not uploaded. Please contact administrator'));
+            $message = $this->container->get('translator')->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message, $filename));
         }
 
         $video = [
@@ -113,18 +122,18 @@ class VideoManager
         if (isset($this->mimeExtensions[$type])) {
             return $this->mimeExtensions[$type];
         }
-        return '.mp4';
+        return self::DEFAULT_URI_UPLOAD_FILE_EXTENSION;
     }
     
     protected function generateFilenameForUrl($url)
     {
         $domain = str_ireplace('www.', '', parse_url($url, PHP_URL_HOST));
-        if (240 < strlen($domain)) {
+        if (self::MAX_FILENAME_LENGTH < strlen($domain)) {
             $domain = substr($domain, 0, 240);
         }
 
         $date = new \DateTime();
-        $domain .= '-'.$date->format('YmdHis');
+        $domain .= '-' . $date->format('YmdHis');
         return $domain;
     }
 }

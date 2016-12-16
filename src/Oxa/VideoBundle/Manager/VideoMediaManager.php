@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Xedin
- * Date: 12.06.16
- * Time: 15:34
- */
 
 namespace Oxa\VideoBundle\Manager;
 

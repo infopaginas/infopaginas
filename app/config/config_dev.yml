@@ -14,19 +14,12 @@ web_profiler:
     intercept_redirects: false
 
 monolog:
-    channels:
-        ['foo']
     handlers:
         main:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
             channels: [!event]
-        glogen:
-            type: stream
-            path: "%kernel.logs_dir%/glogen.log"
-            level: debug
-            channels: 'foo'
         console:
             type:   console
             channels: [!event, !doctrine]

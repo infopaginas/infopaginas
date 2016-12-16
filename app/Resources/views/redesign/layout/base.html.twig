@@ -17,6 +17,7 @@
         <link rel="apple-touch-icon-precomposed" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-57x57-precomposed.png')) }}">
         <link rel="shortcut icon" sizes="196x196" href="{{ absolute_url(asset('redesign/img/touch/touch-icon-196x196.png')) }}">
         <link rel="shortcut icon" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon.png')) }}">
+        <link href="{{ absolute_url(asset('bundles/oxavideo/css/video-js.5.8.8.css')) }}" rel="stylesheet">
 
         <!-- Tile icon for Win8 (144x144 + tile color) -->
         <meta name="msapplication-TileImage" content="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-144x144-precomposed.png')) }}">
@@ -83,6 +84,8 @@
 
         <!-- Scripts -->
         {% block scripts %}
+            <script type="text/javascript" src="{{ absolute_url(asset('bundles/oxavideo/scripts/video.5.8.8.js')) }}" rel="stylesheet"></script>
+
             {% javascripts filter="?jsqueeze" output="js/app.js"
                 'bundles/domainsite/scripts/require.js'
                 'bundles/fosjsrouting/js/router.js'

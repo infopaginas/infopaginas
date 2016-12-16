@@ -9,6 +9,7 @@ services:
         arguments:
             - '@video_storage_filesystem'
             - '@oxa.manager.video_media'
+            - '@service_container'
 
     oxa.manager.video_media:
         class: Oxa\VideoBundle\Manager\VideoMediaManager
@@ -70,4 +71,3 @@ services:
             - '@domain_business.form.url_file_upload'
             - '@request'
             - '@oxa.manager.video'
-
