@@ -176,7 +176,56 @@ class BusinessProfileManager extends Manager
             ];
         }
 
+        if (!$profilesArray) {
+            $profilesArray[] = $this->getDefaultLocationMarkers(false);
+        }
+
         return json_encode($profilesArray);
+    }
+
+    public function getLocationMarkersFromLocalityData($localities)
+    {
+        $data = [];
+
+        /** @var Locality $locality */
+        foreach ($localities as $locality) {
+            if ($locality->getLatitude() and $locality->getLongitude()) {
+                $data[] = [
+                    'id'        => $locality->getId(),
+                    'name'      => $locality->getName(),
+                    'latitude'  => $locality->getLatitude(),
+                    'longitude' => $locality->getLongitude(),
+                ];
+            }
+        }
+
+        if (!$data) {
+            $data[] = $this->getDefaultLocationMarkers(false);
+        }
+
+        return json_encode($data);
+    }
+
+    public function getDefaultLocationMarkers($isEncoded = true)
+    {
+        $defaultCenterCoordinates = $this->container->getParameter('google_map_default_center');
+        $defaultCenterName        = $this->container->getParameter('google_map_default_center_name');
+        $coordinates = explode(',', $defaultCenterCoordinates);
+
+        $profilesArray = [
+            'id'            => 0,
+            'name'          => $defaultCenterName,
+            'latitude'      => $coordinates[0],
+            'longitude'     => $coordinates[1],
+        ];
+
+        if ($isEncoded) {
+            $data = json_encode([$profilesArray]);
+        } else {
+            $data = $profilesArray;
+        }
+
+        return $data;
     }
 
     public function search(SearchDTO $searchParams, string $locale)
@@ -248,8 +297,11 @@ class BusinessProfileManager extends Manager
      */
     public function createProfile() : BusinessProfile
     {
+        $country = $this->getDefaultProfileCountry();
+
         $profile = new BusinessProfile();
         $profile->setIsActive(false);
+        $profile->setCountry($country);
 
         return $profile;
     }
@@ -374,8 +426,8 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        } elseif ($change->getClassName() === Locality::class or
-                            $change->getClassName() === Country::class) {
+                        } elseif ($change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_COUNTRY or
+                            $change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY) {
 
                             $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
                                 $change,
@@ -1220,5 +1272,14 @@ class BusinessProfileManager extends Manager
         ];
 
         return $seoData;
+    }
+
+    public function getDefaultProfileCountry()
+    {
+        $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(
+            ['shortName' => strtoupper(Country::PUERTO_RICO_SHORT_NAME)]
+        );
+
+        return $country;
     }
 }

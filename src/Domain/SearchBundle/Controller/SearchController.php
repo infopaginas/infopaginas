@@ -61,7 +61,7 @@ class SearchController extends Controller
         } else {
             $searchResultsDTO = null;
             $dcDataDTO        = null;
-            $locationMarkers  = null;
+            $locationMarkers  = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
         }
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
@@ -357,9 +357,9 @@ class SearchController extends Controller
         );
 
         if (!$locality) {
-            $locationMarkers = $this->getLocalityManager()->getLocationMarkersFromLocalityData($localities);
+            $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromLocalityData($localities);
         } elseif (!$category) {
-            $locationMarkers = $this->getLocalityManager()->getLocationMarkersFromLocalityData([$locality]);
+            $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromLocalityData([$locality]);
         } else {
             $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $subcategory);
 
@@ -379,6 +379,10 @@ class SearchController extends Controller
                 $locationMarkers = $this->getBusinessProfileManager()
                     ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
             }
+        }
+
+        if (!$locationMarkers) {
+            $locationMarkers = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
         }
 
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $subcategories);

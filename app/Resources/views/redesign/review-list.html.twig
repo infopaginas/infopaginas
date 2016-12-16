@@ -34,6 +34,12 @@
                     {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : reviewsResultDTO.page, 'pageCount' : reviewsResultDTO.pageCount } %}
                 {% endif %}
 
+                <section class="page-section">
+                    <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.catalogLocality.slug, 'slug': businessProfile.slug})) }}">
+                        {% trans %}Back to Business Profile{% endtrans %}
+                    </a>
+                </section>
+
                 {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
             </div>
 

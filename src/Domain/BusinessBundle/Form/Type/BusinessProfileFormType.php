@@ -239,9 +239,6 @@ class BusinessProfileFormType extends AbstractType
                 ],
                 'label' => 'Zip code',
                 'required' => true,
-                'constraints' => [
-                    new NotBlank(),
-                ],
             ])
             ->add('extendedAddress', TextType::class, [
                 'attr' => [
