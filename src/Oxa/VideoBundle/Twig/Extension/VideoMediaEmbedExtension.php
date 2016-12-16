@@ -60,7 +60,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
         $expires->modify('+ 600 seconds');
 
 
-        $url = $this->filesystem->getAdapter()->getUrl($media->getFilepath().$media->getFilename(),['expires' => $expires->getTimestamp()]);
+        $url = $this->filesystem->getAdapter()->getUrl($media->getFilepath() . $media->getFilename(), ['expires' => $expires->getTimestamp()]);
         $html = $this->templating
                 ->render(
                     ":redesign/blocks/video:video_embed.html.twig", [
