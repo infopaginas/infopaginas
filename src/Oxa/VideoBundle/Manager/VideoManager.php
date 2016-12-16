@@ -70,13 +70,13 @@ class VideoManager
         $path = sprintf('%s/%s/', date('Y'), date('m'));
         do {
             $filename = sprintf('%s.%s', uniqid('', 1), $data['ext']);
-        } while ($adapter->exists($path.$filename));
+        } while ($adapter->exists($path . $filename));
  
-        $adapter->setMetadata($path.$filename, [
+        $adapter->setMetadata($path . $filename, [
             'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path.$filename, file_get_contents($data['path']));
+        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
 
         if (!$uploadedSize) {
             throw new \InvalidArgumentException(sprintf('File '.$filename.' is not uploaded. Please contact administrator'));

@@ -70,4 +70,3 @@ services:
             - '@domain_business.form.url_file_upload'
             - '@request'
             - '@oxa.manager.video'
-

@@ -732,7 +732,7 @@ class BusinessProfileManager extends Manager
         $provider = $this->container->get('sonata.media.pool')->getProvider($media->getProviderName());
 
         $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
-        $path = $provider->getFilesystem()->getAdapter()->getDirectory().DIRECTORY_SEPARATOR.$filepath;
+        $path = $provider->getFilesystem()->getAdapter()->getDirectory() . DIRECTORY_SEPARATOR . $filepath;
 
         $media->setBinaryContent($path);
         $media->setProviderReference($media->getPreviousProviderReference());

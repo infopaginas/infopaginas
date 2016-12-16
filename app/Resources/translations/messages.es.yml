@@ -393,3 +393,6 @@ business_profile.url.empty: Error: el campo URL no debe estar vacío.
 business_profile.video_count_limit: Error: demasiados videos agregados. Máximo conteo de archivos =
 Updated By: Actualizado por
 View more articles: Ver más artículos
+To view this video please enable JavaScript, and consider upgrading to a web browser that: Para ver este video, habilita JavaScript y considera actualizar a un navegador web que
+supports HTML5 video: soporta video HTML5
+
