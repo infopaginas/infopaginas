@@ -302,8 +302,11 @@ class BusinessProfileManager extends Manager
      */
     public function createProfile() : BusinessProfile
     {
+        $country = $this->getDefaultProfileCountry();
+
         $profile = new BusinessProfile();
         $profile->setIsActive(false);
+        $profile->setCountry($country);
 
         return $profile;
     }
@@ -428,8 +431,8 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        } elseif ($change->getClassName() === Locality::class or
-                            $change->getClassName() === Country::class) {
+                        } elseif ($change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_COUNTRY or
+                            $change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY) {
 
                             $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
                                 $change,
@@ -1294,5 +1297,14 @@ class BusinessProfileManager extends Manager
         ];
 
         return $seoData;
+    }
+
+    public function getDefaultProfileCountry()
+    {
+        $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(
+            ['shortName' => strtoupper(Country::PUERTO_RICO_SHORT_NAME)]
+        );
+
+        return $country;
     }
 }

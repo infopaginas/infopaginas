@@ -73,6 +73,10 @@ class BusinessProfileExtension extends \Twig_Extension
                 'getBusinessProfileActualReviewsAvgRating'
             ),
             'get_business_profile_changes_string' => new \Twig_Function_Method($this, 'unpackTaskChangeSetRow'),
+            'get_business_profile_translation_changes' => new \Twig_Function_Method(
+                $this,
+                'getTaskTranslationChangeSetRow'
+            ),
             'get_business_profile_image_changes' => new \Twig_Function_Method($this, 'getImageChangeSet'),
             'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
@@ -161,6 +165,45 @@ class BusinessProfileExtension extends \Twig_Extension
 
             return '';
         }, json_decode($value)));
+    }
+
+    public function getTaskTranslationChangeSetRow($oldValue, $newValue)
+    {
+        if (!$this->isJson($oldValue) or !$this->isJson($newValue)) {
+            return [];
+        }
+
+        $oldData = $this->sortTranslationSet($oldValue);
+        $newData = $this->sortTranslationSet($newValue);
+        $data    = [];
+
+        foreach ($oldData as $key => $item) {
+            if ($newData[$key] !== $item) {
+                $data[$key]['old'] = $item;
+                $data[$key]['new'] = $newData[$key];
+            }
+        }
+
+        return $data;
+    }
+
+    public function sortTranslationSet($value)
+    {
+        $translations = json_decode($value);
+        $data = [];
+
+        foreach ($translations as $translation) {
+            $item = json_decode($translation->value);
+
+            if ($item->field !== BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE and
+                $item->field !== BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION) {
+                $data[$item->field . $item->locale] = $item->field . ' [' . $item->locale . ']: ' . $item->value;
+            }
+        }
+
+        ksort($data);
+
+        return $data;
     }
 
     public function getImageChangeSet(string $value)

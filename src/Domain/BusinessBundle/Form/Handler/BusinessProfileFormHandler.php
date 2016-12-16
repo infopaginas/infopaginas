@@ -294,36 +294,47 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
         $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
 
+        $dataEn = false;
+        $dataEs = false;
+
+        if (!empty($post[$propertyEn])) {
+            $dataEn = trim($post[$propertyEn]);
+        }
+
+        if (!empty($post[$propertyEs])) {
+            $dataEs = trim($post[$propertyEs]);
+        }
+
         if (property_exists($businessProfile, $property)) {
-            if (!empty($post[$propertyEn])) {
-                $businessProfile->{'set' . $property}($post[$propertyEn]);
+            if ($dataEn) {
+                $businessProfile->{'set' . $property}($dataEn);
 
                 $translation = new BusinessProfileTranslation(
                     strtolower(BusinessProfile::TRANSLATION_LANG_EN),
                     $property,
-                    $post[$propertyEn]
+                    $dataEn
                 );
 
                 $businessProfile->addTranslation($translation);
 
                 if (property_exists($businessProfile, $propertyEn)) {
-                    $businessProfile->{'set' . $propertyEn}($post[$propertyEn]);
+                    $businessProfile->{'set' . $propertyEn}($dataEn);
                 }
-            } elseif (!empty($post[$propertyEs])) {
-                $businessProfile->{'set' . $property}($post[$propertyEs]);
+            } elseif ($dataEs) {
+                $businessProfile->{'set' . $property}($dataEs);
             }
 
-            if (!empty($post[$propertyEs])) {
+            if ($dataEs) {
                 $translation = new BusinessProfileTranslation(
                     strtolower(BusinessProfile::TRANSLATION_LANG_ES),
                     $property,
-                    $post[$propertyEs]
+                    $dataEs
                 );
 
                 $businessProfile->addTranslation($translation);
 
                 if (property_exists($businessProfile, $propertyEs)) {
-                    $businessProfile->{'set' . $propertyEs}($post[$propertyEs]);
+                    $businessProfile->{'set' . $propertyEs}($dataEs);
                 }
             }
         }
@@ -380,11 +391,14 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
     private function checkTranslationBlock($post)
     {
-        if (empty($post['name' . BusinessProfile::TRANSLATION_LANG_EN]) and
-            empty($post['name' . BusinessProfile::TRANSLATION_LANG_ES])) {
-            return false;
+        if ((!empty($post['name' . BusinessProfile::TRANSLATION_LANG_EN]) and
+            trim($post['name' . BusinessProfile::TRANSLATION_LANG_EN])) or
+            (!empty($post['name' . BusinessProfile::TRANSLATION_LANG_ES]) and
+            trim($post['name' . BusinessProfile::TRANSLATION_LANG_ES]))
+        ) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

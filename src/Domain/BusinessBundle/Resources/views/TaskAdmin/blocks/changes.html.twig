@@ -27,7 +27,28 @@
         </thead>
         <tbody>
         {% for row in data %}
-            {% if row.fieldName != 'latitude' and row.fieldName != 'longitude' %}
+            {% if row.fieldName == 'translations' %}
+                {% set translations = get_business_profile_translation_changes(row.oldValue, row.newValue) %}
+
+                {% if translations is not empty %}
+                    <tr class="sonata-ba-view-container">
+                        <td>{{ normalize_task_fieldname_label(row.fieldName) }}</td>
+                        <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+                        <td>
+                            {% for item in translations %}
+                                {{ item.old }}<br/>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for item in translations %}
+                                {{ item.new }}<br/>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% elseif row.fieldName != 'latitude' and row.fieldName != 'longitude' and
+                row.fieldName != 'seoTitle' and row.fieldName != 'seoDescription'
+            %}
                 <tr class="sonata-ba-view-container">
                     <td>{{ normalize_task_fieldname_label(row.fieldName) }}</td>
 
