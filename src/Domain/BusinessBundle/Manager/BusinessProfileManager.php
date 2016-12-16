@@ -181,7 +181,56 @@ class BusinessProfileManager extends Manager
             ];
         }
 
+        if (!$profilesArray) {
+            $profilesArray[] = $this->getDefaultLocationMarkers(false);
+        }
+
         return json_encode($profilesArray);
+    }
+
+    public function getLocationMarkersFromLocalityData($localities)
+    {
+        $data = [];
+
+        /** @var Locality $locality */
+        foreach ($localities as $locality) {
+            if ($locality->getLatitude() and $locality->getLongitude()) {
+                $data[] = [
+                    'id'        => $locality->getId(),
+                    'name'      => $locality->getName(),
+                    'latitude'  => $locality->getLatitude(),
+                    'longitude' => $locality->getLongitude(),
+                ];
+            }
+        }
+
+        if (!$data) {
+            $data[] = $this->getDefaultLocationMarkers(false);
+        }
+
+        return json_encode($data);
+    }
+
+    public function getDefaultLocationMarkers($isEncoded = true)
+    {
+        $defaultCenterCoordinates = $this->container->getParameter('google_map_default_center');
+        $defaultCenterName        = $this->container->getParameter('google_map_default_center_name');
+        $coordinates = explode(',', $defaultCenterCoordinates);
+
+        $profilesArray = [
+            'id'            => 0,
+            'name'          => $defaultCenterName,
+            'latitude'      => $coordinates[0],
+            'longitude'     => $coordinates[1],
+        ];
+
+        if ($isEncoded) {
+            $data = json_encode([$profilesArray]);
+        } else {
+            $data = $profilesArray;
+        }
+
+        return $data;
     }
 
     public function search(SearchDTO $searchParams, string $locale)
