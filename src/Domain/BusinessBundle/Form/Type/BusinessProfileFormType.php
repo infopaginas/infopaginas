@@ -17,7 +17,7 @@ use Domain\BusinessBundle\Repository\TagRepository;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\MediaBundle\Entity\Media as SonataMedia;
-use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
+use Oxa\VideoBundle\Form\Type\VideoMediaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -311,7 +311,7 @@ class BusinessProfileFormType extends AbstractType
             ])
         ;
 
-        if ($this->isUserSectionRequired) {
+        if ($this->isUserSectionRequired && 0) {
             $builder
                 ->add('firstname', TextType::class, [
                     'attr' => [
@@ -462,8 +462,8 @@ class BusinessProfileFormType extends AbstractType
             'mapped' => false,
         ]);
 
-        $form->add('video', WistiaMediaType::class, [
-            'data_class' => 'Oxa\WistiaBundle\Entity\WistiaMedia',
+        $form->add('video', VideoMediaType::class, [
+            'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
             'by_reference' => false,
         ]);
     }

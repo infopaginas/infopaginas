@@ -255,3 +255,27 @@ happyr_google_analytics:
 presta_sitemap:
     timetolive: 86400
     items_by_set: 100
+
+knp_gaufrette:
+    adapters:
+        video_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
+                options:
+                    create:     true
+                    directory:  'video'
+    filesystems:
+        ipgn:
+            adapter:    video_storage
+            alias:      video_storage_filesystem
+
+aws:
+    version:    '2006-03-01'
+    region:     %amazon_aws_region%
+    credentials:
+        key:    %amazon_aws_key%
+        secret: %amazon_aws_secret_key%
+    S3:
+        version:    '2006-03-01'
+    

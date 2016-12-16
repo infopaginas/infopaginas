@@ -3,7 +3,7 @@ jmaitan_media:
     prefix:   /jmaitan_media
 
 oxa_wistia:
-    resource: "@OxaWistiaBundle/Resources/config/routing.yml"
+    resource: "@OxaVideoBundle/Resources/config/routing.yml"
     prefix:   /
 
 oxa_dfp:

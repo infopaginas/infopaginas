@@ -30,8 +30,8 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
-use Oxa\WistiaBundle\Manager\WistiaMediaManager;
+use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Manager\VideoManager;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Sonata\MediaBundle\Entity\MediaManager;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
@@ -63,9 +63,6 @@ class BusinessProfileManager extends Manager
 
     /** @var FormFactory */
     private $formFactory;
-
-    /** @var WistiaMediaManager */
-    private $wistiaMediaManager;
 
     /** @var Analytics $analytics */
     private $analytics;
@@ -99,8 +96,6 @@ class BusinessProfileManager extends Manager
         $this->translatableListener = $container->get('sonata_translation.listener.translatable');
 
         $this->formFactory = $container->get('form.factory');
-
-        $this->wistiaMediaManager = $container->get('oxa.manager.wistia_media');
 
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
 
@@ -491,7 +486,6 @@ class BusinessProfileManager extends Manager
                 case ChangeSetCalculator::IMAGE_ADD:
                     $data = json_decode($change->getNewValue());
                     $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
-
                     if ($media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
                         $media = $this->setMediaContentAndProvider($media, $data->type);
                         $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
@@ -500,8 +494,9 @@ class BusinessProfileManager extends Manager
                         $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
                     } else {
                         $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
-                        $this->getSonataMediaManager()->save($media, false);
                     }
+
+                    $this->getSonataMediaManager()->save($media, false);
 
                     break;
                 case ChangeSetCalculator::IMAGE_REMOVE:
@@ -563,25 +558,22 @@ class BusinessProfileManager extends Manager
                     break;
                 case ChangeSetCalculator::VIDEO_ADD:
                     $data = json_decode($change->getNewValue());
-                    $video = $this->getEntityManager()->getRepository(WistiaMedia::class)->find($data->id);
+                    $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
                     $businessProfile->setVideo($video);
                     break;
                 case ChangeSetCalculator::VIDEO_REMOVE:
+                    $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
+
                     $businessProfile->setVideo(null);
                     break;
                 case ChangeSetCalculator::VIDEO_UPDATE:
                     $data = json_decode($change->getNewValue());
                     //if video was replaced
                     if (!empty($change->getOldValue())) {
-                        $video = $this->getEntityManager()->getRepository(WistiaMedia::class)->find($data->id);
+                        $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
+
+                        $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
                         $businessProfile->setVideo($video);
-                    } else {
-                        if (isset($data->description)) {
-                            $businessProfile->getVideo()->setDescription($data->description[1]);
-                        }
-                        if (isset($data->name)) {
-                            $businessProfile->getVideo()->setName($data->name[1]);
-                        }
                     }
                     break;
             }
@@ -598,20 +590,6 @@ class BusinessProfileManager extends Manager
     public function getBusinessProfileAsForm(BusinessProfile $businessProfile)
     {
         return $this->formFactory->create(new BusinessProfileFormType(), $businessProfile);
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @return BusinessProfile
-     */
-    public function checkBusinessProfileVideo(BusinessProfile $businessProfile)
-    {
-        if ($businessProfile->getVideo()) {
-            $video = $this->getWistiaMediaManager()->updateNameAndDescriptionByWistiaID($businessProfile->getVideo());
-            $businessProfile->setVideo($video);
-        }
-
-        return $businessProfile;
     }
 
     /**
@@ -806,12 +784,12 @@ class BusinessProfileManager extends Manager
         $provider = $this->container->get('sonata.media.pool')->getProvider($media->getProviderName());
 
         $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
-        $file = $provider->getFilesystem()->getAdapter()->getDirectory().DIRECTORY_SEPARATOR.$filepath;
+        $path = $provider->getFilesystem()->getAdapter()->getDirectory() . DIRECTORY_SEPARATOR . $filepath;
 
-        $media->setBinaryContent($file);
+        $media->setBinaryContent($path);
         $media->setProviderReference($media->getPreviousProviderReference());
+        $media->setContext($newContext);
 
-        $media->getContext($newContext);
         $provider->transform($media);
 
         return $media;
@@ -867,14 +845,6 @@ class BusinessProfileManager extends Manager
     private function getBusinessGalleryRepository() : BusinessGalleryRepository
     {
         return $this->getEntityManager()->getRepository(BusinessGallery::class);
-    }
-
-    /**
-     * @return WistiaMediaManager
-     */
-    private function getWistiaMediaManager() : WistiaMediaManager
-    {
-        return $this->wistiaMediaManager;
     }
 
     private function getGoogleAnalytics()
@@ -1134,6 +1104,11 @@ class BusinessProfileManager extends Manager
         $url      = $provider->generatePublicUrl($media, $format);
 
         return $url;
+    }
+
+    protected function getVideoManager() : VideoManager
+    {
+        return $this->container->get('oxa.manager.video');
     }
 
     /**

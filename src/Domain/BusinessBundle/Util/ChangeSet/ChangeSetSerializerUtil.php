@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Util\DoctrineUtil;
 use Oxa\Sonata\MediaBundle\Entity\Media;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
+use Oxa\VideoBundle\Entity\VideoMedia;
 
 
 /**
@@ -56,10 +56,10 @@ class ChangeSetSerializerUtil
     }
 
     /**
-     * @param WistiaMedia $video
+     * @param VideoMedia $video
      * @return string
      */
-    public static function serializeBusinessProfileVideo(WistiaMedia $video) : string
+    public static function serializeBusinessProfileVideo(VideoMedia $video) : string
     {
         $businessVideoRequiredData = [
             'id'   => $video->getId(),
@@ -70,7 +70,7 @@ class ChangeSetSerializerUtil
     }
 
     /**
-     * @param WistiaMedia $video
+     * @param VideoMedia $video
      * @return string
      */
     public static function serializeBusinessProfileMedia(Media $media, $context) : string

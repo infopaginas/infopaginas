@@ -17,7 +17,7 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Domain\SearchBundle\Util\SearchDataUtil;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
 
@@ -552,7 +552,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->from(BusinessProfile::class, 'bp')
             ->innerJoin('bp.subscriptions', 'bp_s')
             ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
-            ->innerJoin(WistiaMedia::class, 'v', Join::WITH, 'bp.video = v')
+            ->innerJoin(VideoMedia::class, 'v', Join::WITH, 'bp.video = v')
             ->where('bp.isActive = TRUE')
             ->andWhere('bps_p.code = :platinumPlanCode')
             ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
@@ -569,7 +569,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->from(BusinessProfile::class, 'bp')
             ->innerJoin('bp.subscriptions', 'bp_s')
             ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
-            ->innerJoin(WistiaMedia::class, 'v', Join::WITH, 'bp.video = v')
+            ->innerJoin(VideoMedia::class, 'v', Join::WITH, 'bp.video = v')
             ->where('bp.isActive = TRUE')
             ->andWhere('bps_p.code = :platinumPlanCode')
             ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)

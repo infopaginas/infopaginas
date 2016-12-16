@@ -26,7 +26,7 @@
                     <div class="collapse navbar-collapse" id="navbar-buttons">
                         <ul class="nav navbar-nav navbar-left buttons-block">
                             <li>
-                                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : businessProfile.catalogLocality.slug, slug: businessProfile.getSlug() })) }}"
+                                <a href="{{ path('domain_business_profile_view', { 'citySlug' : businessProfile.catalogLocality.slug, slug: businessProfile.getSlug() }) }}"
                                    class="green-btn"
                                    target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
@@ -44,7 +44,7 @@
 
                             {% if not isFreePlan %}
                                 <li>
-                                    <a href="{{ absolute_url(path('domain_business_reports_index', { businessProfileId: businessProfile.getId() })) }}" class="green-btn" target="_blank">
+                                    <a href="{{ path('domain_business_reports_index', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
                                         <i class="fa fa-pie-chart" aria-hidden="true"></i>
                                         <span>{% trans %}Reports{% endtrans %}</span>
                                     </a>
@@ -52,14 +52,14 @@
                             {% endif %}
 
                             <li>
-                                <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() })) }}" class="green-btn" target="_blank">
+                                <a href="{{ path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() }) }}" class="green-btn" target="_blank">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>
                                     <span>{% trans %}Reviews{% endtrans %}</span>
                                 </a>
                             </li>
                             {% if app.security.token and is_granted('ROLE_CONTENT_MANAGER') %}
                                 <li>
-                                    <a href="{{ absolute_url(path('admin_domain_business_subscription_edit', { id: businessProfile.getId() })) }}" class="green-btn" target="_blank" >
+                                    <a href="{{ path('admin_domain_business_subscription_edit', { id: businessProfile.getId() }) }}" class="green-btn" target="_blank" >
                                         <i class="fa fa-tag" aria-hidden="true"></i>
                                         <span>{% trans %}Subscriptions{% endtrans %}</span>
                                     </a>
@@ -76,7 +76,7 @@
                                             }
                                         }
                                     %}
-                                    <a href="{{ absolute_url(path('admin_domain_business_coupon_list', couponParams)) }}" target="_blank" class="green-btn">
+                                    <a href="{{ path('admin_domain_business_coupon_list', couponParams) }}" target="_blank" class="green-btn">
                                         <i class="fa fa-percent" aria-hidden="true"></i>
                                         <span>{% trans %}Discounts{% endtrans %}</span>
                                     </a>
@@ -155,12 +155,12 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ absolute_url(asset('bundles/fosjsrouting/js/router.js')) }}"></script>
-    <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
-    <script type="text/javascript" src="{{ absolute_url(asset('assets/scripts/require.js')) }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('/assets/scripts/require.js')}}"></script>
     <script type="text/javascript">
-        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
-            requirejs(['{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/businessProfile.js")) }}'], function(businessProfile) {
+        requirejs(['./{{ asset("/bundles/domainsite/scripts/common.js")}}'], function(common) {
+            requirejs(['{{asset("/bundles/domainbusiness/scripts/modules/businessProfile.js")}}'], function(businessProfile) {
                 var profile = new businessProfile();
             })
         })

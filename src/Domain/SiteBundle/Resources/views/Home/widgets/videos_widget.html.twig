@@ -3,7 +3,7 @@
     {% for video in videos %}
         <div class="col-xs-6 article">
             <div class="article-pic">
-                {{ render_wistia_embed(video, {width: width, height: height}) | raw }}
+                {{ render_video_embed(video, {width: width, height: height}) | raw }}
             </div>
             <div class="article-info">
                 {{ video.getName() }}

@@ -183,13 +183,9 @@
 
                         {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <section class="page-section video">
-                                {{ render_wistia_embed(businessProfile.getVideo(), {width: 320, height: 220})|raw }}
+                                {{ render_video_embed(businessProfile.getVideo(), {width: 960, height: 720})|raw }}
                             </section>
                         {% endif %}
-
-                        <section class="page-section video">
-                            <style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/TRkkX4CrP-s' frameborder='0' allowfullscreen></iframe></div>
-                        </section>
 
                         {% if businessProfile.getDescription() %}
                             <section class="page-section description-section">

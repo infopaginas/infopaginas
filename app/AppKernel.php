@@ -36,6 +36,7 @@ class AppKernel extends Kernel
             new FM\ElfinderBundle\FMElfinderBundle(),
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
+            new Knp\Bundle\GaufretteBundle\KnpGaufretteBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Sonata\FormatterBundle\SonataFormatterBundle(),
             new Sonata\MediaBundle\SonataMediaBundle(),
@@ -58,6 +59,7 @@ class AppKernel extends Kernel
             new Cache\AdapterBundle\CacheAdapterBundle(),
             new Happyr\GoogleSiteAuthenticatorBundle\HappyrGoogleSiteAuthenticatorBundle(),
             new Happyr\GoogleAnalyticsBundle\HappyrGoogleAnalyticsBundle(),
+            new Aws\Symfony\AwsBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),
@@ -76,7 +78,7 @@ class AppKernel extends Kernel
             new Domain\SearchBundle\DomainSearchBundle(),
             new Domain\ReportBundle\DomainReportBundle(),
             new Oxa\Sonata\DoctrineORMAdminBundle\OxaSonataDoctrineORMAdminBundle(),
-            new Oxa\WistiaBundle\OxaWistiaBundle(),
+            new Oxa\VideoBundle\OxaVideoBundle(),
             new Oxa\DfpBundle\OxaDfpBundle(),
 
             //SiteMap bundle
