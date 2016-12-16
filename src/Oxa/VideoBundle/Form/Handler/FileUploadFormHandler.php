@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 19.07.16
- * Time: 22:06
- */
 
 namespace Oxa\VideoBundle\Form\Handler;
 
