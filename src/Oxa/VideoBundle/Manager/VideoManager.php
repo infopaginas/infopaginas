@@ -44,8 +44,8 @@ class VideoManager
     {
         $media = $this->videoMediaManager->find($id);
 
-        if ($this->filesystem->getAdapter()->exists($media->getFilepath().$media->getFilename())) {
-            return $this->filesystem->delete($media->getFilepath().$media->getFilename());
+        if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+            return $this->filesystem->delete($media->getFilepath() . $media->getFilename());
         }
 
         return true;
@@ -133,7 +133,7 @@ class VideoManager
         }
 
         $date = new \DateTime();
-        $domain .= '-'.$date->format('YmdHis');
+        $domain .= '-' . $date->format('YmdHis');
         return $domain;
     }
 }
