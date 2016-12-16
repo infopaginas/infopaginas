@@ -99,9 +99,19 @@ class MigrationCommand extends ContainerAwareCommand
 
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
 
+        if ($this->withDebug) {
+            $pageCurlTime = 0;
+            $pageDbTime = 0;
+            $itemCounter = 1;
+        }
+
         for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
             if ($this->withDebug) {
-                $output->writeln('Start request page number ' . $page);
+                $output->writeln(
+                    'Start request page number ' . $page .
+                    '; Curl Timer: ' . ($pageCurlTime/$itemCounter) .
+                    '; DB Timer: ' . ($pageDbTime/$itemCounter)
+                );
             }
 
             $data = $this->getCurlData($baseUrl . '?page=' . $page, $this->localePrimary);
@@ -114,12 +124,18 @@ class MigrationCommand extends ContainerAwareCommand
 
                     if (1) {
                         if ($this->withDebug) {
+                            $itemCounter ++;
                             $output->writeln('Starts request item with id ' . $itemId);
+                            $curlTimer = microtime(true);
                         }
 
                         $itemPrimary = $this->getCurlData($baseUrl . '/' . $itemId, $this->localePrimary);
                         $itemSecond = $this->getCurlData($baseUrl . '/' . $itemId, $this->localeSecond);
                         $subscriptions = $this->getCurlData($baseUrl . '/' . $itemId . '/subscriptions', $this->localePrimary);
+
+                        if ($this->withDebug) {
+                            $dbTimer = microtime(true);
+                        }
 
                         $localities = [];
 
@@ -142,6 +158,13 @@ class MigrationCommand extends ContainerAwareCommand
                         );
 
                         if ($this->withDebug) {
+                            $curlInterval = $dbTimer - $curlTimer;
+                            $dbInterval = microtime(true) - $dbTimer;
+
+                            $pageCurlTime += $curlInterval;
+                            $pageDbTime += $dbInterval;
+
+                            $output->writeln('Curl Timer: ' . $curlInterval . '; DB Timer: ' . $dbInterval);
                             $output->writeln('Finish request item with id ' . $itemId);
                         }
                     } else {
