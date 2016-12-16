@@ -59,7 +59,7 @@ class VideosController extends Controller
                 $this->throwVideoFileIsNotProvidedException();
             }
 
-            $media = $this->getVideoManager()->uploadLocalFile(current($files));
+            $media = $this->getOxaVideoManager()->uploadLocalFile(current($files));
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
@@ -84,7 +84,7 @@ class VideosController extends Controller
 
         try {
             $url = $request->get('url');
-            $media = $this->getVideoManager()->uploadRemoteFile($url);
+            $media = $this->getOxaVideoManager()->uploadRemoteFile($url);
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
@@ -196,7 +196,7 @@ class VideosController extends Controller
     /**
      * @return OxaVideoManager
      */
-    private function getVideoManager() : OxaVideoManager
+    private function getOxaVideoManager() : OxaVideoManager
     {
         return $this->get('oxa.manager.video');
     }
