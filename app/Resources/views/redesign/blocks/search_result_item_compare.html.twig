@@ -105,22 +105,22 @@
                     <div class="share">
                         {% if item.getFacebookURL() %}
                             <div class="share__item facebook">
-                                <a href="{{ item.getFacebookURL() }}" title="Visit business profile on ..."><i class="fa fa-facebook"></i></a>
+                                <a href="{{ item.getFacebookURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                         {% if item.getTwitterURL() %}
                             <div class="share__item twitter">
-                                <a href="{{ item.getTwitterURL() }}" title="Visit business profile on ..."><i class="fa fa-twitter"></i></a>
+                                <a href="{{ item.getTwitterURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                         {% if item.getGoogleURL() %}
                             <div class="share__item google-plus">
-                                <a href="{{ item.getGoogleURL() }}" title="Visit business profile on ..."><i class="fa fa-google-plus"></i></a>
+                                <a href="{{ item.getGoogleURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                         {% if item.getYoutubeURL() %}
                             <div class="share__item youtube">
-                                <a href="{{ item.getYoutubeURL() }}" title="Visit business profile on ..."><i class="fa fa-youtube"></i></a>
+                                <a href="{{ item.getYoutubeURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                     </div>
