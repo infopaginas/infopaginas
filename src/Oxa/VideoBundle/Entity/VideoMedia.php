@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * VideoMedia
  *
- * @ORM\Table(name="wistia_medias")
+ * @ORM\Table(name="video_media")
  * @ORM\Entity(repositoryClass="Oxa\VideoBundle\Repository\VideoMediaRepository")
  */
 class VideoMedia

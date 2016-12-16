@@ -340,8 +340,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->with('Video')
                     ->add('videoFile', FileType::class, [
                         'attr' => [
-                            'accept' => 'mov, avi, mp4, video/quicktime, application/x-troff-msvideo,
-                            video/avi, video/msvideo, video/x-msvideo, video/mp4',
+                            'accept' => 'webm, mp4, ogg, video/webm, video/mp4, video/ogg',
                         ],
                         'data_class' => null,
                         'mapped' => false,
@@ -742,13 +741,7 @@ class BusinessProfileAdmin extends OxaAdmin
             $video = $entity->getVideo();
             $videoMediaData = $this->uploadVideo($entity);
 
-            if ($videoMediaData) {
-                if ($video) {
-                    $videoMediaData['name']        = $video->getName();
-                }
-
-                $videoMedia = new VideoMedia($videoMediaData);
-
+            if ($videoMedia) {
                 $entity->setVideo($videoMedia);
             }
         } else {
