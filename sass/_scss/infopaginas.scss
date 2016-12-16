@@ -692,6 +692,10 @@ $side-padding-mb: 16px;
     height: $toolbar-height-mb;
     line-height: $toolbar-height-mb;
     padding: 0 10px;
+    @media only screen and (max-width: 420px) {
+      font-size: 10px;
+      padding: 0 5px;
+    }
   }
 
   @media only screen and (min-width: 805px) {
@@ -944,7 +948,7 @@ select {
   }
 
   span {
-    display: none;
+    display: inline-block;
 
     @media only screen and (min-width: 420px) {
       display: inline-block;
@@ -1120,10 +1124,6 @@ $thumb-width-mb: 60px;
   @media only screen and (min-width: 805px) {
     width: calc(100% - 80px);
   }
-}
-
-.phantom-link {
-  pointer-events: none;
 }
 
 .badge,
@@ -4364,6 +4364,13 @@ table {
 
 .fa-star, fa-star-o {
   cursor: pointer;
+}
+
+.ui-state-focus {
+  font-weight: bold;
+  display: block;
+  background-color: rgba(150, 150, 150, 0.8);
+  color: #000;
 }
 
 @import '../libs/selectize';

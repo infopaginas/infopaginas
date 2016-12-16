@@ -17,7 +17,7 @@ define(
     mapSearchPage.prototype = new view;
 
     mapSearchPage.prototype.init = function () {
-        this.map = null;
+        window.map = null;
         this.markers = [];
         this.options = {
             itemsListScrollable : '#searchResults',
@@ -42,7 +42,7 @@ define(
     };
 
     mapSearchPage.prototype.initMap = function ( options ) {
-        this.map = new google.maps.Map( document.getElementById( options.mapContainer ), this.options.mapOptions );
+        window.map = new google.maps.Map( document.getElementById( options.mapContainer ), this.options.mapOptions );
 
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers( this.options.markers );
@@ -54,7 +54,7 @@ define(
             bounds.extend( markerItem.marker.getPosition() );
         });
 
-        this.map.fitBounds( bounds );
+        window.map.fitBounds( bounds );
     };
 
     mapSearchPage.prototype.addMarkers = function ( markers )
@@ -70,7 +70,7 @@ define(
                 lat: parseFloat( markerData.latitude ),
                 lng: parseFloat( markerData.longitude )
             },
-            map: this.map,
+            map: window.map,
             title: markerData.name,
             labelContent: "",
             labelInBackground: false,
