@@ -5,6 +5,7 @@ namespace Oxa\VideoBundle\Manager;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VideoManager
@@ -27,10 +28,12 @@ class VideoManager
 
     public function __construct(
         Filesystem $filesystem,
-        VideoMediaManager $videoMediaManager
+        VideoMediaManager $videoMediaManager,
+        ContainerInterface $container
     ) {
         $this->filesystem = $filesystem;
         $this->videoMediaManager = $videoMediaManager;
+        $this->container = $container;
     }
 
     public function removeMedia($id)
@@ -62,7 +65,8 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            throw new \InvalidArgumentException(sprintf('Files of type %s are not allowed.', $data['type']));
+            $message = $this->container->get('translator')->trans('Files of type %s are not allowed', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
         $adapter = $this->filesystem->getAdapter();
@@ -79,7 +83,8 @@ class VideoManager
         $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
 
         if (!$uploadedSize) {
-            throw new \InvalidArgumentException(sprintf('File '.$filename.' is not uploaded. Please contact administrator'));
+            $message = $this->container->get('translator')->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message, $filename));
         }
 
         $video = [
