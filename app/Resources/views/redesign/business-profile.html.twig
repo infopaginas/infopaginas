@@ -9,8 +9,11 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
+        {% if businessProfile.getBackground() %}
+            <div class="container profile-header__container" style="background-image:url({% path businessProfile.getBackground(), 'reference' %});">
+        {% else %}
             <div class="container profile-header__container">
-
+        {% endif %}
                 <header class="page-section profile-header">
                     <div class="item__header container">
                         <div class="rank">
