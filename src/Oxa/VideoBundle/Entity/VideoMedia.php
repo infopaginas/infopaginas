@@ -70,12 +70,6 @@ class VideoMedia
      */
     private $status;
 
-    /**
-     * @ORM\OneToOne(targetEntity="VideoMediaThumbnail", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="thumbnail_id", referencedColumnName="id")
-     */
-    private $thumbnail;
-
     public function __construct(array $videoMediaData = [])
     {
         if (!empty($videoMediaData)) {
@@ -87,11 +81,6 @@ class VideoMedia
             $this->setCreatedAt(new \DateTime());
             $this->setUpdatedAt(new \DateTime());
             $this->setStatus('');
-
-            if (isset($videoMediaData['thumbnail'])) {
-                $thumbnail = new VideoMediaThumbnail($videoMediaData['thumbnail']);
-                $this->setThumbnail($thumbnail);
-            }
         }
 
         return $this;
@@ -281,29 +270,5 @@ class VideoMedia
     public function getStatus()
     {
         return $this->status;
-    }
-
-    /**
-     * Set thumbnail
-     *
-     * @param \Oxa\VideoBundle\Entity\VideoMediaThumbnail $thumbnail
-     *
-     * @return VideoMedia
-     */
-    public function setThumbnail(\Oxa\VideoBundle\Entity\VideoMediaThumbnail $thumbnail = null)
-    {
-        $this->thumbnail = $thumbnail;
-
-        return $this;
-    }
-
-    /**
-     * Get thumbnail
-     *
-     * @return \Oxa\VideoBundle\Entity\VideoMediaThumbnail
-     */
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
     }
 }
