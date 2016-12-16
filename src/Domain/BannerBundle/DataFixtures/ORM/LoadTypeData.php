@@ -61,15 +61,15 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
             ],
             [
                 'code'      => TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
-                'name'      => 'search-auto-bottom-468x60-320x50',
+                'name'      => 'search-auto-bottom-320x50',
                 'placement' => 'Search, compare and catalog pages, auto size',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising (should be set up for both sizes)',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising',
             ],
             [
                 'code'      => TypeInterface::CODE_SEARCH_PAGE_TOP,
-                'name'      => 'search-auto-up-468x60-320x50',
+                'name'      => 'search-auto-up-320x50',
                 'placement' => 'Search, compare and catalog pages',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising (should be set up for both sizes)',
+                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising',
             ],
         ];
     }
