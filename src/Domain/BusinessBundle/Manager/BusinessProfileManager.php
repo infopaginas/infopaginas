@@ -253,8 +253,11 @@ class BusinessProfileManager extends Manager
      */
     public function createProfile() : BusinessProfile
     {
+        $country = $this->getDefaultProfileCountry();
+
         $profile = new BusinessProfile();
         $profile->setIsActive(false);
+        $profile->setCountry($country);
 
         return $profile;
     }
@@ -1245,5 +1248,14 @@ class BusinessProfileManager extends Manager
         ];
 
         return $seoData;
+    }
+
+    public function getDefaultProfileCountry()
+    {
+        $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(
+            ['shortName' => strtoupper(Country::PUERTO_RICO_SHORT_NAME)]
+        );
+
+        return $country;
     }
 }
