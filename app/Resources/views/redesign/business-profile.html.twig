@@ -9,7 +9,7 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
-        {% if businessProfile.getBackground() %}
+        {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
             <div class="container profile-header__container" style="background-image:url({% path businessProfile.getBackground(), 'reference' %});">
         {% else %}
             <div class="container profile-header__container">
@@ -29,7 +29,7 @@
                             </a>
                         </div>
                     </div><!-- item__header -->
-                    {% if businessProfile.getLogo() %}
+                    {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
                         <div class="avatar">
                             {% thumbnail businessProfile.getLogo(), 'preview' %}
                         </div>
