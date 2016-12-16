@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class VideoManager
 {
+    const DEFAULT_URI_UPLOAD_FILE_EXTENSION = '.mp4';
+
+    const MAX_FILENAME_LENGTH = 240;
+
     private static $allowedMimeTypes = [
         'video/mp4',
         'video/webm',
@@ -118,13 +122,13 @@ class VideoManager
         if (isset($this->mimeExtensions[$type])) {
             return $this->mimeExtensions[$type];
         }
-        return '.mp4';
+        return self::DEFAULT_URI_UPLOAD_FILE_EXTENSION;
     }
     
     protected function generateFilenameForUrl($url)
     {
         $domain = str_ireplace('www.', '', parse_url($url, PHP_URL_HOST));
-        if (240 < strlen($domain)) {
+        if (self::MAX_FILENAME_LENGTH < strlen($domain)) {
             $domain = substr($domain, 0, 240);
         }
 
