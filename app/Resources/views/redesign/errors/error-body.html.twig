@@ -1,0 +1,28 @@
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="{% block errorContainerClass %}main{% endblock %}">
+                <div class="article error_container">
+                    <h1>{{ errorTitle|trans }}</h1>
+                    <p class="catalog__intro">
+                        {{ errorMessage|trans }}
+                    </p>
+
+                    <section class="error-section error__search">
+                        <h2>{{ errorSearchText|trans }}</h2>
+
+                        {% block searchErrorInput %}
+                            {% include ':redesign/blocks:search.html.twig' %}
+                        {% endblock %}
+                    </section>
+
+                    <section class="error-section error__categories">
+                        <h2>{{ errorSearchCatalog|trans }}</h2>
+
+                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

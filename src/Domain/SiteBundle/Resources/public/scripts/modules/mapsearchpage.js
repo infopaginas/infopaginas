@@ -24,7 +24,7 @@ define(
             mapContainer : 'map',
             mapOptions   : {
                 center: new google.maps.LatLng( googleMapDefaultCenter ),
-                zoom: 8
+                zoom: googleMapDefaultZoom
             },
             directions: new directions
         };
@@ -44,6 +44,9 @@ define(
     mapSearchPage.prototype.initMap = function ( options ) {
         this.map = new google.maps.Map( document.getElementById( options.mapContainer ), this.options.mapOptions );
 
+        //pass google map to main.js for resizing event
+        map = this.map;
+
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers( this.options.markers );
         }
@@ -55,6 +58,12 @@ define(
         });
 
         this.map.fitBounds( bounds );
+
+        google.maps.event.addListenerOnce( this.map, 'bounds_changed', function( event ) {
+            if ( this.getZoom() > googleMapMinZoom ) {
+                this.setZoom( googleMapMinZoom );
+            }
+        });
     };
 
     mapSearchPage.prototype.addMarkers = function ( markers )
