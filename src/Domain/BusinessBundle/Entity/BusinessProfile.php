@@ -70,6 +70,9 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
     const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
 
+    const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY = 'catalogLocality';
+    const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
+
     const DEFAULT_LOCALE = 'en';
 
     const TRANSLATION_LANG_EN = 'En';
@@ -90,7 +93,6 @@ class BusinessProfile implements
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=255)
-
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $name;
@@ -555,6 +557,7 @@ class BusinessProfile implements
     protected $youtubeURL;
 
     /**
+     * Field related to const BUSINESS_PROFILE_FIELD_COUNTRY
      * @var Country - Country, Business is located in
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Address\Country",
      *     inversedBy="businessProfiles",
@@ -772,6 +775,7 @@ class BusinessProfile implements
     }
 
     /**
+     * Field related to const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY
      * @var $catalogLocality - catalogLocality, Business is located in
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Locality",
      *     inversedBy="businessProfiles",

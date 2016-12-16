@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\Impression;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Entity\Keyword;
@@ -45,11 +46,14 @@ class ReportsController extends Controller
 
         $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
 
+        $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
+
         return $this->render(':redesign:business-profile-report.html.twig', [
             'overviewData'      => $overviewData,
             'filtersForm'       => $filtersForm->createView(),
             'businessProfileId' => $businessProfileId,
-            'businessProfile'   => $businessProfile
+            'businessProfile'   => $businessProfile,
+            'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
         ]);
     }
 

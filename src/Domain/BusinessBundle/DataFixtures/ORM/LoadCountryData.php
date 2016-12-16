@@ -30,7 +30,7 @@ class LoadCountryData extends AbstractFixture implements ContainerAwareInterface
         $data = [
             [
                 'name'      => 'Puerto Rico',
-                'shortName' => 'PR'
+                'shortName' => strtoupper(Country::PUERTO_RICO_SHORT_NAME),
             ], [
                 'name'      => 'Australia',
                 'shortName' => 'AU'
@@ -39,7 +39,7 @@ class LoadCountryData extends AbstractFixture implements ContainerAwareInterface
                 'shortName' => 'BN'
             ], [
                 'name'      => 'United States',
-                'shortName' => 'US'
+                'shortName' => strtoupper(Country::USA_SHORT_NAME),
             ]
         ];
 

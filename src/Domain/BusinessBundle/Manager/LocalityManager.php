@@ -53,23 +53,4 @@ class LocalityManager extends Manager
 
         return $locality;
     }
-
-    public function getLocationMarkersFromLocalityData($localities)
-    {
-        $data = [];
-
-        /** @var Locality $locality */
-        foreach ($localities as $locality) {
-            if ($locality->getLatitude() and $locality->getLongitude()) {
-                $data[] = [
-                    'id'        => $locality->getId(),
-                    'name'      => $locality->getName(),
-                    'latitude'  => $locality->getLatitude(),
-                    'longitude' => $locality->getLongitude(),
-                ];
-            }
-        }
-
-        return json_encode($data);
-    }
 }

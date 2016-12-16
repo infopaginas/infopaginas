@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jquery-ui'], function( $, bootstrap, highcharts, Spin, select ) {
+define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'jquery-ui'], function( $, bootstrap, highcharts, Spin, select, businessProfileClose ) {
     'use strict';
 
     //init reports object variables
@@ -25,6 +25,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'jque
         };
 
         this.spinner = new Spin();
+        this.businessProfileClose = new businessProfileClose;
 
         this.run();
     };

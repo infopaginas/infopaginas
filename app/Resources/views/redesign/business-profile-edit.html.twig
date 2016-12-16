@@ -78,7 +78,13 @@
                         {% endif %}
 
                         <div class="form__actions">
-                            <button type="reset" class="button button--text">{% trans %}Reset{% endtrans %}</button>
+                            {% if businessProfile is defined %}
+                                {% set resetUrl = absolute_url(path('domain_business_profile_edit', {'id': businessProfile.id})) %}
+                            {% else %}
+                                {% set resetUrl = absolute_url(path('domain_business_profile_create')) %}
+                            {% endif %}
+
+                            <a href="{{ resetUrl }}" class="button button--text">{% trans %}Reset{% endtrans %}</a>
                             <button type="submit" class="button button--action" id="saveBusinessProfile">{% trans %}Save changes{% endtrans %}</button>
                         </div><!-- form-actions -->
                     </form>

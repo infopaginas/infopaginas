@@ -48,7 +48,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                                     this.invisibleErrosExists = true;
                                 }
 
-                                for( var key in errors[field] ) {
+                                for( var key in errors[field][phoneField] ) {
                                     $field.after( "<span data-error-message class='error'>" + errors[field][phoneField][phoneFieldItem] + "</span>" );
                                 }
                             }

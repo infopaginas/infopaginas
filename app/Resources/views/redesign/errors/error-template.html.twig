@@ -8,30 +8,7 @@
 {% block searchBlock %}{% endblock %}
 
 {% block body %}
-    <div class="main__container main__container--centered">
-        <div class="container clearfix">
-            <div class="main">
-                <div class="article error_container">
-                    <h1>{{ errorTitle|trans }}</h1>
-                    <p class="catalog__intro">
-                        {{ errorMessage|trans }}
-                    </p>
-
-                    <section class="error-section error__search">
-                        <h2>{{ errorSearchText|trans }}</h2>
-
-                        {% include ':redesign/blocks:search.html.twig' %}
-                    </section>
-
-                    <section class="error-section error__categories">
-                        <h2>{{ errorSearchCatalog|trans }}</h2>
-
-                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
-                    </section>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include ':redesign/errors:error-body.html.twig' %}
 {% endblock %}
 
 {% block scripts %}
