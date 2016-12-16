@@ -15,6 +15,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class VideoMediaEmbedExtension extends \Twig_Extension
 {
+    const DEFAULT_VIDEO_WIDTH  = 640;
+
+    const DEFAULT_VIDEO_HEIGHT = 480;
+
     /**
      * @var VideoMediaEmbedManager
      */
@@ -25,10 +29,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
      * VideoMediaEmbedExtension constructor.
      * @param VideoMediaEmbedManager $videoMediaEmbedManager
      */
-    public function __construct(
-            EngineInterface $templating,
-            Filesystem $filesystem
-    ) {
+    public function __construct(EngineInterface $templating, Filesystem $filesystem) {
         $this->templating        = $templating;
         $this->filesystem        = $filesystem;
     }
@@ -49,10 +50,10 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     public function renderVideoEmbed(VideoMedia $media, array $dimensions = []) : string
     {
         if (empty($dimensions['height'])) {
-            $dimensions['height'] = 480;
+            $dimensions['height'] = self::DEFAULT_VIDEO_HEIGHT;
         }
         if (empty($dimensions['width'])) {
-            $dimensions['width'] = 640;
+            $dimensions['width'] = self::DEFAULT_VIDEO_WIDTH;
         }
 
         $expires = new \DateTime();
