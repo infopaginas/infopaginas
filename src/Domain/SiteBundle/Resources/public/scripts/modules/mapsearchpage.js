@@ -24,7 +24,7 @@ define(
             mapContainer : 'map',
             mapOptions   : {
                 center: new google.maps.LatLng( googleMapDefaultCenter ),
-                zoom: 8
+                zoom: googleMapDefaultZoom
             },
             directions: new directions
         };
@@ -60,8 +60,8 @@ define(
         this.map.fitBounds( bounds );
 
         google.maps.event.addListenerOnce( this.map, 'bounds_changed', function( event ) {
-            if ( this.getZoom() > 15 ) {
-                this.setZoom( 15 );
+            if ( this.getZoom() > googleMapMinZoom ) {
+                this.setZoom( googleMapMinZoom );
             }
         });
     };
