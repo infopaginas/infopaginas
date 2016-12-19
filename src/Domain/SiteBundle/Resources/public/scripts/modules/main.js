@@ -454,30 +454,6 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
             $( 'body' ).removeClass( 'body--no-scroll' );
         });
 
-        $.fn.openResult = function() {
-            $(this).each(function() {
-                var $this;
-                $this = $(this);
-                if ($this.closest( resultItem ).is('.results__item--active')) {
-                    resultItem.removeClass( 'results__item--active' );
-                } else {
-                    $( this ).closest( resultItem ).addClass( 'results__item--active' );
-                    $( this ).closest( resultItem ).siblings().removeClass( 'results__item--active' );
-                    $( this ).closest( resultItem ).find('a').unbind('click');
-                    // $( this ).closest( resultItem ).find( detailLink ).addClass( 'results__item--active' );
-                    // $.Velocity.RunSequence(copenResultSequence, { mobileHA: true });
-                }
-            });
-        };
-
-        resultClickzone.on( 'click', function() {
-            $( this ).openResult();
-        });
-
-        $('.phantom-link').on( 'click', function() {
-            event.preventDefault();
-        });
-
         //custom bg on home for mobile
         var videoContainer = $('.video-header__container');
         var url = videoContainer.data('mbg');
