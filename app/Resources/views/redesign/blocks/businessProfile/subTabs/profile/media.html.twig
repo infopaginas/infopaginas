@@ -60,8 +60,6 @@
     </section>
 
     {% if businessProfileForm.video is defined %}
-        <div id="videos-spin-container"></div>
-
         <section class="page-section">
             <h3 class="language-title">{% trans %}Video upload{% endtrans %}</h3>
 
@@ -129,8 +127,8 @@
         </section>
     {% endif %}
 </div>
-    <script>
-        var logoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO') }}';
-        var photoTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES') }}';
-        var backgroundTypeConstant = '{{ constant('Oxa\\Sonata\\MediaBundle\\Model\\OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND') }}';
-    </script>
+<script>
+    var logoTypeConstant = '{{ logoTypeConstant }}';
+    var photoTypeConstant = '{{ photoTypeConstant }}';
+    var backgroundTypeConstant = '{{ backgroundTypeConstant }}';
+</script>
