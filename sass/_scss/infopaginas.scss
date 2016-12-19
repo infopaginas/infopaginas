@@ -1069,20 +1069,6 @@ transition-timing-function: ease-in-out;
   }
 }
 
-.results__item--normal {
-  .item__actions {
-    display: flex;
-
-    .item__primary-actions {
-      display: flex;
-    }
-  }
-
-  .detail-link {
-    display: flex;
-  }
-}
-
 .results__item--active {
 
   .item__actions {
@@ -1442,6 +1428,9 @@ $thumb-width-mb: 60px;
 
 .ad-sidebar {
 
+  display: flex;
+  justify-content: center;
+
   img {
     width: 100%;
     max-width: 100%;
@@ -1726,13 +1715,7 @@ $thumb-width-mb: 60px;
 }
 
 .profile-map {
-  height: 250px;
-  @media only screen and (min-width: 805px) {
-    height: auto;
-  }
-  @media only screen and (max-width: 420px) {
-    height: auto;
-  }
+  height: auto;
 }
 
 #map2 {
