@@ -283,13 +283,10 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         var self = this;
 
         $(document).on( 'change', this.html.imageTypeSelectClassname, function() {
-            console.debug($( this ));
             if ( typeof logoTypeConstant !== undefined && $( this ).val() == logoTypeConstant ) {
                 var triggeredSelect = this;
 
                 $.each( $( self.html.imageTypeSelectClassname ), function() {
-                    console.debug( $( this ).val() );
-                    console.debug($( triggeredSelect ).closest( '.image-row' ).children('.hidden-media').val());
                     if ( $( this ).val() == logoTypeConstant &&
                         $( triggeredSelect ).closest( '.image-row' ).children('.hidden-media').val() != $( this ).closest( '.image-row' ).children('.hidden-media').val()
                     ) {
