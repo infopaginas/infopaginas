@@ -437,8 +437,6 @@ class MigrationCommand extends ContainerAwareCommand
                         $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
                     }
 
-                    $subscription = $this->saveEntity($subscription);
-
                     $entity->addSubscription($subscription);
                 } else {
                     if ($this->withDebug) {
