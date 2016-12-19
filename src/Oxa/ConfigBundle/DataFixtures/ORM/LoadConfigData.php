@@ -61,7 +61,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::FOOTER_CONTENT,
                 'title' => 'Footer content',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:footer_content.html.twig'
                 ),
                 'format' => 'html',
@@ -75,7 +75,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ],[
                 'key' => ConfigInterface::MAIL_REGISTRATION_TEMPLATE,
                 'title' => 'Registration mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_registration_template.html.twig'
                 ),
                 'format' => 'html',
@@ -83,7 +83,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ],[
                 'key' => ConfigInterface::MAIL_NEW_MERCHANT_TEMPLATE,
                 'title' => 'New merchant mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_new_merchant_template.html.twig'
                 ),
                 'format' => 'html',
@@ -91,7 +91,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ],[
                 'key' => ConfigInterface::MAIL_RESET_PASSWORD_TEMPLATE,
                 'title' => 'Reset password mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_reset_password_template.html.twig'
                 ),
                 'format' => 'html',
@@ -99,7 +99,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::MAIL_TEMPLATE_TO_USER,
                 'title' => 'User mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_template_to_user.html.twig'
                 ),
                 'format' => 'html',
@@ -107,7 +107,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::MAIL_CHANGE_WAS_REJECTED,
                 'title' => 'User mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_change_was_rejected.html.twig'
                 ),
                 'format' => 'html',
