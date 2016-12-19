@@ -312,6 +312,7 @@ class BusinessProfileManager extends Manager
      */
     public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en')
     {
+        die(__METHOD__);
         if (!$businessProfile->getId()) {
             $businessProfile->setIsActive(false);
         }
@@ -785,6 +786,8 @@ class BusinessProfileManager extends Manager
 
         $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
         $path = $provider->getFilesystem()->getAdapter()->getDirectory() . DIRECTORY_SEPARATOR . $filepath;
+
+        $res = $provider->getFilesystem()->has($filepath);
 
         $media->setBinaryContent($path);
         $media->setProviderReference($media->getPreviousProviderReference());

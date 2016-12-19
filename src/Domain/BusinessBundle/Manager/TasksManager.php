@@ -99,9 +99,9 @@ class TasksManager
      * @param Collection      $oldCategories
      * @return array
      */
-    public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile, $oldCategories) : array
+    public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile, $oldCategories, $oldImages) : array
     {
-        $changeSet = ChangeSetCalculator::getChangeSet($this->em, $businessProfile, $oldCategories);
+        $changeSet = ChangeSetCalculator::getChangeSet($this->em, $businessProfile, $oldCategories, $oldImages);
 
         if ($changeSet->getEntries()->isEmpty()) {
             return [];
