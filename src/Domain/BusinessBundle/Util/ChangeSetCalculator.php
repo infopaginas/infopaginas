@@ -42,7 +42,7 @@ class ChangeSetCalculator
      * @param Collection $oldCategories
      * @return ChangeSet
      */
-    public static function getChangeSet(EntityManagerInterface $em, $entity, $oldCategories, $oldImages) : ChangeSet
+    public static function getChangeSet(EntityManagerInterface $em, $entity, $oldCategories) : ChangeSet
     {
         $imageFields          = ChangeSetCollectorUtil::getEntityLogoAndBackgroundChangeSet($em, $entity);
         $collectionsChangeSet = ChangeSetCollectorUtil::getEntityCollectionsChangeSet($em, $entity, $oldCategories);

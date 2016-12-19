@@ -92,7 +92,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             //workaround for category/subcategories update
             $oldCategories = clone $businessProfile->getCategories();
-            $oldImages     = clone $businessProfile->getImages();
         }
 
         if ($this->request->getMethod() == 'POST') {
@@ -147,7 +146,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $businessProfile = $this->handleTranslationBlock($businessProfile, $post);
                 $businessProfile = $this->handleSeoBlockUpdate($businessProfile);
 
-                $this->onSuccess($businessProfile, $oldCategories, $oldImages);
+                $this->onSuccess($businessProfile, $oldCategories);
                 return true;
             }
         }
@@ -159,7 +158,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
      * @param BusinessProfile $businessProfile
      * @param Collection      $oldCategories
      */
-    private function onSuccess(BusinessProfile $businessProfile, $oldCategories, $oldImages)
+    private function onSuccess(BusinessProfile $businessProfile, $oldCategories)
     {
         if (!$businessProfile->getId()) {
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
@@ -174,7 +173,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
 
-            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories, $oldImages);
+            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
         }
     }
 
