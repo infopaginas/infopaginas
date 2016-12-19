@@ -16,17 +16,7 @@
                         <h2 class="section__title">{% trans %}Reviews{% endtrans %}</h2>
                         <div class="articles__container clearfix">
                             {% for review in reviewsResultDTO.resultSet %}
-                                <section class="news__item">
-                                    <h3 class="news__title">
-                                        <i class="fa fa-user" aria-hidden="true"></i>
-                                        {{ review.getUsername() }}
-                                    </h3>
-                                    <p>{{ review.getCreatedAt()|date(review_date_format) }}</p>
-                                    <div class="rank">
-                                        {% include ':widgets:rating.html.twig' with { 'ratingValue': review.getRating() } %}
-                                    </div>
-                                    <p>{{ review.getContent() }}</p>
-                                </section>
+                                {% include ':redesign/blocks:review-item.html.twig' %}
                             {% endfor %}
                         </div>
                     </section>
