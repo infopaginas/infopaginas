@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/14/16
- * Time: 12:02 PM
- */
 
 namespace Domain\BusinessBundle\Manager;
 
@@ -117,5 +111,57 @@ class SubscriptionStatusManager
         }
 
         return $businessProfiles;
+    }
+
+    /**
+     * Update Free plan subscription for businesses without subscription
+     *
+     * @param BusinessProfile $businessProfile
+     * @param EntityManager $em
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function updateBusinessProfileFreeSubscription(BusinessProfile $businessProfile, EntityManager $em)
+    {
+        $currentSubscriptions = $businessProfile->getSubscriptions();
+
+        /* @var $currentSubscriptions Subscription[] */
+        foreach ($currentSubscriptions as $item) {
+            if ($item->getStatus() === StatusInterface::STATUS_ACTIVE) {
+                return $businessProfile;
+            }
+        }
+
+        $businessProfile = $this->setBusinessProfileFreeSubscription($businessProfile, $em);
+
+        return $businessProfile;
+    }
+
+    /**
+     * Set Free plan subscription for businesses without subscription
+     *
+     * @param BusinessProfile $businessProfile
+     * @param EntityManager $em
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function setBusinessProfileFreeSubscription(BusinessProfile $businessProfile, EntityManager $em)
+    {
+        $freeSubscriptionPlan = $em
+            ->getRepository('DomainBusinessBundle:SubscriptionPlan')
+            ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
+
+        $startDate = new \DateTime();
+        $endDate   = new \DateTime();
+        $endDate->modify('+1 year');
+
+        $subscription = new Subscription();
+        $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+        $subscription->setBusinessProfile($businessProfile);
+        $subscription->setSubscriptionPlan($freeSubscriptionPlan);
+        $subscription->setStartDate($startDate);
+        $subscription->setEndDate($endDate);
+
+        $em->persist($subscription);
+
+        return $businessProfile;
     }
 }
