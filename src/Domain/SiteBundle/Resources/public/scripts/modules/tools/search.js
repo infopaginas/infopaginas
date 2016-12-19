@@ -28,6 +28,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
                 evt.preventDefault();
                 $( options.searchSelector ).val('');
                 $( options.searchSelector ).css( {"border-color": "#FF3300"}) ;
+                $( options.searchSelector ).addClass('search-input_red-placeholder');
                 $( options.searchSelector ).parent().addClass( "validation-error" );
                 $( options.searchSelector ).attr( "placeholder", $( options.searchSelector).data( "error-placeholder" ) );
             }
@@ -37,6 +38,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             if( $( options.searchSelector ).val() !== '' ){
                 $( options.searchSelector ).css( {"border-color": "#cadb53"} );
                 $( options.searchSelector ).parent().removeClass( "validation-error" );
+                $( options.searchSelector ).removeClass('search-input_red-placeholder');
                 $( options.searchSelector ).attr( "placeholder", $( options.searchSelector).data( "placeholder" ) );
             }
         });

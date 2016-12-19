@@ -132,16 +132,19 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
     var sort = $( '.sort' );
     var filter = $( '.filter' );
     var sortButton = $( '.sort-button' );
+    var results = $( '.results' );
 
     $.fn.toggleSorting = function () {
         if ( sortToggle.is( '.active' ) ) {
             sortToggle.removeClass( 'active' );
             sort.removeClass( 'sort--on' );
+            results.removeClass( 'active__toggle' );
         } else {
             filterToggle.removeClass( 'active' );
             filter.removeClass( 'filter--on' );
             sortToggle.addClass( 'active' );
             sort.addClass( 'sort--on' );
+            results.addClass( 'active__toggle' );
         }
     };
 
@@ -153,11 +156,13 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
         if ( filterToggle.is( '.active' ) ) {
             filterToggle.removeClass( 'active' );
             filter.removeClass( 'filter--on' );
+            results.removeClass( 'active__toggle' );
         } else {
             sortToggle.removeClass( 'active' );
             sort.removeClass( 'sort--on' );
             filterToggle.addClass( 'active' );
             filter.addClass( 'filter--on' );
+            results.addClass( 'active__toggle' );
         }
     };
 
