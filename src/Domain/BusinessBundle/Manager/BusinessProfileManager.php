@@ -786,6 +786,10 @@ class BusinessProfileManager extends Manager
         $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
         $path = $provider->getFilesystem()->getAdapter()->getDirectory() . DIRECTORY_SEPARATOR . $filepath;
 
+        if (!$provider->getFilesystem()->has($filepath)) {
+            return $media;
+        }
+
         $media->setBinaryContent($path);
         $media->setProviderReference($media->getPreviousProviderReference());
         $media->setContext($newContext);

@@ -20,6 +20,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Domain\BannerBundle\Model\TypeInterface;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
@@ -71,6 +72,9 @@ class ProfileController extends Controller
             'businessProfileForm' => $businessProfileForm->createView(),
             'businessProfile'     => $businessProfile,
             'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
+            'logoTypeConstant'          => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+            'photoTypeConstant'         => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
+            'backgroundTypeConstant'    => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
         ]);
     }
 

@@ -62,6 +62,9 @@ class BusinessGalleryType extends AbstractType
                 'label' => 'Description',
             ])
             ->add('type', ChoiceType::class, [
+                'attr'  => [
+                    'class' => 'select-image-type',
+                ],
                 'choices'  => $options,
                 'expanded' => false,
                 'label'    => 'Type',

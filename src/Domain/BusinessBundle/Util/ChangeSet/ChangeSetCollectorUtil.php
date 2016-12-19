@@ -137,7 +137,6 @@ class ChangeSetCollectorUtil
     public static function getChangeSetEntryForImages(EntityManagerInterface $em, $entity, $property, $className)
     {
         $collection = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertyValue($entity, $property);
-
         $insertDiffVar = $collection->getInsertDiff();
         $deleteDiffVar = $collection->getDeleteDiff();
 
