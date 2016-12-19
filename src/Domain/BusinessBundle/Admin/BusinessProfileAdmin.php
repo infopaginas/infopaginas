@@ -752,8 +752,8 @@ class BusinessProfileAdmin extends OxaAdmin
             $video = $entity->getVideo();
             $videoMediaData = $this->uploadVideo($entity);
 
-            if ($videoMedia) {
-                $entity->setVideo($videoMedia);
+            if ($videoMediaData) {
+                $entity->setVideo($videoMediaData);
             }
         } else {
             if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
@@ -790,7 +790,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 return $media;
             }
 
-            $media = $container->get('oxa.manager.video')->uploadLocalFileData(current($files));
+            $media = $container->get('oxa.manager.video')->uploadLocalFile(current($files));
         }
 
         return $media;
