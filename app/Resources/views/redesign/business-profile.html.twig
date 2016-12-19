@@ -239,6 +239,17 @@
                             </section>
                         {% endif %}
 
+                        {% if lastReview is not null %}
+                            <section class="last__review">
+                                <h3>{% trans %}Last review{% endtrans %}</h3>
+                                {% include ':redesign/blocks:review-item.html.twig' with {'review': lastReview} %}
+
+                                <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.getId()})) }}">
+                                    {% trans %}View more reviews{% endtrans %}
+                                </a>
+                            </section>
+                        {% endif %}
+
                         {% include ':redesign/blocks/banners:static-page-bottom.html.twig' %}
 
                         <section class="page-section profile-map">
