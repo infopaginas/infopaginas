@@ -63,6 +63,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     videos.prototype.onRequestSuccess = function( response ) {
         if( response.success ) {
             $( this.html.videoContainerId ).html( response.message );
+            this.updateFieldSelectionFocus();
         } else {
             this.videoErrorHandler( response.message );
         }
@@ -121,7 +122,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
             if( that.checkMaxAllowedFilesCount( files ) == false ) {
                 var error = $( that.html.remoteVideoURLInputId ).data( 'error-size-limit' );
 
-                this.videoErrorHandler( error );
+                that.videoErrorHandler( error );
                 return false;
             }
 
@@ -197,6 +198,20 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
         $remoteVideoURLInput.parent().find( 'span[data-error-message]' ).remove();
 
         return false;
+    };
+
+    videos.prototype.updateFieldSelectionFocus = function () {
+        $( '.form input, .form textarea' ).each(function() {
+            var $this;
+
+            $this = $( this );
+            if ($this.prop( 'value' ).length !== 0){
+                $this.parent().addClass( 'field-active' );
+            } else {
+                $this.parent().removeClass( 'field-active field-filled' );
+                $this.parent().find( 'label' ).removeClass( 'label-active' );
+            }
+        });
     };
 
     return videos;
