@@ -1430,6 +1430,7 @@ $thumb-width-mb: 60px;
 
   display: flex;
   justify-content: center;
+  overflow: hidden;
 
   img {
     width: 100%;
