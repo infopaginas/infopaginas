@@ -2158,6 +2158,12 @@ $thumb-width-mb: 60px;
     padding: 0 20px;
     margin: 0;
     margin-bottom: 10px;
+    overflow-wrap: break-word;
+  }
+
+  .rank {
+    padding: 0 20px;
+    margin-bottom: 10px;
   }
 }
 
@@ -4560,6 +4566,18 @@ input[type='radio'], input[type='checkbox'] {
       color: red;
     }
   }
+}
+
+#customDatesContainer {
+  & input {
+    padding: 0 22px;
+    height: auto;
+    line-height: normal;
+  }
+}
+
+#domain_business_bundle_business_review_type_content {
+  line-height: normal;
 }
 
 @import '../libs/selectize';
