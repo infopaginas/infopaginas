@@ -25,6 +25,7 @@ use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
 use Domain\BusinessBundle\Entity\Translation\TagTranslation;
 use \Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 
 class MigrationCommand extends ContainerAwareCommand
 {
@@ -52,6 +53,8 @@ class MigrationCommand extends ContainerAwareCommand
 
         $this->localePrimary = 'en';
         $this->localeSecond = 'es';
+
+        $this->totalTimer = 0;
 
         $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(['shortName' => 'PR']);
 
@@ -103,6 +106,7 @@ class MigrationCommand extends ContainerAwareCommand
             $pageCurlTime = 0;
             $pageDbTime = 0;
             $itemCounter = 1;
+            $this->totalTimer = microtime(true);
         }
 
         for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
@@ -177,6 +181,7 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         if ($this->withDebug) {
+            $output->writeln('Total time: '.(microtime(true) - $this->totalTimer));
             $output->writeln('Finish requests');
         }
     }
@@ -287,7 +292,7 @@ class MigrationCommand extends ContainerAwareCommand
 
             $pathWeb = $container->get('kernel')->getRootDir() .
                 $container->getParameter('image_back_up_path') .
-                $business->id;
+                SiteHelper::generateBusinessSubfolder($business->id);
 
             foreach ($profile->images as $image) {
                 if ($image->label == 'logo') {
