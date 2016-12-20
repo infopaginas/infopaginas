@@ -337,39 +337,57 @@ class BusinessProfileAdmin extends OxaAdmin
             if (!$businessProfile->getVideo()) {
                 $formMapper
                     ->tab('Profile')
-                    ->with('Video')
-                    ->add('videoFile', FileType::class, [
-                        'attr' => [
-                            'accept' => 'webm, mp4, ogg, video/webm, video/mp4, video/ogg',
-                        ],
-                        'data_class' => null,
-                        'mapped' => false,
-                        'required' => false,
-                    ])
-                    ->add('video', VideoMediaType::class, [
-                        'data_class' => 'Oxa\VideoBundle\Entity\VideoMedia',
-                        'by_reference' => false,
-                        'required' => false,
-                    ])
-                    ->end()
+                        ->with('Video')
+                            ->add('videoFile', FileType::class, [
+                                'attr' => [
+                                    'accept' => 'webm, mp4, ogg, video/webm, video/mp4, video/ogg',
+                                ],
+                                'data_class' => null,
+                                'mapped' => false,
+                                'required' => false,
+                            ])
+                            ->add('videoUrl', TextType::class, [
+                                'data_class' => null,
+                                'mapped' => false,
+                                'required' => false,
+                            ])
+                        ->end()
                     ->end();
             } else {
                 $formMapper
                     ->tab('Profile')
-                    ->with('Video')
-                    ->add('removeVideo', CheckboxType::class, [
-                        'mapped' => false,
-                        'required' => false,
-                    ])
-                    ->add('videoTitle', TextType::class, [
-                        'mapped' => false,
-                        'required' => false,
-                        'attr' => [
-                            'value' => $businessProfile->getVideo()->getName(),
-                        ],
-                    ])
+                        ->with('Video')
+                            ->add('removeVideo', CheckboxType::class, [
+                                'mapped' => false,
+                                'required' => false,
+                            ])
+                            ->add('videoTitle', TextType::class, [
+                                'mapped' => false,
+                                'required' => false,
+                                'attr' => [
+                                    'value' => $businessProfile->getVideo()->getName(),
+                                ],
+                            ])
+                            ->add('videoFile', FileType::class, [
+                                'attr' => [
+                                    'accept' => 'webm, mp4, ogg, video/webm, video/mp4, video/ogg',
+                                    'data-hidden-field' => true,
+                                ],
+                                'data_class' => null,
+                                'mapped' => false,
+                                'required' => false,
+                            ])
+                            ->add('videoUrl', TextType::class, [
+                                'attr' => [
+                                    'data-hidden-field' => true,
+                                ],
+                                'data_class' => null,
+                                'mapped' => false,
+                                'required' => false,
+                            ])
+                        ->end()
                     ->end()
-                    ->end();
+                ;
             }
         }
 
@@ -748,26 +766,23 @@ class BusinessProfileAdmin extends OxaAdmin
         $request = Request::createFromGlobals();
         $files = current($request->files->all());
 
+        if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
+            $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
+            $video = null;
+        }
+
         if ($files) {
-            $video = $entity->getVideo();
             $videoMediaData = $this->uploadVideo($entity);
 
             if ($videoMediaData) {
                 $entity->setVideo($videoMediaData);
-            }
-        } else {
-            if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
-                $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
-                $video = null;
             } else {
                 $video = $entity->getVideo();
 
                 if ($video) {
-                    $video->setName($form->get('name')->getData());
+                    $video->setName($form->get('videoTitle')->getData());
                 }
             }
-
-            $entity->setVideo($video);
         }
 
         return $entity;
@@ -785,12 +800,25 @@ class BusinessProfileAdmin extends OxaAdmin
         $files = current($request->files->all());
 
         if ($files) {
-
             if (!isset($files['videoFile']) || (isset($files['videoFile']) && $files['videoFile'] == null)) {
+                $form = $this->getForm();
+
+                if ($form->has('videoUrl') && $form->get('videoUrl')->getData()) {
+                    try {
+                        $media = $container->get('oxa.manager.video')->uploadRemoteFile($form->get('videoUrl')->getData());
+                    } catch (\Exception $e) {
+                        $media = null;
+                    }
+                }
+
                 return $media;
             }
 
-            $media = $container->get('oxa.manager.video')->uploadLocalFile(current($files));
+            try {
+                $media = $container->get('oxa.manager.video')->uploadLocalFile(current($files));
+            } catch (\Exception $e) {
+                $media = null;
+            }
         }
 
         return $media;

@@ -117,7 +117,7 @@ class VideoManager
         return $this->videoMediaManager->save($uploadedFileData);
     }
 
-    protected function getExtensionByMime(string $type)
+    protected function getExtensionByMime($type)
     {
         if (isset($this->mimeExtensions[$type])) {
             return $this->mimeExtensions[$type];

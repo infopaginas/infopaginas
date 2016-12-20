@@ -1,5 +1,6 @@
 $( document ).ready( function() {
     var categoryField = $( '#' + formId + '_categories' );
+    var removeVideo   = $( '#' + formId + '_removeVideo' );
 
     $.each( ['#' + formId + '_serviceAreasType label', '#' + formId + '_serviceAreasType label ins'], function( index, fieldId ) {
         $( fieldId ).on( 'click', function() {
@@ -33,6 +34,15 @@ $( document ).ready( function() {
         } );
     } );
 
+    hideVideoAdd();
+
+    removeVideo.on( 'ifChecked ifUnchecked' , function( e, aux ){
+        if( removeVideo.prop( 'checked' ) ){
+            showVideoAdd();
+        }else{
+            hideVideoAdd();
+        }
+    });
 
     var useMapAddress = $( '#' + formId + '_useMapAddress' );
 
@@ -97,6 +107,18 @@ $( document ).ready( function() {
                 input.removeAttr( 'disabled' );
             }
         } );
+    }
+
+    function hideVideoAdd() {
+        $( '#' + formId + '_videoFile[data-hidden-field]').parent().parent().hide();
+        $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().hide();
+        $( '#' + formId + '_videoTitle' ).parent().parent().show();
+    }
+
+    function showVideoAdd() {
+        $( '#' + formId + '_videoFile[data-hidden-field]' ).parent().parent().show();
+        $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().show();
+        $( '#' + formId + '_videoTitle' ).parent().parent().hide();
     }
 
     setUseMapAddress();
