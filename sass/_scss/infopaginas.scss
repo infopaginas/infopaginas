@@ -4580,5 +4580,17 @@ input[type='radio'], input[type='checkbox'] {
   line-height: normal;
 }
 
+.profile-header__container_distorched-bg {
+  display: none;
+  background-size: cover;
+  @media only screen and (max-width: 805px) {+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: opacity(0.5);
+  }
+}
+
 @import '../libs/selectize';
 @import '../libs/slick';
