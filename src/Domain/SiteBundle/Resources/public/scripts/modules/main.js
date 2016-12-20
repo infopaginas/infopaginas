@@ -1,4 +1,4 @@
-define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
+define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( $ ) {
     'use strict';
 
     var headerSearch = $( '#searchBox' );
@@ -288,23 +288,15 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui'], function( $ ) {
             }
         });
 
-        var Selectize = require('selectize');
-        Selectize.define( 'no-delete', function( options ) {
-            this.deleteSelection = function() {};
-        });
-
         $('#domain_business_bundle_business_profile_form_type_subcategories, #domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
             plugins: ['remove_button'],
             delimiter: ',',
             persist: false
         });
 
-        $('#domain_business_bundle_business_profile_form_type_categories, #domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality').selectize({
-            plugins: ['remove_button', 'no-delete'],
-            delimiter: ',',
-            persist: false,
-            allowEmptyOption: false
-        });
+        var singleSelects = $('#domain_business_bundle_business_profile_form_type_categories, #domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');
+
+        singleSelects.select2();
 
         $('#select-from, #select-to').selectize({
             maxItems: 1
