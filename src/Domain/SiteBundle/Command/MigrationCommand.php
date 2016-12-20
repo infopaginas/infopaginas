@@ -53,26 +53,6 @@ class MigrationCommand extends ContainerAwareCommand
         $this->localePrimary = 'en';
         $this->localeSecond = 'es';
 
-        $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(['shortName' => 'PR']);
-
-        // get subscription plans
-
-        $planMapping = [
-            SubscriptionPlanInterface::CODE_FREE => 'Free',
-            SubscriptionPlanInterface::CODE_PRIORITY => 'Priority',
-            SubscriptionPlanInterface::CODE_PREMIUM_PLUS => 'Premium Plus',
-            SubscriptionPlanInterface::CODE_PREMIUM_GOLD => 'Premium Gold',
-            SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM => 'Premium Platinum',
-        ];
-
-        $plans = $this->em->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();
-
-        $this->subscriptionPlans = [];
-
-        foreach ($plans as $item) {
-            $this->subscriptionPlans[$planMapping[$item->getCode()]] = $item;
-        }
-
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
         } else {
@@ -106,6 +86,28 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
+
+            // see http://www.doctrine-project.org/2009/08/07/doctrine2-batch-processing.html
+            $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(['shortName' => 'PR']);
+
+            // get subscription plans
+
+            $planMapping = [
+                SubscriptionPlanInterface::CODE_FREE => 'Free',
+                SubscriptionPlanInterface::CODE_PRIORITY => 'Priority',
+                SubscriptionPlanInterface::CODE_PREMIUM_PLUS => 'Premium Plus',
+                SubscriptionPlanInterface::CODE_PREMIUM_GOLD => 'Premium Gold',
+                SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM => 'Premium Platinum',
+            ];
+
+            $plans = $this->em->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();
+
+            $this->subscriptionPlans = [];
+
+            foreach ($plans as $item) {
+                $this->subscriptionPlans[$planMapping[$item->getCode()]] = $item;
+            }
+
             if ($this->withDebug) {
                 $output->writeln(
                     'Start request page number ' . $page .
@@ -173,6 +175,9 @@ class MigrationCommand extends ContainerAwareCommand
                         }
                     }
                 }
+
+                $this->em->flush();
+                $this->em->clear();
             }
         }
 
@@ -480,7 +485,7 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setDescriptionEn($descriptionEn);
         $entity->setDescriptionEs($descriptionEs);
 
-        $entity = $this->saveEntity($entity);
+        $this->em->persist($entity);
 
         // add translations to profile
 
@@ -506,8 +511,6 @@ class MigrationCommand extends ContainerAwareCommand
                 $this->addTranslation($translation, $brandSecond, $entity, 'brands');
             }
         }
-
-        $this->em->flush();
     }
 
     private function loadCategory($pair)
