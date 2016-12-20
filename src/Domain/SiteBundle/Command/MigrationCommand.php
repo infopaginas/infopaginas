@@ -446,6 +446,9 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
+        $subscriptionManager = $this->getContainer()->get('domain_business.manager.subscription_status_manager');
+        $entity = $subscriptionManager->updateBusinessProfileFreeSubscription($entity, $this->em);
+
         $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $this->getContainer());
         $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $this->getContainer());
 
