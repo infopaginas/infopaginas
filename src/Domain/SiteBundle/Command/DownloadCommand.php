@@ -102,39 +102,31 @@ class DownloadCommand extends ContainerAwareCommand
 
             if ($data) {
                 foreach ($data as $item) {
-                    // todo - check if exists by id
-
                     $itemId = $item->_id;
 
-                    if (1) {
-                        if ($this->withDebug) {
-                            $itemCounter ++;
-                            $output->writeln('Starts request item with id ' . $itemId);
-                            $curlTimer = microtime(true);
-                        }
+                    if ($this->withDebug) {
+                        $itemCounter ++;
+                        $output->writeln('Starts request item with id ' . $itemId);
+                        $curlTimer = microtime(true);
+                    }
 
-                        $itemPrimary = $this->getCurlData($baseUrl . '/' . $itemId, $this->localePrimary);
+                    $itemPrimary = $this->getCurlData($baseUrl . '/' . $itemId, $this->localePrimary);
 
-                        if ($this->withDebug) {
-                            $dbTimer = microtime(true);
-                        }
+                    if ($this->withDebug) {
+                        $dbTimer = microtime(true);
+                    }
 
-                        $this->addBusinessProfileByApiData($itemPrimary);
+                    $this->addBusinessProfileByApiData($itemPrimary);
 
-                        if ($this->withDebug) {
-                            $curlInterval = $dbTimer - $curlTimer;
-                            $dbInterval = microtime(true) - $dbTimer;
+                    if ($this->withDebug) {
+                        $curlInterval = $dbTimer - $curlTimer;
+                        $dbInterval = microtime(true) - $dbTimer;
 
-                            $pageCurlTime += $curlInterval;
-                            $pageDbTime += $dbInterval;
+                        $pageCurlTime += $curlInterval;
+                        $pageDbTime += $dbInterval;
 
-                            $output->writeln('Curl Timer: ' . $curlInterval . '; DB Timer: ' . $dbInterval);
-                            $output->writeln('Finish request item with id ' . $itemId);
-                        }
-                    } else {
-                        if ($this->withDebug) {
-                            $output->writeln('Skip as existed item with id ' . $itemId);
-                        }
+                        $output->writeln('Curl Timer: ' . $curlInterval . '; DB Timer: ' . $dbInterval);
+                        $output->writeln('Finish request item with id ' . $itemId);
                     }
                 }
             }
@@ -144,7 +136,7 @@ class DownloadCommand extends ContainerAwareCommand
             $output->writeln('');
             $output->writeln('Total time: ' . (microtime(true) - $timeStart));
 
-//$this->output->writeln('Conf: '.$this->configureTime.';    Load: '.$this->downloadTime.';    Move: '.$this->moveTime);
+//$this->output->writeln('Conf: ' . $this->configureTime . ';    Load: ' . $this->downloadTime . ';    Move: ' . $this->moveTime);
 
             $output->writeln('Finish requests');
         }
@@ -204,18 +196,19 @@ class DownloadCommand extends ContainerAwareCommand
                 $path = $downloadedPath . $filename;
                 if (!file_exists($path)) {
                     $urlPath = 'http://assets3.drxlive.com' . $image->image->url;
-                    $content .= $urlPath."\n";
+                    $content .= $urlPath . "\n";
+//  Save next string for possible reliable download
 //                    $this->downloadImageFromUrl($urlPath, $downloadedPath, $filename);
                 }
             }
             if ($content) {
                 file_put_contents($tmpFile, $content);
 
-                shell_exec('wget -c -P '.$downloadedPath.' -i '.$tmpFile);
+                shell_exec('wget -q -c -P ' . $downloadedPath . ' -i ' . $tmpFile);
 
             }
         }
-        $this->output->writeln('Loaded images for: '.(microtime(true) - $timer));
+        $this->output->writeln('Loaded images for: ' . (microtime(true) - $timer));
     }
 
     protected function getBaseDownloadDir()
@@ -229,7 +222,7 @@ class DownloadCommand extends ContainerAwareCommand
     {
         $path = $this->getBaseDownloadDir();
         $subdirs = explode(DIRECTORY_SEPARATOR, SiteHelper::generateBusinessSubfolder($businessId));
-        foreach($subdirs as $dir) {
+        foreach ($subdirs as $dir) {
             $path .= $dir . DIRECTORY_SEPARATOR;
             if (!file_exists($path)) {
                 mkdir($path);
@@ -254,13 +247,12 @@ class DownloadCommand extends ContainerAwareCommand
         $headers = SiteHelper::checkUrlExistence($url);
 
         if ($headers && in_array($headers['content_type'], SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
-
-            touch($downloadedPath. $filename);
-            if (!file_exists($downloadedPath. $filename)) {
+            touch($downloadedPath . $filename);
+            if (!file_exists($downloadedPath . $filename)) {
                 throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
             }
 
-            file_put_contents($downloadedPath. $filename, file_get_contents($url));
+            file_put_contents($downloadedPath . $filename, file_get_contents($url));
             return true;
         } else {
             return false;
