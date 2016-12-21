@@ -10,7 +10,7 @@
     <div class="main__container main__container--centered">
         <div class="main">
         {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
-            <div class="container profile-header__container" style="background-image:url({% path businessProfile.getBackground(), 'reference' %});">
+            <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
         {% else %}
             <div class="container profile-header__container">
         {% endif %}
@@ -186,7 +186,7 @@
 
                         {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <section class="page-section video">
-                                {{ render_video_embed(businessProfile.getVideo(), {width: 960, height: 720})|raw }}
+                                {{ render_video_embed(businessProfile.getVideo())|raw }}
                             </section>
                         {% endif %}
 

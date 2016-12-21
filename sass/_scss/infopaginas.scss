@@ -809,6 +809,8 @@ $side-padding-mb: 16px;
     display: flex;
     flex: 1 1 auto;
     position: relative;
+    width: 200px;
+    outline: none;
 
     &:after {
       content: "\f0d7";
@@ -4591,6 +4593,19 @@ input[type='radio'], input[type='checkbox'] {
     bottom: 0;
     filter: opacity(0.5);
   }
+}
+
+.page-section.video {
+  padding: 0;
+}
+
+.video-js .vjs-tech {
+  position: relative !important;
+}
+
+.video-1-dimensions {
+  width: 100%;
+  height: auto;
 }
 
 @import '../libs/selectize';
