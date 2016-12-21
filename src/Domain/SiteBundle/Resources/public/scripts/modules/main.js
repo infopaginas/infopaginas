@@ -416,7 +416,7 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
 
 //media querie conditional scripts
 
-    var mediaquery = window.matchMedia("(min-width: 805px)");
+    var mediaquery = window.matchMedia("(min-width: 320px)");
     if (mediaquery.matches) {
         showMap.on( 'click', function() {
             $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });

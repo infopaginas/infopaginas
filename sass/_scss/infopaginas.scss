@@ -2158,6 +2158,12 @@ $thumb-width-mb: 60px;
     padding: 0 20px;
     margin: 0;
     margin-bottom: 10px;
+    overflow-wrap: break-word;
+  }
+
+  .rank {
+    padding: 0 20px;
+    margin-bottom: 10px;
   }
 }
 
@@ -4135,7 +4141,7 @@ li.active {
 .featured-categories__list {
   float: left;
   padding-right: 20px;
-  width: 50%;
+  width: 49.5%;
 
   &:nth-child(2n+2) {
     padding-right: 0;
@@ -4559,6 +4565,31 @@ input[type='radio'], input[type='checkbox'] {
     &::before {
       color: red;
     }
+  }
+}
+
+#customDatesContainer {
+  & input {
+    padding: 0 22px;
+    height: auto;
+    line-height: normal;
+  }
+}
+
+#domain_business_bundle_business_review_type_content {
+  line-height: normal;
+}
+
+.profile-header__container_distorched-bg {
+  display: none;
+  background-size: cover;
+  @media only screen and (max-width: 805px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: opacity(0.5);
   }
 }
 

@@ -51,6 +51,10 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             $( this.options.mediaSearchSection ).css( {"display" : ""} )
         }.bind( this ));
 
+        $(window).resize(function() {
+          $( '.ui-autocomplete' ).css( {"display" : "none"} );
+        }.bind( this ));
+
         return this;
     };
 
