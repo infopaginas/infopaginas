@@ -338,7 +338,8 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         if ($address->postal_code) {
-            $entity->setZipCode(trim($address->postal_code));
+            $zipCode = mb_substr(trim($address->postal_code), 0, BusinessProfile::BUSINESS_PROFILE_ZIP_MAX_LENGTH);
+            $entity->setZipCode($zipCode);
         } elseif ($entity->getCatalogLocality()) {
             $neighborhoods = $entity->getCatalogLocality()->getNeighborhoods();
 
