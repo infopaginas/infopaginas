@@ -2,23 +2,6 @@
 
 namespace Domain\SiteBundle\Command;
 
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
-use Domain\BusinessBundle\Util\SlugUtil;
-use Domain\BusinessBundle\Entity\Area;
-use Domain\BusinessBundle\Entity\Locality;
-use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\BusinessProfilePhone;
-use Domain\BusinessBundle\Entity\Category;
-use Domain\BusinessBundle\Entity\PaymentMethod;
-use Domain\BusinessBundle\Entity\Tag;
-use Domain\BusinessBundle\Entity\Subscription;
-use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
-use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
-use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
-use Domain\BusinessBundle\Entity\Translation\TagTranslation;
-use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\MenuBundle\Model\MenuModel;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,7 +9,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class DownloadCommand extends ContainerAwareCommand
 {
@@ -135,9 +117,6 @@ class DownloadCommand extends ContainerAwareCommand
         if ($this->withDebug) {
             $output->writeln('');
             $output->writeln('Total time: ' . (microtime(true) - $timeStart));
-
-//$this->output->writeln('Conf: ' . $this->configureTime . ';    Load: ' . $this->downloadTime . ';    Move: ' . $this->moveTime);
-
             $output->writeln('Finish requests');
         }
     }
@@ -197,8 +176,6 @@ class DownloadCommand extends ContainerAwareCommand
                 if (!file_exists($path)) {
                     $urlPath = 'http://assets3.drxlive.com' . $image->image->url;
                     $content .= $urlPath . "\n";
-//  Save next string for possible reliable download
-//                    $this->downloadImageFromUrl($urlPath, $downloadedPath, $filename);
                 }
             }
             if ($content) {
