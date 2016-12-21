@@ -146,6 +146,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $businessProfile = $this->handleTranslationBlock($businessProfile, $post);
                 $businessProfile = $this->handleSeoBlockUpdate($businessProfile);
 
+                $businessProfile = $this->setSearchParams($businessProfile);
+
                 $this->onSuccess($businessProfile, $oldCategories);
                 return true;
             }
@@ -399,5 +401,26 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         }
 
         return false;
+    }
+
+    private function setSearchParams(BusinessProfile $businessProfile)
+    {
+        $data = [
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+        ];
+
+        foreach ($data as $field) {
+            $valueEn = $businessProfile->{'get' . $field . BusinessProfile::TRANSLATION_LANG_EN}();
+            $valueEs = $businessProfile->{'get' . $field . BusinessProfile::TRANSLATION_LANG_ES}();
+
+            if ($valueEn and !$valueEs) {
+                $businessProfile->{'set' . $field . BusinessProfile::TRANSLATION_LANG_ES}($valueEn);
+            } elseif (!$valueEn and $valueEs) {
+                $businessProfile->{'set' . $field . BusinessProfile::TRANSLATION_LANG_EN}($valueEs);
+            }
+        }
+
+        return $businessProfile;
     }
 }
