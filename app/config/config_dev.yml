@@ -23,6 +23,11 @@ monolog:
         console:
             type:   console
             channels: [!event, !doctrine]
+        doctrine:
+            action_level: debug
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%_doctrine.log"
+            channels: doctrine
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:

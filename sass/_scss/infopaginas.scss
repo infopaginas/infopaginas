@@ -1442,6 +1442,10 @@ $thumb-width-mb: 60px;
 
 .ad-sidebar {
 
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+
   img {
     width: 100%;
     max-width: 100%;
@@ -1726,13 +1730,7 @@ $thumb-width-mb: 60px;
 }
 
 .profile-map {
-  height: 250px;
-  @media only screen and (min-width: 805px) {
-    height: auto;
-  }
-  @media only screen and (max-width: 420px) {
-    height: auto;
-  }
+  height: auto;
 }
 
 #map2 {
@@ -2419,9 +2417,8 @@ a.tag {
     width: 100%;
 
     @media only screen and (min-width: 500px) {
-      margin-right: 20px;
-      max-width: calc(50% - 10px);
-      width: 50%;
+      margin-right: 2.5%;
+      width: 45%;
 
       &:nth-child(2n + 2) {
         margin-right: 0;
@@ -2433,7 +2430,7 @@ a.tag {
 .section__title {
   font-weight: 300;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 35px;
   margin-bottom: .5em;
   text-align: center;
   text-transform: uppercase
@@ -4145,7 +4142,7 @@ li.active {
   }
 
   @media only screen and (min-width: 420px) {
-    width: 33.3%;
+    width: 33%;
   }
 
   @media only screen and (min-width: 805px) {
@@ -4153,7 +4150,7 @@ li.active {
     padding-left: 10px;
     padding-right: 10px;
     padding-right: 0;
-    width: 20%;
+    width: 19.9%;
 
     &:last-child {
       padding-right: 0;
