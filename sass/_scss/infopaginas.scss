@@ -4593,5 +4593,18 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
+.page-section.video {
+  padding: 0;
+}
+
+.video-js .vjs-tech {
+  position: relative !important;
+}
+
+.video-1-dimensions {
+  width: 100%;
+  height: auto;
+}
+
 @import '../libs/selectize';
 @import '../libs/slick';
