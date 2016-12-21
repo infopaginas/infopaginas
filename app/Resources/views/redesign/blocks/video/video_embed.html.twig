@@ -1,4 +1,4 @@
-<video id="video-{{ media.id }}" class="video-js vjs-big-play-centered" controls preload="auto" width="100%" data-setup="{}">
+<video id="video-{{ media.id }}" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="650" height="264" data-setup='{"fluid": true}'>
     <source src="{{ url }}" type='{{ media.type }}'>
     <p class="vjs-no-js">
       {% trans %}To view this video please enable JavaScript, and consider upgrading to a web browser that{% endtrans %}
