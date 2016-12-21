@@ -4600,5 +4600,10 @@ input[type='radio'], input[type='checkbox'] {
   padding: 0;
 }
 
+.ad {
+  display: flex;
+  justify-content: center;
+}
+
 @import '../libs/selectize';
 @import '../libs/slick';
