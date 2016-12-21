@@ -342,7 +342,7 @@ class MigrationCommand extends ContainerAwareCommand
             $entity->setCatalogLocality($catalogLocality);
         }
 
-        if ($address->postal_code) {
+        if ($address->postal_code and $this->checkZipCode($address->postal_code)) {
             $entity->setZipCode(trim($address->postal_code));
         } elseif ($entity->getCatalogLocality()) {
             $neighborhoods = $entity->getCatalogLocality()->getNeighborhoods();
@@ -903,5 +903,14 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $businessProfile;
+    }
+
+    private function checkZipCode($zipCode)
+    {
+        if (mb_strlen(trim($zipCode)) > BusinessProfile::BUSINESS_PROFILE_ZIP_MAX_LENGTH) {
+            return false;
+        }
+
+        return true;
     }
 }

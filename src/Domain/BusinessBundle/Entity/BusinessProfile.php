@@ -73,6 +73,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY = 'catalogLocality';
     const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
 
+    const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
+
     const DEFAULT_LOCALE = 'en';
 
     const TRANSLATION_LANG_EN = 'En';
@@ -498,6 +500,7 @@ class BusinessProfile implements
     protected $city;
 
     /**
+     * Related to const BUSINESS_PROFILE_ZIP_MAX_LENGTH
      * @var string
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
