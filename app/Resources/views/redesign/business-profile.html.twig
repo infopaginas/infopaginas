@@ -23,11 +23,6 @@
                                 {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
                             </a>
                         </div>
-                        <div class="reviews">
-                            <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.id })) }}">
-                                {% trans %}View{% endtrans %}
-                            </a>
-                        </div>
                     </div><!-- item__header -->
                     {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
                         <div class="avatar">
@@ -198,11 +193,16 @@
                             </section>
                         {% endif %}
 
-                        {% if photos|length > 0  and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD")%}
+                        {% if (advertisements|length > 0 or photos|length > 0) and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
                             <section class="page-section photos slider section--slider">
                                 {% for photo in photos %}
                                     <div class="slider__item">
                                         {% thumbnail photo.getMedia(), 'reference' with {'alt': photo.description} %}
+                                    </div>
+                                {% endfor %}
+                                {% for ad in advertisements %}
+                                    <div class="slider__item">
+                                        {% thumbnail ad.getMedia(), 'reference' with {'alt': ad.description} %}
                                     </div>
                                 {% endfor %}
                             </section>
