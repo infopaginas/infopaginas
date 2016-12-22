@@ -2624,6 +2624,10 @@ a.tag {
   position: relative;
   width: 50%;
 
+  &:not(.comparison__label-column){
+    padding-bottom: 0;
+  }
+
   @media only screen and (min-width: 805px) {
     margin-right: 0;
     flex: 0 0 auto;
