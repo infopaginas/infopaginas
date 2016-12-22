@@ -10,14 +10,14 @@
         {% if articleCategory is defined %}
             <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  articleCategory.getSlug() })) }}" title="{{ articleCategory.name }}">
                 <button id="breadcrumb_location" type="button" class="button button--action button--location">
-                    <span>{{ articleCategory.name|truncate }}</span>
+                    <span>{{ articleCategory.name|truncate(22) }}</span>
                 </button>
             </a>
 
             {% if article is defined %}
                 <div class="breadcrumb">
                     <a href="{{ absolute_url(path('domain_article_view', {'slug':article.slug})) }}" title="{{ article.title }}" class="button categorie__item categorie__parent">
-                        <span>{{ article.title|truncate }}</span>
+                        <span>{{ article.title|truncate(22) }}</span>
                     </a>
                 </div>
             {% endif %}
