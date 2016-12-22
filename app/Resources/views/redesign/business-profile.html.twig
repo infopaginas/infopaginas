@@ -208,14 +208,16 @@
                             </section>
                         {% endif %}
 
-                        {% if businessProfile.getDiscount() is not null or businessProfile.getCoupons()|length > 0 %}
+                        {% if businessProfile.getDiscount() is not null %}
                             <section class="page-section description-section">
                                 <div class="container">
                                     <h3>{% trans %}Discounts{% endtrans %}</h3>
                                     {{ businessProfile.getDiscount()|raw }}
                                 </div>
                             </section>
+                        {% endif %}
 
+                        {% if businessProfile.getCoupons()|length > 0 %}
                             <section class="page-section description-section">
                                 <div class="container">
                                     {% if businessProfile.getCoupons()|length > 0 %}
