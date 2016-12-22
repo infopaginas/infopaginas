@@ -147,7 +147,7 @@ class SearchManager extends Manager
             return null;
         }
 
-        $query      = preg_replace("/[^a-zA-Z0-9\s]+/", "", SearchDataUtil::getQueryFromRequest($request));
+        $query      = SearchDataUtil::getQueryFromRequest($request);
         $page       = SearchDataUtil::getPageFromRequest($request);
 
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
