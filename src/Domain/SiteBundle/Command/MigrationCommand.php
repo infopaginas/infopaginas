@@ -31,6 +31,7 @@ class MigrationCommand extends ContainerAwareCommand
 {
     const SYSTEM_CATEGORY_SEPARATOR = ' / ';
     const CATEGORY_NAME_MAX_LENGTH = 250;
+    const TAG_SEPARATOR = ';';
 
     protected function configure()
     {
@@ -402,7 +403,11 @@ class MigrationCommand extends ContainerAwareCommand
 
         if ($profile->tags) {
             foreach ($profile->tags as $item) {
-                $entity->addTag($this->loadTag($item));
+                foreach ($this->splitTags($item) as $tag) {
+                    $tag = mb_substr(trim($tag), 0, Tag::TAG_NAME_MAX_LENGTH);
+
+                    $entity->addTag($this->loadTag($tag));
+                }
             }
         }
 
@@ -912,5 +917,9 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return true;
+    }
+
+    private function splitTags($value) {
+        return explode(self::TAG_SEPARATOR, $value);
     }
 }
