@@ -35,7 +35,7 @@ class GeolocationManager extends Manager
         $geoLoc = $request->get('geoLoc', null);
 
         $lat        = null;
-        $lat        = null;
+        $lng        = null;
         $locality   = null;
 
         if ($geo) {
@@ -55,6 +55,9 @@ class GeolocationManager extends Manager
                 $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY),
                 $request->getLocale()
             );
+
+            $geo = $locality->getName();
+            $request->request->set('geo', $geo);
         }
 
         if ($locality and !$lat) {

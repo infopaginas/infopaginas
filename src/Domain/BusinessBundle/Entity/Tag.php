@@ -27,6 +27,8 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const TAG_NAME_MAX_LENGTH = 100;
+
     /**
      * @var int
      *
@@ -37,6 +39,7 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
     protected $id;
 
     /**
+     * Related to TAG_NAME_MAX_LENGTH
      * @var string - Tag name
      *
      * @Gedmo\Translatable(fallback=true)

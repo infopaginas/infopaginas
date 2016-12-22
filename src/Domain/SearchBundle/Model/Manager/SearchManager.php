@@ -138,12 +138,12 @@ class SearchManager extends Manager
     public function getSearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
+        $query    = SearchDataUtil::getQueryFromRequest($request);
 
-        if (!$location) {
+        if (!$location or !$query) {
             return null;
         }
 
-        $query      = SearchDataUtil::getQueryFromRequest($request);
         $page       = SearchDataUtil::getPageFromRequest($request);
 
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
