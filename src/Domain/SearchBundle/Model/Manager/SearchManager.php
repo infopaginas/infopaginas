@@ -86,18 +86,14 @@ class SearchManager extends Manager
         if ($results) {
             $totalResults   = $this->businessProfileManager->countSearchResults($searchParams, $locale);
             $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
-
-            // get by current locality
-
-            $neighborhoods  = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
-
             $pagesCount     = ceil($totalResults/$searchParams->limit);
         } else {
             $totalResults = 0;
             $categories = [];
-            $neighborhoods = [];
             $pagesCount = 0;
         }
+
+        $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
@@ -118,14 +114,14 @@ class SearchManager extends Manager
         if ($results) {
             $categories    = [];
             $totalResults  = $this->businessProfileManager->countCatalogSearchResults($searchParams, $locale);
-            $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
             $pagesCount    = ceil($totalResults/$searchParams->limit);
         } else {
             $totalResults  = 0;
             $categories    = [];
-            $neighborhoods = [];
             $pagesCount    = 0;
         }
+
+        $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
