@@ -1071,6 +1071,13 @@ transition-timing-function: ease-in-out;
   }
 }
 
+.comparison__description{
+  .detail-link{
+    position: absolute;
+    bottom: 5px;
+  }
+}
+
 .results__item--normal {
   .item__actions {
     display: flex;
@@ -1962,7 +1969,8 @@ $thumb-width-mb: 60px;
 
   .share__item {
     flex: 1 auto;
-    margin-right: 5px;
+    margin: 1px;
+    width: 48%;    
 
     &:last-child {
       margin-right: 0;
@@ -2779,11 +2787,18 @@ a.tag {
 .comparison__rating {
 }
 
+.comparison__item {
+  .comparison__description{
+    padding-bottom: 12px;
+  }
+}
+
 .comparison__description {
   display: flex;
   flex-direction: column;
   height: 160px;
   overflow-y: auto;
+  position: relative;
 
   p {
     flex: 1 1 auto;
