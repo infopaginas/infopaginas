@@ -334,6 +334,7 @@ $side-padding-mb: 16px;
       margin-left: 10px;
       font-size: .85em;
       display: block;
+      font-weight: normal;
     }
   }
 
@@ -809,7 +810,7 @@ $side-padding-mb: 16px;
     display: flex;
     flex: 1 1 auto;
     position: relative;
-    width: 200px;
+    width: 142px;
     outline: none;
 
     &:after {
@@ -824,7 +825,6 @@ $side-padding-mb: 16px;
 
     @media only screen and (min-width: 768px) {
       flex: 0 0 auto;
-      width: auto;
     }
 
   }
@@ -1709,7 +1709,7 @@ $thumb-width-mb: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 0;
+    margin: 0 auto;
     margin-bottom: 0;
     min-height: 500px;
     overflow: hidden;
@@ -4604,6 +4604,32 @@ input[type='radio'], input[type='checkbox'] {
   display: flex;
   justify-content: center;
 }
+
+.print-btn {
+  display: block;
+}
+
+.highlights__item--coupon {
+  ul {
+    list-style: none;
+    padding-left: 0;
+
+    li:hover {
+      color: #2d3237;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    li {
+      padding: 5px;
+      word-break: break-all;
+      max-width: 400px;
+
+      @media only screen and (max-width: 420px){
+        max-width: 285px;
+      }
+    }
+  }
+}
+
 
 @import '../libs/selectize';
 @import '../libs/slick';
