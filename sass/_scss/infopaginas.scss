@@ -334,6 +334,7 @@ $side-padding-mb: 16px;
       margin-left: 10px;
       font-size: .85em;
       display: block;
+      font-weight: normal;
     }
   }
 
@@ -4626,11 +4627,6 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
-.profile .page-section .no-padding {
-  @media only screen and (min-width: 805px){
-    padding: 0;
-  }
-}
 
 @import '../libs/selectize';
 @import '../libs/slick';
