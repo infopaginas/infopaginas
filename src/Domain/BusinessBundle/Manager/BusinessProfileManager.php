@@ -1189,7 +1189,7 @@ class BusinessProfileManager extends Manager
             if ($photos) {
                 $photo = current($photos);
 
-                $schemaItem['image'] = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
+                $url = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
             } else {
                 $request = $this->container->get('request');
                 $image   = $this->container->getParameter('default_image');
