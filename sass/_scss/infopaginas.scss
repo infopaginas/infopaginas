@@ -1708,6 +1708,7 @@ $thumb-width-mb: 60px;
 .profile-header__container {
   background-size: 0 0;
   background-position: -100% -100%;
+  position: relative;
 
   @media only screen and (min-width: 805px) {
     align-items: center;
@@ -1970,7 +1971,7 @@ $thumb-width-mb: 60px;
   .share__item {
     flex: 1 auto;
     margin: 1px;
-    width: 48%;    
+    width: 48%;
 
     &:last-child {
       margin-right: 0;
@@ -4604,18 +4605,6 @@ input[type='radio'], input[type='checkbox'] {
   line-height: normal;
 }
 
-.profile-header__container_distorched-bg {
-  display: none;
-  background-size: cover;
-  @media only screen and (max-width: 805px) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    filter: opacity(0.5);
-  }
-}
 
 .page-section.video {
   padding: 0;
@@ -4648,6 +4637,22 @@ input[type='radio'], input[type='checkbox'] {
         max-width: 285px;
       }
     }
+  }
+}
+
+.shadow-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-size: cover;
+  z-index: -1;
+  filter: opacity(0.3);
+  background-position: center;
+
+  @media only screen and (min-width: 805px) {
+    display: none;
   }
 }
 

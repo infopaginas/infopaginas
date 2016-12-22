@@ -11,6 +11,7 @@
         <div class="main">
         {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
             <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
+              <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
         {% else %}
             <div class="container profile-header__container">
         {% endif %}
@@ -21,6 +22,11 @@
                             <a href="#" data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
                                 {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
                                 {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
+                            </a>
+                        </div>
+                        <div class="reviews">
+                            <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.id })) }}">
+                                {% trans %}View{% endtrans %}
                             </a>
                         </div>
                     </div><!-- item__header -->
@@ -193,31 +199,24 @@
                             </section>
                         {% endif %}
 
-                        {% if (advertisements|length > 0 or photos|length > 0) and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
+                        {% if photos|length > 0  and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD")%}
                             <section class="page-section photos slider section--slider">
                                 {% for photo in photos %}
                                     <div class="slider__item">
                                         {% thumbnail photo.getMedia(), 'reference' with {'alt': photo.description} %}
                                     </div>
                                 {% endfor %}
-                                {% for ad in advertisements %}
-                                    <div class="slider__item">
-                                        {% thumbnail ad.getMedia(), 'reference' with {'alt': ad.description} %}
-                                    </div>
-                                {% endfor %}
                             </section>
                         {% endif %}
 
-                        {% if businessProfile.getDiscount() is not null %}
+                        {% if businessProfile.getDiscount() is not null or businessProfile.getCoupons()|length > 0 %}
                             <section class="page-section description-section">
                                 <div class="container">
                                     <h3>{% trans %}Discounts{% endtrans %}</h3>
                                     {{ businessProfile.getDiscount()|raw }}
                                 </div>
                             </section>
-                        {% endif %}
 
-                        {% if businessProfile.getCoupons()|length > 0 %}
                             <section class="page-section description-section">
                                 <div class="container">
                                     {% if businessProfile.getCoupons()|length > 0 %}
