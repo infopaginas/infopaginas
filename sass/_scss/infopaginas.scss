@@ -4611,6 +4611,9 @@ input[type='radio'], input[type='checkbox'] {
 
 .highlights__item--coupon {
   ul {
+    list-style: none;
+    padding-left: 0;
+
     li:hover {
       color: #2d3237;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
