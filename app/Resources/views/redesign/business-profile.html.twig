@@ -11,6 +11,7 @@
         <div class="main">
         {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
             <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
+              <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
         {% else %}
             <div class="container profile-header__container">
         {% endif %}
