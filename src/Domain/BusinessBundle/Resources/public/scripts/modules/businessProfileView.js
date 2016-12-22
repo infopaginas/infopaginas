@@ -108,7 +108,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                     if( response.success ) {
                         $( self.html.modals.createReviewModalId ).modal( 'hide' );
                         $( self.html.forms.createReviewFormId ).find( '.star-rating .fa.fa-star-selected' ).each( function( idx, el ) {
-                            return $( this ).removeClass( 'fa-star-selected' ).addClass( 'fa-star' );
+                            return $( this ).removeClass( 'fa-star fa-star-selected' ).addClass( 'fa-star-o' );
                         });
 
                         $( self.html.forms.createReviewFormId )[0].reset();
