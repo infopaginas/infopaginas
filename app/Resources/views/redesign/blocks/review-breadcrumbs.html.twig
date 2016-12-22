@@ -9,13 +9,13 @@
 
         <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.catalogLocality.slug, 'slug': businessProfile.slug})) }}" title="{{ businessProfile.name }}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
-                <span>{{ businessProfile.name|truncate }}</span>
+                <span>{{ businessProfile.name|truncate(breadcrumb_max_length) }}</span>
             </button>
         </a>
 
         <div class="breadcrumb">
             <a href="#" title="{{ page.title }}" class="button categorie__item categorie__parent">
-                <span>{{ page.title|truncate }}</span>
+                <span>{{ page.title|truncate(breadcrumb_max_length) }}</span>
             </a>
         </div>
     </div><!-- toolbar__nav -->
