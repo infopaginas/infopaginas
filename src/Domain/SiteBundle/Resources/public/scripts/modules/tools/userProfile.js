@@ -119,8 +119,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
         if ( response.success ) {
             $( this.html.forms.passwordUpdateFormId )[0].reset();
             $( this.modals.passwordUpdateModalId ).modal( 'hide' );
-            $( self.modals.passwordUpdateModalId ).find( 'div.form__field' ).removeClass( 'field-active' ).removeClass( 'field-filled' );
-            $( self.modals.passwordUpdateModalId ).find( 'label.label-active' ).removeClass( 'label-active' );
+            $( this.modals.passwordUpdateModalId ).find( 'div.form__field' ).removeClass( 'field-active' ).removeClass( 'field-filled' );
+            $( this.modals.passwordUpdateModalId ).find( 'label.label-active' ).removeClass( 'label-active' );
             $( this.modals.passwordUpdateModalId ).modalFunc({close: true});
         } else {
             if ( !$.isEmptyObject( response.errors ) ) {
@@ -179,7 +179,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
             var key = e.which;
             if ( key == 13 ) {
                 $saveButton.click();
-                return false;  
+                return false;
             }
         });
     };
