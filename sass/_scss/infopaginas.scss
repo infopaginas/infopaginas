@@ -2633,6 +2633,11 @@ a.tag {
   position: relative;
   width: 50%;
 
+  @media only screen and (max-width: 420px) {
+    margin-right: 10px;
+    margin-left: 5px;
+  }
+
   &:not(.comparison__label-column){
     padding-bottom: 0;
   }
