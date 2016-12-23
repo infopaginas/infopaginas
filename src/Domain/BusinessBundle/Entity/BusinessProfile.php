@@ -358,14 +358,14 @@ class BusinessProfile implements
     /**
      * @var string - Used to create human like url en
      *
-     * @ORM\Column(name="slug_en", type="string", length=100, nullable=true)
+     * @ORM\Column(name="slug_en", type="string", length=255, nullable=true)
      */
     protected $slugEn;
 
     /**
      * @var string - Used to create human like url en
      *
-     * @ORM\Column(name="slug_es", type="string", length=100, nullable=true)
+     * @ORM\Column(name="slug_es", type="string", length=255, nullable=true)
      */
     protected $slugEs;
 
