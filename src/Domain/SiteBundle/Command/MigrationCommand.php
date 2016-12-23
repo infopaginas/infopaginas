@@ -406,7 +406,11 @@ class MigrationCommand extends ContainerAwareCommand
                 foreach ($this->splitTags($item) as $tag) {
                     $tag = mb_substr(trim($tag), 0, Tag::TAG_NAME_MAX_LENGTH);
 
-                    $entity->addTag($this->loadTag($tag));
+                    $newTag = $this->loadTag($tag);
+
+                    if (!$entity->getTags()->contains($newTag)) {
+                        $entity->addTag($newTag);
+                    }
                 }
             }
         }
