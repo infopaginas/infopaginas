@@ -74,6 +74,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
 
     const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
+    const BUSINESS_PROFILE_URL_MAX_LENGTH = 255;
 
     const DEFAULT_LOCALE = 'en';
 
@@ -186,6 +187,7 @@ class BusinessProfile implements
     protected $categories;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=255, nullable=true)
@@ -532,6 +534,7 @@ class BusinessProfile implements
     protected $hideAddress = false;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
@@ -539,6 +542,7 @@ class BusinessProfile implements
     protected $twitterURL;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
@@ -546,6 +550,7 @@ class BusinessProfile implements
     protected $facebookURL;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
@@ -553,6 +558,7 @@ class BusinessProfile implements
     protected $googleURL;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
