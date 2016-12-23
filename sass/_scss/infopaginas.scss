@@ -4656,6 +4656,11 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
+.no-flex {
+  .button--small {
+    flex: 0 !important;
+  }
+}
 
 @import '../libs/selectize';
 @import '../libs/slick';
