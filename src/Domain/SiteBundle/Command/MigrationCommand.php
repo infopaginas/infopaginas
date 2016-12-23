@@ -284,11 +284,11 @@ class MigrationCommand extends ContainerAwareCommand
 
 #        $entity->setGoogleAddress(?);
 
-        $entity->setFacebookURL(trim($profile->facebook_page_url));
-        $entity->setWebsite(trim($profile->website));
+        $entity->setFacebookURL($this->handleUrl($profile->facebook_page_url));
+        $entity->setWebsite($this->handleUrl($profile->website));
 
-        $entity->setGoogleURL(trim($profile->google_plus_url));
-        $entity->setYoutubeURL(trim($profile->yt_url));
+        $entity->setGoogleURL($this->handleUrl($profile->google_plus_url));
+        $entity->setYoutubeURL($this->handleUrl($profile->yt_url));
 
         // process assigned items
 
@@ -921,5 +921,16 @@ class MigrationCommand extends ContainerAwareCommand
 
     private function splitTags($value) {
         return explode(self::TAG_SEPARATOR, $value);
+    }
+
+    private function handleUrl($url)
+    {
+        $url = trim($url);
+
+        if (mb_strlen($url) > BusinessProfile::BUSINESS_PROFILE_URL_MAX_LENGTH) {
+            return null;
+        }
+
+        return $url;
     }
 }
