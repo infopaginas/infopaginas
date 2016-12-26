@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Model\DataType\ChangeSetArrayDTO;
 use Domain\BusinessBundle\Model\DataType\ChangeSetCollectionDTO;
 use Domain\BusinessBundle\Util\BusinessProfile\BusinessProfilePropertyAccessorUtil;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
@@ -33,10 +34,15 @@ class ChangeSetCollectorUtil
      * @param EntityManagerInterface $em
      * @param $entity
      * @param Collection $oldCategories
+     * @param array      $oldImages
      * @return array
      */
-    public static function getEntityCollectionsChangeSet(EntityManagerInterface $em, $entity, $oldCategories) : array
-    {
+    public static function getEntityCollectionsChangeSet(
+        EntityManagerInterface $em,
+        $entity,
+        $oldCategories,
+        $oldImages
+    ) : array {
         $entityCollections = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertiesHavingCollectionType(
             $em,
             $entity
@@ -71,7 +77,8 @@ class ChangeSetCollectorUtil
                     $em,
                     $entity,
                     $property,
-                    $className
+                    $className,
+                    $oldImages
                 );
 
                 $changeEntries = array_merge($changeEntries, $imagesChanges);
@@ -132,10 +139,16 @@ class ChangeSetCollectorUtil
      * @param $entity
      * @param $property
      * @param $className
+     * @param $oldImages
      * @return array
      */
-    public static function getChangeSetEntryForImages(EntityManagerInterface $em, $entity, $property, $className)
-    {
+    public static function getChangeSetEntryForImages(
+        EntityManagerInterface $em,
+        $entity,
+        $property,
+        $className,
+        $oldImages
+    ) {
         $collection = BusinessProfilePropertyAccessorUtil::getBusinessProfilePropertyValue($entity, $property);
         $insertDiffVar = $collection->getInsertDiff();
         $deleteDiffVar = $collection->getDeleteDiff();
@@ -174,41 +187,36 @@ class ChangeSetCollectorUtil
             $deleteDiff[] = $removedBusinessGalleryObject;
         }
 
-        $originalCollection = BusinessProfilePropertyAccessorUtil::getOriginalBusinessProfileCollectionValues(
-            $entity,
-            $property,
-            $insertDiff,
-            $deleteDiff
-        );
+        //check gallery properties update
+        foreach ($collection as $businessGallery) {
+            $id = $businessGallery->getId();
 
-        foreach ($originalCollection as $businessGallery) {
-            if ($collection->exists(
-                    function($key, $entry) use ($businessGallery) {
-                        return  (
-                                $entry->getMedia()->getId() == $businessGallery->getMedia()->getId()
-                                &&
-                                $entry->getIsPrimary() == $businessGallery->getIsPrimary()
-                                &&
-                                $entry->getDescription() == $businessGallery->getDescription()
-                                &&
-                                $entry->getType() == $businessGallery->getType()
-                                );
-                    }
-                )
-            ) {
-                    continue;
-            }
+            if (isset($oldImages[$id])) {
+                $oldValue = [];
+                $newValue = [];
 
-            try {
-                $changeset[] = self::buildChangeSetEntryObject(
-                    $property,
-                    '',
-                    ChangeSetSerializerUtil::serializeBusinessGalleryDiff($em, $businessGallery),
-                    ChangeSetCalculator::IMAGE_UPDATE,
-                    $className
-                );
-            } catch (ContextErrorException $e) {
-                continue;
+                //check update of gallery type
+                if ($oldImages[$id]['type'] != $businessGallery->getType()) {
+                    $oldValue[$id]['type'] = $oldImages[$id]['type'];
+                    $newValue[$id]['type'] = $businessGallery->getType();
+                }
+
+                //check update of gallery decription
+                if ($oldImages[$id]['description'] != $businessGallery->getDescription()) {
+                    $oldValue[$id]['description'] = $oldImages[$id]['description'];
+                    $newValue[$id]['description'] = $businessGallery->getDescription();
+                }
+
+                if ($newValue) {
+                    //build change set
+                    $changeset[] = self::buildChangeSetEntryObject(
+                        $property,
+                        (new ChangeSetArrayDTO($oldValue))->getJSONContent(),
+                        (new ChangeSetArrayDTO($newValue))->getJSONContent(),
+                        ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE,
+                        $className
+                    );
+                }
             }
         }
 
@@ -217,10 +225,10 @@ class ChangeSetCollectorUtil
 
     protected function checkDuplicatesInsertDelete($collectionEntryies, $gallery, $useCollectionKeysAsId = false)
     {
-        foreach($collectionEntryies as $id => $entry) {
-            if (!$useCollectionKeysAsId && $gallery->getMedia()->getId() == $entry->getMedia()->getId()
+        foreach ($collectionEntryies as $id => $entry) {
+            if ((!$useCollectionKeysAsId && $gallery->getMedia()->getId() == $entry->getMedia()->getId())
                     ||
-                $useCollectionKeysAsId && $id == $gallery->getId()
+                ($useCollectionKeysAsId && $id == $gallery->getId())
             ) {
                 return true;
             }

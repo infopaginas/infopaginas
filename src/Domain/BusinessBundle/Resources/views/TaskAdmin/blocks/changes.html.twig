@@ -69,6 +69,19 @@
                                 {{ change }}
                             {% endfor %}
                         </td>
+                    {% elseif row.action == PROPERTY_IMAGE_PROPERTY_UPDATE %}
+                        {# get view of BusinessGallery updated properties #}
+                        {% set imageChanges = get_business_profile_image_property_changes(row.oldValue, row.newValue) %}
+                        <td>
+                            {% for item in imageChanges %}
+                                {{ item.old }}<br/>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for item in imageChanges %}
+                                {{ item.new }}<br/>
+                            {% endfor %}
+                        </td>
                     {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_ADD') %}
                         {% set changes = get_business_profile_image_changes(row.newValue) %}
                         <td></td>

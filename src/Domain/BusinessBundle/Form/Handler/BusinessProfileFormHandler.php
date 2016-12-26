@@ -92,6 +92,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             //workaround for category/subcategories update
             $oldCategories = clone $businessProfile->getCategories();
+
+            //workaround for businessGallery properties update
+            $oldImages     = $this->cloneBusinessGallery($businessProfile);
         }
 
         if ($this->request->getMethod() == 'POST') {
@@ -148,7 +151,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
                 $businessProfile = $this->setSearchParams($businessProfile);
 
-                $this->onSuccess($businessProfile, $oldCategories);
+                $this->onSuccess($businessProfile, $oldCategories, $oldImages);
                 return true;
             }
         }
@@ -159,8 +162,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     /**
      * @param BusinessProfile $businessProfile
      * @param Collection      $oldCategories
+     * @param array           $oldImages
      */
-    private function onSuccess(BusinessProfile $businessProfile, $oldCategories)
+    private function onSuccess(BusinessProfile $businessProfile, $oldCategories, $oldImages)
     {
         if (!$businessProfile->getId()) {
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
@@ -175,7 +179,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
 
-            $this->getTasksManager()->createUpdateProfileConfirmationRequest($businessProfile, $oldCategories);
+            $this->getTasksManager()->createUpdateProfileConfirmationRequest(
+                $businessProfile,
+                $oldCategories,
+                $oldImages
+            );
         }
     }
 
@@ -422,5 +430,20 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         }
 
         return $businessProfile;
+    }
+
+    private function cloneBusinessGallery(BusinessProfile $businessProfile)
+    {
+        $data = [];
+
+        // track only required property that should be added to task view
+        foreach ($businessProfile->getImages() as $gallery) {
+            $data[$gallery->getId()] = [
+                'type'        => $gallery->getType(),
+                'description' => $gallery->getDescription(),
+            ];
+        }
+
+        return $data;
     }
 }

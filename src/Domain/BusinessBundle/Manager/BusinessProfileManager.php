@@ -341,7 +341,7 @@ class BusinessProfileManager extends Manager
                 $businessProfile->removeImage($gallery);
                 $logoEmpty = false;
                 continue;
-            }elseif ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+            } elseif ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
                 $media = $gallery->getMedia();
 
                 $businessProfile->setBackground($media);
@@ -350,6 +350,7 @@ class BusinessProfileManager extends Manager
                 continue;
             }
         }
+
         if ($logoEmpty && $businessProfile->getLogo()) {
             $businessProfile->setLogo();
         }
@@ -505,6 +506,72 @@ class BusinessProfileManager extends Manager
                     if ($gallery) {
                         $businessProfile->removeImage($gallery);
                     }
+                    break;
+                case ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE:
+                    // update BusinessGallery properties - type and description
+                    $new = json_decode($change->getNewValue());
+                    $old = json_decode($change->getOldValue());
+
+                    $dataNew = current($new);
+                    $dataOld = current($old);
+
+                    $itemNew = json_decode($dataNew->value);
+                    $itemOld = json_decode($dataOld->value);
+
+                    $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($dataNew->id);
+
+                    if (!$gallery) {
+                        break;
+                    }
+
+                    // update gallery description
+                    if (isset($itemNew->description)) {
+                        $gallery->setDescription($itemNew->description);
+                    }
+
+                    // update gallery type
+                    if (isset($itemNew->type)) {
+                        $gallery->setType($itemNew->type);
+
+                        $media = $gallery->getMedia();
+
+                        //convert image logo and background to simple image
+                        $context = '';
+                        if ($itemOld->type != $itemNew->type) {
+                            if ($itemOld->type === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
+                                $context = OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO;
+                                $businessProfile->setLogo(null);
+                            } elseif ($itemOld->type === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                                $context = OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND;
+                                $businessProfile->setBackground(null);
+                            }
+                        }
+
+                        // add former logo to image collection
+                        if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
+                            && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
+                        ) {
+                            $media = $this->setMediaContentAndProvider(
+                                $media,
+                                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES
+                            );
+                            $gallery->setMedia($media);
+                            $businessProfile->addImage($gallery);
+                        }
+
+                        // add former background to image collection
+                        if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
+                            && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
+                        ) {
+                            $media = $this->setMediaContentAndProvider(
+                                $media,
+                                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES
+                            );
+                            $gallery->setMedia($media);
+                            $businessProfile->addImage($gallery);
+                        }
+                    }
+
                     break;
                 case ChangeSetCalculator::IMAGE_UPDATE:
                     $data = json_decode($change->getNewValue());
