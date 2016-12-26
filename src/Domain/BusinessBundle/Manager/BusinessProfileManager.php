@@ -508,6 +508,7 @@ class BusinessProfileManager extends Manager
                     }
                     break;
                 case ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE:
+                    // update BusinessGallery properties - type and description
                     $new = json_decode($change->getNewValue());
                     $old = json_decode($change->getOldValue());
 
@@ -523,15 +524,18 @@ class BusinessProfileManager extends Manager
                         break;
                     }
 
+                    // update gallery description
                     if (isset($itemNew->description)) {
                         $gallery->setDescription($itemNew->description);
                     }
 
+                    // update gallery type
                     if (isset($itemNew->type)) {
                         $gallery->setType($itemNew->type);
 
                         $media = $gallery->getMedia();
 
+                        //convert image logo and background to simple image
                         $context = '';
                         if ($itemOld->type != $itemNew->type) {
                             if ($itemOld->type === OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
@@ -543,6 +547,7 @@ class BusinessProfileManager extends Manager
                             }
                         }
 
+                        // add former logo to image collection
                         if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
                             && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
                         ) {
@@ -553,6 +558,8 @@ class BusinessProfileManager extends Manager
                             $gallery->setMedia($media);
                             $businessProfile->addImage($gallery);
                         }
+
+                        // add former background to image collection
                         if ($context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
                             && $media->getContext() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
                         ) {

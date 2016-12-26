@@ -191,6 +191,13 @@ class BusinessProfileExtension extends \Twig_Extension
         return $data;
     }
 
+    /**
+     * Prepare BusinessGallery updated properties for view
+     *
+     * @param string $oldValue
+     * @param string $newValue
+     * @return array
+     */
     public function getTaskImagePropertyChangeSetRow($oldValue, $newValue)
     {
         if (!$this->isJson($oldValue) or !$this->isJson($newValue)) {
@@ -230,6 +237,12 @@ class BusinessProfileExtension extends \Twig_Extension
         return $data;
     }
 
+    /**
+     * Sort BusinessGallery updated properties
+     *
+     * @param string $value
+     * @return array
+     */
     public function sortImagePropertySet($value)
     {
         $properties = json_decode($value);

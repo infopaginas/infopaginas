@@ -187,6 +187,7 @@ class ChangeSetCollectorUtil
             $deleteDiff[] = $removedBusinessGalleryObject;
         }
 
+        //check gallery properties update
         foreach ($collection as $businessGallery) {
             $id = $businessGallery->getId();
 
@@ -194,17 +195,20 @@ class ChangeSetCollectorUtil
                 $oldValue = [];
                 $newValue = [];
 
+                //check update of gallery type
                 if ($oldImages[$id]['type'] != $businessGallery->getType()) {
                     $oldValue[$id]['type'] = $oldImages[$id]['type'];
                     $newValue[$id]['type'] = $businessGallery->getType();
                 }
 
+                //check update of gallery decription
                 if ($oldImages[$id]['description'] != $businessGallery->getDescription()) {
                     $oldValue[$id]['description'] = $oldImages[$id]['description'];
                     $newValue[$id]['description'] = $businessGallery->getDescription();
                 }
 
                 if ($newValue) {
+                    //build change set
                     $changeset[] = self::buildChangeSetEntryObject(
                         $property,
                         (new ChangeSetArrayDTO($oldValue))->getJSONContent(),

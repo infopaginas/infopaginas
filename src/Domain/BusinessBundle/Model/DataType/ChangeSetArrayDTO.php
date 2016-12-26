@@ -8,6 +8,7 @@ class ChangeSetArrayDTO
 
     public function __construct($collection)
     {
+        //build change set from array
         foreach ($collection as $key => $item) {
             $this->data[] = [
                 'id' => $key,

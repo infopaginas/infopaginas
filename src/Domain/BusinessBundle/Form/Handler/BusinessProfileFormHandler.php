@@ -92,6 +92,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             //workaround for category/subcategories update
             $oldCategories = clone $businessProfile->getCategories();
+
+            //workaround for businessGallery properties update
             $oldImages     = $this->cloneBusinessGallery($businessProfile);
         }
 
@@ -434,6 +436,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     {
         $data = [];
 
+        // track only required property that should be added to task view
         foreach ($businessProfile->getImages() as $gallery) {
             $data[$gallery->getId()] = [
                 'type'        => $gallery->getType(),

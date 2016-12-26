@@ -8,6 +8,7 @@ imports:
     - { resource: extra-configs/extensions.yml }
     - { resource: extra-configs/sonata_media.yml }
     - { resource: extra-configs/sonata_translation.yml }
+    - { resource: extra-configs/twig_constant.yml }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
     - { resource: "@DomainMenuBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
