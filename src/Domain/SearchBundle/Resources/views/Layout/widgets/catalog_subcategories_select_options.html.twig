@@ -5,7 +5,7 @@
         {% set is_selected = false %}
     {% endif %}
 
-    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'subcategorySlug': subcategory.getSlug() })) }}">
+    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'categorySlug2': subcategory.getSlug() })) }}">
         {{ subcategory.getName() }}
     </a>
     |

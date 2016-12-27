@@ -14,7 +14,8 @@ class SearchDTO extends AbstractDTO
     public $limit;
 
     protected $category;
-    protected $subcategory;
+    protected $category2;
+    protected $category3;
     protected $catalogLocality;
     protected $neighborhood;
 
@@ -28,7 +29,8 @@ class SearchDTO extends AbstractDTO
         $this->limit            = $limit;
 
         $this->category         = null;
-        $this->subcategory      = null;
+        $this->category2        = null;
+        $this->category3        = null;
         $this->neighborhood     = null;
 
         $this->orderBy          = null;
@@ -46,16 +48,28 @@ class SearchDTO extends AbstractDTO
         return $this->category;
     }
 
-    public function setSubcategory($subcategory)
+    public function setCategory2($subcategory)
     {
-        $this->subcategory = $subcategory;
+        $this->category2 = $subcategory;
 
         return $this;
     }
 
-    public function getSubcategory()
+    public function getCategory2()
     {
-        return $this->subcategory;
+        return $this->category2;
+    }
+
+    public function setCategory3($category3)
+    {
+        $this->category3 = $category3;
+
+        return $this;
+    }
+
+    public function getCategory3()
+    {
+        return $this->category3;
     }
 
     public function setCatalogLocality($subcategory)

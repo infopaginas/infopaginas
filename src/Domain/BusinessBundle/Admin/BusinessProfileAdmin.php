@@ -181,8 +181,9 @@ class BusinessProfileAdmin extends OxaAdmin
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
-        $category = $businessProfile->getCategory();
-        $subcategories = $businessProfile->getSubcategories();
+        $categories1 = $businessProfile->getCategory();
+        $categories2 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_2);
+        $categories3 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_3);
 
         $formMapper
             ->tab('Profile')
@@ -281,20 +282,33 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
+                        'label' => 'Category lvl 1',
                         'multiple' => false,
                         'required' => true,
                         'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
                             return $rep->getAvailableParentCategoriesQb();
                         },
-                        'data' => $category,
+                        'data' => $categories1,
                     ])
-                    ->add('subcategories', EntityType::class, [
+                    ->add('categories2', EntityType::class, [
+                        'label' => 'Categories lvl 2',
                         'multiple' => true,
                         'required' => false,
                         'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
-                            return $rep->getAvailableCategoriesQb();
+                            return $rep->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_2);
                         },
-                        'data' => $subcategories,
+                        'data' => $categories2,
+                        'mapped' => false,
+                        'class' => \Domain\BusinessBundle\Entity\Category::class,
+                    ])
+                    ->add('categories3', EntityType::class, [
+                        'label' => 'Categories lvl 3',
+                        'multiple' => true,
+                        'required' => false,
+                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
+                            return $rep->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_3);
+                        },
+                        'data' => $categories3,
                         'mapped' => false,
                         'class' => \Domain\BusinessBundle\Entity\Category::class,
                     ])
@@ -499,7 +513,10 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('category', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_category.html.twig'
             ])
-            ->add('subcategories', null, [
+            ->add('categories2', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_subcategories.html.twig'
+            ])
+            ->add('categories3', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_subcategories.html.twig'
             ])
             ->add('catalogLocality')
@@ -839,9 +856,14 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     private function setSubcategories($entity)
     {
-        $subcategories = $this->getForm()->get('subcategories')->getData();
+        $categories2 = $this->getForm()->get('categories2')->getData();
+        $categories3 = $this->getForm()->get('categories3')->getData();
 
-        foreach ($subcategories as $subcategory) {
+        foreach ($categories2 as $subcategory) {
+            $entity->addCategory($subcategory);
+        }
+
+        foreach ($categories3 as $subcategory) {
             $entity->addCategory($subcategory);
         }
 

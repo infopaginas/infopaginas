@@ -2,7 +2,7 @@
     {% for item in menuItems %}
         <div class="featured-categories__list">
             <h3>
-                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': item.locality.slug})) }}" title="item.locality.name">{{ item.locality.name }}</a>
+                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': item.locality.slug})) }}" title="{{ item.locality.name }}">{{ item.locality.name }}</a>
             </h3>
             <ul>
                 {% for category in item.categories %}

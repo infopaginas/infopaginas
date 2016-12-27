@@ -2,9 +2,9 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\BusinessBundle\Model\CategoryModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
-use Domain\MenuBundle\Model\MenuModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -358,29 +358,20 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         if ($profile->headings) {
-            // categories
-
-            $pairs = [];
-            $pair = [];
-
-            foreach ($profile->headings as $key => $value) {
-                // process - en/es pair
-                $pair[] = $value;
-
-                if ($key %2 != 0) {
-                    $pairs[] = $pair;
-
-                    $pair = [];
-                }
-            }
-
-            foreach ($pairs as $pair) {
-                $category = $this->loadCategory($pair);
+            //add categories
+            foreach ($profile->headings as $value) {
+                $category = $this->getCategory($value);
 
                 if ($category) {
                     $entity = $this->addBusinessProfileCategory($entity, $category);
                 }
             }
+        }
+
+        if ($entity->getCategories()->isEmpty()) {
+            //add undefined categories
+            $category = $this->getDefaultCategory();
+            $entity = $this->addBusinessProfileCategory($entity, $category);
         }
 
         if ($business->phones) {
@@ -527,62 +518,20 @@ class MigrationCommand extends ContainerAwareCommand
         }
     }
 
-    private function loadCategory($pair)
+    private function getCategory($name)
     {
-        // first seems to be english
+        $slug = SlugUtil::convertSlug($name);
 
-        if ($this->localePrimary == 'en') {
-            $valuePrimary = $pair[0];
-            $valueSecondary = $pair[1];
+        //search category by slugEn, slugEs
+        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryByCustomSlug($slug);
 
-            $valueEn = $valuePrimary;
-            $valueEs = $valueSecondary;
-        } else {
-            $valuePrimary = $pair[1];
-            $valueSecondary = $pair[0];
+        return $entity;
+    }
 
-            $valueEs = $valuePrimary;
-            $valueEn = $valueSecondary;
-        }
-
-        //search category as is
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
-
-        if (!$entity) {
-            //search category as subcategory
-            $parentValue = $this->parseCategoryName($valuePrimary);
-            $parentEntity = $this->getParentCategory($parentValue);
-
-            if ($parentEntity) {
-                $subcategoryNameEn = $this->convertSubcategoryName($valueEn, $parentEntity->getSearchTextEn());
-                $subcategoryNameEs = $this->convertSubcategoryName($valueEs, $parentEntity->getSearchTextEs());
-
-                $entity = $this->em->getRepository('DomainBusinessBundle:Category')
-                    ->findOneBy(['name' => $subcategoryNameEn]);
-
-                if (!$entity) {
-                    $entity = new Category();
-                    $entity->setName($subcategoryNameEn);
-
-                    $entity->setSlugEn(SlugUtil::convertSlug($valueEn));
-                    $entity->setSlugEs(SlugUtil::convertSlug($valueEs));
-
-                    $entity->setSearchTextEn($subcategoryNameEn);
-                    $entity->setSearchTextEs($subcategoryNameEs);
-                    $entity->setParent($parentEntity);
-
-                    $entity = $this->saveEntity($entity);
-
-                    $className = 'Category';
-
-                    $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
-
-                    $translation = new $translationClassName();
-
-                    $this->addTranslation($translation, $subcategoryNameEs, $entity);
-                }
-            }
-        }
+    private function getDefaultCategory()
+    {
+        $slug = SlugUtil::convertSlug(CategoryModel::UNDEFINED_CATEGORY);
+        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryBySlug($slug);
 
         return $entity;
     }
@@ -706,186 +655,6 @@ class MigrationCommand extends ContainerAwareCommand
         return $entity;
     }
 
-    private function parseCategoryName($name)
-    {
-        //todo
-
-        $categories = MenuModel::getAllCategoriesNames();
-        $categories[] = [
-            'en' => 'Auto',
-            'es' => 'Automobiles',
-        ];
-
-        $categories[] = [
-            'en' => 'Photograph',
-            'es' => 'Fotógrafos',
-        ];
-
-        $categories[] = [
-            'en' => 'Photograph',
-            'es' => 'Photographic',
-        ];
-
-        $categories[] = [
-            'en' => 'Clothing',
-            'es' => 'Ropa',
-        ];
-
-        $categories[] = [
-            'en' => 'Furniture',
-            'es' => 'Muebles',
-        ];
-
-        $categories[] = [
-            'en' => 'Lawyers',
-            'es' => 'Lawyers By Practice',
-        ];
-        $categories[] = [
-            'en' => 'Lawyers',
-            'es' => 'Lawyer',
-        ];
-
-        $categories[] = [
-            'en' => 'Wedding and Party',
-            'es' => 'Weddings & Birthdays',
-        ];
-        $categories[] = [
-            'en' => 'Wedding and Party',
-            'es' => 'Party',
-        ];
-
-        $categories[] = [
-            'en' => 'Radio Communication',
-            'es' => 'Radiocomunicación-Compañías',
-        ];
-
-        $categories[] = [
-            'en' => 'Psychologist',
-            'es' => 'Psychologists',
-        ];
-
-        $categories[] = [
-            'en' => 'Medicine',
-            'es' => 'Medical',
-        ];
-
-        $categories[] = [
-            'en' => 'Jewelers',
-            'es' => 'Joyas',
-        ];
-
-        $categories[] = [
-            'en' => 'Jewelers',
-            'es' => 'Jewels',
-        ];
-
-        $categories[] = [
-            'en' => 'Television',
-            'es' => 'Televisores',
-        ];
-
-        $categories[] = [
-            'en' => 'Churches',
-            'es' => 'Church',
-        ];
-
-        $categories[] = [
-            'en' => 'Refrigerating Equipment',
-            'es' => 'Refrigeration',
-        ];
-
-        $categories[] = [
-            'en' => 'Lawn and Garden',
-            'es' => 'Lawn',
-        ];
-
-        $categories[] = [
-            'en' => 'Pets and Animals',
-            'es' => 'Animals',
-        ];
-
-        $categories[] = [
-            'en' => 'Jobs',
-            'es' => 'Employment',
-        ];
-
-        $categories[] = [
-            'en' => 'Alarm Systems',
-            'es' => 'Alarms',
-        ];
-
-        $categories[] = [
-            'en' => 'Printing',
-            'es' => 'Printers',
-        ];
-
-        $categories[] = [
-            'en' => 'Printing',
-            'es' => 'Impresión',
-        ];
-
-        $categories[] = [
-            'en' => 'Air Conditioning',
-            'es' => 'Air Conditioner',
-        ];
-
-        $categories[] = [
-            'en' => 'Accounting',
-            'es' => 'Accountants',
-        ];
-
-        $separators = $this->getInputCategorySeparators();
-
-        foreach ($categories as $item) {
-            foreach ($separators as $separator) {
-                if (strpos(strtolower($name), strtolower($item['en'] . $separator)) === 0 or
-                    strpos(strtolower($name), strtolower($item['es'] . $separator)) === 0 or
-                    trim(strtolower($name)) === strtolower($item['en']) or
-                    trim(strtolower($name)) === strtolower($item['es'])) {
-                    return $item['en'];
-                }
-            }
-        }
-
-        return $name;
-    }
-
-    private function convertSubcategoryName($name, $parentName)
-    {
-        $convertedName = $name;
-        $separators    = $this->getInputCategorySeparators();
-
-        foreach ($separators as $separator) {
-            $convertedName = str_replace($parentName . $separator, '', $convertedName);
-        }
-
-        $subcategoryMaxLength = self::CATEGORY_NAME_MAX_LENGTH - mb_strlen($parentName . self::SYSTEM_CATEGORY_SEPARATOR);
-
-        $convertedName = mb_substr($convertedName, 0, $subcategoryMaxLength);
-
-        return $parentName . self::SYSTEM_CATEGORY_SEPARATOR . $convertedName;
-    }
-
-    private function getInputCategorySeparators()
-    {
-        return [' - ', ' / ', '/'];
-    }
-
-    private function getParentCategory($parentName)
-    {
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $parentName]);
-
-        if (!$entity) {
-            $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(
-                [
-                    'slug' => strtolower(MenuModel::getOtherCategoriesNames()[MenuModel::CODE_UNDEFINED]['en'])
-                ]
-            );
-        }
-
-        return $entity;
-    }
-
     /**
      * @param BusinessProfile $businessProfile
      * @param Category $category
@@ -894,21 +663,32 @@ class MigrationCommand extends ContainerAwareCommand
      */
     private function addBusinessProfileCategory(BusinessProfile $businessProfile, Category $category)
     {
-        $businessProfileCategory = $businessProfile->getCategory();
-        $newParentCategory = $category->getParent();
+        //get all parent categories and current category
+        $categories = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryParents($category);
 
-        if ($businessProfileCategory) {
-            if ($businessProfileCategory->getChildren()->contains($category) and
-                !$businessProfile->getCategories()->contains($category)
-            ) {
-                $businessProfile->addCategory($category);
-            }
-        } else {
-            if ($newParentCategory) {
-                $businessProfile->addCategory($newParentCategory);
-            }
+        //sort categories
+        foreach ($categories as $item) {
+            $categoriesData[$item->getLvl()] = $item;
+        }
 
-            $businessProfile->addCategory($category);
+        if (!empty($categoriesData[Category::CATEGORY_LEVEL_1])) {
+            $businessProfileCategory = $businessProfile->getCategory();
+
+            if ($businessProfileCategory) {
+                //avoid duplicate
+                if ($businessProfileCategory->getChildren()->contains($categoriesData[Category::CATEGORY_LEVEL_1])) {
+
+                    foreach ($categories as $item) {
+                        if (!$businessProfile->getCategories()->contains($item)) {
+                            $businessProfile->addCategory($item);
+                        }
+                    }
+                }
+            } else {
+                foreach ($categories as $item) {
+                    $businessProfile->addCategory($item);
+                }
+            }
         }
 
         return $businessProfile;

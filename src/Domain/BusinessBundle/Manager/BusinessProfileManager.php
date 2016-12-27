@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Locality;
@@ -897,7 +898,7 @@ class BusinessProfileManager extends Manager
         return $objects;
     }
 
-    public function getSubcategories($categoryId, $businessProfileId, $locale)
+    public function getSubcategories($categoryId, $businessProfileId, $request)
     {
         $data = [];
         $checkedSubcategoryIds = [];
@@ -905,15 +906,21 @@ class BusinessProfileManager extends Manager
         if ($businessProfileId) {
             /* @var BusinessProfile $businessProfile */
             $businessProfile       = $this->getRepository()->find($businessProfileId);
-            $checkedSubcategoryIds = $this->getBusinessProfileSubcategoryIds($businessProfile);
+            $checkedSubcategoryIds = $this->getBusinessProfileSubcategoryIds($businessProfile, $request);
         }
 
-        $subcategories = $this->getSubcategoriesForCategory($categoryId);
+        $subcategories = $this->getSubcategoriesForCategory($categoryId, $request);
 
         foreach ($subcategories as $key => $subcategory) {
+            if ($request['locale']) {
+                $name = $subcategory->{'getSearchText' . ucfirst($request['locale'])}();
+            } else {
+                $name = $subcategory->getName();
+            }
+
             $data[$key] = [
                 'id'       => $subcategory->getId(),
-                'name'     => $locale ? $subcategory->{'getSearchText' . ucfirst($locale)}() : $subcategory->getName(),
+                'name'     => $name,
                 'selected' => false,
             ];
 
@@ -925,10 +932,16 @@ class BusinessProfileManager extends Manager
         return $data;
     }
 
-    public function getSubcategoriesForCategory($categoryId)
+    public function getSubcategoriesForCategory($categoryId, $request)
     {
+        if ($request['level'] == Category::CATEGORY_LEVEL_2) {
+            $categoryIds = [$categoryId];
+        } else {
+            $categoryIds = $request['subcategories'];
+        }
+
         $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
-            ->getAvailableSubCategories($categoryId);
+            ->getAvailableSubCategories($categoryIds, $request['level']);
 
         return $subcategories;
     }
@@ -943,13 +956,14 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @param array           $request
      *
      * @return array
      */
-    public function getBusinessProfileSubcategoryIds(BusinessProfile $businessProfile)
+    public function getBusinessProfileSubcategoryIds(BusinessProfile $businessProfile, $request)
     {
         $data = [];
-        $subcategories = $businessProfile->getSubcategories();
+        $subcategories = $businessProfile->getSubcategories($request['level']);
 
         foreach ($subcategories as $subcategory) {
             $data[] = $subcategory->getId();

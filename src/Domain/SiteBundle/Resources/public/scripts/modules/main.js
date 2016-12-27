@@ -288,10 +288,10 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
             }
         });
 
-        $('#domain_business_bundle_business_profile_form_type_subcategories, #domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
+        $('#domain_business_bundle_business_profile_form_type_categories2, #domain_business_bundle_business_profile_form_type_categories3, #domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
             plugins: ['remove_button'],
             delimiter: ',',
-            persist: false
+            persist: true
         });
 
         var singleSelects = $('#domain_business_bundle_business_profile_form_type_categories, #domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');

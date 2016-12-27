@@ -673,15 +673,20 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     protected function addCatalogSearchQueryBuilder($queryBuilder, SearchDTO $searchParams)
     {
         $category        = $searchParams->getCategory();
-        $subcategory     = $searchParams->getSubcategory();
+        $category2       = $searchParams->getCategory2();
+        $category3       = $searchParams->getCategory3();
         $catalogLocality = $searchParams->getCatalogLocality();
 
         if ($catalogLocality) {
             $this->addSearchByCatalogLocalityQueryBuilder($queryBuilder, $catalogLocality);
 
             if ($category) {
-                if ($subcategory) {
-                    $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $subcategory);
+                if ($category2) {
+                    if ($category3) {
+                        $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category3);
+                    } else {
+                        $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category2);
+                    }
                 } else {
                     $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category);
                 }

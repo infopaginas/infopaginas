@@ -291,6 +291,15 @@ business.list.category_type: Type
 type_category: Category
 type_subcategory: Subcategory
 
+type_category_1: Category lvl 1
+type_category_2: Category lvl 2
+type_category_3: Category lvl 3
+
+#user
+user.business.type_category_1: Categoría lvl 1
+user.business.type_category_2: Categorías lvl 2
+user.business.type_category_3: Categorías lvl 3
+
 #redesign
 What?: ¿Qué?
 Where?: ¿Dónde?
