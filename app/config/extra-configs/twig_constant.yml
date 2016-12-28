@@ -11,3 +11,5 @@ twig:
         CATEGORY_DEFAULT_LEVEL:    1
         SUBCATEGORY_DEFAULT_LEVEL: 2
         CATEGORY_MAX_LEVEL:        3
+
+        PAGINATION_RADIUS: 1
