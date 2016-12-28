@@ -81,7 +81,7 @@ class CategoryAdmin extends OxaAdmin
             } elseif ($levelDiff == 1) {
                 $parentLvl = Category::CATEGORY_LEVEL_1;
             } else {
-                $parentLvl = false;
+                $parentLvl = 0;
             }
         } else {
             $parentLvl = Category::CATEGORY_LEVEL_2;
@@ -93,6 +93,13 @@ class CategoryAdmin extends OxaAdmin
             ->setParameter('maxLevel', $parentLvl)
             ->orderBy('c.name')
         ;
+
+        if ($category->getId()) {
+            $parentQuery
+                ->andWhere('c.id != :id')
+                ->setParameter('id', $category->getId())
+            ;
+        }
 
         $formMapper
             ->add('name')
