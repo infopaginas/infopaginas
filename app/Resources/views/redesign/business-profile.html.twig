@@ -1,8 +1,7 @@
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block breadcrumbs %}
-    {# todo #}
-    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.category, 'category2': businessProfile.getSubcategories(2)|first, 'category3': businessProfile.getSubcategories(3)|first} %}
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.category, 'category2': businessProfile.getSubcategories(CATEGORY_LEVEL_2)|first, 'category3': businessProfile.getSubcategories(CATEGORY_LEVEL_3)|first} %}
 {% endblock %}
 
 {% block bodyClass %}profile{% endblock %}
@@ -269,16 +268,14 @@
 
                         {% include ':redesign/blocks/banners:side-block.html.twig' %}
 
-                        {# todo #}
-                        {% if businessProfile.subcategories(2)|length > 0 %}
+                        {% if businessProfile.subcategories(CATEGORY_LEVEL_2)|length > 0 %}
                             <div class="sidebar__section section--tags">
                                 <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
-                                    {#todo tags cloud - category lvl#}
-                                    {% for category2 in businessProfile.getSubcategories(2) %}
+                                    {% for category2 in businessProfile.getSubcategories(CATEGORY_LEVEL_2) %}
                                         <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'categorySlug2': category2.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ category2.name }}</a>
                                     {% endfor %}
-                                    {% for category3 in businessProfile.getSubcategories(3) %}
+                                    {% for category3 in businessProfile.getSubcategories(CATEGORY_LEVEL_3) %}
                                         <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': businessProfile.category.getSlug(), 'categorySlug2': category3.parent.getSlug(), 'categorySlug3': category3.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ category3.name }}</a>
                                     {% endfor %}
                                 </div>

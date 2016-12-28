@@ -384,10 +384,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     businessProfile.prototype.handleBusinessProfileSubcategories = function () {
         var self = this;
 
-        //todo
-        var maxCategoryLevel        = 3;
-        var defaultSubCategoryLevel = 2;
-        var defaultCategoryLevel    = 1;
         var categoryField = $( self.html.fields.categoriesId );
 
         getSubcategories( defaultCategoryLevel );

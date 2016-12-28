@@ -1,10 +1,6 @@
 $( document ).ready( function() {
     var removeVideo   = $( '#' + formId + '_removeVideo' );
 
-    //todo
-    var maxCategoryLevel        = 3;
-    var defaultSubCategoryLevel = 2;
-    var defaultCategoryLevel    = 1;
     var categoryField = $( '#' + formId + '_categories' );
 
     $.each( ['#' + formId + '_serviceAreasType label', '#' + formId + '_serviceAreasType label ins'], function( index, fieldId ) {
