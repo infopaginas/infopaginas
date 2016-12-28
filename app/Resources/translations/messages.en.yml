@@ -288,8 +288,6 @@ Parent Category: Parent Category
 business.list.category_column: Name
 business.list.parent_category_column: Parent Category
 business.list.category_type: Type
-type_category: Category
-type_subcategory: Subcategory
 
 type_category_1: Category lvl 1
 type_category_2: Category lvl 2

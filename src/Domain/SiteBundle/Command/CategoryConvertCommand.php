@@ -43,7 +43,6 @@ class CategoryConvertCommand extends ContainerAwareCommand
             $isFirst = true;
 
             while (($data = fgetcsv($handle, 1000, self::CSV_DELIMITER)) !== false) {
-
                 if ($isFirst) {
                     $isFirst = false;
                     continue;
@@ -64,7 +63,6 @@ class CategoryConvertCommand extends ContainerAwareCommand
                         ];
 
                         $children1[$data[self::CATEGORY_2_NAME_ES]]['children'] = $children2;
-
                     } else {
                         //add lvl 2
                         $children1[$data[self::CATEGORY_2_NAME_ES]] = [
@@ -81,8 +79,6 @@ class CategoryConvertCommand extends ContainerAwareCommand
                     }
 
                     $categories[$data[self::CATEGORY_1_NAME_ES]]['children'] = $children1;
-
-
                 } else {
                     //add new lvl 1
                     $categories[$data[self::CATEGORY_1_NAME_ES]] = [
@@ -102,7 +98,6 @@ class CategoryConvertCommand extends ContainerAwareCommand
                             ],
                         ],
                     ];
-
                 }
             }
 

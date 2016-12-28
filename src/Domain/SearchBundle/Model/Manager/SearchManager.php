@@ -152,7 +152,7 @@ class SearchManager extends Manager
         $category = SearchDataUtil::getCategoryFromRequest($request);
 
         if ($category) {
-            $searchDTO->setCategory($category);
+            $searchDTO->setCategory1($category);
         }
 
         $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
@@ -185,7 +185,7 @@ class SearchManager extends Manager
         $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
 
         if ($category instanceof Category) {
-            $searchDTO->setCategory($category);
+            $searchDTO->setCategory1($category);
         }
 
         if ($category2 instanceof Category) {
@@ -220,7 +220,7 @@ class SearchManager extends Manager
         return new DCDataDTO(
             explode(' ', $searchDTO->query),
             $searchDTO->locationValue->name,
-            $searchDTO->getCategory()
+            $searchDTO->getCategory1()
         );
     }
 
@@ -263,18 +263,14 @@ class SearchManager extends Manager
     public function getCategoryParentsCatalogPath($category)
     {
         $data = [
-            'categorySlug'    => null,
+            'categorySlug1'   => null,
             'categorySlug2'   => null,
             'categorySlug3'   => null,
         ];
         $categories = $this->getCategoryParents($category);
 
         foreach ($categories as $item) {
-            if ($item->getLvl() == Category::CATEGORY_LEVEL_1) {
-                $data['categorySlug'] = $item->getSlug();
-            } else {
-                $data['categorySlug' . $item->getLvl()] = $item->getSlug();
-            }
+            $data['categorySlug' . $item->getLvl()] = $item->getSlug();
         }
 
         return $data;
@@ -282,20 +278,20 @@ class SearchManager extends Manager
 
     /**
      * @param Locality[] $localities
-     * @param Category[] $categories
+     * @param Category[] $categories1
      * @param Category[] $categories2
      * @param Category[] $categories3
      *
      * @return array();
      */
-    public function sortCatalogItems($localities, $categories = [], $categories2 = [], $categories3 = [])
+    public function sortCatalogItems($localities, $categories1 = [], $categories2 = [], $categories3 = [])
     {
         if ($categories3) {
             $data = $this->sortItems($categories3);
         } elseif ($categories2) {
             $data = $this->sortItems($categories2);
-        } elseif ($categories) {
-            $data = $this->sortItems($categories);
+        } elseif ($categories1) {
+            $data = $this->sortItems($categories1);
         } else {
             $data = $this->sortItems($localities);
         }
@@ -319,7 +315,7 @@ class SearchManager extends Manager
     public function checkCatalogRedirect($slugs, $entities)
     {
         return $this->checkCatalogSlug($slugs['locality'], $entities['locality']) and
-            $this->checkCatalogSlug($slugs['category'], $entities['category']) and
+            $this->checkCatalogSlug($slugs['category1'], $entities['category1']) and
             $this->checkCatalogSlug($slugs['category2'], $entities['category2']) and
             $this->checkCatalogSlug($slugs['category3'], $entities['category3']) and
             $this->checkCatalogCategory($entities);
@@ -329,12 +325,12 @@ class SearchManager extends Manager
     {
         $isValid = true;
 
-        if (!empty($data['category'])) {
-            if ($data['category']->getParent()) {
+        if (!empty($data['category1'])) {
+            if ($data['category1']->getParent()) {
                 $isValid = false;
             } else {
                 if (!empty($data['category2'])) {
-                    if ($data['category2']->getParent() != $data['category']) {
+                    if ($data['category2']->getParent() != $data['category1']) {
                         $isValid = false;
                     } else {
                         if (!empty($data['category3'])) {

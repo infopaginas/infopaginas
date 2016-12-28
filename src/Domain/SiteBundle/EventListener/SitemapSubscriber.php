@@ -108,20 +108,20 @@ class SitemapSubscriber implements EventSubscriberInterface
             $categories = $this->manager->getRepository('DomainBusinessBundle:Category')
                 ->getAvailableParentCategoriesIterator();
 
-            foreach ($categories as $categoryRow) {
-                /* @var $category \Domain\BusinessBundle\Entity\Category */
-                $category = current($categoryRow);
+            foreach ($categories as $categoryRow1) {
+                /* @var $category1 \Domain\BusinessBundle\Entity\Category */
+                $category1 = current($categoryRow1);
 
-                $this->addCatalogUrl($catalogLocality->getSlug(), $category->getSlug());
+                $this->addCatalogUrl($catalogLocality->getSlug(), $category1->getSlug());
 
                 $categories2 = $this->manager->getRepository('DomainBusinessBundle:Category')
-                    ->getAvailableSubcategoriesByCategoryIterator($category, Category::CATEGORY_LEVEL_2);
+                    ->getAvailableSubcategoriesByCategoryIterator($category1, Category::CATEGORY_LEVEL_2);
 
                 foreach ($categories2 as $categoryRow2) {
                     /* @var $subcategory \Domain\BusinessBundle\Entity\Category */
                     $category2 = current($categoryRow2);
 
-                    $this->addCatalogUrl($catalogLocality->getSlug(), $category->getSlug(), $category2->getSlug());
+                    $this->addCatalogUrl($catalogLocality->getSlug(), $category1->getSlug(), $category2->getSlug());
 
                     $categories3 = $this->manager->getRepository('DomainBusinessBundle:Category')
                         ->getAvailableSubcategoriesByCategoryIterator($category2, Category::CATEGORY_LEVEL_3);
@@ -132,7 +132,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
                         $this->addCatalogUrl(
                             $catalogLocality->getSlug(),
-                            $category->getSlug(),
+                            $category1->getSlug(),
                             $category2->getSlug(),
                             $category3->getSlug()
                         );
@@ -143,7 +143,7 @@ class SitemapSubscriber implements EventSubscriberInterface
                     $this->manager->detach($categoryRow2[0]);
                 }
 
-                $this->manager->detach($categoryRow[0]);
+                $this->manager->detach($categoryRow1[0]);
             }
 
             $this->manager->detach($localityRow[0]);
@@ -240,7 +240,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addCatalogUrl(
         $catalogLocalitySlug = null,
-        $categorySlug = null,
+        $categorySlug1 = null,
         $categorySlug2 = null,
         $categorySlug3 = null
     ) {
@@ -248,7 +248,7 @@ class SitemapSubscriber implements EventSubscriberInterface
             'domain_search_catalog',
             [
                 'localitySlug'  => $catalogLocalitySlug,
-                'categorySlug'  => $categorySlug,
+                'categorySlug1' => $categorySlug1,
                 'categorySlug2' => $categorySlug2,
                 'categorySlug3' => $categorySlug3,
             ],

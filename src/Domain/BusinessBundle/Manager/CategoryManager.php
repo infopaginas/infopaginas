@@ -48,17 +48,13 @@ class CategoryManager extends Manager
     {
         $data = $this->getRepository()->getCategoryParents($category);
         $slugs = [
-            'categorySlug'    => null,
-            'categorySlug2'   => null,
-            'categorySlug3'   => null,
+            'categorySlug1' => null,
+            'categorySlug2' => null,
+            'categorySlug3' => null,
         ];
 
         foreach ($data as $item) {
-            if ($item->getLvl() == Category::CATEGORY_LEVEL_1) {
-                $slugs['categorySlug'] = $item->getSlug();
-            } else {
-                $slugs['categorySlug' . $item->getLvl()] = $item->getSlug();
-            }
+            $slugs['categorySlug' . $item->getLvl()] = $item->getSlug();
         }
 
         return $slugs;

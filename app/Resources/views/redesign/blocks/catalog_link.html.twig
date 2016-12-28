@@ -1,16 +1,16 @@
 {% if currentLocality %}
-    {% if currentCategory %}
+    {% if currentCategory1 %}
         {% if currentCategory2 %}
-            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'categorySlug2': currentCategory2.getSlug(), 'categorySlug3': item.getSlug() })) }}" title="{{ item.name }}">
+            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug1': currentCategory1.getSlug(), 'categorySlug2': currentCategory2.getSlug(), 'categorySlug3': item.getSlug() })) }}" title="{{ item.name }}">
                 {{ item.name }}
             </a>
         {% else %}
-            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug': currentCategory.getSlug(), 'categorySlug2': item.getSlug() })) }}" title="{{ item.name }}">
+            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug1': currentCategory1.getSlug(), 'categorySlug2': item.getSlug() })) }}" title="{{ item.name }}">
                 {{ item.name }}
             </a>
         {% endif %}
     {% else %}
-        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug': item.getSlug() })) }}" title="{{ item.name }}">
+        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug1': item.getSlug() })) }}" title="{{ item.name }}">
             {{ item.name }}
         </a>
     {% endif %}

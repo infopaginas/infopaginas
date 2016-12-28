@@ -74,9 +74,11 @@ class CategoryAdmin extends OxaAdmin
                 ->getSingleScalarResult()
             ;
 
-            if ($maxLevel - $lvl == 0) {
+            $levelDiff = $maxLevel - $lvl;
+
+            if ($levelDiff == 0) {
                 $parentLvl = Category::CATEGORY_LEVEL_2;
-            } elseif ($maxLevel - $lvl == 1) {
+            } elseif ($levelDiff == 1) {
                 $parentLvl = Category::CATEGORY_LEVEL_1;
             } else {
                 $parentLvl = false;
@@ -84,8 +86,6 @@ class CategoryAdmin extends OxaAdmin
         } else {
             $parentLvl = Category::CATEGORY_LEVEL_2;
         }
-
-
 
         $parentQuery = $this->modelManager->createQuery(Category::class, 'c')
             ->where('c.isActive = TRUE')

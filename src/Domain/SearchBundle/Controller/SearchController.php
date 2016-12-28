@@ -265,13 +265,13 @@ class SearchController extends Controller
     public function catalogAction(
         Request $request,
         $localitySlug = '',
-        $categorySlug = '',
+        $categorySlug1 = '',
         $categorySlug2 = '',
         $categorySlug3 = ''
     ) {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $category    = null;
+        $category1   = null;
         $category2   = null;
         $category3   = null;
         $showResults = null;
@@ -281,7 +281,7 @@ class SearchController extends Controller
         $seoCategoryName    = null;
         $seoSubcategoryName = null;
 
-        $categories  = [];
+        $categories1 = [];
         $categories2 = [];
         $categories3 = [];
 
@@ -293,28 +293,28 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories = $this->getCategoryManager()->getAvailableParentCategories($request->getLocale());
+            $categories1 = $this->getCategoryManager()->getAvailableParentCategories($request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
             $request->attributes->set('q', $locality->getName());
 
-            $category = $searchManager->searchCatalogCategory($categorySlug);
+            $category1 = $searchManager->searchCatalogCategory($categorySlug1);
             $seoLocationName = $locality->getName();
 
-            if ($category and !$category->getParent()) {
-                $request->attributes->set('category', $category->getName());
-                $request->attributes->set('q', $category->getName());
+            if ($category1 and !$category1->getParent()) {
+                $request->attributes->set('category', $category1->getName());
+                $request->attributes->set('q', $category1->getName());
 
                 $categories2 = $searchManager->searchSubcategoryByCategory(
-                    $category,
+                    $category1,
                     Category::CATEGORY_LEVEL_2,
                     $request->getLocale()
                 );
                 $category2   = $searchManager->searchCatalogCategory($categorySlug2);
 
                 $showResults = true;
-                $seoCategoryName = $category->getName();
+                $seoCategoryName = $category1->getName();
 
                 if ($category2 and $category2->getParent()) {
                     $request->attributes->set('subcategory', $category2->getName());
@@ -346,20 +346,20 @@ class SearchController extends Controller
 
         $slugs = [
             'locality'  => $localitySlug,
-            'category'  => $categorySlug,
+            'category1' => $categorySlug1,
             'category2' => $categorySlug2,
             'category3' => $categorySlug3,
         ];
 
         $entities = [
             'locality'  => $locality,
-            'category'  => $category,
+            'category1' => $category1,
             'category2' => $category2,
             'category3' => $category3,
         ];
 
         if (!$searchManager->checkCatalogRedirect($slugs, $entities)) {
-            return $this->handlePermanentRedirect($locality, $category, $category2, $category3);
+            return $this->handlePermanentRedirect($locality, $category1, $category2, $category3);
         }
 
         $searchDTO        = null;
@@ -382,10 +382,10 @@ class SearchController extends Controller
 
         if (!$locality) {
             $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromLocalityData($localities);
-        } elseif (!$category) {
+        } elseif (!$category1) {
             $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromLocalityData([$locality]);
         } else {
-            $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category, $category2, $category3);
+            $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category1, $category2, $category3);
 
             //locality lat and lan required
             if ($searchDTO) {
@@ -409,7 +409,7 @@ class SearchController extends Controller
             $locationMarkers = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
         }
 
-        $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories, $categories2, $categories3);
+        $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories1, $categories2, $categories3);
 
         $seoData = $this->getBusinessProfileManager()
             ->getBusinessProfileSearchSeoData($seoLocationName, $seoCategoryName, $seoSubcategoryName, true);
@@ -428,7 +428,7 @@ class SearchController extends Controller
                 'searchData'         => $searchData,
                 'pageRouter'         => $pageRouter,
                 'currentLocality'    => $locality,
-                'currentCategory'    => $category,
+                'currentCategory1'   => $category1,
                 'currentCategory2'   => $category2,
                 'currentCategory3'   => $category3,
                 'schemaJsonLD'       => $schema,
@@ -470,20 +470,20 @@ class SearchController extends Controller
         return $searchData;
     }
 
-    private function handlePermanentRedirect($locality = null, $category = null, $category2 = null, $category3 = null)
+    private function handlePermanentRedirect($locality = null, $category1 = null, $category2 = null, $category3 = null)
     {
         $data = [
             'localitySlug'    => null,
-            'categorySlug'    => null,
+            'categorySlug1'    => null,
             'categorySlug2'   => null,
             'categorySlug3'   => null,
         ];
 
         if ($locality) {
-            if (!$category->getParent()) {
-                $data['categorySlug'] = $category->getSlug();
+            if (!$category1->getParent()) {
+                $data['categorySlug1'] = $category1->getSlug();
 
-                if ($category2->getLvl() == Category::CATEGORY_LEVEL_2 and $category2->getParent() == $category) {
+                if ($category2->getLvl() == Category::CATEGORY_LEVEL_2 and $category2->getParent() == $category1) {
                     $data['categorySlug2'] = $category2->getSlug();
 
                     if ($category3->getLvl() == Category::CATEGORY_LEVEL_3 and $category3->getParent() == $category2) {
@@ -495,7 +495,7 @@ class SearchController extends Controller
                     $data = $this->getCategoryManager()->getCategoryParents($category2);
                 }
             } else {
-                $data = $this->getCategoryManager()->getCategoryParents($category);
+                $data = $this->getCategoryManager()->getCategoryParents($category1);
             }
 
             $data['localitySlug'] = $locality->getSlug();

@@ -143,7 +143,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
-        $category = $searchParams->getCategory();
+        $category = $searchParams->getCategory1();
 
         if ($category) {
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $category);
@@ -171,7 +171,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
 
-        $category = $searchParams->getCategory();
+        $category = $searchParams->getCategory1();
 
         if ($category) {
             $this->addCategoryFilterToQueryBuilder($queryBuilder, $category);
@@ -672,7 +672,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      */
     protected function addCatalogSearchQueryBuilder($queryBuilder, SearchDTO $searchParams)
     {
-        $category        = $searchParams->getCategory();
+        $category1       = $searchParams->getCategory1();
         $category2       = $searchParams->getCategory2();
         $category3       = $searchParams->getCategory3();
         $catalogLocality = $searchParams->getCatalogLocality();
@@ -680,7 +680,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         if ($catalogLocality) {
             $this->addSearchByCatalogLocalityQueryBuilder($queryBuilder, $catalogLocality);
 
-            if ($category) {
+            if ($category1) {
                 if ($category2) {
                     if ($category3) {
                         $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category3);
@@ -688,7 +688,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
                         $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category2);
                     }
                 } else {
-                    $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category);
+                    $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category1);
                 }
             }
         }
