@@ -4407,10 +4407,41 @@ table {
 
 .ui-autocomplete.ui-menu {
   z-index: 101;
-  width: 500px !important;
+  width: 570px !important;
   max-width: 85vw;
-  background-color: rgba(122, 122, 122, 0.95) !important;
+  background-color: rgba(200, 200, 200, 0.95) !important;
   padding: 10px 30px;
+  list-style: none;
+  li {
+    a {
+      color: #2d3237;
+    }
+  }
+}
+
+#ui-id-1 {
+  width: 318px !important;
+  @media only screen and (max-width: 805px){
+    max-width: none;
+    width: calc(95vw - 20px) !important;
+  }
+}
+
+#ui-id-2 {
+  @media only screen and (max-width: 805px){
+    max-width: none;
+    width: calc(95vw - 20px) !important;
+  }
+  li::before{
+    width: 15px;
+    height: 15px;
+    position: absolute;;
+    left: 10px;
+    margin-top: 2px;
+    content: "";
+    display: block;
+    background: url('../assets/images/test-icon.png')
+  }
 }
 
 .fa-star, fa-star-o {
@@ -4418,10 +4449,10 @@ table {
 }
 
 .ui-state-focus {
-  font-weight: bold;
   display: block;
-  background-color: rgba(150, 150, 150, 0.8);
-  color: #000;
+  a {
+    color: #2e5890 !important;
+  }
 }
 
 .articles__container h2 {
