@@ -38,6 +38,7 @@ class NormalizerUtil
             ChangeSetCalculator::VIDEO_ADD              => 'Video Add',
             ChangeSetCalculator::VIDEO_REMOVE           => 'Video Remove',
             ChangeSetCalculator::VIDEO_UPDATE           => 'Video Change',
+            ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE => 'Image Propetry Change',
         ];
 
         return $translator->trans($actionLabels[$action]);

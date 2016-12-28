@@ -22,7 +22,7 @@ class VideoMediaType extends AbstractType
             ->add('name', TextType::class, [
                 'attr' => [
                     'class'     => 'form-control',
-                    'disabled'  => true,
+                    'readonly'  => true,
                 ],
                 'label' => 'Name',
             ])

@@ -634,7 +634,7 @@ class BusinessProfile implements
     protected $uid;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia")
      */
     protected $video;
 

@@ -1,0 +1,4 @@
+# Twig Constant Configuration
+twig:
+    globals:
+        PROPERTY_IMAGE_PROPERTY_UPDATE: 'PROPERTY_IMAGE_PROPERTY_UPDATE'    # const of ChangeSetCalculator class
