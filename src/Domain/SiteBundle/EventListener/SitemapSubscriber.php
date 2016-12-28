@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\EventListener;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -107,25 +108,42 @@ class SitemapSubscriber implements EventSubscriberInterface
             $categories = $this->manager->getRepository('DomainBusinessBundle:Category')
                 ->getAvailableParentCategoriesIterator();
 
-            foreach ($categories as $categoryRow) {
-                /* @var $category \Domain\BusinessBundle\Entity\Category */
-                $category = current($categoryRow);
+            foreach ($categories as $categoryRow1) {
+                /* @var $category1 \Domain\BusinessBundle\Entity\Category */
+                $category1 = current($categoryRow1);
 
-                $this->addCatalogUrl($catalogLocality->getSlug(), $category->getSlug());
+                $this->addCatalogUrl($catalogLocality->getSlug(), $category1->getSlug());
 
-                $subcategories = $categories = $this->manager->getRepository('DomainBusinessBundle:Category')
-                    ->getAvailableSubcategoriesByCategoryIterator($category);
+                $categories2 = $this->manager->getRepository('DomainBusinessBundle:Category')
+                    ->getAvailableSubcategoriesByCategoryIterator($category1, Category::CATEGORY_LEVEL_2);
 
-                foreach ($subcategories as $subcategoryRow) {
+                foreach ($categories2 as $categoryRow2) {
                     /* @var $subcategory \Domain\BusinessBundle\Entity\Category */
-                    $subcategory = current($subcategoryRow);
+                    $category2 = current($categoryRow2);
 
-                    $this->addCatalogUrl($catalogLocality->getSlug(), $category->getSlug(), $subcategory->getSlug());
+                    $this->addCatalogUrl($catalogLocality->getSlug(), $category1->getSlug(), $category2->getSlug());
 
-                    $this->manager->detach($subcategoryRow[0]);
+                    $categories3 = $this->manager->getRepository('DomainBusinessBundle:Category')
+                        ->getAvailableSubcategoriesByCategoryIterator($category2, Category::CATEGORY_LEVEL_3);
+
+                    foreach ($categories3 as $categoryRow3) {
+                        /* @var $subcategory \Domain\BusinessBundle\Entity\Category */
+                        $category3 = current($categoryRow3);
+
+                        $this->addCatalogUrl(
+                            $catalogLocality->getSlug(),
+                            $category1->getSlug(),
+                            $category2->getSlug(),
+                            $category3->getSlug()
+                        );
+
+                        $this->manager->detach($categoryRow3[0]);
+                    }
+
+                    $this->manager->detach($categoryRow2[0]);
                 }
 
-                $this->manager->detach($categoryRow[0]);
+                $this->manager->detach($categoryRow1[0]);
             }
 
             $this->manager->detach($localityRow[0]);
@@ -220,14 +238,19 @@ class SitemapSubscriber implements EventSubscriberInterface
         return $priority;
     }
 
-    protected function addCatalogUrl($catalogLocalitySlug = null, $categorySlug = null, $subcategorySlug = null)
-    {
+    protected function addCatalogUrl(
+        $catalogLocalitySlug = null,
+        $categorySlug1 = null,
+        $categorySlug2 = null,
+        $categorySlug3 = null
+    ) {
         $loc = $this->urlGenerator->generate(
             'domain_search_catalog',
             [
-                'localitySlug'    => $catalogLocalitySlug,
-                'categorySlug'    => $categorySlug,
-                'subcategorySlug' => $subcategorySlug,
+                'localitySlug'  => $catalogLocalitySlug,
+                'categorySlug1' => $categorySlug1,
+                'categorySlug2' => $categorySlug2,
+                'categorySlug3' => $categorySlug3,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );

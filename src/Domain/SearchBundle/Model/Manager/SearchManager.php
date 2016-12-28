@@ -152,7 +152,7 @@ class SearchManager extends Manager
         $category = SearchDataUtil::getCategoryFromRequest($request);
 
         if ($category) {
-            $searchDTO->setCategory($category);
+            $searchDTO->setCategory1($category);
         }
 
         $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
@@ -170,7 +170,7 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
-    public function getSearchCatalogDTO($request, $locality, $category, $subcategory)
+    public function getSearchCatalogDTO($request, $locality, $category, $category2, $category3)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
 
@@ -185,11 +185,15 @@ class SearchManager extends Manager
         $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
 
         if ($category instanceof Category) {
-            $searchDTO->setCategory($category);
+            $searchDTO->setCategory1($category);
         }
 
-        if ($subcategory instanceof Category) {
-            $searchDTO->setSubcategory($subcategory);
+        if ($category2 instanceof Category) {
+            $searchDTO->setCategory2($category2);
+        }
+
+        if ($category3 instanceof Category) {
+            $searchDTO->setCategory3($category3);
         }
 
         if ($locality) {
@@ -216,7 +220,7 @@ class SearchManager extends Manager
         return new DCDataDTO(
             explode(' ', $searchDTO->query),
             $searchDTO->locationValue->name,
-            $searchDTO->getCategory()
+            $searchDTO->getCategory1()
         );
     }
 
@@ -242,26 +246,52 @@ class SearchManager extends Manager
         return $category;
     }
 
-    public function searchSubcategoryByCategory($category, $locale)
+    public function searchSubcategoryByCategory($category, $level, $locale)
     {
-        $category = $this->categoriesManager->searchSubcategoryByCategory($category, $locale);
+        $category = $this->categoriesManager->searchSubcategoryByCategory($category, $level, $locale);
 
         return $category;
     }
 
+    public function getCategoryParents($category)
+    {
+        $categories = $this->categoriesManager->getCategoryParents($category);
+
+        return $categories;
+    }
+
+    public function getCategoryParentsCatalogPath($category)
+    {
+        $data = [
+            'categorySlug1'   => null,
+            'categorySlug2'   => null,
+            'categorySlug3'   => null,
+        ];
+        $categories = $this->getCategoryParents($category);
+
+        foreach ($categories as $item) {
+            $data['categorySlug' . $item->getLvl()] = $item->getSlug();
+        }
+
+        return $data;
+    }
+
     /**
      * @param Locality[] $localities
-     * @param Category[] $categories
-     * @param Category[] $subcategories
+     * @param Category[] $categories1
+     * @param Category[] $categories2
+     * @param Category[] $categories3
      *
      * @return array();
      */
-    public function sortCatalogItems($localities, $categories = [], $subcategories = [])
+    public function sortCatalogItems($localities, $categories1 = [], $categories2 = [], $categories3 = [])
     {
-        if ($subcategories) {
-            $data = $this->sortItems($subcategories);
-        } elseif($categories) {
-            $data = $this->sortItems($categories);
+        if ($categories3) {
+            $data = $this->sortItems($categories3);
+        } elseif ($categories2) {
+            $data = $this->sortItems($categories2);
+        } elseif ($categories1) {
+            $data = $this->sortItems($categories1);
         } else {
             $data = $this->sortItems($localities);
         }
@@ -285,28 +315,35 @@ class SearchManager extends Manager
     public function checkCatalogRedirect($slugs, $entities)
     {
         return $this->checkCatalogSlug($slugs['locality'], $entities['locality']) and
-            $this->checkCatalogSlug($slugs['category'], $entities['category']) and
-            $this->checkCatalogSlug($slugs['subcategory'], $entities['subcategory']) and
-            $this->checkCatalogCategory($entities['category']) and
-            $this->checkCatalogSubcategory($entities['subcategory']);
+            $this->checkCatalogSlug($slugs['category1'], $entities['category1']) and
+            $this->checkCatalogSlug($slugs['category2'], $entities['category2']) and
+            $this->checkCatalogSlug($slugs['category3'], $entities['category3']) and
+            $this->checkCatalogCategory($entities);
     }
 
-    private function checkCatalogCategory($category)
+    private function checkCatalogCategory($data)
     {
-        if ($category and $category->getParent()) {
-            return false;
+        $isValid = true;
+
+        if (!empty($data['category1'])) {
+            if ($data['category1']->getParent()) {
+                $isValid = false;
+            } else {
+                if (!empty($data['category2'])) {
+                    if ($data['category2']->getParent() != $data['category1']) {
+                        $isValid = false;
+                    } else {
+                        if (!empty($data['category3'])) {
+                            if ($data['category3']->getParent() != $data['category2']) {
+                                $isValid = false;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        return true;
-    }
-
-    private function checkCatalogSubcategory($subcategory)
-    {
-        if ($subcategory and !$subcategory->getParent()) {
-            return false;
-        }
-
-        return true;
+        return $isValid;
     }
 
     private function checkCatalogSlug($requestSlug, $entity)

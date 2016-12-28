@@ -50,7 +50,7 @@
                 row.fieldName != 'seoTitle' and row.fieldName != 'seoDescription'
             %}
                 <tr class="sonata-ba-view-container">
-                    <td>{{ normalize_task_fieldname_label(row.fieldName) }}</td>
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
 
                     <td>{{ normalize_task_changeaction_label(row.action) }}</td>
 

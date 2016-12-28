@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Form\Type;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
@@ -612,8 +613,9 @@ class BusinessProfileFormType extends AbstractType
 
     private function setupCategories(BusinessProfile $businessProfile, FormInterface $form)
     {
-        $category      = $businessProfile->getCategory();
-        $subcategories = $businessProfile->getSubcategories();
+        $category   = $businessProfile->getCategory();
+        $categories2 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_2);
+        $categories3 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_3);
 
         $form
             ->add('categories', EntityType::class, [
@@ -623,7 +625,7 @@ class BusinessProfileFormType extends AbstractType
                     'multiple' => false,
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'Category',
+                'label' => 'user.business.type_category_1',
                 'label_attr' => [
                     'class' => 'title-label'
                 ],
@@ -635,22 +637,41 @@ class BusinessProfileFormType extends AbstractType
                 'mapped' => false,
                 'validation_groups' => ['userBusinessProfile'],
             ])
-            ->add('subcategories', EntityType::class, [
+            ->add('categories2', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',
                     'placeholder' => 'Select subcategories',
                     'multiple' => 'multiple',
                 ],
                 'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'Subcategories',
+                'label' => 'user.business.type_category_2',
                 'label_attr' => [
                     'class' => 'title-label'
                 ],
                 'multiple' => true,
                 'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableCategoriesQb();
+                    return $repository->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_2);
                 },
-                'data' => $subcategories,
+                'data' => $categories2,
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('categories3', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control selectize-control select-multiple',
+                    'placeholder' => 'Select subcategories',
+                    'multiple' => 'multiple',
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Category',
+                'label' => 'user.business.type_category_3',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
+                'multiple' => true,
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_3);
+                },
+                'data' => $categories3,
                 'mapped' => false,
                 'required' => false,
             ])

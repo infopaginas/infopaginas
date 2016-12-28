@@ -1379,13 +1379,13 @@ class BusinessProfile implements
      *
      * @return Category[]
      */
-    public function getSubcategories()
+    public function getSubcategories($level)
     {
         $categories = [];
 
         foreach ($this->categories as $category)
         {
-            if ($category->getParent() and $category->getLvl() === 2) {
+            if ($category->getParent() and $category->getLvl() == $level) {
                 $categories[] = $category;
             }
         }

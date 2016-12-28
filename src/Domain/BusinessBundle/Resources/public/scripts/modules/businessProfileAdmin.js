@@ -1,6 +1,7 @@
 $( document ).ready( function() {
-    var categoryField = $( '#' + formId + '_categories' );
     var removeVideo   = $( '#' + formId + '_removeVideo' );
+
+    var categoryField = $( '#' + formId + '_categories' );
 
     $.each( ['#' + formId + '_serviceAreasType label', '#' + formId + '_serviceAreasType label ins'], function( index, fieldId ) {
         $( fieldId ).on( 'click', function() {
@@ -52,49 +53,83 @@ $( document ).ready( function() {
         } );
     } );
 
-    getSubcategories();
+    getSubcategories( defaultCategoryLevel );
 
-    categoryField.on( 'change', function() {
-        getSubcategories();
-    });
+    addCategoriesEvents();
 
-    function getSubcategories() {
-        var categoryId = categoryField.val();
-        var subcategories = $( '#' + formId + '_subcategories' );
+    function addCategoriesEvents() {
+        for ( var i = defaultSubCategoryLevel; i <= maxCategoryLevel; i++ ) {
+            (function ( i ) {
+                var subcategoryFiled = $( '#' + formId + '_categories' + i );
 
-        subcategories.html( '' );
-        subcategories.val( null ).trigger('change.select2');
-        subcategories.attr( 'disabled', 'disabled' );
-
-        $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), {'currentLocale': currentLocale}, function( response ) {
-            var html = '';
-
-            if ( response.data ) {
-                $.each( response.data, function ( key, value ) {
-                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                subcategoryFiled.on( 'change', function() {
+                    getSubcategories( i );
                 });
+            }( i ));
+        }
+
+        categoryField.on( 'change', function() {
+            getSubcategories( defaultCategoryLevel );
+        });
+    }
+
+    function getSubcategories( level ) {
+        var categoryId = categoryField.val();
+        var subcategories = $( '#' + formId + '_categories' + ( level + 1 ) );
+        var parentCategories = $( '#' + formId + '_categories' + ( level ) ).val();
+        var data = {
+            'currentLocale': currentLocale,
+            'level':         level + 1,
+            'categories':    parentCategories
+        };
+
+        if (subcategories.length) {
+            subcategories.html( '' );
+            subcategories.val( null ).trigger('change.select2');
+            subcategories.attr( 'disabled', 'disabled' );
+
+            if ( !parentCategories && level > defaultCategoryLevel ) {
+                if ( level < maxCategoryLevel ) {
+                    getSubcategories( level + 1 )
+                }
+
+                return false;
             }
 
-            subcategories.html( html );
+            $.post( Routing.generate('domain_business_get_subcategories', {categoryId: categoryId, businessProfileId: businessProfileId}), data, function( response ) {
+                var html = '';
 
-            if ( html ) {
-                subcategories.attr( 'disabled', false );
-            } else {
-                subcategories.attr( 'disabled', 'disabled' );
-            }
+                if ( response.data ) {
+                    $.each( response.data, function ( key, value ) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                }
 
-            subcategories.val( null ).trigger( 'change.select2' );
+                subcategories.html( html );
 
-            var selectedValues = [];
+                if ( html ) {
+                    subcategories.attr( 'disabled', false );
+                } else {
+                    subcategories.attr( 'disabled', 'disabled' );
+                }
 
-            $.each( response.data, function ( key, value ) {
-                if ( value.selected ) {
-                    selectedValues.push( value.id );
+                subcategories.val( null ).trigger( 'change.select2' );
+
+                var selectedValues = [];
+
+                $.each( response.data, function ( key, value ) {
+                    if ( value.selected ) {
+                        selectedValues.push( value.id );
+                    }
+                });
+
+                subcategories.select2( 'val', selectedValues );
+
+                if ( level < maxCategoryLevel ) {
+                    getSubcategories( level + 1 )
                 }
             });
-
-            subcategories.select2( 'val', selectedValues );
-        });
+        }
     }
 
     function setUseMapAddress() {

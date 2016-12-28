@@ -2,3 +2,12 @@
 twig:
     globals:
         PROPERTY_IMAGE_PROPERTY_UPDATE: 'PROPERTY_IMAGE_PROPERTY_UPDATE'    # const of ChangeSetCalculator class
+
+#       const of Category class
+        CATEGORY_LEVEL_1: 1
+        CATEGORY_LEVEL_2: 2
+        CATEGORY_LEVEL_3: 3
+
+        CATEGORY_DEFAULT_LEVEL:    1
+        SUBCATEGORY_DEFAULT_LEVEL: 2
+        CATEGORY_MAX_LEVEL:        3

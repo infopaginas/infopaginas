@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Domain\BusinessBundle\Entity\Category;
 
 /**
  * CategoryRepository
@@ -11,8 +12,6 @@ use Doctrine\ORM\Internal\Hydration\IterableResult;
  */
 class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathRepository
 {
-    const SUBCATEGORY_LEVEL = 2;
-
     public function getAvailableCategoriesQb()
     {
         $qb = $this->createQueryBuilder('c')
@@ -31,6 +30,17 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb;
     }
 
+    public function getAvailableChildCategoriesQb($level = Category::CATEGORY_LEVEL_2)
+    {
+        $qb = $this->getAvailableCategoriesQb()
+            ->andWhere('c.parent IS NOT NULL')
+            ->andWhere('c.lvl = :level')
+            ->setParameter('level', $level)
+        ;
+
+        return $qb;
+    }
+
     public function getAvailableParentCategories($locale = false)
     {
         $qb = $this->getAvailableParentCategoriesQb();
@@ -42,12 +52,12 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb->getQuery()->getResult();
     }
 
-    public function getAvailableSubCategoriesQb($parent, $level = self::SUBCATEGORY_LEVEL)
+    public function getAvailableSubCategoriesQb($parents, $level = Category::CATEGORY_LEVEL_2)
     {
         $qb = $this->getAvailableCategoriesQb()
-            ->andWhere('c.parent = :parent')
+            ->andWhere('c.parent IN (:parents)')
             ->andWhere('c.lvl = :lvl')
-            ->setParameter('parent', $parent)
+            ->setParameter('parents', $parents)
             ->setParameter('lvl', $level)
         ;
 
@@ -61,9 +71,9 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb->getQuery()->getResult();
     }
 
-    public function getAvailableSubCategories($parent, $level = self::SUBCATEGORY_LEVEL)
+    public function getAvailableSubCategories($parents, $level = Category::CATEGORY_LEVEL_2)
     {
-        $qb = $this->getAvailableSubCategoriesQb($parent, $level);
+        $qb = $this->getAvailableSubCategoriesQb($parents, $level);
 
         return $qb->getQuery()->getResult();
     }
@@ -174,9 +184,9 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         ;
     }
 
-    public function searchSubcategoryByCategory($category, $locale)
+    public function searchSubcategoryByCategory($category, $level, $locale)
     {
-        $qb = $this->getAvailableSubCategoriesQb($category)
+        $qb = $this->getAvailableSubCategoriesQb($category, $level)
             ->orderBy('c.searchText' . ucfirst($locale));
 
         return $qb->getQuery()->getResult();
@@ -196,6 +206,16 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
                 ->setParameter('customSlug', $customSlug)
             ;
         }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    public function getCategoryByCustomSlug($customSlug)
+    {
+        $query = $this->getAvailableCategoriesQb()
+            ->andWhere('c.slugEn = :customSlug OR c.slugEs = :customSlug')
+            ->setParameter('customSlug', $customSlug)
+        ;
 
         return $query->getQuery()->getOneOrNullResult();
     }
@@ -238,17 +258,29 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $iterateResult;
     }
 
-    public function getAvailableSubcategoriesByCategoryIterator($category)
+    public function getAvailableSubcategoriesByCategoryIterator($category, $level)
     {
         $qb = $this->getAvailableSubCategoriesQb($category);
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
-        $query->setParameter('parent', $category)
-            ->setParameter('lvl', self::SUBCATEGORY_LEVEL)
+        $query->setParameter('parents', $category)
+            ->setParameter('lvl', $level)
         ;
 
         $iterateResult = $query->iterate();
 
         return $iterateResult;
+    }
+
+    public function getCategoryParents($category)
+    {
+        $ids = array_filter(explode(',', $category->getPath()));
+
+        $query = $this->getAvailableCategoriesQb()
+            ->where('c.id IN (:path)')
+            ->setParameter('path', $ids)
+        ;
+
+        return $query->getQuery()->getResult();
     }
 }

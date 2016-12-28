@@ -60,11 +60,46 @@ class CategoryAdmin extends OxaAdmin
     {
         $category = $this->getSubject();
 
+        $em = $this->modelManager->getEntityManager(Category::class);
+
+        $lvl = $category->getLvl();
+
+        if ($lvl) {
+            $maxLevel = $em->createQueryBuilder('c')
+                ->select('MAX(c.lvl)')
+                ->from(Category::class, 'c')
+                ->andWhere('c.path LIKE :path')
+                ->setParameter('path', $category->getPath() . '%')
+                ->getQuery()
+                ->getSingleScalarResult()
+            ;
+
+            $levelDiff = $maxLevel - $lvl;
+
+            if ($levelDiff == 0) {
+                $parentLvl = Category::CATEGORY_LEVEL_2;
+            } elseif ($levelDiff == 1) {
+                $parentLvl = Category::CATEGORY_LEVEL_1;
+            } else {
+                $parentLvl = 0;
+            }
+        } else {
+            $parentLvl = Category::CATEGORY_LEVEL_2;
+        }
+
         $parentQuery = $this->modelManager->createQuery(Category::class, 'c')
             ->where('c.isActive = TRUE')
-            ->andWhere('c.parent IS NULL')
+            ->andWhere('c.lvl <= :maxLevel')
+            ->setParameter('maxLevel', $parentLvl)
             ->orderBy('c.name')
         ;
+
+        if ($category->getId()) {
+            $parentQuery
+                ->andWhere('c.id != :id')
+                ->setParameter('id', $category->getId())
+            ;
+        }
 
         $formMapper
             ->add('name')
@@ -82,7 +117,7 @@ class CategoryAdmin extends OxaAdmin
                 'by_reference' => false,
                 'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain()),
                 'attr' => [
-                    'disabled' => $category->getChildren()->isEmpty() ? false : true,
+                    'disabled' => $parentLvl ? false : true,
                 ],
                 'query' => $parentQuery,
             ])

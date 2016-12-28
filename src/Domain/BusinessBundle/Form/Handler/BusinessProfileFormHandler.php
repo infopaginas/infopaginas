@@ -216,11 +216,15 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     {
         $ids = [];
 
-        if (isset($data['categories']) and $data['categories']) {
+        if (!empty($data['categories'])) {
             $ids[] = $data['categories'];
 
-            if (isset($data['subcategories']) and $data['subcategories']) {
-                $ids = array_merge($ids, $data['subcategories']);
+            if (!empty($data['categories2'])) {
+                $ids = array_merge($ids, $data['categories2']);
+
+                if (!empty($data['categories3'])) {
+                    $ids = array_merge($ids, $data['categories3']);
+                }
             }
         }
 

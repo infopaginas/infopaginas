@@ -44,9 +44,15 @@ class SearchDataUtil
         return $request->get('category', null);
     }
 
-    public static function getSubcategoryFromRequest(Request $request)
+    public static function getCategory2FromRequest(Request $request)
     {
-        return $request->get('subcategory', null);
+        return $request->get('category2', null);
+    }
+
+
+    public static function getCategory3FromRequest(Request $request)
+    {
+        return $request->get('category3', null);
     }
 
     public static function getCatalogLocalityFromRequest(Request $request)

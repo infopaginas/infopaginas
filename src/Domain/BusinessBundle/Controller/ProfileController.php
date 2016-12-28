@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -204,11 +205,19 @@ class ProfileController extends Controller
      */
     public function subcategoryListAction(Request $request, $categoryId, $businessProfileId = null)
     {
-        $locale = $request->request->get('currentLocale', null);
+        $data = [
+            'locale'        => $request->request->get('currentLocale', null),
+            'level'         => $request->request->get('level', Category::SUBCATEGORY_DEFAULT_LEVEL),
+            'subcategories' => $request->request->get('categories', []),
+        ];
+
+        if ($data['level'] >  Category::SUBCATEGORY_DEFAULT_LEVEL and !$data['subcategories']) {
+            return new JsonResponse(['data' => []]);
+        }
 
         $businessProfilesManager = $this->getBusinessProfilesManager();
 
-        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId, $locale);
+        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId, $data);
 
         return new JsonResponse(['data' => $subcategories]);
     }

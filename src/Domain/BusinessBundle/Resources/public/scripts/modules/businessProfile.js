@@ -33,7 +33,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
                 serviceAreaRadioName: '[serviceAreasType]',
                 categoriesId: '#' + this.freeProfileFormName + '_categories',
-                subcategoriesId: '#' + this.freeProfileFormName + '_subcategories'
+                subcategoriesId: '#' + this.freeProfileFormName + '_categories'
             },
             closeBusinessProfileLoadingSpinnerContainerId: 'close-business-profile-spinner-container',
             loadingSpinnerContainerClass: '.spinner-container',
@@ -384,62 +384,96 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     businessProfile.prototype.handleBusinessProfileSubcategories = function () {
         var self = this;
 
-        getSubcategories();
+        var categoryField = $( self.html.fields.categoriesId );
 
-        $( self.html.fields.categoriesId ).on( 'change', function( event ) {
-            getSubcategories();
-        });
+        getSubcategories( defaultCategoryLevel );
+        addCategoriesEvents();
 
-        function getSubcategories() {
-            var categoryId = $( self.html.fields.categoriesId ).val();
-            var subcategories = $( self.html.fields.subcategoriesId );
-            var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
+        function addCategoriesEvents() {
+            for ( var i = defaultSubCategoryLevel; i <= maxCategoryLevel - 1; i++ ) {
+                (function ( i ) {
+                    var subcategoryFiled = $( self.html.fields.subcategoriesId + i );
 
-            var selectOptions = [];
-            var selectBlock = subcategories.selectize();
-            var selectize = selectBlock[0].selectize;
-
-            subcategories.html( '' );
-            selectize.disable();
-
-            $.post( Routing.generate('domain_business_get_subcaregories', {categoryId: categoryId, businessProfileId: businessProfileId}), function( response ) {
-                var html = '';
-                var selected = [];
-
-                if ( response.data ) {
-                    $.each( response.data, function ( key, value ) {
-                        html += '<option value="' + value.id + '">' + value.name + '</option>';
-
-                        selectOptions.push({
-                            text: value.name,
-                            value: value.id
-                        });
-
-                        if ( value.selected ) {
-                            selected.push( value.id );
-                        }
+                    subcategoryFiled.on( 'change', function() {
+                        getSubcategories( i );
                     });
-                }
+                }( i ));
+            }
 
-                subcategories.html( html );
-
-                if ( html ) {
-                    subcategories.attr( 'disabled', false );
-                    selectize.enable();
-                } else {
-                    subcategories.attr( 'disabled', 'disabled' );
-                    selectize.disable();
-                }
-
-                selectize.clear();
-                selectize.clearOptions();
-                selectize.renderCache = {};
-                selectize.load( function ( callback ) {
-                    callback( selectOptions );
-                });
-
-                selectize.setValue( selected );
+            categoryField.on( 'change', function() {
+                getSubcategories( defaultCategoryLevel );
             });
+        }
+
+        function getSubcategories( level ) {
+            var categoryId = $( self.html.fields.categoriesId ).val();
+            var subcategories = $( self.html.fields.subcategoriesId + ( level + 1 ) );
+            var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
+            var parentCategories = $( self.html.fields.subcategoriesId + ( level ) ).val();
+            var data = {
+                'level':         level + 1,
+                'categories':    parentCategories
+            };
+
+            if (subcategories.length) {
+                var selectOptions = [];
+                var selectBlock = subcategories.selectize();
+                var selectize = selectBlock[0].selectize;
+
+                subcategories.html( '' );
+                selectize.disable();
+
+                if ( !parentCategories && level > defaultCategoryLevel ) {
+                    if ( level < maxCategoryLevel ) {
+                        getSubcategories( level + 1 )
+                    }
+
+                    return false;
+                }
+
+                $.post( Routing.generate('domain_business_get_subcategories', {categoryId: categoryId, businessProfileId: businessProfileId}), data, function( response ) {
+                    var html = '';
+                    var selected = [];
+
+                    if ( response.data ) {
+                        $.each( response.data, function ( key, value ) {
+                            html += '<option value="' + value.id + '">' + value.name + '</option>';
+
+                            selectOptions.push({
+                                text: value.name,
+                                value: value.id
+                            });
+
+                            if ( value.selected ) {
+                                selected.push( value.id );
+                            }
+                        });
+                    }
+
+                    subcategories.html( html );
+
+                    if ( html ) {
+                        subcategories.attr( 'disabled', false );
+                        selectize.enable();
+                    } else {
+                        subcategories.attr( 'disabled', 'disabled' );
+                        selectize.disable();
+                    }
+
+                    selectize.clear();
+                    selectize.clearOptions();
+                    selectize.renderCache = {};
+                    selectize.load( function ( callback ) {
+                        callback( selectOptions );
+                    });
+
+                    selectize.setValue( selected );
+
+                    if ( level < maxCategoryLevel ) {
+                        getSubcategories( level + 1 )
+                    }
+                });
+            }
         }
     };
 

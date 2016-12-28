@@ -39,56 +39,56 @@ class MenuManager extends Manager
             [
                 'slug' => 'san-juan',
                 'categories' => [
-                    'lawyers',
-                    'bookstores',
-                    'furniture',
-                    'pizza',
-                    'restaurants',
-                    'video-games',
+                    'abogados',
+                    'librerias',
+                    'mueblerias',
+                    'pizzerias',
+                    'restaurantes',
+                    'video-juegos',
                 ],
             ],
             [
                 'slug' => 'ponce',
                 'categories' => [
-                    'lawyers',
-                    'doctors',
-                    'pizza',
-                    'restaurants',
-                    'Salones/Actividades',  //todo
-                    'automobiles-alternators',
+                    'abogados',
+                    'medicos',
+                    'pizzerias',
+                    'restaurantes',
+                    'salones-de-actividades',
+                    'automobiles-alternators',  //todo no such category at mapping
                 ],
             ],
             [
                 'slug' => 'caguas',
                 'categories' => [
-                    'sports-gymnasiums',
-                    'bookstores',
-                    'pizza',
-                    'restaurants',
-                    'veterinarians',
-                    'automobiles-alternators',
+                    'gimnasios',
+                    'librerias',
+                    'pizzerias',
+                    'restaurantes',
+                    'veterinarios',
+                    'automobiles-alternators',  //todo no such category at mapping
                 ],
             ],
             [
                 'slug' => 'mayaguez',
                 'categories' => [
-                    'sports-gymnasiums',
-                    'lawyers',
-                    'Empleos/Agencias', //todo
-                    'bookstores',
-                    'pizza',
-                    'veterinarians',
+                    'gimnasios',
+                    'abogados',
+                    'agencias-de-empleos',
+                    'librerias',
+                    'pizzerias',
+                    'veterinarios',
                 ],
             ],
             [
                 'slug' => 'arecibo',
                 'categories' => [
-                    'lawyers',
-                    'Médicos Especialistas - Obstetricia Y Ginecología',    //todo
-                    'pizza',
-                    'Salones/Actividades',  //todo
-                    'automobiles-alternators',
-                    'veterinarians',
+                    'abogados',
+                    'medicos-especialistas-en-obstetricia-y-ginecologia',
+                    'pizzerias',
+                    'agencias-de-empleoss',
+                    'automobiles-alternators',  //todo no such category at mapping
+                    'veterinarios',
                 ],
             ],
         ];

@@ -288,8 +288,15 @@ Parent Category: Parent Category
 business.list.category_column: Name
 business.list.parent_category_column: Parent Category
 business.list.category_type: Type
-business.list.category_type.category: Category
-business.list.category_type.subcategory: Subcategory
+
+type_category_1: Category lvl 1
+type_category_2: Category lvl 2
+type_category_3: Category lvl 3
+
+#user
+user.business.type_category_1: Category lvl 1
+user.business.type_category_2: Categories lvl 2
+user.business.type_category_3: Categories lvl 3
 
 #redesign
 What?: What?
