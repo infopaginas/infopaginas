@@ -15,19 +15,33 @@
             </li>
         {% endif %}
 
+        {% set showGap = true %}
+
         {% for pageItem in 1..pageCount %}
-            {% if routeParams is defined %}
-                {% set routeParams = routeParams|merge({'page': (pageItem) }) %}
+            {% if ((pageItem < page - PAGINATION_RADIUS) or (pageItem > page + PAGINATION_RADIUS)) and
+                showGap and pageItem != 1 and pageItem != pageCount %}
+                <li class="ellipsis"><span><i class="fa fa-ellipsis-h"></i></span></li>
+
+                {% set showGap = false %}
             {% endif %}
 
-            {% if page == pageItem %}
-                <li class="current">
-                    <span>{{ pageItem }}</span>
-                </li>
-            {% else %}
-                <li>
-                    <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}">{{ pageItem }}</a>
-                </li>
+            {% if (pageItem >= page - PAGINATION_RADIUS) and (pageItem <= page + PAGINATION_RADIUS) or
+                pageItem == 1 or pageItem == pageCount %}
+                {% set showGap = true %}
+
+                {% if routeParams is defined %}
+                    {% set routeParams = routeParams|merge({'page': (pageItem) }) %}
+                {% endif %}
+
+                {% if page == pageItem %}
+                    <li class="current">
+                        <span>{{ pageItem }}</span>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}">{{ pageItem }}</a>
+                    </li>
+                {% endif %}
             {% endif %}
         {% endfor %}
 
