@@ -129,7 +129,10 @@ class MigrationCommand extends ContainerAwareCommand
 
                     $itemId = $item->_id;
 
-                    if (1) {
+                    $businessProfile = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+                        ->findOneBy(['uid' => $itemId]);
+
+                    if (!$businessProfile) {
                         if ($this->withDebug) {
                             $itemCounter ++;
                             $output->writeln('Starts request item with id ' . $itemId);
@@ -263,7 +266,13 @@ class MigrationCommand extends ContainerAwareCommand
         $entity->setSlogan(trim($profile->slogan));
         $entity->setDescription(trim($profile->description));
         $entity->setProduct(trim($profile->products));
-        $entity->setWorkingHours(trim($profile->hours_opr));
+
+        $workingHours = mb_substr(
+            trim($profile->hours_opr),
+            0,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
+        );
+        $entity->setWorkingHours($workingHours);
 
 #        $entity->setPosition(?);
 
@@ -308,6 +317,12 @@ class MigrationCommand extends ContainerAwareCommand
                 }
 
                 $path = $pathWeb . substr($image->image->url, strrpos($image->image->url, '/'));
+
+                /*
+                 * Migration page 2834
+                 * [Imagine\Exception\RuntimeException]
+                 * An image could not be created from the given input
+                 */
 
                 if (file_exists($path)) {
                     $managerGallery->createNewEntryFromLocalFile($entity, $path, $isLogo);
@@ -417,11 +432,19 @@ class MigrationCommand extends ContainerAwareCommand
 
         if ($profile->brands or $profileSecond->brands) {
             if ($profile->brands) {
-                $brandPrimary = implode(PHP_EOL, $profile->brands);
+                $brandPrimary = mb_substr(
+                    implode(PHP_EOL, $profile->brands),
+                    0,
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
+                );
             }
 
             if ($profileSecond->brands) {
-                $brandSecond = implode(PHP_EOL, $profileSecond->brands);
+                $brandSecond = mb_substr(
+                    implode(PHP_EOL, $profileSecond->brands),
+                    0,
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
+                );
             }
 
             $entity->setBrands($brandPrimary);
@@ -484,11 +507,11 @@ class MigrationCommand extends ContainerAwareCommand
             $descriptionEn = $profileSecond->description;
         }
 
-        $entity->setNameEn($nameEn);
-        $entity->setNameEs($nameEs);
+        $entity->setNameEn(trim($nameEn));
+        $entity->setNameEs(trim($nameEs));
 
-        $entity->setDescriptionEn($descriptionEn);
-        $entity->setDescriptionEs($descriptionEs);
+        $entity->setDescriptionEn(trim($descriptionEn));
+        $entity->setDescriptionEs(trim($descriptionEs));
 
         $this->em->persist($entity);
 
