@@ -43,10 +43,11 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      * @param string $code
      * @param string $format
      * @param array $filterParams
+     * @param array $params
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse(string $code, string $format, array $filterParams) : Response
+    public function getResponse(string $code, string $format, array $filterParams, $params = []) : Response
     {
         list($businessOverviewData, $filename) =
             $this->businessOverviewReportManager->getBusinessOverviewReportDataAndName($filterParams, $format);

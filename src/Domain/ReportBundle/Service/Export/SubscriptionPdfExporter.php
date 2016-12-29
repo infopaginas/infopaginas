@@ -11,6 +11,7 @@ namespace Domain\ReportBundle\Service\Export;
 use Domain\ReportBundle\Manager\SubscriptionReportManager;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
 use Domain\ReportBundle\Model\ExporterInterface;
+use Domain\ReportBundle\Util\DatesUtil;
 use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
@@ -38,14 +39,19 @@ class SubscriptionPdfExporter extends PdfExporterModel
      * @param string $code
      * @param string $format
      * @param array $objects
+     * @param array $parameters
      * @return Response
      */
-    public function getResponse(string $code, string $format, array $objects) : Response
+    public function getResponse(string $code, string $format, array $objects, $parameters) : Response
     {
         $filename = $this->subscriptionReportManager->generateReportName($format, 'subscription_report');
 
+        $subscriptionPlans = $this->subscriptionReportManager->getSubscriptionPlans();
+
+        $dates = $dates = DatesUtil::getReportDates($parameters);
+
         $subscriptionData = $this->subscriptionReportManager
-            ->getSubscriptionsQuantities($objects);
+            ->getSubscriptionsQuantities($objects, $dates, $subscriptionPlans);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/SubscriptionReport:pdf_report.html.twig',
