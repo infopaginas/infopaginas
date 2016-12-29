@@ -14,34 +14,54 @@ class LoadPageData extends OxaAbstractFixture
     {
         $dataArray = [
             [
-                'title'         => 'Contact Us',
+                'titleEn'       => 'Contact Us',
+                'titleEs'       => 'Spanish Contact Us',
                 'code'          => PageInterface::CODE_CONTACT_US,
-                'description'   => 'Contact Us Description',
-                'body'          => 'Contact Us Body',
+                'descriptionEn' => 'Contact Us Description',
+                'descriptionEs' => 'Spanish Contact Us Description',
+                'bodyEn'        => 'Contact Us Body',
+                'bodyEs'        => 'Spanish Contact Us Body',
                 'isPublished'   => true,
                 'slug'          => 'contact-us',
             ],
             [
-                'title'         => 'Privacy Statement',
+                'titleEn'       => 'Privacy Policy',
+                'titleEs'       => 'Política de Privacidad',
                 'code'          => PageInterface::CODE_PRIVACY_STATEMENT,
-                'description'   => 'Privacy Statement Description',
-                'body'          => 'Privacy Statement Body',
+                'descriptionEn' => 'Privacy Policy',
+                'descriptionEs' => 'Política de Privacidad',
+                'bodyEn'        => $this->container->get('twig')->render(
+                    'DomainPageBundle:Fixtures:privacy-en.html.twig'
+                ),
+                'bodyEs'        => $this->container->get('twig')->render(
+                    'DomainPageBundle:Fixtures:privacy-es.html.twig'
+                ),
                 'isPublished'   => true,
                 'slug'          => 'privacy',
             ],
             [
-                'title'         => 'Terms of Usage',
+                'titleEn'       => 'Terms of Service',
+                'titleEs'       => 'Terminos del Servicio',
                 'code'          => PageInterface::CODE_TERMS_OF_USE,
-                'description'   => 'Terms of Usage Description',
-                'body'          => 'Terms of Usage Body',
+                'descriptionEn' => 'Terms of Service',
+                'descriptionEs' => 'Terminos del Servicio',
+                'bodyEn'        => $this->container->get('twig')->render(
+                    'DomainPageBundle:Fixtures:term-of-use-en.html.twig'
+                ),
+                'bodyEs'        => $this->container->get('twig')->render(
+                    'DomainPageBundle:Fixtures:term-of-use-es.html.twig'
+                ),
                 'isPublished'   => true,
                 'slug'          => 'terms',
             ],
             [
-                'title'         => 'Advertise with Us',
+                'titleEn'       => 'Advertise with Us',
+                'titleEs'       => 'Spanish Advertise with Us',
                 'code'          => PageInterface::CODE_ADVERTISE,
-                'description'   => 'Advertise with Us Description',
-                'body'          => 'Advertise with Us  - <a href="/businesses/new">Get Your Free Listing</a>',
+                'descriptionEn' => 'Advertise with Us Description',
+                'descriptionEs' => 'Spanish Advertise with Us Description',
+                'bodyEn'        => 'Advertise with Us  - <a href="/businesses/new">Get Your Free Listing</a>',
+                'bodyEs'        => 'Advertise with Us  - <a href="/businesses/new">Spanish Get Your Free Listing</a>',
                 'isPublished'   => true,
                 'slug'          => 'advertise',
             ],
@@ -59,16 +79,16 @@ class LoadPageData extends OxaAbstractFixture
     protected function loadPage(array $data)
     {
         $object = new Page();
-        $object->setTitle($data['title']);
+        $object->setTitle($data['titleEn']);
         $object->setCode($data['code']);
-        $object->setDescription($data['description']);
-        $object->setBody($data['body']);
+        $object->setDescription($data['descriptionEn']);
+        $object->setBody($data['bodyEn']);
         $object->setIsPublished($data['isPublished']);
         $object->setSlug($data['slug']);
 
-        $this->addTranslation(new PageTranslation(), 'title', sprintf('Spain %s', $data['title']), $object);
-        $this->addTranslation(new PageTranslation(), 'description', sprintf('Spain %s', $data['description']), $object);
-        $this->addTranslation(new PageTranslation(), 'body', sprintf('Spain %s', $data['body']), $object);
+        $this->addTranslation(new PageTranslation(), 'titleEn', $data['titleEs'], $object);
+        $this->addTranslation(new PageTranslation(), 'description', $data['descriptionEs'], $object);
+        $this->addTranslation(new PageTranslation(), 'body', $data['bodyEs'], $object);
 
         $object = $this->container->get('domain_page.manager.page')->setPageSeoData($object, $this->container);
 
