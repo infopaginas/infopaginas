@@ -48,7 +48,7 @@ parameters:
     seo_custom_settings:
         company_name: 'Infopáginas'
         title_max_length: 60
-        business_name_length: 16    # + 4 sign
+        business_name_length: 26    # + 4 sign
         locality_length: 15         # + 3 sign
         brand_length: 12
         description_max_length: 160
