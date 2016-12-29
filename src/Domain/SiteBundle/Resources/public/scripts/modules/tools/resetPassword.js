@@ -91,7 +91,7 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
 
     //return object of current active modal window
     resetPassword.prototype.getActiveModal = function() {
-        return $( '#' + $('.modal.in').attr('id') );
+        return $( '#' + $( '.modal--opened' ).attr('id') );
     };
 
     //action before ajax send
@@ -110,11 +110,10 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
 
     //actions on ajax success
     resetPassword.prototype.successHandler = function( response ) {
+        //if current form == reset password form
+        var activeModal = '#' + this.getActiveModal().find('form').attr('id');
+
         if( response.success ) {
-
-            //if current form == reset password form
-            var activeModal = '#' + this.getActiveModal().find('form').attr('id');
-
             if ( activeModal == this.html.forms.resetPasswordFormId ) {
                 $( this.modals.resetModalId ).modal( 'hide' );
                 $( this.modals.loginModalId ).modal( 'show' );
@@ -126,7 +125,11 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
             if ( !$.isEmptyObject( response.errors ) ) {
                 this.enableFieldsHighlight( response.errors );
             } else {
-                this.enableFieldsHighlight( { 'plainPassword': [response.message] } );
+                if ( activeModal == this.html.forms.resetPasswordFormId ) {
+                    this.enableFieldsHighlight( { 'plainPassword': [response.message] } );
+                } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
+                    this.enableFieldsHighlight( { 'email': [response.message] } );
+                }
             }
         }
     };
