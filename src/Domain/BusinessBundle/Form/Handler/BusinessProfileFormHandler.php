@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\Translator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -45,6 +46,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
     /** @var UsersManager $userManager */
     protected $userManager;
+
+    /** @var Translator $userManager */
+    protected $translator;
 
     /**
      * FreeBusinessProfileFormHandler constructor.
@@ -71,6 +75,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $this->currentUser        = $tokenStorage->getToken()->getUser();
         $this->userManager        = $userManager;
         $this->container          = $container;
+        $this->translator         = $this->container->get('translator');
     }
 
     /**
@@ -120,14 +125,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
             }
 
-            if (!$this->checkTranslationBlock($post)) {
-                $translator = $this->container->get('translator');
-
-                $formError = new FormError($translator->trans('business_profile.names_blank'));
-
-                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_EN))->addError($formError);
-                $this->form->get('name' . ucfirst(BusinessProfile::TRANSLATION_LANG_ES))->addError($formError);
-            }
+            $this->checkTranslationBlock($post);
 
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
@@ -263,41 +261,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
     private function handleTranslationBlock(BusinessProfile $businessProfile, $post)
     {
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-            $post
-        );
+        $fields = BusinessProfile::getTranslatableFields();
 
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,
-            $post
-        );
-
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT,
-            $post
-        );
-
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS,
-            $post
-        );
-
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
-            $post
-        );
-
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN,
-            $post
-        );
+        foreach ($fields as $field) {
+            $businessProfile = $this->handleTranslationSet($businessProfile, $field, $post);
+        }
 
         return $businessProfile;
     }
@@ -404,13 +372,82 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
     private function checkTranslationBlock($post)
     {
-        if ((!empty($post['name' . BusinessProfile::TRANSLATION_LANG_EN]) and
-            trim($post['name' . BusinessProfile::TRANSLATION_LANG_EN])) or
-            (!empty($post['name' . BusinessProfile::TRANSLATION_LANG_ES]) and
-            trim($post['name' . BusinessProfile::TRANSLATION_LANG_ES]))
+        //check name not blank
+        $this->checkTranslationBlockNameBlank($post);
+
+        $fields = BusinessProfile::getTranslatableFields();
+
+        //check fields length
+        foreach ($fields as $field) {
+            $this->checkFieldLocaleLength($post, $field, BusinessProfile::TRANSLATION_LANG_EN);
+            $this->checkFieldLocaleLength($post, $field, BusinessProfile::TRANSLATION_LANG_ES);
+        }
+    }
+
+    private function getFieldMaxLength($field)
+    {
+        switch ($field) {
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_NAME:
+                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME_LENGTH;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION:
+                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT:
+                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS:
+                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS:
+                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN:
+                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH;
+                break;
+            default:
+                $maxLength = 0;
+                break;
+        }
+
+        return $maxLength;
+    }
+
+    private function checkFieldLocaleLength($post, $field, $locale)
+    {
+        $maxLength = $this->getFieldMaxLength($field);
+        $fieldName = $field . $locale;
+
+        if (!empty($post[$fieldName]) and mb_strlen($post[$fieldName]) > $maxLength) {
+            $formError = new FormError(
+                $this->translator->trans('business_profile.max_length', ['{{ limit }}' => $maxLength])
+            );
+
+            $this->form->get($fieldName)->addError($formError);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkTranslationBlockNameBlank($post)
+    {
+        $fieldNameEn = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_EN;
+        $fieldNameES = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_ES;
+
+        if ((!empty($post[$fieldNameEn]) and
+            trim($post[$fieldNameEn])) or
+            (!empty($post[$fieldNameES]) and
+            trim($post[$fieldNameES]))
         ) {
             return true;
         }
+
+        $formError = new FormError($this->translator->trans('business_profile.names_blank'));
+
+        $this->form->get($fieldNameEn)->addError($formError);
+        $this->form->get($fieldNameES)->addError($formError);
 
         return false;
     }
