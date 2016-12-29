@@ -22,6 +22,10 @@ class BusinessProfileUtil
         $companyName    = $seoSettings['company_name'];
         $titleMaxLength = $seoSettings['title_max_length'];
 
+        $businessProfileMaxLength = $seoSettings['business_name_length'];
+        $localityMaxLength = $seoSettings['locality_length'];
+        $brandMaxLength = $seoSettings['brand_length'];
+
         if ($locale) {
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation('name', strtolower($locale));
             $businessProfileName = $businessProfile
@@ -36,9 +40,9 @@ class BusinessProfileUtil
         $seoTitle = $translator->trans(
             'business_profile.seoTitle',
             [
-                'name'     => $businessProfileName,
-                'location' => $catalogLocalityName,
-                'company'  => $companyName,
+                'name'     => mb_substr($businessProfileName, 0 , $businessProfileMaxLength),
+                'location' => mb_substr($catalogLocalityName, 0, $localityMaxLength),
+                'company'  => mb_substr($companyName, 0, $brandMaxLength),
             ],
             'messages',
             $businessProfile->getLocale()

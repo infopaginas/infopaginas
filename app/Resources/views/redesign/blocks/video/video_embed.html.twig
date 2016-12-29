@@ -5,3 +5,13 @@
       <a href="http://videojs.com/html5-video-support/" target="_blank">{% trans %}supports HTML5 video{% endtrans %}</a>
     </p>
 </video>
+
+<script>
+    'use strict';
+
+    var video = videojs('video-{{ media.id }}');
+    video.socialShare({
+        facebook: {},
+        twitter: {}
+    });
+</script>
