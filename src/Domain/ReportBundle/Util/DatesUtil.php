@@ -165,7 +165,7 @@ class DatesUtil
 
         $dates = DatesUtil::dateRange($dateRange);
 
-        //dates'll has one non-required day
+        //remove unwanted day from dates
         unset($dates[count($dates) -1]);
 
         return $dates;
