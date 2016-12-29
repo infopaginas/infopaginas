@@ -39,11 +39,11 @@ class Exporter
         switch ($code) {
             case ReportInterface::CODE_PDF_SUBSCRIPTION_REPORT:
                 $response = $this->container->get('domain_report.exporter.subscription_pdf_exporter')
-                    ->getResponse($code, $format, $admin->getDatagrid()->getResults());
+                    ->getResponse($code, $format, $admin->getDatagrid()->getResults(), $parameters);
                 break;
             case ReportInterface::CODE_EXCEL_SUBSCRIPTION_REPORT:
                 $response = $this->container->get('domain_report.exporter.subscription_excel_exporter')
-                    ->getResponse($code, $format, $admin->getDatagrid()->getResults());
+                    ->getResponse($code, $format, $admin->getDatagrid()->getResults(), $parameters);
                 break;
             case ReportInterface::CODE_PDF_CATEGORY_REPORT:
                 $response = $this->container->get('domain_report.exporter.category_pdf_exporter')

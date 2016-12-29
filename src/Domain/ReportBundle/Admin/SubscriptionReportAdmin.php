@@ -54,16 +54,7 @@ class SubscriptionReportAdmin extends ReportAdmin
 
         $parameters = parent::getFilterParameters();
 
-        if ($parameters['datePeriod']['value'] == 'custom') {
-            $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData($parameters['date']['value'], 'd-m-Y');
-        } else {
-            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType($parameters['datePeriod']['value']);
-        }
-
-        $dates = DatesUtil::dateRange($dateRange);
-
-        //dates'll has one non-required day
-        unset($dates[count($dates) -1]);
+        $dates = DatesUtil::getReportDates($parameters);
 
         $this->subscriptionData = $subscriptionReportManager->getSubscriptionsQuantities($subscriptionReports, $dates, $subscriptionPlans);
 
