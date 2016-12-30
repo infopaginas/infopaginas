@@ -3400,34 +3400,6 @@ class CategoryModel
                                 ),
                         ),
                 ),
-            'DELETE' =>
-                array (
-                    'es' => 'DELETE',
-                    'en' => 'DELETE',
-                    'children' =>
-                        array (
-                            'DELETE' =>
-                                array (
-                                    'es' => 'DELETE',
-                                    'en' => 'DELETE',
-                                    'children' =>
-                                        array (
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => 'DELETE',
-                                                    'code' => '26700',
-                                                ),
-                                            'Scrapbooks & Albumes De Recuerdos' =>
-                                                array (
-                                                    'es' => 'Scrapbooks & Albumes De Recuerdos',
-                                                    'en' => 'DELETE',
-                                                    'code' => '46820',
-                                                ),
-                                        ),
-                                ),
-                        ),
-                ),
             'Educación' =>
                 array (
                     'es' => 'Educación',
@@ -6890,12 +6862,6 @@ class CategoryModel
                                                     'en' => '',
                                                     'code' => '38440',
                                                 ),
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '33740',
-                                                ),
                                             'Dentista Estética' =>
                                                 array (
                                                     'es' => 'Dentista Estética',
@@ -8424,12 +8390,6 @@ class CategoryModel
                                                     'en' => '',
                                                     'code' => '660',
                                                 ),
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '600',
-                                                ),
                                         ),
                                 ),
                             'Mediación' =>
@@ -8782,12 +8742,6 @@ class CategoryModel
                                                     'en' => '',
                                                     'code' => '4020',
                                                 ),
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '4055',
-                                                ),
                                             'Delineantes' =>
                                                 array (
                                                     'es' => 'Delineantes',
@@ -9051,14 +9005,7 @@ class CategoryModel
                                     'es' => 'Psicólogo',
                                     'en' => 'Psychologist',
                                     'children' =>
-                                        array (
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '41960',
-                                                ),
-                                        ),
+                                        array (),
                                 ),
                             'Informática' =>
                                 array (
@@ -10226,12 +10173,6 @@ class CategoryModel
                                                     'en' => '',
                                                     'code' => '25740',
                                                 ),
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '25790',
-                                                ),
                                             'Herramientas de Amolado' =>
                                                 array (
                                                     'es' => 'Herramientas de Amolado',
@@ -11058,12 +10999,6 @@ class CategoryModel
                                                     'en' => '',
                                                     'code' => '16420',
                                                 ),
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '16390',
-                                                ),
                                         ),
                                 ),
                             'Gas' =>
@@ -11072,12 +11007,6 @@ class CategoryModel
                                     'en' => 'Gas',
                                     'children' =>
                                         array (
-                                            'DELETE' =>
-                                                array (
-                                                    'es' => 'DELETE',
-                                                    'en' => '',
-                                                    'code' => '24515',
-                                                ),
                                             'Efectos & Equipo para Gas Fluído' =>
                                                 array (
                                                     'es' => 'Efectos & Equipo para Gas Fluído',
