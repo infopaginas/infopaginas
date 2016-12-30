@@ -20,7 +20,7 @@
                                 </div><!-- index -->
                                 <ul>
                                     {% for item in list %}
-                                        <li id="{{ item.id }}">
+                                        <li {% if currentLocality is null %}id="{{ item.id }}"{% endif %}>
                                             {% include ':redesign/blocks:catalog_link.html.twig' %}
                                         </li>
                                     {% endfor %}

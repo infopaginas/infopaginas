@@ -2481,6 +2481,12 @@ a.tag {
   }
 }
 
+.hide-mobile {
+  @media only screen and (max-width: 805px) {
+    display: none !important;
+  }
+}
+
 .categories-section {
 
   li {
