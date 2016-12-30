@@ -13,3 +13,6 @@ twig:
         CATEGORY_MAX_LEVEL:        3
 
         PAGINATION_RADIUS: 1
+
+#        const of BusinessProfileFormHandler class
+        MESSAGE_BUSINESS_PROFILE_FLASH_GROUP: 'success'

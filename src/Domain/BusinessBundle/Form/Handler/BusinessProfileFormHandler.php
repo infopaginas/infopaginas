@@ -32,6 +32,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
+    const MESSAGE_BUSINESS_PROFILE_CREATED = 'business_profile.message.created';
+    const MESSAGE_BUSINESS_PROFILE_UPDATED = 'business_profile.message.updated';
+
+    const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
+
     /** @var Request  */
     protected $request;
 
@@ -173,6 +178,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             }
 
             $this->getBusinessProfilesManager()->saveProfile($businessProfile);
+            $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
@@ -182,7 +188,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $oldCategories,
                 $oldImages
             );
+            $message = self::MESSAGE_BUSINESS_PROFILE_UPDATED;
         }
+
+        $this->container->get('request')->getSession()
+            ->getFlashBag()->add(self::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP, $this->translator->trans($message));
     }
 
     private function getUsersManager() : UsersManager

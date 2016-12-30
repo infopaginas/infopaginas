@@ -6,6 +6,19 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
+            {% set flashMessages = app.session.flashBag.get(MESSAGE_BUSINESS_PROFILE_FLASH_GROUP) %}
+
+            <div class="container clearfix" id="success-block" {% if flashMessages is empty %}style="display: none;"{% endif %}>
+                <section class="page-section">
+                    <div class="form__section">
+                        <strong>
+                            {% for flashMessage in flashMessages %}
+                                {{ flashMessage }}
+                            {% endfor %}
+                        </strong>
+                    </div>
+                </section>
+            </div>
             <div class="container clearfix">
                 <section class="page-section" id="profile-user">
                     <form class="form user-profile-form" name="{{ profileForm.vars.name }}" id="userProfileForm">

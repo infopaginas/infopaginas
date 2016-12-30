@@ -32,8 +32,11 @@ define(['jquery', 'spin'], function( $, _spin ) {
         $.extend( this.options, options );
 
         this.spinnerOn = false;
-        this.spinner = new _spin(this.options);
-        this.bindEvents( container );
+
+        if ( typeof map !== 'undefined' ) {
+            this.spinner = new _spin(this.options);
+            this.bindEvents( container );
+        }
     };
 
     spin.prototype.show = function(container) {
