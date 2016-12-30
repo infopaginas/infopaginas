@@ -1683,9 +1683,9 @@ $thumb-width-mb: 60px;
     @media only screen and (min-width: 805px) {
       background: $white;
       border-radius: 3px;
-      width: 60%;
-      max-width: 90%;
-      width: 810px;
+      width: 100%;
+      max-width: 100%;
+      // width: 810px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
       margin: 30px 0;
       padding: 20px;
@@ -4198,9 +4198,9 @@ li.active {
   padding-right: 20px;
   width: 49.5%;
 
-  &:nth-child(2n+2) {
-    padding-right: 0;
-  }
+  // &:nth-child(2n+2) {
+  //   padding-right: 0;
+  // }
 
   @media only screen and (min-width: 420px) {
     width: 33%;
