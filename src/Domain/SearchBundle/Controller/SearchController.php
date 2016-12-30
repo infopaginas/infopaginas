@@ -313,6 +313,10 @@ class SearchController extends Controller
                 );
                 $category2   = $searchManager->searchCatalogCategory($categorySlug2);
 
+                if (!$categories2) {
+                    $showCatalog = false;
+                }
+
                 $showResults = true;
                 $seoCategoryName = $category1->getName();
 
