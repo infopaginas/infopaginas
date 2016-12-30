@@ -218,7 +218,7 @@ Type: Type
 DESCRIPTION: DESCRIPCIÓN
 REMOVE: REMUEVA
 Photo: Foto
-Banner Ad: Anuncio de la bandera
+Banner Ad: Anuncio de Cintillo o Banner
 
 social networks: las redes sociales
 Advertisement: Publicidad
@@ -248,16 +248,16 @@ Content: Contenido
 business.profile.edit.note: Tenga en cuenta: los cambios se aplicarán después de la aprobación
 Please enter a search term: Por favor, introduzca un término de búsqueda
 Business Profile Views vs Impressions: Vistas empresariales Perfil vs Impresiones
-Count: Incluido
+Count: Conteo
 Keywords Statistics: Estadísticas Palabras clave
 Number of searches: Número de búsquedas
 Searches: Búsquedas
 Date period: Período la fecha
-Keywords Count: Palabras clave Count
+Keywords Count: Conteo de Palabras Clave
 Date Start: Fecha de inicio
 Date End: Fecha de finalización
 Keyword: Palabra clave
-Searches Count: Búsquedas Count
+Searches Count: Conteo de Búsquedas
 Clicks: Clics
 Image: Imagen
 Social Network: Red social
@@ -267,8 +267,8 @@ View more reviews: Ver más opiniones
 firstname: nombre
 Lastname: Apellido
 UPLOAD VIDEO: CARGAR VÍDEOS
-New Business Review: New Business Review
-Why you feel grumpy when the seasons change: ¿Por qué se siente mal humor cuando las estaciones cambian
+New Business Review: Comentarios de nuevos negocios
+Why you feel grumpy when the seasons change: ¿Por qué te sientes de mal humor cuando las estaciones cambian
 Psychologists: Psicólogos
 homepage.article.psychologists.text: Si usted vive en una parte de Australia, con inviernos fríos y tristes, vas a entender. Sus niveles de energía caen en picado, que desea ocultar bajo el edredón, y se siente bien, triste. Usted no está enfermo, en realidad estás deprimido.
 How to choose the right builder: ¿Cómo elegir el constructor adecuado
@@ -278,11 +278,11 @@ prev: anterior
 next: siguiente
 
 Subcategories: Subcategorías
-Select category: Select category
-Select subcategories: Select subcategories
-Catalog Locality: Catalog Locality
-Select catalog locality: Select catalog locality
-Parent Category: Parent Category
+Select category: Selecciona una categoría
+Select subcategories: Seleccionar subcategorías
+Catalog Locality: Localidad del catálogo
+Select catalog locality: Seleccionar localidad del catálogo
+Parent Category: Categoría de Padres
 
 #admin panel
 business.list.category_column: Name
@@ -352,7 +352,7 @@ Actions: Comportamiento
 Go to...: Ir ...
 Details: Detalles
 Web: Web
-Compare view: Comparar vista
+compare.view: Vista&nbspde&nbspComparacion
 Best match: Mejor partido
 Map view: Mapa
 Close list: Cerrar lista
