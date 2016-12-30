@@ -4468,7 +4468,7 @@ table {
     max-width: none;
     width: calc(95vw - 20px) !important;
   }
-  li::before{
+  li.business::before{
     width: 15px;
     height: 15px;
     position: absolute;;
@@ -4476,7 +4476,18 @@ table {
     margin-top: 2px;
     content: "";
     display: block;
-    background: url('../assets/images/test-icon.png')
+    background: url('../assets/images/business-icon.png')
+  }
+
+  li.category::before{
+    width: 15px;
+    height: 15px;
+    position: absolute;;
+    left: 10px;
+    margin-top: 2px;
+    content: "";
+    display: block;
+    background: url('../assets/images/category-icon.png')
   }
 }
 
