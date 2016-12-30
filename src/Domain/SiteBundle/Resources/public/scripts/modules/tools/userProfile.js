@@ -26,7 +26,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
             fields: {
                 locationFieldId: '#domain_site_user_profile_location'
             },
-
+            successBlock: '#success-block',
             loadingSpinnerContainerClass: '.spinner-container'
         };
 
@@ -107,6 +107,9 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
         var spinnerId = $form.find( this.html.loadingSpinnerContainerClass).attr('id');
 
         this.spinner.show( spinnerId );
+
+        $( this.html.successBlock ).find( 'strong' ).html( '' );
+        $( this.html.successBlock ).hide();
     };
 
     //actions then ajax request done
@@ -122,6 +125,11 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/geolocation'], function( $, 
             $( this.modals.passwordUpdateModalId ).find( 'div.form__field' ).removeClass( 'field-active' ).removeClass( 'field-filled' );
             $( this.modals.passwordUpdateModalId ).find( 'label.label-active' ).removeClass( 'label-active' );
             $( this.modals.passwordUpdateModalId ).modalFunc({close: true});
+
+            $( this.html.successBlock ).find( 'strong' ).html( response.message );
+            $( this.html.successBlock ).show();
+
+            $( 'html, body' ).animate({ scrollTop: 0 }, 'fast');
         } else {
             if ( !$.isEmptyObject( response.errors ) ) {
                 this.enableFieldsHighlight( response.errors );

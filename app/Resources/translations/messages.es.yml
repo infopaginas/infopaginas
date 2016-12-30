@@ -414,3 +414,8 @@ Where: Dónde
 Visit business profile on...: Visita el perfil de negocios en...
 Last review: Última revisión
 Show on Map: Ir al Mapa
+Successfully saved profile data: Datos de perfil guardados correctamente
+Successfully updated password: Contraseña actualizada correctamente
+Validation failure: Error de validación
+business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
