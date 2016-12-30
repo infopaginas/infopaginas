@@ -6,13 +6,20 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Presta\SitemapBundle\Sitemap\Url\GoogleMultilangUrlDecorator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Presta\SitemapBundle\Event\SitemapPopulateEvent;
 use Presta\SitemapBundle\Sitemap\Url\UrlConcrete;
+use Symfony\Component\Routing\RequestContext;
 
 class SitemapSubscriber implements EventSubscriberInterface
 {
+    const SECTION_MAIN              = 'main';
+    const SECTION_ARTICLE           = 'article';
+    const SECTION_CATALOG           = 'catalog';
+    const SECTION_BUSINESS_PROFILES = 'businessProfiles';
+
     /**
      * @var UrlGeneratorInterface
      */
@@ -29,6 +36,21 @@ class SitemapSubscriber implements EventSubscriberInterface
     private $siteMapEvent;
 
     /**
+     * @var array
+     */
+    private $languages = ['en'];
+
+    /**
+     * @var RequestContext
+     */
+    private $context;
+
+    /**
+     * @var string
+     */
+    private $defaultHost;
+
+    /**
      * @param UrlGeneratorInterface $urlGenerator
      * @param ObjectManager         $manager
      */
@@ -36,6 +58,8 @@ class SitemapSubscriber implements EventSubscriberInterface
     {
         $this->urlGenerator = $urlGenerator;
         $this->manager      = $manager;
+        $this->context      = $this->urlGenerator->getContext();
+        $this->defaultHost  = $this->context->getHost();
     }
 
     /**
@@ -59,6 +83,7 @@ class SitemapSubscriber implements EventSubscriberInterface
         $this->addArticleList();
         $this->addArticleCategoryList();
         $this->addBusinessProfilesCatalog();
+        $this->addStaticUrls();
     }
 
     protected function addBusinessProfiles()
@@ -69,6 +94,8 @@ class SitemapSubscriber implements EventSubscriberInterface
         foreach ($businessProfiles as $row) {
             /* @var $businessProfile \Domain\BusinessBundle\Entity\BusinessProfile */
             $businessProfile = current($row);
+
+            $this->context->setHost($this->defaultHost);
 
             $loc = $this->urlGenerator->generate(
                 'domain_business_profile_view',
@@ -83,10 +110,30 @@ class SitemapSubscriber implements EventSubscriberInterface
             $priority        = $this->getBusinessProfilePriority($businessProfile);
             $changeFrequency = null;
 
-            $this->siteMapEvent->getUrlContainer()->addUrl(
-                new UrlConcrete($loc, $lastModify, $changeFrequency, $priority),
-                'businessProfiles'
-            );
+            $baseUrl = new UrlConcrete($loc, $lastModify, $changeFrequency, $priority);
+
+            if ($this->languages) {
+                $urlLang = new GoogleMultilangUrlDecorator($baseUrl);
+
+                foreach ($this->languages as $locale) {
+                    $this->context->setHost($locale . '.' . $this->defaultHost);
+
+                    $url = $this->urlGenerator->generate(
+                        'domain_business_profile_view',
+                        [
+                            'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
+                            'slug'     => $businessProfile->getSlug(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+
+                    $urlLang->addLink($url, $locale);
+                }
+
+                $baseUrl = $urlLang;
+            }
+
+            $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_BUSINESS_PROFILES);
 
             $this->manager->detach($row[0]);
         }
@@ -159,7 +206,8 @@ class SitemapSubscriber implements EventSubscriberInterface
             /* @var $article \Domain\ArticleBundle\Entity\Article */
             $article = current($row);
 
-            //article
+            $this->context->setHost($this->defaultHost);
+
             $loc = $this->urlGenerator->generate(
                 'domain_article_view',
                 [
@@ -172,10 +220,29 @@ class SitemapSubscriber implements EventSubscriberInterface
             $changeFrequency = null;
             $priority        = null;
 
-            $this->siteMapEvent->getUrlContainer()->addUrl(
-                new UrlConcrete($loc, $lastModify, $changeFrequency, $priority),
-                'article'
-            );
+            $baseUrl = new UrlConcrete($loc, $lastModify, $changeFrequency, $priority);
+
+            if ($this->languages) {
+                $urlLang = new GoogleMultilangUrlDecorator($baseUrl);
+
+                foreach ($this->languages as $locale) {
+                    $this->context->setHost($locale . '.' . $this->defaultHost);
+
+                    $url = $this->urlGenerator->generate(
+                        'domain_article_view',
+                        [
+                            'slug' => $article->getSlug(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+
+                    $urlLang->addLink($url, $locale);
+                }
+
+                $baseUrl = $urlLang;
+            }
+
+            $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_ARTICLE);
 
             $this->manager->detach($row[0]);
         }
@@ -190,6 +257,8 @@ class SitemapSubscriber implements EventSubscriberInterface
             /* @var $category \Domain\BusinessBundle\Entity\Category */
             $category = current($row);
 
+            $this->context->setHost($this->defaultHost);
+
             //article categories
             $loc = $this->urlGenerator->generate(
                 'domain_article_category',
@@ -199,10 +268,29 @@ class SitemapSubscriber implements EventSubscriberInterface
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            $this->siteMapEvent->getUrlContainer()->addUrl(
-                new UrlConcrete($loc),
-                'article'
-            );
+            $baseUrl = new UrlConcrete($loc);
+
+            if ($this->languages) {
+                $urlLang = new GoogleMultilangUrlDecorator($baseUrl);
+
+                foreach ($this->languages as $locale) {
+                    $this->context->setHost($locale . '.' . $this->defaultHost);
+
+                    $url = $this->urlGenerator->generate(
+                        'domain_article_category',
+                        [
+                            'categorySlug' => $category->getSlug(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+
+                    $urlLang->addLink($url, $locale);
+                }
+
+                $baseUrl = $urlLang;
+            }
+
+            $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_ARTICLE);
 
             $this->manager->detach($row[0]);
         }
@@ -244,6 +332,8 @@ class SitemapSubscriber implements EventSubscriberInterface
         $categorySlug2 = null,
         $categorySlug3 = null
     ) {
+        $this->context->setHost($this->defaultHost);
+
         $loc = $this->urlGenerator->generate(
             'domain_search_catalog',
             [
@@ -255,9 +345,98 @@ class SitemapSubscriber implements EventSubscriberInterface
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        $this->siteMapEvent->getUrlContainer()->addUrl(
-            new UrlConcrete($loc),
-            'catalog'
-        );
+        $baseUrl = new UrlConcrete($loc);
+
+        if ($this->languages) {
+            $urlLang = new GoogleMultilangUrlDecorator($baseUrl);
+
+            foreach ($this->languages as $locale) {
+                $this->context->setHost($locale . '.' . $this->defaultHost);
+
+                $url = $this->urlGenerator->generate(
+                    'domain_search_catalog',
+                    [
+                        'localitySlug'  => $catalogLocalitySlug,
+                        'categorySlug1' => $categorySlug1,
+                        'categorySlug2' => $categorySlug2,
+                        'categorySlug3' => $categorySlug3,
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+
+                $urlLang->addLink($url, $locale);
+            }
+
+            $baseUrl = $urlLang;
+        }
+
+        $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, self::SECTION_CATALOG);
+    }
+
+    public function addStaticUrls()
+    {
+        $data = $this->getStaticUrls();
+
+        foreach ($data as $item) {
+            $this->context->setHost($this->defaultHost);
+
+            $loc = $this->urlGenerator->generate($item['route'], [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $baseUrl = new UrlConcrete($loc);
+
+            if ($this->languages) {
+                $urlLang = new GoogleMultilangUrlDecorator($baseUrl);
+
+                foreach ($this->languages as $locale) {
+                    $this->context->setHost($locale . '.' . $this->defaultHost);
+
+                    $url = $this->urlGenerator->generate($item['route'], [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                    $urlLang->addLink($url, $locale);
+                }
+
+                $baseUrl = $urlLang;
+            }
+
+            $this->siteMapEvent->getUrlContainer()->addUrl($baseUrl, $item['section']);
+        }
+    }
+
+    private function getStaticUrls()
+    {
+        return [
+            'domain_article_homepage' => [
+                'route'   => 'domain_article_homepage',
+                'section' => self::SECTION_ARTICLE,
+            ],
+            'domain_site_home_index' => [
+                'route'   => 'domain_site_home_index',
+                'section' => self::SECTION_MAIN,
+            ],
+            'domain_page_view_contact' => [
+                'route'   => 'domain_page_view_contact',
+                'section' => self::SECTION_MAIN,
+            ],
+            'domain_page_view_terms' => [
+                'route'   => 'domain_page_view_terms',
+                'section' => self::SECTION_MAIN,
+            ],
+            'domain_page_view_privacy' => [
+                'route'   => 'domain_page_view_privacy',
+                'section' => self::SECTION_MAIN,
+            ],
+            'domain_page_view_advertise' => [
+                'route'   => 'domain_page_view_advertise',
+                'section' => self::SECTION_MAIN,
+            ],
+            'domain_page_view_features' => [
+                'route'   => 'domain_page_view_features',
+                'section' => self::SECTION_MAIN,
+            ],
+            'domain_business_video_list' => [
+                'route'   => 'domain_business_video_list',
+                'section' => self::SECTION_MAIN,
+            ],
+        ];
     }
 }
