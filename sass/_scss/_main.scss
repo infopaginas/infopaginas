@@ -193,3 +193,13 @@ textarea[contenteditable] {
        only screen and (min-resolution: 144dpi) {
     /* Style adjustments for viewports that meet the condition */
 }
+
+li.selected-card a {
+  border: 2px solid #96763e;
+  border-radius: 7px;
+}
+
+div.selected-card {
+  border: 2px solid #96763e;
+  border-radius: 7px;
+}
