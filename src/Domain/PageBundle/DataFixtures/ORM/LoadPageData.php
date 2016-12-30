@@ -86,7 +86,7 @@ class LoadPageData extends OxaAbstractFixture
         $object->setIsPublished($data['isPublished']);
         $object->setSlug($data['slug']);
 
-        $this->addTranslation(new PageTranslation(), 'titleEn', $data['titleEs'], $object);
+        $this->addTranslation(new PageTranslation(), 'title', $data['titleEs'], $object);
         $this->addTranslation(new PageTranslation(), 'description', $data['descriptionEs'], $object);
         $this->addTranslation(new PageTranslation(), 'body', $data['bodyEs'], $object);
 
