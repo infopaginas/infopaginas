@@ -287,25 +287,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         }
 
         if (property_exists($businessProfile, $property)) {
-            if ($dataEn) {
-                $businessProfile->{'set' . $property}($dataEn);
-
-                $translation = new BusinessProfileTranslation(
-                    strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-                    $property,
-                    $dataEn
-                );
-
-                $businessProfile->addTranslation($translation);
-
-                if (property_exists($businessProfile, $propertyEn)) {
-                    $businessProfile->{'set' . $propertyEn}($dataEn);
-                }
-            } elseif ($dataEs) {
-                $businessProfile->{'set' . $property}($dataEs);
-            }
-
             if ($dataEs) {
+                $businessProfile->{'set' . $property}($dataEs);
+
                 $translation = new BusinessProfileTranslation(
                     strtolower(BusinessProfile::TRANSLATION_LANG_ES),
                     $property,
@@ -316,6 +300,22 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
                 if (property_exists($businessProfile, $propertyEs)) {
                     $businessProfile->{'set' . $propertyEs}($dataEs);
+                }
+            } elseif ($dataEn) {
+                $businessProfile->{'set' . $property}($dataEn);
+            }
+
+            if ($dataEn) {
+                $translation = new BusinessProfileTranslation(
+                    strtolower(BusinessProfile::TRANSLATION_LANG_EN),
+                    $property,
+                    $dataEn
+                );
+
+                $businessProfile->addTranslation($translation);
+
+                if (property_exists($businessProfile, $propertyEn)) {
+                    $businessProfile->{'set' . $propertyEn}($dataEn);
                 }
             }
         }

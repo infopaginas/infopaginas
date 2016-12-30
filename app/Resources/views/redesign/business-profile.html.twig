@@ -1,7 +1,16 @@
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block breadcrumbs %}
-    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': businessProfile.category, 'category2': businessProfile.getSubcategories(CATEGORY_LEVEL_2)|first, 'category3': businessProfile.getSubcategories(CATEGORY_LEVEL_3)|first} %}
+    {% set category1 = businessProfile.category %}
+    {% set category3 = businessProfile.getSubcategories(CATEGORY_LEVEL_3)|first %}
+
+    {% if category3 %}
+        {% set category2 = category3.parent %}
+    {% else %}
+        {% set category2 = businessProfile.getSubcategories(CATEGORY_LEVEL_2)|first %}
+    {% endif %}
+
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': businessProfile.catalogLocality, 'category': category1, 'category2': category2, 'category3': category3} %}
 {% endblock %}
 
 {% block bodyClass %}profile{% endblock %}
