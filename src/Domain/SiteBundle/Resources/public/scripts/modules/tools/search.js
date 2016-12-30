@@ -124,7 +124,15 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     };
 
     search.prototype.returnAutocompleteDataElement = function ( ul, item ) {
-        return $( "<li>" )
+        var itemClass;
+
+        if ( item.hasOwnProperty(0) ) {
+            itemClass = 'business';
+        } else {
+            itemClass = 'category';
+        }
+
+        return $( "<li class='" + itemClass + "'>" )
             .append( $( "<a></a>" )["html"]( item.data ) )
             .attr( "data-value",  decodeURIComponent( item.data ) )
             .attr( "data-name",  item.name )
