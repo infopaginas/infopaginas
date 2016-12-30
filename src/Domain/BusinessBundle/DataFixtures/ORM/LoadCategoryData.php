@@ -81,6 +81,9 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
             $object->setSlugEs($this->mapping[$category['code']]);
         }
 
+        $object->setSearchTextEn($categoryEn);
+        $object->setSearchTextEs($category['es']);
+
         $this->manager->persist($object);
 
         $translation = new CategoryTranslation();
