@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'business/tools/phones', 'selectize'], function( $, bootstrap, FormHandler, Spin, select, businessProfileClose ) {
+define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'tools/mapspin', 'business/tools/phones', 'selectize'], function( $, bootstrap, FormHandler, Spin, select, businessProfileClose, MapSpin ) {
     'use strict';
 
     //init businessProfile object variables
@@ -54,6 +54,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
         this.geocoder = new google.maps.Geocoder();
         this.businessProfileClose = new businessProfileClose;
+        this.mapSpinner = new MapSpin( this.html.mapContainerId );
 
         this.spinner = new Spin();
 
