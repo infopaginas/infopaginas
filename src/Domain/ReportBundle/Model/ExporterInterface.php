@@ -17,5 +17,5 @@ use Symfony\Component\Templating\EngineInterface;
  */
 interface ExporterInterface
 {
-    public function getResponse(string $code, string $format, array $objects) : Response;
+    public function getResponse(string $code, string $format, array $objects, $parameters = []) : Response;
 }

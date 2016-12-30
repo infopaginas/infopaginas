@@ -3,6 +3,3 @@ domain_site_home_index:
     defaults: { _controller: DomainSiteBundle:Home:index }
     options:
         expose: true
-        sitemap:
-            priority: 1
-            section: main

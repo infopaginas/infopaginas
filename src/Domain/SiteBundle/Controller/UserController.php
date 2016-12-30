@@ -18,11 +18,11 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class UserController extends Controller
 {
-    const SUCCESS_PROFILE_UPDATE_MESSAGE = 'Successfully saved profile data.';
+    const SUCCESS_PROFILE_UPDATE_MESSAGE = 'Successfully saved profile data';
 
-    const SUCCESS_PASSWORD_UPDATE_MESSAGE = 'Successfully updated password.';
+    const SUCCESS_PASSWORD_UPDATE_MESSAGE = 'Successfully updated password';
 
-    const ERROR_VALIDATION_FAILURE = 'Validation failure.';
+    const ERROR_VALIDATION_FAILURE = 'Validation failure';
 
     /**
      * @param Request $request

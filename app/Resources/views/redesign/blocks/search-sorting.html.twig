@@ -8,8 +8,6 @@
         </a>
 
         <div class="sort-bar">
-            {# todo style links #}
-            <a href="{{ absolute_url(path('domain_search_compare', app.request.query.all)) }}" class="button button--action sort__compare-view">{% trans %}Compare view{% endtrans %}</a>
             <button id="sort-toggle" class="button sort-bar__button" type="button">
                 <i class="fa fa-sort"></i>
                 <span>{% trans %}Sort{% endtrans %}</span>

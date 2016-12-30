@@ -450,12 +450,6 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
             $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
             $( 'body' ).removeClass( 'body--no-scroll' );
         });
-
-        //custom bg on home for mobile
-        var videoContainer = $('.video-header__container');
-        var url = videoContainer.data('mbg');
-        videoContainer.css('background-image', 'url(' + url + ')');
-
     }
 
     var comparisonListToggle = $('#comparison-list-toggle');

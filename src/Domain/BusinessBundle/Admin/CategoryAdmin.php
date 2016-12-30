@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -64,7 +65,9 @@ class CategoryAdmin extends OxaAdmin
 
         $lvl = $category->getLvl();
 
-        if ($lvl) {
+        if ($lvl == Category::CATEGORY_LEVEL_1 and !$category->getBusinessProfiles()->isEmpty()) {
+            $parentLvl = 0;
+        } elseif($lvl) {
             $maxLevel = $em->createQueryBuilder('c')
                 ->select('MAX(c.lvl)')
                 ->from(Category::class, 'c')
@@ -163,6 +166,9 @@ class CategoryAdmin extends OxaAdmin
         $this->preSave($entity);
     }
 
+    /**
+     * @param Category $entity
+     */
     private function preSave($entity)
     {
         $textEn = '';
@@ -188,6 +194,38 @@ class CategoryAdmin extends OxaAdmin
 
         if ($textEs) {
             $entity->setSearchTextEs($textEs);
+        }
+
+        //remove category form business only for lvl 2 and 3 (lvl 1 is forbidden to update if binded to business)
+        $businesses = $entity->getBusinessProfiles();
+
+        if (!$businesses->isEmpty()) {
+            $parentCategory = $entity->getParent();
+            $childrenCategory = $entity->getChildren();
+
+            foreach ($businesses as $business) {
+                /* @var $business BusinessProfile */
+                if ($parentCategory) {
+                    if (!$business->getCategories()->contains($parentCategory)) {
+                        $business->removeCategory($entity);
+
+                        foreach ($childrenCategory as $child) {
+                            if ($business->getCategories()->contains($child)) {
+                                $business->removeCategory($child);
+                            }
+                        }
+                    }
+                } else {
+                    $categories = $business->getCategories();
+
+                    foreach ($categories as $category) {
+                        if ($category->getLvl() == Category::CATEGORY_LEVEL_1 and $category != $entity) {
+                            $business->removeCategory($entity);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

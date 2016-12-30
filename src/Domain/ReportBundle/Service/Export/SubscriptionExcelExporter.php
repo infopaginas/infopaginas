@@ -13,6 +13,7 @@ use Domain\ReportBundle\Manager\SubscriptionReportManager;
 use Domain\ReportBundle\Model\Exporter\ExcelExporterModel;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Model\ReportInterface;
+use Domain\ReportBundle\Util\DatesUtil;
 use Exporter\Source\SourceIteratorInterface;
 use Liuggio\ExcelBundle\Factory;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -51,10 +52,11 @@ class SubscriptionExcelExporter extends ExcelExporterModel
      * @param string $code
      * @param string $format
      * @param array $objects
+     * @param array $parameters
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse(string $code, string $format, array $objects) : Response
+    public function getResponse(string $code, string $format, array $objects, $parameters) : Response
     {
         $filename = $this->subscriptionReportManager->generateReportName($format, 'subscription_report');
 
@@ -64,7 +66,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
             ->setTitle($this->translator->trans('export.title.subscription_report', [], 'AdminReportBundle'))
         ;
 
-        $phpExcelObject = $this->setData($phpExcelObject, $objects);
+        $phpExcelObject = $this->setData($phpExcelObject, $objects, $parameters);
 
         $phpExcelObject->getActiveSheet()
             ->setTitle(
@@ -96,11 +98,15 @@ class SubscriptionExcelExporter extends ExcelExporterModel
      * @return \PHPExcel
      * @throws \PHPExcel_Exception
      */
-    public function setData(\PHPExcel $phpExcelObject, array $objects)
+    public function setData(\PHPExcel $phpExcelObject, array $objects, $parameters)
     {
+        $subscriptionPlans = $this->subscriptionReportManager->getSubscriptionPlans();
+
+        $dates = $dates = DatesUtil::getReportDates($parameters);
+
         // count data
         $subscriptionData = $this->subscriptionReportManager
-            ->getSubscriptionsQuantities($objects);
+            ->getSubscriptionsQuantities($objects, $dates, $subscriptionPlans);
 
         $activeSheet = $phpExcelObject->setActiveSheetIndex(0);
 

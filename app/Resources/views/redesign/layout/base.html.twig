@@ -37,12 +37,15 @@
 
         <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
 
+        <script type="text/javascript" src="{{ absolute_url(asset('bundles/oxavideo/scripts/video.5.8.8.js')) }}"></script>
+        <script type="text/javascript" src="{{ absolute_url(asset('assets/scripts/video-js-social-share.js')) }}"></script>
 
         {% block styles %}
             {% stylesheets filter="scssphp" output="css/app.css"
                 "redesign/css/normalize.css"
                 "../sass/_scss/infopaginas.scss"
                 "assets/styles/select2.min.css"
+                "assets/styles/video-js-social-share.css"
             %}
                 <link rel="stylesheet" href="{{ absolute_url(asset_url) }}" />
             {% endstylesheets %}
@@ -85,8 +88,6 @@
 
         <!-- Scripts -->
         {% block scripts %}
-            <script type="text/javascript" src="{{ absolute_url(asset('bundles/oxavideo/scripts/video.5.8.8.js')) }}" rel="stylesheet"></script>
-
             {% javascripts filter="?jsqueeze" output="js/app.js"
                 'bundles/domainsite/scripts/require.js'
                 'bundles/fosjsrouting/js/router.js'

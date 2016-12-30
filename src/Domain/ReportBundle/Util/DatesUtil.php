@@ -154,4 +154,20 @@ class DatesUtil
     {
         return date('n', $timestamp) - 1;
     }
+
+    public static function getReportDates(array $parameters)
+    {
+        if ($parameters['datePeriod']['value'] == 'custom') {
+            $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData($parameters['date']['value'], 'd-m-Y');
+        } else {
+            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType($parameters['datePeriod']['value']);
+        }
+
+        $dates = DatesUtil::dateRange($dateRange);
+
+        //remove unwanted day from dates
+        unset($dates[count($dates) -1]);
+
+        return $dates;
+    }
 }

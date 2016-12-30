@@ -1,6 +1,6 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating'],
-    function ( $, view, _, directions, select ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapspin', 'bootstrap', 'select2', 'tools/star-rating'],
+    function ( $, view, _, directions, select, MapSpin ) {
     'use strict';
 
     var mapSearchPage = function () {
@@ -46,6 +46,7 @@ define(
 
         //pass google map to main.js for resizing event
         map = this.map;
+        this.mapSpinner = new MapSpin( this.options.mapContainer );
 
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers( this.options.markers );
@@ -105,6 +106,12 @@ define(
             self.scrollTo( markerData.id );
             infoWindow.open( self.map, marker );
         });
+
+        if ( document.getElementById( 'show-on-map-' + markerData.id ) ) {
+            google.maps.event.addDomListener(document.getElementById( 'show-on-map-' + markerData.id ), "click", function( e ) {
+                self.map.setCenter( marker.getPosition() );
+            });
+        }
 
         var markerObjec = {};
         this.markers[markerData.id] = {

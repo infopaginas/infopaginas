@@ -48,7 +48,7 @@ Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
-Call: Llamadas
+Call: Llamar
 Reviews: Comentarios
 list: Ok
 map: Mapa
@@ -218,7 +218,7 @@ Type: Type
 DESCRIPTION: DESCRIPCIÓN
 REMOVE: REMUEVA
 Photo: Foto
-Banner Ad: Anuncio de la bandera
+Banner Ad: Anuncio de Cintillo o Banner
 
 social networks: las redes sociales
 Advertisement: Publicidad
@@ -248,16 +248,16 @@ Content: Contenido
 business.profile.edit.note: Tenga en cuenta: los cambios se aplicarán después de la aprobación
 Please enter a search term: Por favor, introduzca un término de búsqueda
 Business Profile Views vs Impressions: Vistas empresariales Perfil vs Impresiones
-Count: Incluido
+Count: Conteo
 Keywords Statistics: Estadísticas Palabras clave
 Number of searches: Número de búsquedas
 Searches: Búsquedas
 Date period: Período la fecha
-Keywords Count: Palabras clave Count
+Keywords Count: Conteo de Palabras Clave
 Date Start: Fecha de inicio
 Date End: Fecha de finalización
 Keyword: Palabra clave
-Searches Count: Búsquedas Count
+Searches Count: Conteo de Búsquedas
 Clicks: Clics
 Image: Imagen
 Social Network: Red social
@@ -267,8 +267,8 @@ View more reviews: Ver más opiniones
 firstname: nombre
 Lastname: Apellido
 UPLOAD VIDEO: CARGAR VÍDEOS
-New Business Review: New Business Review
-Why you feel grumpy when the seasons change: ¿Por qué se siente mal humor cuando las estaciones cambian
+New Business Review: Comentarios de nuevos negocios
+Why you feel grumpy when the seasons change: ¿Por qué te sientes de mal humor cuando las estaciones cambian
 Psychologists: Psicólogos
 homepage.article.psychologists.text: Si usted vive en una parte de Australia, con inviernos fríos y tristes, vas a entender. Sus niveles de energía caen en picado, que desea ocultar bajo el edredón, y se siente bien, triste. Usted no está enfermo, en realidad estás deprimido.
 How to choose the right builder: ¿Cómo elegir el constructor adecuado
@@ -278,11 +278,11 @@ prev: anterior
 next: siguiente
 
 Subcategories: Subcategorías
-Select category: Select category
-Select subcategories: Select subcategories
-Catalog Locality: Catalog Locality
-Select catalog locality: Select catalog locality
-Parent Category: Parent Category
+Select category: Selecciona una categoría
+Select subcategories: Seleccionar subcategorías
+Catalog Locality: Localidad del catálogo
+Select catalog locality: Seleccionar localidad del catálogo
+Parent Category: Categoría de Padres
 
 #admin panel
 business.list.category_column: Name
@@ -302,7 +302,7 @@ user.business.type_category_3: Categorías lvl 3
 What?: ¿Qué?
 Where?: ¿Dónde?
 Common searches N/A link: Búsquedas comunes N / A link
-Catalog: Catalogar
+Catalog: Catálogo
 Infopáginas: Infopáginas
 Business hours: Horas de trabajo
 Payment methods: Métodos de pago
@@ -313,7 +313,7 @@ Business categories: Categorías de negocios
 Forgot password?: Se te olvidó tu contraseña?
 New to Infopáginas: Nuevo en Infopáginas
 Create an account: Crea una cuenta
-First name: Nombre de pila
+First name: Nombre de Persona
 Last name: Apellido
 Confirm password: Confirmar contraseña
 Log in: Iniciar sesión
@@ -341,7 +341,7 @@ error.403.message: No se me permite acceder a esta página.
 error.403.search.text: Busque algo más
 error.403.search.catalog: O navegar por nuestro catálogo
 
-List view: Vista de la lista
+List view: Lista
 Add to compare: Añadir a comparar
 Go to information page: Ir a la página de información
 Next page: Siguiente página
@@ -352,9 +352,9 @@ Actions: Comportamiento
 Go to...: Ir ...
 Details: Detalles
 Web: Web
-Compare view: Comparar vista
+compare.view: Vista&nbspde&nbspComparacion
 Best match: Mejor partido
-Map view: Vista del mapa
+Map view: Mapa
 Close list: Cerrar lista
 Go to watch...: Ir a ver...
 Sort: Ordenar
@@ -398,6 +398,7 @@ business_profile.image_count_limit: Error: se han añadido demasiadas imágenes.
 business_profile.size_limit: Lo siento. El tamaño máximo permitido es de 10Mb.
 business_profile.url.empty: Error: el campo URL no debe estar vacío.
 business_profile.video_count_limit: Error: demasiados videos agregados. Máximo conteo de archivos =
+business_profile.max_length: Por favor, use max {{ limit }} símbolos
 Updated By: Actualizado por
 Back to Business Profile: Volver al perfil del negocio
 Create Profile: Crear perfil
@@ -412,3 +413,9 @@ miles away: millas de distancia
 Where: Dónde
 Visit business profile on...: Visita el perfil de negocios en...
 Last review: Última revisión
+Show on Map: Ir al Mapa
+Successfully saved profile data: Datos de perfil guardados correctamente
+Successfully updated password: Contraseña actualizada correctamente
+Validation failure: Error de validación
+business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
