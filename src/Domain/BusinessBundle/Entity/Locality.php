@@ -30,6 +30,9 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     use LocationTrait;
     use PersonalTranslatable;
 
+    const DEFAULT_CATALOG_LOCALITY_SLUG = 'san-juan';
+    const ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES = 'businessProfiles';
+
     /**
      * @var int
      *
@@ -113,11 +116,23 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $slug;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *      mappedBy="catalogLocality",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $businessProfiles;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->businessProfile  = new ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
         $this->translations     = new ArrayCollection();
         $this->neighborhoods    = new ArrayCollection();
     }
@@ -187,6 +202,47 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
         $this->businessProfile->removeElement($businessProfile);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
+    }
+
+    /**
+     * @param mixed $businessProfiles
+     * @return Locality
+     */
+    public function setBusinessProfiles($businessProfiles)
+    {
+        $this->businessProfiles = $businessProfiles;
+        return $this;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfiles
+     *
+     * @return Locality
+     */
+    public function addBusinessProfiles(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfiles)
+    {
+        $this->businessProfiles[] = $businessProfiles;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfiles
+     * @return $this
+     */
+    public function removeBusinessProfiles(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfiles)
+    {
+        $this->businessProfiles->removeElement($businessProfiles);
 
         return $this;
     }
