@@ -341,14 +341,12 @@ class BusinessProfileManager extends Manager
                 $businessProfile->setLogo($media);
                 $businessProfile->removeImage($gallery);
                 $logoEmpty = false;
-                continue;
             } elseif ($gallery->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
                 $media = $gallery->getMedia();
 
                 $businessProfile->setBackground($media);
                 $businessProfile->removeImage($gallery);
                 $backgroundEmpty = false;
-                continue;
             }
         }
 
@@ -467,7 +465,7 @@ class BusinessProfileManager extends Manager
 
                     if ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
                         $businessProfile->setLogo();
-                    }elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
+                    } elseif ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
                         $businessProfile->setBackground();
                     }
                     break;
@@ -506,6 +504,7 @@ class BusinessProfileManager extends Manager
                     $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
                     if ($gallery) {
                         $businessProfile->removeImage($gallery);
+                        $this->getEntityManager()->remove($gallery);
                     }
                     break;
                 case ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE:

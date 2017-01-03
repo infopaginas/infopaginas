@@ -3,7 +3,7 @@
     {% if image.vars.data.id is empty %}
         {% set id = 'media_' ~ image.vars.data.media.id %}
     {% else %}
-        {% set id = image.vars.data.id %}
+        {% set id = key %}
     {% endif %}
 
     <div class="media__item image-item" id="images-form-{{ image.vars.data.media.id }}">
@@ -17,14 +17,14 @@
         <div class="media__item--right image-row">
             <div class="media__field">
                 <div class="form__field">
-                    {{ form_widget(image.type, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ key ~ '_type', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ key ~ '][type]' }) }}
+                    {{ form_widget(image.type, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_type', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][type]' }) }}
                 </div>
             </div>
             <!-- media__field -->
             <div class="media__field">
                 <div class="form__field">
                     {{ form_label(image.description) }}
-                    {{ form_widget(image.description, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ key ~ '_description', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ key ~ '][description]' }) }}
+                    {{ form_widget(image.description, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_description', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][description]' }) }}
                 </div>
             </div>
             <!-- media__field -->
@@ -34,7 +34,7 @@
                     {% trans %}Remove{% endtrans %}
                 </button>
             </div>
-            {{ form_widget(image.media, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ key ~ '_media', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ key ~ '][media]' }) }}
+            {{ form_widget(image.media, {'id': 'domain_business_bundle_business_profile_form_type_images_' ~ id ~ '_media', 'full_name': 'domain_business_bundle_business_profile_form_type[images][' ~ id ~ '][media]' }) }}
         </div>
         <!-- item--right -->
     </div>
