@@ -1721,6 +1721,8 @@ $thumb-width-mb: 60px;
 
   .toolbar {
     width: 100%;
+    max-height: 37px;
+    overflow: hidden;
   }
 }
 
