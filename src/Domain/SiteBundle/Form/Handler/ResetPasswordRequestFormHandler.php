@@ -16,6 +16,7 @@ use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 
 /**
  * Class ResetPasswordFormHandler
@@ -23,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
-    const ERROR_USER_NOT_FOUND = 'User %s doesn\'t exists';
+    const ERROR_USER_NOT_FOUND = 'user.reset_password_request.email.not_found';
 
     /** @var FormInterface  */
     protected $form;
@@ -40,6 +41,9 @@ class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHan
     /** @var  Mailer */
     protected $mailer;
 
+    /** @var Translator */
+    protected $translator;
+
     /**
      * ResetPasswordRequestFormHandler constructor.
      * @param FormInterface $form
@@ -53,13 +57,15 @@ class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHan
         Request $request,
         UserManagerInterface $userManager,
         TokenGeneratorInterface $tokenGenerator,
-        Mailer $mailer
+        Mailer $mailer,
+        Translator $translator
     ) {
         $this->form           = $form;
         $this->request        = $request;
         $this->userManager    = $userManager;
         $this->tokenGenerator = $tokenGenerator;
         $this->mailer         = $mailer;
+        $this->translator     = $translator;
     }
 
     /**
@@ -92,7 +98,7 @@ class ResetPasswordRequestFormHandler extends BaseFormHandler implements FormHan
         $user = $usersManager->findUserByUsernameOrEmail($email);
 
         if ($user === null) {
-            throw new \Exception(sprintf(self::ERROR_USER_NOT_FOUND, $email));
+            throw new \Exception($this->translator->trans(self::ERROR_USER_NOT_FOUND, ['{-email-}' => $email]));
         }
 
         if ($user->getConfirmationToken() === null) {

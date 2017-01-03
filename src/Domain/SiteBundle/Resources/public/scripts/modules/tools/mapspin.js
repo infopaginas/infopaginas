@@ -35,7 +35,8 @@ define(['jquery', 'spin'], function( $, _spin ) {
 
         if ( typeof map !== 'undefined' ) {
             this.spinner = new _spin(this.options);
-            this.bindEvents( container );
+            this.container = container;
+            this.bindEvents();
         }
     };
 
@@ -48,20 +49,43 @@ define(['jquery', 'spin'], function( $, _spin ) {
         this.spinner.stop();
     };
 
-    spin.prototype.bindEvents = function( container ) {
+    spin.prototype.bindEvents = function() {
         var self = this;
 
-        google.maps.event.addListener(map,'tilesloaded',function(){
-            if (!self.spinnerOn) {
-                self.show( container );
-                self.spinnerOn = true;
-            }
+        self.spinnerOn = true;
+        self.show( this.container );
+
+        google.maps.event.addListener( map, 'bounds_changed', function() {
+            self.mapLoadingStart();
         });
 
-        google.maps.event.addListener(map,'idle',function(){
-            self.hide(container);
-            self.spinnerOn = false;
+        google.maps.event.addListener( map, 'dragstart', function() {
+            self.mapLoadingStart();
         });
+
+        google.maps.event.addListener( map, 'maptypeid_changed', function() {
+            self.mapLoadingStart();
+        });
+
+        google.maps.event.addListener( map, 'idle', function() {
+            self.mapLoadingEnd();
+        });
+
+        google.maps.event.addListener( map, 'tilesloaded', function() {
+            self.mapLoadingEnd();
+        });
+    };
+
+    spin.prototype.mapLoadingStart = function() {
+        if (!this.spinnerOn) {
+            this.show( this.container );
+            this.spinnerOn = true;
+        }
+    };
+
+    spin.prototype.mapLoadingEnd = function() {
+        this.hide( this.container );
+        this.spinnerOn = false;
     };
 
     return spin;

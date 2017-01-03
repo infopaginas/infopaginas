@@ -99,6 +99,7 @@ services:
             - '@fos_user.user_manager'
             - '@fos_user.util.token_generator'
             - '@domain_site.mailer'
+            - '@translator.default'
 
     domain_site.reset_password.form.handler:
         class: Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler

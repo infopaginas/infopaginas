@@ -79,4 +79,53 @@ class LocalityAdmin extends OxaAdmin
             ->add('updatedUser')
         ;
     }
+
+    public function preRemove($entity)
+    {
+        $this->replaceBusinessCatalogLocality($entity);
+    }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = [
+            'DELETE',
+            'ROLE_PHYSICAL_DELETE_ABLE',
+            'ROLE_RESTORE_ABLE',
+        ];
+
+        if ($object && in_array($name, $deniedActions) &&
+            $object->getSlug() == Locality::DEFAULT_CATALOG_LOCALITY_SLUG
+        ) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
+    }
+
+    /**
+     * @param Locality $entity
+     */
+    protected function replaceBusinessCatalogLocality($entity)
+    {
+        $container = $this->getConfigurationPool()->getContainer();
+
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        $defaultLocality = $em->getRepository('DomainBusinessBundle:Locality')
+            ->getLocalityBySlug(Locality::DEFAULT_CATALOG_LOCALITY_SLUG);
+
+        if ($defaultLocality) {
+            $businesses = $entity->getBusinessProfiles();
+
+            foreach ($businesses as $businessProfile) {
+                /** @var BusinessProfile $businessProfile */
+                $businessProfile->setCatalogLocality($defaultLocality);
+            }
+        }
+    }
 }
