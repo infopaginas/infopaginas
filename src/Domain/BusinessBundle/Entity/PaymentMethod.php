@@ -27,6 +27,15 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const PAYMENT_METHOD_TYPE_CASH      = 'cash';
+    const PAYMENT_METHOD_TYPE_CHECK     = 'check';
+    const PAYMENT_METHOD_TYPE_PAYPAL    = 'paypal';
+    const PAYMENT_METHOD_TYPE_ATH_MOVIL = 'ath_movil';
+    const PAYMENT_METHOD_TYPE_ONLINE    = 'online';
+    const PAYMENT_METHOD_TYPE_DEBIT     = 'debit';
+
+    const PAYMENT_METHOD_FIELD_NAME = 'name';
+
     /**
      * @var int
      *
@@ -37,6 +46,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     protected $id;
 
     /**
+     * Related to PAYMENT_METHOD_NAME const
      * @var string - Payment method name
      *
      * @Gedmo\Translatable(fallback=true)
@@ -64,6 +74,13 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
      * )
      */
     protected $translations;
+
+    /**
+     * @var string - Payment method name
+     *
+     * @ORM\Column(name="type", type="string", length=100, nullable=true)
+     */
+    protected $type;
 
     /**
      * Get id
@@ -161,5 +178,36 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return PaymentMethod
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public static function getTranslatableFields()
+    {
+        return [
+            self::PAYMENT_METHOD_FIELD_NAME
+        ];
     }
 }

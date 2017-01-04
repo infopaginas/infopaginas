@@ -46,8 +46,20 @@
                         </td>
                     </tr>
                 {% endif %}
+                {# hide fields from bilingual block due to changes are shown in translation row #}
             {% elseif row.fieldName != 'latitude' and row.fieldName != 'longitude' and
-                row.fieldName != 'seoTitle' and row.fieldName != 'seoDescription'
+                row.fieldName != BUSINESS_PROFILE_FIELD_SEO_TITLE and
+                row.fieldName != BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION and
+                row.fieldName != BUSINESS_PROFILE_FIELD_NAME and
+                row.fieldName != BUSINESS_PROFILE_FIELD_NAME_ES and
+                row.fieldName != BUSINESS_PROFILE_FIELD_NAME_EN and
+                row.fieldName != BUSINESS_PROFILE_FIELD_DESCRIPTION and
+                row.fieldName != BUSINESS_PROFILE_FIELD_DESCRIPTION_ES and
+                row.fieldName != BUSINESS_PROFILE_FIELD_DESCRIPTION_EN and
+                row.fieldName != BUSINESS_PROFILE_FIELD_PRODUCT and
+                row.fieldName != BUSINESS_PROFILE_FIELD_BRANDS and
+                row.fieldName != BUSINESS_PROFILE_FIELD_WORKING_HOURS and
+                row.fieldName != BUSINESS_PROFILE_FIELD_SLOGAN
             %}
                 <tr class="sonata-ba-view-container">
                     <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>

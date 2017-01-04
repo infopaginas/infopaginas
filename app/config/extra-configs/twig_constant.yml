@@ -16,3 +16,25 @@ twig:
 
 #        const of BusinessProfileFormHandler class
         MESSAGE_BUSINESS_PROFILE_FLASH_GROUP: 'success'
+
+#        const of BusinessProfile class
+        BUSINESS_PROFILE_FIELD_SEO_TITLE:       'seoTitle'
+        BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION: 'seoDescription'
+        BUSINESS_PROFILE_FIELD_NAME:            'name'
+        BUSINESS_PROFILE_FIELD_NAME_ES:         'nameEs'
+        BUSINESS_PROFILE_FIELD_NAME_EN:         'nameEn'
+        BUSINESS_PROFILE_FIELD_DESCRIPTION:     'description'
+        BUSINESS_PROFILE_FIELD_DESCRIPTION_ES:  'descriptionEs'
+        BUSINESS_PROFILE_FIELD_DESCRIPTION_EN:  'descriptionEn'
+        BUSINESS_PROFILE_FIELD_PRODUCT:         'product'
+        BUSINESS_PROFILE_FIELD_BRANDS:          'brands'
+        BUSINESS_PROFILE_FIELD_WORKING_HOURS:   'workingHours'
+        BUSINESS_PROFILE_FIELD_SLOGAN:          'slogan'
+
+#        const of PaymentMethod class
+        PAYMENT_METHOD_TYPE_CASH:       'cash'
+        PAYMENT_METHOD_TYPE_CHECK:      'check'
+        PAYMENT_METHOD_TYPE_PAYPAL:     'paypal'
+        PAYMENT_METHOD_TYPE_ATH_MOVIL:  'ath_movil'
+        PAYMENT_METHOD_TYPE_ONLINE:     'online'
+        PAYMENT_METHOD_TYPE_DEBIT:      'debit'
