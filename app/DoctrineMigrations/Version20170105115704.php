@@ -377,7 +377,7 @@ class Version20170105115704 extends AbstractMigration implements ContainerAwareI
 
     protected function getLocalityItemByName($name)
     {
-        $locality = $this->em->getRepository('DomainBusinessBundle:Locality')->getLocalityByName($name);
+        $locality = $this->em->getRepository('DomainBusinessBundle:Locality')->findOneBy(['name' => $name]);
 
         return $locality;
     }
