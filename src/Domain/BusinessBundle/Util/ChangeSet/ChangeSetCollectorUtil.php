@@ -330,10 +330,12 @@ class ChangeSetCollectorUtil
                 $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[0]));
                 $entry->setNewValue('');
                 $entry->setAction(ChangeSetCalculator::VIDEO_REMOVE);
-            } else {
+            } elseif ($diff[1]->getId() != $diff[0]->getId()) {
                 $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[0]));
                 $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[1]));
                 $entry->setAction(ChangeSetCalculator::VIDEO_UPDATE);
+            } else {
+                return false;
             }
 
             return $entry;
