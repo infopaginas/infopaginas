@@ -36,4 +36,21 @@ trait OxaPersonalTranslatable
 
         return $result;
     }
+
+    /**
+     * @param $field
+     * @param $locale
+     *
+     * @return mixed
+     */
+    public function getTranslationItem($field, $locale)
+    {
+        foreach ($this->getTranslations() as $translation) {
+            if (strcmp($translation->getField(), $field) === 0 && strcmp($translation->getLocale(), $locale) === 0) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
 }

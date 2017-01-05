@@ -184,7 +184,15 @@
                                 <h3>{% trans %}Payment methods{% endtrans %}</h3>
                                 <ul>
                                     {% for paymentMethod in businessProfile.paymentMethods %}
-                                        <li>{{ paymentMethod.getName }}</li>
+                                        <li>
+                                            {% if paymentMethod.type  in PAYMENT_METHOD_TYPE %}
+                                                {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.png' %}
+
+                                                <img src="{{ absolute_url(asset(path)) }}">
+                                            {% endif %}
+
+                                            <span>{{ paymentMethod.getName }}</span>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </section>

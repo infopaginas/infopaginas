@@ -52,7 +52,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     /** @var UsersManager $userManager */
     protected $userManager;
 
-    /** @var Translator $userManager */
+    /** @var Translator $translator */
     protected $translator;
 
     /**
@@ -177,7 +177,10 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 $businessProfile->setUser($this->currentUser);
             }
 
-            $this->getBusinessProfilesManager()->saveProfile($businessProfile);
+            $this->getBusinessProfilesManager()->saveProfile(
+                $businessProfile,
+                strtolower(BusinessProfile::TRANSLATION_LANG_ES)
+            );
             $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
@@ -298,8 +301,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
         if (property_exists($businessProfile, $property)) {
             if ($dataEs) {
-                $businessProfile->{'set' . $property}($dataEs);
-
+                if ($businessProfile->{'get' . $property}() and $dataEn) {
+                    $businessProfile->{'set' . $property}($dataEn);
+                } else {
+                    $businessProfile->{'set' . $property}($dataEs);
+                }
                 $translation = new BusinessProfileTranslation(
                     strtolower(BusinessProfile::TRANSLATION_LANG_ES),
                     $property,
@@ -312,7 +318,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                     $businessProfile->{'set' . $propertyEs}($dataEs);
                 }
             } elseif ($dataEn) {
-                $businessProfile->{'set' . $property}($dataEn);
+                if (!$businessProfile->{'get' . $property}()) {
+                    $businessProfile->{'set' . $property}($dataEn);
+                }
             }
 
             if ($dataEn) {

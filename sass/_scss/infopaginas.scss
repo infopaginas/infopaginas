@@ -4763,5 +4763,41 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
+.payment-methods {
+  padding-bottom: 10px;
+
+  img {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    width: 50px;
+  }
+
+  span {
+    font-size: 12px;
+    display: block;
+  }
+
+  li {
+    text-align: center;
+  }
+
+  @media only screen and (max-width: 420px) {
+    li {
+      width: 25%;
+
+      &:nth-child(3n + 3) {
+        margin-right: 0;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    img {
+      width: 35px;
+    }
+  }
+}
+
 @import '../libs/selectize';
 @import '../libs/slick';

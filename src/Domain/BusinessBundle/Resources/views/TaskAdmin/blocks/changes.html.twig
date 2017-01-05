@@ -46,8 +46,9 @@
                         </td>
                     </tr>
                 {% endif %}
+                {# hide fields from bilingual block due to changes are shown in translation row #}
             {% elseif row.fieldName != 'latitude' and row.fieldName != 'longitude' and
-                row.fieldName != 'seoTitle' and row.fieldName != 'seoDescription'
+                row.fieldName not in BUSINESS_PROFILE_FIELD
             %}
                 <tr class="sonata-ba-view-container">
                     <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>

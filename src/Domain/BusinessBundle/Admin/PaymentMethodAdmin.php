@@ -66,4 +66,26 @@ class PaymentMethodAdmin extends OxaAdmin
             ->add('name')
         ;
     }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = [
+            'DELETE',
+            'ROLE_PHYSICAL_DELETE_ABLE',
+            'ROLE_RESTORE_ABLE'
+        ];
+
+        if ($object && in_array($name, $deniedActions) &&
+            in_array(strtolower($object->getType()), $object::getRequiredPaymentMethods())
+        ) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
+    }
 }
