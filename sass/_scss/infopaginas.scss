@@ -487,10 +487,13 @@ $side-padding-mb: 16px;
 }
 
 .form__field {
+  display: -webkit-box;
   display: flex;
   flex: 1 1 100%;
+  -webkit-flex: 1 1 100%;
   position: relative;
   flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
   @media only screen and (min-width: 805px) {
     flex: 1 1 auto;
   }
@@ -1685,7 +1688,6 @@ $thumb-width-mb: 60px;
       border-radius: 3px;
       width: 100%;
       max-width: 100%;
-      // width: 810px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
       margin: 30px 0;
       padding: 20px;
@@ -3102,7 +3104,7 @@ input, textarea {
   box-shadow: none;
   font-size: 16px;
   height: $input-height-mb;
-  line-height: $input-height-mb;
+  line-height: $input-line-height-mb;
   outline: 0;
   padding: $input-padding-mb;
   width: 100%;
@@ -3159,6 +3161,7 @@ input[type='checkbox'] {
 }
 
 .form__row {
+  display: -webkit-box;
   display: flex;
   margin-bottom: 10px;
 
@@ -3170,6 +3173,7 @@ input[type='checkbox'] {
     float: left;
     margin-right: 10px;
     flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
 
     &:last-child,
     &:only-child,
@@ -3424,8 +3428,10 @@ a.button--login {
 
 .row--passwords, .row--name {
   flex-direction: column;
+  -webkit-flex-direction: column;
   .form__field {
     margin-right: 0;
+    min-height: 50px;
   }
 
   @media only screen and (min-width: 420px) {
@@ -3438,6 +3444,7 @@ a.button--login {
 
 .field--password {
   flex-direction: column;
+  -webkit-flex-direction: column;
 
   input {
     flex: 0 0 auto;
