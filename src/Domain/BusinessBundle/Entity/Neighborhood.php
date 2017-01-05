@@ -181,10 +181,10 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     /**
      *  Set owning Locality for this Neighborhood
      *
-     * @param Locality $locality
+     * @param Locality|null $locality
      * @return $this
      */
-    public function setLocality(Locality $locality)
+    public function setLocality($locality)
     {
         $this->locality = $locality;
 

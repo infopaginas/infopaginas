@@ -14,7 +14,7 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         this.options = {
             geoCodeApiURL : '//maps.googleapis.com/maps/api/geocode/json?sensor=true&latlng=',
             googleAutoSuggestApiURL : '',
-            autoCompleteUrl : '/app_dev.php/geolocation/autocomplete',
+            autoCompleteUrl : Routing.generate('domain_site_geolocation_autocomplete'),
             autoCompleteMinLen : 2,
             refreshPositionTimeout : 600, // secs
             cookieKey : 'geo_location_data',
