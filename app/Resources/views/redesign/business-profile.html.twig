@@ -185,25 +185,11 @@
                                 <ul>
                                     {% for paymentMethod in businessProfile.paymentMethods %}
                                         <li>
-                                            {% if paymentMethod.type == PAYMENT_METHOD_TYPE_CASH %}
-                                                {% set image = absolute_url(asset('redesign/img/payment/cash.png')) %}
-                                            {% elseif paymentMethod.type == PAYMENT_METHOD_TYPE_CHECK %}
-                                                {% set image = absolute_url(asset('redesign/img/payment/check.png')) %}
-                                            {% elseif paymentMethod.type == PAYMENT_METHOD_TYPE_PAYPAL %}
-                                                {% set image = absolute_url(asset('redesign/img/payment/paypal.png')) %}
-                                            {% elseif paymentMethod.type == PAYMENT_METHOD_TYPE_ATH_MOVIL %}
-                                                {% set image = absolute_url(asset('redesign/img/payment/ath.png')) %}
-                                            {% elseif paymentMethod.type == PAYMENT_METHOD_TYPE_ONLINE %}
-                                                {% set image = absolute_url(asset('redesign/img/payment/online.png')) %}
-                                            {% elseif paymentMethod.type == PAYMENT_METHOD_TYPE_DEBIT %}
-                                                {% set image = absolute_url(asset('redesign/img/payment/debit.png')) %}
-                                            {% endif %}
+                                            {% if paymentMethod.type  in PAYMENT_METHOD_TYPE %}
+                                                {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.png' %}
 
-                                            {% if image is defined and image %}
-                                                <img src="{{ image }}">
+                                                <img src="{{ absolute_url(asset(path)) }}">
                                             {% endif %}
-
-                                            {% set image = false %}
 
                                             <span>{{ paymentMethod.getName }}</span>
                                         </li>

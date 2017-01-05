@@ -27,6 +27,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    /* const value related to icon name */
     const PAYMENT_METHOD_TYPE_CASH      = 'cash';
     const PAYMENT_METHOD_TYPE_CHECK     = 'check';
     const PAYMENT_METHOD_TYPE_PAYPAL    = 'paypal';
@@ -208,6 +209,18 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     {
         return [
             self::PAYMENT_METHOD_FIELD_NAME
+        ];
+    }
+
+    public static function getRequiredPaymentMethods()
+    {
+        return [
+            self::PAYMENT_METHOD_TYPE_CASH,
+            self::PAYMENT_METHOD_TYPE_CHECK,
+            self::PAYMENT_METHOD_TYPE_PAYPAL,
+            self::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            self::PAYMENT_METHOD_TYPE_ONLINE,
+            self::PAYMENT_METHOD_TYPE_DEBIT,
         ];
     }
 }
