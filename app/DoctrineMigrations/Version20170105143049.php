@@ -106,7 +106,6 @@ class Version20170105143049 extends AbstractMigration implements ContainerAwareI
 
     }
 
-
     protected function getLocalitiesDeleteList()
     {
         $delete = array (
