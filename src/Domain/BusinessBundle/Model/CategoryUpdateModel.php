@@ -4,16 +4,6 @@ namespace Domain\BusinessBundle\Model;
 
 class CategoryUpdateModel
 {
-    const UNDEFINED_CATEGORY = 'Undefined';
-
-    public static function getUndefinedCategory()
-    {
-        return [
-            'en' => self::UNDEFINED_CATEGORY,
-            'es' => self::UNDEFINED_CATEGORY,
-        ];
-    }
-
     /**
      * Used to load update categories via migration
      *
@@ -148,9 +138,9 @@ class CategoryUpdateModel
                                                     'en' => 'Ornamental Plants',
                                                     'code' => '41020',
                                                 ),
-                                            'Viveros ' =>
+                                            'Viveros' =>
                                                 array (
-                                                    'es' => 'Viveros ',
+                                                    'es' => 'Viveros',
                                                     'en' => 'Garden Centers',
                                                     'code' => '53180',
                                                 ),
@@ -734,9 +724,9 @@ class CategoryUpdateModel
                                                     'en' => 'Carriages',
                                                     'code' => '48620',
                                                 ),
-                                            'Válvulas ' =>
+                                            'Válvulas' =>
                                                 array (
-                                                    'es' => 'Válvulas ',
+                                                    'es' => 'Válvulas',
                                                     'en' => 'Valves',
                                                     'code' => '51970',
                                                 ),
@@ -828,9 +818,9 @@ class CategoryUpdateModel
                                                     'en' => 'Automobile Service Centers',
                                                     'code' => '11275',
                                                 ),
-                                            'Cerrajería de Automóviles ' =>
+                                            'Cerrajería de Automóviles' =>
                                                 array (
-                                                    'es' => 'Cerrajería de Automóviles ',
+                                                    'es' => 'Cerrajería de Automóviles',
                                                     'en' => 'Automobile Locksmithing',
                                                     'code' => '5495',
                                                 ),
@@ -864,9 +854,9 @@ class CategoryUpdateModel
                                                     'en' => 'Vehicle Monitoring',
                                                     'code' => '36430',
                                                 ),
-                                            'Póliza de Autos ' =>
+                                            'Póliza de Autos' =>
                                                 array (
-                                                    'es' => 'Póliza de Autos ',
+                                                    'es' => 'Póliza de Autos',
                                                     'en' => 'Automobile Policy',
                                                     'code' => '41390',
                                                 ),
@@ -882,9 +872,9 @@ class CategoryUpdateModel
                                                     'en' => 'Industrial Tints',
                                                     'code' => '50800',
                                                 ),
-                                            'Transmisiones ' =>
+                                            'Transmisiones' =>
                                                 array (
-                                                    'es' => 'Transmisiones ',
+                                                    'es' => 'Transmisiones',
                                                     'en' => 'Transmission',
                                                     'code' => '51340',
                                                 ),
@@ -896,9 +886,9 @@ class CategoryUpdateModel
                                     'en' => 'Garages',
                                     'children' =>
                                         array (
-                                            'Efectos & Equipo de Garajes ' =>
+                                            'Efectos & Equipo de Garajes' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Garajes ',
+                                                    'es' => 'Efectos & Equipo de Garajes',
                                                     'en' => 'Garage Goods & Equipment',
                                                     'code' => '24420',
                                                 ),
@@ -1282,6 +1272,12 @@ class CategoryUpdateModel
                                                     'en' => 'Apartment Sales',
                                                     'code' => '54071',
                                                 ),
+                                            'Tasadores' =>
+                                                array (
+                                                    'es' => 'Tasadores',
+                                                    'en' => 'Appraisers',
+                                                    'code' => '49300',
+                                                ),
                                         ),
                                 ),
                             'Propiedades' =>
@@ -1370,9 +1366,9 @@ class CategoryUpdateModel
                                                 ),
                                         ),
                                 ),
-                            'Planes Médicos ' =>
+                            'Planes Médicos' =>
                                 array (
-                                    'es' => 'Planes Médicos ',
+                                    'es' => 'Planes Médicos',
                                     'en' => 'Medical Plans',
                                     'children' =>
                                         array (
@@ -1381,20 +1377,6 @@ class CategoryUpdateModel
                                                     'es' => 'Planes Médicos',
                                                     'en' => 'Medical Plans',
                                                     'code' => '40820',
-                                                ),
-                                        ),
-                                ),
-                            'BIenes Raices' =>
-                                array (
-                                    'es' => 'BIenes Raices',
-                                    'en' => 'Real Estate',
-                                    'children' =>
-                                        array (
-                                            'Tasadores' =>
-                                                array (
-                                                    'es' => 'Tasadores',
-                                                    'en' => 'Appraisers',
-                                                    'code' => '49300',
                                                 ),
                                         ),
                                 ),
@@ -1816,9 +1798,9 @@ class CategoryUpdateModel
                                     'en' => 'Flowers',
                                     'children' =>
                                         array (
-                                            'Efectos & Equipo de Floristerías ' =>
+                                            'Efectos & Equipo de Floristerías' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Floristerías ',
+                                                    'es' => 'Efectos & Equipo de Floristerías',
                                                     'en' => 'Florist Supplies & Equipment',
                                                     'code' => '23540',
                                                 ),
@@ -1846,9 +1828,9 @@ class CategoryUpdateModel
                                                     'en' => 'Florists',
                                                     'code' => '23500',
                                                 ),
-                                            'Servicios & Entrega de Floristerías ' =>
+                                            'Servicios & Entrega de Floristerías' =>
                                                 array (
-                                                    'es' => 'Servicios & Entrega de Floristerías ',
+                                                    'es' => 'Servicios & Entrega de Floristerías',
                                                     'en' => 'Florist Services & Delivery',
                                                     'code' => '23541',
                                                 ),
@@ -1860,9 +1842,9 @@ class CategoryUpdateModel
                                     'en' => 'Exterminators',
                                     'children' =>
                                         array (
-                                            'Equipos & Productos de Fumigación ' =>
+                                            'Equipos & Productos de Fumigación' =>
                                                 array (
-                                                    'es' => 'Equipos & Productos de Fumigación ',
+                                                    'es' => 'Equipos & Productos de Fumigación',
                                                     'en' => 'Fumigation Equipment & Products',
                                                     'code' => '24070',
                                                 ),
@@ -1986,9 +1968,9 @@ class CategoryUpdateModel
                                                     'en' => 'Copying Machine Goods & Equipment',
                                                     'code' => '15340',
                                                 ),
-                                            'Efectos & Equipo de Fotografía ' =>
+                                            'Efectos & Equipo de Fotografía' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Fotografía ',
+                                                    'es' => 'Efectos & Equipo de Fotografía',
                                                     'en' => 'Photography Goods & Equipment',
                                                     'code' => '23700',
                                                 ),
@@ -2874,9 +2856,9 @@ class CategoryUpdateModel
                                                     'en' => 'Steel Bulidings',
                                                     'code' => '19340',
                                                 ),
-                                            'Efectos & Equipo de Cerámicas ' =>
+                                            'Efectos & Equipo de Cerámicas' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Cerámicas ',
+                                                    'es' => 'Efectos & Equipo de Cerámicas',
                                                     'en' => 'Ceramic Goods & Equipment',
                                                     'code' => '11460',
                                                 ),
@@ -2892,9 +2874,9 @@ class CategoryUpdateModel
                                                     'en' => 'Painting Goods & Equipment',
                                                     'code' => '40300',
                                                 ),
-                                            'Fábricas de Puertas ' =>
+                                            'Fábricas de Puertas' =>
                                                 array (
-                                                    'es' => 'Fábricas de Puertas ',
+                                                    'es' => 'Fábricas de Puertas',
                                                     'en' => 'Fabrication of Doors',
                                                     'code' => '42660',
                                                 ),
@@ -2958,9 +2940,9 @@ class CategoryUpdateModel
                                                     'en' => 'Automatic Operators for Doors',
                                                     'code' => '42780',
                                                 ),
-                                            'Puertas ' =>
+                                            'Puertas' =>
                                                 array (
-                                                    'es' => 'Puertas ',
+                                                    'es' => 'Puertas',
                                                     'en' => 'Doors',
                                                     'code' => '42390',
                                                 ),
@@ -2970,9 +2952,9 @@ class CategoryUpdateModel
                                                     'en' => 'Doors & Windows',
                                                     'code' => '42870',
                                                 ),
-                                            'Puertas de Acero ' =>
+                                            'Puertas de Acero' =>
                                                 array (
-                                                    'es' => 'Puertas de Acero ',
+                                                    'es' => 'Puertas de Acero',
                                                     'en' => 'Steel Doors',
                                                     'code' => '42460',
                                                 ),
@@ -2982,15 +2964,15 @@ class CategoryUpdateModel
                                                     'en' => 'Aluminum Doors',
                                                     'code' => '42500',
                                                 ),
-                                            'Puertas de Closet ' =>
+                                            'Puertas de Closet' =>
                                                 array (
-                                                    'es' => 'Puertas de Closet ',
+                                                    'es' => 'Puertas de Closet',
                                                     'en' => 'Closet Doors',
                                                     'code' => '42520',
                                                 ),
-                                            'Puertas de Cristal ' =>
+                                            'Puertas de Cristal' =>
                                                 array (
-                                                    'es' => 'Puertas de Cristal ',
+                                                    'es' => 'Puertas de Cristal',
                                                     'en' => 'Glass Doors',
                                                     'code' => '42540',
                                                 ),
@@ -3024,9 +3006,9 @@ class CategoryUpdateModel
                                                     'en' => 'Rolling & Folding Doors',
                                                     'code' => '42580',
                                                 ),
-                                            'Reparación de Puertas & Ventanas ' =>
+                                            'Reparación de Puertas & Ventanas' =>
                                                 array (
-                                                    'es' => 'Reparación de Puertas & Ventanas ',
+                                                    'es' => 'Reparación de Puertas & Ventanas',
                                                     'en' => 'Door & Window Repair',
                                                     'code' => '42880',
                                                 ),
@@ -3092,9 +3074,9 @@ class CategoryUpdateModel
                                                     'en' => 'Drainage Contractors',
                                                     'code' => '41620',
                                                 ),
-                                            'Cristalización de Pisos ' =>
+                                            'Cristalización de Pisos' =>
                                                 array (
-                                                    'es' => 'Cristalización de Pisos ',
+                                                    'es' => 'Cristalización de Pisos',
                                                     'en' => 'Floor Polishing',
                                                     'code' => '40580',
                                                 ),
@@ -3152,9 +3134,9 @@ class CategoryUpdateModel
                                                     'en' => 'Remodeling Inspection',
                                                     'code' => '44200',
                                                 ),
-                                            'Instalación Especiales de Pisos ' =>
+                                            'Instalación Especiales de Pisos' =>
                                                 array (
-                                                    'es' => 'Instalación Especiales de Pisos ',
+                                                    'es' => 'Instalación Especiales de Pisos',
                                                     'en' => 'Special Floor Installations',
                                                     'code' => '40620',
                                                 ),
@@ -3164,9 +3146,9 @@ class CategoryUpdateModel
                                                     'en' => 'Interior Remodeling',
                                                     'code' => '44210',
                                                 ),
-                                            'Limpieza de Pisos ' =>
+                                            'Limpieza de Pisos' =>
                                                 array (
-                                                    'es' => 'Limpieza de Pisos ',
+                                                    'es' => 'Limpieza de Pisos',
                                                     'en' => 'Floor Cleaning',
                                                     'code' => '40660',
                                                 ),
@@ -3176,9 +3158,9 @@ class CategoryUpdateModel
                                                     'en' => 'Maritime Remodeling',
                                                     'code' => '44220',
                                                 ),
-                                            'Pisos ' =>
+                                            'Pisos' =>
                                                 array (
-                                                    'es' => 'Pisos ',
+                                                    'es' => 'Pisos',
                                                     'en' => 'Floors',
                                                     'code' => '40540',
                                                 ),
@@ -3200,9 +3182,9 @@ class CategoryUpdateModel
                                                     'en' => 'Stainless Steel Gates',
                                                     'code' => '41465',
                                                 ),
-                                            'Pozos Sépticos ' =>
+                                            'Pozos Sépticos' =>
                                                 array (
-                                                    'es' => 'Pozos Sépticos ',
+                                                    'es' => 'Pozos Sépticos',
                                                     'en' => 'Septic Pipes',
                                                     'code' => '41660',
                                                 ),
@@ -3248,9 +3230,9 @@ class CategoryUpdateModel
                                                     'en' => 'Swimming Pool Services',
                                                     'code' => '40500',
                                                 ),
-                                            'Plomería Comercial ' =>
+                                            'Plomería Comercial' =>
                                                 array (
-                                                    'es' => 'Plomería Comercial ',
+                                                    'es' => 'Plomería Comercial',
                                                     'en' => 'Commercial Plumbing',
                                                     'code' => '54052',
                                                 ),
@@ -3263,7 +3245,7 @@ class CategoryUpdateModel
                                             'Contratistas de Cristaleria' =>
                                                 array (
                                                     'es' => 'Contratistas de Cristaleria',
-                                                    'en' => 'Glasswork Contractor ',
+                                                    'en' => 'Glasswork Contractor',
                                                     'code' => '54085',
                                                 ),
                                         ),
@@ -3454,9 +3436,9 @@ class CategoryUpdateModel
                                                     'en' => 'Construction Molds',
                                                     'code' => '36340',
                                                 ),
-                                            'Pasamanos ' =>
+                                            'Pasamanos' =>
                                                 array (
-                                                    'es' => 'Pasamanos ',
+                                                    'es' => 'Pasamanos',
                                                     'en' => 'Railing',
                                                     'code' => '39190',
                                                 ),
@@ -3522,9 +3504,9 @@ class CategoryUpdateModel
                                     'en' => 'Cisterns',
                                     'children' =>
                                         array (
-                                            'Reparación & Limpieza de Cisternas ' =>
+                                            'Reparación & Limpieza de Cisternas' =>
                                                 array (
-                                                    'es' => 'Reparación & Limpieza de Cisternas ',
+                                                    'es' => 'Reparación & Limpieza de Cisternas',
                                                     'en' => 'Tank Repairs & Cleaning',
                                                     'code' => '11780',
                                                 ),
@@ -4154,11 +4136,29 @@ class CategoryUpdateModel
                                                     'en' => 'Racecourse & Racetrack',
                                                     'code' => '26070',
                                                 ),
+                                            'Disc Jockey' =>
+                                                array (
+                                                    'es' => 'Disc Jockey',
+                                                    'en' => 'Disc Jockey',
+                                                    'code' => '54004',
+                                                ),
+                                            'Pasatiempos' =>
+                                                array (
+                                                    'es' => 'Pasatiempos',
+                                                    'en' => 'Hobbies',
+                                                    'code' => '39260',
+                                                ),
+                                            'Producción de películas' =>
+                                                array (
+                                                    'es' => 'Producción de películas',
+                                                    'en' => 'Movie-Production',
+                                                    'code' => '54008',
+                                                ),
                                             'Alquiler Equipo de Películas' =>
                                                 array (
                                                     'es' => 'Alquiler Equipo de Películas',
                                                     'en' => 'Rental Equipment for Movies',
-                                                    'code' => '54079',
+                                                    'code' => '39460',
                                                 ),
                                         ),
                                 ),
@@ -4258,9 +4258,9 @@ class CategoryUpdateModel
                                                     'en' => 'Decoration for Events',
                                                     'code' => '16300',
                                                 ),
-                                            'Distribuidores de Globos ' =>
+                                            'Distribuidores de Globos' =>
                                                 array (
-                                                    'es' => 'Distribuidores de Globos ',
+                                                    'es' => 'Distribuidores de Globos',
                                                     'en' => 'Balloon Distributors',
                                                     'code' => '24860',
                                                 ),
@@ -4378,9 +4378,9 @@ class CategoryUpdateModel
                                                     'en' => 'Activity Halls',
                                                     'code' => '46460',
                                                 ),
-                                            'Salones de Lounge ' =>
+                                            'Salones de Lounge' =>
                                                 array (
-                                                    'es' => 'Salones de Lounge ',
+                                                    'es' => 'Salones de Lounge',
                                                     'en' => 'Lounge',
                                                     'code' => '46600',
                                                 ),
@@ -4488,15 +4488,15 @@ class CategoryUpdateModel
                                                     'en' => 'Event Promotion',
                                                     'code' => '41745',
                                                 ),
-                                            'Promoción de Ventas ' =>
+                                            'Promoción de Ventas' =>
                                                 array (
-                                                    'es' => 'Promoción de Ventas ',
+                                                    'es' => 'Promoción de Ventas',
                                                     'en' => 'Sales Promotion',
                                                     'code' => '41750',
                                                 ),
-                                            'Promociones de Artículos ' =>
+                                            'Promociones de Artículos' =>
                                                 array (
-                                                    'es' => 'Promociones de Artículos ',
+                                                    'es' => 'Promociones de Artículos',
                                                     'en' => 'Article Promotions',
                                                     'code' => '41765',
                                                 ),
@@ -4518,9 +4518,9 @@ class CategoryUpdateModel
                                                     'en' => 'Sports Promotors',
                                                     'code' => '41830',
                                                 ),
-                                            'Publicaciones ' =>
+                                            'Publicaciones' =>
                                                 array (
-                                                    'es' => 'Publicaciones ',
+                                                    'es' => 'Publicaciones',
                                                     'en' => 'Publications',
                                                     'code' => '41980',
                                                 ),
@@ -4530,9 +4530,9 @@ class CategoryUpdateModel
                                                     'en' => 'Aerial Publicity',
                                                     'code' => '42025',
                                                 ),
-                                            'Publicidad Digital ' =>
+                                            'Publicidad Digital' =>
                                                 array (
-                                                    'es' => 'Publicidad Digital ',
+                                                    'es' => 'Publicidad Digital',
                                                     'en' => 'Digital Publicity',
                                                     'code' => '42160',
                                                 ),
@@ -4787,38 +4787,6 @@ class CategoryUpdateModel
                                                     'es' => 'Lecturas de Tarot',
                                                     'en' => 'Tarot Card Readings',
                                                     'code' => '4560',
-                                                ),
-                                        ),
-                                ),
-                            'Entretimiento' =>
-                                array (
-                                    'es' => 'Entretimiento',
-                                    'en' => 'Entertainment',
-                                    'children' =>
-                                        array (
-                                            'Disc Jockey' =>
-                                                array (
-                                                    'es' => 'Disc Jockey',
-                                                    'en' => 'Disc Jockey',
-                                                    'code' => '54004',
-                                                ),
-                                            'Pasatiempos' =>
-                                                array (
-                                                    'es' => 'Pasatiempos',
-                                                    'en' => 'Hobbies',
-                                                    'code' => '39260',
-                                                ),
-                                            'Producción de películas' =>
-                                                array (
-                                                    'es' => 'Producción de películas',
-                                                    'en' => 'Movie-Production',
-                                                    'code' => '54008',
-                                                ),
-                                            'Alquiler Equipo de Películas' =>
-                                                array (
-                                                    'es' => 'Alquiler Equipo de Películas',
-                                                    'en' => 'Rental Equipment for Movies',
-                                                    'code' => '39460',
                                                 ),
                                         ),
                                 ),
@@ -5180,9 +5148,9 @@ class CategoryUpdateModel
                                                     'en' => 'Immigration Services',
                                                     'code' => '28525',
                                                 ),
-                                            'Servicios Pasaporte & VISA ' =>
+                                            'Servicios Pasaporte & VISA' =>
                                                 array (
-                                                    'es' => 'Servicios Pasaporte & VISA ',
+                                                    'es' => 'Servicios Pasaporte & VISA',
                                                     'en' => 'Passport & Visa Services',
                                                     'code' => '39220',
                                                 ),
@@ -5392,9 +5360,9 @@ class CategoryUpdateModel
                                                     'en' => 'Martial Arts',
                                                     'code' => '17285',
                                                 ),
-                                            'Artículos de Surfing  ' =>
+                                            'Artículos de Surfing' =>
                                                 array (
-                                                    'es' => 'Artículos de Surfing  ',
+                                                    'es' => 'Artículos de Surfing ',
                                                     'en' => 'Surfing Goods',
                                                     'code' => '18150',
                                                 ),
@@ -5512,27 +5480,27 @@ class CategoryUpdateModel
                                                     'en' => 'Diving Supplies & Equipment',
                                                     'code' => '8740',
                                                 ),
-                                            'Efectos & Equipo de Deportes ' =>
+                                            'Efectos & Equipo de Deportes' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Deportes ',
+                                                    'es' => 'Efectos & Equipo de Deportes',
                                                     'en' => 'Sports Goods & Equipment',
                                                     'code' => '17660',
                                                 ),
-                                            'Efectos & Equipo de Gimnasios ' =>
+                                            'Efectos & Equipo de Gimnasios' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Gimnasios ',
+                                                    'es' => 'Efectos & Equipo de Gimnasios',
                                                     'en' => 'Gym Supplies & Equipment',
                                                     'code' => '17780',
                                                 ),
-                                            'Efectos & Equipo de Golf ' =>
+                                            'Efectos & Equipo de Golf' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Golf ',
+                                                    'es' => 'Efectos & Equipo de Golf',
                                                     'en' => 'Golf Supplies & Equipment',
                                                     'code' => '17860',
                                                 ),
-                                            'Efectos & Equipo de Pesca ' =>
+                                            'Efectos & Equipo de Pesca' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo de Pesca ',
+                                                    'es' => 'Efectos & Equipo de Pesca',
                                                     'en' => 'Fishing Supplies & Equipment',
                                                     'code' => '18100',
                                                 ),
@@ -5554,9 +5522,9 @@ class CategoryUpdateModel
                                                     'en' => 'Trainers',
                                                     'code' => '17671',
                                                 ),
-                                            'Federaciones de Deportes ' =>
+                                            'Federaciones de Deportes' =>
                                                 array (
-                                                    'es' => 'Federaciones de Deportes ',
+                                                    'es' => 'Federaciones de Deportes',
                                                     'en' => 'Sports Federations',
                                                     'code' => '17700',
                                                 ),
@@ -5968,9 +5936,9 @@ class CategoryUpdateModel
                                                     'en' => 'Cafes',
                                                     'code' => '9180',
                                                 ),
-                                            'Carritos de Comida ' =>
+                                            'Carritos de Comida' =>
                                                 array (
-                                                    'es' => 'Carritos de Comida ',
+                                                    'es' => 'Carritos de Comida',
                                                     'en' => 'Food Carts',
                                                     'code' => '10700',
                                                 ),
@@ -6396,9 +6364,9 @@ class CategoryUpdateModel
                                                     'en' => 'Candy Stores',
                                                     'code' => '19140',
                                                 ),
-                                            'Dulces Típicos ' =>
+                                            'Dulces Típicos' =>
                                                 array (
-                                                    'es' => 'Dulces Típicos ',
+                                                    'es' => 'Dulces Típicos',
                                                     'en' => 'Typical Sweets',
                                                     'code' => '19230',
                                                 ),
@@ -6420,9 +6388,9 @@ class CategoryUpdateModel
                                                     'en' => 'Spices',
                                                     'code' => '21740',
                                                 ),
-                                            'Exportación de Cacao ' =>
+                                            'Exportación de Cacao' =>
                                                 array (
-                                                    'es' => 'Exportación de Cacao ',
+                                                    'es' => 'Exportación de Cacao',
                                                     'en' => 'Cacao Export',
                                                     'code' => '8995',
                                                 ),
@@ -6656,9 +6624,9 @@ class CategoryUpdateModel
                                                     'en' => 'Gourmet Coffee',
                                                     'code' => '9010',
                                                 ),
-                                            'Cava ' =>
+                                            'Cava' =>
                                                 array (
-                                                    'es' => 'Cava ',
+                                                    'es' => 'Cava',
                                                     'en' => 'Cavas',
                                                     'code' => '53338',
                                                 ),
@@ -6704,9 +6672,9 @@ class CategoryUpdateModel
                                                     'en' => 'Discos',
                                                     'code' => '18780',
                                                 ),
-                                            'Distribuidores de Café ' =>
+                                            'Distribuidores de Café' =>
                                                 array (
-                                                    'es' => 'Distribuidores de Café ',
+                                                    'es' => 'Distribuidores de Café',
                                                     'en' => 'Coffee Distributors',
                                                     'code' => '9005',
                                                 ),
@@ -7062,9 +7030,9 @@ class CategoryUpdateModel
                                                     'en' => 'Optics',
                                                     'code' => '29980',
                                                 ),
-                                            'Patología ' =>
+                                            'Patología' =>
                                                 array (
-                                                    'es' => 'Patología ',
+                                                    'es' => 'Patología',
                                                     'en' => 'Pathology',
                                                     'code' => '30020',
                                                 ),
@@ -7246,9 +7214,9 @@ class CategoryUpdateModel
                                                     'en' => 'Specialized Clinics',
                                                     'code' => '11870',
                                                 ),
-                                            'Corrección Visual ' =>
+                                            'Corrección Visual' =>
                                                 array (
-                                                    'es' => 'Corrección Visual ',
+                                                    'es' => 'Corrección Visual',
                                                     'en' => 'Visual Correction',
                                                     'code' => '38440',
                                                 ),
@@ -7510,9 +7478,9 @@ class CategoryUpdateModel
                                                     'en' => 'Doctors Specializing in Immunology',
                                                     'code' => '34380',
                                                 ),
-                                            'Médicos Especialistas en Manejo del Dolor ' =>
+                                            'Médicos Especialistas en Manejo del Dolor' =>
                                                 array (
-                                                    'es' => 'Médicos Especialistas en Manejo del Dolor ',
+                                                    'es' => 'Médicos Especialistas en Manejo del Dolor',
                                                     'en' => 'Doctors Specializing in Pain Management',
                                                     'code' => '33940',
                                                 ),
@@ -7756,9 +7724,9 @@ class CategoryUpdateModel
                                                     'en' => 'Pediatric Optometrists',
                                                     'code' => '38520',
                                                 ),
-                                            'Ortodoncia ' =>
+                                            'Ortodoncia' =>
                                                 array (
-                                                    'es' => 'Ortodoncia ',
+                                                    'es' => 'Ortodoncia',
                                                     'en' => 'Orthodontics',
                                                     'code' => '16940',
                                                 ),
@@ -7840,9 +7808,9 @@ class CategoryUpdateModel
                                                     'en' => 'Psychologists',
                                                     'code' => '47780',
                                                 ),
-                                            'Psicólogos ' =>
+                                            'Psicólogos' =>
                                                 array (
-                                                    'es' => 'Psicólogos ',
+                                                    'es' => 'Psicólogos',
                                                     'en' => 'Psychologists',
                                                     'code' => '48100',
                                                 ),
@@ -8034,9 +8002,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Doctors Specializing in Pediatric Rheumatology',
                                                     'code' => '54086',
                                                 ),
-                                            'Médicos Especialistas de Naturopatía ' =>
+                                            'Médicos Especialistas de Naturopatía' =>
                                                 array (
-                                                    'es' => 'Médicos Especialistas de Naturopatía ',
+                                                    'es' => 'Médicos Especialistas de Naturopatía',
                                                     'en' => 'Doctors Specializing in Naturopathy',
                                                     'code' => '54101',
                                                 ),
@@ -8198,9 +8166,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Natural Products',
                                                     'code' => '37820',
                                                 ),
-                                            'Pruebas de Dopaje ' =>
+                                            'Pruebas de Dopaje' =>
                                                 array (
-                                                    'es' => 'Pruebas de Dopaje ',
+                                                    'es' => 'Pruebas de Dopaje',
                                                     'en' => 'Drug Tests',
                                                     'code' => '41945',
                                                 ),
@@ -8566,9 +8534,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Medicinal Products',
                                                     'code' => '33020',
                                                 ),
-                                            'Prótesis ' =>
+                                            'Prótesis' =>
                                                 array (
-                                                    'es' => 'Prótesis ',
+                                                    'es' => 'Prótesis',
                                                     'en' => 'Prosthesis',
                                                     'code' => '38620',
                                                 ),
@@ -8632,9 +8600,9 @@ Reumatología Pediátrica',
                                     'en' => 'Specialist',
                                     'children' =>
                                         array (
-                                            'Médicos Especialistas de Naturopatía ' =>
+                                            'Médicos Especialistas de Naturopatía' =>
                                                 array (
-                                                    'es' => 'Médicos Especialistas de Naturopatía ',
+                                                    'es' => 'Médicos Especialistas de Naturopatía',
                                                     'en' => 'Doctors Specializing in Naturopathy',
                                                     'code' => '37900',
                                                 ),
@@ -9125,7 +9093,7 @@ Reumatología Pediátrica',
                                             'Seguros de título' =>
                                                 array (
                                                     'es' => 'Seguros de título',
-                                                    'en' => 'Title Insurance ',
+                                                    'en' => 'Title Insurance',
                                                     'code' => '54077',
                                                 ),
                                         ),
@@ -9156,9 +9124,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Builder',
                                                     'code' => '14620',
                                                 ),
-                                            'Alquiler, Efectos & Equipo para Contratistas ' =>
+                                            'Alquiler, Efectos & Equipo para Contratistas' =>
                                                 array (
-                                                    'es' => 'Alquiler, Efectos & Equipo para Contratistas ',
+                                                    'es' => 'Alquiler, Efectos & Equipo para Contratistas',
                                                     'en' => 'Rentals, Supplies & Equipment for Contractors',
                                                     'code' => '14580',
                                                 ),
@@ -9261,7 +9229,7 @@ Reumatología Pediátrica',
                                             'Consultores de Economía' =>
                                                 array (
                                                     'es' => 'Consultores de Economía',
-                                                    'en' => 'Economy Consultants ',
+                                                    'en' => 'Economy Consultants',
                                                     'code' => '54072',
                                                 ),
                                             'Oficina de Administracion' =>
@@ -9328,9 +9296,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Communications Supplies & Equipment',
                                                     'code' => '12780',
                                                 ),
-                                            'Equipo & Servicio de Comunicaciones ' =>
+                                            'Equipo & Servicio de Comunicaciones' =>
                                                 array (
-                                                    'es' => 'Equipo & Servicio de Comunicaciones ',
+                                                    'es' => 'Equipo & Servicio de Comunicaciones',
                                                     'en' => 'Communications Supplies & Equipment',
                                                     'code' => '12795',
                                                 ),
@@ -9552,9 +9520,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Inheritance',
                                                     'code' => '25685',
                                                 ),
-                                            'Información de Legislación ' =>
+                                            'Información de Legislación' =>
                                                 array (
-                                                    'es' => 'Información de Legislación ',
+                                                    'es' => 'Información de Legislación',
                                                     'en' => 'Legislation Information',
                                                     'code' => '30660',
                                                 ),
@@ -9566,9 +9534,9 @@ Reumatología Pediátrica',
                                                 ),
                                         ),
                                 ),
-                            'Psicólogo ' =>
+                            'Psicólogo' =>
                                 array (
-                                    'es' => 'Psicólogo ',
+                                    'es' => 'Psicólogo',
                                     'en' => 'Psychologist',
                                     'children' =>
                                         array (
@@ -9620,9 +9588,9 @@ Reumatología Pediátrica',
                                                 ),
                                         ),
                                 ),
-                            'Planes Médicos ' =>
+                            'Planes Médicos' =>
                                 array (
-                                    'es' => 'Planes Médicos ',
+                                    'es' => 'Planes Médicos',
                                     'en' => 'Medical Plans',
                                     'children' =>
                                         array (
@@ -9915,7 +9883,7 @@ Reumatología Pediátrica',
                                             'Seguros de Inundaciones' =>
                                                 array (
                                                     'es' => 'Seguros de Inundaciones',
-                                                    'en' => 'Floor Insurance ',
+                                                    'en' => 'Floor Insurance',
                                                     'code' => '54048',
                                                 ),
                                         ),
@@ -10266,9 +10234,9 @@ Reumatología Pediátrica',
                                     'en' => 'Marketing',
                                     'children' =>
                                         array (
-                                            'Agencias de Publicidad ' =>
+                                            'Agencias de Publicidad' =>
                                                 array (
-                                                    'es' => 'Agencias de Publicidad ',
+                                                    'es' => 'Agencias de Publicidad',
                                                     'en' => 'Publicity Agencies',
                                                     'code' => '42060',
                                                 ),
@@ -10472,15 +10440,15 @@ Reumatología Pediátrica',
                                                     'en' => 'Hurricane Protectors',
                                                     'code' => '26840',
                                                 ),
-                                            'Restauración de Incendios & Daños ' =>
+                                            'Restauración de Incendios & Daños' =>
                                                 array (
-                                                    'es' => 'Restauración de Incendios & Daños ',
+                                                    'es' => 'Restauración de Incendios & Daños',
                                                     'en' => 'Fire Damage & Restoration',
                                                     'code' => '27870',
                                                 ),
-                                            'Seguridad & Salud Ocupacional ' =>
+                                            'Seguridad & Salud Ocupacional' =>
                                                 array (
-                                                    'es' => 'Seguridad & Salud Ocupacional ',
+                                                    'es' => 'Seguridad & Salud Ocupacional',
                                                     'en' => 'Occupational Security & Health',
                                                     'code' => '47045',
                                                 ),
@@ -10588,9 +10556,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Refrigeration Technicians',
                                                     'code' => '43801',
                                                 ),
-                                            'Mantenimiento de Aire Acondicionado ' =>
+                                            'Mantenimiento de Aire Acondicionado' =>
                                                 array (
-                                                    'es' => 'Mantenimiento de Aire Acondicionado ',
+                                                    'es' => 'Mantenimiento de Aire Acondicionado',
                                                     'en' => 'Air Conditioning Maintenance',
                                                     'code' => '54078',
                                                 ),
@@ -10608,9 +10576,9 @@ Reumatología Pediátrica',
                                     'en' => 'Warehouses',
                                     'children' =>
                                         array (
-                                            'Almacén de Provisiones ' =>
+                                            'Almacén de Provisiones' =>
                                                 array (
-                                                    'es' => 'Almacén de Provisiones ',
+                                                    'es' => 'Almacén de Provisiones',
                                                     'en' => 'Provision Warehouse',
                                                     'code' => '41940',
                                                 ),
@@ -10828,9 +10796,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Trucks with Sound',
                                                     'code' => '25360',
                                                 ),
-                                            'Líneas de Guaguas ' =>
+                                            'Líneas de Guaguas' =>
                                                 array (
-                                                    'es' => 'Líneas de Guaguas ',
+                                                    'es' => 'Líneas de Guaguas',
                                                     'en' => 'Bus Lines',
                                                     'code' => '25380',
                                                 ),
@@ -10878,9 +10846,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Manufacture of Nuts & Bolts',
                                                     'code' => '51140',
                                                 ),
-                                            'Reparación de Herramientas ' =>
+                                            'Reparación de Herramientas' =>
                                                 array (
-                                                    'es' => 'Reparación de Herramientas ',
+                                                    'es' => 'Reparación de Herramientas',
                                                     'en' => 'Tool Repair',
                                                     'code' => '25820',
                                                 ),
@@ -11396,9 +11364,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Concrete',
                                                     'code' => '26380',
                                                 ),
-                                            'Hormigón Prefabricado ' =>
+                                            'Hormigón Prefabricado' =>
                                                 array (
-                                                    'es' => 'Hormigón Prefabricado ',
+                                                    'es' => 'Hormigón Prefabricado',
                                                     'en' => 'Prefabricated Concrete',
                                                     'code' => '26420',
                                                 ),
@@ -11718,9 +11686,9 @@ Reumatología Pediátrica',
                                                     'en' => 'DELETE',
                                                     'code' => '24515',
                                                 ),
-                                            'Efectos & Equipo para Gas Fluído ' =>
+                                            'Efectos & Equipo para Gas Fluído' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipo para Gas Fluído ',
+                                                    'es' => 'Efectos & Equipo para Gas Fluído',
                                                     'en' => 'Fluid Gas Supplies & Equipment',
                                                     'code' => '24500',
                                                 ),
@@ -12026,9 +11994,9 @@ Reumatología Pediátrica',
                                     'en' => 'Paper',
                                     'children' =>
                                         array (
-                                            'Distribuidores de Papel ' =>
+                                            'Distribuidores de Papel' =>
                                                 array (
-                                                    'es' => 'Distribuidores de Papel ',
+                                                    'es' => 'Distribuidores de Papel',
                                                     'en' => 'Paper Distributors',
                                                     'code' => '38980',
                                                 ),
@@ -12038,9 +12006,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Ink Distributors',
                                                     'code' => '39090',
                                                 ),
-                                            'Fábricas de Papel ' =>
+                                            'Fábricas de Papel' =>
                                                 array (
-                                                    'es' => 'Fábricas de Papel ',
+                                                    'es' => 'Fábricas de Papel',
                                                     'en' => 'Paper Factories',
                                                     'code' => '39020',
                                                 ),
@@ -12540,9 +12508,9 @@ Reumatología Pediátrica',
                                     'en' => 'Kitchen',
                                     'children' =>
                                         array (
-                                            'Fábrica de Topes ' =>
+                                            'Fábrica de Topes' =>
                                                 array (
-                                                    'es' => 'Fábrica de Topes ',
+                                                    'es' => 'Fábrica de Topes',
                                                     'en' => 'Countertop Factories',
                                                     'code' => '50980',
                                                 ),
@@ -12634,9 +12602,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Solar Electric Generators',
                                                     'code' => '24705',
                                                 ),
-                                            'Reparación de Generadores Eléctricos ' =>
+                                            'Reparación de Generadores Eléctricos' =>
                                                 array (
-                                                    'es' => 'Reparación de Generadores Eléctricos ',
+                                                    'es' => 'Reparación de Generadores Eléctricos',
                                                     'en' => 'Electric Generator Repair',
                                                     'code' => '24700',
                                                 ),
@@ -12744,9 +12712,9 @@ Reumatología Pediátrica',
                                     'en' => 'Pumps',
                                     'children' =>
                                         array (
-                                            'Instalación de Bombas De Pozos ' =>
+                                            'Instalación de Bombas De Pozos' =>
                                                 array (
-                                                    'es' => 'Instalación de Bombas De Pozos ',
+                                                    'es' => 'Instalación de Bombas De Pozos',
                                                     'en' => 'Drain Pipe Installation',
                                                     'code' => '8140',
                                                 ),
@@ -12970,9 +12938,9 @@ Reumatología Pediátrica',
                                     'en' => 'Fences & Gates',
                                     'children' =>
                                         array (
-                                            'Materiales de Verjas & Portones ' =>
+                                            'Materiales de Verjas & Portones' =>
                                                 array (
-                                                    'es' => 'Materiales de Verjas & Portones ',
+                                                    'es' => 'Materiales de Verjas & Portones',
                                                     'en' => 'Fence & Gate Materials',
                                                     'code' => '52440',
                                                 ),
@@ -13078,9 +13046,9 @@ Reumatología Pediátrica',
                                     'en' => 'Plumbing',
                                     'children' =>
                                         array (
-                                            'Plomería Comercial ' =>
+                                            'Plomería Comercial' =>
                                                 array (
-                                                    'es' => 'Plomería Comercial ',
+                                                    'es' => 'Plomería Comercial',
                                                     'en' => 'Commercial Plumbing',
                                                     'code' => '41165',
                                                 ),
@@ -13100,9 +13068,9 @@ Reumatología Pediátrica',
                                                 ),
                                         ),
                                 ),
-                            'Postes ' =>
+                            'Postes' =>
                                 array (
-                                    'es' => 'Postes ',
+                                    'es' => 'Postes',
                                     'en' => 'Posts',
                                     'children' =>
                                         array (
@@ -13528,9 +13496,9 @@ Reumatología Pediátrica',
                                     'en' => 'Products',
                                     'children' =>
                                         array (
-                                            'Almacenes Públicos ' =>
+                                            'Almacenes Públicos' =>
                                                 array (
-                                                    'es' => 'Almacenes Públicos ',
+                                                    'es' => 'Almacenes Públicos',
                                                     'en' => 'Public Warehouse',
                                                     'code' => '54049',
                                                 ),
@@ -14228,9 +14196,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Supplies & Equipment for Doctors',
                                                     'code' => '33140',
                                                 ),
-                                            'Efectos & Equipos Dentales ' =>
+                                            'Efectos & Equipos Dentales' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipos Dentales ',
+                                                    'es' => 'Efectos & Equipos Dentales',
                                                     'en' => 'Dental Goods & Equipment',
                                                     'code' => '16700',
                                                 ),
@@ -14302,9 +14270,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Interior Furniture',
                                                     'code' => '37545',
                                                 ),
-                                            'Muebles de Patio ' =>
+                                            'Muebles de Patio' =>
                                                 array (
-                                                    'es' => 'Muebles de Patio ',
+                                                    'es' => 'Muebles de Patio',
                                                     'en' => 'Patio Furniture',
                                                     'code' => '37660',
                                                 ),
@@ -14414,9 +14382,9 @@ Reumatología Pediátrica',
                                     'en' => 'Wedding',
                                     'children' =>
                                         array (
-                                            'Artículos para Novias ' =>
+                                            'Artículos para Novias' =>
                                                 array (
-                                                    'es' => 'Artículos para Novias ',
+                                                    'es' => 'Artículos para Novias',
                                                     'en' => 'Goods for Brides',
                                                     'code' => '38020',
                                                 ),
@@ -14902,9 +14870,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Crafts',
                                                     'code' => '31920',
                                                 ),
-                                            'Manufactura de Marcos ' =>
+                                            'Manufactura de Marcos' =>
                                                 array (
-                                                    'es' => 'Manufactura de Marcos ',
+                                                    'es' => 'Manufactura de Marcos',
                                                     'en' => 'Frame Manufacturers',
                                                     'code' => '32420',
                                                 ),
@@ -14914,9 +14882,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Frames & Paintings',
                                                     'code' => '32380',
                                                 ),
-                                            'Arte Corporal ' =>
+                                            'Arte Corporal' =>
                                                 array (
-                                                    'es' => 'Arte Corporal ',
+                                                    'es' => 'Arte Corporal',
                                                     'en' => 'Body Art',
                                                     'code' => '4141',
                                                 ),
@@ -15070,9 +15038,9 @@ Reumatología Pediátrica',
                                     'en' => 'Sports',
                                     'children' =>
                                         array (
-                                            'Piezas & Servicios para Patines ' =>
+                                            'Piezas & Servicios para Patines' =>
                                                 array (
-                                                    'es' => 'Piezas & Servicios para Patines ',
+                                                    'es' => 'Piezas & Servicios para Patines',
                                                     'en' => 'Skating Parts & Services',
                                                     'code' => '39313',
                                                 ),
@@ -15118,9 +15086,9 @@ Reumatología Pediátrica',
                                                 ),
                                         ),
                                 ),
-                            'Plata ' =>
+                            'Plata' =>
                                 array (
-                                    'es' => 'Plata ',
+                                    'es' => 'Plata',
                                     'en' => 'Silver',
                                     'children' =>
                                         array (
@@ -15352,9 +15320,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Boilers',
                                                     'code' => '54096',
                                                 ),
-                                            'Certificadores de Calibración ' =>
+                                            'Certificadores de Calibración' =>
                                                 array (
-                                                    'es' => 'Certificadores de Calibración ',
+                                                    'es' => 'Certificadores de Calibración',
                                                     'en' => 'Calibration Certifiers',
                                                     'code' => '9660',
                                                 ),
@@ -15574,9 +15542,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Snacks',
                                                     'code' => '54098',
                                                 ),
-                                            'Efectos & Equipos ' =>
+                                            'Efectos & Equipos' =>
                                                 array (
-                                                    'es' => 'Efectos & Equipos ',
+                                                    'es' => 'Efectos & Equipos',
                                                     'en' => 'Supplies & Equipment',
                                                     'code' => '54099',
                                                 ),
@@ -15718,9 +15686,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Boat Repairs',
                                                     'code' => '8460',
                                                 ),
-                                            'Servicio Carga Marítima ' =>
+                                            'Servicio Carga Marítima' =>
                                                 array (
-                                                    'es' => 'Servicio Carga Marítima ',
+                                                    'es' => 'Servicio Carga Marítima',
                                                     'en' => 'Maritime Cargo Services',
                                                     'code' => '10420',
                                                 ),
@@ -15998,9 +15966,9 @@ Reumatología Pediátrica',
                                                     'en' => 'Lodges',
                                                     'code' => '31460',
                                                 ),
-                                            'Moteles ' =>
+                                            'Moteles' =>
                                                 array (
-                                                    'es' => 'Moteles ',
+                                                    'es' => 'Moteles',
                                                     'en' => 'Motels',
                                                     'code' => '36480',
                                                 ),
@@ -16394,7 +16362,7 @@ Reumatología Pediátrica',
             'Escuelas Académicas,Private Schools & Academies,Schools-Music,Escuelas - Música' => '21650',
             'Air Conditioning-Consoles-Maintenance,Aire Acondicionado-Consolas-Mantenimiento' => '54078',
             'Storage - Household & Commercial,Almacenes Privados,Vending Machines' => '3180',
-            'Movie-Production,Movies - Services,Películas-Alquiler Equipo,Movies-Producers,Peliculas-Productores' => '54079',
+            'Movie-Production,Movies - Services,Películas-Alquiler Equipo,Movies-Producers,Peliculas-Productores' => '39460',
             'Automobiles - Tires-Repair-Equipment & Supplies,Automóviles - Gomas-Reparación-Materiales Y Equipo,Automobiles - Wheel Aligning & Balancing Service - Equipment & Supplies,Automóviles - Alineamiento y Balance - Efectos y Equipo' => '5740',
             'Advertising-Buses and Trains,Publicidad-Guaguas Y Trenes' => '54080',
             'Partitions - Office,Divisiones - Oficinas,Transcripts,Transcripciones' => '38310',
