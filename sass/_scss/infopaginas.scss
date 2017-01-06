@@ -487,10 +487,13 @@ $side-padding-mb: 16px;
 }
 
 .form__field {
+  display: -webkit-box;
   display: flex;
   flex: 1 1 100%;
+  -webkit-flex: 1 1 100%;
   position: relative;
   flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
   @media only screen and (min-width: 805px) {
     flex: 1 1 auto;
   }
@@ -765,7 +768,7 @@ $side-padding-mb: 16px;
     i {
       font-size: 16px;
     }
-    
+
   }
 }
 
@@ -1685,7 +1688,6 @@ $thumb-width-mb: 60px;
       border-radius: 3px;
       width: 100%;
       max-width: 100%;
-      // width: 810px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
       margin: 30px 0;
       padding: 20px;
@@ -1735,6 +1737,7 @@ $thumb-width-mb: 60px;
     align-items: center;
     background: lighten($blue--dark, 70%);
     background-size: cover;
+    background-position: 0 75%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1745,6 +1748,7 @@ $thumb-width-mb: 60px;
     padding-bottom: 50px;
     padding-top: 100px;
     width: 100%;
+
   }
 }
 
@@ -2784,8 +2788,10 @@ a.tag {
   .highlights__item {
     flex: 1 1 100%;
     padding-right: 0;
-    margin-bottom: 10px;
-
+    margin-bottom: 0;
+    h3 {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -2815,6 +2821,38 @@ a.tag {
   height: 40px;
   align-items: center;
   display: flex;
+}
+
+.highlights__item_address-row ul,
+.highlights__item_hours-row ul,
+.highlights__item_brands-row ul,
+.highlights__item_social-row ul {
+  height: 3em;
+}
+
+.highlights__item_payment-row ul{
+  height: 6em;
+}
+
+.highlights__item_phone-row ul {
+  height: 2em;
+}
+
+.highlights__item_share-row ul {
+  height: 88px;
+}
+
+.highlights__item_fixed-height ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: content-box;
+  line-height: 1em;
+  margin: 10px 0;
+}
+
+.empty {
+  padding-top: 22px;
 }
 
 .comparison__rating {
@@ -3102,7 +3140,7 @@ input, textarea {
   box-shadow: none;
   font-size: 16px;
   height: $input-height-mb;
-  line-height: $input-height-mb;
+  line-height: $input-line-height-mb;
   outline: 0;
   padding: $input-padding-mb;
   width: 100%;
@@ -3159,6 +3197,7 @@ input[type='checkbox'] {
 }
 
 .form__row {
+  display: -webkit-box;
   display: flex;
   margin-bottom: 10px;
 
@@ -3170,6 +3209,7 @@ input[type='checkbox'] {
     float: left;
     margin-right: 10px;
     flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
 
     &:last-child,
     &:only-child,
@@ -3424,8 +3464,10 @@ a.button--login {
 
 .row--passwords, .row--name {
   flex-direction: column;
+  -webkit-flex-direction: column;
   .form__field {
     margin-right: 0;
+    min-height: 50px;
   }
 
   @media only screen and (min-width: 420px) {
@@ -3438,6 +3480,7 @@ a.button--login {
 
 .field--password {
   flex-direction: column;
+  -webkit-flex-direction: column;
 
   input {
     flex: 0 0 auto;
@@ -4468,25 +4511,26 @@ table {
     width: calc(95vw - 20px) !important;
   }
   li.business::before{
-    width: 15px;
-    height: 15px;
+    width: 4px;
+    height: 4px;
     position: absolute;;
-    left: 10px;
-    margin-top: 2px;
+    left: 15px;
+    margin-top: 8px;
     content: "";
     display: block;
-    background: url('../assets/images/business-icon.png')
+    border: 1px solid #3187ef;
+    border-radius: 1px;
   }
 
   li.category::before{
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     position: absolute;;
     left: 10px;
     margin-top: 2px;
     content: "";
     display: block;
-    background: url('../assets/images/category-icon.png')
+    background: url('../assets/images/category-view-icon.png')
   }
 }
 
