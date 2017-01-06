@@ -1748,7 +1748,6 @@ $thumb-width-mb: 60px;
     padding-bottom: 50px;
     padding-top: 100px;
     width: 100%;
-
   }
 }
 
@@ -4511,15 +4510,17 @@ table {
     width: calc(95vw - 20px) !important;
   }
   li.business::before{
-    width: 4px;
-    height: 4px;
-    position: absolute;;
-    left: 15px;
-    margin-top: 8px;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    transform: scale(0.9);
+    left: 11px;
+    margin-top: 2px;
     content: "";
     display: block;
-    border: 1px solid #3187ef;
-    border-radius: 1px;
+    background-size: cover;
+    background-position: center;
+    background: url('../assets/images/business-house.png');
   }
 
   li.category::before{
