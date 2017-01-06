@@ -43,6 +43,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     const CATEGORY_LEVEL_2 = 2;
     const CATEGORY_LEVEL_3 = 3;
 
+    const CATEGORY_FIELD_NAME = 'name';
 
     /**
      * @var int
@@ -55,6 +56,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $id;
 
     /**
+     * Related to CATEGORY_FIELD_NAME
      * @var string - Category name
      *
      * @Gedmo\Translatable(fallback=true)
@@ -215,6 +217,15 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\OrderBy({"name" = "ASC"})
      */
     private $children;
+
+
+    /**
+     * @var string - Category code
+     *
+     * @ORM\Column(name="code", type="string", length=255, nullable=true)
+     * @Assert\NotBlank()
+     */
+    protected $code;
 
     public function setLocale($locale)
     {
@@ -627,5 +638,36 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getSlugEs()
     {
         return $this->slugEs;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Category
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public static function getTranslatableFields()
+    {
+        return [
+            self::CATEGORY_FIELD_NAME
+        ];
     }
 }
