@@ -151,6 +151,12 @@ class Version20170105143049 extends AbstractMigration implements ContainerAwareI
                     'name' => 'Toa Baja PR',
                     'parent' => '69',
                 ),
+            98 =>
+                array (
+                    'id' => '98',
+                    'name' => 'villalba',
+                    'parent' => '75',
+                ),
         );
 
         return $delete;
@@ -193,6 +199,11 @@ class Version20170105143049 extends AbstractMigration implements ContainerAwareI
                 array (
                     'id' => '69',
                     'name' => 'Toa Baja',
+                ),
+            75 =>
+                array (
+                    'id' => '75',
+                    'name' => 'Villalba',
                 ),
         );
 
