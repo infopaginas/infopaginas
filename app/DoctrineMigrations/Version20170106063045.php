@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170106063045 extends AbstractMigration
+class Version20170106063045 extends AbstractMigration implements ContainerAwareInterface
 {
     /**
      * @var $em \Doctrine\ORM\EntityManager

@@ -53,9 +53,9 @@
             <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
         {% endblock %}
 
-        {% block googleTagManagerScript %}
-            {% include ':widgets:google_tag_manager_script.html.twig' %}
-        {% endblock %}
+        {#{% block googleTagManagerScript %}#}
+            {#{% include ':widgets:google_tag_manager_script.html.twig' %}#}
+        {#{% endblock %}#}
 
         {% block doubleClickHeader %}
             {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
@@ -70,9 +70,9 @@
         {% endblock %}
     </head>
     <body class="{% block bodyClass %}{% endblock %}">
-        {% block googleTagManagerNoScript %}
-            {% include ':widgets:google_tag_manager_no_script.html.twig' %}
-        {% endblock %}
+        {#{% block googleTagManagerNoScript %}#}
+            {#{% include ':widgets:google_tag_manager_no_script.html.twig' %}#}
+        {#{% endblock %}#}
 
         {% block searchHeader %}
             {% include ':redesign/blocks:header.html.twig' %}
