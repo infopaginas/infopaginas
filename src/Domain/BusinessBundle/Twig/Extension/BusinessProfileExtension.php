@@ -182,8 +182,20 @@ class BusinessProfileExtension extends \Twig_Extension
         $data    = [];
 
         foreach ($oldData as $key => $item) {
-            if ($newData[$key] !== $item) {
+            if (empty($newData[$key])) {
                 $data[$key]['old'] = $item;
+                $data[$key]['new'] = '';
+            } else {
+                if ($newData[$key] !== $item) {
+                    $data[$key]['old'] = $item;
+                    $data[$key]['new'] = $newData[$key];
+                }
+            }
+        }
+
+        foreach ($newData as $key => $item) {
+            if (empty($oldData[$key])) {
+                $data[$key]['old'] = '';
                 $data[$key]['new'] = $newData[$key];
             }
         }

@@ -418,14 +418,6 @@ class BusinessProfileManager extends Manager
                             );
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        } elseif ($change->getClassName() === BusinessProfileTranslation::class) {
-                            $collection = TranslationChangeSetUtil::getTranslationCollectionsFromChangeSet(
-                                $change,
-                                $businessProfile,
-                                $this->getEntityManager()
-                            );
-
-                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
                         } elseif ($change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_COUNTRY or
                             $change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY) {
 
@@ -647,6 +639,26 @@ class BusinessProfileManager extends Manager
         }
 
         $this->getEntityManager()->persist($businessProfile);
+        $this->getEntityManager()->flush();
+
+        /** @var ChangeSetEntry $change */
+        foreach ($changeSet->getEntries() as $change) {
+            // workaround to override translation after gedmo translatable callback
+            switch ($change->getAction()) {
+                case ChangeSetCalculator::PROPERTY_CHANGE:
+                    if ($change->getClassName() === BusinessProfileTranslation::class) {
+                        $collection = TranslationChangeSetUtil::getTranslationCollectionsFromChangeSet(
+                            $change,
+                            $businessProfile,
+                            $this->getEntityManager()
+                        );
+
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                    }
+                break;
+            }
+        }
+
         $this->getEntityManager()->flush();
     }
 
