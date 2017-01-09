@@ -1329,8 +1329,7 @@ class BusinessProfileManager extends Manager
 
     public function getBusinessProfileSearchSeoData(
         $locality = null,
-        $category = null,
-        $subcategory = null,
+        $categories = [],
         $isCatalog = false
     )
     {
@@ -1339,7 +1338,12 @@ class BusinessProfileManager extends Manager
 
         $companyName          = $seoSettings['company_name'];
         $titleMaxLength       = $seoSettings['title_max_length'];
+        $titleCategoryMaxLength = $seoSettings['title_category_max_length'];
+        $titleLocalityMaxLength = $seoSettings['locality_length'];
         $descriptionMaxLength = $seoSettings['description_max_length'];
+        $descriptionCategoriesMaxLength = $seoSettings['description_category_max_length'];
+        $descriptionCategoriesSeparator = $seoSettings['description_category_separator'];
+        $categoriesCut = $seoSettings['description_category_cut'];
 
         if ($isCatalog) {
             $seoTitle = $translator->trans('Catalog');
@@ -1347,20 +1351,43 @@ class BusinessProfileManager extends Manager
             $seoTitle = $translator->trans('Search');
         }
 
+        $categoryData = [];
+
+        if ($categories) {
+            $itemsCount = count($categories);
+            $categoryData = [];
+            $categoryMaxLength = floor($descriptionCategoriesMaxLength / $itemsCount);
+
+            foreach ($categories as $category) {
+                $categoryOutput = mb_substr($category, 0, $categoryMaxLength);
+
+                if (mb_strlen($category) > $categoryMaxLength) {
+                    $categoryOutput .= $categoriesCut;
+                }
+
+                $categoryData[] = $categoryOutput;
+            }
+        }
+
+        $seoDescription = $translator->trans(
+            'business_profile.seoDescription.search',
+            [
+                '{-categories-}' => implode($descriptionCategoriesSeparator, $categoryData),
+                '{-locality-}'   => $locality,
+            ],
+            'messages'
+        );
+
         if ($locality) {
-            $seoTitle = $seoTitle . ' ' . $translator->trans('in') . ' ' . $locality;
+            $seoTitle .= ' ' . $translator->trans('in') . ' ' . mb_substr($locality, 0, $titleLocalityMaxLength);
         }
 
-        if ($category) {
-            $seoTitle = $seoTitle . ' ' . $translator->trans('for') . ' ' . $category;
+        if (current($categories)) {
+            $category1 = mb_substr(current($categories), 0, $titleCategoryMaxLength);
+            $seoTitle .= ' ' . $translator->trans('for') . ' ' . $category1;
         }
 
-        if ($subcategory) {
-            $seoTitle = $seoTitle . ' - ' . $subcategory;
-        }
-
-        $seoDescription = $seoTitle;
-        $seoTitle       = $seoTitle . ' | ' . $companyName;
+        $seoTitle .=' | ' . $companyName;
 
         $seoData = [
             'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),

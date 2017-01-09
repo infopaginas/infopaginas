@@ -2,7 +2,7 @@
     {% if language.active %}
 <link rel="canonical" href="{{ language.url }}" />
     {% else %}
-<link rel="alternate" href="{{ language.url }}" hreflang="{{ key }}" />
+<link rel="alternate" href="{{ language.url }}" hreflang="{{ key }}-pr" />
     {% endif %}
 {% endfor %}
 {% if app.request.get('order') and app.request.get('order') != constant('\\Domain\\SearchBundle\\Util\\SearchDataUtil::DEFAULT_ORDER_BY_VALUE') %}
