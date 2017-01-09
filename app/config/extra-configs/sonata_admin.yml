@@ -88,3 +88,14 @@ sonata_admin:
                     - domain_report.admin.subscription_report
                     - domain_report.admin.category_report
                     - domain_report.admin.views_and_visitors_report
+        blocks:
+            -
+                position: left
+                type: sonata.admin.block.admin_list
+            -
+                position: right
+                type: sonata.block.service.text
+                settings:
+                    content: >
+                        <h2>Welcome to the Infopaginas Admin Panel</h2>
+                        <p>Current varsion: %app_version%</p>
