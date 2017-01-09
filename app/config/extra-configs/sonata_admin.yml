@@ -98,4 +98,4 @@ sonata_admin:
                 settings:
                     content: >
                         <h2>Welcome to the Infopaginas Admin Panel</h2>
-                        <p>Current varsion: %app_version%</p>
+                        <p>Current version: %app_version%</p>
