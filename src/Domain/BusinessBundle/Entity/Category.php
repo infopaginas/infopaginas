@@ -45,6 +45,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
 
     const CATEGORY_FIELD_NAME = 'name';
 
+    const CATEGORY_UNDEFINED_CODE = '54016';
+    const CATEGORY_UNDEFINED_SLUG = 'undefined';
+
     /**
      * @var int
      *
@@ -223,7 +226,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @var string - Category code
      *
      * @ORM\Column(name="code", type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
      */
     protected $code;
 
