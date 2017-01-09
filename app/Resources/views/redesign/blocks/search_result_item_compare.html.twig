@@ -33,7 +33,7 @@
     <div class="comparison__row comparison__highlights">
         <div class="highlights container">
             {% if not item.getHideAddress() %}
-                <div class="highlights__item highlights__item_address-row highlights__item_fixed-height">
+                <div class="highlights__item highlights__item_address-row highlights__item_fixed-height highlights__item--address">
                     <h3>{% trans %}Address{% endtrans %}</h3>
                     <ul>
                         <li>
@@ -53,7 +53,7 @@
             {% endif %}
 
             {% if item.getPhones()|length > 0 %}
-                <div class="highlights__item highlights__item_phone-row highlights__item_fixed-height">
+                <div class="highlights__item highlights__item_phone-row highlights__item_fixed-height highlights__item--phone">
                     <h3>{% trans %}Phone{% endtrans %}</h3>
                     <ul>
                         {% for phone in item.getPhones() %}
@@ -70,7 +70,7 @@
             {% endif %}
 
             {% if item.getBrands() %}
-                <div class="highlights__item highlights__item--checklist highlights__item_brands-row highlights__item_fixed-height">
+                <div class="highlights__item highlights__item--checklist highlights__item_brands-row highlights__item_fixed-height highlights__item--brand">
                     <h3>{% trans %}Brands{% endtrans %}</h3>
                     <ul>
                         <li>
@@ -101,7 +101,7 @@
             {% endif %}
 
             {% if item.paymentMethods|length > 0 %}
-                <div class="highlights__item highlights__item--checklist highlights__item_payment-row highlights__item_fixed-height">
+                <div class="highlights__item highlights__item--checklist highlights__item_payment-row highlights__item_fixed-height highlights__item--payment">
                     <h3>{% trans %}Payment methods{% endtrans %}</h3>
                     <ul>
                         {% for paymentMethod in item.paymentMethods %}
