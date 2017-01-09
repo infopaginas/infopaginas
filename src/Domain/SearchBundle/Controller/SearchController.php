@@ -36,7 +36,7 @@ class SearchController extends Controller
 
         $schema       = false;
         $locationName = false;
-        $query        = false;
+        $seoCategories = [];
 
         if ($searchDTO) {
             $searchResultsDTO = $searchManager->search($searchDTO, $locale);
@@ -57,7 +57,7 @@ class SearchController extends Controller
             }
 
             if ($searchDTO->query) {
-                $query = $searchDTO->query;
+                $seoCategories[] = $searchDTO->query;
             }
         } else {
             $searchResultsDTO = null;
@@ -73,7 +73,7 @@ class SearchController extends Controller
             ]
         );
 
-        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $query);
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
 
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
@@ -176,7 +176,7 @@ class SearchController extends Controller
         $locale = ucwords($request->getLocale());
 
         $locationName = false;
-        $query        = false;
+        $seoCategories = [];
 
         if ($searchDTO) {
             $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
@@ -194,7 +194,7 @@ class SearchController extends Controller
             }
 
             if ($searchDTO->query) {
-                $query = $searchDTO->query;
+                $seoCategories[] = $searchDTO->query;
             }
         } else {
             $searchResultsDTO = null;
@@ -211,7 +211,7 @@ class SearchController extends Controller
 
         $pageRouter = $this->container->get('request')->attributes->get('_route');
 
-        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $query);
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
 
         return $this->render(
             ':redesign:search-results-compare.html.twig',
@@ -277,9 +277,8 @@ class SearchController extends Controller
         $showResults = null;
         $showCatalog = true;
 
-        $seoLocationName    = null;
-        $seoCategoryName    = null;
-        $seoSubcategoryName = null;
+        $seoLocationName  = null;
+        $seoCategories = [];
 
         $categories1 = [];
         $categories2 = [];
@@ -318,7 +317,7 @@ class SearchController extends Controller
                 }
 
                 $showResults = true;
-                $seoCategoryName = $category1->getName();
+                $seoCategories[] = $category1->getName();
 
                 if ($category2 and $category2->getParent()) {
                     $request->attributes->set('subcategory', $category2->getName());
@@ -331,14 +330,14 @@ class SearchController extends Controller
                     );
                     $category3   = $searchManager->searchCatalogCategory($categorySlug3);
 
-                    $seoSubcategoryName = $category2->getName();    //todo https://jira.oxagile.com/browse/INFT-312
+                    $seoCategories[] = $category2->getName();
 
                     if ($category3 and $category3->getParent()) {
                         $request->attributes->set('subcategory', $category3->getName());
                         $request->attributes->set('q', $category3->getName());
 
                         $showCatalog = false;
-                        $seoSubcategoryName = $category3->getName();    //todo https://jira.oxagile.com/browse/INFT-312
+                        $seoCategories[] = $category3->getName();
                     }
 
                     if (!$categories3) {
@@ -415,8 +414,11 @@ class SearchController extends Controller
 
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories1, $categories2, $categories3);
 
-        $seoData = $this->getBusinessProfileManager()
-            ->getBusinessProfileSearchSeoData($seoLocationName, $seoCategoryName, $seoSubcategoryName, true);
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData(
+            $seoLocationName,
+            $seoCategories,
+            true
+        );
 
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
