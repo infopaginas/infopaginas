@@ -743,7 +743,7 @@ $side-padding-mb: 16px;
     margin: 0 10px 0 10px;
     height: 100%;
     line-height: 30px;
-
+    
     &::after {
       background: $blue--dark;
       bottom: -4px;
@@ -3059,7 +3059,7 @@ a.tag {
   width: 100%;
   position: fixed;
   z-index: 888;
-  ransition-duration: .6s;
+  transition-duration: .6s;
   transition-property: opacity;
   transition-timing-function: ease-out;
 }
@@ -3094,7 +3094,6 @@ a.tag {
   transition-timing-function: ease-out;
   width: 90%;
   z-index: 999999;
-
   @media only screen and (min-width: 805px) {
     width: 50%;
   }

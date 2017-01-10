@@ -8,18 +8,18 @@
         </a>
 
         <div class="sort-bar">
-            <button id="sort-toggle" class="button sort-bar__button" type="button">
+            <button id="sort-toggle" class="button sort-bar__button active" type="button">
                 <i class="fa fa-sort"></i>
                 <span>{% trans %}Sort{% endtrans %}</span>
             </button>
-            <button id="filter-toggle" class="button sort-bar__button active" type="button">
+            <button id="filter-toggle" class="button sort-bar__button" type="button">
                 <i class="fa fa-filter"></i>
                 <span>{% trans %}Filter{% endtrans %}</span>
             </button>
 
-            <div class="sort__options sort">
+            <div class="sort__options sort sort--on">
                 <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchRelevance}))) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %}>
-                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') == searchRelevance %}sort--active{% endif %}">
+                    <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') != searchDistance %}sort--active{% endif %}">
                         {% trans %}Best match{% endtrans %}
                         <i class="fa fa-sort-amount-desc"></i>
                     </button>
@@ -32,7 +32,7 @@
                 </a>
             </div><!-- sort -->
 
-            <div class=" sort__options filter filter--on">
+            <div class=" sort__options filter">
                 <form class="form">
                     <div class="filter__item">
                         <div class="form__field field-filter-category">
