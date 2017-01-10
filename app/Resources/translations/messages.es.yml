@@ -420,3 +420,4 @@ Validation failure: Error de validación
 business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 user.reset_password_request.email.not_found: El usuario {-email-} no existe
+business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
