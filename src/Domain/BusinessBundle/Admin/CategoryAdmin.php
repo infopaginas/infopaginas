@@ -242,8 +242,7 @@ class CategoryAdmin extends OxaAdmin
             'ROLE_RESTORE_ABLE'
         ];
 
-        if ($object && in_array($name, $deniedActions) && !$object->getBusinessProfiles()->isEmpty()
-        ) {
+        if ($object && in_array($name, $deniedActions) && !$object->getBusinessProfiles()->isEmpty()) {
             return false;
         }
 
