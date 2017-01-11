@@ -42,13 +42,15 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
             ->add('date', 'doctrine_orm_datetime_range', [
                 'field_type' => 'sonata_type_datetime_range_picker',
                 'field_options' => [
-                    'format' => AdminHelper::FILTER_DATE_RANGE_FORMAT,
+                    'field_options' => [
+                        'format' => AdminHelper::FILTER_DATE_RANGE_FORMAT,
+                        'empty_value'  => false,
+                    ],
                     'attr' => [
                         'class' => AdminHelper::FILTER_DATE_RANGE_CLASS
                     ],
                     'mapped' => false,
                     'required'  => true,
-                    'empty_value'  => false,
                 ]
             ])
             ->add('periodOption', 'doctrine_orm_choice', AdminHelper::getDatagridPeriodOptionOptions())

@@ -143,10 +143,17 @@ doctrine:
             FOSUserBundle: ~
             OxaSonataMediaBundle: ~
             SonataMediaBundle: ~
+            SonataClassificationBundle: ~
+            ApplicationSonataClassificationBundle: ~
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
                 enabled: true
+
+#sonataClassificationBundle
+sonata_classification:
+    class:
+        media: Oxa\Sonata\MediaBundle\Entity\Media
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -286,10 +293,10 @@ knp_gaufrette:
 
 aws:
     version:    '2006-03-01'
-    region:     %amazon_aws_region%
+    region:     '%amazon_aws_region%'
     credentials:
-        key:    %amazon_aws_key%
-        secret: %amazon_aws_secret_key%
+        key:    '%amazon_aws_key%'
+        secret: '%amazon_aws_secret_key%'
     S3:
         version:    '2006-03-01'
     

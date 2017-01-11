@@ -40,6 +40,8 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Sonata\FormatterBundle\SonataFormatterBundle(),
             new Sonata\MediaBundle\SonataMediaBundle(),
+            new Sonata\ClassificationBundle\SonataClassificationBundle(),
+            new Application\Sonata\ClassificationBundle\ApplicationSonataClassificationBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Sonata\IntlBundle\SonataIntlBundle(),
             new Sonata\TranslationBundle\SonataTranslationBundle(),

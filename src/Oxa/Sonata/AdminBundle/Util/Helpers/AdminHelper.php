@@ -166,7 +166,9 @@ class AdminHelper
         return [
             'field_type' => 'sonata_type_datetime_range_picker',
             'field_options' => [
-                'format' => self::FILTER_DATE_RANGE_FORMAT,
+                'field_options' => [
+                    'format' => self::FILTER_DATE_RANGE_FORMAT
+                ],
                 'attr' => [
                     'class' => self::FILTER_DATE_RANGE_CLASS
                 ]

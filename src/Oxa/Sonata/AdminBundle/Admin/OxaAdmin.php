@@ -11,7 +11,7 @@ use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 
 class OxaAdmin extends BaseAdmin
 {
@@ -69,7 +69,9 @@ class OxaAdmin extends BaseAdmin
     protected $defaultDatagridDatetimeTypeOptions = [
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
-            'format' => self::FILTER_DATETIME_FORMAT
+            'field_options' => [
+                'format' => self::FILTER_DATETIME_FORMAT
+            ],
         ]
     ];
 
@@ -81,7 +83,9 @@ class OxaAdmin extends BaseAdmin
     protected $defaultDatagridDateTypeOptions = [
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
-            'format' => self::FILTER_DATE_FORMAT
+            'field_options' => [
+                'format' => self::FILTER_DATE_FORMAT
+            ],
         ]
     ];
 
