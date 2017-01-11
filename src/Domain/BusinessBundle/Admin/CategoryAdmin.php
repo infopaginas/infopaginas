@@ -228,4 +228,25 @@ class CategoryAdmin extends OxaAdmin
             }
         }
     }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = [
+            'DELETE',
+            'ROLE_PHYSICAL_DELETE_ABLE',
+            'ROLE_RESTORE_ABLE'
+        ];
+
+        if ($object && in_array($name, $deniedActions) && !$object->getBusinessProfiles()->isEmpty()
+        ) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
+    }
 }
