@@ -120,12 +120,29 @@ class LocalityAdmin extends OxaAdmin
             ->getLocalityBySlug(Locality::DEFAULT_CATALOG_LOCALITY_SLUG);
 
         if ($defaultLocality) {
+            /* get businesses by catalog locality */
             $businesses = $entity->getBusinessProfiles();
 
-            foreach ($businesses as $businessProfile) {
-                /** @var BusinessProfile $businessProfile */
-                $businessProfile->setCatalogLocality($defaultLocality);
+            $this->updateBusinessProfiles($businesses, $defaultLocality, $entity);
+
+            /* get businesses by service area locality */
+            $businesses = $entity->getBusinessProfile();
+
+            $this->updateBusinessProfiles($businesses, $defaultLocality, $entity);
+        }
+    }
+
+    protected function updateBusinessProfiles($businesses, $defaultLocality, $entity)
+    {
+        foreach ($businesses as $businessProfile) {
+            /** @var BusinessProfile $businessProfile */
+            $businessProfile->setCatalogLocality($defaultLocality);
+
+            if (!$businessProfile->getLocalities()->contains($defaultLocality)) {
+                $businessProfile->addLocality($defaultLocality);
             }
+
+            $businessProfile->removeLocality($entity);
         }
     }
 }
