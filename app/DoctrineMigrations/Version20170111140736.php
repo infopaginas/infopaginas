@@ -101,22 +101,6 @@ class Version20170111140736 extends AbstractMigration implements ContainerAwareI
 
     }
 
-    protected function getLocalitiesDeleteIterator()
-    {
-        $qb = $this->em->createQueryBuilder()
-            ->select('l')
-            ->from('DomainBusinessBundle:Locality', 'l')
-            ->where('l.deletedAt IS NOT NULL')
-        ;
-
-        $query = $this->em->createQuery($qb->getDQL());
-
-        $iterateResult = $query->iterate();
-
-        return $iterateResult;
-    }
-
-
     protected function getParentList()
     {
         $parent = [
