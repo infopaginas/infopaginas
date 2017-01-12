@@ -690,7 +690,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $parameters = $this->getFilterParameters();
 
         // search by active subscription of chosen subscriptionPlan
-        /*if (isset($parameters['subscriptions__subscriptionPlan']) &&
+        if (isset($parameters['subscriptions__subscriptionPlan']) &&
             !empty($parameters['subscriptions__subscriptionPlan']['value'])
         ) {
             $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
@@ -703,7 +703,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
             $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
             $query->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
-        }*/
+        }
 
         return $query;
     }
