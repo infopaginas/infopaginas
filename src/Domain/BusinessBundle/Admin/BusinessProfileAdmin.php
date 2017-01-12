@@ -55,7 +55,13 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('state')
             ->add('country')
             ->add('catalogLocality')
-            ->add('phones')
+            ->add(
+                'phones.phone',
+                null,
+                [
+                    'label' => $this->trans('filter.label_phone', [], $this->getTranslationDomain())
+                ]
+            )
             ->add('subscriptions.subscriptionPlan', null, [
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
             ])
@@ -684,7 +690,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $parameters = $this->getFilterParameters();
 
         // search by active subscription of chosen subscriptionPlan
-        if (isset($parameters['subscriptions__subscriptionPlan']) &&
+        /*if (isset($parameters['subscriptions__subscriptionPlan']) &&
             !empty($parameters['subscriptions__subscriptionPlan']['value'])
         ) {
             $subscriptionPlanId = $parameters['subscriptions__subscriptionPlan']['value'];
@@ -697,7 +703,7 @@ class BusinessProfileAdmin extends OxaAdmin
 
             $query->setParameter('subscriptionPlanId', $subscriptionPlanId);
             $query->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE);
-        }
+        }*/
 
         return $query;
     }
