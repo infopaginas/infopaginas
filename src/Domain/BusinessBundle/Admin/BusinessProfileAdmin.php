@@ -55,7 +55,13 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('state')
             ->add('country')
             ->add('catalogLocality')
-            ->add('phones')
+            ->add(
+                'phones.phone',
+                null,
+                [
+                    'label' => $this->trans('filter.label_phone', [], $this->getTranslationDomain())
+                ]
+            )
             ->add('subscriptions.subscriptionPlan', null, [
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
             ])
