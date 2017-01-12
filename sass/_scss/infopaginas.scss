@@ -4857,3 +4857,20 @@ input[type='radio'], input[type='checkbox'] {
 
 @import '../libs/selectize';
 @import '../libs/slick';
+
+
+.profile-header--no-image {
+  background-image: none !important;
+  background-color: $grey--light;
+  min-height: 0;
+  @media only screen and (max-width: 768px){
+    max-width: 100%; 
+    padding: 10px; 
+  }
+  .profile-header {
+    box-shadow: none;
+    @media only screen and (min-width: 768px) {
+      min-width: 700px;
+    }
+  }
+}
