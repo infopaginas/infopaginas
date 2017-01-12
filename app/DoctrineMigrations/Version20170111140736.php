@@ -157,8 +157,23 @@ class Version20170111140736 extends AbstractMigration implements ContainerAwareI
             ->setParameter(':id', $id)
         ;
 
+        $businesses = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($businesses as $business) {
+            $data[] = $business['id'];
+        }
+
+        $qb = $this->em->createQueryBuilder()
+            ->select('b')
+            ->from('DomainBusinessBundle:BusinessProfile', 'b')
+            ->where('b.id IN (:ids)')
+            ->setParameter('ids', $data)
+        ;
+
         $query = $this->em->createQuery($qb->getDQL());
-        $query->setParameter('id', $id);
+        $query->setParameter('ids', $data);
 
         $iterateResult = $query->iterate();
 
