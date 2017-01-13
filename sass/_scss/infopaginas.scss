@@ -1822,23 +1822,27 @@ $thumb-width-mb: 60px;
   font-weight: 700;
 }
 .highlights {
-  .highlights__item {
+  
+  .highlights__item--address ul {
+    max-height: 65px;
     overflow: hidden;
   }
-  .highlights__item--address ul {
-    max-height: 66px;
-  }
   .highlights__item--phone ul {
-    max-height: 44px;
+    max-height: 35px;
+    overflow: hidden;  
   }
   .highlights__item--brand ul {
-    max-height: 66px;
+    max-height: 65px;
+    overflow: hidden;
   }
   .highlights__item--hours ul {
-    max-height: 66px;
+    max-height: 48px;
+    overflow: hidden;
   }
   .highlights__item--payment ul {
-    max-height: 138px;
+    max-height: 102px;
+    height: 102px;
+    overflow: hidden;
   }
 }
 .highlights__item--checklist {
