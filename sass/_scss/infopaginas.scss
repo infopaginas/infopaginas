@@ -1824,24 +1824,24 @@ $thumb-width-mb: 60px;
 .highlights {
   
   .highlights__item--address ul {
-    max-height: 65px;
+    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--phone ul {
-    max-height: 35px;
+    max-height: 2em;
     overflow: hidden;  
   }
   .highlights__item--brand ul {
-    max-height: 65px;
+    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--hours ul {
-    max-height: 48px;
+    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--payment ul {
-    max-height: 102px;
-    height: 102px;
+    max-height: 6.2em;
+    height: 6.2em;
     overflow: hidden;
   }
 }
