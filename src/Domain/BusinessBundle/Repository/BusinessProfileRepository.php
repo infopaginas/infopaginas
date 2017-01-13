@@ -131,6 +131,8 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
+        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
+
         if (SearchDataUtil::ORDER_BY_DISTANCE == $searchParams->getOrderBy()) {
             $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
             $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
@@ -140,8 +142,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
             $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
         }
-
-        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
 
         $category = $searchParams->getCategory1();
 
@@ -208,7 +208,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             },
             $words
         );
-        $plain = implode(' | ', $wordParts);
+        $plain = implode(' & ', $wordParts);
 
         return $plain;
     }

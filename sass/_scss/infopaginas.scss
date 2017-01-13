@@ -743,7 +743,7 @@ $side-padding-mb: 16px;
     margin: 0 10px 0 10px;
     height: 100%;
     line-height: 30px;
-
+    
     &::after {
       background: $blue--dark;
       bottom: -4px;
@@ -837,7 +837,7 @@ $side-padding-mb: 16px;
       display: inline-block;
       font-family: fontAwesome;
       position: absolute;
-      right: 0;
+      left: 0;
       top: .3em;
       z-index: 100;
     }
@@ -1902,7 +1902,8 @@ $thumb-width-mb: 60px;
   text-align: center;
 
   img {
-    height: 65px;
+    height: 120px;
+    width: 120px;
   }
 }
 
@@ -3059,7 +3060,7 @@ a.tag {
   width: 100%;
   position: fixed;
   z-index: 888;
-  ransition-duration: .6s;
+  transition-duration: .6s;
   transition-property: opacity;
   transition-timing-function: ease-out;
 }
@@ -3094,7 +3095,6 @@ a.tag {
   transition-timing-function: ease-out;
   width: 90%;
   z-index: 999999;
-
   @media only screen and (min-width: 805px) {
     width: 50%;
   }
@@ -4858,3 +4858,20 @@ input[type='radio'], input[type='checkbox'] {
 
 @import '../libs/selectize';
 @import '../libs/slick';
+
+
+.profile-header--no-image {
+  background-image: none !important;
+  background-color: $grey--light;
+  min-height: 0;
+  @media only screen and (max-width: 768px){
+    max-width: 100%; 
+    padding: 10px; 
+  }
+  .profile-header {
+    box-shadow: none;
+    @media only screen and (min-width: 768px) {
+      min-width: 700px;
+    }
+  }
+}

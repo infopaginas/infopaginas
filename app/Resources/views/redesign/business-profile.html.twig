@@ -19,10 +19,10 @@
     <div class="main__container main__container--centered">
         <div class="main">
             {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
-                <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
+                <div class="container profile-header__container profile-header--no-image" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
             {% else %}
-                <div class="container profile-header__container" style="margin: 0 auto; background-image:url('{{ absolute_url(asset('redesign/img/profile-header.jpg')) }}');">
+                <div class="container profile-header__container profile-header--no-image" style="margin: 0 auto; background-image:url('{{ absolute_url(asset('redesign/img/profile-header.jpg')) }}');">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url('{{ absolute_url(asset('redesign/img/profile-header.jpg')) }}');"></div>
             {% endif %}
                 <header class="page-section profile-header">
