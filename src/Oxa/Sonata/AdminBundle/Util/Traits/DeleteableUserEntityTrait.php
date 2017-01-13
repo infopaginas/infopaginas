@@ -28,10 +28,10 @@ trait DeleteableUserEntityTrait
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @return $this
      */
-    public function setDeletedUser(User $user)
+    public function setDeletedUser($user)
     {
         $this->deletedUser = $user;
 

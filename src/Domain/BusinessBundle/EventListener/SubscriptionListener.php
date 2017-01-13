@@ -8,6 +8,7 @@ use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
@@ -63,7 +64,8 @@ class SubscriptionListener implements EventSubscriber
     public function postSoftDelete(LifecycleEventArgs $args)
     {
         if ($args->getEntity() instanceof Subscription) {
-            $this->index($args);
+            $args->getEntity()->setStatus(StatusInterface::STATUS_CANCELED);
+            $args->getEntityManager()->flush();
         }
     }
 
@@ -90,14 +92,17 @@ class SubscriptionListener implements EventSubscriber
 
             $businessProfile = $entity->getBusinessProfile();
 
-            // workaround for callback update_at and update_by
-            $em->refresh($businessProfile);
+            // soft deleted business profiles
+            if (!$businessProfile->isDeleted()) {
+                // workaround for callback update_at and update_by
+                $em->refresh($businessProfile);
 
-            $subscription = $businessProfile->getSubscription();
+                $subscription = $businessProfile->getSubscription();
 
-            if (!$subscription) {
-                $this->subscriptionStatusManager->setBusinessProfileFreeSubscription($businessProfile, $em);
-                $em->flush();
+                if (!$subscription) {
+                    $this->subscriptionStatusManager->setBusinessProfileFreeSubscription($businessProfile, $em);
+                    $em->flush();
+                }
             }
         }
     }

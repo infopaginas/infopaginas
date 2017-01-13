@@ -244,10 +244,6 @@ class CRUDController extends SortableAdminController
                 $existDependentFields = $adminManager->checkExistDependentEntity($object);
             }
 
-            if ($object instanceof Subscription) {
-                $object->setStatus(StatusInterface::STATUS_CANCELED);
-            }
-
             if (!count($existDependentFields)) {
                 try {
                     $this->admin->delete($object);

@@ -90,18 +90,9 @@ class AdminManager extends DefaultManager
      */
     public function restoreEntity(DeleteableEntityInterface $entity)
     {
-        // execute query here (not in repository),
-        // be course a repository requires to be related on mapped entity
-        // but here entity is not specified
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->update(get_class($entity), 'e')
-            ->set('e.' . DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME, 'NULL')
-            ->set('e.' . DeleteableEntityInterface::DELETED_AT_PROPERTY_NAME, 'NULL')
-            ->where('e.id=:id')
-            ->setParameter(':id', $entity->getId())
-            ->getQuery()
-            ->execute();
+        $entity->setDeletedAt(null);
+        $entity->setDeletedUser(null);
+        $this->getEntityManager()->flush();
     }
 
     /**
