@@ -74,17 +74,12 @@ class AdminManager extends DefaultManager
             ));
         }
 
-        // execute query here (not in repository),
-        // cuz a repository requires to be related on mapped entity
-        // but here entity is not specified
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->delete(get_class($entity), 'e')
-            ->where('e.id=:id')
-            ->setParameter(':id', $entity->getId())
-            ->getQuery()
-            ->execute()
-        ;
+        $em = $this->getEntityManager();
+
+        $this->enablePhysicalDelete();
+
+        $em->remove($entity);
+        $em->flush();
     }
 
     /**
@@ -95,18 +90,9 @@ class AdminManager extends DefaultManager
      */
     public function restoreEntity(DeleteableEntityInterface $entity)
     {
-        // execute query here (not in repository),
-        // be course a repository requires to be related on mapped entity
-        // but here entity is not specified
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->update(get_class($entity), 'e')
-            ->set('e.' . DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME, 'NULL')
-            ->set('e.' . DeleteableEntityInterface::DELETED_AT_PROPERTY_NAME, 'NULL')
-            ->where('e.id=:id')
-            ->setParameter(':id', $entity->getId())
-            ->getQuery()
-            ->execute();
+        $entity->setDeletedAt(null);
+        $entity->setDeletedUser(null);
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -360,5 +346,18 @@ class AdminManager extends DefaultManager
             )
             ->getQuery()
             ->getResult();
+    }
+
+    protected function enablePhysicalDelete()
+    {
+        $em = $this->getEntityManager();
+
+        foreach ($em->getEventManager()->getListeners() as $eventName => $listeners) {
+            foreach ($listeners as $listener) {
+                if ($listener instanceof \Gedmo\SoftDeleteable\SoftDeleteableListener) {
+                    $em->getEventManager()->removeEventListener($eventName, $listener);
+                }
+            }
+        }
     }
 }

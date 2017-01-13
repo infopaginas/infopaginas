@@ -184,10 +184,11 @@ services:
             - {name: doctrine.event_subscriber, connection: default, priority: 2}
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
-    domain_business.listener.subscription_listener:
+
+    domain_business.listener.subscription_subscriber:
         class: Domain\BusinessBundle\EventListener\SubscriptionListener
         tags:
-            - {name: doctrine.event_listener, event: postFlush, priority: 10}
+            - { name: doctrine.event_subscriber, connection: default, priority: 10 }
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
 

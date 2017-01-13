@@ -3,6 +3,8 @@
 namespace Oxa\Sonata\AdminBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;

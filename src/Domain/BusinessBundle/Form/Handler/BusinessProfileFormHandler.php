@@ -171,7 +171,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     {
         if (!$businessProfile->getId()) {
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
-            $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
 
             if ($this->currentUser instanceof User) {
                 $businessProfile->setUser($this->currentUser);
@@ -182,6 +181,8 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
                 strtolower(BusinessProfile::TRANSLATION_LANG_ES)
             );
             $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
+
+            $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
         } else {
             $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
