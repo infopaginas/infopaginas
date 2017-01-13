@@ -35,9 +35,7 @@ define(
               currentelement.css('height', maxRowHeight+'px');
               if(elemName === 'share'){
                 $(element).css('height', maxRowHeight+'px')
-              } else if (elemName === 'brands') {
-                currentelement.css('height', 'auto')
-              }
+              } 
             });
           }
         })
