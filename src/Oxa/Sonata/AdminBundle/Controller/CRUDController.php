@@ -3,6 +3,8 @@
 namespace Oxa\Sonata\AdminBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -240,6 +242,10 @@ class CRUDController extends SortableAdminController
                 $existDependentFields = [];
             } else {
                 $existDependentFields = $adminManager->checkExistDependentEntity($object);
+            }
+
+            if ($object instanceof Subscription) {
+                $object->setStatus(StatusInterface::STATUS_CANCELED);
             }
 
             if (!count($existDependentFields)) {

@@ -60,7 +60,7 @@ happyr_google_analytics:
     tracking_id: UA-10361727-2
     fetching:
         client_service: 'google.client.google_analytics'
-        view_id: 130700540
+        view_id: 20865077
         cache_service: 'cache.provider.my_file_system'
         cache_lifetime: 3600
 

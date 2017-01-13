@@ -74,17 +74,12 @@ class AdminManager extends DefaultManager
             ));
         }
 
-        // execute query here (not in repository),
-        // cuz a repository requires to be related on mapped entity
-        // but here entity is not specified
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->delete(get_class($entity), 'e')
-            ->where('e.id=:id')
-            ->setParameter(':id', $entity->getId())
-            ->getQuery()
-            ->execute()
-        ;
+        $em = $this->getEntityManager();
+
+        $this->enablePhysicalDelete();
+
+        $em->remove($entity);
+        $em->flush();
     }
 
     /**
@@ -360,5 +355,18 @@ class AdminManager extends DefaultManager
             )
             ->getQuery()
             ->getResult();
+    }
+
+    protected function enablePhysicalDelete()
+    {
+        $em = $this->getEntityManager();
+
+        foreach ($em->getEventManager()->getListeners() as $eventName => $listeners) {
+            foreach ($listeners as $listener) {
+                if ($listener instanceof \Gedmo\SoftDeleteable\SoftDeleteableListener) {
+                    $em->getEventManager()->removeEventListener($eventName, $listener);
+                }
+            }
+        }
     }
 }
