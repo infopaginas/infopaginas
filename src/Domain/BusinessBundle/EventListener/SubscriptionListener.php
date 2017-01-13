@@ -93,7 +93,7 @@ class SubscriptionListener implements EventSubscriber
             $businessProfile = $entity->getBusinessProfile();
 
             // soft deleted business profiles
-            if (!$businessProfile->isDeleted()) {
+            if ($businessProfile and !$businessProfile->isDeleted()) {
                 // workaround for callback update_at and update_by
                 $em->refresh($businessProfile);
 
