@@ -46,19 +46,19 @@ class ReportAdmin extends OxaAdmin
     /**
      * get valid date range field values for custom process field
      *
-     * @param array $dateRangeArray
+     * @param array $dateRange
      * @param array $defaultValues
      *
      * @return array
      */
-    protected function getValidDateRange($dateRangeArray, $defaultValues)
+    protected function getValidDateRange($dateRange, $defaultValues)
     {
         $result = [];
 
-        $result['start'] = DatesUtil::isValidDateString($dateRangeArray['value']['start']) ?
-            $dateRangeArray['value']['start'] : $defaultValues['start'];
-        $result['end'] = DatesUtil::isValidDateString($dateRangeArray['value']['end']) ?
-            $dateRangeArray['value']['end'] : $defaultValues['end'];
+        $result['start'] = DatesUtil::isValidDateString($dateRange['value']['start']) ?
+            $dateRange['value']['start'] : $defaultValues['start'];
+        $result['end'] = DatesUtil::isValidDateString($dateRange['value']['end']) ?
+            $dateRange['value']['end'] : $defaultValues['end'];
 
         return $result;
     }
