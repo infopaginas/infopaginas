@@ -58,4 +58,26 @@ class SubscriptionPlanAdmin extends OxaAdmin
             ->add('rank')
         ;
     }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = [
+            'CREATE',
+            'EDIT',
+            'DELETE',
+            'ROLE_PHYSICAL_DELETE_ABLE',
+            'ROLE_RESTORE_ABLE'
+        ];
+
+        if (in_array($name, $deniedActions)) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
+    }
 }
