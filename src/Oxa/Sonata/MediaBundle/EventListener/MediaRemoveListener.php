@@ -29,6 +29,7 @@ class MediaRemoveListener extends MediaEventSubscriber
             Events::postRemove,
             Events::postPersist,
             Events::postUpdate,
+            Events::onClear,
         );
     }
 
