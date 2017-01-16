@@ -13,6 +13,7 @@ sonata_block:
             contexts: [admin]
 
 sonata_admin:
+    show_mosaic_button: false
     title: Ingopaginas
     title_logo: logo.png
     templates:

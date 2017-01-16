@@ -48,11 +48,8 @@ class CategoryReportAdmin extends ReportAdmin
      * @var array
      */
     protected $datagridValues = array(
-        '_page'       => 1,
-        '_per_page'   => 5,
-        'datePeriod' => [
-            'value' => AdminHelper::DATE_RANGE_CODE_LAST_WEEK
-        ]
+        '_page'     => 1,
+        '_per_page' => 5,
     );
 
     /**
@@ -61,9 +58,7 @@ class CategoryReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->remove('datePeriod')
             ->remove('categoryReportCategories.date')
-            ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
             ->add(
                 'categoryReportCategories.date',
                 'doctrine_orm_datetime_range',
@@ -82,7 +77,8 @@ class CategoryReportAdmin extends ReportAdmin
      */
     protected function configureListFields(ListMapper $listMapper)
     {
-        $filterParam = $this->getDatagrid()->getValues();
+        $filterParam = $this->getFilterParameters();
+
         $this->categoryData = $this->getConfigurationPool()
             ->getContainer()
             ->get('domain_report.manager.category_report_manager')
@@ -110,9 +106,7 @@ class CategoryReportAdmin extends ReportAdmin
     public function getFilterParameters()
     {
         $parameters = parent::getFilterParameters();
-
         $datePeriodParams = AdminHelper::getDataPeriodParameters();
-        $allowedDatePeriodCodes = array_keys($datePeriodParams);
 
         if (isset($parameters['_per_page']) && $parameters['_per_page'] == AdminHelper::PER_PAGE_ALL) {
             $perPageAll = $this->getConfigurationPool()
@@ -129,36 +123,20 @@ class CategoryReportAdmin extends ReportAdmin
             );
         }
 
-        if (isset($parameters['datePeriod'])) {
-            // if datePeriod is set
-            // apply it's data range in force way
-            if (isset($parameters['datePeriod']['value']) && $datePeriodCode = $parameters['datePeriod']['value']) {
-                if ($datePeriodCode == AdminHelper::DATE_RANGE_CODE_CUSTOM) {
-                    return $parameters;
-                }
-
-                if (!in_array($datePeriodCode, $allowedDatePeriodCodes)) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            '"%s" is not allowed, must be one of: %s',
-                            $datePeriodCode,
-                            implode(', ', $allowedDatePeriodCodes)
-                        )
-                    );
-                }
-
-                $parameters = $this->datagridValues = array_merge(
-                    $parameters,
-                    [
-                        'categoryReportCategories__date' => [
-                            'type' => EqualType::TYPE_IS_EQUAL,
-                            'value' => $datePeriodParams[$datePeriodCode],
-                        ]
+        if (!isset($parameters['categoryReportCategories__date'])) {
+            $parameters = $this->datagridValues = array_merge(
+                $parameters,
+                [
+                    'categoryReportCategories__date' => [
+                        'value' => $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH],
                     ]
-                );
-            } else {
-                unset($parameters['datePeriod']);
-            }
+                ]
+            );
+        } else {
+            $parameters['categoryReportCategories__date']['value'] = $this->getValidDateRange(
+                $parameters['categoryReportCategories__date'],
+                $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH]
+            );
         }
 
         return $parameters;
