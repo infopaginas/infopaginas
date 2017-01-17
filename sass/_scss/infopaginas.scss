@@ -1686,7 +1686,7 @@ $thumb-width-mb: 60px;
     @media only screen and (min-width: 805px) {
       background: $white;
       border-radius: 3px;
-      max-width: 100%;
+      max-width: 900px;
       // box-shadow: 0 4px 8px transparentize($black, .97);
       margin: 30px 0;
       padding: 20px;
@@ -1823,23 +1823,18 @@ $thumb-width-mb: 60px;
 .highlights {
   
   .highlights__item--address ul {
-    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--phone ul {
-    max-height: 2em;
     overflow: hidden;  
   }
   .highlights__item--brand ul {
-    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--hours ul {
-    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--payment ul {
-    max-height: 6.2em;
     height: 6.2em;
     overflow: hidden;
   }

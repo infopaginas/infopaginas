@@ -13,23 +13,19 @@ define(
             directions: new directions
         };
 
-        var highlightsElems = ['address', 'phone', 'hours', 'brands', 'social', 'payments', 'share'];
+        var highlightsElems = ['address', 'phone', 'hours', 'brands', 'social', 'payment', 'share'];
 
         highlightsElems.forEach(function(elemName){
           var maxRowHeight = (elemName === 'share') ? 88 : 0;
           $('.highlights__item_'+elemName+'-row').each(function(i, element){
-            var liSumHeight = 0;
-            $(element).find('li').each(function(i, elem){
-              liSumHeight+= $(elem).height();
-            })
-            maxRowHeight = liSumHeight > maxRowHeight ? liSumHeight : maxRowHeight;
+            var ulHeight = $(element).find('ul').height();
+            maxRowHeight = ulHeight > maxRowHeight ? ulHeight : maxRowHeight;
           });
           if(maxRowHeight === 0){
             $('.highlights__item_'+elemName+'-row').each(function(i, element){
               $(element).css('display', 'none');
             });
-          }
-          else{
+          } else {
             $('.highlights__item_'+elemName+'-row').each(function(i, element){
               var currentelement = $(element).find('ul');
               currentelement.css('height', maxRowHeight+'px');
