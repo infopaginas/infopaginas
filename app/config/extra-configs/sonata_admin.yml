@@ -14,7 +14,7 @@ sonata_block:
 
 sonata_admin:
     show_mosaic_button: false
-    title: Ingopaginas
+    title: Infopaginas
     title_logo: logo.png
     templates:
         layout: OxaSonataAdminBundle::layout.html.twig
