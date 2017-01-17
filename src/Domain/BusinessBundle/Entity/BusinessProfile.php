@@ -88,6 +88,8 @@ class BusinessProfile implements
     const TRANSLATION_LANG_EN = 'En';
     const TRANSLATION_LANG_ES = 'Es';
 
+    const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
+
     /**
      * @var int
      *

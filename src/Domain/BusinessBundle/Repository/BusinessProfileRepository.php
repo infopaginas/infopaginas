@@ -725,4 +725,24 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $iterateResult;
     }
+
+    /**
+     * @param int $idStart
+     * @return IterableResult
+     */
+    public function getActiveBusinessProfilesIteratorElastic($idStart)
+    {
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->andWhere('bp.id >= :idStart')
+            ->setParameter('idStart', $idStart)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('idStart', $idStart);
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
 }

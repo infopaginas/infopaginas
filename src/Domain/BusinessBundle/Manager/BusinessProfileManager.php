@@ -27,6 +27,7 @@ use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
+use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -71,6 +72,9 @@ class BusinessProfileManager extends Manager
     /** @var  MediaManager */
     private $sonataMediaManager;
 
+    /** @var ElasticSearchManager $elasticSearchManager */
+    private $elasticSearchManager;
+
     /** @var ContainerInterface $container */
     private $container;
 
@@ -101,6 +105,10 @@ class BusinessProfileManager extends Manager
         $this->sonataMediaManager = $container->get('sonata.media.manager.media');
 
         $this->analytics = $container->get('google.analytics');
+
+        $this->elasticSearchManager = $container->get('oxa_elastic_search.manager.search');
+
+        $this->elasticSearchManager->setDocumentType(BusinessProfile::ELASTIC_DOCUMENT_TYPE);
     }
 
     public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
@@ -1404,5 +1412,175 @@ class BusinessProfileManager extends Manager
         );
 
         return $country;
+    }
+
+    public function createElasticSearchIndex()
+    {
+        $properties = $this->getElasticSearchIndexParams();
+
+        $this->elasticSearchManager->createIndex($properties);
+    }
+
+    /**
+     * @param BusinessProfile[] $businessProfiles
+     */
+    public function addBusinessesRawToElasticIndex($businessProfiles)
+    {
+        $data = [];
+
+        foreach ($businessProfiles as $businessProfile) {
+            $data[] = $this->buildBusinessProfileElasticData($businessProfile);
+        }
+
+        if ($data) {
+            $this->elasticSearchManager->addBulkItems($data);
+        }
+    }
+
+    /**
+     * @param array $data
+     */
+    public function addBusinessesToElasticIndex($data)
+    {
+        if ($data) {
+            $this->elasticSearchManager->addBulkItems($data);
+        }
+    }
+
+    protected function getElasticSearchQuery($params, $pageStart, $itemsLimit)
+    {
+        //todo params set
+        $fields = [
+            'name_en^5',
+            'categories_en^3',
+            'description_en^1',
+        ];
+
+        if (isset($params['lang'])) {
+            $fields = [
+                'name_es^5',
+                'categories_es^3',
+                'description_es^1',
+            ];
+        }
+
+        $searchQuery = [
+            'from' => $pageStart,
+            'size' => $itemsLimit,
+            'track_scores' => true,
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    [
+                                        'query_string' => [
+                                            'default_operator' => 'AND',
+                                            'fields' => $fields,
+                                            'query' => $params['query']
+                                        ]
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'bool' => [
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    [
+                                        'script' => [
+                                            'script' => 'doc["location"].arcDistanceInMiles('.$params['lat'].', '.$params['lon'].') < doc["miles_of_my_business"].value'
+                                        ]
+                                    ],
+                                    [
+                                        'match' => [
+                                            'locality_id' => [
+                                                'query' => $params['locality'],
+                                            ]
+                                        ]
+                                    ],
+                                ]
+                            ]
+                        ],
+                    ],
+                ],
+            ],
+            'sort' => [
+                [
+                    'subscr_rank'   => [
+                        'order' => 'desc'
+                    ],
+                    '_score' => [
+                        'order' => 'desc'
+                    ],
+                    '_geo_distance' => [
+                        'location' => [
+                            'lat' => $params['lat'],
+                            'lon' => $params['lon'],
+                        ],
+                        'unit' => 'mi',
+                        'order' => 'asc'
+                    ]
+                ]
+            ],
+        ];
+
+        return $searchQuery;
+    }
+
+    public function buildBusinessProfileElasticData(BusinessProfile $businessProfile)
+    {
+        //todo
+        $categoriesEn = [];
+
+        foreach ($businessProfile->getCategories() as $category) {
+            $categoriesEn[] = $category->getName();
+        }
+
+        $data = [
+            'id'                    => $businessProfile->getId(),
+            'name_en'               => $businessProfile->getNameEn(),
+            'name_es'               => $businessProfile->getNameEs(),
+            'description_en'        => $businessProfile->getDescriptionEn(),
+            'description_es'        => $businessProfile->getDescriptionEs(),
+            'miles_of_my_business'  => $businessProfile->getMilesOfMyBusiness() ?: 0,
+            'categories_en'         => $categoriesEn,
+            'categories_es'         => $categoriesEn,   //todo
+            'deleted_at'            => $businessProfile->getDeletedAt(),
+            'is_active'             => $businessProfile->getIsActive(),
+            'location'              => [
+                'lat' => $businessProfile->getLatitude(),
+                'lon' => $businessProfile->getLongitude(),
+            ],
+            'locality_id'           => $businessProfile->getCatalogLocality()->getId(),
+            'subscr_rank'           => $businessProfile->getSubscriptionPlan() ? $businessProfile->getSubscriptionPlan()->getRank() : 0,
+        ];
+
+        return $data;
+    }
+
+    protected function getElasticSearchIndexParams()
+    {
+        $params = [
+            'location' => [
+                'type' => 'geo_point'
+            ],
+            'location_id' => [
+                'type' => 'integer'
+            ],
+            'miles_of_my_business' => [
+                'type' => 'integer'
+            ],
+            'subscription_id' => [
+                'type' => 'integer'
+            ],
+            'subscr_rank' => [
+                'type' => 'integer'
+            ],
+        ];
+
+        return $params;
     }
 }
