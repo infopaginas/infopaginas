@@ -25,16 +25,6 @@ class KeywordsReportAdmin extends ReportAdmin
     const KEYWORDS_PER_PAGE_COUNT = [5, 10, 15, 20, 25];
 
     /**
-     * Default values to the datagrid.
-     *
-     * @var array
-     */
-    protected $datagridValues = array(
-        '_page'       => 1,
-        '_per_page'   => 25,
-    );
-
-    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -86,7 +76,7 @@ class KeywordsReportAdmin extends ReportAdmin
      */
     protected function configureListFields(ListMapper $listMapper)
     {
-        $filterParam = $this->getDatagrid()->getValues();
+        $filterParam = $this->getFilterParameters();
 
         $this->keywordsData = $this->getConfigurationPool()
             ->getContainer()

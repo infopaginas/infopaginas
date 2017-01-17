@@ -31,10 +31,11 @@ define(
           }
           else{
             $('.highlights__item_'+elemName+'-row').each(function(i, element){
-              $($(element).find('ul')).css('height', maxRowHeight+'px')
+              var currentelement = $(element).find('ul');
+              currentelement.css('height', maxRowHeight+'px');
               if(elemName === 'share'){
                 $(element).css('height', maxRowHeight+'px')
-              }
+              } 
             });
           }
         })
