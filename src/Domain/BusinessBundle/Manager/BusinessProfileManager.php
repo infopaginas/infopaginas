@@ -1445,7 +1445,13 @@ class BusinessProfileManager extends Manager
         $response = true;
 
         foreach ($businessProfiles as $businessProfile) {
-            $data[] = $this->buildBusinessProfileElasticData($businessProfile);
+            $item = $this->buildBusinessProfileElasticData($businessProfile);
+
+            if ($item) {
+                $data[] = $item;
+            } else {
+                $this->removeBusinessFromElastic($businessProfile->getId());
+            }
         }
 
         if ($data) {
@@ -1678,7 +1684,13 @@ class BusinessProfileManager extends Manager
                 /* @var $business BusinessProfile */
                 $business = current($businessRow);
 
-                $data[] = $this->buildBusinessProfileElasticData($business);
+                $item = $this->buildBusinessProfileElasticData($business);
+
+                if ($item) {
+                    $data[] = $item;
+                } else {
+                    $this->removeBusinessFromElastic($business->getId());
+                }
 
                 $business->setIsUpdated(false);
 

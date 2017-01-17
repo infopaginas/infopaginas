@@ -94,7 +94,14 @@ class CreateElasticCommand extends ContainerAwareCommand
             /* @var $business BusinessProfile */
             $business = current($businessRow);
 
-            $data[] = $businessProfileManager->buildBusinessProfileElasticData($business);
+            $item = $businessProfileManager->buildBusinessProfileElasticData($business);
+
+            if ($item) {
+                $data[] = $item;
+            } else {
+                $businessProfileManager->removeBusinessFromElastic($business->getId());
+            }
+
             $iBatch ++;
             $kCount ++;
 
