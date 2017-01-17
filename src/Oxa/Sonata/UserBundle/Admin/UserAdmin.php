@@ -14,7 +14,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -86,12 +86,7 @@ class UserAdmin extends OxaAdmin
                 ],
                 'translation_domain' => 'SonataUserBundle'
             ])
-            ->add('createdAt', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => 'dd-MM-y hh:mm:ss'
-                ]
-            ])
+            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
 

@@ -17,38 +17,26 @@ use Sonata\CoreBundle\Form\Type\EqualType;
 class ViewsAndVisitorsReportAdmin extends ReportAdmin
 {
     /**
-     * Default values to the datagrid.
-     *
-     * @var array
-     */
-    protected $datagridValues = array(
-        '_page'       => 1,
-        '_per_page'   => 25,
-        'datePeriod' => [
-            'value' => AdminHelper::DATE_RANGE_CODE_LAST_WEEK
-        ],
-    );
-
-    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
             ->remove('date')
-            ->remove('datePeriod')
             ->remove('periodOption')
-            ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
             ->add('date', 'doctrine_orm_datetime_range', [
+                'show_filter' => true,
                 'field_type' => 'sonata_type_datetime_range_picker',
                 'field_options' => [
-                    'format' => AdminHelper::FILTER_DATE_RANGE_FORMAT,
+                    'field_options' => [
+                        'format' => AdminHelper::FILTER_DATE_RANGE_FORMAT,
+                        'empty_value'  => false,
+                    ],
                     'attr' => [
                         'class' => AdminHelper::FILTER_DATE_RANGE_CLASS
                     ],
                     'mapped' => false,
                     'required'  => true,
-                    'empty_value'  => false,
                 ]
             ])
             ->add('periodOption', 'doctrine_orm_choice', AdminHelper::getDatagridPeriodOptionOptions())
@@ -60,7 +48,7 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
      */
     protected function configureListFields(ListMapper $listMapper)
     {
-        $filterParam = $this->getDatagrid()->getValues();
+        $filterParam = $this->getFilterParameters();
 
         $this->viewsAndVisitorsData = $this->getConfigurationPool()
             ->getContainer()
@@ -92,41 +80,36 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
     public function getFilterParameters()
     {
         $parameters = parent::getFilterParameters();
-
         $datePeriodParams = AdminHelper::getDataPeriodParameters();
-        $allowedDatePeriodCodes = array_keys($datePeriodParams);
 
-        if (isset($parameters['datePeriod'])) {
-            // if datePeriod is set
-            // apply it's data range in force way
-            if (isset($parameters['datePeriod']['value']) && $datePeriodCode = $parameters['datePeriod']['value']) {
-                if ($datePeriodCode == AdminHelper::DATE_RANGE_CODE_CUSTOM) {
-                    return $parameters;
-                }
-
-                if (!in_array($datePeriodCode, $allowedDatePeriodCodes)) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            '"%s" is not allowed, must be one of: %s',
-                            $datePeriodCode,
-                            implode(', ', $allowedDatePeriodCodes)
-                        )
-                    );
-                }
-
-                $parameters = $this->datagridValues = array_merge(
-                    $parameters,
-                    [
-                        'date' => [
-                            'type' => EqualType::TYPE_IS_EQUAL,
-                            'value' => $datePeriodParams[$datePeriodCode],
-                        ]
+        if (!isset($parameters['date'])) {
+            $parameters = $this->datagridValues = array_merge(
+                $parameters,
+                [
+                    'date' => [
+                        'value' => $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH],
                     ]
-                );
-            } else {
-                unset($parameters['datePeriod']);
-            }
+                ]
+            );
+        } else {
+            $parameters['date']['value'] = $this->getValidDateRange(
+                $parameters['date'],
+                $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH]
+            );
         }
+
+        // periodOption is set as 'daily' by default
+        if (!isset($parameters['periodOption']) || !isset($parameters['periodOption']['value'])) {
+            $parameters = $this->datagridValues = array_merge(
+                $parameters,
+                [
+                    'periodOption' => [
+                        'value' => AdminHelper::PERIOD_OPTION_CODE_DAILY,
+                    ]
+                ]
+            );
+        }
+
         return $parameters;
     }
 }

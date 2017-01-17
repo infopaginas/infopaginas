@@ -112,7 +112,7 @@ class LinkImageCommand extends ContainerAwareCommand
                         }
                     } else {
                         if ($this->withDebug) {
-                            $output->writeln('Skip as existed item with id ' . $itemId);
+                            $output->writeln('Skip as not existed item with id ' . $itemId);
                         }
                     }
                 }

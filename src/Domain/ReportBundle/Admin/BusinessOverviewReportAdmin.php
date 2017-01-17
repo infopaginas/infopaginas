@@ -22,7 +22,6 @@ class BusinessOverviewReportAdmin extends ReportAdmin
     {
         $datagridMapper
             ->remove('date')
-            ->remove('datePeriod')
             ->remove('businessOverviewReportBusinessProfiles.businessProfile')
             ->remove('periodOption')
             ->add('businessOverviewReportBusinessProfiles.businessProfile', null, [
@@ -31,7 +30,6 @@ class BusinessOverviewReportAdmin extends ReportAdmin
                 'mapped' => false,
                 'empty_value' => null,
             ])
-            ->add('datePeriod', 'doctrine_orm_choice', AdminHelper::getDatagridDatePeriodOptions())
             ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getDatagridDateTypeOptions())
             ->add('periodOption', 'doctrine_orm_choice', AdminHelper::getDatagridPeriodOptionOptions())
         ;
@@ -42,7 +40,7 @@ class BusinessOverviewReportAdmin extends ReportAdmin
      */
     protected function configureListFields(ListMapper $listMapper)
     {
-        $filterParam = $this->getDatagrid()->getValues();
+        $filterParam = $this->getFilterParameters();
 
         $this->businessOverviewData = $this->getConfigurationPool()
             ->getContainer()
@@ -74,41 +72,24 @@ class BusinessOverviewReportAdmin extends ReportAdmin
     public function getFilterParameters()
     {
         $parameters = parent::getFilterParameters();
-
         $datePeriodParams = AdminHelper::getDataPeriodParameters();
-        $allowedDatePeriodCodes = array_keys($datePeriodParams);
 
-        if (isset($parameters['datePeriod'])) {
-            // if datePeriod is set
-            // apply it's data range in force way
-            if (isset($parameters['datePeriod']['value']) && $datePeriodCode = $parameters['datePeriod']['value']) {
-                if ($datePeriodCode == AdminHelper::DATE_RANGE_CODE_CUSTOM) {
-                    return $parameters;
-                }
-
-                if (!in_array($datePeriodCode, $allowedDatePeriodCodes)) {
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            '"%s" is not allowed, must be one of: %s',
-                            $datePeriodCode,
-                            implode(', ', $allowedDatePeriodCodes)
-                        )
-                    );
-                }
-
-                $parameters = $this->datagridValues = array_merge(
-                    $parameters,
-                    [
-                        'date' => [
-                            'type' => EqualType::TYPE_IS_EQUAL,
-                            'value' => $datePeriodParams[$datePeriodCode],
-                        ]
+        if (!isset($parameters['date'])) {
+            $parameters = $this->datagridValues = array_merge(
+                $parameters,
+                [
+                    'date' => [
+                        'value' => $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH],
                     ]
-                );
-            } else {
-                unset($parameters['datePeriod']);
-            }
+                ]
+            );
+        } else {
+            $parameters['date']['value'] = $this->getValidDateRange(
+                $parameters['date'],
+                $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH]
+            );
         }
+
         return $parameters;
     }
 }

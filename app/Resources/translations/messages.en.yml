@@ -421,3 +421,8 @@ business_profile.message.created: Business profile was successfully created (cha
 business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
 user.reset_password_request.email.not_found: User {-email-} doesn't exists
 business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
+
+#admin
+action_copy: Copy
+action_restore: Restore
+action_delete_physical: Physical delete
