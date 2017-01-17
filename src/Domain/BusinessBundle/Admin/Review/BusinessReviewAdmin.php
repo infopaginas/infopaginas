@@ -10,7 +10,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 
 class BusinessReviewAdmin extends OxaAdmin
@@ -39,12 +39,7 @@ class BusinessReviewAdmin extends OxaAdmin
                 ],
                 'translation_domain' => 'AdminDomainBusinessBundle'
             ])
-            ->add('createdAt', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => 'dd-MM-y hh:mm:ss'
-                ]
-            ])
+            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
 

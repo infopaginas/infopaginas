@@ -157,17 +157,25 @@ class DatesUtil
 
     public static function getReportDates(array $parameters)
     {
-        if ($parameters['datePeriod']['value'] == 'custom') {
-            $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData($parameters['date']['value'], 'd-m-Y');
-        } else {
-            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType($parameters['datePeriod']['value']);
-        }
+        $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData(
+            $parameters['date']['value'],
+            self::START_END_DATE_ARRAY_FORMAT
+        );
 
         $dates = DatesUtil::dateRange($dateRange);
 
         //remove unwanted day from dates
-        unset($dates[count($dates) -1]);
+        unset($dates[count($dates) - 1]);
 
         return $dates;
+    }
+
+    public static function isValidDateString($dateString)
+    {
+        try {
+            return \DateTime::createFromFormat(self::START_END_DATE_ARRAY_FORMAT, $dateString);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

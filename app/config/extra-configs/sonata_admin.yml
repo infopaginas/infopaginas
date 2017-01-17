@@ -13,7 +13,8 @@ sonata_block:
             contexts: [admin]
 
 sonata_admin:
-    title: Ingopaginas
+    show_mosaic_button: false
+    title: Infopaginas
     title_logo: logo.png
     templates:
         layout: OxaSonataAdminBundle::layout.html.twig
@@ -21,7 +22,6 @@ sonata_admin:
         edit:   OxaSonataAdminBundle:CRUD:edit.html.twig
         show:   OxaSonataAdminBundle:CRUD:show.html.twig
         base_list_field:   OxaSonataAdminBundle:CRUD:base_list_field.html.twig
-        batch_confirmation:   OxaSonataAdminBundle:CRUD:batch_confirmation.html.twig
     security:
         handler: sonata.admin.security.handler.role
     dashboard:
@@ -52,7 +52,7 @@ sonata_admin:
                     - domain_business.admin.payment_method
                     - domain_business.admin.address.country
             domain.admin.group.menu:
-                label: Pages
+                label: Menu
                 icon: <i class="fa fa-list"></i>
                 items:
                     - domain_menu.admin.menu

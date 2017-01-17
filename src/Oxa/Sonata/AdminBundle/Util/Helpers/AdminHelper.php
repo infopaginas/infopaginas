@@ -122,6 +122,8 @@ class AdminHelper
      */
     public static function getDatagridDatePeriodOptions()
     {
+        // todo: all datePeriod filter logic should be refactored or removed
+        // as it has been cut during sonata update as a result of logic conflict
         return [
             'field_type' => 'choice',
             'field_options' => [
@@ -144,6 +146,7 @@ class AdminHelper
     public static function getDatagridPeriodOptionOptions()
     {
         return [
+            'show_filter' => true,
             'field_type' => 'choice',
             'field_options' => [
                 'mapped' => false,
@@ -166,7 +169,9 @@ class AdminHelper
         return [
             'field_type' => 'sonata_type_datetime_range_picker',
             'field_options' => [
-                'format' => self::FILTER_DATE_RANGE_FORMAT,
+                'field_options' => [
+                    'format' => self::FILTER_DATE_RANGE_FORMAT
+                ],
                 'attr' => [
                     'class' => self::FILTER_DATE_RANGE_CLASS
                 ]

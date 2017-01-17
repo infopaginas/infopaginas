@@ -66,42 +66,28 @@ sonata_media:
     cdn:
         #define the public base url for the uploaded media
         server:
-            path:      %sonata_media.cdn.host%
-#             path: 'http://symfony-admin/uploads/media'
+            path:      '%sonata_media.cdn.host%'
     filesystem:
         # define where the uploaded file will be stored
-        local:
-            directory:  %kernel.root_dir%/../web/uploads/media
-            create:     true
+        s3:
+            sdk_version: 3
+            bucket:         '%amazon_aws_bucket_name%'
+            accessKey:      '%amazon_aws_key%'
+            secretKey:      '%amazon_aws_secret_key%'
+            region:         '%amazon_aws_region%' # change if not using US Standard region
+            directory:      'uploads/media'
+            acl:            public
 
     providers:
         image:
+            service:    sonata.media.provider.image
+            filesystem: sonata.media.filesystem.s3
             allowed_extensions: ['jpg', 'png', 'gif', 'jpeg']
             allowed_mime_types: ['image/pjpeg','image/jpeg','image/png','image/x-png', 'image/gif']
-        # ...
+            thumbnail: sonata.media.thumbnail.format
         file:
             # the resizer must be set to false, otherwhise this can delete icon files from the fs
             resizer:    false
-        image:
-           thumbnail: sonata.media.thumbnail.format          # default value
-#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
-#            thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
-        vimeo:
-            thumbnail: sonata.media.thumbnail.format          # default value
-#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
-#           thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
-        youtube:
-            thumbnail: sonata.media.thumbnail.format          # default value
-#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
-#           thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
-        dailymotion:
-            thumbnail: sonata.media.thumbnail.format          # default value
-#           thumbnail: sonata.media.thumbnail.consumer.format # can be used to dispatch the resize action to async task
-#           thumbnail: sonata.media.thumbnail.liip_imagine    # use the LiipImagineBundle to resize the image
-
-    pixlr:
-        enabled:  false
-        referrer: Demo - Sonata Project
 
     resizer:
         simple:
