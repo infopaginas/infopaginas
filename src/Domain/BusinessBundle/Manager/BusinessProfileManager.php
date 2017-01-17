@@ -1416,35 +1416,95 @@ class BusinessProfileManager extends Manager
 
     public function createElasticSearchIndex()
     {
+        $status = true;
         $properties = $this->getElasticSearchIndexParams();
 
-        $this->elasticSearchManager->createIndex($properties);
+        try {
+            $response = $this->elasticSearchManager->createIndex($properties);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+            if (!empty($message->error->type) and
+                $message->error->type == ElasticSearchManager::INDEX_ALREADY_EXISTS_EXCEPTION
+            ) {
+                $status = true;
+            }
+        }
+
+        return $status;
     }
 
     /**
      * @param BusinessProfile[] $businessProfiles
+     *
+     * @return mixed
      */
     public function addBusinessesRawToElasticIndex($businessProfiles)
     {
         $data = [];
+        $response = true;
 
         foreach ($businessProfiles as $businessProfile) {
             $data[] = $this->buildBusinessProfileElasticData($businessProfile);
         }
 
         if ($data) {
-            $this->elasticSearchManager->addBulkItems($data);
+            $response = $this->addElasticBulkBusinessData($data);
         }
+
+        return $response;
     }
 
     /**
      * @param array $data
+     *
+     * @return mixed
      */
     public function addBusinessesToElasticIndex($data)
     {
-        if ($data) {
-            $this->elasticSearchManager->addBulkItems($data);
+        $response = $this->addElasticBulkBusinessData($data);
+
+        return $response;
+    }
+
+    protected function addElasticBulkBusinessData($data)
+    {
+        try {
+            $status = $this->elasticSearchManager->addBulkItems($data);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+
+            //create index if it doesn't exist
+            if (!empty($message->error->type) and
+                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            ) {
+                $this->createElasticSearchIndex();
+                $status = $this->elasticSearchManager->addBulkItems($data);
+            }
         }
+
+        return $status;
+    }
+
+    public function removeBusinessFromElastic($id)
+    {
+        $status = true;
+
+        try {
+            $response = $this->elasticSearchManager->deleteItem($id);
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+
+            if (!empty($message->error->type) and
+                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            ) {
+                $status = true;
+            }
+        }
+
+        return $status;
     }
 
     protected function getElasticSearchQuery($params, $pageStart, $itemsLimit)
@@ -1582,5 +1642,50 @@ class BusinessProfileManager extends Manager
         ];
 
         return $params;
+    }
+
+    public function handleBusinessElasticSync()
+    {
+        $index = $this->createElasticSearchIndex();
+
+        if ($index) {
+            $businesses = $this->getRepository()->getUpdatedBusinessProfilesIterator();
+
+            $iDoctrine = 0;
+            $batchDoctrine = 20;
+
+            $iElastic = 0;
+            $batchElastic = $this->elasticSearchManager->getIndexingPage();
+
+            $data = [];
+
+            foreach ($businesses as $businessRow) {
+                /* @var $business BusinessProfile */
+                $business = current($businessRow);
+
+                $data[] = $this->buildBusinessProfileElasticData($business);
+
+                $business->setIsUpdated(false);
+
+                if (($iElastic % $batchElastic) === 0) {
+                    $this->addBusinessesToElasticIndex($data);
+                    $data = [];
+                }
+
+                if (($iDoctrine % $batchDoctrine) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $iElastic ++;
+                $iDoctrine ++;
+            }
+
+            if ($data) {
+                $this->addBusinessesToElasticIndex($data);
+            }
+
+            $this->em->flush();
+        }
     }
 }

@@ -745,4 +745,19 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $iterateResult;
     }
+
+    /**
+     * @return IterableResult
+     */
+    public function getUpdatedBusinessProfilesIterator()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->andWhere('bp.isUpdated = TRUE');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
 }
