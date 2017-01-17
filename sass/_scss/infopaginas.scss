@@ -1686,7 +1686,6 @@ $thumb-width-mb: 60px;
     @media only screen and (min-width: 805px) {
       background: $white;
       border-radius: 3px;
-      width: 100%;
       max-width: 100%;
       // box-shadow: 0 4px 8px transparentize($black, .97);
       margin: 30px 0;
@@ -1822,23 +1821,27 @@ $thumb-width-mb: 60px;
   font-weight: 700;
 }
 .highlights {
-  .highlights__item {
+  
+  .highlights__item--address ul {
+    max-height: 3em;
     overflow: hidden;
   }
-  .highlights__item--address ul {
-    max-height: 66px;
-  }
   .highlights__item--phone ul {
-    max-height: 44px;
+    max-height: 2em;
+    overflow: hidden;  
   }
   .highlights__item--brand ul {
-    max-height: 66px;
+    max-height: 3em;
+    overflow: hidden;
   }
   .highlights__item--hours ul {
-    max-height: 66px;
+    max-height: 3em;
+    overflow: hidden;
   }
   .highlights__item--payment ul {
-    max-height: 138px;
+    max-height: 6.2em;
+    height: 6.2em;
+    overflow: hidden;
   }
 }
 .highlights__item--checklist {
@@ -4505,7 +4508,7 @@ table {
   z-index: 101;
   width: 570px !important;
   max-width: 85vw;
-  background-color: rgba(200, 200, 200, 0.95) !important;
+  background-color: rgba(255,255,255, 0.9) !important;
   padding: 10px 30px;
   list-style: none;
   li {
