@@ -1654,11 +1654,12 @@ class BusinessProfileManager extends Manager
             'miles_of_my_business' => [
                 'type' => 'integer'
             ],
-            'subscription_id' => [
-                'type' => 'integer'
-            ],
             'subscr_rank' => [
                 'type' => 'integer'
+            ],
+            'service_areas_type' => [
+                'type'  => 'string',
+                'index' => 'not_analyzed'
             ],
         ];
 
