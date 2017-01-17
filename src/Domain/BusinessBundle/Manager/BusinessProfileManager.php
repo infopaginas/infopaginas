@@ -1592,30 +1592,45 @@ class BusinessProfileManager extends Manager
 
     public function buildBusinessProfileElasticData(BusinessProfile $businessProfile)
     {
-        //todo
-        $categoriesEn = [];
+        $categories = [];
+        $locales    = [
+            strtolower(BusinessProfile::TRANSLATION_LANG_EN),
+            strtolower(BusinessProfile::TRANSLATION_LANG_ES),
+        ];
 
-        foreach ($businessProfile->getCategories() as $category) {
-            $categoriesEn[] = $category->getName();
+        foreach ($locales as $locale) {
+            $categories[$locale] = [];
         }
 
+        foreach ($businessProfile->getCategories() as $category) {
+            foreach ($category->getTranslations() as $translation) {
+                if (in_array($translation->getLocale(), $locales)) {
+                    $categories[$translation->getLocale()][] = $translation->getContent();
+                }
+            }
+        }
+
+        $businessSubscription     = $businessProfile->getSubscription();
+        $businessSubscriptionPlan = $businessProfile->getSubscriptionPlan();
+
         $data = [
-            'id'                    => $businessProfile->getId(),
-            'name_en'               => $businessProfile->getNameEn(),
-            'name_es'               => $businessProfile->getNameEs(),
-            'description_en'        => $businessProfile->getDescriptionEn(),
-            'description_es'        => $businessProfile->getDescriptionEs(),
-            'miles_of_my_business'  => $businessProfile->getMilesOfMyBusiness() ?: 0,
-            'categories_en'         => $categoriesEn,
-            'categories_es'         => $categoriesEn,   //todo
-            'deleted_at'            => $businessProfile->getDeletedAt(),
-            'is_active'             => $businessProfile->getIsActive(),
-            'location'              => [
+            'id'                   => $businessProfile->getId(),
+            'name_en'              => $businessProfile->getNameEn(),
+            'name_es'              => $businessProfile->getNameEs(),
+            'description_en'       => $businessProfile->getDescriptionEn(),
+            'description_es'       => $businessProfile->getDescriptionEs(),
+            'miles_of_my_business' => $businessProfile->getMilesOfMyBusiness() ?: 0,
+            'categories_en'        => $categories[strtolower(BusinessProfile::TRANSLATION_LANG_EN)],
+            'categories_es'        => $categories[strtolower(BusinessProfile::TRANSLATION_LANG_ES)],
+            'is_active'            => $businessProfile->getIsActive(),
+            'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),
             ],
-            'locality_id'           => $businessProfile->getCatalogLocality()->getId(),
-            'subscr_rank'           => $businessProfile->getSubscriptionPlan() ? $businessProfile->getSubscriptionPlan()->getRank() : 0,
+            'service_areas_type'   => $businessProfile->getServiceAreasType(),
+            'locality_id'          => $businessProfile->getCatalogLocality()->getId(),
+            'subscr_status'        => $businessSubscription ? $businessSubscription->getStatus() : 0,
+            'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
         ];
 
         return $data;
