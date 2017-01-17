@@ -22,7 +22,6 @@ sonata_admin:
         edit:   OxaSonataAdminBundle:CRUD:edit.html.twig
         show:   OxaSonataAdminBundle:CRUD:show.html.twig
         base_list_field:   OxaSonataAdminBundle:CRUD:base_list_field.html.twig
-#        batch_confirmation:   OxaSonataAdminBundle:CRUD:batch_confirmation.html.twig   #namespaces aren't correct so there is an issue with extending base template
     security:
         handler: sonata.admin.security.handler.role
     dashboard:

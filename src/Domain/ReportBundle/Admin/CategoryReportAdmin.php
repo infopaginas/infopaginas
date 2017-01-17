@@ -28,6 +28,13 @@ class CategoryReportAdmin extends ReportAdmin
     protected $maxPerPage = 5;
 
     /**
+     * category report date field
+     *
+     * @var string
+     */
+    protected $reportDateField = 'categoryReportCategories__date';
+
+    /**
      * Basic admin configuration
      */
     public function configure()
@@ -123,18 +130,18 @@ class CategoryReportAdmin extends ReportAdmin
             );
         }
 
-        if (!isset($parameters['categoryReportCategories__date'])) {
+        if (!isset($parameters[$this->reportDateField])) {
             $parameters = $this->datagridValues = array_merge(
                 $parameters,
                 [
-                    'categoryReportCategories__date' => [
+                    $this->reportDateField => [
                         'value' => $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH],
                     ]
                 ]
             );
         } else {
-            $parameters['categoryReportCategories__date']['value'] = $this->getValidDateRange(
-                $parameters['categoryReportCategories__date'],
+            $parameters[$this->reportDateField]['value'] = $this->getValidDateRange(
+                $parameters[$this->reportDateField],
                 $datePeriodParams[AdminHelper::DATE_RANGE_CODE_LAST_MONTH]
             );
         }
