@@ -6,6 +6,9 @@ use Elasticsearch;
 
 class ElasticSearchManager
 {
+    const INDEX_NOT_FOUND_EXCEPTION = 'index_not_found_exception';
+    const INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception';
+
     protected $documentIndex;
     protected $indexingPage;
     protected $host;
@@ -45,6 +48,7 @@ class ElasticSearchManager
 
     public function addBulkItems(array $data)
     {
+        $status = true;
         $this->setIndexPaused();
 
         try {
@@ -57,7 +61,7 @@ class ElasticSearchManager
 
                 if (count($jsonData['body']) >= $indexingPage) {
                     $response = $this->sendBulkData($jsonData);
-                    $jsonData = getDefaultBulkJson();
+                    $jsonData = $this->getDefaultBulkJson();
                 }
             }
 
@@ -65,12 +69,14 @@ class ElasticSearchManager
                 $response = $this->sendBulkData($jsonData);
             }
         } catch (\Exception $e) {
-            //todo error
+            $status = $e->getMessage();
         }
 
         //index processing should be enabled
         $this->setIndexProcessing();
         $this->refreshIndex();
+
+        return $status;
     }
 
     public function createIndex($properties, $sourceEnabled = true)
@@ -82,6 +88,17 @@ class ElasticSearchManager
                     'number_of_shards'   => $this->numberOfShards,
                     'number_of_replicas' => $this->numberOfReplicas,
                     'refresh_interval'   => $this->indexRefreshInterval,
+                    'analysis' => [
+                        'analyzer' => [
+                            'folding' => [
+                                'tokenizer' => 'standard',
+                                'filter' =>  [
+                                    'lowercase',
+                                    'asciifolding'
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'mappings' => [
                     $this->getDocumentType() => [
@@ -96,6 +113,21 @@ class ElasticSearchManager
 
         // Create the index with mappings and settings now
         $response = $this->client->indices()->create($params);
+
+        return $response;
+    }
+
+    public function deleteItem($id)
+    {
+        $params = [
+            'index' => $this->documentIndex,
+            'type'  => $this->getDocumentType(),
+            'id'    => (int)$id,
+        ];
+
+        $response = $this->client->delete($params);
+
+        return $response;
     }
 
     protected function addItemToRequest(array $data, $jsonData = [])
