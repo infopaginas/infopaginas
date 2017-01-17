@@ -1647,7 +1647,7 @@ class BusinessProfileManager extends Manager
             'location' => [
                 'type' => 'geo_point'
             ],
-            'location_id' => [
+            'locality_id' => [
                 'type' => 'integer'
             ],
             'miles_of_my_business' => [
