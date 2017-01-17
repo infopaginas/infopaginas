@@ -17,6 +17,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
 use Domain\BusinessBundle\Repository\BusinessReviewRepository;
@@ -1532,26 +1533,26 @@ class BusinessProfileManager extends Manager
 
     public function buildBusinessProfileElasticData(BusinessProfile $businessProfile)
     {
-        $categories = [];
-        $locales    = [
-            strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-            strtolower(BusinessProfile::TRANSLATION_LANG_ES),
-        ];
-
-        foreach ($locales as $locale) {
-            $categories[$locale] = [];
-        }
-
-        foreach ($businessProfile->getCategories() as $category) {
-            foreach ($category->getTranslations() as $translation) {
-                if (in_array($translation->getLocale(), $locales)) {
-                    $categories[$translation->getLocale()][] = $translation->getContent();
-                }
-            }
-        }
-
         $businessSubscription     = $businessProfile->getSubscription();
         $businessSubscriptionPlan = $businessProfile->getSubscriptionPlan();
+
+        if (!$businessSubscription || $businessSubscription->getStatus() != StatusInterface::STATUS_ACTIVE ||
+            !$businessProfile->getIsActive() || $businessProfile->getDeletedAt()
+        ) {
+            return false;
+        }
+
+        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
+        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $categories = [
+            $enLocale => [],
+            $esLocale => [],
+        ];
+
+        foreach ($businessProfile->getCategories() as $category) {
+            $categories[$enLocale][] = $category->getTranslation('name', $enLocale);
+            $categories[$esLocale][] = $category->getTranslation('name', $esLocale);
+        }
 
         $data = [
             'id'                   => $businessProfile->getId(),
@@ -1560,16 +1561,14 @@ class BusinessProfileManager extends Manager
             'description_en'       => $businessProfile->getDescriptionEn(),
             'description_es'       => $businessProfile->getDescriptionEs(),
             'miles_of_my_business' => $businessProfile->getMilesOfMyBusiness() ?: 0,
-            'categories_en'        => $categories[strtolower(BusinessProfile::TRANSLATION_LANG_EN)],
-            'categories_es'        => $categories[strtolower(BusinessProfile::TRANSLATION_LANG_ES)],
-            'is_active'            => $businessProfile->getIsActive(),
+            'categories_en'        => $categories[$enLocale],
+            'categories_es'        => $categories[$esLocale],
             'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),
             ],
             'service_areas_type'   => $businessProfile->getServiceAreasType(),
             'locality_id'          => $businessProfile->getCatalogLocality()->getId(),
-            'subscr_status'        => $businessSubscription ? $businessSubscription->getStatus() : 0,
             'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
         ];
 
