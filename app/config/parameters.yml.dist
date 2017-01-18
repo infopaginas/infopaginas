@@ -30,4 +30,5 @@ parameters:
     amazon_aws_base_url:    infopaginas-dev.s3-website-us-east-1.amazonaws.com
 
     # Sonata media files path storage
-    sonata_media.cdn.host: 'https://s3.amazonaws.com/%amazon_aws_bucket_name%/uploads/media'
+    sonata_media.cdn.host:   'https://s3.amazonaws.com/%amazon_aws_bucket_name%/uploads/media/%sonata_media.cdn.folder%'
+    sonata_media.cdn.folder: infopaginas
