@@ -114,6 +114,24 @@ class SearchController extends Controller
         return (new JsonResponse)->setData($results);
     }
 
+    /**
+     * autocomplete locality by name
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function autocompleteLocalityAction(Request $request)
+    {
+        $locale = $request->getLocale();
+        $term   = $request->get('term', '');
+
+        $localityManager = $this->get('domain_business.manager.locality');
+        $data = $localityManager->getLocalitiesAutocomplete($term, $locale);
+
+        return (new JsonResponse)->setData($data);
+    }
+
     public function mapAction(Request $request)
     {
 //        todo remove this
