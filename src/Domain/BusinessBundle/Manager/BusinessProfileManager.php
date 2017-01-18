@@ -26,9 +26,11 @@ use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
+use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -238,12 +240,9 @@ class BusinessProfileManager extends Manager
         return $data;
     }
 
-    public function search(SearchDTO $searchParams, string $locale)
+    public function search(SearchDTO $searchParams, string $locale, $useElastic = true)
     {
-        $searchResultsData = $this->getRepository()->search($searchParams, $locale);
-        $searchResultsData = array_map(function ($item) {
-            return $item[0]->setDistance($item['distance']);
-        }, $searchResultsData);
+        $searchResultsData = $this->getSearchData($searchParams, $locale, $useElastic);
 
         return $searchResultsData;
     }
@@ -1415,6 +1414,88 @@ class BusinessProfileManager extends Manager
         return $country;
     }
 
+    protected function getSearchData($searchParams, $locale, $useElastic = true)
+    {
+        if ($useElastic) {
+            $searchResultsData = $this->searchBusinessInElastic($searchParams, $locale);
+        } else {
+            $searchResultsData = $this->searchBusinessInDB($searchParams, $locale);
+        }
+
+        return $searchResultsData;
+    }
+
+    protected function searchBusinessInDB($searchParams, $locale)
+    {
+        $searchResultsData = $this->getRepository()->search($searchParams, $locale);
+
+        $searchResultsData = array_map(function ($item) {
+            return $item[0]->setDistance($item['distance']);
+        }, $searchResultsData);
+
+        return $searchResultsData;
+    }
+
+    protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
+    {
+        $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
+
+        $response = $this->elasticSearchManager->search($searchQuery);
+
+        $businesses = $this->getBusinessDataFromElasticResponse($response);
+
+        $businesses = array_map(function ($item) use ($searchParams) {
+            $distance = GeolocationUtils::getDistanceForPoint(
+                $searchParams->locationValue->lat,
+                $searchParams->locationValue->lng,
+                $item->getLatitude(),
+                $item->getLongitude()
+            );
+
+
+            return $item->setDistance($distance);
+        }, $businesses);
+
+        return $businesses;
+    }
+
+    protected function getBusinessDataFromElasticResponse($response)
+    {
+        $data = [];
+
+        if (!empty($response['hits']['hits'])) {
+            $result = $response['hits']['hits'];
+            $dataIds = [];
+
+            foreach ($result as $item) {
+                $dataIds[] = $item['_id'];
+            }
+
+            $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
+
+            foreach ($dataIds as $id) {
+                $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
+
+                if ($item) {
+                    $data[] = $item;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    protected function searchBusinessByIdsInArray($data, $id)
+    {
+        foreach ($data as $item) {
+            if ($item->getId() == $id) {
+                return $item;
+            }
+        }
+
+        return false;
+    }
+
     public function createElasticSearchIndex()
     {
         $status = true;
@@ -1514,26 +1595,69 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
-    protected function getElasticSearchQuery($params, $pageStart, $itemsLimit)
+    protected function getElasticSearchQuery(SearchDTO $params, $locale)
     {
-        //todo params set
         $fields = [
-            'name_en^5',
-            'categories_en^3',
-            'description_en^1',
+            'name_' . strtolower($locale) . '^5',
+            'categories_' . strtolower($locale) . '^3',
+            'description_' . strtolower($locale) . '^1',
         ];
 
-        if (isset($params['lang'])) {
-            $fields = [
-                'name_es^5',
-                'categories_es^3',
-                'description_es^1',
+        $filters = [];
+
+        $sort['subscr_rank'] = [
+            'order' => 'desc'
+        ];
+
+        if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
+            $sort['_geo_distance'] = [
+                'location' => [
+                    'lat' => $params->locationValue->lat,
+                    'lon' => $params->locationValue->lng,
+                ],
+                'unit' => 'mi',
+                'order' => 'asc'
+            ];
+            $sort['_score'] = [
+                'order' => 'desc'
+            ];
+        } else {
+            $sort['_score'] = [
+                'order' => 'desc'
+            ];
+            $sort['_geo_distance'] = [
+                'location' => [
+                    'lat' => $params->locationValue->lat,
+                    'lon' => $params->locationValue->lng,
+                ],
+                'unit' => 'mi',
+                'order' => 'asc'
+            ];
+        }
+
+        $category = $params->getCategory1();
+
+        if ($category) {
+            $filters[] = [
+                'match' => [
+                    'categories_ids' => $category
+                ],
+            ];
+        }
+
+        $neighborhood = $params->getNeighborhood();
+
+        if ($neighborhood) {
+            $filters[] = [
+                'match' => [
+                    'neighborhood_ids' => $neighborhood
+                ],
             ];
         }
 
         $searchQuery = [
-            'from' => $pageStart,
-            'size' => $itemsLimit,
+            'from' => ($params->page - 1) * $params->limit,
+            'size' => $params->limit,
             'track_scores' => true,
             'query' => [
                 'bool' => [
@@ -1546,8 +1670,8 @@ class BusinessProfileManager extends Manager
                                         'query_string' => [
                                             'default_operator' => 'AND',
                                             'fields' => $fields,
-                                            'query' => $params['query']
-                                        ]
+                                            'query' => $params->query,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -1557,42 +1681,54 @@ class BusinessProfileManager extends Manager
                                 'minimum_should_match' => 1,
                                 'should' => [
                                     [
-                                        'script' => [
-                                            'script' => 'doc["location"].arcDistanceInMiles('.$params['lat'].', '.$params['lon'].') < doc["miles_of_my_business"].value'
-                                        ]
+                                        'bool' => [
+                                            'must' => [
+                                                [
+                                                    'script' => [
+                                                        'script' => 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', ' . $params->locationValue->lng . ') < doc["miles_of_my_business"].value'
+                                                    ],
+                                                ],
+                                                [
+                                                    'term' => [
+                                                        'service_areas_type' => BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE,
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
                                     ],
                                     [
-                                        'match' => [
-                                            'locality_id' => [
-                                                'query' => $params['locality'],
-                                            ]
-                                        ]
+                                        'bool' => [
+                                            'must' => [
+                                                [
+                                                    'match' => [
+                                                        'locality_id' => [
+                                                            'query' => $params->locationValue->locality ? $params->locationValue->locality->getId() : 0,
+                                                        ],
+                                                    ],
+                                                ],
+                                                [
+                                                    'term' => [
+                                                        'service_areas_type' => BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
                                     ],
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                     ],
                 ],
             ],
             'sort' => [
-                [
-                    'subscr_rank'   => [
-                        'order' => 'desc'
-                    ],
-                    '_score' => [
-                        'order' => 'desc'
-                    ],
-                    '_geo_distance' => [
-                        'location' => [
-                            'lat' => $params['lat'],
-                            'lon' => $params['lon'],
-                        ],
-                        'unit' => 'mi',
-                        'order' => 'asc'
-                    ]
-                ]
+                $sort
             ],
         ];
+
+
+        foreach ($filters as $filter) {
+            $searchQuery['query']['bool']['must'][] = $filter;
+        }
 
         return $searchQuery;
     }
@@ -1615,9 +1751,18 @@ class BusinessProfileManager extends Manager
             $esLocale => [],
         ];
 
+        $categoryIds = [];
+
         foreach ($businessProfile->getCategories() as $category) {
             $categories[$enLocale][] = $category->getTranslation('name', $enLocale);
             $categories[$esLocale][] = $category->getTranslation('name', $esLocale);
+            $categoryIds[] = $category->getId();
+        }
+
+        $neighborhoodIds = [];
+
+        foreach ($businessProfile->getNeighborhoods() as $neighborhood) {
+            $neighborhoodIds[] = $neighborhood->getId();
         }
 
         $data = [
@@ -1636,6 +1781,8 @@ class BusinessProfileManager extends Manager
             'service_areas_type'   => $businessProfile->getServiceAreasType(),
             'locality_id'          => $businessProfile->getCatalogLocality()->getId(),
             'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
+            'neighborhood_ids'     => $neighborhoodIds,
+            'categories_ids'       => $categoryIds,
         ];
 
         return $data;
