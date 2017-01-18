@@ -53,4 +53,23 @@ class LocalityManager extends Manager
 
         return $locality;
     }
+
+    public function getLocalitiesByName(string $localityName, string $locale)
+    {
+        $localities = $this->getRepository()->getLocalitiesByNameAndLocality($localityName, $locale);
+
+        return $localities;
+    }
+
+    public function getLocalitiesAutocomplete(string $localityName, string $locale)
+    {
+        $result     = [];
+        $localities = $this->getLocalitiesByName($localityName, $locale);
+
+        foreach ($localities as $locality) {
+            $result[] = $locality->getTranslation('name', $locale);
+        }
+
+        return $result;
+    }
 }
