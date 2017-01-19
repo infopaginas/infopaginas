@@ -37,7 +37,7 @@
                     </div><!-- item__header -->
                     {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
                         <div class="avatar">
-                            {% thumbnail businessProfile.getLogo(), 'preview' %}
+                            <img src="{% path businessProfile.getLogo(), 'preview' %}">
                         </div>
                     {% endif %}
                     <h1>&nbsp;{{ businessProfile.getName() }}</h1>
