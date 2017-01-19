@@ -6,7 +6,6 @@
 * {
   box-sizing: border-box;
 }
-
 body {
   background: $white;
   color: $grey;
@@ -1686,7 +1685,6 @@ $thumb-width-mb: 60px;
     @media only screen and (min-width: 805px) {
       background: $white;
       border-radius: 3px;
-      max-width: 100%;
       // box-shadow: 0 4px 8px transparentize($black, .97);
       margin: 30px 0;
       padding: 20px;
@@ -1695,7 +1693,6 @@ $thumb-width-mb: 60px;
     &.page-section--no-box {
       background: transparent;
       box-shadow: none;
-
       @media only screen and (min-width: 805px) {
         padding: 0;
       }
@@ -1776,7 +1773,6 @@ $thumb-width-mb: 60px;
 }
 
 .highlights-section {
-
   @media only screen and (min-width: 805px) {
     margin-top: 10px !important;
     margin-bottom: 0 !important;
@@ -1823,23 +1819,18 @@ $thumb-width-mb: 60px;
 .highlights {
   
   .highlights__item--address ul {
-    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--phone ul {
-    max-height: 2em;
     overflow: hidden;  
   }
   .highlights__item--brand ul {
-    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--hours ul {
-    max-height: 3em;
     overflow: hidden;
   }
   .highlights__item--payment ul {
-    max-height: 6.2em;
     height: 6.2em;
     overflow: hidden;
   }
@@ -4508,13 +4499,14 @@ table {
   z-index: 101;
   width: 570px !important;
   max-width: 85vw;
-  background-color: rgba(255,255,255, 0.9) !important;
+  background-color: #f0f1f3 !important; 
   padding: 10px 30px;
   list-style: none;
-  li {
-    a {
-      color: #2d3237;
-    }
+  li.category a {
+    color: #08418c;
+  } 
+  li.business a {
+    color: #8a8d90;
   }
 }
 
@@ -4543,6 +4535,7 @@ table {
     background-size: cover;
     background-position: center;
     background: url('../assets/images/business-house.png');
+    opacity: .3;
   }
 
   li.category::before{
@@ -4553,7 +4546,6 @@ table {
     margin-top: 2px;
     content: "";
     display: block;
-    background: url('../assets/images/category-view-icon.png')
   }
 }
 
@@ -4565,7 +4557,7 @@ table {
   display: block;
   color: #2e5890 !important;
   a {
-    color: #2e5890 !important;
+    color: #3e81db !important;
   }
 }
 
@@ -4873,6 +4865,7 @@ input[type='radio'], input[type='checkbox'] {
   }
   .profile-header {
     box-shadow: none;
+    max-width: 900px;
     @media only screen and (min-width: 768px) {
       min-width: 700px;
     }
