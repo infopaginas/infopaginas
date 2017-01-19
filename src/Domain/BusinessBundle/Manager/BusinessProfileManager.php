@@ -1812,7 +1812,7 @@ class BusinessProfileManager extends Manager
             'name_es'              => $businessProfile->getNameEs(),
             'description_en'       => $businessProfile->getDescriptionEn(),
             'description_es'       => $businessProfile->getDescriptionEs(),
-            'miles_of_my_business' => $businessProfile->getMilesOfMyBusiness() ?: 0,
+            'miles_of_my_business' => $businessProfile->getMilesOfMyBusiness() ?: BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
             'location'             => [
@@ -1820,7 +1820,7 @@ class BusinessProfileManager extends Manager
                 'lon' => $businessProfile->getLongitude(),
             ],
             'service_areas_type'   => $businessProfile->getServiceAreasType(),
-            'locality_ids'          => $localityIds,
+            'locality_ids'         => $localityIds,
             'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,

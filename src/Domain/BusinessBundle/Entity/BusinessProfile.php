@@ -91,6 +91,8 @@ class BusinessProfile implements
     const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
     const FLAG_IS_UPDATED = 'isUpdated';
 
+    const DEFAULT_MILES_FROM_MY_BUSINESS = 100;
+
     /**
      * @var int
      *
@@ -612,7 +614,7 @@ class BusinessProfile implements
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
      * 
      */
-    protected $milesOfMyBusiness = 100;
+    protected $milesOfMyBusiness;
 
     /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
@@ -839,6 +841,7 @@ class BusinessProfile implements
 
         $this->isClosed  = false;
         $this->isUpdated = true;
+        $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
 
         $this->uid = uniqid('', true);
     }
