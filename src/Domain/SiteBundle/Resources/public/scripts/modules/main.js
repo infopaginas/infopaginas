@@ -263,22 +263,56 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
             $( itemId ).velocity( { opacity: 1, top: 0 }, { display: "flex" } );
         });
 
-        var formInput = $('.form__field input, .form__field textarea');
+        var formInput                 = $( '.form__field input, .form__field textarea' );
+        var formInputEmailSelector    = '.form__field input[type="email"]';
+        var formInputPasswordSelector = '.form__field input[type="password"]';
+        var loginForm                 = $( '.login-form' );
 
-        formInput.focus(function(){
-            $(this).parent().addClass("field-active");
-            $(this).parent().find('label').addClass("label-active");
+        $.fn.checkInputValue = function () {
+            if ( $( this ).val() ) {
+                $( this ).parent().addClass( 'field-active' );
+            } else {
+                $( this ).parent().removeClass( 'field-active field-filled' );
+                $( this ).parent().find( 'label' ).removeClass( 'label-active' );
+            }
+        };
+
+        formInput.each(function () {
+            $( this ).checkInputValue();
         });
 
-        formInput.blur(function(){
-            if($(this).val() === "") {
-                $(this).parent().removeClass("field-active field-filled");
-                $(this).parent().find('label').removeClass("label-active");
-            } else {
-                $(this).parent().addClass("field-filled");
+        if ( loginForm.length > 0 && loginForm.find( formInputEmailSelector ).val() ) {
+            loginForm.find( formInputPasswordSelector ).parent().addClass( 'field-active' );
+        }
+
+        formInput.focus(function () {
+            $(this).parent().addClass( 'field-active' );
+            $(this).parent().find( 'label' ).addClass( 'label-active' );
+        });
+
+        formInput.blur(function () {
+            $( this ).checkInputValue();
+        });
+
+        $(document).on('input', formInputEmailSelector, function () {
+            var form = $( this ).parents( 'form' );
+
+            if ( $( this ).val() ) {
+                if ( navigator.userAgent.toLowerCase().indexOf( 'chrome' ) >= 0 ) {
+                    form.find( formInputPasswordSelector + ':-webkit-autofill' ).each(function () {
+                        $( this ).parent().addClass( 'field-active' );
+                    });
+                } else {
+                    setTimeout(function () {
+                        form.find( formInputPasswordSelector ).each(function () {
+                            if ( $( this ).val() ) {
+                                $( this ).parent().addClass( 'field-active' );
+                            }
+                        });
+                    }, 50);
+                }
             }
         });
-
 
         $('.form input, .form textarea').each(function() {
             var $this;
