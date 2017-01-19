@@ -1433,7 +1433,16 @@ class BusinessProfileManager extends Manager
             return $item[0]->setDistance($item['distance']);
         }, $searchResultsData);
 
-        return $searchResultsData;
+        if ($searchResultsData) {
+            $total = $this->countSearchResults($searchParams, $locale);
+        } else {
+            $total = 0;
+        }
+
+        return [
+            'data' => $searchResultsData,
+            'total' => $total,
+        ];
     }
 
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
@@ -1442,9 +1451,9 @@ class BusinessProfileManager extends Manager
 
         $response = $this->elasticSearchManager->search($searchQuery);
 
-        $businesses = $this->getBusinessDataFromElasticResponse($response);
+        $search = $this->getBusinessDataFromElasticResponse($response);
 
-        $businesses = array_map(function ($item) use ($searchParams) {
+        $search['data'] = array_map(function ($item) use ($searchParams) {
             $distance = GeolocationUtils::getDistanceForPoint(
                 $searchParams->locationValue->lat,
                 $searchParams->locationValue->lng,
@@ -1454,14 +1463,19 @@ class BusinessProfileManager extends Manager
 
 
             return $item->setDistance($distance);
-        }, $businesses);
+        }, $search['data']);
 
-        return $businesses;
+        return $search;
     }
 
     protected function getBusinessDataFromElasticResponse($response)
     {
-        $data = [];
+        $data  = [];
+        $total = 0;
+
+        if (!empty($response['hits']['total'])) {
+            $total = $response['hits']['total'];
+        }
 
         if (!empty($response['hits']['hits'])) {
             $result = $response['hits']['hits'];
@@ -1482,7 +1496,10 @@ class BusinessProfileManager extends Manager
             }
         }
 
-        return $data;
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
     }
 
     protected function searchBusinessByIdsInArray($data, $id)

@@ -85,8 +85,8 @@ class CreateElasticCommand extends ContainerAwareCommand
         $businesses = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
             ->getActiveBusinessProfilesIteratorElastic($itemIdStart);
 
-        $iBatch = 0;
-        $kCount = 0;
+        $i = 0;
+        $count = 0;
         $batch = 100;
         $data = [];
 
@@ -102,24 +102,24 @@ class CreateElasticCommand extends ContainerAwareCommand
                 $businessProfileManager->removeBusinessFromElastic($business->getId());
             }
 
-            $iBatch ++;
-            $kCount ++;
+            $i ++;
+            $count ++;
 
-            if ($iBatch >= $batch or ($itemsCountLimit and $kCount >= $itemsCountLimit)) {
+            if ($i >= $batch or ($itemsCountLimit and $count >= $itemsCountLimit)) {
                 $businessProfileManager->addBusinessesToElasticIndex($data);
                 $data = [];
-                $iBatch = 0;
+                $i = 0;
             }
 
             $this->em->detach($businessRow[0]);
 
-            if ($kCount >= $itemsCountLimit) {
+            if ($count >= $itemsCountLimit) {
                 break;
             }
         }
 
         if ($this->withDebug) {
-            $this->itemCounter = $kCount;
+            $this->itemCounter = $count;
         }
     }
 }

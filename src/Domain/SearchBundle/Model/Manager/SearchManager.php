@@ -76,7 +76,9 @@ class SearchManager extends Manager
 
     public function search(SearchDTO $searchParams, string $locale) : SearchResultsDTO
     {
-        $results = $this->businessProfileManager->search($searchParams, $locale);
+        $search = $this->businessProfileManager->search($searchParams, $locale);
+        $results = $search['data'];
+        $totalResults = $search['total'];
 
         if (!$results) {
             // todo - change logic to 40 miles
@@ -84,7 +86,6 @@ class SearchManager extends Manager
         }
 
         if ($results) {
-            $totalResults   = $this->businessProfileManager->countSearchResults($searchParams, $locale);
             $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
             $pagesCount     = ceil($totalResults/$searchParams->limit);
         } else {
