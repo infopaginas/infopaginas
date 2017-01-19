@@ -75,7 +75,7 @@ sonata_media:
             accessKey:      '%amazon_aws_key%'
             secretKey:      '%amazon_aws_secret_key%'
             region:         '%amazon_aws_region%' # change if not using US Standard region
-            directory:      'uploads/media'
+            directory:      'uploads/media/%sonata_media.cdn.folder%'
             acl:            public
 
     providers:

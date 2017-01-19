@@ -24,9 +24,14 @@ class GeolocationManager extends Manager
         $this->localityManager = $localityManager;
     }
 
-    public function buildLocationValue(string $name, $lat = null, $lng = null, $locality = null)
-    {
-        return new LocationValueObject($name, $lat, $lng, $locality);
+    public function buildLocationValue(
+        string $name,
+        $lat = null,
+        $lng = null,
+        $locality = null,
+        $ignoreLocality = false
+    ) {
+        return new LocationValueObject($name, $lat, $lng, $locality, $ignoreLocality);
     }
 
     public function buildLocationValueFromRequest(Request $request)
@@ -37,10 +42,10 @@ class GeolocationManager extends Manager
         $lat        = null;
         $lng        = null;
         $locality   = null;
+        $ignoreLocality = false;
 
         if ($geo) {
             // get locality by name and locale
-
             $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
 
             // check is custom geo request not from geolocation - use coordinates
@@ -50,14 +55,12 @@ class GeolocationManager extends Manager
             }
         } else {
             // empty search - show default
-
             $locality = $this->localityManager->getLocalityByNameAndLocale(
                 $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY),
                 $request->getLocale()
             );
 
-            $geo = $locality->getName();
-            $request->request->set('geo', $geo);
+            $ignoreLocality = true;
         }
 
         if ($locality and !$lat) {
@@ -66,7 +69,7 @@ class GeolocationManager extends Manager
         }
 
         if ($lat and $lng) {
-            $return = $this->buildLocationValue($geo, $lat, $lng, $locality);
+            $return = $this->buildLocationValue($geo, $lat, $lng, $locality, $ignoreLocality);
         } else {
             $return = null;
         }

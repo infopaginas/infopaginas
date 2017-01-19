@@ -82,6 +82,8 @@ class AppKernel extends Kernel
             new Oxa\Sonata\DoctrineORMAdminBundle\OxaSonataDoctrineORMAdminBundle(),
             new Oxa\VideoBundle\OxaVideoBundle(),
             new Oxa\DfpBundle\OxaDfpBundle(),
+            // elastic search bundle
+            new Oxa\ElasticSearchBundle\ElasticSearchBundle(),
 
             //SiteMap bundle
             new Presta\SitemapBundle\PrestaSitemapBundle(),

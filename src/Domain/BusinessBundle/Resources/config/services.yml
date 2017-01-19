@@ -30,6 +30,9 @@ services:
     domain_business.manager.subscription_status_manager:
         class: Domain\BusinessBundle\Manager\SubscriptionStatusManager
 
+    domain_business.manager.business_status_manager:
+        class: Domain\BusinessBundle\Manager\BusinessStatusManager
+
     domain_business.manager.category:
         class: Domain\BusinessBundle\Manager\CategoryManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -191,6 +194,13 @@ services:
             - { name: doctrine.event_subscriber, connection: default, priority: 10 }
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
+
+    domain_business.listener.elsatic_search_subscriber:
+        class: Domain\BusinessBundle\EventListener\ElasticSearchSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default, priority: 5 }
+        calls:
+            - [ setBusinessStatusManager, [ '@domain_business.manager.business_status_manager' ] ]
 
     #services section
     domain_business.service.datetime_period_status_service:

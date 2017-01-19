@@ -15,6 +15,7 @@ imports:
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
     - { resource: "@OxaDfpBundle/Resources/config/services.yml" }
+    - { resource: "@ElasticSearchBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -205,16 +206,16 @@ hwi_oauth:
     resource_owners:
         facebook:
             type:                facebook
-            client_id:           229778020787780
-            client_secret:       e8856b7872e7cbc138384aaae58bb4cd
+            client_id:           395706097433162
+            client_secret:       a3b0120497f463012ea5b431e815a717
             scope:         "email"
             infos_url:     "https://graph.facebook.com/me?fields=id,name,email,first_name,last_name"
             paths:
                 email:          email
         google:
             type:                google
-            client_id:           1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com
-            client_secret:       MqwCsstQtzNrT_WTgWW5Styc
+            client_id:           584296512785-clg06us2ajt6b0s38u41r0nlr9h4mbs6.apps.googleusercontent.com
+            client_secret:       5J_TAMDieaCliwy4HVvI9Wfk
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
 
 fos_js_routing:
@@ -299,4 +300,9 @@ aws:
         secret: '%amazon_aws_secret_key%'
     S3:
         version:    '2006-03-01'
-    
+
+elastic_search:
+    host: '%elastic_search.host%'
+    document_index: '%elastic_search.document_index%'
+    indexing_page: 100
+
