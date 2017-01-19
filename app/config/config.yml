@@ -15,6 +15,7 @@ imports:
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
     - { resource: "@OxaDfpBundle/Resources/config/services.yml" }
+    - { resource: "@ElasticSearchBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -299,4 +300,9 @@ aws:
         secret: '%amazon_aws_secret_key%'
     S3:
         version:    '2006-03-01'
-    
+
+elastic_search:
+    host: '%elastic_search.host%'
+    document_index: '%elastic_search.document_index%'
+    indexing_page: 100
+

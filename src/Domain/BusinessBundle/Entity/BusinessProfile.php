@@ -88,6 +88,9 @@ class BusinessProfile implements
     const TRANSLATION_LANG_EN = 'En';
     const TRANSLATION_LANG_ES = 'Es';
 
+    const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
+    const FLAG_IS_UPDATED = 'isUpdated';
+
     /**
      * @var int
      *
@@ -810,6 +813,14 @@ class BusinessProfile implements
     protected $catalogLocality;
 
     /**
+     * Related to FLAG_IS_UPDATED const
+     * @var bool
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
+     */
+    protected $isUpdated;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -826,7 +837,8 @@ class BusinessProfile implements
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this->isClosed = false;
+        $this->isClosed  = false;
+        $this->isUpdated = true;
 
         $this->uid = uniqid('', true);
     }
@@ -2807,6 +2819,26 @@ class BusinessProfile implements
     public function getSlugEs()
     {
         return $this->slugEs;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return BusinessProfile
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
     }
 
     /**
