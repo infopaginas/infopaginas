@@ -117,6 +117,13 @@ class OxaAdmin extends BaseAdmin
      */
     public $advancedFilterMode = false;
 
+    /**
+     * show list filters dropdown
+     *
+     * @var bool
+     */
+    public $showFilters = true;
+
     public function setPositionService(PositionHandler $positionHandler)
     {
         $this->positionService = $positionHandler;
