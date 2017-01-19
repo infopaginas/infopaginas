@@ -1672,6 +1672,62 @@ class BusinessProfileManager extends Manager
             ];
         }
 
+        if ($params->locationValue->ignoreLocality) {
+            $locationQuery = [
+                'bool' => [
+                    'must' => [
+                        [
+                            'script' => [
+                                'script' => 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', ' . $params->locationValue->lng . ') < doc["miles_of_my_business"].value'
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+        } else {
+            $locationQuery = [
+                'bool' => [
+                    'minimum_should_match' => 1,
+                    'should' => [
+                        [
+                            'bool' => [
+                                'must' => [
+                                    [
+                                        'script' => [
+                                            'script' => 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', ' . $params->locationValue->lng . ') < doc["miles_of_my_business"].value'
+                                        ],
+                                    ],
+                                    [
+                                        'term' => [
+                                            'service_areas_type' => BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'bool' => [
+                                'must' => [
+                                    [
+                                        'match' => [
+                                            'locality_id' => [
+                                                'query' => $params->locationValue->locality ? $params->locationValue->locality->getId() : 0,
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'term' => [
+                                            'service_areas_type' => BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+        }
+
         $searchQuery = [
             'from' => ($params->page - 1) * $params->limit,
             'size' => $params->limit,
@@ -1693,47 +1749,7 @@ class BusinessProfileManager extends Manager
                                 ],
                             ],
                         ],
-                        [
-                            'bool' => [
-                                'minimum_should_match' => 1,
-                                'should' => [
-                                    [
-                                        'bool' => [
-                                            'must' => [
-                                                [
-                                                    'script' => [
-                                                        'script' => 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', ' . $params->locationValue->lng . ') < doc["miles_of_my_business"].value'
-                                                    ],
-                                                ],
-                                                [
-                                                    'term' => [
-                                                        'service_areas_type' => BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE,
-                                                    ],
-                                                ],
-                                            ],
-                                        ],
-                                    ],
-                                    [
-                                        'bool' => [
-                                            'must' => [
-                                                [
-                                                    'match' => [
-                                                        'locality_id' => [
-                                                            'query' => $params->locationValue->locality ? $params->locationValue->locality->getId() : 0,
-                                                        ],
-                                                    ],
-                                                ],
-                                                [
-                                                    'term' => [
-                                                        'service_areas_type' => BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
-                                                    ],
-                                                ],
-                                            ],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
+                        $locationQuery
                     ],
                 ],
             ],

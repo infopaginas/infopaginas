@@ -95,13 +95,13 @@ class GeolocationUtils
     {
         $distance = GeolocationUtils::getEarthDiameterMiles() * sin(
             sqrt(
-                (1 - cos(($itemLatitude - $userLatitude) * PI()/180)) / 2
+                ((1 - cos(($itemLatitude - $userLatitude) * PI() / 180)) / 2)
                 +
-                cos($userLatitude * PI()/180)
+                cos($userLatitude * PI() / 180)
                 *
-                cos($itemLatitude * PI()/180)
+                cos($itemLatitude * PI() / 180)
                 *
-                (1 - cos(($itemLongitude - $userLongitude) * PI()/180)) / 2
+                ((1 - cos(($itemLongitude - $userLongitude) * PI() / 180)) / 2)
             )
         );
 
