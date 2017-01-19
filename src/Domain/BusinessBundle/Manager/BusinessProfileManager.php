@@ -1710,9 +1710,7 @@ class BusinessProfileManager extends Manager
                                 'must' => [
                                     [
                                         'match' => [
-                                            'locality_id' => [
-                                                'query' => $params->locationValue->locality ? $params->locationValue->locality->getId() : 0,
-                                            ],
+                                            'locality_ids' => $params->locationValue->locality ? $params->locationValue->locality->getId() : 0,
                                         ],
                                     ],
                                     [
@@ -1798,6 +1796,16 @@ class BusinessProfileManager extends Manager
             $neighborhoodIds[] = $neighborhood->getId();
         }
 
+        $localityIds = [];
+
+        foreach ($businessProfile->getLocalities() as $locality) {
+            $localityIds[] = $locality->getId();
+        }
+
+        if ($businessProfile->getCatalogLocality()) {
+            $localityIds[] = $businessProfile->getCatalogLocality()->getId();
+        }
+
         $data = [
             'id'                   => $businessProfile->getId(),
             'name_en'              => $businessProfile->getNameEn(),
@@ -1812,7 +1820,7 @@ class BusinessProfileManager extends Manager
                 'lon' => $businessProfile->getLongitude(),
             ],
             'service_areas_type'   => $businessProfile->getServiceAreasType(),
-            'locality_id'          => $businessProfile->getCatalogLocality()->getId(),
+            'locality_ids'          => $localityIds,
             'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
@@ -1826,9 +1834,6 @@ class BusinessProfileManager extends Manager
         $params = [
             'location' => [
                 'type' => 'geo_point'
-            ],
-            'locality_id' => [
-                'type' => 'integer'
             ],
             'miles_of_my_business' => [
                 'type' => 'integer'
