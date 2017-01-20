@@ -54,6 +54,8 @@ use Domain\SearchBundle\Model\DataType\DCDataDTO;
 class BusinessProfileManager extends Manager
 {
     const DEFAULT_LOCALE_NAME = 'San Juan';
+    const AUTO_COMPLETE_TYPE  = 'business';
+    const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
 
     /**
      * @var CategoryManager
@@ -129,7 +131,7 @@ class BusinessProfileManager extends Manager
     public function searchAutosuggestByPhraseAndLocation($query, $locale)
     {
         $categories = $this->categoryManager->searchAutosuggestByName($query, $locale);
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, ucwords($locale));
+        $businessProfiles = $this->getBusinessAutoSuggestSearchData($query, ucwords($locale));
 
         $result = array_merge($categories, $businessProfiles);
 
@@ -1425,6 +1427,17 @@ class BusinessProfileManager extends Manager
         return $searchResultsData;
     }
 
+    protected function getBusinessAutoSuggestSearchData($searchParams, $locale, $useElastic = true)
+    {
+        if ($useElastic) {
+            $searchResultsData = $this->searchBusinessAutoSuggestInElastic($searchParams, $locale);
+        } else {
+            $searchResultsData = $this->searchBusinessAutoSuggestInDB($searchParams, $locale);
+        }
+
+        return $searchResultsData;
+    }
+
     protected function searchBusinessInDB($searchParams, $locale)
     {
         $searchResultsData = $this->getRepository()->search($searchParams, $locale);
@@ -1448,9 +1461,7 @@ class BusinessProfileManager extends Manager
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
-
-        $response = $this->elasticSearchManager->search($searchQuery);
-
+        $response = $this->searchElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response);
 
         $search['data'] = array_map(function ($item) use ($searchParams) {
@@ -1461,11 +1472,45 @@ class BusinessProfileManager extends Manager
                 $item->getLongitude()
             );
 
-
             return $item->setDistance($distance);
         }, $search['data']);
 
         return $search;
+    }
+
+    protected function searchBusinessAutoSuggestInDB($query, $locale)
+    {
+        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, ucwords($locale));
+
+        return $businessProfiles;
+    }
+
+    protected function searchBusinessAutoSuggestInElastic($query, $locale)
+    {
+        $searchQuery = $this->getElasticAutoSuggestSearchQuery($query, $locale);
+        $response = $this->searchElastic($searchQuery);
+        $search = $this->getBusinessDataFromElasticResponse($response);
+
+        $search['data'] = array_map(function ($item) {
+            return [
+                'type' => self::AUTO_COMPLETE_TYPE,
+                'name' => $item->getName(),
+                'data' => $item->getName(),
+            ];
+        }, $search['data']);
+
+        return $search['data'];
+    }
+
+    protected function searchElastic($searchQuery)
+    {
+        try {
+            $response = $this->elasticSearchManager->search($searchQuery);
+        } catch (\Exception $e) {
+            $response = [];
+        }
+
+        return $response;
     }
 
     protected function getBusinessDataFromElasticResponse($response)
@@ -1672,19 +1717,9 @@ class BusinessProfileManager extends Manager
             ];
         }
 
-        if ($params->locationValue->ignoreLocality) {
-            $locationQuery = [
-                'bool' => [
-                    'must' => [
-                        [
-                            'script' => [
-                                'script' => 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', ' . $params->locationValue->lng . ') < doc["miles_of_my_business"].value'
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-        } else {
+        $locationQuery = [];
+
+        if (!$params->locationValue->ignoreLocality) {
             $locationQuery = [
                 'bool' => [
                     'minimum_should_match' => 1,
@@ -1747,7 +1782,6 @@ class BusinessProfileManager extends Manager
                                 ],
                             ],
                         ],
-                        $locationQuery
                     ],
                 ],
             ],
@@ -1756,10 +1790,41 @@ class BusinessProfileManager extends Manager
             ],
         ];
 
+        if ($locationQuery) {
+            $searchQuery['query']['bool']['must'][] = $locationQuery;
+        }
 
         foreach ($filters as $filter) {
             $searchQuery['query']['bool']['must'][] = $filter;
         }
+
+        return $searchQuery;
+    }
+
+    protected function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 0)
+    {
+        if (!$limit) {
+            $limit = self::AUTO_SUGGEST_MAX_BUSINESSES_COUNT;
+        }
+
+        $searchQuery = [
+            'from' => $offset,
+            'size' => $limit,
+            'track_scores' => true,
+            'query' => [
+                'match' => [
+                    'auto_suggest_' . strtolower($locale) => [
+                        'query' => $query,
+                        'operator' => 'and',
+                    ],
+                ],
+            ],
+            'sort' => [
+                '_score' => [
+                    'order' => 'desc'
+                ],
+            ],
+        ];
 
         return $searchQuery;
     }
@@ -1806,6 +1871,9 @@ class BusinessProfileManager extends Manager
             $localityIds[] = $businessProfile->getCatalogLocality()->getId();
         }
 
+        $autoSuggest[$enLocale][] = $businessProfile->getNameEn();
+        $autoSuggest[$esLocale][] = $businessProfile->getNameEs();
+
         $data = [
             'id'                   => $businessProfile->getId(),
             'name_en'              => $businessProfile->getNameEn(),
@@ -1815,6 +1883,8 @@ class BusinessProfileManager extends Manager
             'miles_of_my_business' => $businessProfile->getMilesOfMyBusiness() ?: BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
+            'auto_suggest_en'      => $autoSuggest[$enLocale],
+            'auto_suggest_es'      => $autoSuggest[$esLocale],
             'location'             => [
                 'lat' => $businessProfile->getLatitude(),
                 'lon' => $businessProfile->getLongitude(),
@@ -1832,6 +1902,16 @@ class BusinessProfileManager extends Manager
     protected function getElasticSearchIndexParams()
     {
         $params = [
+            'auto_suggest_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+            ],
+            'auto_suggest_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+            ],
             'location' => [
                 'type' => 'geo_point'
             ],
