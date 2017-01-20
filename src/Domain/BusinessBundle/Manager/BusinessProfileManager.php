@@ -55,6 +55,7 @@ class BusinessProfileManager extends Manager
 {
     const DEFAULT_LOCALE_NAME = 'San Juan';
     const AUTO_COMPLETE_TYPE  = 'business';
+    const AUTO_SUGGEST_MAX_BUSINESSES_COUNT = 5;
 
     /**
      * @var CategoryManager
@@ -1800,8 +1801,12 @@ class BusinessProfileManager extends Manager
         return $searchQuery;
     }
 
-    protected function getElasticAutoSuggestSearchQuery($query, $locale, $limit = 5, $offset = 0)
+    protected function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 0)
     {
+        if (!$limit) {
+            $limit = self::AUTO_SUGGEST_MAX_BUSINESSES_COUNT;
+        }
+
         $searchQuery = [
             'from' => $offset,
             'size' => $limit,

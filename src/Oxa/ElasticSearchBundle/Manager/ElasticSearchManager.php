@@ -9,6 +9,9 @@ class ElasticSearchManager
     const INDEX_NOT_FOUND_EXCEPTION = 'index_not_found_exception';
     const INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception';
 
+    const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
+    const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 10;
+
     protected $documentIndex;
     protected $indexingPage;
     protected $host;
@@ -111,8 +114,8 @@ class ElasticSearchManager
                         'tokenizer' => [
                             'autocomplete' => [
                                 'type' => 'edge_ngram',
-                                'min_gram' => 2,
-                                'max_gram' => 10,
+                                'min_gram' => self::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED,
+                                'max_gram' => self::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED,
                                 'token_chars' => [
                                     'letter',
                                     'digit',
