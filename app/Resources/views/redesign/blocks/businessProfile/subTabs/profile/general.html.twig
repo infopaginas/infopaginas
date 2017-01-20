@@ -122,11 +122,6 @@
                 {{ form_widget(businessProfileForm.areas) }}
             </div>
 
-            <div class="form__row vertical__row">
-                {{ custom_form_label.widget(businessProfileForm.tags) }}
-                {{ form_widget(businessProfileForm.tags) }}
-            </div>
-
             <div id="phone-fields-list"
                  data-length="{{ businessProfileForm.phones|length }}"
                  data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
