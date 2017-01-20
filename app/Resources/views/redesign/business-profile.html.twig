@@ -207,7 +207,7 @@
                         {% if businessProfile.getDescription() %}
                             <section class="page-section description-section">
                                 <div class="container">
-                                    <p>{{ businessProfile.getDescription() }}</p>
+                                    <p>{{ businessProfile.getDescription()|raw }}</p>
                                 </div>
                             </section>
                         {% endif %}
