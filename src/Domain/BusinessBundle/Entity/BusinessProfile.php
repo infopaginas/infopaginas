@@ -417,7 +417,7 @@ class BusinessProfile implements
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
-     *     orphanRemoval=false,
+     *     orphanRemoval=true,
      *     )
      * @ORM\OrderBy({"position" = "ASC"})
      */
