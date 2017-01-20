@@ -11,9 +11,9 @@
 
 namespace Oxa\Sonata\MediaBundle\Entity;
 
-use Domain\BannerBundle\Entity\Banner;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
+use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -80,16 +80,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     protected $coupons;
 
     /**
-     * @var Banner[]
-     * @ORM\OneToMany(targetEntity="Domain\BannerBundle\Entity\Banner",
-     *     mappedBy="image",
-     *     cascade={"persist"}
-     * )
-     */
-    protected $banners;
-
-    /**
-     * @var Banner[]
+     * @var Article[]
      * @ORM\OneToMany(targetEntity="Domain\ArticleBundle\Entity\Article",
      *     mappedBy="image",
      *     cascade={"persist"}
@@ -322,40 +313,6 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getCoupons()
     {
         return $this->coupons;
-    }
-
-    /**
-     * Add banner
-     *
-     * @param \Domain\BannerBundle\Entity\Banner $banner
-     *
-     * @return Media
-     */
-    public function addBanner(\Domain\BannerBundle\Entity\Banner $banner)
-    {
-        $this->banners[] = $banner;
-
-        return $this;
-    }
-
-    /**
-     * Remove banner
-     *
-     * @param \Domain\BannerBundle\Entity\Banner $banner
-     */
-    public function removeBanner(\Domain\BannerBundle\Entity\Banner $banner)
-    {
-        $this->banners->removeElement($banner);
-    }
-
-    /**
-     * Get banners
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBanners()
-    {
-        return $this->banners;
     }
 
     /**
