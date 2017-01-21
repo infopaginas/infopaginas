@@ -115,23 +115,6 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Email',
                 'constraints' => $emailConstraints,
             ])
-            ->add('tags', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'placeholder' => 'Advertising, Cafeterias, Grooming, Restaurants',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Tag',
-                'label' => 'Tags',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'multiple' => true,
-                'query_builder' => function (TagRepository $repository) {
-                    return $repository->getAvailableTagsQb();
-                },
-                'required' => false,
-            ])
             ->add('paymentMethods', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',
