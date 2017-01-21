@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -179,11 +180,9 @@ class LinkImageCommand extends ContainerAwareCommand
 
         if ($profile->images) {
             foreach ($profile->images as $image) {
-                if ($image->label == 'logo') {
-                    $isLogo = true;
-                } else {
-                    $isLogo = false;
-                }
+                $context = ($image->label == 'logo') ?
+                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO :
+                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES;
 
                 $path = $pathWeb . substr($image->image->url, strrpos($image->image->url, '/'));
 
@@ -194,11 +193,11 @@ class LinkImageCommand extends ContainerAwareCommand
                  */
 
                 if (file_exists($path)) {
-                    $managerGallery->createNewEntryFromLocalFile($entity, $path, $isLogo);
+                    $managerGallery->createNewEntryFromLocalFile($entity, $context, $path);
                 } else {
                     $path = 'http://assets3.drxlive.com' . $image->image->url;
 
-                    $managerGallery->createNewEntryFromRemoteFile($entity, $path, $isLogo);
+                    $managerGallery->createNewEntryFromRemoteFile($entity, $context, $path);
                 }
             }
         }

@@ -344,6 +344,41 @@ class ChangeSetCollectorUtil
         return false;
     }
 
+    public static function getEntityMediaItemChangeSet($em, $entity, $type)
+    {
+        try {
+            $profileDiff = DoctrineUtil::diffDoctrineObject($em, $entity);
+        } catch (ContextErrorException $e) {
+            return false;
+        }
+
+        $entry = new ChangeSetEntry();
+        $entry->setFieldName($type);
+
+        if (!isset($profileDiff[$type])) {
+            return false;
+        }
+
+        $diff = $profileDiff[$type];
+
+        if (is_array($diff) && count($diff) == 2) {
+            if ($diff[0] == null) {
+                $entry->setOldValue('');
+                $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[1]));
+                $entry->setAction(ChangeSetCalculator::LOGO_ADD);
+            } elseif($diff[1] == null) {
+                $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[0]));
+                $entry->setNewValue('');
+                $entry->setAction(ChangeSetCalculator::LOGO_REMOVE);
+            } else {
+                return false;
+            }
+
+            return $entry;
+        }
+
+        return false;
+    }
 
     /**
      * @param $em

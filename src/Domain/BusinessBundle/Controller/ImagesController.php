@@ -40,12 +40,18 @@ class ImagesController extends Controller
             $this->throwBusinessNotFoundException();
         }
 
-        $business = $this->getBusinessGalleryManager()->fillBusinessGallery($business, $request->files);
+        $business = $this->getBusinessGalleryManager()->fillBusinessGallery(
+            $business,
+            $request->get('context', OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES),
+            $request->files
+        );
 
         $imagesForm = $this->getImagesForm($business);
 
         return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
-            'images' => $imagesForm->createView(),
+            'images'     => $imagesForm['images']->createView(),
+            'logo'       => $imagesForm['logo']->createView(),
+            'background' => $imagesForm['logo']->createView(),
         ]);
     }
 
@@ -65,13 +71,19 @@ class ImagesController extends Controller
             $this->throwBusinessNotFoundException();
         }
 
-        $business = $this->getBusinessGalleryManager()->createNewEntryFromRemoteFile($business, $request->get('url'));
+        $business = $this->getBusinessGalleryManager()->createNewEntryFromRemoteFile(
+            $business,
+            $request->get('context', OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES),
+            $request->get('url')
+        );
 
         if ($business) {
             $imagesForm = $this->getImagesForm($business);
 
             return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
-                'images' => $imagesForm->createView(),
+                'images'     => $imagesForm->createView(),
+                'logo'       => $imagesForm['logo']->createView(),
+                'background' => $imagesForm['logo']->createView(),
             ]);
         } else {
             return $this->getFailureResponse(
@@ -108,11 +120,19 @@ class ImagesController extends Controller
 
     /**
      * @param BusinessProfile $businessProfile
-     * @return \Symfony\Component\Form\FormInterface
+     *
+     * @return \Symfony\Component\Form\FormInterface[]
      */
-    private function getImagesForm(BusinessProfile $businessProfile) : FormInterface
+    private function getImagesForm(BusinessProfile $businessProfile)
     {
         $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
-        return $form->get('images');
+
+        $result = [
+            'images'     => $form->get('images'),
+            'logo'       => $form->get('logo'),
+            'background' => $form->get('background'),
+        ];
+
+        return $result;
     }
 }

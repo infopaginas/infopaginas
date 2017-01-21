@@ -6,6 +6,13 @@
             <div class="section__sidebar">
                 <p>{% trans %}Select and upload images to show on your business profile{% endtrans %}</p>
 
+                {% if mediaContextTypes is defined and mediaContextTypes %}
+                    <select id="media-select-image-type" class="select-image-type">
+                        {% for key, label in mediaContextTypes %}
+                            <option value="{{ key }}">{{ label|trans }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
                 <div class="form__row row--full">
                     <div class="form__field">
                         <button type="button" class="button button--featured file-upload-button" data-url="{{ path('domain_business_images_upload') }}">
@@ -51,7 +58,7 @@
                 <div class="media-table" id="gallery" {% if businessProfileForm.images | length <= 0 and not businessProfile.background and not businessProfile.logo %}style="display: none"{% endif %}>
                     <h3>{% trans %}Your photos{% endtrans %}</h3>
 
-                    {% include ':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig' with {'images': businessProfileForm.images} %}
+                    {% include ':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig' with {'images': businessProfileForm.images, 'logo': businessProfileForm.logo, 'background': businessProfileForm.background} %}
                 </div>
             </div>
             <!-- section__main-content -->

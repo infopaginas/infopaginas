@@ -39,6 +39,17 @@ class ProfileController extends Controller
     const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
     const ERROR_ACCESS_NOT_ALLOWED = 'You haven\'t access to this page!';
 
+    protected function getMediaContextTypes()
+    {
+        $types = [
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES      => 'Photo',
+        ];
+
+        return $types;
+    }
+
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -48,6 +59,7 @@ class ProfileController extends Controller
 
         return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm' => $businessProfileForm->createView(),
+            'mediaContextTypes'   => $this->getMediaContextTypes(),
         ]);
     }
 
@@ -76,6 +88,7 @@ class ProfileController extends Controller
             'logoTypeConstant'          => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
             'photoTypeConstant'         => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
             'backgroundTypeConstant'    => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+            'mediaContextTypes'         => $this->getMediaContextTypes(),
         ]);
     }
 

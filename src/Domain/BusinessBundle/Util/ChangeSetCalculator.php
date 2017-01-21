@@ -10,6 +10,7 @@ namespace Domain\BusinessBundle\Util;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Util\ChangeSet\ChangeSetCollectorUtil;
@@ -37,6 +38,9 @@ class ChangeSetCalculator
     const VIDEO_REMOVE = 'VIDEO_REMOVE';
     const VIDEO_UPDATE = 'VIDEO_UPDATE';
 
+    const LOGO_ADD    = 'LOGO_ADD';
+    const LOGO_REMOVE = 'LOGO_REMOVE';
+
     /**
      * @param EntityManagerInterface $em
      * @param $entity
@@ -46,7 +50,8 @@ class ChangeSetCalculator
      */
     public static function getChangeSet(EntityManagerInterface $em, $entity, $oldCategories, $oldImages) : ChangeSet
     {
-        $imageFields          = ChangeSetCollectorUtil::getEntityLogoAndBackgroundChangeSet($em, $entity);
+        // should be removed as logo and background are separated now
+        //$imageFields          = ChangeSetCollectorUtil::getEntityLogoAndBackgroundChangeSet($em, $entity);
         $collectionsChangeSet = ChangeSetCollectorUtil::getEntityCollectionsChangeSet(
             $em,
             $entity,
@@ -55,6 +60,16 @@ class ChangeSetCalculator
         );
         $fieldsChangeSet      = ChangeSetCollectorUtil::getEntityFieldsChangeSet($em, $entity);
         $videoChange          = ChangeSetCollectorUtil::getEntityVideoChangeSet($em, $entity);
+        $logoChange           = ChangeSetCollectorUtil::getEntityMediaItemChangeSet(
+            $em,
+            $entity,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO
+        );
+        $backgroundChange     = ChangeSetCollectorUtil::getEntityMediaItemChangeSet(
+            $em,
+            $entity,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND
+        );
 
         $changeSet = new ChangeSet();
 
@@ -72,16 +87,28 @@ class ChangeSetCalculator
             $em->persist($entry);
         }
 
-        foreach ($imageFields as $entry) {
+        /*foreach ($imageFields as $entry) {
             $entry->setChangeSet($changeSet);
             $changeSet->addEntry($entry);
             $em->persist($entry);
-        }
+        }*/
 
         if ($videoChange !== false) {
             $videoChange->setChangeSet($changeSet);
             $changeSet->addEntry($videoChange);
             $em->persist($videoChange);
+        }
+
+        if ($logoChange !== false) {
+            $logoChange->setChangeSet($changeSet);
+            $changeSet->addEntry($logoChange);
+            $em->persist($logoChange);
+        }
+
+        if ($backgroundChange !== false) {
+            $backgroundChange->setChangeSet($changeSet);
+            $changeSet->addEntry($backgroundChange);
+            $em->persist($backgroundChange);
         }
 
         $em->persist($changeSet);

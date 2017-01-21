@@ -16,7 +16,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             removeImageClassname:        'remove-image-link',
             remoteImageURLInputId:       '#remote-image-url',
             imageTypeSelectClassname:    '.select-image-type',
-            imageRowContainer:           'div.media__item.image-item'
+            imageRowContainer:           'div.media__item.image-item',
+            fileContextSelect:           '#media-select-image-type'
         };
 
         this.urls = {
@@ -152,6 +153,9 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         var businessProfileId = $( '#' + this.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
         formData.append( 'businessProfileId', businessProfileId );
 
+        var fileContextValue = $( this.html.fileContextSelect ).val();
+        formData.append( 'context', fileContextValue );
+
         return formData;
     };
 
@@ -199,10 +203,12 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
                 }
 
                 var businessProfileId = $( '#' + that.html.buttons.fileInputId ).parents( 'form' ).data( 'id' );
+                var fileContextValue = $( that.html.fileContextSelect ).val();
 
                 var data = {
                     url: $remoteImageURLInput.val(),
-                    businessProfileId: businessProfileId
+                    businessProfileId: businessProfileId,
+                    context: fileContextValue
                 };
 
                 $.ajax( {

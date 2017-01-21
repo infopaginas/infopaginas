@@ -448,11 +448,21 @@ class BusinessProfileManager extends Manager
                         }
                     }
                     break;
+                case ChangeSetCalculator::LOGO_ADD:
+                    // just markup for now
+                    $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
+                        $change,
+                        $this->getEntityManager()
+                    );
+
+                    $accessor->setValue($businessProfile, $change->getFieldName(), $item);
+                    break;
                 case ChangeSetCalculator::PROPERTY_IMAGE_ADD:
                     $data   = json_decode($change->getNewValue());
 
                     $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
-                    $media = $this->setMediaContentAndProvider($media, $data->context);
+                    // should be checked on removing
+                    //$media = $this->setMediaContentAndProvider($media, $data->context);
 
                     if ($data->context == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
                         $businessProfile->setLogo($media);
@@ -873,7 +883,7 @@ class BusinessProfileManager extends Manager
         $provider = $this->container->get('sonata.media.pool')->getProvider($media->getProviderName());
 
         $filepath = sprintf('%s/%s', $provider->generatePath($media), $media->getProviderReference());
-        $path = $provider->getFilesystem()->getAdapter()->getDirectory() . DIRECTORY_SEPARATOR . $filepath;
+        $path = $provider->getFilesystem()->getAdapter()->getUrl($filepath);
 
         if (!$provider->getFilesystem()->has($filepath)) {
             return $media;
