@@ -59,6 +59,7 @@ parameters:
         description_category_separator: ', '
         description_category_cut: '...'
     image_back_up_path: '/../web/imageBackUp/'
+    video_back_up_path: '/../web/imageBackUp/video/'
     breadcrumb_max_length: 22
 
 framework:
