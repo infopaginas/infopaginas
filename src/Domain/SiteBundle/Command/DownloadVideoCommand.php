@@ -14,6 +14,8 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 
 class DownloadVideoCommand extends ContainerAwareCommand
 {
+    const ADDITIONAL_DIRECTORY = 'additional/';
+
     /* @var EntityManager $em */
     protected $em;
 
@@ -44,18 +46,18 @@ class DownloadVideoCommand extends ContainerAwareCommand
         $videoAdditionalMapping = VideoMappingModel::getAdditionalVideoMapping();
 
         $counter = $this->downloadVideo($videoMapping);
-        $counter += $this->downloadVideo($videoAdditionalMapping);
+        $counter += $this->downloadVideo($videoAdditionalMapping, true);
 
         $output->writeln('Downloaded ' . $counter);
     }
 
-    protected function downloadVideo($data)
+    protected function downloadVideo($data, $isAdditional = false)
     {
         $counter = 0;
 
         foreach ($data as $item) {
             if (!empty($item['uid']) and !empty($item['asset'])) {
-                $downloadedPath = $this->generateLocalVideoPath($item['uid']);
+                $downloadedPath = $this->generateLocalVideoPath($item['uid'], $isAdditional);
 
                 $tmpFile = tempnam('/tmp', 'glo');
                 $filename = $this->getOriginalFilename();
@@ -80,9 +82,15 @@ class DownloadVideoCommand extends ContainerAwareCommand
         return uniqid();
     }
 
-    protected function generateLocalVideoPath($uid)
+    protected function generateLocalVideoPath($uid, $isAdditional = false)
     {
-        $path = $this->getBaseDownloadDir() . $uid . '/';
+        $path = $this->getBaseDownloadDir();
+
+        if ($isAdditional) {
+            $path .= self::ADDITIONAL_DIRECTORY;
+        }
+
+        $path .= $uid . '/';
 
         return $path;
     }
