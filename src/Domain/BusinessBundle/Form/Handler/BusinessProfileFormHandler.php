@@ -108,12 +108,24 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         }
 
         if ($this->request->getMethod() == 'POST') {
+            $requestParams = $this->request->request->all();
             $this->form->handleRequest($this->request);
 
             /** @var BusinessProfile $businessProfile */
             $businessProfile = $this->form->getData();
 
-            if (!isset($this->request->request->all()[$this->form->getName()]['video'])) {
+            $mediaItems = [
+                BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO,
+                BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND
+            ];
+
+            foreach ($mediaItems as $mediaItem) {
+                if (empty($requestParams[$this->form->getName()][$mediaItem])) {
+                    $businessProfile->{'set' . ucfirst($mediaItem)}(null);
+                }
+            }
+
+            if (!isset($requestParams[$this->form->getName()]['video'])) {
                 $businessProfile->setVideo(null);
 
                 if ($businessProfile->getIsSetVideo()) {
@@ -170,8 +182,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     private function onSuccess(BusinessProfile $businessProfile, $oldCategories, $oldImages)
     {
         if (!$businessProfile->getId()) {
-            $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
-
             if ($this->currentUser instanceof User) {
                 $businessProfile->setUser($this->currentUser);
             }
@@ -184,9 +194,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
         } else {
-            $businessProfile = $this->getBusinessProfilesManager()->preSaveProfile($businessProfile);
             //create 'Update Business Profile' Task for Admin / CM
-
             $this->getTasksManager()->createUpdateProfileConfirmationRequest(
                 $businessProfile,
                 $oldCategories,

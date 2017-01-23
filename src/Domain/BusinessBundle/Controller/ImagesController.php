@@ -51,7 +51,7 @@ class ImagesController extends Controller
         return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
             'images'     => $imagesForm['images']->createView(),
             'logo'       => $imagesForm['logo']->createView(),
-            'background' => $imagesForm['logo']->createView(),
+            'background' => $imagesForm['background']->createView(),
         ]);
     }
 
@@ -81,9 +81,9 @@ class ImagesController extends Controller
             $imagesForm = $this->getImagesForm($business);
 
             return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
-                'images'     => $imagesForm->createView(),
+                'images'     => $imagesForm['images']->createView(),
                 'logo'       => $imagesForm['logo']->createView(),
-                'background' => $imagesForm['logo']->createView(),
+                'background' => $imagesForm['background']->createView(),
             ]);
         } else {
             return $this->getFailureResponse(

@@ -25,14 +25,10 @@ class ChangeSetCalculator
     const PROPERTY_ADD    = 'PROPERTY_ADD';
     const PROPERTY_REMOVE = 'PROPERTY_REMOVE';
 
-    const PROPERTY_IMAGE_ADD    = 'PROPERTY_IMAGE_ADD';
-    const PROPERTY_IMAGE_REMOVE = 'PROPERTY_IMAGE_REMOVE';
-    const PROPERTY_IMAGE_UPDATE = 'PROPERTY_IMAGE_UPDATE';
     const PROPERTY_IMAGE_PROPERTY_UPDATE = 'PROPERTY_IMAGE_PROPERTY_UPDATE';
 
     const IMAGE_ADD    = 'IMAGE_ADD';
     const IMAGE_REMOVE = 'IMAGE_REMOVE';
-    const IMAGE_UPDATE = 'IMAGE_UPDATE';
 
     const VIDEO_ADD    = 'VIDEO_ADD';
     const VIDEO_REMOVE = 'VIDEO_REMOVE';
@@ -40,6 +36,11 @@ class ChangeSetCalculator
 
     const LOGO_ADD    = 'LOGO_ADD';
     const LOGO_REMOVE = 'LOGO_REMOVE';
+    const LOGO_UPDATE = 'LOGO_UPDATE';
+
+    const BACKGROUND_ADD    = 'BACKGROUND_ADD';
+    const BACKGROUND_REMOVE = 'BACKGROUND_REMOVE';
+    const BACKGROUND_UPDATE = 'BACKGROUND_UPDATE';
 
     /**
      * @param EntityManagerInterface $em
@@ -50,8 +51,6 @@ class ChangeSetCalculator
      */
     public static function getChangeSet(EntityManagerInterface $em, $entity, $oldCategories, $oldImages) : ChangeSet
     {
-        // should be removed as logo and background are separated now
-        //$imageFields          = ChangeSetCollectorUtil::getEntityLogoAndBackgroundChangeSet($em, $entity);
         $collectionsChangeSet = ChangeSetCollectorUtil::getEntityCollectionsChangeSet(
             $em,
             $entity,
@@ -86,12 +85,6 @@ class ChangeSetCalculator
             $changeSet->addEntry($entry);
             $em->persist($entry);
         }
-
-        /*foreach ($imageFields as $entry) {
-            $entry->setChangeSet($changeSet);
-            $changeSet->addEntry($entry);
-            $em->persist($entry);
-        }*/
 
         if ($videoChange !== false) {
             $videoChange->setChangeSet($changeSet);

@@ -74,7 +74,6 @@ class ProfileController extends Controller
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
-        $businessProfile = $this->getBusinessProfilesManager()->addLogoAndBackgroundToGallery($businessProfile);
 
         $this->checkBusinessProfileAccess($businessProfile);
 
@@ -82,13 +81,13 @@ class ProfileController extends Controller
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
 
         return $this->render(':redesign:business-profile-edit.html.twig', [
-            'businessProfileForm' => $businessProfileForm->createView(),
-            'businessProfile'     => $businessProfile,
+            'businessProfileForm'      => $businessProfileForm->createView(),
+            'businessProfile'          => $businessProfile,
             'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
-            'logoTypeConstant'          => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
-            'photoTypeConstant'         => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
-            'backgroundTypeConstant'    => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
-            'mediaContextTypes'         => $this->getMediaContextTypes(),
+            'logoTypeConstant'         => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+            'photoTypeConstant'        => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
+            'backgroundTypeConstant'   => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+            'mediaContextTypes'        => $this->getMediaContextTypes(),
         ]);
     }
 

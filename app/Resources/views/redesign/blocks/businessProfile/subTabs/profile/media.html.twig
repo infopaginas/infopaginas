@@ -7,12 +7,15 @@
                 <p>{% trans %}Select and upload images to show on your business profile{% endtrans %}</p>
 
                 {% if mediaContextTypes is defined and mediaContextTypes %}
-                    <select id="media-select-image-type" class="select-image-type">
-                        {% for key, label in mediaContextTypes %}
-                            <option value="{{ key }}">{{ label|trans }}</option>
-                        {% endfor %}
-                    </select>
+                    <div class="form__row row--full">
+                        <select id="media-select-image-type" class="select-image-type">
+                            {% for key, label in mediaContextTypes %}
+                                <option value="{{ key }}">{{ label|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 {% endif %}
+
                 <div class="form__row row--full">
                     <div class="form__field">
                         <button type="button" class="button button--featured file-upload-button" data-url="{{ path('domain_business_images_upload') }}">
@@ -35,9 +38,11 @@
                         <input type="text"
                                name="image-url"
                                id="remote-image-url"
-                               data-error-count-limit="{% trans %}business_profile.image_count_limit{% endtrans %} "
+                               data-error-count-limit="{% trans %}business_profile.image_count_limit{% endtrans %}"
                                data-error-size-limit="{% trans %}business_profile.size_limit{% endtrans %}"
-                               data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}">
+                               data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}"
+                               data-error-logo-limit="{% trans %}business_profile.logo.image_count_limit{% endtrans %}"
+                               data-error-background-limit="{% trans %}business_profile.background.image_count_limit{% endtrans %}">
                     </div>
                     <div class="form__field">
                         <button type="button" class="button button--featured" id="start-remote-image-upload">
@@ -60,6 +65,9 @@
 
                     {% include ':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig' with {'images': businessProfileForm.images, 'logo': businessProfileForm.logo, 'background': businessProfileForm.background} %}
                 </div>
+                {% do businessProfileForm.logo.setRendered %}
+                {% do businessProfileForm.background.setRendered %}
+                {% do businessProfileForm.images.setRendered %}
             </div>
             <!-- section__main-content -->
         </div>

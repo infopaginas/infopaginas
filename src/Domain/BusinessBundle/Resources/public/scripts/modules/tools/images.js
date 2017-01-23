@@ -17,6 +17,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             remoteImageURLInputId:       '#remote-image-url',
             imageTypeSelectClassname:    '.select-image-type',
             imageRowContainer:           'div.media__item.image-item',
+            imageRowLogoContainer:       'div.media__item.image-item.image-form-logo',
+            imageRowBackgroundContainer: 'div.media__item.image-item.image-form-background',
             fileContextSelect:           '#media-select-image-type'
         };
 
@@ -33,6 +35,11 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
         //max business profile images count - 10
         this.maxAllowedFilesCount = 10;
+        // single logo and background
+        this.maxAllowedMediaItemCount = 1;
+
+        // removed images to disable its re-enable after upload
+        this.removedItems = [];
 
         this.handleFileUploadInput();
         this.handleClickOnImages();
@@ -60,13 +67,33 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
     //max allowed files count: 10
     images.prototype.checkMaxAllowedFilesCount = function( files ) {
-        var filesSelected = files.length;
-        var filesAlreadyAdded = $( document ).find( this.html.imageRowContainer ).length;
+        var error                  = '';
+        var filesSelected          = files.length;
+        var filesAlreadyAdded      = $( document ).find( this.html.imageRowContainer ).length;
+        var logoAlreadyAdded       = $( document ).find( this.html.imageRowLogoContainer ).length;
+        var backgroundAlreadyAdded = $( document ).find( this.html.imageRowBackgroundContainer ).length;
+        var fileContextValue       = $( this.html.fileContextSelect ).val();
 
-        var filesAdded = filesSelected + filesAlreadyAdded;
+        var filesAdded      = filesSelected + filesAlreadyAdded;
+        var logoAdded       = filesSelected + logoAlreadyAdded;
+        var backgroundAdded = filesSelected + backgroundAlreadyAdded;
 
         if( filesAdded > this.maxAllowedFilesCount ) {
-            var error = $( this.html.remoteImageURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+            error = $( this.html.remoteImageURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+
+            this.imageErrorHandler( error );
+            return false;
+        }
+
+        if ( fileContextValue == logoTypeConstant && logoAdded > this.maxAllowedMediaItemCount ) {
+            error = $( this.html.remoteImageURLInputId ).data( 'error-logo-limit' ) + this.maxAllowedMediaItemCount;
+
+            this.imageErrorHandler( error );
+            return false;
+        }
+
+        if ( fileContextValue == backgroundTypeConstant && backgroundAdded > this.maxAllowedMediaItemCount ) {
+            error = $( this.html.remoteImageURLInputId ).data( 'error-background-limit' ) + this.maxAllowedMediaItemCount;
 
             this.imageErrorHandler( error );
             return false;
@@ -101,6 +128,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
     //actions on ajax success
     images.prototype.onRequestSuccess = function( response ) {
+        var that = this;
+
         if ( response.success === false ) {
             this.imageErrorHandler( response.message );
         } else {
@@ -114,7 +143,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
                 var imageId = $imageRow.attr( 'id' );
 
-                if( !$( document ).find( '#' + imageId ).length > 0 ) {
+                if( !$( document ).find( '#' + imageId ).length > 0 && that.removedItems.indexOf( imageId ) === -1 ) {
                     $imagesContainer.append( $imageRow );
                 }
             });
@@ -257,10 +286,13 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
     //remove image by click on "remove" link
     images.prototype.handleClickOnRemoveLink = function() {
-        $(document).on( 'click', '.' + this.html.removeImageClassname, function( event ) {
-            var imageId = $(this).data( 'id' );
+        var that = this;
 
-            $(document).find( '#images-form-' + imageId ).remove();
+        $(document).on( 'click', '.' + this.html.removeImageClassname, function( event ) {
+            var imageId = 'images-form-' + $(this).data( 'id' );
+
+            that.removedItems.push( imageId );
+            $(document).find( '#' + imageId ).remove();
 
             event.preventDefault();
         } );

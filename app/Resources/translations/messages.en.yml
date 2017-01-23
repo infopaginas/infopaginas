@@ -399,6 +399,8 @@ business_profile.size_limit: Sorry. Maximum allowed filesize is 10Mb.
 business_profile.url.empty: Error: URL field should not be empty.
 business_profile.video_count_limit: Error: too much videos added. Max files count =
 business_profile.max_length: Please use max {{ limit }} symbols
+business_profile.logo.image_count_limit: Error: only single logo is allowed
+business_profile.background.image_count_limit: Error: only single background is allowed
 Updated By: Updated By
 Back to Business Profile: Back to Business Profile
 Create Profile: Create Profile

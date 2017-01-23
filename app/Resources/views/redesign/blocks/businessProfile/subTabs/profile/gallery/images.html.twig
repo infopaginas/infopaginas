@@ -41,7 +41,7 @@
 {% endfor %}
 
 {% if logo.vars.data %}
-    <div class="media__item image-item" id="images-logo-form-{{ logo.vars.data.id }}">
+    <div class="media__item image-item image-form-logo" id="images-form-{{ logo.vars.data.id }}">
         <div class="media__item--left">
             <div class="media__field media__thumbnail">
                 {% thumbnail logo.vars.data, 'preview' %}
@@ -54,23 +54,29 @@
                     {% trans %}Logo{% endtrans %}
                 </div>
             </div>
+            <div class="media__field">
+                <div class="form__field">
+                    {{ form_widget(logo.id) }}
+                </div>
+            </div>
+            <div class="media__field display-none">
+                <div class="form__field">
+                    {{ form_label(logo.name) }}
+                    {{ form_widget(logo.name) }}
+                </div>
+            </div>
             <div class="media__field remove">
                 <button type="button" class="button button--text remove-image-link" data-id="{{ logo.vars.data.id }}">
                     <i class="fa fa-remove"></i>
                     {% trans %}Remove{% endtrans %}
                 </button>
             </div>
-            <div class="media__field">
-                <div class="form__field">
-                    {{ form_widget(logo) }}
-                </div>
-            </div>
         </div>
     </div>
 {% endif %}
 
 {% if background.vars.data %}
-    <div class="media__item image-item" id="images-logo-form-{{ background.vars.data.id }}">
+    <div class="media__item image-item image-form-background" id="images-form-{{ background.vars.data.id }}">
         <div class="media__item--left">
             <div class="media__field media__thumbnail">
                 {% thumbnail background.vars.data, 'preview' %}
@@ -83,16 +89,22 @@
                     {% trans %}Background{% endtrans %}
                 </div>
             </div>
+            <div class="media__field">
+                <div class="form__field">
+                    {{ form_widget(background.id) }}
+                </div>
+            </div>
+            <div class="media__field display-none">
+                <div class="form__field">
+                    {{ form_label(background.name) }}
+                    {{ form_widget(background.name) }}
+                </div>
+            </div>
             <div class="media__field remove">
                 <button type="button" class="button button--text remove-image-link" data-id="{{ background.vars.data.id }}">
                     <i class="fa fa-remove"></i>
                     {% trans %}Remove{% endtrans %}
                 </button>
-            </div>
-            <div class="media__field">
-                <div class="form__field">
-                    {{ form_widget(background) }}
-                </div>
             </div>
         </div>
     </div>

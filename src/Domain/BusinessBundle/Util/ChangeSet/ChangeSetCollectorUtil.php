@@ -346,6 +346,21 @@ class ChangeSetCollectorUtil
 
     public static function getEntityMediaItemChangeSet($em, $entity, $type)
     {
+        switch ($type) {
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO:
+                $addAction    = ChangeSetCalculator::LOGO_ADD;
+                $removeAction = ChangeSetCalculator::LOGO_REMOVE;
+                $updateAction = ChangeSetCalculator::LOGO_UPDATE;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND:
+                $addAction    = ChangeSetCalculator::BACKGROUND_ADD;
+                $removeAction = ChangeSetCalculator::BACKGROUND_REMOVE;
+                $updateAction = ChangeSetCalculator::BACKGROUND_UPDATE;
+                break;
+            default:
+                return false;
+        }
+
         try {
             $profileDiff = DoctrineUtil::diffDoctrineObject($em, $entity);
         } catch (ContextErrorException $e) {
@@ -365,11 +380,15 @@ class ChangeSetCollectorUtil
             if ($diff[0] == null) {
                 $entry->setOldValue('');
                 $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[1]));
-                $entry->setAction(ChangeSetCalculator::LOGO_ADD);
+                $entry->setAction($addAction);
             } elseif($diff[1] == null) {
                 $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[0]));
                 $entry->setNewValue('');
-                $entry->setAction(ChangeSetCalculator::LOGO_REMOVE);
+                $entry->setAction($removeAction);
+            } elseif ($diff[1]->getId() != $diff[0]->getId()) {
+                $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[0]));
+                $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[1]));
+                $entry->setAction($updateAction);
             } else {
                 return false;
             }
@@ -378,57 +397,6 @@ class ChangeSetCollectorUtil
         }
 
         return false;
-    }
-
-    /**
-     * @param $em
-     * @param $entity
-     * @return bool|ChangeSetEntry
-     */
-    public static function getEntityLogoAndBackgroundChangeSet($em, $entity)
-    {
-        try {
-            $profileDiff = DoctrineUtil::diffDoctrineObject($em, $entity);
-        } catch (ContextErrorException $e) {
-            return false;
-        }
-
-        $fields = ['logo', 'background'];
-        $context = [
-            'logo'          => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
-            'background'    => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
-        ];
-
-        $entries = [];
-        foreach($fields as $field) {
-            $entry = new ChangeSetEntry();
-            $entry->setFieldName($field);
-
-            if (!isset($profileDiff[$field])) {
-                continue;
-            }
-
-            $diff = $profileDiff[$field];
-            if (is_array($diff) && count($diff) == 2) {
-                if ($diff[0] == null) {
-                    $entry->setOldValue('');
-                    $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[1], $context[$field]));
-                    $entry->setAction(ChangeSetCalculator::PROPERTY_IMAGE_ADD);
-                } elseif($diff[1] == null) {
-                    $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[0], $context[$field]));
-                    $entry->setNewValue('');
-                    $entry->setAction(ChangeSetCalculator::PROPERTY_IMAGE_REMOVE);
-                } else {
-                    $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[0], $context[$field]));
-                    $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMedia($diff[1], $context[$field]));
-                    $entry->setAction(ChangeSetCalculator::PROPERTY_IMAGE_UPDATE);
-                }
-
-                $entries[] = $entry;
-            }
-        }
-
-        return $entries;
     }
 
     /**
