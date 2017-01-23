@@ -131,7 +131,7 @@ class BusinessProfileManager extends Manager
     public function searchAutosuggestByPhraseAndLocation($query, $locale)
     {
         $categories = $this->categoryManager->searchAutosuggestByName($query, $locale);
-        $businessProfiles = $this->getBusinessAutoSuggestSearchData($query, ucwords($locale));
+        $businessProfiles = $this->searchBusinessAutoSuggestInElastic($query, $locale);
 
         $result = array_merge($categories, $businessProfiles);
 
@@ -242,9 +242,9 @@ class BusinessProfileManager extends Manager
         return $data;
     }
 
-    public function search(SearchDTO $searchParams, string $locale, $useElastic = true)
+    public function search(SearchDTO $searchParams, string $locale)
     {
-        $searchResultsData = $this->getSearchData($searchParams, $locale, $useElastic);
+        $searchResultsData = $this->searchBusinessInElastic($searchParams, $locale);
 
         return $searchResultsData;
     }
@@ -755,16 +755,6 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
-    }
-
-    /**
-     * @param SearchDTO $searchParams
-     * @param string    $locale
-     * @return mixed
-     */
-    public function countSearchResults(SearchDTO $searchParams, string $locale)
-    {
-        return $this->getRepository()->countSearchResults($searchParams, $locale);
     }
 
     /**
@@ -1416,48 +1406,6 @@ class BusinessProfileManager extends Manager
         return $country;
     }
 
-    protected function getSearchData($searchParams, $locale, $useElastic = true)
-    {
-        if ($useElastic) {
-            $searchResultsData = $this->searchBusinessInElastic($searchParams, $locale);
-        } else {
-            $searchResultsData = $this->searchBusinessInDB($searchParams, $locale);
-        }
-
-        return $searchResultsData;
-    }
-
-    protected function getBusinessAutoSuggestSearchData($searchParams, $locale, $useElastic = true)
-    {
-        if ($useElastic) {
-            $searchResultsData = $this->searchBusinessAutoSuggestInElastic($searchParams, $locale);
-        } else {
-            $searchResultsData = $this->searchBusinessAutoSuggestInDB($searchParams, $locale);
-        }
-
-        return $searchResultsData;
-    }
-
-    protected function searchBusinessInDB($searchParams, $locale)
-    {
-        $searchResultsData = $this->getRepository()->search($searchParams, $locale);
-
-        $searchResultsData = array_map(function ($item) {
-            return $item[0]->setDistance($item['distance']);
-        }, $searchResultsData);
-
-        if ($searchResultsData) {
-            $total = $this->countSearchResults($searchParams, $locale);
-        } else {
-            $total = 0;
-        }
-
-        return [
-            'data' => $searchResultsData,
-            'total' => $total,
-        ];
-    }
-
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
@@ -1476,13 +1424,6 @@ class BusinessProfileManager extends Manager
         }, $search['data']);
 
         return $search;
-    }
-
-    protected function searchBusinessAutoSuggestInDB($query, $locale)
-    {
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, ucwords($locale));
-
-        return $businessProfiles;
     }
 
     protected function searchBusinessAutoSuggestInElastic($query, $locale)
@@ -1578,6 +1519,44 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
+    public function handleElasticSearchIndexRefresh()
+    {
+        $status = false;
+
+        $deleteStatus = $this->deleteElasticSearchIndex();
+
+        if ($deleteStatus) {
+            $createStatus = $this->createElasticSearchIndex();
+
+            if ($createStatus) {
+                $this->getRepository()->setUpdatedAllBusinessProfiles();
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
+
+    protected function deleteElasticSearchIndex()
+    {
+        $status = true;
+
+        try {
+            $response = $this->elasticSearchManager->deleteIndex();
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+
+            if (!empty($message->error->type) and
+                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            ) {
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
+
     /**
      * @param BusinessProfile[] $businessProfiles
      *
@@ -1663,6 +1642,9 @@ class BusinessProfileManager extends Manager
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
             'description_' . strtolower($locale) . '^1',
+            'name_' . strtolower($locale) . '.folded^5',
+            'categories_' . strtolower($locale) . '.folded^3',
+            'description_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -1812,10 +1794,12 @@ class BusinessProfileManager extends Manager
             'size' => $limit,
             'track_scores' => true,
             'query' => [
-                'match' => [
-                    'auto_suggest_' . strtolower($locale) => [
-                        'query' => $query,
-                        'operator' => 'and',
+                'multi_match' => [
+                    'type' => 'most_fields',
+                    'query' => $query,
+                    'fields' => [
+                        'auto_suggest_' . strtolower($locale),
+                        'auto_suggest_' . strtolower($locale) . '.folded'
                     ],
                 ],
             ],
@@ -1906,11 +1890,89 @@ class BusinessProfileManager extends Manager
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
             ],
             'auto_suggest_es' => [
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'name_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'name_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'categories_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'categories_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'description_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'description_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
             ],
             'location' => [
                 'type' => 'geo_point'

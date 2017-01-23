@@ -673,50 +673,6 @@ class BusinessProfile implements
      */
     protected $isClosed;
 
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_en", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "nameEn",
-     *              "descriptionEn"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEn;
-
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_es", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "nameEs",
-     *              "descriptionEs"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEs;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="search_city_fts", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "city"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchCityFts;
-
     /**
      * @var BusinessProfile
      *
@@ -2213,52 +2169,6 @@ class BusinessProfile implements
         $this->neighborhoods = $neighborhoods;
     }
 
-     /**
-     * Set searchFtsEn
-     *
-     * @param tsvector $searchFtsEn
-     *
-     * @return BusinessProfile
-     */
-    public function setSearchFtsEn($searchFtsEn)
-    {
-        $this->searchFtsEn = $searchFtsEn;
-        return $this;
-    }
-
-    /*
-    * Get searchFtsEn
-    *
-    * @return tsvector
-    */
-    public function getSearchFtsEn()
-    {
-        return $this->searchFtsEn;
-    }
-
-     /**
-     * Set searchFtsEs
-     *
-     * @param tsvector $searchFtsEs
-     *
-     * @return BusinessProfile
-     */
-    public function setSearchFtsEs($searchFtsEs)
-    {
-        $this->searchFtsEs = $searchFtsEs;
-        return $this;
-    }
-
-    /*
-    * Get searchFtsEs
-    *
-    * @return tsvector
-    */
-    public function getSearchFtsEs()
-    {
-        return $this->searchFtsEs;
-    }
-
     /**
      * @return mixed
      */
@@ -2292,19 +2202,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set searchCityFts
-     *
-     * @param tsvector $searchCityFts
-     *
-     * @return BusinessProfile
-     */
-    public function setSearchCityFts($searchCityFts)
-    {
-        $this->searchCityFts = $searchCityFts;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2325,16 +2222,6 @@ class BusinessProfile implements
     public function __clone()
     {
         $this->id = null;
-    }
-
-    /**
-     * Get searchCityFts
-     *
-     * @return tsvector
-     */
-    public function getSearchCityFts()
-    {
-        return $this->searchCityFts;
     }
 
     /**

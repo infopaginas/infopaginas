@@ -94,7 +94,7 @@ class ElasticSearchManager
                     'analysis' => [
                         'analyzer' => [
                             'folding' => [
-                                'tokenizer' => 'standard',
+                                'tokenizer' => 'autocomplete',
                                 'filter' =>  [
                                     'lowercase',
                                     'asciifolding'
@@ -106,7 +106,6 @@ class ElasticSearchManager
                                     'lowercase',
                                 ],
                             ],
-
                             'autocomplete_search' => [
                                 'tokenizer' => 'lowercase',
                             ],
@@ -150,6 +149,17 @@ class ElasticSearchManager
         ];
 
         $response = $this->client->delete($params);
+
+        return $response;
+    }
+
+    public function deleteIndex()
+    {
+        $params = [
+            'index' => $this->documentIndex,
+        ];
+
+        $response = $this->client->indices()->delete($params);
 
         return $response;
     }
