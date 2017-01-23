@@ -3,7 +3,6 @@
 namespace Domain\BusinessBundle\Admin\Media;
 
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -76,15 +75,6 @@ class BusinessGalleryAdmin extends OxaAdmin
                 'style'         => 'resize: none',
                 'placeholder'   => 'Create an image description as if you were describing the image to someone who cannot see it',
             ]])
-            ->add('type', ChoiceType::class, [
-                'choices' => [
-                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES => 'Photo',
-                    OxaMediaInterface::CONTEXT_BANNER => 'Display Ad',
-                ],
-                'multiple' => false,
-                'expanded' => true,
-                'required' => true,
-            ])
             ->add('isPrimary')
             ->add('isActive')
             ->add('position', 'hidden', [

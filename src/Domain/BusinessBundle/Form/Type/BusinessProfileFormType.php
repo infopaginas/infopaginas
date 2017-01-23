@@ -478,6 +478,14 @@ class BusinessProfileFormType extends AbstractType
                 'allow_delete' => true,
                 'allow_extra_fields' => true,
             ])
+            ->add('logo', BusinessLogoType::class, [
+                'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
+                'by_reference' => false,
+            ])
+            ->add('background', BusinessBackgroundType::class, [
+                'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
+                'by_reference' => false,
+            ])
         ;
     }
 

@@ -1648,12 +1648,6 @@ class BusinessProfile implements
         $this->images[] = $image;
         $image->setBusinessProfile($this);
 
-        if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-            $this->setLogo($image->getMedia());
-        } elseif ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
-            $this->setBackground($image->getMedia());
-        }
-
         return $this;
     }
 
