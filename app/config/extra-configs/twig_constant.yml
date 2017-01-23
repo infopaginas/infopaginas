@@ -1,8 +1,6 @@
 # Twig Constant Configuration
 twig:
     globals:
-        PROPERTY_IMAGE_PROPERTY_UPDATE: 'PROPERTY_IMAGE_PROPERTY_UPDATE'    # const of ChangeSetCalculator class
-
 #       const of Category class
         CATEGORY_LEVEL_1: 1
         CATEGORY_LEVEL_2: 2
@@ -40,3 +38,21 @@ twig:
             ATH_MOVIL:  'ath_movil'
             ONLINE:     'online'
             DEBIT:      'debit'
+
+#       const types of ChangeSetCalculator class
+        CHANGE_SET_TYPE:
+            PROPERTY_IMAGE_PROPERTY_UPDATE: 'PROPERTY_IMAGE_PROPERTY_UPDATE'
+            PROPERTY_CHANGE:                'PROPERTY_CHANGE'
+            PROPERTY_ADD:                   'PROPERTY_ADD'
+            PROPERTY_REMOVE:                'PROPERTY_REMOVE'
+            IMAGE_ADD:                      'IMAGE_ADD'
+            IMAGE_REMOVE:                   'IMAGE_REMOVE'
+            VIDEO_ADD:                      'VIDEO_ADD'
+            VIDEO_REMOVE:                   'VIDEO_REMOVE'
+            VIDEO_UPDATE:                   'VIDEO_UPDATE'
+            LOGO_ADD:                       'LOGO_ADD'
+            LOGO_REMOVE:                    'LOGO_REMOVE'
+            LOGO_UPDATE:                    'LOGO_UPDATE'
+            BACKGROUND_ADD:                 'BACKGROUND_ADD'
+            BACKGROUND_REMOVE:              'BACKGROUND_REMOVE'
+            BACKGROUND_UPDATE:              'BACKGROUND_UPDATE'

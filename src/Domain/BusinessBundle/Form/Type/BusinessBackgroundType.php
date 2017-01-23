@@ -10,7 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class BusinessBackgroundType
- * @package Domain\BusinessBundle\Form\Type
  */
 class BusinessBackgroundType extends AbstractType
 {

@@ -248,7 +248,9 @@ class ChangeSetCollectorUtil
         $changeEntries = [];
 
         foreach ($fieldsChanges as $field => $change) {
-            if (!is_array($change) || $field == 'video' || $field == BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO || $field == BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND) {
+            if (!is_array($change) || $field == 'video' || $field == BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO ||
+                $field == BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND
+            ) {
                 continue;
             }
 
@@ -326,7 +328,7 @@ class ChangeSetCollectorUtil
                 $entry->setOldValue('');
                 $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[1]));
                 $entry->setAction(ChangeSetCalculator::VIDEO_ADD);
-            } elseif($diff[1] == null) {
+            } elseif ($diff[1] == null) {
                 $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[0]));
                 $entry->setNewValue('');
                 $entry->setAction(ChangeSetCalculator::VIDEO_REMOVE);
@@ -352,11 +354,13 @@ class ChangeSetCollectorUtil
                 $removeAction = ChangeSetCalculator::LOGO_REMOVE;
                 $updateAction = ChangeSetCalculator::LOGO_UPDATE;
                 break;
+
             case BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND:
                 $addAction    = ChangeSetCalculator::BACKGROUND_ADD;
                 $removeAction = ChangeSetCalculator::BACKGROUND_REMOVE;
                 $updateAction = ChangeSetCalculator::BACKGROUND_UPDATE;
                 break;
+
             default:
                 return false;
         }
@@ -381,7 +385,7 @@ class ChangeSetCollectorUtil
                 $entry->setOldValue('');
                 $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[1]));
                 $entry->setAction($addAction);
-            } elseif($diff[1] == null) {
+            } elseif ($diff[1] == null) {
                 $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileMediaItem($diff[0]));
                 $entry->setNewValue('');
                 $entry->setAction($removeAction);

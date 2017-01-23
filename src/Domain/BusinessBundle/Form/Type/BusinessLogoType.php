@@ -10,7 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class BusinessLogoType
- * @package Domain\BusinessBundle\Form\Type
  */
 class BusinessLogoType extends AbstractType
 {

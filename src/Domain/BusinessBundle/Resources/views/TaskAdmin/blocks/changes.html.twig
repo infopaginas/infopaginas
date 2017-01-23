@@ -55,7 +55,7 @@
 
                     <td>{{ normalize_task_changeaction_label(row.action) }}</td>
 
-                    {% if row.action == PROPERTY_IMAGE_PROPERTY_UPDATE %}
+                    {% if row.action == CHANGE_SET_TYPE.PROPERTY_IMAGE_PROPERTY_UPDATE %}
                         {# get view of BusinessGallery updated properties #}
                         {% set imageChanges = get_business_profile_image_property_changes(row.oldValue, row.newValue) %}
                         <td>
@@ -68,31 +68,28 @@
                                 {{ item.new }}<br/>
                             {% endfor %}
                         </td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::LOGO_ADD')
-                        or row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::BACKGROUND_ADD') %}
+                    {% elseif (row.action == CHANGE_SET_TYPE.LOGO_ADD or row.action == CHANGE_SET_TYPE.BACKGROUND_ADD) %}
                         {% set changes = get_business_profile_image_changes(row.newValue) %}
                         <td>-</td>
                         <td>{{ changes.name }}</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::LOGO_REMOVE')
-                        or row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::BACKGROUND_REMOVE') %}
+                    {% elseif (row.action == CHANGE_SET_TYPE.LOGO_REMOVE or row.action == CHANGE_SET_TYPE.BACKGROUND_REMOVE) %}
                         {% set changes = get_business_profile_image_changes(row.oldValue) %}
                         <td>{{ changes.name }}</td>
                         <td>-</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::LOGO_UPDATE')
-                        or row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::BACKGROUND_UPDATE') %}
+                    {% elseif (row.action == CHANGE_SET_TYPE.LOGO_UPDATE or row.action == CHANGE_SET_TYPE.BACKGROUND_UPDATE) %}
                         {% set oldData = get_business_profile_image_changes(row.oldValue) %}
                         {% set newData = get_business_profile_image_changes(row.newValue) %}
                         <td>{{ oldData.name }}</td>
                         <td>{{ newData.name }}</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_ADD') %}
+                    {% elseif row.action == CHANGE_SET_TYPE.VIDEO_ADD %}
                         {% set changes = get_business_profile_image_changes(row.newValue) %}
                         <td></td>
                         <td>{{ changes.name }}</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_REMOVE') %}
+                    {% elseif row.action == CHANGE_SET_TYPE.VIDEO_REMOVE %}
                         {% set changes = get_business_profile_image_changes(row.oldValue) %}
                         <td>{{ changes.name }}</td>
                         <td></td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_UPDATE') %}
+                    {% elseif row.action == CHANGE_SET_TYPE.VIDEO_UPDATE %}
                         {% set oldData = get_business_profile_image_changes(row.oldValue) %}
                         {% set newData = get_business_profile_image_changes(row.newValue) %}
                         {% if oldData != '' %}
@@ -115,11 +112,11 @@
                                 {% endfor %}
                             </td>
                         {% endif %}
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_REMOVE') %}
+                    {% elseif row.action == CHANGE_SET_TYPE.IMAGE_REMOVE %}
                         {% set changes = get_business_profile_image_changes(row.oldValue) %}
                         <td> {{ changes.name }} </td>
                         <td>-</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_ADD') %}
+                    {% elseif row.action == CHANGE_SET_TYPE.IMAGE_ADD %}
                         {% set changes = get_business_profile_image_changes(row.newValue) %}
                         <td>-</td>
                         <td> {{ changes.name }} </td>
