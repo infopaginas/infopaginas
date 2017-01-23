@@ -116,7 +116,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
 
             $mediaItems = [
                 BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND
+                BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND,
             ];
 
             foreach ($mediaItems as $mediaItem) {

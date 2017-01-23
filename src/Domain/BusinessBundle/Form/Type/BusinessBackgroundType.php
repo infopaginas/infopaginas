@@ -23,8 +23,8 @@ class BusinessBackgroundType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'attr' => [
-                    'class'     => 'form-control',
-                    'readonly'  => true,
+                    'class'    => 'form-control',
+                    'readonly' => true,
                 ],
                 'label' => 'Name',
             ])
