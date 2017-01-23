@@ -1578,6 +1578,41 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
+    public function handleElasticSearchIndexRefresh()
+    {
+        $status = $this->deleteElasticSearchIndex();
+
+        if ($status) {
+            $status = $this->createElasticSearchIndex();
+
+            if ($status) {
+                $this->getRepository()->setUpdatedAllBusinessProfiles();
+            }
+        }
+
+        return $status;
+    }
+
+    protected function deleteElasticSearchIndex()
+    {
+        $status = true;
+
+        try {
+            $response = $this->elasticSearchManager->deleteIndex();
+        } catch (\Exception $e) {
+            $status = false;
+            $message = json_decode($e->getMessage());
+
+            if (!empty($message->error->type) and
+                $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
+            ) {
+                $status = true;
+            }
+        }
+
+        return $status;
+    }
+
     /**
      * @param BusinessProfile[] $businessProfiles
      *
@@ -1663,6 +1698,9 @@ class BusinessProfileManager extends Manager
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
             'description_' . strtolower($locale) . '^1',
+            'name_' . strtolower($locale) . '.folded^5',
+            'categories_' . strtolower($locale) . '.folded^3',
+            'description_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -1812,10 +1850,12 @@ class BusinessProfileManager extends Manager
             'size' => $limit,
             'track_scores' => true,
             'query' => [
-                'match' => [
-                    'auto_suggest_' . strtolower($locale) => [
-                        'query' => $query,
-                        'operator' => 'and',
+                'multi_match' => [
+                    'type' => 'most_fields',
+                    'query' => $query,
+                    'fields' => [
+                        'auto_suggest_' . strtolower($locale),
+                        'auto_suggest_' . strtolower($locale) . '.folded'
                     ],
                 ],
             ],
@@ -1906,11 +1946,89 @@ class BusinessProfileManager extends Manager
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
             ],
             'auto_suggest_es' => [
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'name_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'name_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'categories_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'categories_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'description_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'description_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
             ],
             'location' => [
                 'type' => 'geo_point'

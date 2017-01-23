@@ -760,4 +760,23 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $iterateResult;
     }
+
+    /**
+     * Set isUpdated flag for all businesses for elastic search synchronization
+     *
+     * @return mixed
+     */
+    public function setUpdatedAllBusinessProfiles()
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->set('bp.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
 }
