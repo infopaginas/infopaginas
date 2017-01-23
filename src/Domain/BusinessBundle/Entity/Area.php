@@ -79,20 +79,6 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     protected $locality;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "name"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFts;
-
-    /**
      * Get id
      *
      * @return int
@@ -190,30 +176,6 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\AreaTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    /**
-     * Set searchFts
-     *
-     * @param tsvector $searchFts
-     *
-     * @return Area
-     */
-    public function setSearchFts($searchFts)
-    {
-        $this->searchFts = $searchFts;
-
-        return $this;
-    }
-
-    /**
-     * Get searchFts
-     *
-     * @return tsvector
-     */
-    public function getSearchFts()
-    {
-        return $this->searchFts;
     }
 
     /**

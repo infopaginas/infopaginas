@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 
 /**
  * Class BusinessStatusManager
@@ -24,22 +25,29 @@ class BusinessStatusManager
     }
 
     /**
+     * @param Category $entity
+     */
+    public function manageCategoryStatusPreUpdate(Category $entity, EntityManager $em)
+    {
+        $changeSet = $em->getUnitOfWork()->getEntityChangeSet($entity);
+
+        if (!$entity->getIsUpdated() and empty($changeSet[Category::FLAG_IS_UPDATED])) {
+            $entity->setIsUpdated(true);
+        }
+    }
+
+    /**
      * @param BusinessProfile[] $entities
      * @param EntityManager $em
      */
     public function manageBusinessStatusPostUpdate($entities, EntityManager $em)
     {
-        $isUpdated = false;
-
         foreach ($entities as $entity) {
             if (!$entity->getIsUpdated()) {
                 $entity->setIsUpdated(true);
-                $isUpdated = true;
-            }
-        }
 
-        if ($isUpdated) {
-            $em->flush();
+                $em->getRepository('DomainBusinessBundle:BusinessProfile')->setUpdatedBusinessProfile($entity->getId());
+            }
         }
     }
 }

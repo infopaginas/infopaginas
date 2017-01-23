@@ -88,64 +88,6 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb->getQuery()->getResult();
     }
 
-    public function searchAutosuggest($name, string $locale)
-    {
-        $name    = $this->splitPhraseToPlain($name);
-        $connection = $this->getEntityManager()->getConnection();
-
-        $searchSQL = $this->getSearchSQLQuery($locale);
-
-        $statement = $connection->prepare(
-            "SELECT
-                ts_headline(name, q) as data,
-                name
-            FROM
-            (
-                $searchSQL
-            ) as search
-            LIMIT 5"
-        );
-
-        $statement->bindValue("searchQuery", $name);
-        $statement->execute();
-        $results = $statement->fetchAll();
-
-        return $results;
-    }
-
-    protected function getSearchSQLQuery(string $locale)
-    {
-        return 'SELECT
-                c.id AS id,
-                c.search_text_' . $locale . ' as name,
-                q,
-                ts_rank(c.search_fts_' . $locale . ', q) AS rank
-            FROM
-                category c,
-                to_tsquery(:searchQuery) q
-            WHERE
-                c.search_fts_' . $locale . ' @@ q
-            AND (
-                c.deleted_at IS NULL
-            )
-            ORDER BY rank DESC, name';
-    }
-
-    protected function splitPhraseToPlain(string $phrase)
-    {
-        $words = explode(' ', $phrase);
-        $words = array_filter($words);
-        $wordParts = array_map(
-            function ($item) {
-                return $item . ":*";
-            },
-            $words
-        );
-        $plain = implode(' & ', $wordParts);
-
-        return $plain;
-    }
-
     protected function getCategoryQueryBuilder()
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
@@ -282,5 +224,40 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         ;
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getUpdatedCategoriesIterator()
+    {
+        $qb = $this->getAvailableCategoriesQb();
+        $qb->andWhere('c.isUpdated = TRUE');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * Set isUpdated flag for all businesses for elastic search synchronization
+     *
+     * @return mixed
+     */
+    public function setUpdatedAllCategories()
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:Category', 'c')
+            ->where('c.isActive = TRUE')
+            ->set('c.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
     }
 }

@@ -54,6 +54,10 @@ class ElasticSearchSubscriber implements EventSubscriber
         if ($entity instanceof BusinessProfile) {
             $this->businessStatusManager->manageBusinessStatusPreUpdate($entity, $args->getEntityManager());
         }
+
+        if ($entity instanceof Category) {
+            $this->businessStatusManager->manageCategoryStatusPreUpdate($entity, $args->getEntityManager());
+        }
     }
 
     public function postUpdate(LifecycleEventArgs $args)

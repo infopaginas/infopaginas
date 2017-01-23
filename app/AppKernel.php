@@ -50,7 +50,6 @@ class AppKernel extends Kernel
             new Ivory\GoogleMapBundle\IvoryGoogleMapBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
-            new Alsatian\PostgresSearchBundle\AlsatianPostgresSearchBundle(),
             new \JMaitan\SonataMediaCropBundle\JMaitanSonataMediaCropBundle(),
             new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),

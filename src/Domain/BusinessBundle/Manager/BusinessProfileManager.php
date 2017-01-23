@@ -130,7 +130,7 @@ class BusinessProfileManager extends Manager
 
     public function searchAutosuggestByPhraseAndLocation($query, $locale)
     {
-        $categories = $this->categoryManager->searchAutosuggestByName($query, $locale);
+        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale);
         $businessProfiles = $this->searchBusinessAutoSuggestInElastic($query, $locale);
 
         $result = array_merge($categories, $businessProfiles);
@@ -1409,7 +1409,7 @@ class BusinessProfileManager extends Manager
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
-        $response = $this->searchElastic($searchQuery);
+        $response = $this->searchBusinessElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response);
 
         $search['data'] = array_map(function ($item) use ($searchParams) {
@@ -1429,7 +1429,7 @@ class BusinessProfileManager extends Manager
     protected function searchBusinessAutoSuggestInElastic($query, $locale)
     {
         $searchQuery = $this->getElasticAutoSuggestSearchQuery($query, $locale);
-        $response = $this->searchElastic($searchQuery);
+        $response = $this->searchBusinessElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response);
 
         $search['data'] = array_map(function ($item) {
@@ -1443,13 +1443,63 @@ class BusinessProfileManager extends Manager
         return $search['data'];
     }
 
-    protected function searchElastic($searchQuery)
+    protected function searchCategoryAutoSuggestInElastic($query, $locale)
+    {
+        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale);
+        $response = $this->searchCategoryElastic($searchQuery);
+
+        $search = $this->categoryManager->getCategoryFromElasticResponse($response);
+
+        $search['data'] = array_map(function ($item) {
+            $name = [];
+
+            $parent1 = $item->getParent();
+
+            if ($parent1) {
+                $parent2 = $parent1->getParent();
+
+                if ($parent2) {
+                    $name[] = $parent2->getName();
+                }
+
+                $name[] = $parent1->getName();
+            }
+
+            $name[] = $item->getName();
+
+            $data = implode(CategoryManager::AUTO_SUGGEST_SEPARATOR, $name);
+
+            return [
+                'type' => CategoryManager::AUTO_COMPLETE_TYPE,
+                'name' => $data,
+                'data' => $data,
+            ];
+        }, $search['data']);
+
+        return $search['data'];
+    }
+
+    protected function searchElastic($searchQuery, $documentType)
     {
         try {
-            $response = $this->elasticSearchManager->search($searchQuery);
+            $response = $this->elasticSearchManager->search($searchQuery, $documentType);
         } catch (\Exception $e) {
             $response = [];
         }
+
+        return $response;
+    }
+
+    protected function searchBusinessElastic($searchQuery)
+    {
+        $response = $this->searchElastic($searchQuery, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
+
+        return $response;
+    }
+
+    protected function searchCategoryElastic($searchQuery)
+    {
+        $response = $this->searchElastic($searchQuery, Category::ELASTIC_DOCUMENT_TYPE);
 
         return $response;
     }
@@ -1502,10 +1552,10 @@ class BusinessProfileManager extends Manager
     public function createElasticSearchIndex()
     {
         $status = true;
-        $properties = $this->getElasticSearchIndexParams();
+        $mappings = $this->getElasticSearchMappings();
 
         try {
-            $response = $this->elasticSearchManager->createIndex($properties);
+            $response = $this->elasticSearchManager->createIndex($mappings);
         } catch (\Exception $e) {
             $status = false;
             $message = json_decode($e->getMessage());
@@ -1530,11 +1580,54 @@ class BusinessProfileManager extends Manager
 
             if ($createStatus) {
                 $this->getRepository()->setUpdatedAllBusinessProfiles();
+                $this->categoryManager->setUpdatedAllCategories();
                 $status = true;
             }
         }
 
         return $status;
+    }
+
+    protected function getElasticSearchMappings()
+    {
+        $businessMapping = $this->getBusinessElasticSearchMapping();
+        $categoryMapping = $this->categoryManager->getCategoryElasticSearchMapping();
+
+        $mappings = array_merge($businessMapping, $categoryMapping);
+
+        return $mappings;
+    }
+
+    protected function getBusinessElasticSearchMapping($sourceEnabled = true)
+    {
+        $properties = $this->getBusinessElasticSearchIndexParams();
+
+        $data = [
+            BusinessProfile::ELASTIC_DOCUMENT_TYPE => [
+                '_source' => [
+                    'enabled' => $sourceEnabled,
+                ],
+                'properties' => $properties,
+            ],
+        ];
+
+        return $data;
+    }
+
+    protected function getCategoryElasticSearchMapping($sourceEnabled = true)
+    {
+        $properties = $this->categoryManager->getCategoryElasticSearchIndexParams();
+
+        $data = [
+            Category::ELASTIC_DOCUMENT_TYPE => [
+                '_source' => [
+                    'enabled' => $sourceEnabled,
+                ],
+                'properties' => $properties,
+            ],
+        ];
+
+        return $data;
     }
 
     protected function deleteElasticSearchIndex()
@@ -1591,15 +1684,27 @@ class BusinessProfileManager extends Manager
      */
     public function addBusinessesToElasticIndex($data)
     {
-        $response = $this->addElasticBulkBusinessData($data);
+        $response = $this->addElasticBulkItemData($data, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
 
         return $response;
     }
 
-    protected function addElasticBulkBusinessData($data)
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function addCategoriesToElasticIndex($data)
+    {
+        $response = $this->addElasticBulkItemData($data, Category::ELASTIC_DOCUMENT_TYPE);
+
+        return $response;
+    }
+
+    protected function addElasticBulkItemData($data, $documentType)
     {
         try {
-            $status = $this->elasticSearchManager->addBulkItems($data);
+            $status = $this->elasticSearchManager->addBulkItems($data, $documentType);
         } catch (\Exception $e) {
             $status = false;
             $message = json_decode($e->getMessage());
@@ -1609,19 +1714,17 @@ class BusinessProfileManager extends Manager
                 $message->error->type == ElasticSearchManager::INDEX_NOT_FOUND_EXCEPTION
             ) {
                 $this->createElasticSearchIndex();
-                $status = $this->elasticSearchManager->addBulkItems($data);
+                $status = $this->elasticSearchManager->addBulkItems($data, $documentType);
             }
         }
 
         return $status;
     }
 
-    public function removeBusinessFromElastic($id)
+    protected function removeItemFromElastic($id, $documentType)
     {
-        $status = true;
-
         try {
-            $response = $this->elasticSearchManager->deleteItem($id);
+            $response = $this->elasticSearchManager->deleteItem($id, $documentType);
         } catch (\Exception $e) {
             $status = false;
             $message = json_decode($e->getMessage());
@@ -1632,6 +1735,20 @@ class BusinessProfileManager extends Manager
                 $status = true;
             }
         }
+
+        return $status;
+    }
+
+    public function removeBusinessFromElastic($id)
+    {
+        $status = $this->removeItemFromElastic($id, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
+
+        return $status;
+    }
+
+    public function removeCategoryFromElastic($id)
+    {
+        $status = $this->removeItemFromElastic($id, Category::ELASTIC_DOCUMENT_TYPE);
 
         return $status;
     }
@@ -1883,7 +2000,7 @@ class BusinessProfileManager extends Manager
         return $data;
     }
 
-    protected function getElasticSearchIndexParams()
+    protected function getBusinessElasticSearchIndexParams()
     {
         $params = [
             'auto_suggest_en' => [
@@ -2037,6 +2154,57 @@ class BusinessProfileManager extends Manager
 
             if ($data) {
                 $this->addBusinessesToElasticIndex($data);
+            }
+
+            $this->em->flush();
+        }
+    }
+
+    public function handleCategoryElasticSync()
+    {
+        $index = $this->createElasticSearchIndex();
+
+        if ($index) {
+            $categories = $this->categoryManager->getUpdatedCategoriesIterator();
+
+            $countDoctrine = 0;
+            $batchDoctrine = 20;
+
+            $countElastic = 0;
+            $batchElastic = $this->elasticSearchManager->getIndexingPage();
+
+            $data = [];
+
+            foreach ($categories as $categoryRow) {
+                /* @var $category Category */
+                $category = current($categoryRow);
+
+                $item = $this->categoryManager->buildCategoryElasticData($category);
+
+                if ($item) {
+                    $data[] = $item;
+                } else {
+                    $this->removeCategoryFromElastic($category->getId());
+                }
+
+                $category->setIsUpdated(false);
+
+                if (($countElastic % $batchElastic) === 0) {
+                    $this->addCategoriesToElasticIndex($data);
+                    $data = [];
+                }
+
+                if (($countDoctrine % $batchDoctrine) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $countElastic ++;
+                $countDoctrine ++;
+            }
+
+            if ($data) {
+                $this->addCategoriesToElasticIndex($data);
             }
 
             $this->em->flush();

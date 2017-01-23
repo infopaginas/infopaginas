@@ -531,4 +531,28 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    /**
+     * workaround for unstable EntityManagerInterface#flush() inside of event lintener
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function setUpdatedBusinessProfile($id)
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bp.id = :id')
+            ->set('bp.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
 }

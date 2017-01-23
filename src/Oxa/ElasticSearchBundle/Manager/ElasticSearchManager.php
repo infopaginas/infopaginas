@@ -36,11 +36,15 @@ class ElasticSearchManager
         $this->client        = $builder->build();
     }
 
-    public function search($searchQuery)
+    public function search($searchQuery, $documentType = false)
     {
+        if (!$documentType) {
+            $documentType = $this->getDocumentType();
+        }
+
         $params = [
             'index' => $this->documentIndex,
-            'type'  => $this->getDocumentType(),
+            'type'  => $documentType,
             'body'  => $searchQuery,
         ];
 
@@ -49,22 +53,26 @@ class ElasticSearchManager
         return $result;
     }
 
-    public function addBulkItems(array $data)
+    public function addBulkItems(array $data, $documentType = false)
     {
+        if (!$documentType) {
+            $documentType = $this->getDocumentType();
+        }
+
         $status = true;
         $this->setIndexPaused();
 
         try {
-            $jsonData = $this->getDefaultBulkJson();
+            $jsonData = $this->getDefaultBulkJson($documentType);
 
             $indexingPage = $this->indexingPage * 2;
 
             foreach ($data as $item) {
-                $jsonData = $this->addItemToRequest($item, $jsonData);
+                $jsonData = $this->addItemToRequest($item, $documentType, $jsonData);
 
                 if (count($jsonData['body']) >= $indexingPage) {
                     $response = $this->sendBulkData($jsonData);
-                    $jsonData = $this->getDefaultBulkJson();
+                    $jsonData = $this->getDefaultBulkJson($documentType);
                 }
             }
 
@@ -82,7 +90,7 @@ class ElasticSearchManager
         return $status;
     }
 
-    public function createIndex($properties, $sourceEnabled = true)
+    public function createIndex($mappings)
     {
         $params = [
             'index' => $this->documentIndex,
@@ -123,14 +131,7 @@ class ElasticSearchManager
                         ],
                     ],
                 ],
-                'mappings' => [
-                    $this->getDocumentType() => [
-                        '_source' => [
-                            'enabled' => $sourceEnabled, // Source is enabled and all data are saved in original format. Please disable to use lower memory for indexing. You can return index to correct load data in application
-                        ],
-                        'properties' => $properties,
-                    ]
-                ]
+                'mappings' => $mappings
             ]
         ];
 
@@ -140,11 +141,15 @@ class ElasticSearchManager
         return $response;
     }
 
-    public function deleteItem($id)
+    public function deleteItem($id, $documentType = false)
     {
+        if (!$documentType) {
+            $documentType = $this->getDocumentType();
+        }
+
         $params = [
             'index' => $this->documentIndex,
-            'type'  => $this->getDocumentType(),
+            'type'  => $documentType,
             'id'    => (int)$id,
         ];
 
@@ -164,17 +169,17 @@ class ElasticSearchManager
         return $response;
     }
 
-    protected function addItemToRequest(array $data, $jsonData = [])
+    protected function addItemToRequest(array $data, $documentType, $jsonData = [])
     {
         if (!$jsonData) {
-            $jsonData = $this->getDefaultBulkJson();
+            $jsonData = $this->getDefaultBulkJson($documentType);
         }
 
         $jsonData['body'][] = json_encode([
             'index' => [
                 '_id'   => (int)$data['id'],
                 '_index' => $this->documentIndex,
-                '_type'  => $this->getDocumentType(),
+                '_type'  => $documentType,
             ]
         ]);
 
@@ -194,11 +199,11 @@ class ElasticSearchManager
         return $response;
     }
 
-    protected function getDefaultBulkJson()
+    protected function getDefaultBulkJson($documentType)
     {
         return [
             'index' => $this->documentIndex,
-            'type'  => $this->getDocumentType(),
+            'type'  => $documentType,
             'body'  => [],
         ];
     }
