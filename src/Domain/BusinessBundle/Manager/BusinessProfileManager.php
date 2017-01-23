@@ -131,7 +131,7 @@ class BusinessProfileManager extends Manager
     public function searchAutosuggestByPhraseAndLocation($query, $locale)
     {
         $categories = $this->categoryManager->searchAutosuggestByName($query, $locale);
-        $businessProfiles = $this->getBusinessAutoSuggestSearchData($query, ucwords($locale));
+        $businessProfiles = $this->searchBusinessAutoSuggestInElastic($query, $locale);
 
         $result = array_merge($categories, $businessProfiles);
 
@@ -242,9 +242,9 @@ class BusinessProfileManager extends Manager
         return $data;
     }
 
-    public function search(SearchDTO $searchParams, string $locale, $useElastic = true)
+    public function search(SearchDTO $searchParams, string $locale)
     {
-        $searchResultsData = $this->getSearchData($searchParams, $locale, $useElastic);
+        $searchResultsData = $this->searchBusinessInElastic($searchParams, $locale);
 
         return $searchResultsData;
     }
@@ -755,16 +755,6 @@ class BusinessProfileManager extends Manager
     {
         $this->getEntityManager()->remove($businessProfile);
         $this->getEntityManager()->flush();
-    }
-
-    /**
-     * @param SearchDTO $searchParams
-     * @param string    $locale
-     * @return mixed
-     */
-    public function countSearchResults(SearchDTO $searchParams, string $locale)
-    {
-        return $this->getRepository()->countSearchResults($searchParams, $locale);
     }
 
     /**
@@ -1416,48 +1406,6 @@ class BusinessProfileManager extends Manager
         return $country;
     }
 
-    protected function getSearchData($searchParams, $locale, $useElastic = true)
-    {
-        if ($useElastic) {
-            $searchResultsData = $this->searchBusinessInElastic($searchParams, $locale);
-        } else {
-            $searchResultsData = $this->searchBusinessInDB($searchParams, $locale);
-        }
-
-        return $searchResultsData;
-    }
-
-    protected function getBusinessAutoSuggestSearchData($searchParams, $locale, $useElastic = true)
-    {
-        if ($useElastic) {
-            $searchResultsData = $this->searchBusinessAutoSuggestInElastic($searchParams, $locale);
-        } else {
-            $searchResultsData = $this->searchBusinessAutoSuggestInDB($searchParams, $locale);
-        }
-
-        return $searchResultsData;
-    }
-
-    protected function searchBusinessInDB($searchParams, $locale)
-    {
-        $searchResultsData = $this->getRepository()->search($searchParams, $locale);
-
-        $searchResultsData = array_map(function ($item) {
-            return $item[0]->setDistance($item['distance']);
-        }, $searchResultsData);
-
-        if ($searchResultsData) {
-            $total = $this->countSearchResults($searchParams, $locale);
-        } else {
-            $total = 0;
-        }
-
-        return [
-            'data' => $searchResultsData,
-            'total' => $total,
-        ];
-    }
-
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
@@ -1476,13 +1424,6 @@ class BusinessProfileManager extends Manager
         }, $search['data']);
 
         return $search;
-    }
-
-    protected function searchBusinessAutoSuggestInDB($query, $locale)
-    {
-        $businessProfiles = $this->getRepository()->searchAutosuggestWithBuilder($query, ucwords($locale));
-
-        return $businessProfiles;
     }
 
     protected function searchBusinessAutoSuggestInElastic($query, $locale)
@@ -1580,13 +1521,16 @@ class BusinessProfileManager extends Manager
 
     public function handleElasticSearchIndexRefresh()
     {
-        $status = $this->deleteElasticSearchIndex();
+        $status = false;
 
-        if ($status) {
-            $status = $this->createElasticSearchIndex();
+        $deleteStatus = $this->deleteElasticSearchIndex();
 
-            if ($status) {
+        if ($deleteStatus) {
+            $createStatus = $this->createElasticSearchIndex();
+
+            if ($createStatus) {
                 $this->getRepository()->setUpdatedAllBusinessProfiles();
+                $status = true;
             }
         }
 
