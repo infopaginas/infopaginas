@@ -44,6 +44,7 @@
         "willdurand/geocoder": "2.8.1",
         "hwi/oauth-bundle": "^0.4.1",
         "friendsofsymfony/jsrouting-bundle": "^1.6",
+        "spine/postgres-search-bundle": "^0.1.1",
         "liuggio/excelbundle": "v2.1.0",
         "spraed/pdf-generator-bundle": "v1.0",
         "guzzlehttp/guzzle": "^6.2",
