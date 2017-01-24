@@ -19,7 +19,7 @@ class SubscriptionStatusManager
     /**
      * @var Subscription[]|null
      */
-    private $balkSubscription;
+    private $bulkSubscriptions;
 
     /**
      * @param Subscription $entity
@@ -32,9 +32,9 @@ class SubscriptionStatusManager
             ->getActualSubscriptionsForBusiness($entity->getBusinessProfile());
 
         //store batch entities insert/update
-        $this->balkSubscription[] = $entity;
+        $this->bulkSubscriptions[] = $entity;
 
-        $baseEntities = $this->getSubscriptionsArrayForPriorityCalculation($baseEntities, $this->balkSubscription);
+        $baseEntities = $this->getSubscriptionsArrayForPriorityCalculation($baseEntities, $this->bulkSubscriptions);
 
         // get priority subscription
         $priorityEntity = $this->getPrioritySubscription($baseEntities);
