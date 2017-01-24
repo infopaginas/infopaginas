@@ -96,11 +96,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $businessProfiles;
 
     /**
-     * @ORM\OneToOne(targetEntity="Domain\MenuBundle\Entity\Menu", mappedBy="category", cascade={"persist"})
-     */
-    protected $menu;
-
-    /**
      * @var Article[]
      *
      * @ORM\OneToMany(
@@ -369,30 +364,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     }
 
     /**
-     * Set menu
-     *
-     * @param \Domain\MenuBundle\Entity\Menu $menu
-     *
-     * @return Category
-     */
-    public function setMenu(\Domain\MenuBundle\Entity\Menu $menu = null)
-    {
-        $this->menu = $menu;
-
-        return $this;
-    }
-
-    /**
-     * Get menu
-     *
-     * @return \Domain\MenuBundle\Entity\Menu
-     */
-    public function getMenu()
-    {
-        return $this->menu;
-    }
-
-    /**
      * @param AbstractPersonalTranslation $translation
      *
      * @return $this
@@ -403,7 +374,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
 
         return $this;
     }
-
 
     /**
      * Add article

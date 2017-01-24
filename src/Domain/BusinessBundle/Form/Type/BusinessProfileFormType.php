@@ -115,23 +115,6 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Email',
                 'constraints' => $emailConstraints,
             ])
-            ->add('tags', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'placeholder' => 'Advertising, Cafeterias, Grooming, Restaurants',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Tag',
-                'label' => 'Tags',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'multiple' => true,
-                'query_builder' => function (TagRepository $repository) {
-                    return $repository->getAvailableTagsQb();
-                },
-                'required' => false,
-            ])
             ->add('paymentMethods', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',
@@ -494,6 +477,14 @@ class BusinessProfileFormType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'allow_extra_fields' => true,
+            ])
+            ->add('logo', BusinessLogoType::class, [
+                'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
+                'by_reference' => false,
+            ])
+            ->add('background', BusinessBackgroundType::class, [
+                'data_class' => 'Oxa\Sonata\MediaBundle\Entity\Media',
+                'by_reference' => false,
             ])
         ;
     }

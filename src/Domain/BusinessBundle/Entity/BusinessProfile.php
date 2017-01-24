@@ -417,7 +417,7 @@ class BusinessProfile implements
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Media\BusinessGallery",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
-     *     orphanRemoval=false,
+     *     orphanRemoval=true,
      *     )
      * @ORM\OrderBy({"position" = "ASC"})
      */
@@ -1647,12 +1647,6 @@ class BusinessProfile implements
     {
         $this->images[] = $image;
         $image->setBusinessProfile($this);
-
-        if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-            $this->setLogo($image->getMedia());
-        } elseif ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND) {
-            $this->setBackground($image->getMedia());
-        }
 
         return $this;
     }

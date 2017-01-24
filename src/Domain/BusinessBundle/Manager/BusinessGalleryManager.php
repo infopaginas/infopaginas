@@ -45,10 +45,12 @@ class BusinessGalleryManager
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param FileBag $fileBag
+     * @param string          $context
+     * @param FileBag         $fileBag
+     *
      * @return BusinessProfile
      */
-    public function fillBusinessGallery(BusinessProfile $businessProfile, FileBag $fileBag)
+    public function fillBusinessGallery(BusinessProfile $businessProfile, $context, FileBag $fileBag)
     {
         $images = [];
 
@@ -56,7 +58,7 @@ class BusinessGalleryManager
         foreach ($fileBag->get('files') as $file) {
             $media = $this->createNewMediaEntryFromUploadedFile(
                 $file,
-                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES
+                $context
             );
             array_push($images, $media);
         }
@@ -72,12 +74,13 @@ class BusinessGalleryManager
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param string $url
-     * @param bool $isLogo
-     * @return BusinessProfile
+     * @param string          $context
+     * @param string          $url
+     *
+     * @return BusinessProfile|bool
      * @throws \Exception
      */
-    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $url, bool $isLogo = false)
+    public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $context, string $url)
     {
         $headers = SiteHelper::checkUrlExistence($url);
 
@@ -97,11 +100,9 @@ class BusinessGalleryManager
             // referencing the temp file (used for validation only)
             $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
 
-            $context = $this->getMigrationImageContext($isLogo);
-
             $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
 
-            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media, $isLogo);
+            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
 
             return $businessProfile;
         } else {
@@ -111,23 +112,22 @@ class BusinessGalleryManager
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param string $url
-     * @param bool $isLogo
-     * @return BusinessProfile
+     * @param string          $context
+     * @param string          $url
+     *
+     * @return BusinessProfile|bool
      * @throws \Exception
      */
-    public function createNewEntryFromLocalFile(BusinessProfile $businessProfile, string $url, bool $isLogo = false)
+    public function createNewEntryFromLocalFile(BusinessProfile $businessProfile, string $context, string $url)
     {
         $isExist = file_exists($url);
 
         if ($isExist && in_array(mime_content_type($url), SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
             $uploadedFile = new UploadedFile($url, $url, null, null, null, true);
 
-            $context = $this->getMigrationImageContext($isLogo);
-
             $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
 
-            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media, $isLogo);
+            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
 
             return $businessProfile;
         } else {
@@ -156,15 +156,21 @@ class BusinessGalleryManager
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param Media $media
+     * @param Media           $media
+     *
      * @return BusinessProfile
      */
-    public function addNewItemToBusinessProfileGallery(
-            BusinessProfile $businessProfile, 
-            Media $media, 
-            bool $isLogo = false, 
-            bool $isBackground = false) : BusinessProfile
+    public function addNewItemToBusinessProfileGallery(BusinessProfile $businessProfile, Media $media) : BusinessProfile
     {
+        $isLogo       = $this->getContextIsOfType(
+            $media->getContext(),
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO
+        );
+        $isBackground = $this->getContextIsOfType(
+            $media->getContext(),
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND
+        );
+
         if (!$isLogo and !$isBackground) {
             $businessGallery = new BusinessGallery();
             $businessGallery->setMedia($media);
@@ -181,6 +187,19 @@ class BusinessGalleryManager
         }
 
         return $businessProfile;
+    }
+
+    /**
+     * check context type
+     *
+     * @param string $context
+     * @param string $type
+     *
+     * @return bool
+     */
+    protected function getContextIsOfType(string $context, string $type)
+    {
+        return ($context == $type);
     }
 
     /**

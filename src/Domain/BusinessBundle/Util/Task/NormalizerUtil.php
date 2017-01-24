@@ -26,19 +26,21 @@ class NormalizerUtil
     public static function normalizeTaskChangeActionLabel(string $action, TranslatorInterface $translator)
     {
         $actionLabels = [
-            ChangeSetCalculator::PROPERTY_CHANGE        => 'Field Change',
-            ChangeSetCalculator::PROPERTY_ADD           => 'Field Change',
-            ChangeSetCalculator::PROPERTY_REMOVE        => 'Field Change',
-            ChangeSetCalculator::PROPERTY_IMAGE_UPDATE  => 'Field Change',
-            ChangeSetCalculator::PROPERTY_IMAGE_ADD     => 'Field Change',
-            ChangeSetCalculator::PROPERTY_IMAGE_REMOVE  => 'Field Change',
-            ChangeSetCalculator::IMAGE_ADD              => 'Image Add',
-            ChangeSetCalculator::IMAGE_REMOVE           => 'Image Remove',
-            ChangeSetCalculator::IMAGE_UPDATE           => 'Image Change',
-            ChangeSetCalculator::VIDEO_ADD              => 'Video Add',
-            ChangeSetCalculator::VIDEO_REMOVE           => 'Video Remove',
-            ChangeSetCalculator::VIDEO_UPDATE           => 'Video Change',
-            ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE => 'Image Propetry Change',
+            ChangeSetCalculator::PROPERTY_CHANGE                => 'Field Change',
+            ChangeSetCalculator::PROPERTY_ADD                   => 'Field Change',
+            ChangeSetCalculator::PROPERTY_REMOVE                => 'Field Change',
+            ChangeSetCalculator::IMAGE_ADD                      => 'Image Add',
+            ChangeSetCalculator::IMAGE_REMOVE                   => 'Image Remove',
+            ChangeSetCalculator::VIDEO_ADD                      => 'Video Add',
+            ChangeSetCalculator::VIDEO_REMOVE                   => 'Video Remove',
+            ChangeSetCalculator::VIDEO_UPDATE                   => 'Video Change',
+            ChangeSetCalculator::LOGO_ADD                       => 'Logo Add',
+            ChangeSetCalculator::LOGO_REMOVE                    => 'Logo Remove',
+            ChangeSetCalculator::LOGO_UPDATE                    => 'Logo Update',
+            ChangeSetCalculator::BACKGROUND_ADD                 => 'Background Add',
+            ChangeSetCalculator::BACKGROUND_REMOVE              => 'Background Remove',
+            ChangeSetCalculator::BACKGROUND_UPDATE              => 'Background Update',
+            ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE => 'Image Property Change',
         ];
 
         return $translator->trans($actionLabels[$action]);

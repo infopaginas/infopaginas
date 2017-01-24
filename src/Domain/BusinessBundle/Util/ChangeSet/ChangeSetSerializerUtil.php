@@ -69,6 +69,16 @@ class ChangeSetSerializerUtil
         return self::serializeObject($businessVideoRequiredData);
     }
 
+    public static function serializeBusinessProfileMediaItem(Media $item) : string
+    {
+        $businessMediaRequiredData = [
+            'id'   => $item->getId(),
+            'name' => $item->getName(),
+        ];
+
+        return self::serializeObject($businessMediaRequiredData);
+    }
+
     /**
      * @param VideoMedia $video
      * @return string

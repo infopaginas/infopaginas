@@ -51,11 +51,6 @@ sonata_admin:
                     - domain_business.admin.tag
                     - domain_business.admin.payment_method
                     - domain_business.admin.address.country
-            domain.admin.group.menu:
-                label: Menu
-                icon: <i class="fa fa-list"></i>
-                items:
-                    - domain_menu.admin.menu
             domain.admin.group.page:
                 label: Pages
                 icon: <i class="fa fa-file"></i>

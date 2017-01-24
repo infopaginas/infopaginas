@@ -99,6 +99,16 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     }
 
     /**
+     * Set id
+     *
+     * @return int
+     */
+    public function setId($id)
+    {
+        return $this->id = $id;
+    }
+
+    /**
      * Sets createdAt.
      *
      * @param  \DateTime $createdAt
