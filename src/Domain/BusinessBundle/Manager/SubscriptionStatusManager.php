@@ -129,13 +129,8 @@ class SubscriptionStatusManager
             $maxRank = SubscriptionPlanInterface::CODE_FREE;
             $now = new \DateTime();
 
-            //todo start date
-//            $maxEndDate = $currentEntity->getEndDate();
-
             foreach ($entities as $entity) {
                 if (!$entity->isExpired() and in_array($entity->getStatus(), StatusTrait::getActualStatuses())) {
-
-                    //todo
                     $rank = $entity->getSubscriptionPlan() ? $entity->getSubscriptionPlan()->getCode() : null;
 
                     if ($rank !== null and $rank >= $maxRank) {
@@ -143,7 +138,6 @@ class SubscriptionStatusManager
 
                         if ($endDate > $now) {
                             $maxRank = $rank;
-//                            $maxEndDate = $endDate;
                             $priorityEntity = $entity;
                         }
                     }
