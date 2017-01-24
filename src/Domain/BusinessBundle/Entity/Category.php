@@ -48,6 +48,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     const CATEGORY_UNDEFINED_CODE = '54016';
     const CATEGORY_UNDEFINED_SLUG = 'undefined';
 
+    const ELASTIC_DOCUMENT_TYPE = 'Category';
+    const FLAG_IS_UPDATED = 'isUpdated';
+
     /**
      * @var int
      *
@@ -137,34 +140,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $translations;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_en", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "searchTextEn"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEn;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_es", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "searchTextEs"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEs;
-
-    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
@@ -224,6 +199,14 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     protected $code;
 
+    /**
+     * Related to FLAG_IS_UPDATED const
+     * @var bool
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
+     */
+    protected $isUpdated;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -248,6 +231,8 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $this->isUpdated = true;
     }
 
     public function __toString()
@@ -448,54 +433,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         return $this->slug;
     }
 
-    /**
-     * Set searchFtsEn
-     *
-     * @param tsvector $searchFtsEn
-     *
-     * @return Category
-     */
-    public function setSearchFtsEn($searchFtsEn)
-    {
-        $this->searchFtsEn = $searchFtsEn;
-
-        return $this;
-    }
-
-    /**
-     * Get searchFtsEn
-     *
-     * @return tsvector
-     */
-    public function getSearchFtsEn()
-    {
-        return $this->searchFtsEn;
-    }
-
-    /**
-     * Set searchFtsEs
-     *
-     * @param tsvector $searchFtsEs
-     *
-     * @return Category
-     */
-    public function setSearchFtsEs($searchFtsEs)
-    {
-        $this->searchFtsEs = $searchFtsEs;
-
-        return $this;
-    }
-
-    /**
-     * Get searchFtsEs
-     *
-     * @return tsvector
-     */
-    public function getSearchFtsEs()
-    {
-        return $this->searchFtsEs;
-    }
-
     public function setPath($path)
     {
         $this->path = $path;
@@ -634,6 +571,26 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return BusinessProfile
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
     }
 
     public static function getTranslatableFields()

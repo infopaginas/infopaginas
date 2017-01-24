@@ -513,7 +513,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * Set isUpdated flag for all businesses for elastic search synchronization
+     * Set isUpdated flag for all categories for elastic search synchronization
      *
      * @return mixed
      */
@@ -522,9 +522,33 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $result = $this->getEntityManager()
             ->createQueryBuilder()
             ->update('DomainBusinessBundle:BusinessProfile', 'bp')
-            ->where('bp.isActive = TRUE')
+            ->where('bp.isActive = true')
             ->set('bp.isUpdated', ':isUpdated')
             ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
+
+    /**
+     * workaround for unstable EntityManagerInterface#flush() inside of event lintener
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function setUpdatedBusinessProfile($id)
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bp.id = :id')
+            ->set('bp.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->setParameter('id', $id)
             ->getQuery()
             ->execute()
         ;
