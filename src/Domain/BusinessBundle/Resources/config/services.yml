@@ -184,7 +184,7 @@ services:
     domain_business.listener.datetime_period_status_subscriber:
         class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusSubscriber
         tags:
-            - {name: doctrine.event_subscriber, connection: default, priority: 2}
+            - {name: doctrine.event_subscriber, connection: default, priority: 15}
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
 

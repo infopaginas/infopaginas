@@ -79,6 +79,8 @@ class BusinessProfile implements
 
     const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY = 'catalogLocality';
     const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
+    const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
+    const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
     const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
     const BUSINESS_PROFILE_URL_MAX_LENGTH = 1000;

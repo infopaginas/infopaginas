@@ -2,6 +2,10 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
+
 /**
  * SubscriptionRepository
  *
@@ -10,4 +14,23 @@ namespace Domain\BusinessBundle\Repository;
  */
 class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return Subscription[]
+     */
+    public function getActualSubscriptionsForBusiness(BusinessProfile $businessProfile)
+    {
+        $queryBuilder = $this->createQueryBuilder('sub');
+
+        $queryBuilder->select('s')
+            ->from('DomainBusinessBundle:Subscription', 's')
+            ->andWhere('s.businessProfile = :businessProfile')
+            ->andWhere('s.status IN (:actualSubscriptions)')
+            ->setParameter('businessProfile', $businessProfile)
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

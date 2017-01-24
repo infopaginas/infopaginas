@@ -54,6 +54,15 @@ trait StatusTrait
             StatusInterface::STATUS_ACTIVE    => 'Active',
             StatusInterface::STATUS_EXPIRED   => 'Expired',
             StatusInterface::STATUS_CANCELED  => 'Canceled',
+            StatusInterface::STATUS_PENDING   => 'Pending',
+        ];
+    }
+
+    public static function getActualStatuses()
+    {
+        return [
+            StatusInterface::STATUS_ACTIVE,
+            StatusInterface::STATUS_PENDING,
         ];
     }
 
