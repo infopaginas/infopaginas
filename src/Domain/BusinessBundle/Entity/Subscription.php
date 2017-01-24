@@ -31,6 +31,8 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
     use PersonalTranslatable;
     use DatetimePeriodStatusTrait;
 
+    const PROPERTY_NAME_UPDATED_AT = 'updatedAt';
+
     /**
      * @var int
      *

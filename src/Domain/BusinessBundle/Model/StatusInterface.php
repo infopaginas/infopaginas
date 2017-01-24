@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/16/16
- * Time: 8:13 PM
- */
 
 namespace Domain\BusinessBundle\Model;
 
@@ -19,6 +13,7 @@ interface StatusInterface
     const STATUS_ACTIVE     = 1;
     const STATUS_EXPIRED    = 2;
     const STATUS_CANCELED   = 3;
+    const STATUS_PENDING    = 4;
 
     /**
      * @param integer $status

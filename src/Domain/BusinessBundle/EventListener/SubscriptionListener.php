@@ -76,14 +76,15 @@ class SubscriptionListener implements EventSubscriber
         if ($entity instanceof BusinessProfile) {
             $em = $args->getEntityManager();
 
-            // workaround for callback update_at & update_by
-            $em->refresh($entity);
+            $changeSet = $em->getUnitOfWork()->getEntityChangeSet($entity);
 
-            $subscription = $entity->getSubscription();
+            if (!empty($changeSet[BusinessProfile::BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS])) {
+                $subscription = $entity->getSubscription();
 
-            if (!$subscription) {
-                $this->subscriptionStatusManager->setBusinessProfileFreeSubscription($entity, $em);
-                $em->flush();
+                if (!$subscription) {
+                    $this->subscriptionStatusManager->setBusinessProfileFreeSubscription($entity, $em);
+                    $em->flush();
+                }
             }
         }
 
@@ -94,14 +95,15 @@ class SubscriptionListener implements EventSubscriber
 
             // soft deleted business profiles
             if ($businessProfile and !$businessProfile->isDeleted()) {
-                // workaround for callback update_at and update_by
-                $em->refresh($businessProfile);
+                $changeSet = $em->getUnitOfWork()->getEntityChangeSet($entity);
 
-                $subscription = $businessProfile->getSubscription();
+                if (empty($changeSet[Subscription::PROPERTY_NAME_UPDATED_AT]) or count($changeSet) > 1) {
+                    $subscription = $businessProfile->getSubscription();
 
-                if (!$subscription) {
-                    $this->subscriptionStatusManager->setBusinessProfileFreeSubscription($businessProfile, $em);
-                    $em->flush();
+                    if (!$subscription) {
+                        $this->subscriptionStatusManager->setBusinessProfileFreeSubscription($businessProfile, $em);
+                        $em->flush();
+                    }
                 }
             }
         }

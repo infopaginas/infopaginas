@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
+use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 
@@ -64,7 +65,7 @@ class DatetimePeriodStatusSubscriber implements EventSubscriber
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof DatetimePeriodStatusInterface) {
+        if ($entity instanceof Subscription) {
             $this->subscriptionStatusManager
                 ->manageDatetimePeriodStatus($entity, $args->getEntityManager());
         }

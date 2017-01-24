@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
 
 /**
  * Class SubscriptionStatusManager
@@ -16,67 +17,141 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 class SubscriptionStatusManager
 {
     /**
-     * @var DatetimePeriodStatusInterface|null
+     * @var Subscription[]|null
      */
-    private $entityToSetStatusAsActive;
+    private $balkSubscription;
 
     /**
-     * @param DatetimePeriodStatusInterface $entity
+     * @param Subscription $entity
      * @param EntityManager $em
      */
-    public function manageDatetimePeriodStatus(DatetimePeriodStatusInterface $entity, EntityManager $em)
+    public function manageDatetimePeriodStatus(Subscription $entity, EntityManager $em)
     {
-        $changeSet = $em->getUnitOfWork()
-            ->getEntityChangeSet($entity);
+        //get all active or pending subscription
+        $baseEntities = $em->getRepository('DomainBusinessBundle:Subscription')
+            ->getActualSubscriptionsForBusiness($entity->getBusinessProfile());
 
-        // set status as expired if it's
-        if ($entity->isExpired()) {
-            $entity->setStatus(StatusInterface::STATUS_EXPIRED);
+        //store batch entities insert/update
+        $this->balkSubscription[] = $entity;
 
-            return;
-        }
+        $baseEntities = $this->getSubscriptionsArrayForPriorityCalculation($baseEntities, $this->balkSubscription);
 
-        // if you try to set status as Active
-        // if status was edited or new entity added
-        if (isset($changeSet[StatusInterface::PROPERTY_NAME_STATUS]) &&
-            $entity->getStatus() == StatusInterface::STATUS_ACTIVE
-        ) {
-            // set Cancel if you try to set Active status for more than one entity
-            // only first entity in this persistence can be with Active status
-            if ($this->entityToSetStatusAsActive) {
-                $entity->setStatus(StatusInterface::STATUS_CANCELED);
-            } else {
-                // cancel previous active records (from database)
-                $baseEntities = $em->getRepository(get_class($entity))->findBy([
-                    DatetimePeriodStatusInterface::PROPERTY_NAME_BUSINESS_PROFILE => $entity->getBusinessProfile(),
-                    StatusInterface::PROPERTY_NAME_STATUS => StatusInterface::STATUS_ACTIVE
-                ]);
+        // get priority subscription
+        $priorityEntity = $this->getPrioritySubscription($baseEntities);
 
-                $uow = $em->getUnitOfWork();
+        // $priorityEntity == null - means there is no available subscription, see SubscriptionListener
 
-                foreach ($baseEntities as $baseEntity) {
-                    /** @var DatetimePeriodStatusInterface $baseEntity*/
-                    $baseEntity->setStatus(StatusInterface::STATUS_CANCELED);
+        $uow = $em->getUnitOfWork();
 
-                    // add
-                    $uow->propertyChanged(
-                        $baseEntity,
-                        StatusInterface::PROPERTY_NAME_STATUS,
-                        $baseEntity->getStatus(),
-                        StatusInterface::STATUS_CANCELED
-                    );
-
-                    $uow->scheduleExtraUpdate($baseEntity, [
-                        StatusInterface::PROPERTY_NAME_STATUS => [
-                            $baseEntity->getStatus(),
-                            StatusInterface::STATUS_CANCELED
-                        ]
-                    ]);
+        foreach ($baseEntities as $baseEntity) {
+            /** @var Subscription $baseEntity */
+            if ($baseEntity->isExpired()) {
+                // disable expired subscription
+                $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_EXPIRED, $uow);
+            } elseif ($baseEntity == $priorityEntity) {
+                // enable priority subscription (only pending subscription can be activated)
+                if ($baseEntity->getStatus() == StatusInterface::STATUS_PENDING) {
+                    $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_ACTIVE, $uow);
                 }
-
-                $this->entityToSetStatusAsActive = $entity;
+            } else {
+                // set pending status to all other active subscriptions
+                if ($baseEntity->getStatus() == StatusInterface::STATUS_ACTIVE) {
+                    $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_PENDING, $uow);
+                }
             }
         }
+    }
+
+    /**
+     * @param Subscription[] $baseEntities
+     * @param Subscription[] $subscriptions
+     *
+     * @return Subscription[]
+     */
+    protected function getSubscriptionsArrayForPriorityCalculation($baseEntities, $subscriptions)
+    {
+        foreach ($subscriptions as $entity) {
+            if (!$this->searchSubscriptionInArray($entity, $subscriptions)) {
+                $baseEntities[] = $entity;
+            }
+        }
+
+        return $baseEntities;
+    }
+
+    /**
+     * @param Subscription   $subscription
+     * @param Subscription[] $array
+     *
+     * @return Subscription[]
+     */
+    protected function searchSubscriptionInArray($subscription, $array)
+    {
+        foreach ($array as $item) {
+            if ($item == $subscription) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function updateSubscriptionStatus(Subscription $subscription, $status, \Doctrine\ORM\UnitOfWork $uow)
+    {
+        $subscription->setStatus($status);
+
+        $uow->propertyChanged(
+            $subscription,
+            StatusInterface::PROPERTY_NAME_STATUS,
+            $subscription->getStatus(),
+            $status
+        );
+
+        $uow->scheduleExtraUpdate($subscription, [
+            StatusInterface::PROPERTY_NAME_STATUS => [
+                $subscription->getStatus(),
+                $status
+            ]
+        ]);
+    }
+
+    /**
+     * @param Subscription[] $entities
+     *
+     * @return Subscription|null
+     */
+    public function getPrioritySubscription($entities)
+    {
+        $priorityEntity = null;
+
+        if ($entities) {
+            // default subscription rank
+            $maxRank = SubscriptionPlanInterface::CODE_FREE;
+            $now = new \DateTime();
+
+            //todo start date
+//            $maxEndDate = $currentEntity->getEndDate();
+
+            foreach ($entities as $entity) {
+                if (!$entity->isExpired() and in_array($entity->getStatus(), StatusTrait::getActualStatuses())) {
+
+                    //todo
+                    $rank = $entity->getSubscriptionPlan() ? $entity->getSubscriptionPlan()->getCode() : null;
+
+                    if ($rank !== null and $rank >= $maxRank) {
+                        $endDate = $entity->getEndDate();
+
+                        if ($endDate > $now) {
+                            $maxRank = $rank;
+//                            $maxEndDate = $endDate;
+                            $priorityEntity = $entity;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $priorityEntity;
     }
 
     /**

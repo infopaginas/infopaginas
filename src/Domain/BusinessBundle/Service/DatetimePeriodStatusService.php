@@ -35,8 +35,7 @@ class DatetimePeriodStatusService
     public function updateStatus()
     {
         $entityClassArray = [
-            Subscription::class,
-            Campaign::class
+            Subscription::class
         ];
 
         $updatedRecordsCount = 0;
