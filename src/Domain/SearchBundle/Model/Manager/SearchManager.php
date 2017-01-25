@@ -139,7 +139,7 @@ class SearchManager extends Manager
     public function getSearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
-        $query    = preg_replace("/[^a-zA-ZáéíñóúüÁÉÍÑÓÚÜ0-9\s]+/", '', SearchDataUtil::getQueryFromRequest($request));
+        $query = SearchDataUtil::getQueryFromRequest($request);
 
         if (!$location or !$query) {
             return null;
