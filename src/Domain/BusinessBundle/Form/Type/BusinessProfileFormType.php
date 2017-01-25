@@ -224,20 +224,6 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Zip code',
                 'required' => true,
             ])
-            ->add('extendedAddress', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label' => 'Extended address',
-                'required' => false,
-            ])
-            ->add('crossStreet', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label' => 'Cross street',
-                'required' => false,
-            ])
             ->add('customAddress', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',

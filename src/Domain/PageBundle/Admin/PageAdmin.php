@@ -24,7 +24,6 @@ class PageAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('title')
-            ->add('description')
             ->add('updatedUser')
         ;
     }
@@ -36,10 +35,8 @@ class PageAdmin extends OxaAdmin
     {
         $listMapper
             ->addIdentifier('title')
-            ->add('description')
             ->add('updatedAt')
             ->add('updatedUser')
-            ->add('isPublished')
         ;
 
         $this->addGridActions($listMapper);
@@ -60,7 +57,6 @@ class PageAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('title')
-                ->add('description')
                 ->add('template', 'sonata_type_model_list', [
                     'required' => false,
                     'btn_add' => false,
@@ -84,11 +80,6 @@ class PageAdmin extends OxaAdmin
                     )
                 ])
                 ->add('slug', null, ['read_only' => true, 'required' => false])
-                ->add('isPublished', CheckboxType::class,[
-                    'label'     => 'Status',
-                    'required'  => false,
-                    'help'      => 'Check to publish the page',
-                ])
             ->end()
             ->with('Body')
                 ->add('body', 'ckeditor')
@@ -104,7 +95,6 @@ class PageAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('title')
-            ->add('description')
             ->add('body', null, array('template' => 'DomainPageBundle:Admin:show__body.html.twig'))
             ->add('updatedAt')
             ->add('updatedUser')

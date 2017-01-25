@@ -133,7 +133,7 @@ $( document ).ready( function() {
     }
 
     function setUseMapAddress() {
-        $.each( [ 'country','state', 'city', 'zipCode', 'streetAddress', 'extendedAddress' ], function( targetIndex, targetFieldId ) {
+        $.each( [ 'country','state', 'city', 'zipCode', 'streetAddress' ], function( targetIndex, targetFieldId ) {
             var input = $( '#' + formId + '_' + targetFieldId );
 
             if ( useMapAddress.prop( 'checked' ) ) {
