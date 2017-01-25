@@ -41,14 +41,11 @@ sonata_admin:
                 icon: <i class="fa fa-briefcase"></i>
                 items:
                     - domain_business.admin.business_profile
-                    - domain_business.admin.business_profile_has_media
-                    - domain_business.admin.subscription
                     - domain_business.admin.subscription_plan
                     - domain_business.admin.category
                     - domain_business.admin.area
                     - domain_business.admin.locality
                     - domain_business.admin.neighborhood
-                    - domain_business.admin.tag
                     - domain_business.admin.payment_method
                     - domain_business.admin.address.country
             domain.admin.group.page:
@@ -57,20 +54,13 @@ sonata_admin:
                 items:
                     - domain_article.admin.article
                     - domain_page.admin.page
-                    - domain_page.admin.template
             domain.admin.group.banner:
                 label: Banners
                 icon: <i class="fa fa-star"></i>
                 items:
-                    - domain_banner.admin.campaign
                     - domain_banner.admin.banner
                     - domain_banner.admin.type
                     - domain_banner.admin.template
-            sonata.admin.group.media:
-                label: Media
-                icon: <i class="fa fa-picture-o"></i>
-                items:
-                    - sonata.media.admin.media
             oxa.admin.group.config:
                 label: Configs
                 icon: <i class="fa fa-cogs"></i>

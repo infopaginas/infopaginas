@@ -73,54 +73,6 @@ class UserProfileType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('twitterURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'twitter.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Twitter',
-                'required' => false,
-            ])
-            ->add('facebookURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'facebook.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Facebook',
-                'required' => false,
-            ])
-            ->add('googleURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'plus.google.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Google Plus',
-                'required' => false,
-            ])
-            ->add('youtubeURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'youtube.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Youtube',
-                'required' => false,
-            ])
         ;
     }
 

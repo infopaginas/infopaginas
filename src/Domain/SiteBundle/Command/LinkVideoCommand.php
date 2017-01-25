@@ -86,7 +86,7 @@ class LinkVideoCommand extends ContainerAwareCommand
                         $businessAlreadyHasVideo ++;
                     } else {
                         if ($this->withDebug) {
-                            $this->output->writeln('Start request item number ' . $item);
+                            $this->output->writeln('Start request item number ' . $item['uid']);
                         }
 
 

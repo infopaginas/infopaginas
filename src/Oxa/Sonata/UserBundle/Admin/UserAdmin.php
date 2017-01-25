@@ -108,12 +108,6 @@ class UserAdmin extends OxaAdmin
                 ->add('lastname')
                 ->add('locale')
             ->end()
-            ->with('Social')
-                ->add('facebookURL')
-                ->add('twitterURL')
-                ->add('googleURL')
-                ->add('youtubeURL')
-            ->end()
         ;
     }
 
@@ -127,7 +121,6 @@ class UserAdmin extends OxaAdmin
             ->tab('Profile')
                 ->with('Profile', array('class' => 'col-md-6'))->end()
                 ->with('General', array('class' => 'col-md-6'))->end()
-                ->with('Social', array('class' => 'col-md-6'))->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
@@ -220,12 +213,6 @@ class UserAdmin extends OxaAdmin
                         'required'  => true,
                     ])
                 ->end()
-                ->with('Social')
-                    ->add('facebookURL')
-                    ->add('twitterURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                ->end()
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
@@ -251,18 +238,6 @@ class UserAdmin extends OxaAdmin
     public function validate(ErrorElement $errorElement, $object)
     {
         $errorElement
-            ->with('twitterURL')
-            ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
-            ->with('facebookURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
-            ->with('googleURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
-            ->with('youtubeURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
             ->with('phone')
                 ->addConstraint(new Regex(BusinessProfilePhone::REGEX_PHONE_PATTERN))
             ->end()

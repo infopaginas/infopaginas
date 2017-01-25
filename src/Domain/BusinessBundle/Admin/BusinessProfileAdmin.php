@@ -125,7 +125,6 @@ class BusinessProfileAdmin extends OxaAdmin
             }
 
             $formMapper->tab('Profile')->with('Status', array('class' => 'col-md-6'))->end()
-                ->with('Displayed blocks', array('class' => 'col-md-6'))->end()
                 ->with('Subscriptions')->end()
                 ->with('Coupons', array('class' => 'col-md-6'))->end()
                 ->with('Discount', array('class' => 'col-md-6'))->end()
@@ -263,9 +262,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('streetAddress', null, [
                         'required' => true
                     ])
-                    ->add('extendedAddress')
-                    ->add('crossStreet')
-                    ->add('streetNumber')
                     ->add('customAddress')
                     ->add('hideAddress')
                 ->end()
@@ -329,7 +325,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
                     ->add('neighborhoods', null, $neighborhoodsFieldOptions)
-                    ->add('tags', null, ['multiple' => true])
                     ->add('paymentMethods', null, [
                         'multiple' => true,
                         'expanded' => true,
@@ -428,16 +423,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'disabled' => true,
                     ])
                 ->end()
-                ->with('Displayed blocks')
-                    ->add('isSetDescription')
-                    ->add('isSetMap')
-                    ->add('isSetAd')
-                    ->add('isSetLogo')
-                    ->add('isSetSlogan')
-                    ->add('isSetVideo', null, [
-                        'disabled' => true,
-                    ])
-                ->end()
                 ->with('Subscriptions')
                     ->add('subscriptions', 'sonata_type_collection', [
                         'by_reference' => false,
@@ -531,7 +516,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('neighborhoods')
             ->add('brands')
             ->add('paymentMethods')
-            ->add('tags')
             ->add('businessReviews')
             ->add('website')
             ->add('email')
@@ -546,11 +530,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig'
             ])
             ->add('hideAddress')
-            ->add('isSetDescription')
-            ->add('isSetMap')
-            ->add('isSetAd')
-            ->add('isSetLogo')
-            ->add('isSetSlogan')
             ->add('slug')
             ->add('updatedAt')
             ->add('updatedUser')
