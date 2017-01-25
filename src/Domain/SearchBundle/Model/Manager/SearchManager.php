@@ -140,7 +140,7 @@ class SearchManager extends Manager
     public function getSearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
-        $query = $this->getSaveSearchString(SearchDataUtil::getQueryFromRequest($request));
+        $query = $this->getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
 
         if (!$location or !$query) {
             return null;
@@ -357,7 +357,7 @@ class SearchManager extends Manager
         return true;
     }
 
-    public function getSaveSearchString($query)
+    public function getSafeSearchString($query)
     {
         $words = $this->getSaveSearchWords($query);
 
