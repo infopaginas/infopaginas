@@ -3,6 +3,7 @@
 namespace Domain\SearchBundle\Model\Manager;
 
 use Domain\BusinessBundle\Entity\Category;
+use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Doctrine\ORM\EntityManager;
@@ -139,7 +140,7 @@ class SearchManager extends Manager
     public function getSearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
-        $query    = preg_replace("/[^a-zA-ZáéíñóúüÁÉÍÑÓÚÜ0-9\s]+/", '', SearchDataUtil::getQueryFromRequest($request));
+        $query = $this->getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
 
         if (!$location or !$query) {
             return null;
@@ -354,5 +355,102 @@ class SearchManager extends Manager
         }
 
         return true;
+    }
+
+    public function getSafeSearchString($query)
+    {
+        $words = $this->getSaveSearchWords($query);
+
+        $search = implode(' ', $words);
+
+        return $search;
+    }
+
+    private function getSaveSearchWords($query)
+    {
+        $words = explode(' ', $query);
+
+        $data = [];
+
+        foreach ($words as $word) {
+            $wordLength = mb_strlen($word);
+
+            if ($wordLength >= ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED) {
+                if ($wordLength > ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED) {
+                    $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
+                }
+
+                $data[] = $this->escapeElasticSpecialCharacter($word);
+            }
+        }
+
+        return $data;
+    }
+
+    private function escapeElasticSpecialCharacter($query)
+    {
+        //http://npm.taobao.org/package/elasticsearch-sanitize
+        //http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping
+        //characters to escape: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ / AND OR NOT space
+
+        $search = [
+            '+',
+            '-',
+            '=',
+            '&&',
+            '||',
+            '>',
+            '<',
+            '!',
+            '(',
+            ')',
+            '{',
+            '}',
+            '[',
+            ']',
+            '^',
+            '"',
+            '~',
+            '*',
+            '?',
+            ':',
+            '\\',
+            '/',
+            'AND',
+            'OR',
+            'NOT',
+        ];
+
+        $escaped = [
+            '\+',
+            '\-',
+            '\=',
+            '\&\&',
+            '\|\|',
+            '\>',
+            '\<',
+            '\!',
+            '\(',
+            '\)',
+            '\{',
+            '\}',
+            '\[',
+            '\]',
+            '\^',
+            '\"',
+            '\~',
+            '\*',
+            '\?',
+            '\:',
+            '\\\\',
+            '\/',
+            '\A\N\D',
+            '\O\R',
+            '\N\O\T',
+        ];
+
+        $newQuery = str_replace($search, $escaped, $query);
+
+        return $newQuery;
     }
 }
