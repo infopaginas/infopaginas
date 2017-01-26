@@ -81,8 +81,6 @@ class Version20170124132041 extends AbstractMigration implements ContainerAwareI
                 $this->em->clear();
             }
             $i ++;
-
-            $this->em->detach($row[0]);
         }
 
         $this->em->flush();
