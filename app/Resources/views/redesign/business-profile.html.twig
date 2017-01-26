@@ -216,12 +216,12 @@
                             <section class="page-section photos slider section--slider">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        {% thumbnail photo.getMedia(), 'reference' with {'alt': photo.description} %}
+                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{{ photo.description }}">
                                     </div>
                                 {% endfor %}
                                 {% for ad in advertisements %}
                                     <div class="slider__item">
-                                        {% thumbnail ad.getMedia(), 'reference' with {'alt': ad.description} %}
+                                        <img src="{% path ad.getMedia(), 'normal' %}" alt="{{ ad.description }}">
                                     </div>
                                 {% endfor %}
                             </section>
