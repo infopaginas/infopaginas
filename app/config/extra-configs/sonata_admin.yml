@@ -61,6 +61,11 @@ sonata_admin:
                     - domain_banner.admin.banner
                     - domain_banner.admin.type
                     - domain_banner.admin.template
+            sonata.admin.group.media:
+                label: Media
+                icon: <i class="fa fa-picture-o"></i>
+                items:
+                    - sonata.media.admin.media
             oxa.admin.group.config:
                 label: Configs
                 icon: <i class="fa fa-cogs"></i>
