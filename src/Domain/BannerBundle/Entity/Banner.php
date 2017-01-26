@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="banner")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\BannerRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\BannerTranslation")
  */
 class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableEntityInterface

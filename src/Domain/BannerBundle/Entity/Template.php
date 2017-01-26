@@ -15,7 +15,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Template
  *
  * @ORM\Table(name="banner_template")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\TemplateRepository")
  * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\TemplateTranslation")
  */

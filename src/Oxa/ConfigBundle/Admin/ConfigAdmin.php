@@ -78,8 +78,6 @@ class ConfigAdmin extends OxaAdmin
     {
         parent::configureRoutes($collection);
 
-        $collection->remove('restore');
-        $collection->remove('delete_physical');
         $collection->remove('create');
         $collection->remove('delete');
         $collection->remove('export');

@@ -13,9 +13,7 @@ use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\BusinessBundle\Entity\Locality;
-use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
 /**
@@ -27,40 +25,12 @@ use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 class AdminManager extends DefaultManager
 {
     /**
-     * Get object even from deleted(soft) records if $disableSoftdelete param equals True
-     *
-     * @param string $entityClass
-     * @param int $id
-     * @param bool $disableSoftdelete
-     * @return mixed
-     * @throws InvalidArgumentException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function getObjectByClassName(string $entityClass, int $id, $disableSoftdelete = false)
-    {
-        if ($disableSoftdelete) {
-            $this->disableDeleteableListener($entityClass);
-        }
-
-        $this->checkIfEntityClassIsValid($entityClass);
-
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('e')
-            ->from($entityClass, 'e')
-            ->where('e.id=:id')
-            ->setParameter(':id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    /**
      * Delete record completely
      *
      * @param $entity
      * @throws InvalidArgumentException
      */
-    public function deletePhysicalEntity(DeleteableEntityInterface $entity)
+    public function deletePhysicalEntity($entity)
     {
         $existDependentFields = $this->checkExistDependentEntity($entity);
 
@@ -76,36 +46,8 @@ class AdminManager extends DefaultManager
 
         $em = $this->getEntityManager();
 
-        $this->enablePhysicalDelete();
-
         $em->remove($entity);
         $em->flush();
-    }
-
-    /**
-     * Restore deleted(soft) record
-     *
-     * @param $entity
-     * @throws InvalidArgumentException
-     */
-    public function restoreEntity(DeleteableEntityInterface $entity)
-    {
-        $entity->setDeletedAt(null);
-        $entity->setDeletedUser(null);
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Restore deleted(soft) record
-     *
-     * @param string $entityClass
-     * @param int $id
-     * @param bool $disableSoftdelete
-     */
-    public function restoreEntityByClassName(string $entityClass, int $id, $disableSoftdelete = false)
-    {
-        $object = $this->getObjectByClassName($entityClass, $id, $disableSoftdelete);
-        $this->restoreEntity($object);
     }
 
     /**
@@ -142,25 +84,6 @@ class AdminManager extends DefaultManager
     {
         $this->cloneEntityObject($entity);
         $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Disable Deleteable Listener to work with deleted object as well
-     *
-     * @param $entityClass
-     */
-    public function disableDeleteableListener(string $entityClass)
-    {
-        $this->checkIfEntityClassIsValid($entityClass);
-
-        /**
-         * @var SoftDeleteableFilter $softDeleteableFilter
-         */
-        $softDeleteableFilter = $this->getEntityManager()
-            ->getFilters()
-            ->getFilter('softdeleteable');
-
-        $softDeleteableFilter->disableForEntity($entityClass);
     }
 
     /**
@@ -239,37 +162,6 @@ class AdminManager extends DefaultManager
     public function removeEntities(array $entityArray = [])
     {
         foreach ($entityArray as $entity) {
-            if ($entity instanceof DeleteableEntityInterface && is_null($entity->getDeletedAt())) {
-                $existDependentFields = $this->checkExistDependentEntity($entity);
-
-                if ($existDependentFields) {
-                    throw new \Exception($this->getContainer()->get('translator')->trans(
-                        'batch_delete_error_rel',
-                        array(
-                            'record_id' => $entity->getId(),
-                            '%fields%' => implode(', ', $existDependentFields),
-                        ),
-                        'SonataAdminBundle'
-                    ));
-                }
-
-                $this->getEntityManager()->remove($entity);
-            }
-        }
-
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Delete records completely
-     *
-     * @param array $entityArray
-     * @param bool $disableSoftdelete
-     * @throws \Exception
-     */
-    public function physicalDeleteEntities(array $entityArray = [], $disableSoftdelete = false)
-    {
-        foreach ($entityArray as $entity) {
             $existDependentFields = $this->checkExistDependentEntity($entity);
 
             if ($existDependentFields) {
@@ -283,32 +175,10 @@ class AdminManager extends DefaultManager
                 ));
             }
 
-            if ($disableSoftdelete) {
-                $this->disableDeleteableListener(get_class($entity));
-            }
-
-            if ($entity instanceof DeleteableEntityInterface) {
-                $this->deletePhysicalEntity($entity);
-            }
+            $this->getEntityManager()->remove($entity);
         }
-    }
 
-    /**
-     * Restore deleted(soft) records
-     *
-     * @param array $entityArray
-     */
-    public function restoreEntities(array $entityArray = [], $disableSoftdelete = false)
-    {
-        foreach ($entityArray as $entity) {
-            if ($disableSoftdelete) {
-                $this->disableDeleteableListener(get_class($entity));
-            }
-
-            if ($entity instanceof DeleteableEntityInterface && !is_null($entity->getDeletedAt())) {
-                $this->restoreEntity($entity);
-            }
-        }
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -346,18 +216,5 @@ class AdminManager extends DefaultManager
             )
             ->getQuery()
             ->getResult();
-    }
-
-    protected function enablePhysicalDelete()
-    {
-        $em = $this->getEntityManager();
-
-        foreach ($em->getEventManager()->getListeners() as $eventName => $listeners) {
-            foreach ($listeners as $listener) {
-                if ($listener instanceof \Gedmo\SoftDeleteable\SoftDeleteableListener) {
-                    $em->getEventManager()->removeEventListener($eventName, $listener);
-                }
-            }
-        }
     }
 }

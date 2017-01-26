@@ -92,11 +92,7 @@ class LocalityAdmin extends OxaAdmin
      */
     public function isGranted($name, $object = null)
     {
-        $deniedActions = [
-            'DELETE',
-            'ROLE_PHYSICAL_DELETE_ABLE',
-            'ROLE_RESTORE_ABLE',
-        ];
+        $deniedActions = $this->getDeleteDeniedAction();
 
         if ($object && in_array($name, $deniedActions) &&
             $object->getSlug() == Locality::DEFAULT_CATALOG_LOCALITY_SLUG

@@ -75,9 +75,7 @@ class TypeAdmin extends OxaAdmin
     {
         parent::configureRoutes($collection);
 
-        $collection->remove('restore');
         $collection->remove('create');
         $collection->remove('delete');
-        $collection->remove('delete_physical');
     }
 }

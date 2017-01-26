@@ -6,23 +6,45 @@ use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 class CategoryAdminCRUDController extends CRUDController
 {
     /**
-     * Delete record completely
+     * Delete action.
      *
-     * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
+     * @param int|string|null $id
+     *
+     * @return Response|RedirectResponse
+     *
+     * @throws NotFoundHttpException If the object does not exist
+     * @throws AccessDeniedException If access is not granted
      */
-    public function deletePhysicalAction(Request $request)
+    public function deleteAction($id)
     {
-        $objectId = ($request->get('id') != null) ? intval($request->get('id')) : $request->get('id');
+        $request = $this->getRequest();
+        $id = $request->get($this->admin->getIdParameter());
+        $object = $this->admin->getObject($id);
 
+        if (!$object) {
+            throw $this->createNotFoundException(sprintf('unable to find the object with id : %s', $id));
+        }
+
+        $this->admin->checkAccess('delete', $object);
         $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $object = $adminManager->getObjectByClassName($this->admin->getClass(), $objectId, true);
-        $existDependentFields = null;
+
+        $preResponse = $this->preDelete($request, $object);
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
 
         if ($this->getRestMethod() == Request::METHOD_DELETE) {
+            // check the csrf token
+            $this->validateCsrfToken('sonata.delete');
+
             $existDependentFields = $adminManager->checkExistDependentEntity($object);
 
             $categoryAttachedToProfiles = ($this->admin->getClass() == Category::class)
@@ -33,14 +55,30 @@ class CategoryAdminCRUDController extends CRUDController
             }
 
             if (!count($existDependentFields) && !$categoryAttachedToProfiles) {
-                $adminManager->deletePhysicalEntity($object);
-                $this->addFlash(
-                    'sonata_flash_success',
-                    $this->get('translator')
-                        ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
-                );
+                $objectName = $this->admin->toString($object);
 
-                return $this->saveFilterResponse();
+                try {
+                    $adminManager->deletePhysicalEntity($object);
+
+                    if ($this->isXmlHttpRequest()) {
+                        return $this->renderJson(array('result' => 'ok'), 200, array());
+                    }
+
+                    $this->addFlash(
+                        'sonata_flash_success',
+                        $this->trans(
+                            'flash_delete_success',
+                            array('%name%' => $this->escapeHtml($objectName)),
+                            'SonataAdminBundle'
+                        )
+                    );
+                } catch (\Exception $e) {
+                    if ($this->isXmlHttpRequest()) {
+                        return $this->renderJson(array('result' => 'error'), 200, array());
+                    }
+
+                    $this->addFlash('sonata_flash_error', $e->getMessage());
+                }
             } else {
                 $this->addFlash(
                     'sonata_flash_error',
@@ -51,12 +89,18 @@ class CategoryAdminCRUDController extends CRUDController
                     )
                 );
             }
+
+            return $this->redirectTo($object);
         }
 
-        return $this->render('OxaSonataAdminBundle:CRUD:physical_delete.html.twig', [
-            'action' => 'physical_delete',
-            'object' => $object,
-            'existDependentFields' => $existDependentFields,
-        ]);
+        return $this->render(
+            $this->admin->getTemplate('delete'),
+            [
+                'object' => $object,
+                'action' => 'delete',
+                'csrf_token' => $this->getCsrfToken('sonata.delete'),
+            ],
+            null
+        );
     }
 }

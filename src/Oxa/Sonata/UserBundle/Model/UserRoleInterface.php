@@ -7,7 +7,7 @@ use Oxa\Sonata\UserBundle\Entity\Group;
 /**
  * Add role group when new role has been added
  *
- * Interface DeleteableEntityInterface
+ * Interface UserRoleInterface
  * @package Oxa\Sonata\AdminBundle\Model
  */
 interface UserRoleInterface

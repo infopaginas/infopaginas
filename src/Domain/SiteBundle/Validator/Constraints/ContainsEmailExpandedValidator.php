@@ -2,7 +2,6 @@
 
 namespace Domain\SiteBundle\Validator\Constraints;
 
-use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Email;

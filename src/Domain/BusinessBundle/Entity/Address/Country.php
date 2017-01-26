@@ -17,7 +17,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @ORM\Table(name="country")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CountryRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Address\CountryTranslation")
  */
 class Country implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface

@@ -17,7 +17,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Table(name="fos_user_group")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\GroupRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Oxa\Sonata\UserBundle\Entity\Translation\GroupTranslation")
  * @UniqueEntity("code")
  */

@@ -63,7 +63,5 @@ class MenuAdmin extends OxaAdmin
         $collection->remove('create');
         $collection->remove('edit');
         $collection->remove('delete');
-        $collection->remove('delete_physical');
-        $collection->remove('restore');
     }
 }

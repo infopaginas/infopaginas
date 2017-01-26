@@ -40,7 +40,6 @@ use Domain\SiteBundle\Validator\Constraints as DomainAssert;
  * @ORM\Table(name="business_profile")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
 class BusinessProfile implements
@@ -430,7 +429,7 @@ class BusinessProfile implements
      *
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="businessProfiles",
+     *     inversedBy="logoBusinessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
@@ -442,7 +441,7 @@ class BusinessProfile implements
      *
      * @var Media - Media Background Image
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="businessProfiles",
+     *     inversedBy="backgroundBusinessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="background_id", referencedColumnName="id", nullable=true)

@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_gallery")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessGalleryRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation")
  */
 class BusinessGallery implements DefaultEntityInterface, TranslatableInterface

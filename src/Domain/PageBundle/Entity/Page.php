@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="page")
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\PageRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
  */
 class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface

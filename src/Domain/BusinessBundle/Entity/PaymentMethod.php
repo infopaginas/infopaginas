@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="payment_method")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\PaymentMethodRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation")
  */

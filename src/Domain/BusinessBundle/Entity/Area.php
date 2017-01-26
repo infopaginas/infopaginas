@@ -19,7 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="area")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\AreaRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\AreaTranslation")

@@ -18,7 +18,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="config")
  * @ORM\Entity(repositoryClass="Oxa\ConfigBundle\Repository\ConfigRepository")
  * @UniqueEntity("key")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Oxa\ConfigBundle\Entity\Translation\ConfigTranslation")
  */
 class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInterface

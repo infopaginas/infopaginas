@@ -19,7 +19,6 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  *
  * @ORM\Table(name="neighborhood")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\NeighborhoodRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation")
  */

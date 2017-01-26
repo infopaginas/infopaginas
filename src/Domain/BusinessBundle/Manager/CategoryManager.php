@@ -68,7 +68,7 @@ class CategoryManager extends Manager
 
     public function buildCategoryElasticData(Category $category)
     {
-        if (!$category->getIsActive() || $category->getDeletedAt()) {
+        if (!$category->getIsActive()) {
             return false;
         }
 

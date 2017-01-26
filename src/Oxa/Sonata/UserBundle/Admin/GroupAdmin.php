@@ -87,9 +87,7 @@ class GroupAdmin extends OxaAdmin
             ->remove('copy')
             ->remove('batch')
             ->remove('delete')
-            ->remove('delete_physical')
             ->remove('create')
-            ->remove('restore')
         ;
     }
 }
