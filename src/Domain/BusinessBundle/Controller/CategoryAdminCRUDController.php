@@ -61,20 +61,34 @@ class CategoryAdminCRUDController extends CRUDController
                     $adminManager->deletePhysicalEntity($object);
 
                     if ($this->isXmlHttpRequest()) {
-                        return $this->renderJson(array('result' => 'ok'), 200, array());
+                        return $this->renderJson(
+                            [
+                                'result' => 'ok',
+                            ],
+                            200,
+                            []
+                        );
                     }
 
                     $this->addFlash(
                         'sonata_flash_success',
                         $this->trans(
                             'flash_delete_success',
-                            array('%name%' => $this->escapeHtml($objectName)),
+                            [
+                                '%name%' => $this->escapeHtml($objectName),
+                            ],
                             'SonataAdminBundle'
                         )
                     );
                 } catch (\Exception $e) {
                     if ($this->isXmlHttpRequest()) {
-                        return $this->renderJson(array('result' => 'error'), 200, array());
+                        return $this->renderJson(
+                            [
+                                'result' => 'error',
+                            ],
+                            200,
+                            []
+                        );
                     }
 
                     $this->addFlash('sonata_flash_error', $e->getMessage());
