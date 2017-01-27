@@ -10,7 +10,7 @@ use Oxa\Sonata\UserBundle\Entity\User;
  * Interface DefaultEntityInterface
  * @package Oxa\Sonata\AdminBundle\Model
  */
-interface DefaultEntityInterface extends DeleteableEntityInterface
+interface DefaultEntityInterface
 {
     const IS_ACTIVE_PROPERTY_NAME = 'isActive';
     const CREATE_USER_PROPERTY_NAME = 'createdUser';

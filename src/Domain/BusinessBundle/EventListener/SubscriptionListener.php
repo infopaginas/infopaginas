@@ -9,7 +9,6 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
 use Domain\BusinessBundle\Model\StatusInterface;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
  * To set free plan subscription for businesses without subscription
@@ -30,7 +29,6 @@ class SubscriptionListener implements EventSubscriber
             Events::postPersist,
             Events::postUpdate,
             Events::postRemove,
-            SoftDeleteableListener::POST_SOFT_DELETE,
         ];
     }
 
@@ -61,14 +59,6 @@ class SubscriptionListener implements EventSubscriber
         }
     }
 
-    public function postSoftDelete(LifecycleEventArgs $args)
-    {
-        if ($args->getEntity() instanceof Subscription) {
-            $args->getEntity()->setStatus(StatusInterface::STATUS_CANCELED);
-            $args->getEntityManager()->flush();
-        }
-    }
-
     public function index(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -93,8 +83,7 @@ class SubscriptionListener implements EventSubscriber
 
             $businessProfile = $entity->getBusinessProfile();
 
-            // soft deleted business profiles
-            if ($businessProfile and !$businessProfile->isDeleted()) {
+            if ($businessProfile) {
                 $changeSet = $em->getUnitOfWork()->getEntityChangeSet($entity);
 
                 if (empty($changeSet[Subscription::PROPERTY_NAME_UPDATED_AT]) or count($changeSet) > 1) {

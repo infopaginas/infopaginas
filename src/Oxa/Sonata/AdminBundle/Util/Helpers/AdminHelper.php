@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/5/16
- * Time: 11:44 AM
- */
 
 namespace Oxa\Sonata\AdminBundle\Util\Helpers;
 

@@ -3,7 +3,6 @@
 namespace Oxa\Sonata\AdminBundle\EventListener;
 
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -83,21 +82,5 @@ class UserCRUDActionListener
                 }
             }
         }, $uow->getScheduledEntityUpdates());
-
-        // set user to deleted object
-        array_map(function ($entity) use ($uow) {
-            if ($entity instanceof DefaultEntityInterface) {
-                $entity->setDeletedUser($this->user);
-                $uow->propertyChanged(
-                    $entity,
-                    DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME,
-                    null,
-                    $this->user
-                );
-                $uow->scheduleExtraUpdate($entity, [
-                    DeleteableEntityInterface::DELETED_USER_PROPERTY_NAME => [null, $this->user]
-                ]);
-            }
-        }, $uow->getScheduledEntityDeletions());
     }
 }

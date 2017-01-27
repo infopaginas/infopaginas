@@ -110,8 +110,6 @@ class PageAdmin extends OxaAdmin
         parent::configureRoutes($collection);
 
         $collection
-            ->remove('restore')
-            ->remove('delete_physical')
             ->remove('delete')
             ->remove('remove')
             ->remove('create')

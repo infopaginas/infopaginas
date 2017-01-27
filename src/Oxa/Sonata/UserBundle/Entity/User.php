@@ -6,7 +6,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\AvailableUserEntityTrait;
-use Oxa\Sonata\AdminBundle\Util\Traits\DeleteableUserEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\UserCUableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Oxa\Sonata\UserBundle\Model\UserRoleInterface;
@@ -20,12 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="fos_user_user")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("email")
  * */
 class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 {
-    use AvailableUserEntityTrait, DeleteableUserEntityTrait, UserCUableEntityTrait;
+    use AvailableUserEntityTrait, UserCUableEntityTrait;
 
     /**
      * @ORM\Id

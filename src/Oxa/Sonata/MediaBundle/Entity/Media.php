@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of the <name> project.
- *
- * (c) <yourname> <youremail>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Oxa\Sonata\MediaBundle\Entity;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -26,7 +17,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Table(name="media__media")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  */
 class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface
@@ -68,7 +58,16 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      *     cascade={"persist"}
      * )
      */
-    protected $businessProfiles;
+    protected $logoBusinessProfiles;
+
+    /**
+     * @var BusinessProfile[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     mappedBy="background",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $backgroundBusinessProfiles;
 
     /**
      * @var Coupon[]
@@ -258,37 +257,71 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     }
 
     /**
-     * Add businessProfile
+     * Add businessProfile Logo
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      *
      * @return Media
      */
-    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    public function addLogoBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
-        $this->businessProfiles[] = $businessProfile;
+        $this->logoBusinessProfiles[] = $businessProfile;
 
         return $this;
     }
 
     /**
-     * Remove businessProfile
+     * Remove businessProfile Logo
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      */
-    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    public function removeLogoBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
-        $this->businessProfiles->removeElement($businessProfile);
+        $this->logoBusinessProfiles->removeElement($businessProfile);
     }
 
     /**
-     * Get businessProfiles
+     * Get businessProfiles Logo
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getBusinessProfiles()
+    public function getLogoBusinessProfiles()
     {
-        return $this->businessProfiles;
+        return $this->logoBusinessProfiles;
+    }
+
+    /**
+     * Add businessProfile Background
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Media
+     */
+    public function addBackgroundBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->backgroundBusinessProfiles[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile Background
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBackgroundBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->backgroundBusinessProfiles->removeElement($businessProfile);
+    }
+
+    /**
+     * Get businessProfiles Background
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBackgroundBusinessProfiles()
+    {
+        return $this->backgroundBusinessProfiles;
     }
 
     /**

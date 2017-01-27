@@ -1699,7 +1699,7 @@ class BusinessProfileManager extends Manager
         $businessSubscriptionPlan = $businessProfile->getSubscriptionPlan();
 
         if (!$businessSubscription || $businessSubscription->getStatus() != StatusInterface::STATUS_ACTIVE ||
-            !$businessProfile->getIsActive() || $businessProfile->getDeletedAt()
+            !$businessProfile->getIsActive()
         ) {
             return false;
         }

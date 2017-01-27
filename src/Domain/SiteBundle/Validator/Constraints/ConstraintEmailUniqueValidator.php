@@ -4,7 +4,6 @@ namespace Domain\SiteBundle\Validator\Constraints;
 
 use Doctrine\ORM\EntityManager;
 use Oxa\Sonata\UserBundle\Entity\User;
-use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
@@ -49,15 +48,6 @@ class ConstraintEmailUniqueValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if ($value) {
-            /**
-             * @var SoftDeleteableFilter $softDeleteableFilter
-             */
-            $softDeleteableFilter = $this->entityManager
-                ->getFilters()
-                ->getFilter('softdeleteable');
-
-            $softDeleteableFilter->disableForEntity(User::class);
-
             $user = $this->usersManager->getUserByEmail($value);
 
             if ($user) {

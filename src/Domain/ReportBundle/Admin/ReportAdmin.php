@@ -38,8 +38,6 @@ class ReportAdmin extends OxaAdmin
             ->remove('edit')
             ->remove('create')
             ->remove('delete')
-            ->remove('restore')
-            ->remove('delete_physical')
         ;
     }
 

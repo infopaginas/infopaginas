@@ -20,7 +20,6 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  *
  * @ORM\Table(name="locality")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\LocalityTranslation")
  */

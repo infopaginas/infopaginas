@@ -147,10 +147,6 @@ doctrine:
             SonataMediaBundle: ~
             SonataClassificationBundle: ~
             ApplicationSonataClassificationBundle: ~
-        filters:
-            softdeleteable:
-                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
-                enabled: true
 
 #sonataClassificationBundle
 sonata_classification:

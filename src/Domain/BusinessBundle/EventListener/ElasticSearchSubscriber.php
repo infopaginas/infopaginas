@@ -10,7 +10,6 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Manager\BusinessStatusManager;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
  * set is updated flag for elastic search synchronization
@@ -40,7 +39,6 @@ class ElasticSearchSubscriber implements EventSubscriber
             Events::postUpdate,
             Events::postPersist,
             Events::postRemove,
-            SoftDeleteableListener::POST_SOFT_DELETE,
         ];
     }
 
@@ -83,19 +81,6 @@ class ElasticSearchSubscriber implements EventSubscriber
     }
 
     public function postRemove(LifecycleEventArgs $args)
-    {
-        $entity = $args->getEntity();
-
-        if ($entity instanceof Subscription) {
-            $this->handleSubscriptionUpdate($entity, $args->getEntityManager());
-        }
-
-        if ($entity instanceof Category) {
-            $this->handleCategoryUpdate($entity, $args->getEntityManager());
-        }
-    }
-
-    public function postSoftDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
 

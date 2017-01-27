@@ -10,5 +10,5 @@ namespace Oxa\Sonata\AdminBundle\Util\Traits;
  */
 trait DefaultEntityTrait
 {
-    use DeleteableUserEntityTrait, TimestampableUserEntityTrait, AvailableUserEntityTrait;
+    use TimestampableUserEntityTrait, AvailableUserEntityTrait;
 }

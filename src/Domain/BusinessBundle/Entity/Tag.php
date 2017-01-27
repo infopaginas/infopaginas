@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="tag")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TagRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\TagTranslation")
  */

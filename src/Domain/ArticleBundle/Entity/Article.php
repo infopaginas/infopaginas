@@ -21,7 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="article")
  * @ORM\Entity(repositoryClass="Domain\ArticleBundle\Repository\ArticleRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\ArticleBundle\Entity\Translation\ArticleTranslation")
  */
 class Article implements DefaultEntityInterface, TranslatableInterface

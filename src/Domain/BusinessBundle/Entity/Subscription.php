@@ -22,7 +22,6 @@ use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTransl
  * @ORM\Table(name="subscription")
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\SubscriptionRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\SubscriptionTranslation")
  */
 class Subscription implements DefaultEntityInterface, TranslatableInterface, DatetimePeriodStatusInterface

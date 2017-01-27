@@ -144,18 +144,6 @@ class CategoryAdmin extends OxaAdmin
         ;
     }
 
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        parent::configureRoutes($collection);
-
-        $collection
-            ->remove('delete_physical')
-            ->add('delete_physical', null, [
-                '_controller' => 'DomainBusinessBundle:CategoryAdminCRUD:deletePhysical'
-            ])
-        ;
-    }
-
     public function prePersist($entity)
     {
         $this->preSave($entity);
@@ -236,11 +224,7 @@ class CategoryAdmin extends OxaAdmin
      */
     public function isGranted($name, $object = null)
     {
-        $deniedActions = [
-            'DELETE',
-            'ROLE_PHYSICAL_DELETE_ABLE',
-            'ROLE_RESTORE_ABLE'
-        ];
+        $deniedActions = $this->getDeleteDeniedAction();
 
         if ($object && in_array($name, $deniedActions) && !$object->getBusinessProfiles()->isEmpty()) {
             return false;

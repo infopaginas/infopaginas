@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
+use Domain\ReportBundle\Entity\CategoryReport;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -20,7 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="category")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
  * @Gedmo\Tree(type="materializedPath")
  */
@@ -207,6 +207,17 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     protected $isUpdated;
 
+    /** @var CategoryReport[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\CategoryReport",
+     *     mappedBy="category",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $reports;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -231,6 +242,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->reports = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isUpdated = true;
     }
@@ -591,6 +603,37 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getIsUpdated()
     {
         return $this->isUpdated;
+    }
+
+    /**
+     * Add category report
+     *
+     * @param CategoryReport $report
+     * @return BusinessProfile
+     */
+    public function addReport(CategoryReport $report)
+    {
+        $this->reports[] = $report;
+        return $this;
+    }
+
+    /** Remove category report
+     *
+     * @param CategoryReport $report
+     */
+    public function removeReport(CategoryReport $report)
+    {
+        $this->reports->removeElement($report);
+    }
+
+    /**
+     * Get category reports
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReports()
+    {
+        return $this->reports;
     }
 
     public static function getTranslatableFields()
