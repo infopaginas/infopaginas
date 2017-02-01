@@ -712,6 +712,17 @@ class BusinessProfile implements
     private $searchLogs;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\BusinessOverviewReport",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     */
+    private $businessViews;
+
+    /**
      * @return mixed
      */
     public function getVideo()

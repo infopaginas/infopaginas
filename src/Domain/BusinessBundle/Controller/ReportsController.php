@@ -13,15 +13,12 @@ use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\InteractionsReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
-use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
-use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ReportController
@@ -35,12 +32,12 @@ class ReportsController extends Controller
 
         $params = [
             'businessProfileId' => $businessProfileId,
-            'date' => DatesUtil::getDateAsArrayFromVO($dateRange),
-            'limit' => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+            'date'              => DatesUtil::getDateAsArrayFromVO($dateRange),
         ];
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        //$overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewDataDb($params);
 
         $filtersForm = $this->createForm(new BusinessReportFilterType());
 
@@ -48,13 +45,16 @@ class ReportsController extends Controller
 
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
 
-        return $this->render(':redesign:business-profile-report.html.twig', [
-            'overviewData'      => $overviewData,
-            'filtersForm'       => $filtersForm->createView(),
-            'businessProfileId' => $businessProfileId,
-            'businessProfile'   => $businessProfile,
-            'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
-        ]);
+        return $this->render(
+            ':redesign:business-profile-report.html.twig',
+            [
+                'overviewData'             => $overviewData,
+                'filtersForm'              => $filtersForm->createView(),
+                'businessProfileId'        => $businessProfileId,
+                'businessProfile'          => $businessProfile,
+                'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
+            ]
+        );
     }
 
     public function overviewAction(Request $request)
@@ -62,7 +62,7 @@ class ReportsController extends Controller
         $params = $this->prepareReportParameters($request->request->all());
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewDataDb($params);
 
         $stats = $this->renderView(
             'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',

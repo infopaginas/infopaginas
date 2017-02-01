@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 
 use Domain\BannerBundle\Model\TypeInterface;
 
@@ -78,6 +79,16 @@ class SearchController extends Controller
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
+        $businessProfileIds = [];
+        //dump($searchResultsDTO);exit();
+        if (!empty($searchResultsDTO->resultSet)) {
+            foreach ($searchResultsDTO->resultSet as $resultItem) {
+                $businessProfileIds[] = $resultItem->getId();
+            }
+
+            $this->getBusinessOverviewReportManager()->registerBusinessImpressionDb($businessProfileIds);
+        }
+
         return $this->render(
             ':redesign:search-results.html.twig',
             [
@@ -96,6 +107,11 @@ class SearchController extends Controller
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
+    }
+
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
+    {
+        return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
     /**
@@ -158,6 +174,16 @@ class SearchController extends Controller
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+
+            $businessProfileIds = [];
+            //dump($searchResultsDTO);exit();
+            if (!empty($searchResultsDTO->resultSet)) {
+                foreach ($searchResultsDTO->resultSet as $resultItem) {
+                    $businessProfileIds[] = $resultItem->getId();
+                }
+
+                $this->getBusinessOverviewReportManager()->registerBusinessImpressionDb($businessProfileIds);
+            }
         } else {
             $searchResultsDTO = null;
             $locationMarkers = null;
@@ -213,6 +239,16 @@ class SearchController extends Controller
 
             if ($searchDTO->query) {
                 $seoCategories[] = $searchDTO->query;
+            }
+
+            $businessProfileIds = [];
+            //dump($searchResultsDTO);exit();
+            if (!empty($searchResultsDTO->resultSet)) {
+                foreach ($searchResultsDTO->resultSet as $resultItem) {
+                    $businessProfileIds[] = $resultItem->getId();
+                }
+
+                $this->getBusinessOverviewReportManager()->registerBusinessImpressionDb($businessProfileIds);
             }
         } else {
             $searchResultsDTO = null;
@@ -423,6 +459,16 @@ class SearchController extends Controller
 
                 $locationMarkers = $this->getBusinessProfileManager()
                     ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+
+                $businessProfileIds = [];
+                //dump($searchResultsDTO);exit();
+                if (!empty($searchResultsDTO->resultSet)) {
+                    foreach ($searchResultsDTO->resultSet as $resultItem) {
+                        $businessProfileIds[] = $resultItem->getId();
+                    }
+
+                    $this->getBusinessOverviewReportManager()->registerBusinessImpressionDb($businessProfileIds);
+                }
             }
         }
 

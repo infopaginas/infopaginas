@@ -139,6 +139,8 @@ class ProfileController extends Controller
             );
         }
 
+        $this->getBusinessOverviewReportManager()->registerBusinessViewDb(array($businessProfile->getId()));
+
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
@@ -271,6 +273,11 @@ class ProfileController extends Controller
     }
 
     protected function getBusinessOverviewReviewManager() : BusinessOverviewReportManager
+    {
+        return $this->get('domain_report.manager.business_overview_report_manager');
+    }
+
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
     }
