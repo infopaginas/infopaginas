@@ -255,11 +255,6 @@ class ProfileController extends Controller
         return $this->get('domain_business.form.handler.business_profile');
     }
 
-    protected function getBusinessOverviewReviewManager() : BusinessOverviewReportManager
-    {
-        return $this->get('domain_report.manager.business_overview_report_manager');
-    }
-
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
