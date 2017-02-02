@@ -312,10 +312,14 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                         }
                     };
 
-                    popup.onbeforeunload = closePrint;
-                    popup.onafterprint = closePrint;
-                    popup.focus(); // Required for IE
-                    popup.print();
+                    if ( popup ) {
+                        popup.onbeforeunload = closePrint;
+                        popup.onafterprint = closePrint;
+                        popup.focus(); // Required for IE
+                        popup.print();
+                    } else {
+                        // process blocked window case
+                    }
                 },
                 complete: function() {
                     $('#export-spinner').html('');

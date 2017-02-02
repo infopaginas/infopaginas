@@ -139,7 +139,7 @@ class ProfileController extends Controller
             );
         }
 
-        $this->getBusinessOverviewReportManager()->registerBusinessViewDb(array($businessProfile->getId()));
+        $this->getBusinessOverviewReportManager()->registerBusinessView(array($businessProfile));
 
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
@@ -191,23 +191,6 @@ class ProfileController extends Controller
         }
 
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
-    }
-
-    public function registerViewAction(Request $request)
-    {
-        $businessProfileId = $request->get('id', null);
-
-        if ($businessProfileId) {
-            try {
-                $this->getBusinessOverviewReviewManager()->registerBusinessView($businessProfileId);
-            } catch (\Exception $e) {
-                return $this->getFailureResponse($e->getMessage(), $e->getErrors());
-            }
-
-            return $this->getSuccessResponse(true);
-        }
-
-        return $this->getFailureResponse(false);
     }
 
     /**

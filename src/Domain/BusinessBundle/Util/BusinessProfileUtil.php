@@ -9,7 +9,7 @@ class BusinessProfileUtil
 {
     public static function extractBusinessProfiles(array $searchResults)
     {
-        return array_column($searchResults, 0);
+        return array_column($searchResults, 'id');
     }
 
     public static function seoTitleBuilder(

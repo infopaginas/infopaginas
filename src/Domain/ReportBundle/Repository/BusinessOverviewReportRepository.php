@@ -31,15 +31,15 @@ class BusinessOverviewReportRepository extends EntityRepository
      */
     protected function getBusinessOverviewReportQb(array $params = [])
     {
-        $query = $this->createQueryBuilder('bor');
+        $qb = $this->createQueryBuilder('bor');
 
         // do not use pagination for Per month filter option
         if (!isset($params['periodOption']) || $params['periodOption'] != AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
             // manage pagination
             if (isset($params['perPage']) && isset($params['page'])) {
                 $first = ($params['page'] - 1) * $params['perPage'];
-                $query->setMaxResults($params['perPage']);
-                $query->setFirstResult($first);
+                $qb->setMaxResults($params['perPage']);
+                $qb->setFirstResult($first);
             }
         }
 
@@ -53,30 +53,30 @@ class BusinessOverviewReportRepository extends EntityRepository
                 'end'   => $params['date']['end'],
             ];
 
-            $query->andWhere('bor.date >= :startDate')
+            $qb->andWhere('bor.date >= :startDate')
                 ->setParameter('startDate', $startDate)
             ;
 
-            $query->andWhere('bor.date <= :endDate')
+            $qb->andWhere('bor.date <= :endDate')
                 ->setParameter('endDate', $endDate)
             ;
         }
 
         if (isset($params['dateTime'])) {
-            $query->andWhere('bor.date = :date')
+            $qb->andWhere('bor.date = :date')
                 ->setParameter('date', $params['dateTime'])
             ;
         }
 
         if (!empty($params['businessProfileId'])) {
-            $query->andWhere('bor.businessProfile IN (:businessIds)')
+            $qb->andWhere('bor.businessProfile IN (:businessIds)')
                 ->setParameter('businessIds', $params['businessProfileId'])
             ;
         }
 
-        $query->orderBy('bor.date');
+        $qb->orderBy('bor.date');
 
-        return $query;
+        return $qb;
     }
 
     /**
@@ -88,9 +88,9 @@ class BusinessOverviewReportRepository extends EntityRepository
      */
     public function getBusinessOverviewReportData(array $params = [])
     {
-        $query = $this->getBusinessOverviewReportQb($params);
+        $qb = $this->getBusinessOverviewReportQb($params);
 
-        $results = $query->getQuery()->getResult();
+        $results = $qb->getQuery()->getResult();
 
         return [
             'results'    => $results,
@@ -100,12 +100,8 @@ class BusinessOverviewReportRepository extends EntityRepository
 
     public function getBusinessOverviewReportByParams(array $params = [])
     {
-        $query = $this->getBusinessOverviewReportQb($params);
-        /*dump($query->getQuery()->getDQL());
-        dump($query->getQuery()->getParameters());
-        exit();*/
-        $results = $query->getQuery()->getResult();
+        $qb = $this->getBusinessOverviewReportQb($params);
 
-        return $results;
+        return $qb->getQuery()->getResult();
     }
 }

@@ -145,8 +145,6 @@ class DatesUtil
             $from = strtotime($step, $from);
         }
 
-        $dates[] = date($outputFormat, $from);
-
         return $dates;
     }
 
@@ -163,9 +161,6 @@ class DatesUtil
         );
 
         $dates = DatesUtil::dateRange($dateRange);
-
-        //remove unwanted day from dates
-        unset($dates[count($dates) - 1]);
 
         return $dates;
     }

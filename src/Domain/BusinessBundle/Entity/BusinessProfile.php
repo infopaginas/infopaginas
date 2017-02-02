@@ -760,6 +760,16 @@ class BusinessProfile implements
         return $this->getName() ?: '';
     }
 
+    public function __get($prop)
+    {
+        return $this->$prop;
+    }
+
+    public function __isset($prop) : bool
+    {
+        return isset($this->$prop);
+    }
+
     /**
      * Get id
      *
@@ -806,6 +816,7 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessViews = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2751,5 +2762,39 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
         ];
+    }
+
+    /**
+     * Add businessView
+     *
+     * @param \Domain\ReportBundle\Entity\BusinessOverviewReport $businessView
+     *
+     * @return BusinessProfile
+     */
+    public function addBusinessView(\Domain\ReportBundle\Entity\BusinessOverviewReport $businessView)
+    {
+        $this->businessViews[] = $businessView;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessView
+     *
+     * @param \Domain\ReportBundle\Entity\BusinessOverviewReport $businessView
+     */
+    public function removeBusinessView(\Domain\ReportBundle\Entity\BusinessOverviewReport $businessView)
+    {
+        $this->businessViews->removeElement($businessView);
+    }
+
+    /**
+     * Get businessViews
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessViews()
+    {
+        return $this->businessViews;
     }
 }

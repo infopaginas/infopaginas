@@ -36,8 +36,7 @@ class ReportsController extends Controller
         ];
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        //$overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewDataDb($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
 
         $filtersForm = $this->createForm(new BusinessReportFilterType());
 
@@ -62,7 +61,7 @@ class ReportsController extends Controller
         $params = $this->prepareReportParameters($request->request->all());
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewDataDb($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
 
         $stats = $this->renderView(
             'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
@@ -179,10 +178,10 @@ class ReportsController extends Controller
     {
         $params = [
             'businessProfileId' => $requestData['businessProfileId'],
-            'limit' => $requestData['limit'],
+            'limit'             => $requestData['limit'],
         ];
 
-        if ($requestData['datesRange'] !== 'custom') {
+        if ($requestData['datesRange'] !== DatesUtil::RANGE_CUSTOM) {
             $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType($requestData['datesRange']);
             $params['date'] = DatesUtil::getDateAsArrayFromVO($dateRange);
         } else {

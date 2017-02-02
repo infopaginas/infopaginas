@@ -18,6 +18,9 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
 {
     use DefaultEntityTrait;
 
+    const TYPE_CODE_IMPRESSION = 'impression';
+    const TYPE_CODE_VIEW       = 'view';
+
     /**
      * @var int
      *
@@ -60,6 +63,14 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
         return [
             self::CODE_PDF_BUSINESS_OVERVIEW_REPORT   => self::FORMAT_PDF,
             self::CODE_EXCEL_BUSINESS_OVERVIEW_REPORT => self::FORMAT_EXCEL,
+        ];
+    }
+
+    public static function getTypes()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION,
+            self::TYPE_CODE_VIEW,
         ];
     }
 
