@@ -1,24 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/12/16
- * Time: 2:28 PM
- */
 
 namespace Domain\ReportBundle\Manager;
 
-use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Entity\BusinessOverviewReport;
-use Domain\ReportBundle\Entity\BusinessOverviewReportBusinessProfile;
-use Domain\ReportBundle\Entity\CategoryReport;
-use Domain\ReportBundle\Entity\CategoryReportCategory;
-use Domain\ReportBundle\Entity\SubscriptionReport;
-use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
-use Domain\ReportBundle\Google\Analytics\DataFetcher;
-use Domain\ReportBundle\Model\BusinessOverviewReportTypeInterface;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Ivory\CKEditorBundle\Exception\Exception;
@@ -32,9 +18,6 @@ class BusinessOverviewReportManager extends BaseReportManager
     /** @var  BusinessProfileManager $businessProfileManager */
     protected $businessProfileManager;
 
-    /** @var DataFetcher $gaDataSource */
-    protected $gaDataSource;
-
     /** @var Kernel $kernel */
     protected $kernel;
 
@@ -45,10 +28,9 @@ class BusinessOverviewReportManager extends BaseReportManager
      * BusinessOverviewReportManager constructor.
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function __construct(BusinessProfileManager $businessProfileManager, DataFetcher $gaDataSource, Router $router, Kernel $kernel)
+    public function __construct(BusinessProfileManager $businessProfileManager, Router $router, Kernel $kernel)
     {
         $this->businessProfileManager = $businessProfileManager;
-        $this->gaDataSource = $gaDataSource;
 
         $this->kernel = $kernel;
         $this->router = $router;
@@ -91,10 +73,6 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $this->getBusinessOverviewData($params);
     }
 
-    /**
-     * @param array $params
-     * @return array
-     */
     public function getBusinessOverviewData(array $params = [])
     {
         $businessProfile = $this->getBusinessProfileManager()->find((int)$params['businessProfileId']);
@@ -121,25 +99,27 @@ class BusinessOverviewReportManager extends BaseReportManager
             $params['date']['end']
         );
 
-        if (isset($params['periodOption']) &&
-            $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
-        ) {
-            $dimension = 'yearMonth';
-            $step = DatesUtil::STEP_MONTH;
+        if (isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
+            $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
+            $step       = DatesUtil::STEP_MONTH;
         } else {
-            $dimension = 'date';
-            $step = DatesUtil::STEP_DAY;
+            $dateFormat = AdminHelper::DATE_FORMAT;
+            $step       = DatesUtil::STEP_DAY;
         }
 
-        $result['dates'] = DatesUtil::dateRange($dates, $step);
-        $result['views']       = $this->getBusinessProfileGaViews($businessProfile, $dates, $dimension);
-        $result['impressions'] = $this->getBusinessProfileGaImpressions($businessProfile, $dates, $dimension);
+        $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
 
-        $result['results']     = $this->prepareBusinessProfileOverviewReportStats(
+        $businessViews = $this->getBusinessProfileViews($params);
+
+        $businessProfileResult = $this->prepareBusinessProfileOverviewReportStats(
             $result['dates'],
-            $result['views'],
-            $result['impressions']
+            $businessViews['results'],
+            $dateFormat
         );
+
+        $result['results'] = $businessProfileResult['results'];
+        $result['views'] = $businessProfileResult['views'];
+        $result['impressions'] = $businessProfileResult['impressions'];
 
         return $result;
     }
@@ -152,127 +132,112 @@ class BusinessOverviewReportManager extends BaseReportManager
         return new ReportDatesRangeVO($startDate, $endDate);
     }
 
-    protected function prepareBusinessProfileOverviewReportStats($dates, $clicks, $impressions) : array
+    protected function prepareBusinessProfileOverviewReportStats($dates, $views, $dateFormat) : array
     {
         $stats = [];
+        $dates = array_flip($dates);
 
-        foreach ($dates as $key => $date) {
-            if (!isset($clicks[$key]) || !isset($impressions[$key])) {
-                continue;
-            }
-
-            $stats[$date] = [
+        foreach ($dates as $date => $key) {
+            $stats['results'][$date] = [
                 'date' => $date,
-                'views' => $clicks[$key],
-                'impressions' => $impressions[$key],
+                'dateObject' => \DateTime::createFromFormat($dateFormat, $date),
+                'views' => 0,
+                'impressions' => 0,
             ];
+            $stats['views'][$key] = 0;
+            $stats['impressions'][$key] = 0;
+        }
+
+        foreach ($views as $view) {
+            $viewDate    = $view->getDate()->format($dateFormat);
+            $views       = $view->getViews();
+            $impressions = $view->getImpressions();
+
+            $stats['results'][$viewDate]['views']       += $views;
+            $stats['results'][$viewDate]['impressions'] += $impressions;
+            $stats['views'][$dates[$viewDate]]          += $views;
+            $stats['impressions'][$dates[$viewDate]]    += $impressions;
         }
 
         return $stats;
     }
 
-    protected function getBusinessProfileGaViews(
-        BusinessProfile $businessProfile,
-        ReportDatesRangeVO $dates,
-        string $dimension
-    ) : array
+    protected function getBusinessProfileViews(array $params) : array
     {
-        $path = $this->getRouter()->generate('domain_business_profile_view', [
-            'slug'     => $businessProfile->getSlug(),
-            'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
-        ]);
+        $em = $this->getEntityManager();
+        /** @var BusinessOverviewReport[] $businessViews */
+        $businessViews = $em->getRepository('DomainReportBundle:BusinessOverviewReport')->getBusinessOverviewReportData(
+            $params
+        );
 
-        //only for dev env - remove app_dev.php from URL (GA doesn't track it)
-        if ($this->getKernel()->getEnvironment() == 'dev') {
-            $path = str_replace('/app_dev.php', '', $path);
-        }
-
-        $views = $this->getGaDataSource()->getViews($path, $dates, $dimension);
-
-        return array_map(function($value) {
-            return (int)$value[1];
-        }, $views);
+        return $businessViews;
     }
 
-    protected function getBusinessProfileGaImpressions(
-        BusinessProfile $businessProfile,
-        ReportDatesRangeVO $dates,
-        string $dimension
-    ) : array
-    {
-        $impressions = $this->getGaDataSource()->getImpressions($businessProfile->getSlug(), $dates, $dimension);
-
-        return array_map(function($value) {
-            return (int)$value[1];
-        }, $impressions);
-    }
-
-    /**
-     * @param int $businessProfileId
-     * @param \DateTime|null $datetime
-     */
-    public function registerBusinessView(int $businessProfileId, \DateTime $datetime = null)
+    public function registerBusinessView(array $businessProfiles)
     {
         $this->registerBusinessOverview(
-            BusinessOverviewReportTypeInterface::TYPE_CODE_VIEW,
-            $businessProfileId,
-            $datetime
+            BusinessOverviewReport::TYPE_CODE_VIEW,
+            $businessProfiles
         );
     }
 
-    /**
-     * @param int $businessProfileId
-     * @param \DateTime|null $datetime
-     */
-    public function registerBusinessImpression(int $businessProfileId, \DateTime $datetime = null)
+    public function registerBusinessImpression(array $businessProfiles)
     {
         $this->registerBusinessOverview(
-            BusinessOverviewReportTypeInterface::TYPE_CODE_IMPRESSION,
-            $businessProfileId,
-            $datetime
+            BusinessOverviewReport::TYPE_CODE_IMPRESSION,
+            $businessProfiles
         );
     }
 
     /**
      * @param $type
-     * @param int $businessProfileId
-     * @param \DateTime|null $datetime
+     * @param array $businessProfiles
+     *
+     * @return bool
      */
-    private function registerBusinessOverview($type, int $businessProfileId, \DateTime $datetime = null)
+    private function registerBusinessOverview($type, array $businessProfiles)
     {
-        if (!array_key_exists($type, BusinessOverviewReportBusinessProfile::getTypes())) {
+        if (!in_array($type, BusinessOverviewReport::getTypes())) {
             throw new \InvalidArgumentException(sprintf('Invalid Business overview report type (%s)'), $type);
+        }
+
+        if (!$businessProfiles) {
+            return false;
         }
 
         $em = $this->getEntityManager();
 
-        $businessProfile = $em->getRepository('DomainBusinessBundle:BusinessProfile')->findOneBy([
-            'id' => $businessProfileId
-        ]);
+        $datetime           = new \DateTime();
+        $businessProfileIds = BusinessProfileUtil::extractBusinessProfiles($businessProfiles);
 
-        if (!$businessProfile) {
-            throw new \InvalidArgumentException(sprintf('Invalid Business profile Id (%s)'), $businessProfileId);
+        $reports  = [];
+        $params   = [
+            'dateTime'          => $datetime,
+            'businessProfileId' => $businessProfileIds,
+        ];
+
+        $businessOverviewReports = $em->getRepository('DomainReportBundle:BusinessOverviewReport')
+            ->getBusinessOverviewReportByParams($params);
+
+        foreach ($businessOverviewReports as $businessOverviewReport) {
+            $reports[$businessOverviewReport->getBusinessProfile()->getId()] = $businessOverviewReport;
         }
 
-        $datetime = ($datetime) ? $datetime : new \DateTime();
+        foreach ($businessProfileIds as $businessProfileId) {
+            if (empty($reports[$businessProfileId])) {
+                $businessOverviewReport = new BusinessOverviewReport();
+                $businessOverviewReport->setDate($datetime);
+                $businessOverviewReport->setBusinessProfile(
+                    $this->getEntityManager()->getReference('DomainBusinessBundle:BusinessProfile', $businessProfileId)
+                );
+            } else {
+                $businessOverviewReport = $reports[$businessProfileId];
+            }
 
-        $businessOverviewReport = $em->getRepository('DomainReportBundle:BusinessOverviewReport')->findOneBy([
-            'date' => $datetime
-        ]);
+            $businessOverviewReport->incrementBusinessCounter($type);
 
-        if (!$businessOverviewReport) {
-            $businessOverviewReport = new BusinessOverviewReport();
-            $businessOverviewReport->setDate($datetime);
+            $em->persist($businessOverviewReport);
         }
-
-        $businessOverviewReportBusinessProfile = new BusinessOverviewReportBusinessProfile();
-        $businessOverviewReportBusinessProfile->setBusinessOverviewReport($businessOverviewReport);
-        $businessOverviewReportBusinessProfile->setBusinessProfile($businessProfile);
-        $businessOverviewReportBusinessProfile->setDatetime($datetime);
-        $businessOverviewReportBusinessProfile->setType($type);
-
-        $em->persist($businessOverviewReport);
-        $em->persist($businessOverviewReportBusinessProfile);
 
         $em->flush();
     }
@@ -310,10 +275,5 @@ class BusinessOverviewReportManager extends BaseReportManager
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
-    }
-
-    protected function getGaDataSource() : DataFetcher
-    {
-        return $this->gaDataSource;
     }
 }

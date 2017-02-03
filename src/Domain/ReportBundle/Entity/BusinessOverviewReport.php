@@ -1,32 +1,25 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/26/16
- * Time: 6:45 PM
- */
 
 namespace Domain\ReportBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Domain\ReportBundle\Model\BusinessOverviewReportTypeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Domain\ReportBundle\Entity\BusinessOverviewReportBusinessProfile;
 
 /**
  * BusinessOverviewReport
  *
  * @ORM\Table(name="business_overview_report")
- * @UniqueEntity("date")
  * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\BusinessOverviewReportRepository")
  */
 class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
 {
     use DefaultEntityTrait;
+
+    const TYPE_CODE_IMPRESSION = 'impressions';
+    const TYPE_CODE_VIEW       = 'views';
 
     /**
      * @var int
@@ -44,72 +37,51 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     protected $date;
 
     /**
-     * @var BusinessOverviewReportBusinessProfile[] $businessOverviewReportBusinessProfile
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\ReportBundle\Entity\BusinessOverviewReportBusinessProfile",
-     *     mappedBy="businessOverviewReport",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     *     )
+     * @var int
+     * @ORM\Column(name="views", type="integer")
      */
-    protected $businessOverviewReportBusinessProfiles;
+    protected $views = 0;
 
     /**
-     * Get id
-     *
-     * @return int
+     * @var int
+     * @ORM\Column(name="impressions", type="integer")
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    protected $impressions = 0;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     inversedBy="businessOverviewReports",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     */
+    protected $businessProfile;
 
     public static function getExportFormats()
     {
         return [
-            self::CODE_PDF_BUSINESS_OVERVIEW_REPORT      => self::FORMAT_PDF,
-            self::CODE_EXCEL_BUSINESS_OVERVIEW_REPORT    => self::FORMAT_EXCEL,
+            self::CODE_PDF_BUSINESS_OVERVIEW_REPORT   => self::FORMAT_PDF,
+            self::CODE_EXCEL_BUSINESS_OVERVIEW_REPORT => self::FORMAT_EXCEL,
         ];
     }
+
+    public static function getTypes()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION,
+            self::TYPE_CODE_VIEW,
+        ];
+    }
+
     /**
-     * Constructor
+     * Get id
+     *
+     * @return integer
      */
-    public function __construct()
+    public function getId()
     {
-        $this->businessOverviewReportBusinessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function getViews(int $businessId = null)
-    {
-        $count = 0;
-        foreach ($this->businessOverviewReportBusinessProfiles as $object) {
-            if ($object->getType() == BusinessOverviewReportTypeInterface::TYPE_CODE_VIEW) {
-                if ($businessId && $object->getBusinessProfile()->getId() != $businessId) {
-                    continue;
-                }
-
-                $count++;
-            }
-        }
-
-        return $count;
-    }
-
-    public function getImpressions(int $businessId = null)
-    {
-        $count = 0;
-        foreach ($this->businessOverviewReportBusinessProfiles as $object) {
-            if ($object->getType() == BusinessOverviewReportTypeInterface::TYPE_CODE_IMPRESSION) {
-                if ($businessId && $object->getBusinessProfile()->getId() != $businessId) {
-                    continue;
-                }
-
-                $count++;
-            }
-        }
-
-        return $count;
+        return $this->id;
     }
 
     /**
@@ -137,47 +109,79 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     }
 
     /**
-     * Add businessOverviewReportBusinessProfile
+     * Set views
      *
-     * @param BusinessOverviewReportBusinessProfile $businessOverviewReportBusinessProfile
+     * @param integer $views
      *
      * @return BusinessOverviewReport
      */
-    public function addBusinessOverviewReportBusinessProfile(
-        BusinessOverviewReportBusinessProfile $businessOverviewReportBusinessProfile
-    ) {
-        $this->businessOverviewReportBusinessProfiles[] = $businessOverviewReportBusinessProfile;
+    public function setViews($views)
+    {
+        $this->views = $views;
+
         return $this;
     }
 
     /**
-     * Remove businessOverviewReportBusinessProfile
+     * Get views
      *
-     * @param BusinessOverviewReportBusinessProfile $businessOverviewReportBusinessProfile
+     * @return integer
      */
-    public function removeBusinessOverviewReportBusinessProfile(
-        BusinessOverviewReportBusinessProfile $businessOverviewReportBusinessProfile
-    ) {
-        $this->businessOverviewReportBusinessProfiles->removeElement($businessOverviewReportBusinessProfile);
+    public function getViews()
+    {
+        return $this->views;
     }
 
     /**
-     * Get businessOverviewReportBusinessProfile
+     * Set impressions
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @param integer $impressions
+     *
+     * @return BusinessOverviewReport
      */
-    public function getBusinessOverviewReportBusinessProfile()
+    public function setImpressions($impressions)
     {
-        return $this->businessOverviewReportBusinessProfiles;
+        $this->impressions = $impressions;
+
+        return $this;
     }
 
     /**
-     * Get businessOverviewReportBusinessProfiles
+     * Get impressions
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return integer
      */
-    public function getBusinessOverviewReportBusinessProfiles()
+    public function getImpressions()
     {
-        return $this->businessOverviewReportBusinessProfiles;
+        return $this->impressions;
+    }
+
+    /**
+     * Set businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return BusinessOverviewReport
+     */
+    public function setBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile = null)
+    {
+        $this->businessProfile = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Get businessProfile
+     *
+     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     */
+    public function getBusinessProfile()
+    {
+        return $this->businessProfile;
+    }
+
+    public function incrementBusinessCounter($type)
+    {
+        $this->{$type}++;
     }
 }

@@ -11,7 +11,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\CoreBundle\Form\Type\EqualType;
 
 /**
- * Class BusinessOverviewReportAdmin
+ * Class ViewsAndVisitorsReportAdmin
  * @package Domain\ReportBundle\Admin
  */
 class ViewsAndVisitorsReportAdmin extends ReportAdmin

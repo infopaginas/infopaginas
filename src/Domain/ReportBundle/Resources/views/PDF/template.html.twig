@@ -136,11 +136,12 @@
         </tr>
         </thead>
         <tbody>
-        {% for monthlyData in thisMonthOverviewData %}
+        {% set monthMaxIndex = max(thisMonthOverviewData|length, lastMonthOverviewData|length) - 1 %}
+        {% for index in 0..monthMaxIndex %}
             <tr>
-                <td>{{ loop.index + 1 }}</td>
-                <td>{{ lastMonthOverviewData[loop.index]['impressions'] }}</td>
-                <td>{{ monthlyData['impressions'] }}</td>
+                <td>{{ index + 1 }}</td>
+                <td>{{ lastMonthOverviewData[index]['impressions'] is defined ? lastMonthOverviewData[index]['impressions'] : '-' }}</td>
+                <td>{{ thisMonthOverviewData[index]['impressions'] is defined ? thisMonthOverviewData[index]['impressions'] : '-' }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -165,9 +166,9 @@
         <tbody>
         {% for yearlyData in thisYearOverviewData %}
             <tr>
-                <td>{{ yearlyData['date']|date('F, Y') }}</td>
+                <td>{{ yearlyData['dateObject']|date('F, Y') }}</td>
                 <td>{{ yearlyData['impressions'] }}</td>
-                <td>{{ lastYearOverviewData[loop.index -1]['date']|date('F, Y') }}</td>
+                <td>{{ lastYearOverviewData[loop.index -1]['dateObject']|date('F, Y') }}</td>
                 <td>{{ lastYearOverviewData[loop.index -1]['impressions'] }}</td>
             </tr>
         {% endfor %}

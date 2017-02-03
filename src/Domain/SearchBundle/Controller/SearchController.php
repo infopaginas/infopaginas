@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
+use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 
 use Domain\BannerBundle\Model\TypeInterface;
 
@@ -59,6 +61,8 @@ class SearchController extends Controller
             if ($searchDTO->query) {
                 $seoCategories[] = $searchDTO->query;
             }
+
+            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
             $dcDataDTO        = null;
@@ -96,6 +100,11 @@ class SearchController extends Controller
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
             ]
         );
+    }
+
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
+    {
+        return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
     /**
@@ -158,6 +167,8 @@ class SearchController extends Controller
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
+
+            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
             $locationMarkers = null;
@@ -214,6 +225,8 @@ class SearchController extends Controller
             if ($searchDTO->query) {
                 $seoCategories[] = $searchDTO->query;
             }
+
+            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
         } else {
             $searchResultsDTO = null;
             $schema           = null;
@@ -423,6 +436,8 @@ class SearchController extends Controller
 
                 $locationMarkers = $this->getBusinessProfileManager()
                     ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+
+                $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
             }
         }
 

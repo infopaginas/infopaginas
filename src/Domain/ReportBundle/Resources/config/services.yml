@@ -12,7 +12,6 @@ services:
         class: Domain\ReportBundle\Manager\BusinessOverviewReportManager
         arguments:
             - '@domain_business.manager.business_profile'
-            - '@domain_report.google_analytics.data_fetcher'
             - '@router'
             - '@kernel'
         calls:

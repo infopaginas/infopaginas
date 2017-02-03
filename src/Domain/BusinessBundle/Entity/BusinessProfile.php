@@ -27,7 +27,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-
+use Domain\ReportBundle\Entity\BusinessOverviewReport;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
@@ -712,6 +712,17 @@ class BusinessProfile implements
     private $searchLogs;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\BusinessOverviewReport",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
+     */
+    private $businessOverviewReports;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -747,6 +758,16 @@ class BusinessProfile implements
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    public function __get($prop)
+    {
+        return $this->$prop;
+    }
+
+    public function __isset($prop) : bool
+    {
+        return isset($this->$prop);
     }
 
     /**
@@ -795,6 +816,7 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessOverviewReports = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2740,5 +2762,39 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
         ];
+    }
+
+    /**
+     * Add businessOverviewReport
+     *
+     * @param BusinessOverviewReport $businessOverviewReport
+     *
+     * @return BusinessProfile
+     */
+    public function addBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport)
+    {
+        $this->businessOverviewReports[] = $businessOverviewReport;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessOverviewReport
+     *
+     * @param BusinessOverviewReport $businessOverviewReport
+     */
+    public function removeBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport)
+    {
+        $this->businessOverviewReports->removeElement($businessOverviewReport);
+    }
+
+    /**
+     * Get businessOverviewReports
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBusinessOverviewReports()
+    {
+        return $this->businessOverviewReports;
     }
 }
