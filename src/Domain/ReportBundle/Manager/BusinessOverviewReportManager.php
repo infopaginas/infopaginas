@@ -126,8 +126,8 @@ class BusinessOverviewReportManager extends BaseReportManager
 
     protected function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
     {
-        $startDate = \DateTime::createFromFormat('d-m-Y', $start);
-        $endDate = \DateTime::createFromFormat('d-m-Y', $end);
+        $startDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $start);
+        $endDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $end);
 
         return new ReportDatesRangeVO($startDate, $endDate);
     }

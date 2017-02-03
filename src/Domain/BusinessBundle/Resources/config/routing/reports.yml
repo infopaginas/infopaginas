@@ -39,3 +39,7 @@ domain_business_reports_print:
      defaults: { _controller: DomainBusinessBundle:Reports:print }
      options:
         expose: true
+
+domain_business_reports_api_overview:
+     path:     /api/overview
+     defaults: { _controller: DomainBusinessBundle:Api:overview }
