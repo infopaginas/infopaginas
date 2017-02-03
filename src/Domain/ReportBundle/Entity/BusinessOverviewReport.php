@@ -184,14 +184,4 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     {
         $this->{$type}++;
     }
-
-    public function incrementViews()
-    {
-        $this->views++;
-    }
-
-    public function incrementImpressions()
-    {
-        $this->impressions++;
-    }
 }
