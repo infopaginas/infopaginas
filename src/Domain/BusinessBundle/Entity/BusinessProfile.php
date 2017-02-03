@@ -81,6 +81,9 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
     const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
+    const BUSINESS_STATUS_ACTIVE   = 'active';
+    const BUSINESS_STATUS_INACTIVE = 'inactive';
+
     const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
     const BUSINESS_PROFILE_URL_MAX_LENGTH = 1000;
 
@@ -2796,5 +2799,10 @@ class BusinessProfile implements
     public function getBusinessOverviewReports()
     {
         return $this->businessOverviewReports;
+    }
+
+    public function getActiveStatus()
+    {
+        return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
     }
 }

@@ -113,3 +113,7 @@ services:
             - '@domain_report.manager.ad_usage'
             - '@templating'
             - '@spraed.pdf.generator'
+
+    domain_report.manager.business_overview_report_api_manager:
+            class: Domain\ReportBundle\Manager\BusinessOverviewReportApiManager
+            arguments: [ '@service_container' ]
