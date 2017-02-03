@@ -27,7 +27,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-
+use Domain\ReportBundle\Entity\BusinessOverviewReport;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
@@ -720,7 +720,7 @@ class BusinessProfile implements
      * )
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
      */
-    private $businessViews;
+    private $businessOverviewReports;
 
     /**
      * @return mixed
@@ -816,7 +816,7 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->businessViews = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessOverviewReports = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2765,36 +2765,36 @@ class BusinessProfile implements
     }
 
     /**
-     * Add businessView
+     * Add businessOverviewReport
      *
-     * @param \Domain\ReportBundle\Entity\BusinessOverviewReport $businessView
+     * @param BusinessOverviewReport $businessOverviewReport
      *
      * @return BusinessProfile
      */
-    public function addBusinessView(\Domain\ReportBundle\Entity\BusinessOverviewReport $businessView)
+    public function addBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport)
     {
-        $this->businessViews[] = $businessView;
+        $this->businessOverviewReports[] = $businessOverviewReport;
 
         return $this;
     }
 
     /**
-     * Remove businessView
+     * Remove businessOverviewReport
      *
-     * @param \Domain\ReportBundle\Entity\BusinessOverviewReport $businessView
+     * @param BusinessOverviewReport $businessOverviewReport
      */
-    public function removeBusinessView(\Domain\ReportBundle\Entity\BusinessOverviewReport $businessView)
+    public function removeBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport)
     {
-        $this->businessViews->removeElement($businessView);
+        $this->businessOverviewReports->removeElement($businessOverviewReport);
     }
 
     /**
-     * Get businessViews
+     * Get businessOverviewReports
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getBusinessViews()
+    public function getBusinessOverviewReports()
     {
-        return $this->businessViews;
+        return $this->businessOverviewReports;
     }
 }

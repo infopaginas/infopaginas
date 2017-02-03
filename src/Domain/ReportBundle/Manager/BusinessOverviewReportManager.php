@@ -234,11 +234,12 @@ class BusinessOverviewReportManager extends BaseReportManager
                 $businessOverviewReport = $reports[$businessProfileId];
             }
 
-            if ($type == BusinessOverviewReport::TYPE_CODE_IMPRESSION) {
-                $businessOverviewReport->setImpressions($businessOverviewReport->getImpressions() + 1);
+            $businessOverviewReport->incrementBusinessCounter($type);
+            /*if ($type == BusinessOverviewReport::TYPE_CODE_IMPRESSION) {
+                $businessOverviewReport->incrementImpressions();
             } else {
-                $businessOverviewReport->setViews($businessOverviewReport->getViews() + 1);
-            }
+                $businessOverviewReport->incrementViews();
+            }*/
 
             $em->persist($businessOverviewReport);
         }

@@ -18,8 +18,8 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
 {
     use DefaultEntityTrait;
 
-    const TYPE_CODE_IMPRESSION = 'impression';
-    const TYPE_CODE_VIEW       = 'view';
+    const TYPE_CODE_IMPRESSION = 'impressions';
+    const TYPE_CODE_VIEW       = 'views';
 
     /**
      * @var int
@@ -51,7 +51,7 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *     inversedBy="businessViews",
+     *     inversedBy="businessOverviewReports",
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
@@ -178,5 +178,20 @@ class BusinessOverviewReport implements DefaultEntityInterface, ReportInterface
     public function getBusinessProfile()
     {
         return $this->businessProfile;
+    }
+
+    public function incrementBusinessCounter($type)
+    {
+        $this->{$type}++;
+    }
+
+    public function incrementViews()
+    {
+        $this->views++;
+    }
+
+    public function incrementImpressions()
+    {
+        $this->impressions++;
     }
 }

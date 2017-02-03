@@ -139,7 +139,7 @@ class ProfileController extends Controller
             );
         }
 
-        $this->getBusinessOverviewReportManager()->registerBusinessView(array($businessProfile));
+        $this->getBusinessOverviewReportManager()->registerBusinessView([$businessProfile]);
 
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
