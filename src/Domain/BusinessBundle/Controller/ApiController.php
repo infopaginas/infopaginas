@@ -16,7 +16,7 @@ class ApiController extends Controller
     {
         $params = $request->query->all();
 
-        $result = $this->getBusinessOverviewReportApiManager()->getBusinessOverview($params);
+        $result = $this->getBusinessOverviewReportApiManager()->getBusinessViewsAndImpressions($params);
 
         return new JsonResponse($result);
     }

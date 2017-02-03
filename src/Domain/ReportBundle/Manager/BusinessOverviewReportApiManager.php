@@ -105,7 +105,7 @@ class BusinessOverviewReportApiManager
      *
      * @return array
      */
-    public function getBusinessOverview($params)
+    public function getBusinessViewsAndImpressions($params)
     {
         list($result, $params) = $this->prepareReportParameters($params);
 
