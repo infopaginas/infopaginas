@@ -22,7 +22,7 @@
                 <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
             {% else %}
-                <div class="container profile-header__container profile-header--no-image" style="margin: 0 auto; background-image:url('{{ absolute_url(asset('redesign/img/profile-header.jpg')) }}');">
+                <div class="container profile-header__container profile-header--no-image" style="margin: 0 auto;">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url('{{ absolute_url(asset('redesign/img/profile-header.jpg')) }}');"></div>
             {% endif %}
                 <header class="page-section profile-header">
