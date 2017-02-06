@@ -4890,9 +4890,7 @@ input[type='radio'], input[type='checkbox'] {
   margin-bottom: 5px;
   ul {
     display: none;
-    a {
-      color: #132249;
-    }
+    color: #132249;
   }
 }
 .dropdown-call-button {
@@ -4907,6 +4905,9 @@ input[type='radio'], input[type='checkbox'] {
   font-weight: 700;
   letter-spacing: 1px;
   margin-bottom: 0;
+  &:hover {
+    background-color: #acc02f;
+  }  
 }
 
 .open {
