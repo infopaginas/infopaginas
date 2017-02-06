@@ -4861,7 +4861,7 @@ input[type='radio'], input[type='checkbox'] {
 
 
 .profile-header--no-image {
-  background-image: none !important;
+  // background-image: none !important;
   background-color: $grey--light;
   min-height: 0;
   @media only screen and (max-width: 768px){
@@ -4919,3 +4919,25 @@ input[type='radio'], input[type='checkbox'] {
     border: 2px solid #2a305b;
   }
 }
+
+
+.education {background-image: url('../redesign/img/category-backgrounds/bg_educacion.jpg')}
+.computers-communications-electronics {background-image: url('../redesign/img/category-backgrounds/bg_computadora.jpg')}
+.personal-care {background-image: url('../redesign/img/category-backgrounds/bg_belleza.jpg')}
+.travel-lodging {background-image: url('../redesign/img/category-backgrounds/bg_viajes.jpg')}
+.government-public-services-and-environment {background-image: url('../redesign/img/category-backgrounds/bg_gobierno.jpg')}
+.food-beverage {background-image: url('../redesign/img/category-backgrounds/bg_restaurante.jpg')}
+.business-professional-services {background-image: url('../redesign/img/category-backgrounds/bg_serviciosynegocios.jpg')}
+.agriculture-fishing-forestry {background-image: url('../redesign/img/category-backgrounds/bg_agricultura.jpg')}
+.automobiles-trucks-motorcycles {background-image: url('../redesign/img/category-backgrounds/bg_auto.jpg')}
+.real-estate-insurance {background-image: url('../redesign/img/category-backgrounds/bg_bienesraices.jpg')}
+.home-garden {background-image: url('../redesign/img/category-backgrounds/bg_hogar.jpg')}
+.family-community {background-image: url('../redesign/img/category-backgrounds/bg_familia.jpg')}
+.construction-renovation {background-image: url('../redesign/img/category-backgrounds/bg_contruction.jpg')}
+.entertainment-media {background-image: url('../redesign/img/category-backgrounds/bg_entretenimiento.jpg')}
+.finance-legal-services {background-image: url('../redesign/img/category-backgrounds/bg_finance.jpg')}
+.sports-recreation {background-image: url('../redesign/img/category-backgrounds/bg_deportes.jpg')}
+.health-medicine {background-image: url('../redesign/img/category-backgrounds/bg_salud.jpg')}
+.industrial-services {background-image: url('../redesign/img/category-backgrounds/bg_industriales.jpg')}
+.shopping-specialty-stores {background-image: url('../redesign/img/category-backgrounds/bg_shopping.jpg')}
+.transportation {background-image: url('../redesign/img/category-backgrounds/bg_transportacion.jpg')}
