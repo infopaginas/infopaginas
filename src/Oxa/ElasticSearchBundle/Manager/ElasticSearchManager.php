@@ -126,6 +126,9 @@ class ElasticSearchManager
                                 'token_chars' => [
                                     'letter',
                                     'digit',
+//                                    'whitespace',
+                                    'punctuation',
+                                    'symbol',
                                 ],
                             ],
                         ],
