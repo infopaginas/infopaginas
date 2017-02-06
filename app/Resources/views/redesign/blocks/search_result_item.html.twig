@@ -50,12 +50,12 @@
                 {% trans %}Directions{% endtrans %}
             </a>
             {% if item.getPhones() | length > 0 %}
-                <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop">
+                <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>
                 <div class="dropdown dropdown-call hide-mobile">
-                  <button class="btn btn-default dropdown-toggle dropdown-call-button" type="button" id="dropdownMenuCall" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                     <span class="caret"></span>
