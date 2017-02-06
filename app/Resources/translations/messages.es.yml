@@ -428,3 +428,21 @@ business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-l
 action_copy: Copy
 action_restore: Restore
 action_delete_physical: Physical delete
+
+# interaction report
+interaction_report.button.direction: Direcciones
+interaction_report.button.show_map: Mostrar en el Mapa
+interaction_report.button.marker_map: Marcador en el mapa
+interaction_report.button.web: Web
+interaction_report.button.call_mob: Llamar (mob)
+interaction_report.button.call_desk: Llamada (escritorio)
+interaction_report.button.add_compare: Añadir a comparar
+interaction_report.button.remove_compare: Eliminar de Comparar
+interaction_report.share.facebook: Compartir facebook
+interaction_report.share.twitter: Compartir twitter
+interaction_report.visit.facebook: Visita facebook
+interaction_report.visit.twitter: Visita Twitter
+interaction_report.visit.google: Visite Google
+interaction_report.visit.youtube: Visita Youtube
+interaction_report.video.watched: Video visto
+interaction_report.review.click: Opiniones

@@ -189,6 +189,34 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
+    public function registerBusinessInteraction(array $businessProfiles, $type)
+    {
+        $this->registerBusinessOverview(
+            $type,
+            $businessProfiles
+        );
+    }
+
+    public function checkBusinessInteraction($businessProfileId, $type)
+    {
+        $result = false;
+
+        if ($businessProfileId and $type) {
+            $businessProfile = $this->getBusinessProfileManager()->getRepository()->find($businessProfileId);
+
+            if ($businessProfile) {
+                try {
+                    $this->registerBusinessInteraction([$businessProfile], $type);
+                    $result = true;
+                } catch (\Exception $e) {
+                    $result = $e->getMessage();
+                }
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * @param $type
      * @param array $businessProfiles

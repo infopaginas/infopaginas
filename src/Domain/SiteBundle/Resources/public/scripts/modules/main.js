@@ -1,5 +1,7 @@
-define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( $ ) {
+define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( $, ReportTracker ) {
     'use strict';
+
+    var reportTracker = new ReportTracker;
 
     var headerSearch = $( '#searchBox' );
     var header = $( '.header' );
@@ -251,8 +253,11 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
         compareRemove.on( 'click', function() {
             var item = $( this ).closest( '.comparison__item' );
             var itemId = item.attr( 'id' );
+            var businessId = itemId.split( '-' ).slice( -1 )[0] ;
 
             $( '[data-item-id = #' + itemId + ']' ).removeAttr( 'disabled' );
+
+            reportTracker.trackEvent( 'removeCompareButton', businessId );
 
             item.velocity( { opacity: 1, top: 100 }, { display: "none" } );
         });
@@ -260,6 +265,8 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
         compareAdd.on( 'click', function() {
             $( this ).attr( 'disabled', 'disabled' );
             var itemId = $( this ).data( 'item-id' );
+            var businessId = itemId.split( '-' ).slice( -1 )[0] ;
+            reportTracker.trackEvent( 'addCompareButton', businessId );
             $( itemId ).velocity( { opacity: 1, top: 0 }, { display: "flex" } );
         });
 
@@ -384,6 +391,11 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
 
             $("#" + modal_id + ".modal").modalFunc();
             $this.siblings().removeClass('modal--opened');
+
+            if ( modal_id == 'writeReviewModal' ) {
+                handleReportTracker( 'reviewClick' );
+            }
+
             return;
         });
 
@@ -511,8 +523,16 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
     $( 'a.button.social-share' ).on( 'click', function(e) {
         e.preventDefault();
 
+        handleReportTracker( 'facebookShare' );
+
         windowPopup( $(this).attr( 'href' ), 500, 300 );
     });
+
+    if ( typeof twttr !== 'undefined' && twttr ) {
+        twttr.events.bind('click', function(event) {
+            handleReportTracker( 'twitterShare' );
+        });
+    }
 
     var jsSocialShares = document.querySelectorAll( '.a.button.social-share' );
     if (jsSocialShares) {
@@ -536,4 +556,31 @@ define(['jquery', 'selectize', 'velocity', 'velocity-ui', 'select2'], function( 
         );
     }
 
+    function handleReportTracker( type ) {
+        var businessProfile = $( '#businessProfileName' );
+
+        if ( businessProfile ) {
+            var businessProfileId = businessProfile.data( 'business-profile-id' );
+
+            if ( businessProfileId ) {
+                reportTracker.trackEvent( type, businessProfileId );
+            }
+        }
+    }
+
+    //call
+    var phoneCall = $( '.phone-call' );
+
+    phoneCall.on( 'click', function() {
+        console.log(1);
+
+        var itemId = $( this ).data( 'id' );
+        var type = $( this ).data( 'type' );
+
+        reportTracker.trackEvent( type, itemId );
+    });
+
+    $( 'video' ).one( 'play', function() {
+        handleReportTracker( 'videoWatched' );
+    });
 });

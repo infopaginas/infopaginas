@@ -128,12 +128,24 @@ class ReportsController extends Controller
         $stats = $this->renderView(
             'DomainBusinessBundle:Reports:blocks/interactionStatistics.html.twig',
             [
-                'interactionsData' => $interactionsData,
+                'interactionsData' => $interactionsData['category'],
             ]
         );
 
         return new JsonResponse([
             'stats' => $stats,
+        ]);
+    }
+
+    public function interactionsTrackAction(Request $request)
+    {
+        $businessProfileId = $request->request->get('id', null);
+        $type = $request->request->get('type', null);
+
+        $result = $this->getBusinessOverviewReportManager()->checkBusinessInteraction($businessProfileId, $type);
+
+        return new JsonResponse([
+            'status' => $result,
         ]);
     }
 
