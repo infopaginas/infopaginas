@@ -197,28 +197,26 @@
     color: black;
 }
 
-@for $i from 320 through 804 {
+@for $i from 320 through 500 {
   @media only screen and (min-width: $i * 1px) {
     .slick-slide {
       height: ceil(($i * 0.75px));
     }
   }
 }
-@for $i from 805 through 1500 {
-  @media only screen and (min-width: $i * 1px) {
-    .slick-slide {
-      height: ceil(($i * 0.96 * 0.75px * 0.7 ));
-    }
-  }
+.slick-list {
+  max-width: 500px;
+  margin: 0 auto;
 }
 .slider__item {
+  background-size: contain; 
+  background-position: center; 
+  background-repeat: no-repeat;
   img {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
+    width: 100%;
   }   
 }
