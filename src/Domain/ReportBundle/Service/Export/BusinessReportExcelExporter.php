@@ -174,21 +174,22 @@ class BusinessReportExcelExporter
 
         $activeSheet->setCellValue(
             \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex + 1) . '10',
-            (new \DateTime('now'))->modify('-1 month')->format('F, Y')
+            (new \DateTime('now'))->modify('-1 month')->format(AdminHelper::DATE_FULL_MONTH_FORMAT)
         );
         $this->makeCellValueBold($activeSheet, \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex + 1) . '10');
 
         $activeSheet->setCellValue(
             \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex + 2) . '10',
-            (new \DateTime('now'))->format('F, Y')
+            (new \DateTime('now'))->format(AdminHelper::DATE_FULL_MONTH_FORMAT)
         );
         $this->makeCellValueBold($activeSheet, \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex + 2) . '10');
 
 
         $thisMonthOverviewCellIndex = 11;
         $counter = 1;
+        $monthMaxIndex = max(count($thisMonthOverviewData), count($lastMonthOverviewData));
 
-        foreach ($thisMonthOverviewData as $index => $stats) {
+        for ($index = 0; $index < $monthMaxIndex; $index++) {
             $activeSheet->setCellValue(
                 \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex) . $thisMonthOverviewCellIndex,
                 $counter
@@ -201,7 +202,7 @@ class BusinessReportExcelExporter
 
             $activeSheet->setCellValue(
                 \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex + 2) . $thisMonthOverviewCellIndex,
-                $stats['impressions']
+                isset($thisMonthOverviewData[$index]) ? $thisMonthOverviewData[$index]['impressions'] : '-'
             );
 
             $counter++;
@@ -243,7 +244,7 @@ class BusinessReportExcelExporter
         foreach ($thisYearOverviewData as $index => $stats) {
             $activeSheet->setCellValue(
                 \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex) . $thisYearOverviewCellIndex,
-                \DateTime::createFromFormat('d.m.Y', $stats['date'])->format('F, Y')
+                $stats['dateObject']->format(AdminHelper::DATE_FULL_MONTH_FORMAT)
             );
 
             $activeSheet->setCellValue(
@@ -253,7 +254,7 @@ class BusinessReportExcelExporter
 
             $activeSheet->setCellValue(
                 \PHPExcel_Cell::stringFromColumnIndex($currentColumnIndex + 2) . $thisYearOverviewCellIndex,
-                \DateTime::createFromFormat('d.m.Y', $lastYearOverviewData[$index]['date'])->format('F, Y')
+                $lastYearOverviewData[$index]['dateObject']->format(AdminHelper::DATE_FULL_MONTH_FORMAT)
             );
 
             $activeSheet->setCellValue(

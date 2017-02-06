@@ -34,6 +34,7 @@ class DatesUtil
     const RANGE_DEFAULT = 'this_week';
 
     const START_END_DATE_ARRAY_FORMAT = 'd-m-Y';
+    const DATE_DB_FORMAT              = 'Y-m-d';
 
     public static function getReportDataRanges()
     {
@@ -101,7 +102,7 @@ class DatesUtil
         return new DateRangeVO($start, $end);
     }
 
-    public static function getDateAsArrayFromRequestData(array $requestData, string $format = 'Y-m-d')
+    public static function getDateAsArrayFromRequestData(array $requestData, string $format = self::DATE_DB_FORMAT)
     {
         $date['start'] = \DateTime::createFromFormat($format, $requestData['start'])
             ->format(self::START_END_DATE_ARRAY_FORMAT);
@@ -145,8 +146,6 @@ class DatesUtil
             $from = strtotime($step, $from);
         }
 
-        $dates[] = date($outputFormat, $from);
-
         return $dates;
     }
 
@@ -164,16 +163,13 @@ class DatesUtil
 
         $dates = DatesUtil::dateRange($dateRange);
 
-        //remove unwanted day from dates
-        unset($dates[count($dates) - 1]);
-
         return $dates;
     }
 
-    public static function isValidDateString($dateString)
+    public static function isValidDateString($dateString, $dateFormat = self::START_END_DATE_ARRAY_FORMAT)
     {
         try {
-            return \DateTime::createFromFormat(self::START_END_DATE_ARRAY_FORMAT, $dateString);
+            return \DateTime::createFromFormat($dateFormat, $dateString);
         } catch (\Exception $e) {
             return false;
         }
