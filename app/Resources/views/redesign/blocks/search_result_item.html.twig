@@ -54,6 +54,19 @@
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>
+                <div class="dropdown dropdown-call hide-mobile">
+                  <button class="btn btn-default dropdown-toggle dropdown-call-button" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="fa fa-phone"></i>
+                    {% trans %}Call{% endtrans %}
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                  {% for phone in item.getPhones() %}
+                    <li><a href="#">{{ phone.phone }}</a></li>
+                    <li role="separator" class="divider"></li>
+                  {% endfor %}
+                  </ul>   
+                </div>
             {% endif %}
             <button class="button button--small button--featured hide-mobile" id="show-on-map-{{ item.id }}">
                 <i class="fa fa-location-arrow"></i>
