@@ -19,6 +19,7 @@ interface SubscriptionPlanInterface
     const CODE_PREMIUM_PLUS     = 3;
     const CODE_PREMIUM_GOLD     = 4;
     const CODE_PREMIUM_PLATINUM = 5;
+    const CODE_SUPER_VM         = 6;
 
     /**
      * @return mixed

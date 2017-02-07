@@ -1,8 +1,18 @@
-<div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}" id="{{ item.id }}">
+{% set hasVideo = video_section_allowed_for_business(item) and item.getVideo() is not null %}
+{% set hasImages = item.logo or item.background or item.images|length > 0 and hasSubscription(item, "CODE_PREMIUM_PLUS") %}
+{% set itemSubscriptionClass = getItemSubscriptionClass(item) %}
+
+<div class="results__item results__item--{{ itemSubscriptionClass }}" id="{{ item.id }}">
     <div class="item__content clearfix">
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
                 <img width="80" src="{% path item.getLogo(), 'preview' %}">
+                {% if hasVideo and hasSubscription(item, "CODE_PREMIUM_PLATINUM") %}
+                    hasVideo
+                {% endif %}
+                {% if hasImages and hasSubscription(item, "CODE_PREMIUM_GOLD") %}
+                    hasImages
+                {% endif %}
             {% endif %}
         </div>
 

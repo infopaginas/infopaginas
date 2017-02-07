@@ -306,6 +306,7 @@ class SitemapSubscriber implements EventSubscriberInterface
         $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
 
         switch ($code) {
+            case SubscriptionPlanInterface::CODE_SUPER_VM:
             case SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM:
                 $priority = 1.0;
                 break;
