@@ -23,7 +23,7 @@
                     <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
             {% else %}
                 {% set categorySlug = businessProfile.category.slug %}
-                <div class="container profile-header__container profile-header--no-image {{ categorySlug }}" style="margin: 0 auto;">
+                <div class="container profile-header__container profile-header--no-image {{ categorySlug }}">
                     <div class="shadow-background" style="margin: 0 auto; );"></div>
             {% endif %}
                 <header class="page-section profile-header">
