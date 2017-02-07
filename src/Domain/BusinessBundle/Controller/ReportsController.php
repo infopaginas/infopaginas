@@ -142,7 +142,7 @@ class ReportsController extends Controller
         $businessProfileId = $request->request->get('id', null);
         $type = $request->request->get('type', null);
 
-        $result = $this->getBusinessOverviewReportManager()->checkBusinessInteraction($businessProfileId, $type);
+        $result = $this->getBusinessOverviewReportManager()->registerBusinessInteraction($businessProfileId, $type);
 
         return new JsonResponse([
             'status' => $result,

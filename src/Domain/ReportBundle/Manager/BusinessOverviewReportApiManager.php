@@ -131,9 +131,9 @@ class BusinessOverviewReportApiManager
                 if (!empty($interactionData['results'][$key])) {
                     foreach (InteractionsReportManager::EVENT_TYPES as $eventKey => $event) {
                         if (!empty($interactionData['results'][$key][$event])) {
-                            $result['data'][$key][$event] = $interactionData['results'][$key][$event];
+                            $result['data'][$key][$eventKey] = $interactionData['results'][$key][$event];
                         } else {
-                            $result['data'][$key][$event] = 0;
+                            $result['data'][$key][$eventKey] = 0;
                         }
                     }
                 }
