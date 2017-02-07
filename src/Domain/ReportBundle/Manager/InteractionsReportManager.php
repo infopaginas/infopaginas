@@ -65,7 +65,7 @@ class InteractionsReportManager extends BaseReportManager
                 'start' => $params['date']['start'],
                 'end' => $params['date']['end'],
             ],
-            'businessProfile' => $businessProfileName
+            'businessProfile' => $businessProfileName,
         ];
 
         $dates = $this->getDateRangeVOFromDateString(
