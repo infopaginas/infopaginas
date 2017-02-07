@@ -305,7 +305,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
             ->innerJoin(VideoMedia::class, 'v', Join::WITH, 'bp.video = v')
             ->where('bp.isActive = TRUE')
-            ->andWhere('bps_p.code = :platinumPlanCode')
+            ->andWhere('bps_p.code >= :platinumPlanCode')
             ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
             ->orderBy('v.createdAt', 'DESC')
         ;
@@ -322,7 +322,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
             ->innerJoin(VideoMedia::class, 'v', Join::WITH, 'bp.video = v')
             ->where('bp.isActive = TRUE')
-            ->andWhere('bps_p.code = :platinumPlanCode')
+            ->andWhere('bps_p.code >= :platinumPlanCode')
             ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
         ;
 

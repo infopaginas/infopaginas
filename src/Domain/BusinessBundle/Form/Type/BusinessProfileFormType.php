@@ -333,6 +333,7 @@ class BusinessProfileFormType extends AbstractType
                     $this->setupPremiumGoldPlanFormFields($businessProfile, $event->getForm());
                     break;
                 case SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM:
+                case SubscriptionPlanInterface::CODE_SUPER_VM:
                     $this->setupPremiumPlatinumPlanFormFields($businessProfile, $event->getForm());
                     break;
                 default:
