@@ -132,9 +132,11 @@ class ReportsController extends Controller
             ]
         );
 
-        return new JsonResponse([
-            'stats' => $stats,
-        ]);
+        return new JsonResponse(
+            [
+                'stats' => $stats,
+            ]
+        );
     }
 
     public function interactionsTrackAction(Request $request)
@@ -144,9 +146,11 @@ class ReportsController extends Controller
 
         $result = $this->getBusinessOverviewReportManager()->registerBusinessInteraction($businessProfileId, $type);
 
-        return new JsonResponse([
-            'status' => $result,
-        ]);
+        return new JsonResponse(
+            [
+                'status' => $result,
+            ]
+        );
     }
 
     public function excelExportAction(Request $request)
