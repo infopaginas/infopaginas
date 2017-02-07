@@ -175,7 +175,7 @@ class BusinessOverviewReportManager extends BaseReportManager
 
     public function registerBusinessView(array $businessProfiles)
     {
-        $this->registerBusinessOverview(
+        $this->registerBusinessEvent(
             BusinessOverviewReport::TYPE_CODE_VIEW,
             $businessProfiles
         );
@@ -183,10 +183,28 @@ class BusinessOverviewReportManager extends BaseReportManager
 
     public function registerBusinessImpression(array $businessProfiles)
     {
-        $this->registerBusinessOverview(
+        $this->registerBusinessEvent(
             BusinessOverviewReport::TYPE_CODE_IMPRESSION,
             $businessProfiles
         );
+    }
+
+    public function registerBusinessInteraction($businessProfileId, $type)
+    {
+        if ($businessProfileId and $type) {
+            $businessProfile = $this->getBusinessProfileManager()->getRepository()->find($businessProfileId);
+
+            if ($businessProfile) {
+                $result = $this->registerBusinessEvent(
+                    $type,
+                    [$businessProfile]
+                );
+
+                return $result;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -195,13 +213,9 @@ class BusinessOverviewReportManager extends BaseReportManager
      *
      * @return bool
      */
-    private function registerBusinessOverview($type, array $businessProfiles)
+    private function registerBusinessEvent($type, array $businessProfiles)
     {
-        if (!in_array($type, BusinessOverviewReport::getTypes())) {
-            throw new \InvalidArgumentException(sprintf('Invalid Business overview report type (%s)'), $type);
-        }
-
-        if (!$businessProfiles) {
+        if (!in_array($type, BusinessOverviewReport::getTypes()) or !$businessProfiles) {
             return false;
         }
 
@@ -240,6 +254,8 @@ class BusinessOverviewReportManager extends BaseReportManager
         }
 
         $em->flush();
+
+        return true;
     }
 
     /**

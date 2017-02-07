@@ -28,6 +28,9 @@ class BusinessOverviewReportApiManager
     /** @var  BusinessProfileManager $businessOverviewReportManager */
     protected $businessOverviewReportManager;
 
+    /** @var  InteractionsReportManager $interactionReportManager */
+    protected $interactionReportManager;
+
     /**
      * BusinessOverviewReportApiManager constructor
      * @param ContainerInterface $container
@@ -40,6 +43,8 @@ class BusinessOverviewReportApiManager
 
         $this->businessOverviewReportManager =
             $container->get('domain_report.manager.business_overview_report_manager');
+
+        $this->interactionReportManager = $container->get('domain_report.manager.interactions');
     }
 
     protected function getValidParams()
@@ -114,15 +119,28 @@ class BusinessOverviewReportApiManager
             $result['data']           = [];
 
             $overviewData = $this->businessOverviewReportManager->getBusinessOverviewData($params);
+            $interactionData = $this->interactionReportManager->getInteractionsData($params);
 
-            foreach ($overviewData['results'] as $data) {
-                $result['data'][] = [
+            foreach ($overviewData['results'] as $key => $data) {
+                $result['data'][$key] = [
                     'date'        => $data['dateObject']->format(DatesUtil::DATE_DB_FORMAT),
                     'views'       => $data['views'],
                     'impressions' => $data['impressions'],
                 ];
+
+                if (!empty($interactionData['results'][$key])) {
+                    foreach (InteractionsReportManager::EVENT_TYPES as $eventKey => $event) {
+                        if (!empty($interactionData['results'][$key][$event])) {
+                            $result['data'][$key][$eventKey] = $interactionData['results'][$key][$event];
+                        } else {
+                            $result['data'][$key][$eventKey] = 0;
+                        }
+                    }
+                }
             }
         }
+
+        $result['data'] = array_values($result['data']);
 
         return $result;
     }

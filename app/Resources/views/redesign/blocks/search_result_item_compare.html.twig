@@ -126,22 +126,22 @@
                     <div class="share">
                         {% if item.getFacebookURL() %}
                             <div class="share__item facebook">
-                                <a href="{{ item.getFacebookURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
+                                <a href="{{ item.getFacebookURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                         {% if item.getTwitterURL() %}
                             <div class="share__item twitter">
-                                <a href="{{ item.getTwitterURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
+                                <a href="{{ item.getTwitterURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                         {% if item.getGoogleURL() %}
                             <div class="share__item google-plus">
-                                <a href="{{ item.getGoogleURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
+                                <a href="{{ item.getGoogleURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                         {% if item.getYoutubeURL() %}
                             <div class="share__item youtube">
-                                <a href="{{ item.getYoutubeURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
+                                <a href="{{ item.getYoutubeURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                     </div>
@@ -162,13 +162,13 @@
                     </a>
                 {% endif %}
                 {% if item.getPhones()|length > 0 %}
-                    <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop">
+                    <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
                         <i class="fa fa-phone"></i>
                         <span>{% trans %}Call{% endtrans %}</span>
                     </a>
                 {% endif %}
                 {% if item.getWebsite() %}
-                    <a class="button button--small button--featured" href="{{ item.getWebsiteLink() }}">
+                    <a class="button button--small button--featured redirect-event" href="{{ item.getWebsiteLink() }}" data-id="{{ item.id }}" data-type="webButton">
                         <i class="fa fa-external-link"></i>
                         <span>{% trans %}Web{% endtrans %}</span>
                     </a>

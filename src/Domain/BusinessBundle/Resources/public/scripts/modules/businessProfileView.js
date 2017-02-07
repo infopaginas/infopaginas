@@ -1,5 +1,5 @@
-define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'tools/spin', 'tools/resetPassword',
-    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, directions, rating, Spin ) {
+define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
+    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, directions, rating, Spin, Redirect ) {
     'use strict';
 
     var businessProfileView = function() {
@@ -23,6 +23,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         };
 
         this.spinner = new Spin();
+        this.redirect = new Redirect;
 
         this.run();
     };

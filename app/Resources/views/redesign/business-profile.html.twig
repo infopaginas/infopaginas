@@ -41,7 +41,7 @@
                             <img src="{% path businessProfile.getLogo(), 'preview' %}">
                         </div>
                     {% endif %}
-                    <h1>&nbsp;{{ businessProfile.getName() }}</h1>
+                    <h1 id="businessProfileName" data-business-profile-id="{{ businessProfile.id }}">&nbsp;{{ businessProfile.getName() }}</h1>
                     {% if (hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") and businessProfile.getSlogan()) %}
                         <p>&nbsp;{{ businessProfile.getSlogan() }}</p>
                     {% endif %}
@@ -53,13 +53,13 @@
                             </a>
                         {% endif %}
                         {% if businessProfile.getPhones()|length > 0 %}
-                            <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop">
+                            <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">
                                 <i class="fa fa-phone"></i>
                                 <span>{% trans %}Call{% endtrans %}</span>
                             </a>
                         {% endif %}
                         {% if businessProfile.getWebsite() %}
-                            <a class="button button--small button--featured" href="{{ businessProfile.getWebsiteLink() }}">
+                            <a class="button button--small button--featured redirect-event" href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
                                 <i class="fa fa-external-link"></i>
                                 <span>{% trans %}Web{% endtrans %}</span>
                             </a>
@@ -76,22 +76,22 @@
                         <div class="share">
                             {% if businessProfile.getFacebookURL() %}
                                 <div class="share__item facebook">
-                                    <a href="{{ businessProfile.getFacebookURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
+                                    <a href="{{ businessProfile.getFacebookURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getTwitterURL() %}
                                 <div class="share__item twitter">
-                                    <a href="{{ businessProfile.getTwitterURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
+                                    <a href="{{ businessProfile.getTwitterURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getGoogleURL() %}
                                 <div class="share__item google-plus">
-                                    <a href="{{ businessProfile.getGoogleURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
+                                    <a href="{{ businessProfile.getGoogleURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getYoutubeURL() %}
                                 <div class="share__item youtube">
-                                    <a href="{{ businessProfile.getYoutubeURL() }}" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
+                                    <a href="{{ businessProfile.getYoutubeURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                         </div>

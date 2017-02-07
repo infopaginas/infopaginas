@@ -1,8 +1,9 @@
-define(['jquery', 'abstract/view', 'js-cookie'],
-    function ($, view, cookie) {
+define(['jquery', 'abstract/view', 'js-cookie', 'tools/reportTracker'],
+    function ($, view, cookie, ReportTracker) {
     'use strict';
 
     var directions = function( options ) {
+        this.reportTracker = new ReportTracker;
         this.init( options );
     };
 
@@ -33,6 +34,8 @@ define(['jquery', 'abstract/view', 'js-cookie'],
 
         if ( e ) {
             latlng = $( e.currentTarget ).data( 'latlng' );
+            var id = $( e.currentTarget).data( 'id' );
+            this.reportTracker.trackEvent( 'directionButton', id );
         } else if ( latlngEvent ) {
             latlng = latlngEvent;
         }

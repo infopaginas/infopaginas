@@ -1,12 +1,14 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapspin', 'bootstrap', 'select2', 'tools/star-rating'],
-    function ( $, view, _, directions, select, MapSpin ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapspin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/star-rating'],
+    function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
 
     var mapSearchPage = function () {
         this.events = {
             '.map-address click' : 'showMarker' //todo
         };
+
+        this.reportTracker = new ReportTracker;
 
         this.init();
         this.bindFilterEvents();
@@ -105,11 +107,21 @@ define(
             self.closeAllLables();
             self.scrollTo( markerData.id );
             infoWindow.open( self.map, marker );
+
+            if (!self.mapMarkerTriggered) {
+                self.reportTracker.trackEvent( 'mapMarkerButton', markerData.id );
+            }
+
+            self.mapMarkerTriggered = false;
         });
 
         if ( document.getElementById( 'show-on-map-' + markerData.id ) ) {
             google.maps.event.addDomListener(document.getElementById( 'show-on-map-' + markerData.id ), "click", function( e ) {
                 self.map.setCenter( marker.getPosition() );
+
+                self.reportTracker.trackEvent( 'mapShowButton', markerData.id );
+                self.mapMarkerTriggered = true;
+
                 google.maps.event.trigger( marker, 'click' );
             });
         }

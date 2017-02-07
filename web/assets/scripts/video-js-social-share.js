@@ -20,6 +20,7 @@
      * @type {function}
      */
     function launchTweet(e) {
+      twttr.events.trigger("click", {});
       e.preventDefault();
 
       var link = $( 'a.button-share--twitter' ).attr( 'href' );

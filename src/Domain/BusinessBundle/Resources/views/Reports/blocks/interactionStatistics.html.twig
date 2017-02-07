@@ -6,10 +6,10 @@
     </tr>
     </thead>
     <tbody>
-    {% for row in interactionsData %}
+    {% for event, value in interactionsData %}
         <tr>
-            <td>{{ row['category']|trans }}</td>
-            <td>{{ row['clicks'] }}</td>
+            <td>{{ event|trans }}</td>
+            <td>{{ value }}</td>
         </tr>
     {% endfor %}
     </tbody>

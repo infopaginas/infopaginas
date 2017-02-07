@@ -93,7 +93,10 @@ services:
 
     domain_report.manager.interactions:
         class: Domain\ReportBundle\Manager\InteractionsReportManager
-        arguments: ['@domain_report.google_analytics.data_fetcher']
+        arguments:
+            - '@domain_business.manager.business_profile'
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
 
     domain_report.exporter.excel:
         class: Domain\ReportBundle\Service\Export\BusinessReportExcelExporter
