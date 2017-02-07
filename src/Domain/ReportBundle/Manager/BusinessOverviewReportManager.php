@@ -189,7 +189,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
-    public function registerBusinessInteraction(array $businessProfiles, $type)
+    public function registerBusinessInteractions(array $businessProfiles, $type)
     {
         $this->registerBusinessOverview(
             $type,
@@ -206,7 +206,7 @@ class BusinessOverviewReportManager extends BaseReportManager
 
             if ($businessProfile) {
                 try {
-                    $this->registerBusinessInteraction([$businessProfile], $type);
+                    $this->registerBusinessInteractions([$businessProfile], $type);
                     $result = true;
                 } catch (\Exception $e) {
                     $result = $e->getMessage();
