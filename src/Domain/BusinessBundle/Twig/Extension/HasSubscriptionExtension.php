@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 
 /**
  * Class ConfigExtension
@@ -22,7 +24,17 @@ class HasSubscriptionExtension extends \Twig_Extension
                         'all'
                     ]
                 ]
-            )
+            ),
+            'getItemSubscriptionClass' => new \Twig_Function_Method(
+                $this,
+                'getItemSubscriptionClass',
+                [
+                    'needs_environment'=> true,
+                    'is_safe' => [
+                        'all'
+                    ]
+                ]
+            ),
         );
     }
 
@@ -44,6 +56,19 @@ class HasSubscriptionExtension extends \Twig_Extension
                 1
             );
         }
+    }
+
+    public function getItemSubscriptionClass($env, BusinessProfile $profile)
+    {
+        $plan = $profile->getSubscriptionPlan();
+
+        if ($plan and $plan->getCode()) {
+            $class = SubscriptionPlan::getCodeValues()[$plan->getCode()];
+        } else {
+            $class = SubscriptionPlan::getCodeValues()[SubscriptionPlanInterface::CODE_FREE];
+        }
+
+        return $class;
     }
 
     /**

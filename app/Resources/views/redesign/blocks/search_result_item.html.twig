@@ -1,16 +1,6 @@
 {% set hasVideo = video_section_allowed_for_business(item) and item.getVideo() is not null %}
 {% set hasImages = item.logo or item.background or item.images|length > 0 and hasSubscription(item, "CODE_PREMIUM_PLUS") %}
-{% set itemSubscriptionClass = 'normal' %}
-
-{% if hasSubscription(item, "CODE_SUPER_VM") %}
-    {% set itemSubscriptionClass = 'super' %}
-{% elseif hasSubscription(item, "CODE_PREMIUM_PLATINUM") %}
-    {% set itemSubscriptionClass = 'platinum' %}
-{% elseif hasSubscription(item, "CODE_PREMIUM_GOLD") %}
-    {% set itemSubscriptionClass = 'gold' %}
-{% elseif hasSubscription(item, "CODE_FREE") or hasSubscription(item, "CODE_PRIORITY") or hasSubscription(item, "CODE_PREMIUM_PLUS") %}
-    {% set itemSubscriptionClass = 'premium' %}
-{% endif %}
+{% set itemSubscriptionClass = getItemSubscriptionClass(item) %}
 
 <div class="results__item results__item--{{ itemSubscriptionClass }}" id="{{ item.id }}">
     <div class="item__content clearfix">
@@ -18,10 +8,10 @@
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
                 <img width="80" src="{% path item.getLogo(), 'preview' %}">
                 {% if hasVideo and hasSubscription(item, "CODE_PREMIUM_PLATINUM") %}
-
+                    hasVideo
                 {% endif %}
                 {% if hasImages and hasSubscription(item, "CODE_PREMIUM_GOLD") %}
-
+                    hasImages
                 {% endif %}
             {% endif %}
         </div>
