@@ -438,11 +438,11 @@ interaction_report.button.call_mob: Call (mob)
 interaction_report.button.call_desk: Call (desktop)
 interaction_report.button.add_compare: Add to Compare
 interaction_report.button.remove_compare: Remove from Compare
-interaction_report.share.facebook: Share facebook
-interaction_report.share.twitter: Share twitter
-interaction_report.visit.facebook: Visit facebook
+interaction_report.share.facebook: Share Facebook
+interaction_report.share.twitter: Share Twitter
+interaction_report.visit.facebook: Visit Facebook
 interaction_report.visit.twitter: Visit Twitter
 interaction_report.visit.google: Visit Google
 interaction_report.visit.youtube: Visit Youtube
-interaction_report.video.watched: Video watched
+interaction_report.video.watched: Video Watched
 interaction_report.review.click: Reviews
