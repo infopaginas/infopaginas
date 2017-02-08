@@ -1172,7 +1172,11 @@ class BusinessProfileManager extends Manager
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         //randomize feature works only for relevance sorting ("Best match")
-        $randomize = SearchDataUtil::ORDER_BY_RELEVANCE == $searchParams->getOrderBy();
+        if (SearchDataUtil::ORDER_BY_RELEVANCE == $searchParams->getOrderBy()) {
+            $randomize = true;
+        } else {
+            $randomize = false;
+        }
 
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
         $response = $this->searchBusinessElastic($searchQuery);
@@ -1994,7 +1998,6 @@ class BusinessProfileManager extends Manager
     {
         $raw = [];
 
-        /* @var $data BusinessProfile[] */
         foreach ($data as $item) {
             // convert to string to avoid cast of float array keys to integer
             $plan = (string)$item['plan'];
@@ -2005,8 +2008,8 @@ class BusinessProfileManager extends Manager
 
         $result = [];
 
-        foreach ($raw as $code => $rankArray) {
-            foreach ($rankArray as $rank => $businesses) {
+        foreach ($raw as $code => $items) {
+            foreach ($items as $rank => $businesses) {
                 if ($code != SubscriptionPlanInterface::CODE_FREE) {
                     shuffle($businesses);
                 }
