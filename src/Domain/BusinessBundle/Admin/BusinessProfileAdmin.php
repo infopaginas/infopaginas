@@ -21,6 +21,7 @@ use Oxa\Sonata\UserBundle\Entity\User;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Form\Type\BooleanType;
@@ -872,5 +873,38 @@ class BusinessProfileAdmin extends OxaAdmin
         $entity->setSeoDescription($seoDescription);
 
         return $entity;
+    }
+
+    /**
+     * Add additional routes
+     *
+     * @param RouteCollection $collection
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->add('show')
+            ->add('move', $this->getRouterIdParameter().'/move/{position}')
+        ;
+    }
+
+    public function getExportFormats()
+    {
+        return [
+            'business_profile.admin.export.csv' => 'csv',
+        ];
+    }
+
+    public function getExportFields()
+    {
+        $exportFields['ID']   = 'id';
+        $exportFields['Name'] = 'nameEn';
+        $exportFields['Slug'] = 'slug';
+        $exportFields['Level 1 category ID']   = 'category.id';
+        $exportFields['Level 1 category name'] = 'category.name';
+        $exportFields['Level 2 name+ID']       = 'exportCategoryLvl2';
+        $exportFields['Level 3 name+ID']       = 'exportCategoryLvl3';
+
+        return $exportFields;
     }
 }
