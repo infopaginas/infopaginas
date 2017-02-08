@@ -1195,7 +1195,7 @@ $thumb-width-mb: 60px;
   }
 
   .rank {
-    margin-left: 0;
+    margin-left: auto;
   }
 }
 
@@ -4904,6 +4904,7 @@ input[type='radio'], input[type='checkbox'] {
   font-weight: 700;
   letter-spacing: 1px;
   margin-bottom: 0;
+  border-radius: 2px;
   &:hover {
     background-color: #acc02f;
   }  
@@ -4916,6 +4917,7 @@ input[type='radio'], input[type='checkbox'] {
     margin: 0;
     padding: 0 0 0 20px;
     border: 2px solid #2a305b;
+    border-radius: 2px;
   }
 }
 
@@ -4940,3 +4942,53 @@ input[type='radio'], input[type='checkbox'] {
 .servicios-y-efectos-industriales {background-image: url('../redesign/img/category-backgrounds/bg_industriales.jpg')}
 .shopping-y-tiendas-de-especialidad {background-image: url('../redesign/img/category-backgrounds/bg_shopping.jpg')}
 .transportacion {background-image: url('../redesign/img/category-backgrounds/bg_transportacion.jpg')}
+.cementerios-y-funerarias {background-image: url('../redesign/img/category-backgrounds/bg_cementery.jpg')}
+
+
+.results__item--super_vm {
+  background: lighten($blue, 50%);
+  h2 {
+    color: $blue;
+    display: flex;
+    i {
+      font-size: .8em;
+      line-height: 1.5em;
+      margin-right: 5px;
+    }
+  }
+}
+.results__item--premium_platinum {
+  background: lighten($blue, 60%);
+  h2 {
+    color: $blue;
+  }
+}
+.results__item--premium_gold {
+  h2 {
+    color: $blue;
+  }
+}
+.results__item--premium_plus {
+  h2 {
+    color: $black;
+  }
+}
+.item__img {
+  position: relative;
+}
+
+.att-icons {
+  bottom: -11px;
+  position: absolute;
+  right: 3px;
+  i {
+    background: $blue;
+    color: $white;
+    border-radius: 50%;
+    font-size: 14px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    width: 23px;
+  }
+}
