@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 06.09.16
- * Time: 11:41
- */
 
 namespace Domain\ReportBundle\Service;
 
@@ -22,12 +16,10 @@ class StemmerService
      */
     public function getWordsArrayFromString(string $search) : array
     {
-        $normalizedSearchString = preg_replace('/[^ \w]+/', '', $search);
-
-        $usefulWords = array_diff(explode(' ', $normalizedSearchString), self::STOP_WORDS);
+        $usefulWords = array_diff(explode(' ', $search), self::STOP_WORDS);
 
         return array_map(function($keyword) {
-            return ucfirst($keyword);
+            return mb_strtolower($keyword);
         }, $usefulWords);
     }
 }
