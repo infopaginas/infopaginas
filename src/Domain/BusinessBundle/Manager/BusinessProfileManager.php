@@ -1171,9 +1171,12 @@ class BusinessProfileManager extends Manager
 
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
+        //randomize feature works only for relevance sorting ("Best match")
+        $randomize = SearchDataUtil::ORDER_BY_RELEVANCE == $searchParams->getOrderBy();
+
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
         $response = $this->searchBusinessElastic($searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response);
+        $search = $this->getBusinessDataFromElasticResponse($response, $randomize);
 
         $search['data'] = array_map(function ($item) use ($searchParams) {
             $distance = GeolocationUtils::getDistanceForPoint(
@@ -1267,9 +1270,10 @@ class BusinessProfileManager extends Manager
         return $response;
     }
 
-    protected function getBusinessDataFromElasticResponse($response)
+    protected function getBusinessDataFromElasticResponse($response, $randomize = false)
     {
         $data  = [];
+        $sort  = [];
         $total = 0;
 
         if (!empty($response['hits']['total'])) {
@@ -1282,6 +1286,18 @@ class BusinessProfileManager extends Manager
 
             foreach ($result as $item) {
                 $dataIds[] = $item['_id'];
+
+                if ($randomize) {
+                    $sort[] = [
+                        'id'   => $item['_id'],
+                        'plan' => $item['sort'][0], // subscription plan is always first at order by statement
+                        'rank' => $item['sort'][1], // can be rank or distance but randomize is available only for rank
+                    ];
+                }
+            }
+
+            if ($randomize) {
+                $dataIds = $this->shuffleSearchResult($sort);
             }
 
             $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
@@ -1972,5 +1988,33 @@ class BusinessProfileManager extends Manager
 
             $this->em->flush();
         }
+    }
+
+    protected function shuffleSearchResult($data)
+    {
+        $raw = [];
+
+        /* @var $data BusinessProfile[] */
+        foreach ($data as $item) {
+            // convert to string to avoid cast of float array keys to integer
+            $plan = (string)$item['plan'];
+            $rank = (string)number_format($item['rank'], ElasticSearchManager::ROTATION_RANK_PRECISION);
+
+            $raw[$plan][$rank][] = $item['id'];
+        }
+
+        $result = [];
+
+        foreach ($raw as $code => $rankArray) {
+            foreach ($rankArray as $rank => $businesses) {
+                if ($code != SubscriptionPlanInterface::CODE_FREE) {
+                    shuffle($businesses);
+                }
+
+                $result = array_merge($result, $businesses);
+            }
+        }
+
+        return $result;
     }
 }
