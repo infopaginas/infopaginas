@@ -20,20 +20,12 @@ class ArticleAdmin extends OxaAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $choiceOptions = [
-            'choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
-            ],
-            'translation_domain' => $this->getTranslationDomain()
-        ];
-
         $datagridMapper
             ->add('id')
             ->add('title')
             ->add('category')
-            ->add('isPublished', null, [], null, $choiceOptions)
-            ->add('isOnHomepage', null, [], null, $choiceOptions)
+            ->add('isPublished')
+            ->add('isOnHomepage')
             ->add('activationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('expirationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)

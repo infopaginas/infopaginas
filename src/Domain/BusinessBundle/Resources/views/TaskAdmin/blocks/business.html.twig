@@ -77,14 +77,6 @@
             <td>{{ business.getProduct() }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
-            <td>{{ admin.trans('Tags') }}</td>
-            <td>
-                {% for tag in business.getTags() %}
-                    {{ tag }}{% if not loop.last %},{% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Brands') }}</td>
             <td>{{ business.getBrands() }}</td>
         </tr>

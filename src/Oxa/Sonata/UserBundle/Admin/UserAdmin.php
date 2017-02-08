@@ -79,13 +79,7 @@ class UserAdmin extends OxaAdmin
             ->add('lastname')
             ->add('email')
             ->add('role')
-            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, [
-                'choices' => [
-                    1 => 'label_yes',
-                    2 => 'label_no',
-                ],
-                'translation_domain' => 'SonataUserBundle'
-            ])
+            ->add('enabled')
             ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
         ;
     }
