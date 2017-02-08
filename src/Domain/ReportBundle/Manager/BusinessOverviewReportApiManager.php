@@ -16,6 +16,8 @@ class BusinessOverviewReportApiManager
     const API_ERROR_NOT_FOUND     = 'not_found';
     const API_ERROR_INVALID       = 'invalid_params';
 
+    const API_DEFAULT_LIMIT = 100;
+
     /** @var ContainerInterface $container */
     protected $container;
 
@@ -31,6 +33,9 @@ class BusinessOverviewReportApiManager
     /** @var  InteractionsReportManager $interactionReportManager */
     protected $interactionReportManager;
 
+    /** @var  KeywordsReportManager $keywordsReportManager */
+    protected $keywordsReportManager;
+
     /**
      * BusinessOverviewReportApiManager constructor
      * @param ContainerInterface $container
@@ -45,6 +50,8 @@ class BusinessOverviewReportApiManager
             $container->get('domain_report.manager.business_overview_report_manager');
 
         $this->interactionReportManager = $container->get('domain_report.manager.interactions');
+
+        $this->keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
     }
 
     protected function getValidParams()
@@ -98,6 +105,10 @@ class BusinessOverviewReportApiManager
             $params['date']['end']   = $endDate->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
         }
 
+        if (empty($params['limit'])) {
+            $params['limit'] = self::API_DEFAULT_LIMIT;
+        }
+
         $result = $this->getResponse($error);
 
         return [$result, $params];
@@ -141,6 +152,34 @@ class BusinessOverviewReportApiManager
         }
 
         $result['data'] = array_values($result['data']);
+
+        return $result;
+    }
+
+    /**
+     * get business views and impressions in date range
+     *
+     * @param [] $params
+     *
+     * @return array
+     */
+    public function getBusinessKeywords($params)
+    {
+        list($result, $params) = $this->prepareReportParameters($params);
+
+        if (!$result['error']) {
+            $result['businessStatus'] = $this->businessProfile->getActiveStatus();
+            $result['data']           = [];
+
+            $data = $this->keywordsReportManager->getKeywordsData($params);
+
+            foreach ($data['results'] as $key => $word) {
+                $result['data'][] = [
+                    'word'  => $key,
+                    'count' => $word,
+                ];
+            }
+        }
 
         return $result;
     }
