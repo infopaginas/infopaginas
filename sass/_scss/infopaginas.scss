@@ -1285,14 +1285,16 @@ $thumb-width-mb: 60px;
 }
 
 .item__actions {
-  display: none;
+  display: flex;
   flex-direction: column;
   margin-top: 5px;
 
 
   .item__primary-actions {
-    display: none;
-
+    display: flex;
+    @media only screen and (max-width: 805px) {
+      margin-top: 10px;
+    }
     @media only screen and (min-width: 805px) {
       display: flex;
       flex-direction: column;
@@ -1331,7 +1333,7 @@ $thumb-width-mb: 60px;
     background: $blue;
     color: $white;
     display: inline-block;
-    flex: 0 50%;
+    flex: 0 100%;
     font-weight: 700;
     margin-right: 5px;
     padding: 0;
