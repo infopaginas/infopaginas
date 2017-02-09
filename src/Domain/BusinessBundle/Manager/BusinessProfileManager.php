@@ -518,7 +518,7 @@ class BusinessProfileManager extends Manager
 
     public function getTaskMediaLink(ChangeSetEntry $change, $value)
     {
-        $url = false;
+        $url = '';
 
         switch ($change->getAction()) {
             case ChangeSetCalculator::LOGO_ADD:

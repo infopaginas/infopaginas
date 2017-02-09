@@ -94,7 +94,7 @@ class BusinessProfileExtension extends \Twig_Extension
                 [
                     'needs_environment' => true,
                     'is_safe' => [
-                        'html'
+                        'html',
                     ],
                 ]
             ),
