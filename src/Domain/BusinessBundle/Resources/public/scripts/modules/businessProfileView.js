@@ -1,5 +1,5 @@
-define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
-    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, directions, rating, Spin, Redirect ) {
+define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/star-rating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
+    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, rating, Spin, Redirect ) {
     'use strict';
 
     var businessProfileView = function() {
@@ -31,8 +31,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
     //setup required "listeners"
     businessProfileView.prototype.run = function() {
         new select();
-        this.directions = new directions;
-        this.directions.bindEventsDirections();
 
         new interactionsTracker();
 
