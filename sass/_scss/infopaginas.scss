@@ -1730,10 +1730,10 @@ $thumb-width-mb: 60px;
 }
 
 .profile-header__container {
-  background-size: 0 0;
-  background-position: -100% -100%;
+  background-size: cover;
+  background-position: 50%;
   position: relative;
-
+  
   @media only screen and (min-width: 805px) {
     align-items: center;
     background: lighten($blue--dark, 70%);
@@ -1754,7 +1754,7 @@ $thumb-width-mb: 60px;
 
 .profile-header {
   z-index: 10;
-
+  position: relative;
   @media only screen and (min-width: 805px) {
     background: transparentize($white, .05);
     box-shadow: 0 4px 8px transparentize($black, .85);
@@ -2015,7 +2015,7 @@ $thumb-width-mb: 60px;
     flex: 1 auto;
     margin: 1px;
     width: 48%;
-
+    opacity: 0.6;
     &:last-child {
       margin-right: 0;
     }
@@ -4796,10 +4796,9 @@ input[type='radio'], input[type='checkbox'] {
   left: 0;
   bottom: 0;
   background-size: cover;
-  z-index: -1;
-  filter: opacity(0.3);
+  filter: opacity(0.6);
   background-position: center;
-
+  background-color: #f0f1f3;
   @media only screen and (min-width: 805px) {
     display: none;
   }
@@ -4872,6 +4871,9 @@ input[type='radio'], input[type='checkbox'] {
   .profile-header {
     box-shadow: none;
     max-width: 900px;
+    @media only screen and (max-width: 804px) {
+      margin-bottom: 0;
+    }
     @media only screen and (min-width: 768px) {
       min-width: 700px;
     }
@@ -4913,15 +4915,17 @@ input[type='radio'], input[type='checkbox'] {
 }
 
 .open {
-  ul {
+  .dropdown-call-list {
     display: block;
     list-style: none;
     margin: 0;
-    padding: 0 0 0 20px;
+    padding: 0 20px;
     border: 2px solid #2a305b;
     border-radius: 2px;
     li {
-      color: #132249;
+      a {
+        color: #132249;
+      }
     }
   }
 }
