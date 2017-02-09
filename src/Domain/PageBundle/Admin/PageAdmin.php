@@ -57,10 +57,6 @@ class PageAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('title')
-                ->add('template', 'sonata_type_model_list', [
-                    'required' => false,
-                    'btn_add' => false,
-                ])
             ->end()
             ->with('Status')
                 ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])

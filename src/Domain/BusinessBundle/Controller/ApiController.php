@@ -21,6 +21,15 @@ class ApiController extends Controller
         return new JsonResponse($result);
     }
 
+    public function keywordsAction(Request $request)
+    {
+        $params = $request->query->all();
+
+        $result = $this->getBusinessOverviewReportApiManager()->getBusinessKeywords($params);
+
+        return new JsonResponse($result);
+    }
+
     private function getBusinessOverviewReportApiManager() : BusinessOverviewReportApiManager
     {
         return $this->get('domain_report.manager.business_overview_report_api_manager');

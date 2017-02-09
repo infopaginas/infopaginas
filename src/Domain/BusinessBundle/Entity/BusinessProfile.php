@@ -768,7 +768,7 @@ class BusinessProfile implements
         return $this->$prop;
     }
 
-    public function __isset($prop) : bool
+    public function __isset($prop)
     {
         return isset($this->$prop);
     }
@@ -2804,5 +2804,33 @@ class BusinessProfile implements
     public function getActiveStatus()
     {
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
+    }
+
+    public function getExportCategoryLvl2()
+    {
+        return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_2);
+    }
+
+    public function getExportCategoryLvl3()
+    {
+        return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_3);
+    }
+
+    public function getExportCategoryByLvl($lvl)
+    {
+        $data = [];
+
+        $categories = $this->getCategories();
+
+        foreach ($categories as $category) {
+            if ($category->getLvl() === $lvl) {
+                $data[] = [
+                    'id'   => $category->getId(),
+                    'name' => $category->getName(),
+                ];
+            }
+        }
+
+        return json_encode($data);
     }
 }

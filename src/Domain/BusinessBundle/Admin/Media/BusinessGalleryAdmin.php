@@ -24,8 +24,8 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('id')
             ->add('media.name')
             ->add('businessProfile.name')
-            ->add('isPrimary', null, [], null, $this->defaultDatagridBooleanTypeOptions)
-            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
+            ->add('isPrimary')
+            ->add('isActive')
         ;
     }
 

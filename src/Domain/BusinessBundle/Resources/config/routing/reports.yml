@@ -49,3 +49,7 @@ domain_business_reports_print:
 domain_business_reports_api_overview:
      path:     /api/overview
      defaults: { _controller: DomainBusinessBundle:Api:overview }
+
+domain_business_reports_api_keywords:
+     path:     /api/keywords
+     defaults: { _controller: DomainBusinessBundle:Api:keywords }
