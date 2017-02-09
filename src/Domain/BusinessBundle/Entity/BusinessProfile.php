@@ -768,7 +768,7 @@ class BusinessProfile implements
         return $this->$prop;
     }
 
-    public function __isset($prop) : bool
+    public function __isset($prop)
     {
         return isset($this->$prop);
     }
