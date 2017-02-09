@@ -426,15 +426,21 @@ class BusinessProfileManager extends Manager
                     $data  = json_decode($change->getNewValue());
                     $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
 
-                    $accessor->setValue($businessProfile, $change->getFieldName(), $media);
+                    if ($media) {
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $media);
+                    }
+
                     break;
                 case ChangeSetCalculator::IMAGE_ADD:
                     $data = json_decode($change->getNewValue());
                     $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
 
-                    $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
+                    if ($media) {
+                        $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
 
-                    $this->getSonataMediaManager()->save($media, false);
+                        $this->getSonataMediaManager()->save($media, false);
+                    }
+
                     break;
                 case ChangeSetCalculator::IMAGE_REMOVE:
                     $data = json_decode($change->getOldValue());
@@ -508,6 +514,51 @@ class BusinessProfileManager extends Manager
         }
 
         $this->getEntityManager()->flush();
+    }
+
+    public function getTaskMediaLink(ChangeSetEntry $change, $value)
+    {
+        $url = false;
+
+        switch ($change->getAction()) {
+            case ChangeSetCalculator::LOGO_ADD:
+            case ChangeSetCalculator::LOGO_UPDATE:
+            case ChangeSetCalculator::LOGO_REMOVE:
+            case ChangeSetCalculator::BACKGROUND_ADD:
+            case ChangeSetCalculator::BACKGROUND_UPDATE:
+            case ChangeSetCalculator::BACKGROUND_REMOVE:
+                $data  = json_decode($value);
+                $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
+
+                if ($media) {
+                    $url = $this->getMediaPublicUrl($media, 'reference');
+                }
+
+                break;
+            case ChangeSetCalculator::IMAGE_ADD:
+            case ChangeSetCalculator::IMAGE_REMOVE:
+                $data = json_decode($value);
+                $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
+
+                if ($media) {
+                    $url = $this->getMediaPublicUrl($media, 'reference');
+                }
+
+                break;
+            case ChangeSetCalculator::VIDEO_ADD:
+            case ChangeSetCalculator::VIDEO_REMOVE:
+            case ChangeSetCalculator::VIDEO_UPDATE:
+                $data = json_decode($value);
+                $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
+
+                if ($video) {
+                    $url = $this->getVideoManager()->getPublicUrl($video);
+                }
+
+                break;
+        }
+
+        return $url;
     }
 
     /**

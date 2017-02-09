@@ -1,0 +1,5 @@
+{% if data.url %}
+    <a href="{{ data.url }}" target="_blank">{{ data.name }}</a>
+{% else %}
+    {{ data.name }} - <span class="alert-warning">deleted</span>
+{% endif %}
