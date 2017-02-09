@@ -69,36 +69,32 @@
                             {% endfor %}
                         </td>
                     {% elseif (row.action == CHANGE_SET_TYPE.LOGO_ADD or row.action == CHANGE_SET_TYPE.BACKGROUND_ADD) %}
-                        {% set changes = get_business_profile_image_changes(row.newValue) %}
+                        {% set changes = get_business_profile_image_changes(row.newValue, row) %}
                         <td>-</td>
-                        <td>{{ changes.name }}</td>
+                        <td>{{ render_task_media_link(changes) }}</td>
                     {% elseif (row.action == CHANGE_SET_TYPE.LOGO_REMOVE or row.action == CHANGE_SET_TYPE.BACKGROUND_REMOVE) %}
-                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
-                        <td>{{ changes.name }}</td>
+                        {% set changes = get_business_profile_image_changes(row.oldValue, row) %}
+                        <td>{{ render_task_media_link(changes) }}</td>
                         <td>-</td>
                     {% elseif (row.action == CHANGE_SET_TYPE.LOGO_UPDATE or row.action == CHANGE_SET_TYPE.BACKGROUND_UPDATE) %}
-                        {% set oldData = get_business_profile_image_changes(row.oldValue) %}
-                        {% set newData = get_business_profile_image_changes(row.newValue) %}
-                        <td>{{ oldData.name }}</td>
-                        <td>{{ newData.name }}</td>
+                        {% set oldData = get_business_profile_image_changes(row.oldValue, row) %}
+                        {% set newData = get_business_profile_image_changes(row.newValue, row) %}
+                        <td>{{ render_task_media_link(oldData) }}</td>
+                        <td>{{ render_task_media_link(newData) }}</td>
                     {% elseif row.action == CHANGE_SET_TYPE.VIDEO_ADD %}
-                        {% set changes = get_business_profile_image_changes(row.newValue) %}
-                        <td></td>
-                        <td>{{ changes.name }}</td>
+                        {% set changes = get_business_profile_image_changes(row.newValue, row) %}
+                        <td>-</td>
+                        <td>{{ render_task_media_link(changes) }}</td>
                     {% elseif row.action == CHANGE_SET_TYPE.VIDEO_REMOVE %}
-                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
-                        <td>{{ changes.name }}</td>
-                        <td></td>
+                        {% set changes = get_business_profile_image_changes(row.oldValue, row) %}
+                        <td>{{ render_task_media_link(changes) }}</td>
+                        <td>-</td>
                     {% elseif row.action == CHANGE_SET_TYPE.VIDEO_UPDATE %}
-                        {% set oldData = get_business_profile_image_changes(row.oldValue) %}
-                        {% set newData = get_business_profile_image_changes(row.newValue) %}
+                        {% set oldData = get_business_profile_image_changes(row.oldValue, row) %}
+                        {% set newData = get_business_profile_image_changes(row.newValue, row) %}
                         {% if oldData != '' %}
-                            <td>
-                                {{ oldData.name }}
-                            </td>
-                            <td>
-                                {{ newData.name }}
-                            </td>
+                            <td>{{ render_task_media_link(oldData) }}</td>
+                            <td>{{ render_task_media_link(newData) }}</td>
                         {% else %}
                             {% set changes = prepare_image_diff(newData) %}
                             <td>
@@ -113,13 +109,13 @@
                             </td>
                         {% endif %}
                     {% elseif row.action == CHANGE_SET_TYPE.IMAGE_REMOVE %}
-                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
-                        <td> {{ changes.name }} </td>
+                        {% set changes = get_business_profile_image_changes(row.oldValue, row) %}
+                        <td>{{ render_task_media_link(changes) }}</td>
                         <td>-</td>
                     {% elseif row.action == CHANGE_SET_TYPE.IMAGE_ADD %}
-                        {% set changes = get_business_profile_image_changes(row.newValue) %}
+                        {% set changes = get_business_profile_image_changes(row.newValue, row) %}
                         <td>-</td>
-                        <td> {{ changes.name }} </td>
+                        <td>{{ render_task_media_link(changes) }}</td>
                     {% else %}
                         <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>
                         <td>{{ get_business_profile_changes_string(row.newValue) }}</td>
