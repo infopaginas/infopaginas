@@ -72,7 +72,7 @@
                     {% trans %}Call{% endtrans %}
                     <span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuCall">
+                  <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
                   {% for phone in item.getPhones() %}
                     <li>{{ phone.phone }}</li>
                     <li role="separator" class="divider"></li>
