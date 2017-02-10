@@ -29,7 +29,7 @@
                     <div class="item__header container">
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
-                            <a href="#" data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
+                            <a data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
                                 {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
                                 {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
                             </a>

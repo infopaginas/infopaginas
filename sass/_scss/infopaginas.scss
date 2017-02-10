@@ -1196,6 +1196,10 @@ $thumb-width-mb: 60px;
 
   .rank {
     margin-left: auto;
+
+    a[data-show-modal-id] {
+      cursor: pointer;
+    }
   }
 }
 
@@ -2179,6 +2183,10 @@ $thumb-width-mb: 60px;
       background: darken($twitter, 10%) !important;
       color: $white !important;
     }
+  }
+
+  a.button-share--twitter[data-href], a.button-share--facebook[data-href] {
+    cursor: pointer;
   }
 }
 
