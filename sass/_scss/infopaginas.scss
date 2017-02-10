@@ -1673,6 +1673,9 @@ $thumb-width-mb: 60px;
     p {
       color: $grey--medium;
       text-align: center;
+      @media only screen and (max-width: 804px) {
+        color: $black;
+      }
     }
   }
 
@@ -5003,4 +5006,10 @@ input[type='radio'], input[type='checkbox'] {
 }
 .vjs-social-share {
   z-index: 1 !important;
+}
+#businessProfileName {
+  @media only screen and (max-width: 804px) {
+    color: $black;
+    font-weight: inherit !important;
+  }
 }
