@@ -2019,6 +2019,10 @@ $thumb-width-mb: 60px;
     &:last-child {
       margin-right: 0;
     }
+
+    a[data-href] {
+      cursor: pointer;
+    }
   }
 
   a {
