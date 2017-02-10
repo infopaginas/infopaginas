@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Repository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 
 /**
  * SubscriptionRepository
@@ -21,10 +22,9 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getActualSubscriptionsForBusiness(BusinessProfile $businessProfile)
     {
-        $queryBuilder = $this->createQueryBuilder('sub');
+        $queryBuilder = $this->createQueryBuilder('s');
 
         $queryBuilder->select('s')
-            ->from('DomainBusinessBundle:Subscription', 's')
             ->andWhere('s.businessProfile = :businessProfile')
             ->andWhere('s.status IN (:actualSubscriptions)')
             ->setParameter('businessProfile', $businessProfile)
@@ -32,5 +32,18 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getActiveSubscriptionsStepIterator()
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        $queryBuilder
+            ->select('s.id, s.endDate')
+            ->andWhere('s.status IN (:actualSubscriptions)')
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+        ;
+
+        return $queryBuilder->getQuery()->getArrayResult();
     }
 }

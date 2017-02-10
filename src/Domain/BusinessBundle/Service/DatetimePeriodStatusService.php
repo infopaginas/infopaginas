@@ -32,7 +32,7 @@ class DatetimePeriodStatusService
     /**
      * Set Expired status if it's
      */
-    public function updateStatus()
+    public function updateStatusOld()
     {
         $entityClassArray = [
             Subscription::class
@@ -60,5 +60,85 @@ class DatetimePeriodStatusService
         }
 
         return $updatedRecordsCount;
+    }
+
+    /**
+     * Set Expired status if it's
+     */
+    public function updateStatus()
+    {
+        $updatedRecordsCount = 0;
+
+        $batchSize = 20;
+        $i = 0;
+
+        $data = $this->em->getRepository(Subscription::class)->getActiveSubscriptionsStepIterator();
+
+        foreach ($data as $item) {
+
+//            dump($item);
+
+            if ($this->isExpired($item)) {
+                $entity = $this->em->getRepository(Subscription::class)->find($item['id']);
+
+                if ($entity->isExpired()) {
+                    $entity->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
+
+                    $updatedRecordsCount++;
+
+                    if (($i % $batchSize) === 0) {
+                        $this->em->flush();
+                        $this->em->clear();
+                    }
+
+                    $i ++;
+                }
+            }
+        }
+
+        if ($updatedRecordsCount) {
+            $this->em->flush();
+        }
+
+//        $entities = $this->em->getRepository(Subscription::class)->getActiveSubscriptionsStepIterator();
+//
+//        $batchSize = 20;
+//        $i = 0;
+//
+//        foreach ($entities as $row) {
+//            $entity = $row[0];
+//
+//            /** @var DatetimePeriodStatusInterface $entity */
+//            if ($entity->isExpired()) {
+//                $entity->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
+//
+//                $updatedRecordsCount++;
+//
+//                if (($i % $batchSize) === 0) {
+//                    $this->em->flush();
+//                    $this->em->clear();
+//                }
+//
+//                $i ++;
+//            }
+//        }
+//
+//        if ($updatedRecordsCount) {
+//            $this->em->flush();
+//        }
+
+        return $updatedRecordsCount;
+    }
+
+    public function isExpired($data)
+    {
+        if ($data['endDate'] instanceof \DateTime) {
+            $datetime = new \DateTime('now');
+            $diff = $datetime->diff($data['endDate']);
+
+            return (bool)$diff->invert;
+        }
+
+        return false;
     }
 }
