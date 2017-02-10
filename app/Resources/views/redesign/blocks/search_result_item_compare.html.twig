@@ -158,10 +158,10 @@
         <section class="actions-section">
             <div class="header-actions">
                 {% if not item.getHideAddress() %}
-                    <button class="get-dir button button--small button--featured" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+                    <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
                         <i class="fa fa-location-arrow"></i>
                         <span>{% trans %}Directions{% endtrans %}</span>
-                    </button>
+                    </a>
                 {% endif %}
                 {% if item.getPhones()|length > 0 %}
                     <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
@@ -170,10 +170,10 @@
                     </a>
                 {% endif %}
                 {% if item.getWebsite() %}
-                    <button class="button button--small button--featured redirect-event" data-href="{{ item.getWebsiteLink() }}" data-id="{{ item.id }}" data-type="webButton">
+                    <a class="button button--small button--featured redirect-event link-pointer" data-href="{{ item.getWebsiteLink() }}" data-id="{{ item.id }}" data-type="webButton">
                         <i class="fa fa-external-link"></i>
                         <span>{% trans %}Web{% endtrans %}</span>
-                    </button>
+                    </a>
                 {% endif %}
             </div><!-- header-actions -->
         </section>

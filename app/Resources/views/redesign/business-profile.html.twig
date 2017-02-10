@@ -46,10 +46,10 @@
                     {% endif %}
                     <div class="header-actions">
                         {% if not businessProfile.getHideAddress() %}
-                            <button class="get-dir button button--small button--featured" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
+                            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
                                 <i class="fa fa-location-arrow"></i>
                                 <span>{% trans %}Directions{% endtrans %}</span>
-                            </button>
+                            </a>
                         {% endif %}
                         {% if businessProfile.getPhones()|length > 0 %}
                             <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">
@@ -58,10 +58,10 @@
                             </a>
                         {% endif %}
                         {% if businessProfile.getWebsite() %}
-                            <button class="button button--small button--featured redirect-event" data-href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
+                            <a class="button button--small button--featured redirect-event link-pointer" data-href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
                                 <i class="fa fa-external-link"></i>
                                 <span>{% trans %}Web{% endtrans %}</span>
-                            </button>
+                            </a>
                         {% endif %}
                     </div><!-- header-actions -->
 
