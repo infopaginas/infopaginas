@@ -88,6 +88,16 @@ class BusinessProfileExtension extends \Twig_Extension
             'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
             'get_business_profile_images' => new \Twig_Function_Method($this, 'getBusinessProfileImages'),
             'get_business_profile_ads' => new \Twig_Function_Method($this, 'getBusinessProfileAds'),
+            'render_task_media_link' => new \Twig_Function_Method(
+                $this,
+                'renderTaskMediaLink',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
         ];
     }
 
@@ -274,9 +284,23 @@ class BusinessProfileExtension extends \Twig_Extension
         return $data;
     }
 
-    public function getImageChangeSet(string $value)
+    public function getImageChangeSet(string $value, $change)
     {
-        return ImagesChangeSetUtil::deserializeChangeSet($value);
+        $data = ImagesChangeSetUtil::deserializeChangeSet($value);
+        $data->url = $this->businessProfileManager->getTaskMediaLink($change, $value);
+
+        return $data;
+    }
+
+    public function renderTaskMediaLink(\Twig_Environment $environment, $data)
+    {
+        $html = $environment->render(
+            ':redesign/blocks/task:task_media_link.html.twig', [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
     }
 
     public function prepareImageDiff($diff)

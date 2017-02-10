@@ -13,6 +13,7 @@ class VideoManager
     const DEFAULT_URI_UPLOAD_FILE_EXTENSION = '.mp4';
 
     const MAX_FILENAME_LENGTH = 240;
+    const LINK_LIFE_TIME      = 600;
 
     private static $allowedMimeTypes = [
         'video/mp4',
@@ -115,6 +116,21 @@ class VideoManager
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
         return $this->videoMediaManager->save($uploadedFileData);
+    }
+
+    public function getPublicUrl(VideoMedia $media)
+    {
+        $expires = new \DateTime();
+        $expires->modify('+ ' . self::LINK_LIFE_TIME . ' seconds');
+
+        $url = $this->filesystem->getAdapter()->getUrl(
+            $media->getFilepath() . $media->getFilename(),
+            [
+                'expires' => $expires->getTimestamp(),
+            ]
+        );
+
+        return $url;
     }
 
     protected function getExtensionByMime($type)
