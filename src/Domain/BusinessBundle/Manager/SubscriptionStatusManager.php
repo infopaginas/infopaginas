@@ -250,9 +250,11 @@ class SubscriptionStatusManager
      */
     public function manageBusinessSubscriptionCreate(BusinessProfile $entity, EntityManager $em)
     {
+
 //        $subscription = $entity->getSubscription();
 
         $subscriptions = $em->getRepository('DomainBusinessBundle:Subscription')->getActualSubscriptionsForBusiness($entity);
+
 
         //todo allow pending subscription
 

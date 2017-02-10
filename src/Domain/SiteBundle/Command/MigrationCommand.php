@@ -134,7 +134,7 @@ class MigrationCommand extends ContainerAwareCommand
                     $businessProfile = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
                         ->findOneBy(['uid' => $itemId]);
 
-                    if (!$businessProfile) {
+                    if (1) {
                         if ($this->withDebug) {
                             $itemCounter ++;
                             $output->writeln('Starts request item with id ' . $itemId);
@@ -468,6 +468,8 @@ class MigrationCommand extends ContainerAwareCommand
 
                     if ($endDate >= $now) {
                         $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+                    } else {
+                        $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
                     }
 
                     $entity->addSubscription($subscription);
