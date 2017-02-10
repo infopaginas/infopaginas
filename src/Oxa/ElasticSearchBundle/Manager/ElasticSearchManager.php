@@ -13,7 +13,7 @@ class ElasticSearchManager
     const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 10;
 
     // max = 8 as elastic original precision
-    const ROTATION_RANK_PRECISION = 2;
+    const ROTATION_RANK_PRECISION = 1;
 
     protected $documentIndex;
     protected $indexingPage;

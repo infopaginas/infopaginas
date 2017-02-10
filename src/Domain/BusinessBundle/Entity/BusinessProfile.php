@@ -703,6 +703,14 @@ class BusinessProfile implements
      */
     protected $distance;
 
+    /** @var float
+     */
+    protected $score;
+
+    /** @var float
+     */
+    protected $plan;
+
      /** @var SearchLog[]
      *
      * @ORM\OneToMany(
@@ -2832,5 +2840,41 @@ class BusinessProfile implements
         }
 
         return json_encode($data);
+    }
+
+    /**
+     * @return float
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * @param float $score
+     * @return BusinessProfile
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPlan()
+    {
+        return $this->plan;
+    }
+
+    /**
+     * @param float $plan
+     * @return BusinessProfile
+     */
+    public function setPlan($plan)
+    {
+        $this->plan = $plan;
+        return $this;
     }
 }

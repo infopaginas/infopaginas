@@ -1361,6 +1361,19 @@ class BusinessProfileManager extends Manager
                 $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
 
                 if ($item) {
+                    $score = 0;
+                    $plan = 1;
+
+                    foreach ($result as $business) {
+                        if ($business['_id'] == $id) {
+                            $plan = $business['sort'][0];
+                            $score = number_format($business['sort'][1], ElasticSearchManager::ROTATION_RANK_PRECISION);
+                            break;
+                        }
+                    }
+
+                    $item->setScore($score);
+                    $item->setPlan($plan);
                     $data[] = $item;
                 }
             }
