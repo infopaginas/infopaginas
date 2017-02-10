@@ -72,6 +72,7 @@ class DatetimePeriodStatusService
         $batchSize = 20;
         $i = 0;
 
+        //todo
         $data = $this->em->getRepository(Subscription::class)->getActiveSubscriptionsStepIterator();
 
         foreach ($data as $item) {

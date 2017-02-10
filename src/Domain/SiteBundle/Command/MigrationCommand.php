@@ -104,6 +104,7 @@ class MigrationCommand extends ContainerAwareCommand
                 SubscriptionPlanInterface::CODE_PREMIUM_PLUS => 'Premium Plus',
                 SubscriptionPlanInterface::CODE_PREMIUM_GOLD => 'Premium Gold',
                 SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM => 'Premium Platinum',
+                SubscriptionPlanInterface::CODE_SUPER_VM => 'SuperVM',
             ];
 
             $plans = $this->em->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();

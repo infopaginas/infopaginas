@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -47,10 +48,6 @@ class SubscriptionListener implements EventSubscriber
             if ($entity instanceof BusinessProfile) {
                 $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $em);
             }
-
-//            if ($entity instanceof Subscription) {
-//                $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity->getBusinessProfile(), $em);
-//            }
         }
 
         $uow->computeChangeSets();

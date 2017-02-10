@@ -118,6 +118,8 @@ class SubscriptionStatusManager
                 $status
             ]
         ]);
+
+//        $uow->scheduleForInsert()
     }
 
     /**
@@ -248,9 +250,13 @@ class SubscriptionStatusManager
      */
     public function manageBusinessSubscriptionCreate(BusinessProfile $entity, EntityManager $em)
     {
-        $subscription = $entity->getSubscription();
+//        $subscription = $entity->getSubscription();
 
-        if (!$subscription) {
+        $subscriptions = $em->getRepository('DomainBusinessBundle:Subscription')->getActualSubscriptionsForBusiness($entity);
+
+        //todo allow pending subscription
+
+        if (!$subscriptions) {
             $freeSubscriptionPlan = $em
                 ->getRepository('DomainBusinessBundle:SubscriptionPlan')
                 ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
