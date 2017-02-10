@@ -68,11 +68,11 @@
                     {% trans %}Call{% endtrans %}
                 </a>
                 <div class="dropdown dropdown-call hide-mobile">
-                  <a class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                     <span class="caret"></span>
-                  </a>
+                  </button>
                   <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
                   {% for phone in item.getPhones() %}
                     <li>{{ phone.phone }}</li>
