@@ -49,7 +49,6 @@ class SubscriptionListener implements EventSubscriber
                 $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $em);
             }
         }
-        //todo
 
         $uow->computeChangeSets();
     }

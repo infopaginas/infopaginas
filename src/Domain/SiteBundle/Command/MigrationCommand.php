@@ -134,7 +134,7 @@ class MigrationCommand extends ContainerAwareCommand
                     $businessProfile = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
                         ->findOneBy(['uid' => $itemId]);
 
-                    if (1) {
+                    if (!$businessProfile) {
                         if ($this->withDebug) {
                             $itemCounter ++;
                             $output->writeln('Starts request item with id ' . $itemId);

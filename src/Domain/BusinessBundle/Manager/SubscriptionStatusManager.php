@@ -31,8 +31,7 @@ class SubscriptionStatusManager
         if ($entity->getBusinessProfile() and $entity->getBusinessProfile()->getId()) {
             //get all active or pending subscription
 
-            $baseEntities = $em->getRepository('DomainBusinessBundle:Subscription')
-                ->getActualSubscriptionsForBusiness($entity->getBusinessProfile());
+            $baseEntities = $this->getBusinessActualSubscriptions($entity->getBusinessProfile(), true);
 
             //store batch entities insert/update
             $this->bulkSubscriptions[] = $entity;
@@ -43,7 +42,6 @@ class SubscriptionStatusManager
             $priorityEntity = $this->getPrioritySubscription($baseEntities);
 
             // $priorityEntity == null - means there is no available subscription, see SubscriptionListener
-            //todo ???
 
             $uow = $em->getUnitOfWork();
 
@@ -103,8 +101,6 @@ class SubscriptionStatusManager
 
     protected function updateSubscriptionStatus(Subscription $subscription, $status, \Doctrine\ORM\UnitOfWork $uow)
     {
-        $subscription->setStatus($status);
-
         $uow->propertyChanged(
             $subscription,
             StatusInterface::PROPERTY_NAME_STATUS,
@@ -118,8 +114,6 @@ class SubscriptionStatusManager
                 $status
             ]
         ]);
-
-//        $uow->scheduleForInsert()
     }
 
     /**
@@ -246,17 +240,11 @@ class SubscriptionStatusManager
      *
      * @param BusinessProfile $entity
      * @param EntityManager $em
-     * @return \Domain\BusinessBundle\Entity\BusinessProfile
+     * @return Subscription|null
      */
     public function manageBusinessSubscriptionCreate(BusinessProfile $entity, EntityManager $em)
     {
-
-//        $subscription = $entity->getSubscription();
-
-        $subscriptions = $em->getRepository('DomainBusinessBundle:Subscription')->getActualSubscriptionsForBusiness($entity);
-
-
-        //todo allow pending subscription
+        $subscriptions = $this->getBusinessActualSubscriptions($entity);
 
         if (!$subscriptions) {
             $freeSubscriptionPlan = $em
@@ -281,5 +269,31 @@ class SubscriptionStatusManager
         }
 
         return null;
+    }
+
+    /**
+     * Get business actual subscriptions
+     *
+     * @param BusinessProfile $entity
+     * @param bool            $allowExpired
+     *
+     * @return Subscription[]
+     */
+    protected function getBusinessActualSubscriptions(BusinessProfile $entity, $allowExpired = false)
+    {
+        $subscriptions = [];
+
+        $data = $entity->getSubscriptions();
+
+        foreach ($data as $item) {
+            /* @var $item Subscription */
+            if (in_array($item->getStatus(), StatusTrait::getActualStatuses())) {
+                if ($allowExpired or !$item->isExpired()) {
+                    $subscriptions[] = $item;
+                }
+            }
+        }
+
+        return $subscriptions;
     }
 }

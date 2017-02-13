@@ -34,16 +34,31 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+    /**
+     * @return IterableResult
+     */
     public function getActiveSubscriptionsStepIterator()
     {
+        $now = new \DateTime();
+
         $queryBuilder = $this->createQueryBuilder('s');
 
         $queryBuilder
-            ->select('s.id, s.endDate')
+            ->select('s')
             ->andWhere('s.status IN (:actualSubscriptions)')
+            ->andWhere('s.endDate <= :now')
             ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter(':now', $now)
         ;
 
-        return $queryBuilder->getQuery()->getArrayResult();
+        $query = $this->getEntityManager()->createQuery($queryBuilder->getDQL());
+        $query
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter(':now', $now)
+        ;
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
     }
 }
