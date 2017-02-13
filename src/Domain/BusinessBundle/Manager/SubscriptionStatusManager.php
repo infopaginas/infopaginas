@@ -27,36 +27,39 @@ class SubscriptionStatusManager
      */
     public function manageDatetimePeriodStatus(Subscription $entity, EntityManager $em)
     {
-        //get all active or pending subscription
-        $baseEntities = $em->getRepository('DomainBusinessBundle:Subscription')
-            ->getActualSubscriptionsForBusiness($entity->getBusinessProfile());
+        // exclude subscription that were created with business
+        if ($entity->getBusinessProfile() and $entity->getBusinessProfile()->getId()) {
+            //get all active or pending subscription
 
-        //store batch entities insert/update
-        $this->bulkSubscriptions[] = $entity;
+            $baseEntities = $this->getBusinessActualSubscriptions($entity->getBusinessProfile(), true);
 
-        $baseEntities = $this->getSubscriptionsArrayForPriorityCalculation($baseEntities, $this->bulkSubscriptions);
+            //store batch entities insert/update
+            $this->bulkSubscriptions[] = $entity;
 
-        // get priority subscription
-        $priorityEntity = $this->getPrioritySubscription($baseEntities);
+            $baseEntities = $this->getSubscriptionsArrayForPriorityCalculation($baseEntities, $this->bulkSubscriptions);
 
-        // $priorityEntity == null - means there is no available subscription, see SubscriptionListener
+            // get priority subscription
+            $priorityEntity = $this->getPrioritySubscription($baseEntities);
 
-        $uow = $em->getUnitOfWork();
+            // $priorityEntity == null - means there is no available subscription, see SubscriptionListener
 
-        foreach ($baseEntities as $baseEntity) {
-            /** @var Subscription $baseEntity */
-            if ($baseEntity->isExpired()) {
-                // disable expired subscription
-                $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_EXPIRED, $uow);
-            } elseif ($baseEntity == $priorityEntity) {
-                // enable priority subscription (only pending subscription can be activated)
-                if ($baseEntity->getStatus() == StatusInterface::STATUS_PENDING) {
-                    $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_ACTIVE, $uow);
-                }
-            } else {
-                // set pending status to all other active subscriptions
-                if ($baseEntity->getStatus() == StatusInterface::STATUS_ACTIVE) {
-                    $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_PENDING, $uow);
+            $uow = $em->getUnitOfWork();
+
+            foreach ($baseEntities as $baseEntity) {
+                /** @var Subscription $baseEntity */
+                if ($baseEntity->isExpired()) {
+                    // disable expired subscription
+                    $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_EXPIRED, $uow);
+                } elseif ($baseEntity == $priorityEntity) {
+                    // enable priority subscription (only pending subscription can be activated)
+                    if ($baseEntity->getStatus() == StatusInterface::STATUS_PENDING) {
+                        $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_ACTIVE, $uow);
+                    }
+                } else {
+                    // set pending status to all other active subscriptions
+                    if ($baseEntity->getStatus() == StatusInterface::STATUS_ACTIVE) {
+                        $this->updateSubscriptionStatus($baseEntity, StatusInterface::STATUS_PENDING, $uow);
+                    }
                 }
             }
         }
@@ -98,8 +101,6 @@ class SubscriptionStatusManager
 
     protected function updateSubscriptionStatus(Subscription $subscription, $status, \Doctrine\ORM\UnitOfWork $uow)
     {
-        $subscription->setStatus($status);
-
         $uow->propertyChanged(
             $subscription,
             StatusInterface::PROPERTY_NAME_STATUS,
@@ -232,5 +233,67 @@ class SubscriptionStatusManager
         $em->persist($subscription);
 
         return $businessProfile;
+    }
+
+    /**
+     * Set Free plan subscription for businesses without subscription
+     *
+     * @param BusinessProfile $entity
+     * @param EntityManager $em
+     * @return Subscription|null
+     */
+    public function manageBusinessSubscriptionCreate(BusinessProfile $entity, EntityManager $em)
+    {
+        $subscriptions = $this->getBusinessActualSubscriptions($entity);
+
+        if (!$subscriptions) {
+            $freeSubscriptionPlan = $em
+                ->getRepository('DomainBusinessBundle:SubscriptionPlan')
+                ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
+
+            $startDate = new \DateTime();
+            $endDate   = new \DateTime();
+            $endDate->modify('+1 year');
+
+            $subscription = new Subscription();
+            $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+            $subscription->setBusinessProfile($entity);
+            $subscription->setSubscriptionPlan($freeSubscriptionPlan);
+            $subscription->setStartDate($startDate);
+            $subscription->setEndDate($endDate);
+
+            $em->persist($subscription);
+            // EntityManager#flush is not allowed during onFlush event
+
+            return $subscription;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get business actual subscriptions
+     *
+     * @param BusinessProfile $entity
+     * @param bool            $allowExpired
+     *
+     * @return Subscription[]
+     */
+    protected function getBusinessActualSubscriptions(BusinessProfile $entity, $allowExpired = false)
+    {
+        $subscriptions = [];
+
+        $data = $entity->getSubscriptions();
+
+        foreach ($data as $item) {
+            /* @var $item Subscription */
+            if (in_array($item->getStatus(), StatusTrait::getActualStatuses())) {
+                if ($allowExpired or !$item->isExpired()) {
+                    $subscriptions[] = $item;
+                }
+            }
+        }
+
+        return $subscriptions;
     }
 }
