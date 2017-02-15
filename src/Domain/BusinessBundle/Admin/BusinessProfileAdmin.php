@@ -750,12 +750,30 @@ class BusinessProfileAdmin extends OxaAdmin
         $this->preSave($entity);
     }
 
+    public function postPersist($entity)
+    {
+        $this->createFreeSubscription($entity);
+    }
+
     private function preSave($entity)
     {
         $entity = $this->setSearchValues($entity);
         $entity = $this->setVideoValue($entity);
         $entity = $this->setSubcategories($entity);
         $entity = $this->setSeoDate($entity);
+    }
+
+    private function createFreeSubscription($entity)
+    {
+        $container = $this->getConfigurationPool()->getContainer();
+
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        $subscriptionStatusManager = $container->get('domain_business.manager.subscription_status_manager');
+
+        $subscription = $subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $em);
+
+        $em->flush($subscription);
     }
 
     private function setSearchValues($entity)
