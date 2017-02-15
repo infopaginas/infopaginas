@@ -108,6 +108,11 @@
                                 {% endfor %}
                             </td>
                         {% endif %}
+                    {% elseif row.action == CHANGE_SET_TYPE.VIDEO_PROPERTY_UPDATE %}
+                        {% set oldData = get_business_profile_image_changes(row.oldValue, row) %}
+                        {% set newData = get_business_profile_image_changes(row.newValue, row) %}
+                        <td>{{ render_task_media_link(oldData) }}</td>
+                        <td>{{ render_task_media_link(newData) }}</td>
                     {% elseif row.action == CHANGE_SET_TYPE.IMAGE_REMOVE %}
                         {% set changes = get_business_profile_image_changes(row.oldValue, row) %}
                         <td>{{ render_task_media_link(changes) }}</td>

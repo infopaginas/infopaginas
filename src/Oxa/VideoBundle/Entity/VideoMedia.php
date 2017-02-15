@@ -2,7 +2,10 @@
 
 namespace Oxa\VideoBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * VideoMedia
@@ -12,6 +15,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class VideoMedia
 {
+    const YOUTUBE_ACTION_ADD     = 'YOUTUBE_ACTION_ADD';
+    const YOUTUBE_ACTION_UPDATE  = 'YOUTUBE_ACTION_UPDATE';
+    const YOUTUBE_ACTION_REMOVE  = 'YOUTUBE_ACTION_REMOVE';
+    const YOUTUBE_ACTION_PENDING = 'YOUTUBE_ACTION_PENDING';
+    const YOUTUBE_ACTION_ERROR   = 'YOUTUBE_ACTION_ERROR';
+
+    const VIDEO_TITLE_MAX_LENGTH      = 255;
+    const VIDEO_TITLE_MAX_DESCRIPTION = 255;
+
     /**
      * @var int
      *
@@ -27,6 +39,24 @@ class VideoMedia
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
+
+    /**
+     * Related to VIDEO_TITLE_MAX_LENGTH
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     */
+    private $title;
+
+    /**
+     * Related to VIDEO_TITLE_MAX_DESCRIPTION
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     */
+    private $description;
 
     /**
      * @var string
@@ -70,6 +100,38 @@ class VideoMedia
      */
     private $status;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="youtube_id", type="string", length=255, nullable=true)
+     */
+    private $youtubeId;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="youtube_support", type="boolean", nullable=true)
+     */
+    private $youtubeSupport;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="youtube_action", type="string", length=255, nullable=true)
+     */
+    private $youtubeAction;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *      mappedBy="video",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $businessProfiles;
+
     public function __construct(array $videoMediaData = [])
     {
         if (!empty($videoMediaData)) {
@@ -81,9 +143,12 @@ class VideoMedia
             $this->setCreatedAt(new \DateTime());
             $this->setUpdatedAt(new \DateTime());
             $this->setStatus('');
-        }
 
-        return $this;
+            $this->setYoutubeSupport(true);
+            $this->setYoutubeAction(null);
+
+            $this->businessProfiles = new ArrayCollection();
+        }
     }
 
     /**
@@ -128,6 +193,46 @@ class VideoMedia
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return VideoMedia
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return VideoMedia
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -270,5 +375,145 @@ class VideoMedia
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
+    }
+
+    /**
+     * @param mixed $businessProfiles
+     *
+     * @return VideoMedia
+     */
+    public function setBusinessProfiles($businessProfiles)
+    {
+        $this->businessProfiles = $businessProfiles;
+
+        return $this;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param BusinessProfile $businessProfile
+     *
+     * @return VideoMedia
+     */
+    public function addBusinessProfiles(BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles[] = $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return $this
+     */
+    public function removeBusinessProfiles(BusinessProfile $businessProfile)
+    {
+        $this->businessProfiles->removeElement($businessProfile);
+
+        return $this;
+    }
+
+    /**
+     * @param string $youtubeId
+     *
+     * @return VideoMedia
+     */
+    public function setYoutubeId($youtubeId)
+    {
+        $this->youtubeId = $youtubeId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getYoutubeId()
+    {
+        return $this->youtubeId;
+    }
+
+    /**
+     * @param bool $youtubeSupport
+     *
+     * @return VideoMedia
+     */
+    public function setYoutubeSupport($youtubeSupport)
+    {
+        $this->youtubeSupport = $youtubeSupport;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getYoutubeSupport()
+    {
+        return $this->youtubeSupport;
+    }
+
+    /**
+     * @param string $youtubeAction
+     *
+     * @return VideoMedia
+     */
+    public function setYoutubeAction($youtubeAction)
+    {
+        $this->youtubeAction = $youtubeAction;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getYoutubeAction()
+    {
+        return $this->youtubeAction;
+    }
+
+    public function getYoutubeTitle()
+    {
+        $title = '';
+
+        if ($this->getTitle()) {
+            $title = $this->getTitle();
+        } else {
+            if (!$this->getBusinessProfiles()->isEmpty()) {
+                /* @var BusinessProfile $business */
+                $business = $this->getBusinessProfiles()->first();
+
+                $title = $business->getSeoTitle();
+            }
+        }
+
+        return $title;
+    }
+
+    public function getYoutubeDescription()
+    {
+        $title = '';
+
+        if ($this->getDescription()) {
+            $title = $this->getDescription();
+        } else {
+            if (!$this->getBusinessProfiles()->isEmpty()) {
+                /* @var BusinessProfile $business */
+                $business = $this->getBusinessProfiles()->first();
+
+                $title = $business->getSeoDescription();
+            }
+        }
+
+        return $title;
     }
 }

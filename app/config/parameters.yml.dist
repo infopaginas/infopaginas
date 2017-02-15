@@ -40,3 +40,12 @@ parameters:
 
     # api token
     api_token: 3IKmd2uI78Wl4CUjnYCljfFhfE2WRn1FEvi4fsi3J00P7VIZgLCFhybIJepNFpmvvTUDjO53ZezF1bIiqFRY
+
+    # youtube api
+    # Valid env is "private" and "public"
+    google_youtube_video_privacy: 'private'
+
+    # youtube users:
+    # prod - "Infopaginaspr" - 'UCWWRfV9jE0GoEgfGEc6QWVQ';
+    # dev - user "nadyaoxatest@gmail.com" - 'UCQBIBb2bn2XFMaZURIeV18A'
+    google_youtube_user_channel_id: 'UCQBIBb2bn2XFMaZURIeV18A'

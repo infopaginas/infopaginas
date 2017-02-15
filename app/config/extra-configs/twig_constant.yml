@@ -50,6 +50,7 @@ twig:
             VIDEO_ADD:                      'VIDEO_ADD'
             VIDEO_REMOVE:                   'VIDEO_REMOVE'
             VIDEO_UPDATE:                   'VIDEO_UPDATE'
+            VIDEO_PROPERTY_UPDATE:          'VIDEO_PROPERTY_UPDATE'
             LOGO_ADD:                       'LOGO_ADD'
             LOGO_REMOVE:                    'LOGO_REMOVE'
             LOGO_UPDATE:                    'LOGO_UPDATE'

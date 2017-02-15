@@ -114,3 +114,7 @@ fos_user_resetting_reset:
 happyr_google_site_authenticator:
     resource: "@HappyrGoogleSiteAuthenticatorBundle/Resources/config/routing.yml"
     prefix:   /admin
+
+oxa_youtube:
+    resource: "@OxaVideoBundle/Resources/config/routing.yml"
+    prefix:   /youtube/oauth/

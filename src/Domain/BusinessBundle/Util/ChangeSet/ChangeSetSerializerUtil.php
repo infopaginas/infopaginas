@@ -64,6 +64,8 @@ class ChangeSetSerializerUtil
         $businessVideoRequiredData = [
             'id'   => $video->getId(),
             'name' => $video->getName(),
+            'title' => $video->getTitle(),
+            'description' => $video->getDescription(),
         ];
 
         return self::serializeObject($businessVideoRequiredData);

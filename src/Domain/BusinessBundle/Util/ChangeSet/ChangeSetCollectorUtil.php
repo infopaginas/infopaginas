@@ -21,6 +21,7 @@ use Domain\BusinessBundle\Util\DoctrineUtil;
 use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -336,6 +337,12 @@ class ChangeSetCollectorUtil
                 $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[0]));
                 $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[1]));
                 $entry->setAction(ChangeSetCalculator::VIDEO_UPDATE);
+            } elseif ($diff[0]->getTitle() != $diff[1]->getTitle() or
+                $diff[0]->getDescription() != $diff[1]->getDescription()
+            ) {
+                $entry->setOldValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[0]));
+                $entry->setNewValue(ChangeSetSerializerUtil::serializeBusinessProfileVideo($diff[1]));
+                $entry->setAction(ChangeSetCalculator::VIDEO_PROPERTY_UPDATE);
             } else {
                 return false;
             }

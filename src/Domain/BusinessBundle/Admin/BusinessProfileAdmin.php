@@ -35,6 +35,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * Class BusinessProfileAdmin
@@ -367,6 +368,30 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'mapped' => false,
                                 'required' => false,
                             ])
+                            ->add('videoTitle', TextType::class, [
+                                'data_class' => null,
+                                'mapped' => false,
+                                'required' => false,
+                                'constraints' => array(
+                                    new Length(
+                                        [
+                                            'max' => VideoMedia::VIDEO_TITLE_MAX_LENGTH,
+                                        ]
+                                    ),
+                                ),
+                            ])
+                            ->add('videoDescription', TextareaType::class, [
+                                'data_class' => null,
+                                'mapped' => false,
+                                'required' => false,
+                                'constraints' => array(
+                                    new Length(
+                                        [
+                                            'max' => VideoMedia::VIDEO_TITLE_MAX_DESCRIPTION,
+                                        ]
+                                    ),
+                                ),
+                            ])
                         ->end()
                     ->end();
             } else {
@@ -377,7 +402,7 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'mapped' => false,
                                 'required' => false,
                             ])
-                            ->add('videoTitle', TextType::class, [
+                            ->add('videoName', TextType::class, [
                                 'mapped' => false,
                                 'required' => false,
                                 'attr' => [
@@ -400,6 +425,32 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'data_class' => null,
                                 'mapped' => false,
                                 'required' => false,
+                            ])
+                            ->add('videoTitle', TextType::class, [
+                                'mapped' => false,
+                                'required' => false,
+                                'attr' => [
+                                    'value' => $businessProfile->getVideo()->getTitle(),
+                                ],
+                                'constraints' => array(
+                                    new Length(
+                                        [
+                                            'max' => VideoMedia::VIDEO_TITLE_MAX_LENGTH,
+                                        ]
+                                    ),
+                                ),
+                            ])
+                            ->add('videoDescription', TextareaType::class, [
+                                'mapped' => false,
+                                'required' => false,
+                                'data' => $businessProfile->getVideo()->getDescription(),
+                                'constraints' => array(
+                                    new Length(
+                                        [
+                                            'max' => VideoMedia::VIDEO_TITLE_MAX_LENGTH,
+                                        ]
+                                    ),
+                                ),
                             ])
                         ->end()
                     ->end()
@@ -788,20 +839,31 @@ class BusinessProfileAdmin extends OxaAdmin
         $files = current($request->files->all());
 
         if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
-            $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
             $entity->setVideo(null);
+            $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
         }
 
         if ($files) {
             $videoMediaData = $this->uploadVideo($entity);
 
             if ($videoMediaData) {
+                $videoMediaData->setTitle($form->get('videoTitle')->getData());
+                $videoMediaData->setDescription($form->get('videoDescription')->getData());
+                $videoMediaData->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+
                 $entity->setVideo($videoMediaData);
             } else {
+                /* @var $video VideoMedia */
                 $video = $entity->getVideo();
 
                 if ($video) {
-                    $video->setName($form->get('videoTitle')->getData());
+                    $video->setName($form->get('videoName')->getData());
+                    $video->setTitle($form->get('videoTitle')->getData());
+                    $video->setDescription($form->get('videoDescription')->getData());
+
+                    if ($video->getYoutubeSupport() and !$video->getYoutubeAction()) {
+                        $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
+                    }
                 }
             }
         }

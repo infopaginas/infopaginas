@@ -1,0 +1,19 @@
+oxa_youtube_oauth_notify:
+    path:     /notify
+    defaults: { _controller: OxaVideoBundle:OAuth:notify }
+
+oxa_youtube_oauth_authorization:
+    path:     /authorization
+    defaults: { _controller: OxaVideoBundle:OAuth:oauth }
+
+oxa_youtube_oauth_redirect:
+    path:     /redirect
+    defaults: { _controller: OxaVideoBundle:OAuth:oauthRedirect }
+
+oxa_youtube_oauth_success:
+    path:     /success
+    defaults: { _controller: OxaVideoBundle:OAuth:authSuccess }
+
+oxa_youtube_oauth_error:
+    path:     /error
+    defaults: { _controller: OxaVideoBundle:OAuth:authError }
