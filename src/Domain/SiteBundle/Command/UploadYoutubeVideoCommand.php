@@ -58,26 +58,30 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
             $this->withDebug = false;
         }
 
-        $error = $this->uploadVideo();
+        $resultUpload = $this->uploadVideo();
+        $currentError = $resultUpload['error'];
 
-        if ($error === false) {
-            $error = $this->updateVideo();
+        if ($resultUpload['error'] === false) {
+            $resultUpdate = $this->updateVideo();
+            $currentError = $resultUpdate['error'];
+
+            if ($resultUpdate['error'] === false) {
+                $resultRemove = $this->removeVideo();
+                $currentError = $resultRemove['error'];
+            }
         }
 
-        if ($error === false) {
-            $error = $this->removeVideo();
-        }
-
-        if ($error !== false) {
+        if ($currentError !== false) {
             $admins = $this->em->getRepository('OxaSonataUserBundle:User')->findByRole('ROLE_ADMINISTRATOR');
 
-            $this->mailer->sendYoutubeTokenErrorEmailMessage($error, $admins);
+            $this->mailer->sendYoutubeTokenErrorEmailMessage($currentError, $admins);
         }
     }
 
     protected function uploadVideo()
     {
-        $error = false;
+        $error  = false;
+        $status = true;
 
         $videoMapping = $this->em->getRepository('OxaVideoBundle:VideoMedia')
             ->getVideoForYoutubeActionIterator(VideoMedia::YOUTUBE_ACTION_ADD);
@@ -97,6 +101,7 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
                     $videoMedia->setYoutubeSupport(false);
                 } elseif ($data['error'] !== false) {
                     $error = $data['error'];
+                    $status = false;
                     break;
                 } elseif ($data['youtubeId']) {
                     $videoMedia->setYoutubeId($data['youtubeId']);
@@ -117,12 +122,16 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
 
         $this->em->flush();
 
-        return $error;
+        return [
+            'status' => $status,
+            'error'  => $error,
+        ];
     }
 
     protected function updateVideo()
     {
-        $error = false;
+        $error  = false;
+        $status = true;
 
         $videoMapping = $this->em->getRepository('OxaVideoBundle:VideoMedia')
             ->getVideoForYoutubeActionIterator(VideoMedia::YOUTUBE_ACTION_UPDATE);
@@ -135,13 +144,16 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
             $videoMedia = $row[0];
 
             if ($videoMedia and !$videoMedia->getBusinessProfiles()->isEmpty()) {
-                $youtubeError = $this->youtubeVideoManager->updateMedia($videoMedia);
+                $response = $this->youtubeVideoManager->updateMedia($videoMedia);
+
+                $youtubeError = $response['error'];
 
                 if ($youtubeError == YoutubeManager::ERROR_NOT_FOUND) {
                     $videoMedia->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ERROR);
                     $videoMedia->setYoutubeSupport(false);
                 } elseif ($youtubeError !== false) {
                     $error = $youtubeError;
+                    $status = false;
                     break;
                 } else {
                     $videoMedia->setYoutubeAction(null);
@@ -158,12 +170,16 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
 
         $this->em->flush();
 
-        return $error;
+        return [
+            'status' => $status,
+            'error'  => $error,
+        ];
     }
 
     protected function removeVideo()
     {
-        $error = false;
+        $error  = false;
+        $status = true;
 
         $videoMapping = $this->em->getRepository('OxaVideoBundle:VideoMedia')
             ->getVideoForYoutubeActionIterator(VideoMedia::YOUTUBE_ACTION_REMOVE);
@@ -176,12 +192,15 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
             $videoMedia = $row[0];
 
             if ($videoMedia and $videoMedia->getBusinessProfiles()->isEmpty()) {
-                $youtubeError = $this->youtubeVideoManager->removeMedia($videoMedia);
+                $response = $this->youtubeVideoManager->removeMedia($videoMedia);
+
+                $youtubeError = $response['error'];
 
                 if ($youtubeError == YoutubeManager::ERROR_NOT_FOUND) {
                     $this->em->remove($videoMedia);
                 } elseif ($youtubeError !== false) {
-                    $error = $youtubeError;
+                    $error  = $youtubeError;
+                    $status = false;
                     break;
                 } else {
                     $this->em->remove($videoMedia);
@@ -198,6 +217,9 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
 
         $this->em->flush();
 
-        return $error;
+        return [
+            'status' => $status,
+            'error'  => $error,
+        ];
     }
 }

@@ -32,8 +32,8 @@ class VideoMediaRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('youtubeAction', $action)
         ;
 
-        $iterateResult = $query->iterate();
+        $videoIterator = $query->iterate();
 
-        return $iterateResult;
+        return $videoIterator;
     }
 }

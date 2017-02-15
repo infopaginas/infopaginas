@@ -152,7 +152,7 @@ class VideoManager
 
         $ext = pathinfo($url, PATHINFO_EXTENSION);
         // Put content in this file
-        $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext  ;
+        $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext;
         file_put_contents($path, file_get_contents($url));
 
         return $path;

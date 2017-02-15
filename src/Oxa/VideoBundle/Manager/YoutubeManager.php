@@ -11,8 +11,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class YoutubeManager
 {
-    const PROD_ENV = 'prod';
-
     const PRIVACY_STATUS_PUBLIC   = 'public';
     const PRIVACY_STATUS_PRIVATE  = 'private';
     const PRIVACY_STATUS_UNLISTED = 'unlisted';
@@ -64,11 +62,12 @@ class YoutubeManager
 
     private $redirectUrl;
 
-    private $env;
+    private $privacyStatus;
 
     private $channelId;
 
-    public function __construct(ContainerInterface $container, $env, $channelId) {
+    public function __construct(ContainerInterface $container, $privacyStatus, $channelId)
+    {
         $this->container = $container;
         $this->videoMediaManager = $container->get('oxa.manager.video_media');
         $this->videoManager      = $container->get('oxa.manager.video');
@@ -81,8 +80,8 @@ class YoutubeManager
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        $this->env       = $env;
-        $this->channelId = $channelId;
+        $this->privacyStatus = $privacyStatus;
+        $this->channelId     = $channelId;
     }
 
     public function setGoogleClient($clientId, $secretKey)
@@ -101,6 +100,7 @@ class YoutubeManager
     {
         $videoId = $videoMedia->getYoutubeId();
         $error   = false;
+        $status  = false;
 
         try {
             $check = $this->handleUserTokenAuth();
@@ -110,6 +110,7 @@ class YoutubeManager
 
                 // see https://developers.google.com/youtube/v3/docs/videos/delete
                 $response = $youtube->videos->delete($videoId);
+                $status   = true;
             } else {
                 $error = $check['error'];
             }
@@ -121,7 +122,10 @@ class YoutubeManager
             $error = self::ERROR_UNKNOWN;
         }
 
-        return $error;
+        return [
+            'status' => $status,
+            'error'  => $error,
+        ];
     }
 
     public function updateMedia(VideoMedia $videoMedia)
@@ -131,6 +135,7 @@ class YoutubeManager
         $description = $videoMedia->getYoutubeDescription();
         $videoId     = $videoMedia->getYoutubeId();
         $error       = false;
+        $status      = false;
 
         try {
             $check = $this->handleUserTokenAuth();
@@ -159,6 +164,7 @@ class YoutubeManager
                     // Update the video resource by calling the videos.update() method.
                     // see https://developers.google.com/youtube/v3/docs/videos/update
                     $updateResponse = $youtube->videos->update('snippet', $video);
+                    $status = true;
                 }
             } else {
                 $error = $check['error'];
@@ -171,7 +177,10 @@ class YoutubeManager
             $error = self::ERROR_UNKNOWN;
         }
 
-        return $error;
+        return [
+            'status' => $status,
+            'error'  => $error,
+        ];
     }
 
     public function uploadMedia(VideoMedia $videoMedia)
@@ -203,11 +212,7 @@ class YoutubeManager
                     // Set the video's status to "public". Valid statuses are "public", "private" and "unlisted".
                     $status = new \Google_Service_YouTube_VideoStatus();
 
-                    if ($this->env == self::PROD_ENV) {
-                        $status->privacyStatus = self::PRIVACY_STATUS_PUBLIC;
-                    } else {
-                        $status->privacyStatus = self::PRIVACY_STATUS_PRIVATE;
-                    }
+                    $status->privacyStatus = $this->privacyStatus;
 
                     // Associate the snippet and status objects with a new video resource.
                     $video = new \Google_Service_YouTube_Video();
@@ -235,7 +240,6 @@ class YoutubeManager
                         $chunkSizeBytes
                     );
                     $media->setFileSize(filesize($tempFilePath));
-
 
                     // Read the media file and upload it chunk by chunk.
                     $status = false;

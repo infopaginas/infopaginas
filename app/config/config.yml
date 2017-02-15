@@ -63,10 +63,8 @@ parameters:
     breadcrumb_max_length: 22
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
-    google_youtube_environment: '%google_api_youtube_environment%'
-
-    #    nadyaoxatest@gmail.com
-    google_youtube_channel_id: 'UCQBIBb2bn2XFMaZURIeV18A'
+    google_youtube_privacy: '%google_youtube_video_privacy%'
+    google_youtube_channel_id: '%google_youtube_user_channel_id%'
 
 framework:
     #esi:             ~

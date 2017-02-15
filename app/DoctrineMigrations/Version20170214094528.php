@@ -51,7 +51,6 @@ class Version20170214094528 extends AbstractMigration implements ContainerAwareI
             $value = $this->container->get('twig')
                 ->render('OxaConfigBundle:Fixtures:mail_youtube_token_invalid.html.twig');
 
-
             $configMail = new Config();
             $configMail->setKey(ConfigInterface::YOUTUBE_ERROR_EMAIL_TEMPLATE);
             $configMail->setTitle('Youtube token error template');
