@@ -34,6 +34,7 @@ class NormalizerUtil
             ChangeSetCalculator::VIDEO_ADD                      => 'Video Add',
             ChangeSetCalculator::VIDEO_REMOVE                   => 'Video Remove',
             ChangeSetCalculator::VIDEO_UPDATE                   => 'Video Change',
+            ChangeSetCalculator::VIDEO_PROPERTY_UPDATE          => 'Video Property Change',
             ChangeSetCalculator::LOGO_ADD                       => 'Logo Add',
             ChangeSetCalculator::LOGO_REMOVE                    => 'Logo Remove',
             ChangeSetCalculator::LOGO_UPDATE                    => 'Logo Update',

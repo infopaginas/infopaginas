@@ -40,3 +40,7 @@ parameters:
 
     # api token
     api_token: 3IKmd2uI78Wl4CUjnYCljfFhfE2WRn1FEvi4fsi3J00P7VIZgLCFhybIJepNFpmvvTUDjO53ZezF1bIiqFRY
+
+    # youtube api
+    # Valid env is "dev" and "prod"
+    google_api_youtube_environment: 'dev'

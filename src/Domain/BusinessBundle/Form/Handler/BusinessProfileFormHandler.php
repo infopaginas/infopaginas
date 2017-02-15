@@ -18,6 +18,7 @@ use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;

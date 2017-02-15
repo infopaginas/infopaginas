@@ -472,20 +472,69 @@ class BusinessProfileManager extends Manager
                 case ChangeSetCalculator::VIDEO_ADD:
                     $data = json_decode($change->getNewValue());
                     $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-                    $businessProfile->setVideo($video);
+
+                    if ($video) {
+                        if (!empty($data->title)) {
+                            $video->setTitle($data->title);
+                        }
+
+                        if (!empty($data->description)) {
+                            $video->setDescription($data->description);
+                        }
+
+                        if ($video->getYoutubeSupport()) {
+                            $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+                        }
+
+                        $businessProfile->setVideo($video);
+                    }
                     break;
                 case ChangeSetCalculator::VIDEO_REMOVE:
-                    $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
-
                     $businessProfile->setVideo(null);
+                    $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
                     break;
                 case ChangeSetCalculator::VIDEO_UPDATE:
                     $data = json_decode($change->getNewValue());
                     //if video was replaced
                     if (!empty($change->getOldValue())) {
                         $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-
                         $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
+
+                        if ($video) {
+                            if (!empty($data->title)) {
+                                $video->setTitle($data->title);
+                            }
+
+                            if (!empty($data->description)) {
+                                $video->setDescription($data->description);
+                            }
+
+                            if ($video->getYoutubeSupport()) {
+                                $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+                            }
+
+                            $businessProfile->setVideo($video);
+                        }
+                    }
+                    break;
+                case ChangeSetCalculator::VIDEO_PROPERTY_UPDATE:
+                    $data = json_decode($change->getNewValue());
+
+                    $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
+
+                    if ($video) {
+                        if (!empty($data->title)) {
+                            $video->setTitle($data->title);
+                        }
+
+                        if (!empty($data->description)) {
+                            $video->setDescription($data->description);
+                        }
+
+                        if ($video->getYoutubeSupport() and !$video->getYoutubeAction() and $video->getYoutubeId()) {
+                            $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
+                        }
+
                         $businessProfile->setVideo($video);
                     }
                     break;

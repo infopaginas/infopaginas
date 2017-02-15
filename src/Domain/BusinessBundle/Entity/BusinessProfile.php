@@ -658,7 +658,11 @@ class BusinessProfile implements
     protected $uid;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia")
+     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(name="video_id", referencedColumnName="id", nullable=true)
      */
     protected $video;
 

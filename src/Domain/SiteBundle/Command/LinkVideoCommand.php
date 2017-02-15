@@ -115,6 +115,9 @@ class LinkVideoCommand extends ContainerAwareCommand
 
                                 try {
                                     $media = $videoManager->uploadLocalFile($uploadedFile);
+
+                                    $media->setYoutubeSupport(false);
+                                    $media->setYoutubeAction(null);
                                 } catch (\Exception $e) {
                                     if ($this->withDebug) {
                                         $this->output->writeln(

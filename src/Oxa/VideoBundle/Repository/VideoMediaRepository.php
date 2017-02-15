@@ -2,6 +2,8 @@
 
 namespace Oxa\VideoBundle\Repository;
 
+use Doctrine\ORM\Internal\Hydration\IterableResult;
+
 /**
  * VideoMediaRepository
  *
@@ -10,4 +12,28 @@ namespace Oxa\VideoBundle\Repository;
  */
 class VideoMediaRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param string $action
+     * @return IterableResult
+     */
+    public function getVideoForYoutubeActionIterator($action)
+    {
+        $qb = $this->createQueryBuilder('v');
+        $qb
+            ->andWhere('v.youtubeSupport = :youtubeSupport')
+            ->andWhere('v.youtubeAction = :youtubeAction')
+            ->setParameter('youtubeSupport', true)
+            ->setParameter('youtubeAction', $action)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query
+            ->setParameter('youtubeSupport', true)
+            ->setParameter('youtubeAction', $action)
+        ;
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
 }
