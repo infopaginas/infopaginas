@@ -5031,6 +5031,16 @@ input[type='radio'], input[type='checkbox'] {
     width: 23px;
   }
 }
+
+.small-subscriptions-icons {
+  i {
+    width: 12px;
+    height: 12px;
+    font-size: 6px;
+    line-height: 12px;
+  }
+}
+
 .vjs-social-share {
   z-index: 1 !important;
 }

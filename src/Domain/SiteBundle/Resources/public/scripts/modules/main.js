@@ -469,11 +469,13 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll results--map-view' );
+            $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
         });
 
         hideMap.on( 'click', function() {
             $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
+            $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
         });
 
         var sources = document.querySelectorAll('#bgvid source');
