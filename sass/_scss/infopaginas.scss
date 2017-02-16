@@ -1185,6 +1185,7 @@ $thumb-width-mb: 60px;
 }
 
 .item__header {
+  align-items: center;
   display: flex;
   flex-direction: column;
   margin-bottom: 5px;
@@ -1199,6 +1200,10 @@ $thumb-width-mb: 60px;
       cursor: pointer;
     }
   }
+}
+
+.header-align-stars {
+  align-items: flex-start;
 }
 
 .now {
