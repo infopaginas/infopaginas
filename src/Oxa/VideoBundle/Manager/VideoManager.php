@@ -43,13 +43,23 @@ class VideoManager
 
     public function removeMedia($id)
     {
+        $status = true;
+
         $media = $this->videoMediaManager->find($id);
 
-        if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
-            return $this->filesystem->delete($media->getFilepath() . $media->getFilename());
+        if ($media) {
+            if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+                $status = $this->filesystem->delete($media->getFilepath() . $media->getFilename());
+            }
+
+            if ($media->getYoutubeSupport() and $media->getYoutubeId()) {
+                $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_REMOVE);
+            } else {
+                $this->container->get('doctrine.orm.entity_manager')->remove($media);
+            }
         }
 
-        return true;
+        return $status;
     }
 
     public function uploadLocalFile(UploadedFile $file, array $data = []) : VideoMedia
@@ -116,6 +126,36 @@ class VideoManager
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
         return $this->videoMediaManager->save($uploadedFileData);
+    }
+
+    public function uploadTempYoutubeFile($url)
+    {
+        $headers = SiteHelper::checkUrlExistence($url);
+
+        $fileData = [
+            'name'      => $this->generateFilenameForUrl($url),
+            'ext'       => $this->getExtensionByMime($headers['content_type']),
+            'type'      => $headers['content_type'],
+            'path'      => $url,
+        ];
+
+        // Check if the file's mime type is in the list of allowed mime types.
+        if (!in_array($fileData['type'], self::$allowedMimeTypes)) {
+            return false;
+        }
+
+        $file = tmpfile();
+
+        if ($file === false) {
+            return false;
+        }
+
+        $ext = pathinfo($url, PATHINFO_EXTENSION);
+        // Put content in this file
+        $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext;
+        file_put_contents($path, file_get_contents($url));
+
+        return $path;
     }
 
     public function getPublicUrl(VideoMedia $media)

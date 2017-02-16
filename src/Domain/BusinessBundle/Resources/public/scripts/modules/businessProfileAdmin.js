@@ -147,13 +147,13 @@ $( document ).ready( function() {
     function hideVideoAdd() {
         $( '#' + formId + '_videoFile[data-hidden-field]').parent().parent().hide();
         $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().hide();
-        $( '#' + formId + '_videoTitle' ).parent().parent().show();
+        $( '#' + formId + '_videoName' ).parent().parent().show();
     }
 
     function showVideoAdd() {
         $( '#' + formId + '_videoFile[data-hidden-field]' ).parent().parent().show();
         $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().show();
-        $( '#' + formId + '_videoTitle' ).parent().parent().hide();
+        $( '#' + formId + '_videoName' ).parent().parent().hide();
     }
 
     setUseMapAddress();

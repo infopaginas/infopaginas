@@ -18,6 +18,14 @@
         </div>
         <div class="media__field">
             <div class="form__field">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title) }}
+            </div>
+        </div>
+        <div class="media__field">
+            <div class="form__field">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
             </div>
         </div>
         <div class="media__field remove">

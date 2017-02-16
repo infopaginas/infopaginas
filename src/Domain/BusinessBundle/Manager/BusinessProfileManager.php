@@ -472,11 +472,25 @@ class BusinessProfileManager extends Manager
                 case ChangeSetCalculator::VIDEO_ADD:
                     $data = json_decode($change->getNewValue());
                     $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-                    $businessProfile->setVideo($video);
+
+                    if ($video) {
+                        if (!empty($data->title)) {
+                            $video->setTitle($data->title);
+                        }
+
+                        if (!empty($data->description)) {
+                            $video->setDescription($data->description);
+                        }
+
+                        if ($video->getYoutubeSupport()) {
+                            $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+                        }
+
+                        $businessProfile->setVideo($video);
+                    }
                     break;
                 case ChangeSetCalculator::VIDEO_REMOVE:
                     $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
-
                     $businessProfile->setVideo(null);
                     break;
                 case ChangeSetCalculator::VIDEO_UPDATE:
@@ -484,8 +498,43 @@ class BusinessProfileManager extends Manager
                     //if video was replaced
                     if (!empty($change->getOldValue())) {
                         $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-
                         $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
+
+                        if ($video) {
+                            if (!empty($data->title)) {
+                                $video->setTitle($data->title);
+                            }
+
+                            if (!empty($data->description)) {
+                                $video->setDescription($data->description);
+                            }
+
+                            if ($video->getYoutubeSupport()) {
+                                $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+                            }
+
+                            $businessProfile->setVideo($video);
+                        }
+                    }
+                    break;
+                case ChangeSetCalculator::VIDEO_PROPERTY_UPDATE:
+                    $data = json_decode($change->getNewValue());
+
+                    $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
+
+                    if ($video) {
+                        if (!empty($data->title)) {
+                            $video->setTitle($data->title);
+                        }
+
+                        if (!empty($data->description)) {
+                            $video->setDescription($data->description);
+                        }
+
+                        if ($video->getYoutubeSupport() and !$video->getYoutubeAction() and $video->getYoutubeId()) {
+                            $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
+                        }
+
                         $businessProfile->setVideo($video);
                     }
                     break;
@@ -1361,6 +1410,19 @@ class BusinessProfileManager extends Manager
                 $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
 
                 if ($item) {
+                    $score = 0;
+                    $plan = 1;
+
+                    foreach ($result as $business) {
+                        if ($business['_id'] == $id) {
+                            $plan = $business['sort'][0];
+                            $score = number_format($business['sort'][1], ElasticSearchManager::ROTATION_RANK_PRECISION);
+                            break;
+                        }
+                    }
+
+                    $item->setScore($score);
+                    $item->setPlan($plan);
                     $data[] = $item;
                 }
             }

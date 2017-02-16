@@ -33,6 +33,7 @@ class ChangeSetCalculator
     const VIDEO_ADD    = 'VIDEO_ADD';
     const VIDEO_REMOVE = 'VIDEO_REMOVE';
     const VIDEO_UPDATE = 'VIDEO_UPDATE';
+    const VIDEO_PROPERTY_UPDATE = 'VIDEO_PROPERTY_UPDATE';
 
     const LOGO_ADD    = 'LOGO_ADD';
     const LOGO_REMOVE = 'LOGO_REMOVE';

@@ -13,7 +13,9 @@ use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use FOS\UserBundle\Model\UserInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
+use Oxa\Sonata\UserBundle\Entity\User;
 use \Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class Mailer
@@ -175,12 +177,47 @@ class Mailer
     }
 
     /**
-     * @param string $toEmail
+     * @param string $reason
+     * @param User[] $users
+     */
+    public function sendYoutubeTokenErrorEmailMessage($reason, $users) {
+
+        $message = $this->getConfigService()->getValue(ConfigInterface::YOUTUBE_ERROR_EMAIL_TEMPLATE);
+        $link    = $this->getRouter()->generate(
+            'oxa_youtube_oauth_notify',
+            [],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $message = str_replace('{REASON}', $reason, $message);
+        $message = str_replace('{LINK}', $link, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'Youtube token error';
+
+        $emails = [];
+
+        foreach ($users as $user) {
+            $email = $user->getEmail();
+
+            if ($email and filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emails[] = $email;
+            }
+        }
+
+        if ($emails) {
+            $this->send($emails, $subject, $message, $contentType);
+        }
+    }
+
+    /**
+     * @param mixed $toEmail
      * @param string $subject
      * @param string $body
      * @param string $contentType
      */
-    protected function send(string $toEmail, string $subject, string $body, string $contentType = 'text/plain')
+    protected function send($toEmail, string $subject, string $body, string $contentType = 'text/plain')
     {
         $fromEmail = $this->getConfigService()->getValue(ConfigInterface::DEFAULT_EMAIL_ADDRESS);
 

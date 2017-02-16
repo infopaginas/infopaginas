@@ -30,6 +30,7 @@
                                     <i class="fa fa-star"></i>
                                 {% endfor %}
                             {% endif %}
+                            Plan: {{ item.plan }}; Score: {{ item.score }};
                         </div>
                     </div>
                 </div>
@@ -57,7 +58,7 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions">
-            <a href="#" class="get-dir button button--small button--featured" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>
@@ -67,7 +68,7 @@
                     {% trans %}Call{% endtrans %}
                 </a>
                 <div class="dropdown dropdown-call hide-mobile">
-                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                     <span class="caret"></span>
@@ -80,10 +81,10 @@
                   </ul>   
                 </div>
             {% endif %}
-            <button class="button button--small button--featured hide-mobile" id="show-on-map-{{ item.id }}">
+            <a class="button button--small button--featured hide-mobile link-pointer" id="show-on-map-{{ item.id }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Show on Map{% endtrans %}
-            </button>
+            </a>
         </div><!-- item__primary-actions -->
     </div>
 </div><!-- results__item -->

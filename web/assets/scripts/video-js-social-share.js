@@ -23,7 +23,7 @@
       twttr.events.trigger("click", {});
       e.preventDefault();
 
-      var link = $( 'a.button-share--twitter' ).attr( 'href' );
+      var link = $( 'a.button-share--twitter' ).data( 'href' );
 
       var width = 500;
       var height = 300;

@@ -658,7 +658,11 @@ class BusinessProfile implements
     protected $uid;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia")
+     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(name="video_id", referencedColumnName="id", nullable=true)
      */
     protected $video;
 
@@ -702,6 +706,14 @@ class BusinessProfile implements
      * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
      */
     protected $distance;
+
+    /** @var float
+     */
+    protected $score;
+
+    /** @var float
+     */
+    protected $plan;
 
      /** @var SearchLog[]
      *
@@ -2832,5 +2844,41 @@ class BusinessProfile implements
         }
 
         return json_encode($data);
+    }
+
+    /**
+     * @return float
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * @param float $score
+     * @return BusinessProfile
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPlan()
+    {
+        return $this->plan;
+    }
+
+    /**
+     * @param float $plan
+     * @return BusinessProfile
+     */
+    public function setPlan($plan)
+    {
+        $this->plan = $plan;
+        return $this;
     }
 }

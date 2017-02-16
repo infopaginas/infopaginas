@@ -20,7 +20,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '0.5.3'
+    app_version: '0.6.0'
     locale: en
     locales: [en, es]
     locale_data:
@@ -61,6 +61,10 @@ parameters:
     image_back_up_path: '/../web/imageBackUp/'
     video_back_up_path: '/../web/imageBackUp/video/'
     breadcrumb_max_length: 22
+    google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
+    google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
+    google_youtube_privacy: '%google_youtube_video_privacy%'
+    google_youtube_channel_id: '%google_youtube_user_channel_id%'
 
 framework:
     #esi:             ~

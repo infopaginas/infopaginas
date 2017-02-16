@@ -82,6 +82,9 @@ security:
         - { path: ^/business/profile/view/*, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/business/profile/*, role: ROLE_CONSUMER }
 
+        # youtube oauth
+        - { path: ^/youtube/oauth/*, role: [ROLE_ADMINISTRATOR] }
+
         # Secured part of the site
         # This config requires being logged for the whole site and having the admin role for the admin part.
         # Change these rules to adapt them to your needs

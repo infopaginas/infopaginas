@@ -31,6 +31,11 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             $config->setFormat($item['format']);
             $config->setDescription($item['description']);
             $config->setPosition($key);
+
+            if (!empty($item['hidden'])) {
+                $config->setIsActive(false);
+            }
+
             $manager->persist($config);
         }
 
@@ -172,6 +177,21 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'value' => 'San Juan',
                 'format' => 'text',
                 'description' => 'Defines how many results will be shown on (any) results page',
+            ], [
+                'key' => ConfigInterface::YOUTUBE_ACCESS_TOKEN,
+                'title' => 'Youtube access token',
+                'value' => json_encode([]),
+                'format' => 'json',
+                'description' => 'Token to access youtube account',
+                'hidden' => true,
+            ], [
+                'key' => ConfigInterface::YOUTUBE_ERROR_EMAIL_TEMPLATE,
+                'title' => 'Youtube token error template',
+                'value' => $this->container->get('twig')->render(
+                    'OxaConfigBundle:Fixtures:mail_youtube_token_invalid.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Notify if youtube token is invalid',
             ],
         ];
     }

@@ -20,13 +20,13 @@ define(['jquery', 'tools/reportTracker'], function( $, ReportTracker ) {
 
         var current = $( e.currentTarget );
 
-        var redirectionLink = current.prop( 'href' );
+        var redirectionLink = current.data( 'href' );
         var id = current.data( 'id' );
         var type = current.data( 'type' );
 
         this.reportTracker.trackEvent( type, id );
 
-        window.location.href = redirectionLink;
+        window.open( redirectionLink );
     };
 
     redirect.prototype.bindRedirectEvents = function ( e ) {

@@ -29,7 +29,7 @@
                     <div class="item__header container">
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
-                            <a href="#" data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
+                            <a data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
                                 {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
                                 {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
                             </a>
@@ -46,7 +46,7 @@
                     {% endif %}
                     <div class="header-actions">
                         {% if not businessProfile.getHideAddress() %}
-                            <a href="#" class="get-dir button button--small button--featured" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
+                            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
                                 <i class="fa fa-location-arrow"></i>
                                 <span>{% trans %}Directions{% endtrans %}</span>
                             </a>
@@ -58,7 +58,7 @@
                             </a>
                         {% endif %}
                         {% if businessProfile.getWebsite() %}
-                            <a class="button button--small button--featured redirect-event" href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
+                            <a class="button button--small button--featured redirect-event link-pointer" data-href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
                                 <i class="fa fa-external-link"></i>
                                 <span>{% trans %}Web{% endtrans %}</span>
                             </a>
@@ -75,22 +75,22 @@
                         <div class="share">
                             {% if businessProfile.getFacebookURL() %}
                                 <div class="share__item facebook">
-                                    <a href="{{ businessProfile.getFacebookURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
+                                    <a data-href="{{ businessProfile.getFacebookURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getTwitterURL() %}
                                 <div class="share__item twitter">
-                                    <a href="{{ businessProfile.getTwitterURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
+                                    <a data-href="{{ businessProfile.getTwitterURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getGoogleURL() %}
                                 <div class="share__item google-plus">
-                                    <a href="{{ businessProfile.getGoogleURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
+                                    <a data-href="{{ businessProfile.getGoogleURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                             {% if businessProfile.getYoutubeURL() %}
                                 <div class="share__item youtube">
-                                    <a href="{{ businessProfile.getYoutubeURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
+                                    <a data-href="{{ businessProfile.getYoutubeURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                         </div>
@@ -125,7 +125,9 @@
                                         <ul>
                                             {% for phone in businessProfile.getPhones() %}
                                                 <li>
-                                                    <i class="fa fa-phone"></i> {{ phone.getPhone() }}
+                                                    <i class="fa fa-phone"></i>
+                                                    <a href="tel:{{ phone.getPhone() }}" class="hide-desktop phone-call" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">{{ phone.getPhone() }}</a>
+                                                    <span class="hide-mobile">{{ phone.getPhone() }}</span>
                                                 </li>
                                             {% endfor %}
                                         </ul>
@@ -137,7 +139,7 @@
                                         <h3>Email</h3>
                                         <ul>
                                             <li>
-                                                <i class="fa fa-envelope"></i> {{ businessProfile.getEmail() }}
+                                                <i class="fa fa-envelope"></i> <a href="mailto:{{ businessProfile.getEmail() }}">{{ businessProfile.getEmail() }}</a>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->

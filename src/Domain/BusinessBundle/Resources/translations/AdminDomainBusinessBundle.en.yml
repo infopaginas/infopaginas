@@ -12,3 +12,5 @@ form.business.empty_images: Images in gallery must not contain empty value in Me
 form.subscription.start_date: Start Date cannot be in the future
 form.name.required: Please fill name of business profile
 business_profile.admin.export.csv: csv
+task.media.change.title: Title
+task.media.change.description: Description
