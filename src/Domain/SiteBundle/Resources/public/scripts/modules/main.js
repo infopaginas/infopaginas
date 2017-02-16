@@ -470,12 +470,14 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll results--map-view' );
             $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
+            $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
         });
 
         hideMap.on( 'click', function() {
             $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
             $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
+            $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
         });
 
         var sources = document.querySelectorAll('#bgvid source');
