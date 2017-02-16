@@ -75,8 +75,8 @@ class LocalityManager extends Manager
 
     public function getCatalogLocalitiesWithContent()
     {
-        $catalogLocalities = $this->getRepository()->getCatalogLocalitiesWithContent();
+        $catalogLocalitiesWithContent = $this->getRepository()->getCatalogLocalitiesWithContent();
 
-        return $catalogLocalities;
+        return $catalogLocalitiesWithContent;
     }
 }

@@ -52,9 +52,10 @@ class CategoryManager extends Manager
 
     public function searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale)
     {
-        $category = $this->getRepository()->searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale);
+        $subcategoriesWithContent = $this->getRepository()
+            ->searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale);
 
-        return $category;
+        return $subcategoriesWithContent;
     }
 
     public function searchSubcategoryByCategory($category, $level, $locale)

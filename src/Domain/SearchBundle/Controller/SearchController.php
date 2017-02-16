@@ -446,9 +446,7 @@ class SearchController extends Controller
             }
         }
 
-        $checkCatalogItem = $searchManager->checkCatalogItemHasContent($entities);
-
-        if (!$checkCatalogItem) {
+        if (!$searchManager->checkCatalogItemHasContent($entities)) {
             throw $this->createNotFoundException();
         }
 

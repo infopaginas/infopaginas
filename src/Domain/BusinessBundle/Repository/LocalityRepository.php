@@ -130,6 +130,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.catalogItems', 'ci', 'WITH', 'ci.category IS NULL')
             ->andWhere('ci.hasContent = TRUE')
+            ->orderBy('l.name')
         ;
 
         return $qb->getQuery()->getResult();

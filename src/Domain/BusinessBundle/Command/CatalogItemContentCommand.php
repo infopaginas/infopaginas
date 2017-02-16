@@ -11,10 +11,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
-/**
- * Class CatalogItemContentCommand
- * @package Domain\BusinessBundle\Command
- */
 class CatalogItemContentCommand extends ContainerAwareCommand
 {
     /* @var EntityManager $em */
@@ -28,9 +24,6 @@ class CatalogItemContentCommand extends ContainerAwareCommand
         ;
     }
 
-    /**
-     * Used manage objects statuses
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -72,7 +65,7 @@ class CatalogItemContentCommand extends ContainerAwareCommand
                 }
 
                 if ($catalogLocality->getIsActive() and $category->getIsActive()) {
-                    $countCategoryContent = $this->checkCatalogItemContent($catalogLocality, $category);
+                    $countCategoryContent = $this->getCountCatalogItemContent($catalogLocality, $category);
 
                     $catalogItem->setHasContent((bool)$countCategoryContent);
 
@@ -108,11 +101,11 @@ class CatalogItemContentCommand extends ContainerAwareCommand
         }
     }
 
-    protected function checkCatalogItemContent($catalogLocality, $category)
+    protected function getCountCatalogItemContent($catalogLocality, $category)
     {
-        $content = $this->em->getRepository('DomainBusinessBundle:CatalogItem')
+        $countCatalogItemContent = $this->em->getRepository('DomainBusinessBundle:CatalogItem')
             ->getCountCatalogItemContent($catalogLocality, $category);
 
-        return $content;
+        return $countCatalogItemContent;
     }
 }

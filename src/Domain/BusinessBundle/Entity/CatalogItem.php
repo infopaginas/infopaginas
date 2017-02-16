@@ -8,7 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * CatalogState
+ * CatalogItem
  *
  * @ORM\Table(name="catalog_item")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CatalogItemRepository")
