@@ -45,6 +45,18 @@ class CategoryManager extends Manager
         return $this->getRepository()->getAvailableParentCategories($locale);
     }
 
+    public function getAvailableParentCategoriesWithContent($locality, $locale = false)
+    {
+        return $this->getRepository()->getAvailableParentCategoriesWithContent($locality, $locale);
+    }
+
+    public function searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale)
+    {
+        $category = $this->getRepository()->searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale);
+
+        return $category;
+    }
+
     public function searchSubcategoryByCategory($category, $level, $locale)
     {
         return $this->getRepository()->searchSubcategoryByCategory($category, $level, $locale);

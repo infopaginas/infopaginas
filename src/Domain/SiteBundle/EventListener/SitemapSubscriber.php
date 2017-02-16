@@ -4,9 +4,11 @@ namespace Domain\SiteBundle\EventListener;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\CatalogItem;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Presta\SitemapBundle\Sitemap\Url\GoogleMultilangUrlDecorator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Presta\SitemapBundle\Event\SitemapPopulateEvent;
@@ -19,6 +21,11 @@ class SitemapSubscriber implements EventSubscriberInterface
     const SECTION_ARTICLE           = 'article';
     const SECTION_CATALOG           = 'catalog';
     const SECTION_BUSINESS_PROFILES = 'businessProfiles';
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * @var UrlGeneratorInterface
@@ -51,13 +58,13 @@ class SitemapSubscriber implements EventSubscriberInterface
     private $defaultHost;
 
     /**
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param ObjectManager         $manager
+     * @param ContainerInterface $container
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator, ObjectManager $manager)
+    public function __construct(ContainerInterface $container)
     {
-        $this->urlGenerator = $urlGenerator;
-        $this->manager      = $manager;
+        $this->container    = $container;
+        $this->urlGenerator = $container->get('router');
+        $this->manager      = $container->get('doctrine.orm.entity_manager');
         $this->context      = $this->urlGenerator->getContext();
         $this->defaultHost  = $this->context->getHost();
     }
@@ -141,59 +148,19 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addBusinessProfilesCatalog()
     {
-        $catalogLocalities = $this->manager->getRepository('DomainBusinessBundle:Locality')
-            ->getAvailableLocalitiesIterator();
+        $catalogItems = $this->manager->getRepository('DomainBusinessBundle:CatalogItem')
+            ->getCatalogItemsWithContentIterator();
 
         $this->addCatalogUrl();
 
-        foreach ($catalogLocalities as $localityRow) {
-            /* @var $catalogLocality \Domain\BusinessBundle\Entity\Locality */
-            $catalogLocality = current($localityRow);
+        foreach ($catalogItems as $row) {
+            /* @var $catalogItem \Domain\BusinessBundle\Entity\CatalogItem */
+            $catalogItem = current($row);
 
-            $this->addCatalogUrl($catalogLocality->getSlug());
+            $this->addCatalogUrlByCatalogItem($catalogItem);
 
-            $categories = $this->manager->getRepository('DomainBusinessBundle:Category')
-                ->getAvailableParentCategoriesIterator();
-
-            foreach ($categories as $categoryRow1) {
-                /* @var $category1 \Domain\BusinessBundle\Entity\Category */
-                $category1 = current($categoryRow1);
-
-                $this->addCatalogUrl($catalogLocality->getSlug(), $category1->getSlug());
-
-                $categories2 = $this->manager->getRepository('DomainBusinessBundle:Category')
-                    ->getAvailableSubcategoriesByCategoryIterator($category1, Category::CATEGORY_LEVEL_2);
-
-                foreach ($categories2 as $categoryRow2) {
-                    /* @var $subcategory \Domain\BusinessBundle\Entity\Category */
-                    $category2 = current($categoryRow2);
-
-                    $this->addCatalogUrl($catalogLocality->getSlug(), $category1->getSlug(), $category2->getSlug());
-
-                    $categories3 = $this->manager->getRepository('DomainBusinessBundle:Category')
-                        ->getAvailableSubcategoriesByCategoryIterator($category2, Category::CATEGORY_LEVEL_3);
-
-                    foreach ($categories3 as $categoryRow3) {
-                        /* @var $subcategory \Domain\BusinessBundle\Entity\Category */
-                        $category3 = current($categoryRow3);
-
-                        $this->addCatalogUrl(
-                            $catalogLocality->getSlug(),
-                            $category1->getSlug(),
-                            $category2->getSlug(),
-                            $category3->getSlug()
-                        );
-
-                        $this->manager->detach($categoryRow3[0]);
-                    }
-
-                    $this->manager->detach($categoryRow2[0]);
-                }
-
-                $this->manager->detach($categoryRow1[0]);
-            }
-
-            $this->manager->detach($localityRow[0]);
+            $this->manager->detach($row[0]);
+            unset($catalogItem);
         }
     }
 
@@ -439,5 +406,30 @@ class SitemapSubscriber implements EventSubscriberInterface
                 'section' => self::SECTION_MAIN,
             ],
         ];
+    }
+
+    private function addCatalogUrlByCatalogItem(CatalogItem $catalogItem)
+    {
+        $locality = $catalogItem->getLocality();
+        $category = $catalogItem->getCategory();
+
+        $localitySlug = $locality->getSlug();
+        $categorySlug1 = null;
+        $categorySlug2 = null;
+        $categorySlug3 = null;
+
+        if ($category) {
+            $categoryManager = $this->container->get('domain_business.manager.category');
+
+            $slugs = $categoryManager->getCategoryParents($category);
+
+            $categorySlug1 = $slugs['categorySlug1'];
+            $categorySlug2 = $slugs['categorySlug2'];
+            $categorySlug3 = $slugs['categorySlug3'];
+        }
+
+        $this->addCatalogUrl($localitySlug, $categorySlug1, $categorySlug2, $categorySlug3);
+
+        unset($locality, $category, $localitySlug, $categorySlug1, $categorySlug2, $categorySlug3);
     }
 }

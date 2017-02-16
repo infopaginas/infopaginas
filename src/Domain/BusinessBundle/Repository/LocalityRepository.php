@@ -110,4 +110,28 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAllLocalitiesIterator()
+    {
+        $qb = $this->createQueryBuilder('l');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateLocalities = $query->iterate();
+
+        return $iterateLocalities;
+    }
+
+    public function getCatalogLocalitiesWithContent()
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->leftJoin('l.catalogItems', 'ci', 'WITH', 'ci.category IS NULL')
+            ->andWhere('ci.hasContent = TRUE')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

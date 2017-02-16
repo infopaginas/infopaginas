@@ -31,6 +31,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
 
     const DEFAULT_CATALOG_LOCALITY_SLUG = 'san-juan';
     const ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES = 'businessProfiles';
+    const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS     = 'catalogItems';
 
     /**
      * @var int
@@ -112,6 +113,16 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $businessProfiles;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\CatalogItem",
+     *      mappedBy="locality",
+     * )
+     */
+    protected $catalogItems;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -120,6 +131,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->businessProfiles = new ArrayCollection();
         $this->translations     = new ArrayCollection();
         $this->neighborhoods    = new ArrayCollection();
+        $this->catalogItems     = new ArrayCollection();
     }
 
     /**
@@ -305,5 +317,39 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCatalogItems()
+    {
+        return $this->catalogItems;
+    }
+
+    /**
+     * Add catalogItem
+     *
+     * @param CatalogItem $catalogItem
+     *
+     * @return Locality
+     */
+    public function addCatalogItem(CatalogItem $catalogItem)
+    {
+        $this->catalogItems[] = $catalogItem;
+
+        return $this;
+    }
+
+    /**
+     * @param CatalogItem $catalogItem
+     *
+     * @return Locality
+     */
+    public function removeCatalogItems(CatalogItem $catalogItem)
+    {
+        $this->catalogItems->removeElement($catalogItem);
+
+        return $this;
     }
 }
