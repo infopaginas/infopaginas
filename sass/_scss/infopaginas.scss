@@ -2129,23 +2129,23 @@ $thumb-width-mb: 60px;
       flex-direction: column;
       margin-top: 5px;
       max-width: 100%;
-      padding-right: 10px;
       width: 100%;
 
       .item__primary-actions {
         flex-direction: row;
+        flex-wrap: wrap;
       }
 
       .button, a.button {
-        flex: 1 1 auto;
-        margin-right: 3px;
-
-        &:last-child {
-          margin-right: 0;
-        }
+        flex: 1 1 49%;
+        margin-right: 2px;
       }
     }
   }
+}
+
+.dropdown-call-button-additional {
+  margin-right: 2px;
 }
 
 .sidebar__section {
@@ -4922,7 +4922,7 @@ input[type='radio'], input[type='checkbox'] {
 
 
 .dropdown-call {
-  margin-bottom: 5px;
+  flex: 1 1 100%;
   ul {
     display: none;
     color: #132249;
@@ -4955,6 +4955,7 @@ input[type='radio'], input[type='checkbox'] {
     border: 2px solid #2a305b;
     border-radius: 2px;
     li {
+      text-align: center;
       a {
         color: #132249;
       }
