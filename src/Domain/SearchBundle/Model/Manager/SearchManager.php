@@ -278,6 +278,28 @@ class SearchManager extends Manager
         return $data;
     }
 
+    public function checkCatalogItemHasContent($entities)
+    {
+        $data = true;
+
+        if ($entities['locality']) {
+            if (!empty($entities['category3'])) {
+                $currentCategory = $entities['category3'];
+            } elseif (!empty($entities['category2'])) {
+                $currentCategory = $entities['category2'];
+            } elseif (!empty($entities['category1'])) {
+                $currentCategory = $entities['category1'];
+            } else {
+                $currentCategory = null;
+            }
+
+            $data = $this->em->getRepository('DomainBusinessBundle:CatalogItem')
+                ->checkCatalogItemHasContent($entities['locality'], $currentCategory);
+        }
+
+        return $data;
+    }
+
     /**
      * @param Locality[] $localities
      * @param Category[] $categories1

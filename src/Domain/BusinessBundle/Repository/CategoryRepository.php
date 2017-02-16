@@ -52,6 +52,53 @@ class CategoryRepository extends \Gedmo\Tree\Entity\Repository\MaterializedPathR
         return $qb->getQuery()->getResult();
     }
 
+    public function getAvailableParentCategoriesWithContent($locality, $locale = false)
+    {
+        $qb = $this->getAvailableParentCategoriesQb();
+
+        $qb
+            ->leftJoin('c.catalogItems', 'ci')
+            ->andWhere('ci.hasContent = TRUE')
+            ->andWhere('ci.locality = :locality')
+            ->setParameter('locality', $locality)
+        ;
+
+        if ($locale) {
+            $qb->orderBy('c.searchText' . ucfirst($locale));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale)
+    {
+        $qb = $this->getAvailableSubCategoriesQb($category, $level);
+
+        $qb
+            ->leftJoin('c.catalogItems', 'ci')
+            ->andWhere('ci.hasContent = TRUE')
+            ->andWhere('ci.locality = :locality')
+            ->setParameter('locality', $locality)
+            ->orderBy('c.searchText' . ucfirst($locale))
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAllCategoriesIterator()
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateCategories = $query->iterate();
+
+        return $iterateCategories;
+    }
+
     public function getAvailableSubCategoriesQb($parents, $level = Category::CATEGORY_LEVEL_2)
     {
         $qb = $this->getAvailableCategoriesQb()

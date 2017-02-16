@@ -12,6 +12,7 @@ namespace Oxa\Sonata\AdminBundle\Manager;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
@@ -116,7 +117,16 @@ class AdminManager extends DefaultManager
 
                 //allow delete catalog locality - see LocalityAdmin preRemove
                 if ($entity instanceof Locality and
-                    $associationMapping['fieldName'] == Locality::ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES
+                    ($associationMapping['fieldName'] == Locality::ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES or
+                        $associationMapping['fieldName'] == Locality::ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS
+                    )
+                ) {
+                    continue;
+                }
+
+                //allow delete category that associated only with Catalog items
+                if ($entity instanceof Category and
+                    $associationMapping['fieldName'] == Category::ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS
                 ) {
                     continue;
                 }
