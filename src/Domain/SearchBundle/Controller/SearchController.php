@@ -315,7 +315,7 @@ class SearchController extends Controller
         $categories2 = [];
         $categories3 = [];
 
-        $localities = $this->getLocalityManager()->findAll();
+        $localities = $this->getLocalityManager()->getCatalogLocalitiesWithContent();
 
         $locality = $searchManager->searchCatalogLocality($localitySlug);
 
@@ -323,24 +323,27 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories1 = $this->getCategoryManager()->getAvailableParentCategories($request->getLocale());
+            $categories1 = $this->getCategoryManager()->getAvailableParentCategoriesWithContent($locality, $request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
             $request->attributes->set('q', $locality->getName());
 
             $category1 = $searchManager->searchCatalogCategory($categorySlug1);
+
             $seoLocationName = $locality->getName();
 
             if ($category1 and !$category1->getParent()) {
                 $request->attributes->set('category', $category1->getName());
                 $request->attributes->set('q', $category1->getName());
 
-                $categories2 = $searchManager->searchSubcategoryByCategory(
+                $categories2 = $this->getCategoryManager()->searchSubcategoriesWithContentByCategory(
                     $category1,
+                    $locality,
                     Category::CATEGORY_LEVEL_2,
                     $request->getLocale()
                 );
+
                 $category2   = $searchManager->searchCatalogCategory($categorySlug2);
 
                 if (!$categories2) {
@@ -354,11 +357,13 @@ class SearchController extends Controller
                     $request->attributes->set('subcategory', $category2->getName());
                     $request->attributes->set('q', $category2->getName());
 
-                    $categories3 = $searchManager->searchSubcategoryByCategory(
+                    $categories3 = $this->getCategoryManager()->searchSubcategoriesWithContentByCategory(
                         $category2,
+                        $locality,
                         Category::CATEGORY_LEVEL_3,
                         $request->getLocale()
                     );
+
                     $category3   = $searchManager->searchCatalogCategory($categorySlug3);
 
                     $seoCategories[] = $category2->getName();
@@ -439,6 +444,10 @@ class SearchController extends Controller
 
                 $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
             }
+        }
+
+        if (!$searchManager->checkCatalogItemHasContent($entities)) {
+            throw $this->createNotFoundException();
         }
 
         if (!$locationMarkers) {

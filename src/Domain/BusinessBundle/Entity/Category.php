@@ -51,6 +51,8 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     const ELASTIC_DOCUMENT_TYPE = 'Category';
     const FLAG_IS_UPDATED = 'isUpdated';
 
+    const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';
+
     /**
      * @var int
      *
@@ -218,6 +220,17 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     private $reports;
 
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\CatalogItem",
+     *      mappedBy="category",
+     * )
+     */
+    protected $catalogItems;
+
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -238,11 +251,12 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     public function __construct()
     {
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->reports = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
+        $this->translations     = new ArrayCollection();
+        $this->articles         = new ArrayCollection();
+        $this->children         = new ArrayCollection();
+        $this->reports          = new ArrayCollection();
+        $this->catalogItems     = new ArrayCollection();
 
         $this->isUpdated = true;
     }
@@ -641,5 +655,39 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         return [
             self::CATEGORY_FIELD_NAME
         ];
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCatalogItems()
+    {
+        return $this->catalogItems;
+    }
+
+    /**
+     * Add catalogItem
+     *
+     * @param CatalogItem $catalogItem
+     *
+     * @return Category
+     */
+    public function addCatalogItem(CatalogItem $catalogItem)
+    {
+        $this->catalogItems[] = $catalogItem;
+
+        return $this;
+    }
+
+    /**
+     * @param CatalogItem $catalogItem
+     *
+     * @return Category
+     */
+    public function removeCatalogItems(CatalogItem $catalogItem)
+    {
+        $this->catalogItems->removeElement($catalogItem);
+
+        return $this;
     }
 }
