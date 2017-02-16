@@ -94,3 +94,18 @@ button {
     font-size: 2em;
   }
 }
+
+@media only screen and (max-width: 804px) {
+  .button-round {
+    border-radius: 3px;
+    height: auto;
+    width: auto; 
+    line-height: 2.5em;
+    padding: 0;
+  }
+  .button--show-map, .button--hide-map {
+    i {
+      display: none;
+    }
+  }
+}

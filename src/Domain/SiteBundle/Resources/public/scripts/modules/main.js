@@ -191,9 +191,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var adBottom = $( '.ad--bottom' );
 
     var openMapSequence = [
-        { e: adBottom, p: { translateY: 200 }, o: { duration: 400, easing: "easeOutCubic" } },
-        { e: showMap, p: { translateY: 140 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: resultsMap, p: { translateY: "-110vh" }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
+        { e: showMap, p: { translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: resultsMap, p: { translateY: "-115vh" }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
         { e: hideMap, p: { translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
     ];
 
@@ -462,7 +461,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
 //media querie conditional scripts
 
-    var mediaquery = window.matchMedia("(min-width: 320px)");
+    var mediaquery = window.matchMedia("(min-width: 804px)");
+
+    console.log(mediaquery.matches);
     if (mediaquery.matches) {
         showMap.on( 'click', function() {
             $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });
