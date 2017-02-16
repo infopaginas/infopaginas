@@ -1185,7 +1185,6 @@ $thumb-width-mb: 60px;
 }
 
 .item__header {
-  align-items: center;
   display: flex;
   flex-direction: column;
   margin-bottom: 5px;
@@ -1196,8 +1195,6 @@ $thumb-width-mb: 60px;
   }
 
   .rank {
-    margin-left: auto;
-
     a[data-show-modal-id] {
       cursor: pointer;
     }
@@ -1229,13 +1226,13 @@ $thumb-width-mb: 60px;
   }
 }
 
-.rank-ta {
-  background: url('/redesign/img/ta-rating.svg');
-  background-size: 100%;
-  display: none;
-  height: 12px;
-  width: 65px;
-}
+// .rank-ta {
+//   background: url('/redesign/img/ta-rating.svg');
+//   background-size: 100%;
+//   display: none;
+//   height: 12px;
+//   width: 65px;
+// }
 
 .rank-ta--45 { background-position: 0 -11px; }
 .rank-ta--4 {  background-position: 0 -23px; }
@@ -5033,6 +5030,7 @@ input[type='radio'], input[type='checkbox'] {
 }
 
 .small-subscriptions-icons {
+  right: 0;
   i {
     width: 12px;
     height: 12px;
