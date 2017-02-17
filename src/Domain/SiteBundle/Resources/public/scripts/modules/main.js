@@ -471,7 +471,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
       var mapStateSize = 'desktop';
       var sources = document.querySelectorAll('#bgvid source');
       var video = document.querySelector('#bgvid');
-      for(var i = 0; i<sources.length;i++) {
+      
+      for (var i = 0; i<sources.length;i++) {
           sources[i].setAttribute('src', sources[i].getAttribute('data-src'));
       }
 
@@ -487,6 +488,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     showMap.on( 'click', function() {
       var mediaquery = window.matchMedia("(min-width: 804px)");
+
       if (mediaquery.matches) {
         $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });
         showMap.removeClass( 'floating-offset' );
