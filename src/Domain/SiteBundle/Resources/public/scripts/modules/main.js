@@ -469,7 +469,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     if (mediaquery.matches) {
       var mapStateSize = 'desktop';
-
       var sources = document.querySelectorAll('#bgvid source');
       var video = document.querySelector('#bgvid');
       for(var i = 0; i<sources.length;i++) {
@@ -499,7 +498,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           showMap.removeClass( 'floating-offset' );
           $( 'body' ).addClass( 'body--no-scroll' );
       }
-
       mapState = 'expanded';
     });
 
@@ -519,7 +517,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
       mapState = 'default';
     });
-
 
     $( window ).resize(function() {
       if (mapStateSize == 'desktop') {
