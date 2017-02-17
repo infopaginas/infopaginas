@@ -1790,6 +1790,13 @@ $thumb-width-mb: 60px;
 
 .profile-map {
   height: auto;
+  #map {
+    min-height: 500px;
+
+    @media only screen and (max-width: 414px) {
+      min-height: 250px;
+    }
+  }
 }
 
 #map2 {
