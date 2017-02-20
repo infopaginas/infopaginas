@@ -106,3 +106,9 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Zips}
+
+    domain_business.admin.business_profile_working_hour:
+        class: Domain\BusinessBundle\Admin\BusinessProfileWorkingHourAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileWorkingHour, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Working Hour}

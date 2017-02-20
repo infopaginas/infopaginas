@@ -1,0 +1,8 @@
+{% trans_default_domain 'AdminDomainBusinessBundle' %}
+
+{% for key, properties in data %}
+    {% for name, value in properties %}
+        {{ name|trans }}: {{ value }}<br/>
+    {% endfor %}
+    <br/>
+{% endfor %}

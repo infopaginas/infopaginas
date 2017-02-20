@@ -13,6 +13,31 @@
     </div>
 {% endmacro %}
 
+{% macro working_hours_prototype(workingHoursField) %}
+    <div class="multi-field">
+        <div class="form__field field--multi-select">
+            {{ form_widget(workingHoursField.day ) }}
+        </div><!-- form-field -->
+        <div class="form__field field-hour-select">
+            {{ form_widget(workingHoursField.timeStart ) }}
+        </div><!-- form-field -->
+        <div class="field-middle-text">to</div>
+        <div class="form__field field-hour-select">
+            {{ form_widget(workingHoursField.timeEnd ) }}
+        </div><!-- form-field -->
+
+        <div class="form__field field--website">
+            {{ form_label(workingHoursField.openAllTime) }}
+            {{ form_widget(workingHoursField.openAllTime) }}
+        </div>
+
+        <button class="button button--small remove-working-hours">
+            <i class="fa fa-minus-square"></i>
+            {% trans %}Remove working hours{% endtrans %}
+        </button>
+    </div><!-- multifield -->
+{% endmacro %}
+
 <div class="form-column__container clearfix">
     <div class="info-box">
         <ul class="clearfix">
@@ -143,6 +168,50 @@
                 <button class="button button--small" id="add-another-phone">
                     <i class="fa fa-plus-square"></i>
                     {% trans %}Add phone{% endtrans %}
+                </button>
+            </div>
+
+            <div id="working-hours-fields-list" class="form__row vertical__row"
+                 data-length="{{ businessProfileForm.collectionWorkingHours|length }}"
+                 data-prototype="{{ _self.working_hours_prototype(businessProfileForm.collectionWorkingHours.vars.prototype)|e }}">
+
+                <label class="title-label">{% trans %}Working hours{% endtrans %}</label>
+                <small class="field__description">{% trans %}business.working.hours.edit_note{% endtrans %}</small>
+
+                <div class="form__row vertical__row">
+                    {{ form_widget(businessProfileForm.collectionWorkingHoursError) }}
+                </div>
+
+                {% for collectionWorkingHoursField in businessProfileForm.collectionWorkingHours %}
+                    <div class="multi-field">
+                        <div class="form__field field--multi-select">
+                            {{ form_widget(collectionWorkingHoursField.day ) }}
+                        </div><!-- form-field -->
+                        <div class="form__field field-hour-select">
+                            {{ form_widget(collectionWorkingHoursField.timeStart ) }}
+                        </div><!-- form-field -->
+                        <div class="field-middle-text">to</div>
+                        <div class="form__field field-hour-select">
+                            {{ form_widget(collectionWorkingHoursField.timeEnd ) }}
+                        </div><!-- form-field -->
+
+                        <div class="form__field field--website">
+                            {{ form_label(collectionWorkingHoursField.openAllTime) }}
+                            {{ form_widget(collectionWorkingHoursField.openAllTime) }}
+                        </div>
+
+                        <button class="button button--small remove-working-hours">
+                            <i class="fa fa-minus-square"></i>
+                            {% trans %}Remove working hours{% endtrans %}
+                        </button>
+                    </div><!-- multifield -->
+                {% endfor %}
+            </div>
+
+            <div class="form__row vertical__row">
+                <button class="button button--small" id="add-another-working-hours">
+                    <i class="fa fa-plus-square"></i>
+                    {% trans %}Add working hours{% endtrans %}
                 </button>
             </div>
         </div>

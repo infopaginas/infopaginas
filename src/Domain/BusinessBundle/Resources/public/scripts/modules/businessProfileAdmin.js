@@ -3,6 +3,8 @@ $( document ).ready( function() {
 
     var categoryField = $( '#' + formId + '_categories' );
 
+    var openAllTimeCheckboxes = $( '[ id *= "_openAllTime" ]' );
+
     $.each( ['#' + formId + '_serviceAreasType label', '#' + formId + '_serviceAreasType label ins'], function( index, fieldId ) {
         $( fieldId ).on( 'click', function() {
             var $self = $( this).parent().find( 'input[name="' + formId + '[serviceAreasType]"]' );
@@ -34,6 +36,42 @@ $( document ).ready( function() {
             }
         } );
     } );
+
+    $.each( openAllTimeCheckboxes, function( index, openAllTimeCheckbox ) {
+        $( openAllTimeCheckbox ).on( 'ifChecked ifUnchecked' , function( e, aux ) {
+            checkCollectionWorkingHours( openAllTimeCheckbox );
+        });
+    });
+
+    checkAllCollectionWorkingHours( openAllTimeCheckboxes );
+
+    function checkAllCollectionWorkingHours( openAllTimeCheckboxes ) {
+        $.each( openAllTimeCheckboxes, function( index, openAllTimeCheckbox ) {
+            checkCollectionWorkingHours( openAllTimeCheckbox );
+        });
+    }
+
+    function checkCollectionWorkingHours( openAllTimeCheckbox ) {
+        var workingHourBlock = $( openAllTimeCheckbox ).parents( 'tr' ).first();
+        var timeStart = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeStart" ]' );
+        var timeEnd = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeEnd" ]' );
+
+        if( $( openAllTimeCheckbox ).prop( 'checked' ) ) {
+            timeStart.find( 'select' ).val( 0 ).trigger( 'change' );
+            timeStart.find( 'select' ).attr( 'readonly', 'readonly' );
+            timeStart.find( 'select' ).select2( 'disable' );
+
+            timeEnd.find( 'select' ).val( 0 ).trigger( 'change' );
+            timeEnd.find( 'select' ).attr( 'readonly', 'readonly' );
+            timeEnd.find( 'select' ).select2( 'disable' );
+        } else {
+            timeStart.find( 'select' ).removeAttr( 'readonly' );
+            timeStart.find( 'select' ).select2( 'enable' );
+
+            timeEnd.find( 'select' ).removeAttr( 'readonly' );
+            timeEnd.find( 'select' ).select2( 'enable' );
+        }
+    }
 
     hideVideoAdd();
 

@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
+use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
@@ -26,6 +27,7 @@ use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
+use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -393,6 +395,14 @@ class BusinessProfileManager extends Manager
                     } else {
                         if ($change->getClassName() === BusinessProfilePhone::class) {
                             $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
+                                $change,
+                                $businessProfile,
+                                $this->getEntityManager()
+                            );
+
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        } elseif ($change->getClassName() === BusinessProfileWorkingHour::class) {
+                            $collection = WorkingHoursChangeSetUtil::getWorkingHoursCollectionsFromChangeSet(
                                 $change,
                                 $businessProfile,
                                 $this->getEntityManager()

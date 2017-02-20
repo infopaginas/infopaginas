@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
@@ -229,6 +230,19 @@ class BusinessProfileAdmin extends OxaAdmin
                         ],
                     ])
                     ->add('workingHours')
+                    ->add(
+                        'collectionWorkingHours',
+                        'sonata_type_collection',
+                        [
+                            'by_reference' => false,
+                            'required' => false,
+                        ],
+                        [
+                            'edit' => 'inline',
+                            'delete_empty' => false,
+                            'inline' => 'table',
+                        ]
+                    )
                     ->add(
                         'phones',
                         'sonata_type_collection',
@@ -578,6 +592,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig'
             ])
             ->add('product')
+            ->add('collectionWorkingHours', null, [
+                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig'
+            ])
             ->add('workingHours', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig'
             ])
@@ -704,6 +721,30 @@ class BusinessProfileAdmin extends OxaAdmin
                 ))
                 ->end()
             ;
+        }
+
+        if (!$object->getCollectionWorkingHours()->isEmpty()) {
+            if (!DayOfWeekModel::validateWorkingHoursTime($object->getCollectionWorkingHours())) {
+                $errorElement->with('collectionWorkingHours')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.collectionWorkingHours.duration',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+            }
+
+            if (!DayOfWeekModel::validateWorkingHoursOverlap($object->getCollectionWorkingHours())) {
+                $errorElement->with('collectionWorkingHours')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.collectionWorkingHours.overlap',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+            }
         }
     }
 

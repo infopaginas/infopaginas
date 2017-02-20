@@ -446,3 +446,33 @@ interaction_report.visit.google: Visit Google
 interaction_report.visit.youtube: Visit Youtube
 interaction_report.video.watched: Video Watched
 interaction_report.review.click: Reviews
+
+# working hours
+business.working.hours.open_all_time: Open 24 hours
+business.working.hours.open_until: Open until {-TIME-}
+business.working.hours.closed_now: Now closed
+business.working.hours.closed: Closed
+business.working.hours.edit_note: First select a day (or group of days) and then opening and closing time for those days
+
+MON: Mon
+TUE: Tue
+WED: Wed
+THU: Thu
+FRI: Fri
+SAT: Sat
+SUN: Sun
+
+Weekday: Weekday
+Weekend: Weekend
+Monday: Monday
+Tuesday: Tuesday
+Wednesday: Wednesday
+Thursday: Thursday
+Friday: Friday
+Saturday: Saturday
+Sunday: Sunday
+
+Open All Time: Open All Time
+Remove working hours: Remove working hours
+Add working hours: Add working hours
+Now: Now

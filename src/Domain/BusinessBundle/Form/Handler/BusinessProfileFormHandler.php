@@ -8,11 +8,13 @@
 
 namespace Domain\BusinessBundle\Form\Handler;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
@@ -144,6 +146,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             }
 
             $this->checkTranslationBlock($post);
+            $this->checkCollectionWorkingHoursBlock($businessProfile->getCollectionWorkingHours());
 
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
@@ -442,6 +445,26 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         foreach ($fields as $field) {
             $this->checkFieldLocaleLength($post, $field, BusinessProfile::TRANSLATION_LANG_EN);
             $this->checkFieldLocaleLength($post, $field, BusinessProfile::TRANSLATION_LANG_ES);
+        }
+    }
+
+    /**
+     * @param ArrayCollection $workingHours
+     */
+    private function checkCollectionWorkingHoursBlock($workingHours)
+    {
+        if (!$workingHours->isEmpty()) {
+            if (!DayOfWeekModel::validateWorkingHoursTime($workingHours)) {
+                $formError = new FormError($this->translator->trans('form.collectionWorkingHours.duration'));
+
+                $this->form->get('collectionWorkingHoursError')->addError($formError);
+            }
+
+            if (!DayOfWeekModel::validateWorkingHoursOverlap($workingHours)) {
+                $formError = new FormError($this->translator->trans('form.collectionWorkingHours.overlap'));
+
+                $this->form->get('collectionWorkingHoursError')->addError($formError);
+            }
         }
     }
 
