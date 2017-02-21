@@ -1187,7 +1187,6 @@ $thumb-width-mb: 60px;
 .item__header {
   align-items: center;
   display: flex;
-  flex-direction: column;
   margin-bottom: 5px;
 
   span {
@@ -1196,14 +1195,12 @@ $thumb-width-mb: 60px;
   }
 
   .rank {
+    margin-left: auto;
+
     a[data-show-modal-id] {
       cursor: pointer;
     }
   }
-}
-
-.header-align-stars {
-  align-items: flex-start;
 }
 
 .now {
