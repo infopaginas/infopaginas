@@ -446,3 +446,36 @@ interaction_report.visit.google: Visite Google
 interaction_report.visit.youtube: Visita Youtube
 interaction_report.video.watched: Video Visto
 interaction_report.review.click: Opiniones
+
+# working hours
+business.working.hours.open_all_time: Abierto 24 horas
+business.working.hours.open_until: Abierto hasta {-TIME-}
+business.working.hours.closed_now: Ahora cerrado
+business.working.hours.closed: Cerrado
+business.working.hours.edit_note: Primero seleccione un día (o grupo de días) y luego el horario de apertura y cierre de esos días
+
+MON: Lun
+TUE: Mar
+WED: Mié
+THU: Jue
+FRI: Vie
+SAT: Sáb
+SUN: Dom
+
+Weekday: Dias de Semana
+Weekend: Fin de Semana
+Monday: Lunes
+Tuesday: Martes
+Wednesday: Miércoles
+Thursday: Jueves
+Friday: Viernes
+Saturday: Sábado
+Sunday: Domingo
+
+Open All Time: Abierto todo el tiempo
+Remove working hours: Eliminar horas de trabajo
+Add working hours: Añadir horas de trabajo
+Now: Ahora
+
+form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
+form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final

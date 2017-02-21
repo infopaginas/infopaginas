@@ -30,6 +30,8 @@ twig:
             WORKING_HOURS:   'workingHours'
             SLOGAN:          'slogan'
 
+        WORKING_HOURS_ASSOCIATED_FIELD: 'collectionWorkingHours'
+
 #        const of PaymentMethod class
         PAYMENT_METHOD_TYPE:
             CASH:       'cash'

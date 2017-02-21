@@ -27,6 +27,7 @@
             {% endif %}
                 <header class="page-section profile-header">
                     <div class="item__header container">
+                        {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': businessProfile } %}
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
                             <a data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
@@ -145,16 +146,7 @@
                                     </div><!-- highlights__item -->
                                 {% endif %}
 
-                                {% if businessProfile.getWorkingHours() %}
-                                    <div class="highlights__item highlights__item--hours">
-                                        <h3>{% trans %}Business hours{% endtrans %}</h3>
-                                        <ul>
-                                            <li>
-                                                {{ businessProfile.getWorkingHours() }}
-                                            </li>
-                                        </ul>
-                                    </div><!-- highlights__item -->
-                                {% endif %}
+                                {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
 
                                 {% if businessProfile.getBrands() %}
                                     <div class="highlights__item highlights__item--checklist">

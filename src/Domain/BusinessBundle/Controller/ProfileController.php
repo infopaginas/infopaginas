@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

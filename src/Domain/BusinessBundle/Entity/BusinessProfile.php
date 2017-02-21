@@ -11,6 +11,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\LocalityRepository;
@@ -80,6 +81,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
     const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
     const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
+
+    const WORKING_HOURS_ASSOCIATED_FIELD = 'collectionWorkingHours';
 
     const BUSINESS_STATUS_ACTIVE   = 'active';
     const BUSINESS_STATUS_INACTIVE = 'inactive';
@@ -738,6 +741,19 @@ class BusinessProfile implements
     private $businessOverviewReports;
 
     /**
+     * Related to WORKING_HOURS_ASSOCIATED_FIELD
+     * @var BusinessProfileWorkingHour[] - Business Profile working hours
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileWorkingHour",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $collectionWorkingHours;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -832,6 +848,7 @@ class BusinessProfile implements
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessOverviewReports = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2880,5 +2897,41 @@ class BusinessProfile implements
     {
         $this->plan = $plan;
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCollectionWorkingHours()
+    {
+        return $this->collectionWorkingHours;
+    }
+
+    /**
+     * Add $workingHour
+     *
+     * @param BusinessProfileWorkingHour $workingHour
+     *
+     * @return BusinessProfile
+     */
+    public function addCollectionWorkingHour($workingHour)
+    {
+        $this->collectionWorkingHours[] = $workingHour;
+
+        if ($workingHour) {
+            $workingHour->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $workingHours
+     *
+     * @param BusinessProfileWorkingHour $workingHours
+     */
+    public function removeCollectionWorkingHour(BusinessProfileWorkingHour $workingHours)
+    {
+        $this->collectionWorkingHours->removeElement($workingHours);
     }
 }
