@@ -33,22 +33,22 @@ class BusinessProfileWorkingHourType extends AbstractType
                 'required' => true,
                 'choice_translation_domain' => true,
             ])
-            ->add('timeStart', TimeType::class, array(
+            ->add('timeStart', TimeType::class, [
                 'label' => 'Time Start',
                 'input'  => 'datetime',
                 'widget' => 'choice',
                 'attr' => [
                     'class' => 'working-hours-time-start',
                 ],
-            ))
-            ->add('timeEnd', TimeType::class, array(
+            ])
+            ->add('timeEnd', TimeType::class, [
                 'label' => 'Time End',
                 'input'  => 'datetime',
                 'widget' => 'choice',
                 'attr' => [
                     'class' => 'working-hours-time-end',
                 ],
-            ))
+            ])
             ->add('openAllTime', CheckboxType::class, [
                 'label' => 'Open All Time',
                 'required' => false,

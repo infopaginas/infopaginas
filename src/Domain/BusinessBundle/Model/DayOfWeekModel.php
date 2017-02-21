@@ -247,7 +247,11 @@ class DayOfWeekModel
                         ) or (
                             in_array($dayOfWeek, self::getDaysOfWeek()) and $workingHourDay == $dayOfWeek
                         )
-                    ) and ($now < $workingHour->getTimeEnd() and $now >= $workingHour->getTimeStart()) or ($workingHour->getOpenAllTime())
+                    ) and (
+                        (
+                            $now < $workingHour->getTimeEnd() and $now >= $workingHour->getTimeStart()
+                        ) or $workingHour->getOpenAllTime()
+                    )
                 ) {
                     $workingHourData[$dayOfWeek][] = $workingHour;
                 }

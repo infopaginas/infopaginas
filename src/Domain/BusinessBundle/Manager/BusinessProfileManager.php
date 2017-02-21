@@ -403,7 +403,7 @@ class BusinessProfileManager extends Manager
 
                             $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
                         } elseif ($change->getClassName() === BusinessProfileWorkingHour::class) {
-                            $collection = WorkingHoursChangeSetUtil::getWorkingHoursCollectionsFromChangeSet(
+                            $collection = WorkingHoursChangeSetUtil::getWorkingHoursCollectionFromChangeSet(
                                 $change,
                                 $businessProfile,
                                 $this->getEntityManager()

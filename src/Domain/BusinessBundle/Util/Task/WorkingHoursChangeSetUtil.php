@@ -20,7 +20,7 @@ class WorkingHoursChangeSetUtil
      * @param EntityManagerInterface $entityManager
      * @return ArrayCollection
      */
-    public static function getWorkingHoursCollectionsFromChangeSet(
+    public static function getWorkingHoursCollectionFromChangeSet(
         ChangeSetEntry $change,
         BusinessProfile $businessProfile,
         EntityManagerInterface $entityManager

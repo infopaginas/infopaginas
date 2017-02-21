@@ -330,8 +330,6 @@ class BusinessProfileExtension extends \Twig_Extension
                 $property = json_decode($item->value);
 
                 foreach ($property as $name => $value) {
-
-
                     if (!empty($value->date)) {
                         $date = new \DateTime($value->date);
 

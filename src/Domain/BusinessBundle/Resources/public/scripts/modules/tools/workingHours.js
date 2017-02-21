@@ -36,17 +36,17 @@ define(['jquery', 'select2', 'bootstrap'], function( $, select2, bootstrap ) {
 
             var formInput = $newWidget.find( '.form__field input' );
 
-            formInput.focus(function(){
-                $( this ).parent().addClass( "field-active" );
-                $( this ).parent().find( 'label' ).addClass( "label-active" );
+            formInput.focus( function() {
+                $( this ).parent().addClass( 'field-active' );
+                $( this ).parent().find( 'label' ).addClass( 'label-active' );
             });
 
-            formInput.blur(function(){
-                if( $( this ).val() === "" ) {
-                    $( this ).parent().removeClass( "field-active field-filled" );
-                    $( this).parent().find( 'label' ).removeClass( "label-active" );
+            formInput.blur( function() {
+                if( $( this ).val() === '' ) {
+                    $( this ).parent().removeClass( 'field-active field-filled' );
+                    $( this).parent().find( 'label' ).removeClass( 'label-active' );
                 } else {
-                    $( this ).parent().addClass( "field-filled" );
+                    $( this ).parent().addClass( 'field-filled' );
                 }
             });
 

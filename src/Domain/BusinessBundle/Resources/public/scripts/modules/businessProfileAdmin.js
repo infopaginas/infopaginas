@@ -56,7 +56,7 @@ $( document ).ready( function() {
         var timeStart = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeStart" ]' );
         var timeEnd = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeEnd" ]' );
 
-        if( $( openAllTimeCheckbox ).prop( 'checked' ) ) {
+        if ( $( openAllTimeCheckbox ).prop( 'checked' ) ) {
             timeStart.find( 'select' ).val( 0 ).trigger( 'change' );
             timeStart.find( 'select' ).attr( 'readonly', 'readonly' );
             timeStart.find( 'select' ).select2( 'disable' );
