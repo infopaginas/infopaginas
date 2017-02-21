@@ -17,6 +17,15 @@ class DayOfWeekModel
     const CODE_WEEKDAY   = 'WD';
     const CODE_WEEKEND   = 'WE';
 
+    // see https://developers.google.com/search/docs/data-types/local-businesses
+    const SCHEMA_ORG_OPEN_ALL_DAY_OPEN_TIME  = '00:00';
+    const SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME = '23:59';
+
+    const SCHEMA_ORG_CLOSE_ALL_DAY_OPEN_TIME  = '00:00';
+    const SCHEMA_ORG_CLOSE_ALL_DAY_CLOSE_TIME = '00:00';
+
+    const SCHEMA_ORG_OPEN_TIME_FORMAT = 'H:i';
+
     public static function getDayOfWeekMapping()
     {
         return [
@@ -29,6 +38,24 @@ class DayOfWeekModel
             self::CODE_FRIDAY    => 'Friday',
             self::CODE_SATURDAY  => 'Saturday',
             self::CODE_SUNDAY    => 'Sunday',
+        ];
+    }
+
+    /**
+     * see http://schema.org/DayOfWeek
+     *
+     * @return array
+     */
+    public static function getDayOfWeekSchemaOrgMapping()
+    {
+        return [
+            self::CODE_MONDAY    => 'http://schema.org/Monday',
+            self::CODE_TUESDAY   => 'http://schema.org/Tuesday',
+            self::CODE_WEDNESDAY => 'http://schema.org/Wednesday',
+            self::CODE_THURSDAY  => 'http://schema.org/Thursday',
+            self::CODE_FRIDAY    => 'http://schema.org/Friday',
+            self::CODE_SATURDAY  => 'http://schema.org/Saturday',
+            self::CODE_SUNDAY    => 'http://schema.org/Sunday',
         ];
     }
 
