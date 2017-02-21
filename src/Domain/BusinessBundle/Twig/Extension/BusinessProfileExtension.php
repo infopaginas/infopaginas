@@ -9,7 +9,9 @@
 namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
@@ -97,6 +99,21 @@ class BusinessProfileExtension extends \Twig_Extension
                         'html',
                     ],
                 ]
+            ),
+            'get_business_profile_related_entity_changes_html' => new \Twig_Function_Method(
+                $this,
+                'renderBusinessProfileRelatedEntityChanges',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'get_business_profile_open_status' => new \Twig_Function_Method($this, 'getBusinessProfileOpenStatus'),
+            'get_business_profile_working_hours_list' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileWorkingHoursList'
             ),
         ];
     }
@@ -301,6 +318,74 @@ class BusinessProfileExtension extends \Twig_Extension
         );
 
         return $html;
+    }
+
+    public function renderBusinessProfileRelatedEntityChanges(\Twig_Environment $environment, $json)
+    {
+        $data = [];
+        $raw = json_decode($json);
+
+        if ($raw) {
+            foreach ($raw as $key => $item) {
+                $property = json_decode($item->value);
+
+                foreach ($property as $name => $value) {
+                    if (!empty($value->date)) {
+                        $date = new \DateTime($value->date);
+
+                        $data[$key][$name] = $date->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+                    } else {
+                        $data[$key][$name] = $value;
+                    }
+                }
+            }
+        }
+
+        $html = $environment->render(
+            ':redesign/blocks/task:related_entity_changes.html.twig', [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    public function getBusinessProfileOpenStatus(BusinessProfile $businessProfile)
+    {
+        $workingHourData = DayOfWeekModel::getBusinessProfileOpenNowData($businessProfile);
+
+        $text = '';
+
+        if ($workingHourData['status']) {
+            if ($workingHourData['hours']) {
+                if ($workingHourData['hours']->getOpenAllTime()) {
+                    $text = $this->translator->trans('business.working.hours.open_all_time');
+                } else {
+                    $endTime = $workingHourData['hours']->getTimeEnd()
+                        ->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+
+                    $text = $this->translator->trans(
+                        'business.working.hours.open_until',
+                        [
+                            '{-TIME-}' => $endTime,
+                        ]
+                    );
+                }
+            } else {
+                $text = $this->translator->trans('business.working.hours.closed_now');
+            }
+        }
+
+        $workingHourData['text'] = $text;
+
+        return $workingHourData;
+    }
+
+    public function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
+    {
+        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursList($businessProfile);
+
+        return $workingHourData;
     }
 
     public function prepareImageDiff($diff)

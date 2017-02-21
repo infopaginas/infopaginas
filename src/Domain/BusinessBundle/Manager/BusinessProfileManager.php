@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
+use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
@@ -17,6 +18,7 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
@@ -26,6 +28,7 @@ use Domain\BusinessBundle\Util\Task\PhoneChangeSetUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
+use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -393,6 +396,14 @@ class BusinessProfileManager extends Manager
                     } else {
                         if ($change->getClassName() === BusinessProfilePhone::class) {
                             $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
+                                $change,
+                                $businessProfile,
+                                $this->getEntityManager()
+                            );
+
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        } elseif ($change->getClassName() === BusinessProfileWorkingHour::class) {
+                            $collection = WorkingHoursChangeSetUtil::getWorkingHoursCollectionFromChangeSet(
                                 $change,
                                 $businessProfile,
                                 $this->getEntityManager()
@@ -967,10 +978,7 @@ class BusinessProfileManager extends Manager
                 ];
             }
 
-            $openingHours = $businessProfile->getWorkingHours();
-            if ($openingHours) {
-                $schemaItem['openingHours'] = $openingHours;
-            }
+            $schemaItem = $this->getBusinessProfileWorkingHoursSchema($businessProfile, $schemaItem);
 
             $phones = $businessProfile->getPhones();
             foreach ($phones as $phone) {
@@ -1124,6 +1132,69 @@ class BusinessProfileManager extends Manager
         ];
 
         return $item;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param array $schemaItem
+     *
+     * @return array
+     */
+    private function getBusinessProfileWorkingHoursSchema($businessProfile, $schemaItem = [])
+    {
+        $openingHoursCollection = $businessProfile->getCollectionWorkingHours();
+
+        if (!$openingHoursCollection->isEmpty()) {
+            $dailyHours = DayOfWeekModel::getBusinessProfileWorkingHoursList($businessProfile);
+            $dayOfWeekSchemaOrgMapping = DayOfWeekModel::getDayOfWeekSchemaOrgMapping();
+
+            foreach ($dailyHours as $key => $workingHourItems) {
+                $days = explode(',', $key);
+                $dayOfWeek = [];
+
+                foreach ($days as $day) {
+                    $dayOfWeek[] = $dayOfWeekSchemaOrgMapping[$day];
+                }
+
+                if ($dayOfWeek) {
+                    $schemaItemTemplate = [
+                        '@type'     => 'OpeningHoursSpecification',
+                        'dayOfWeek' => $dayOfWeek,
+                    ];
+
+                    if ($workingHourItems) {
+                        foreach ($workingHourItems as $item) {
+                            if ($item->getOpenAllTime()) {
+                                // open all time
+                                $openTime  = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_OPEN_TIME;
+                                $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
+                            } else {
+                                $openTime  = $item->getTimeStart()->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                                $closeTime = $item->getTimeEnd()->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                            }
+
+                            $schemaItemTemplate['opens'] = $openTime;
+                            $schemaItemTemplate['closes'] = $closeTime;
+
+                            $schemaItem['openingHoursSpecification'][] = $schemaItemTemplate;
+                        }
+                    } else {
+                        // close all time
+                        $openTime  = DayOfWeekModel::SCHEMA_ORG_CLOSE_ALL_DAY_OPEN_TIME;
+                        $closeTime = DayOfWeekModel::SCHEMA_ORG_CLOSE_ALL_DAY_CLOSE_TIME;
+
+                        $schemaItemTemplate['opens'] = $openTime;
+                        $schemaItemTemplate['closes'] = $closeTime;
+
+                        $schemaItem['openingHoursSpecification'][] = $schemaItemTemplate;
+                    }
+                }
+            }
+        } elseif ($businessProfile->getWorkingHours()) {
+            $schemaItem['openingHours'] = $businessProfile->getWorkingHours();
+        }
+
+        return $schemaItem;
     }
 
     /**

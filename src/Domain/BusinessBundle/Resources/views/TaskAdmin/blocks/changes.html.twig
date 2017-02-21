@@ -122,8 +122,13 @@
                         <td>-</td>
                         <td>{{ render_task_media_link(changes) }}</td>
                     {% else %}
-                        <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>
-                        <td>{{ get_business_profile_changes_string(row.newValue) }}</td>
+                        {% if row.fieldName == WORKING_HOURS_ASSOCIATED_FIELD %}
+                            <td>{{ get_business_profile_related_entity_changes_html(row.oldValue) }}</td>
+                            <td>{{ get_business_profile_related_entity_changes_html(row.newValue) }}</td>
+                        {% else %}
+                            <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>
+                            <td>{{ get_business_profile_changes_string(row.newValue) }}</td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endif %}

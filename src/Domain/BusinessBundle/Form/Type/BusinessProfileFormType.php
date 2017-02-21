@@ -90,6 +90,20 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Phone number',
                 'required' => false,
             ])
+            ->add('collectionWorkingHours', CollectionType::class, [
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'entry_type'   => BusinessProfileWorkingHourType::class,
+                'label' => 'Working Hours',
+                'required' => false,
+            ])
+            ->add('collectionWorkingHoursError', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'hidden',
+                ],
+            ])
             ->add('areas', EntityType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',

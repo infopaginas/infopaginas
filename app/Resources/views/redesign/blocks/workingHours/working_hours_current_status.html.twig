@@ -1,0 +1,7 @@
+{% set workingHoursData = get_business_profile_open_status(businessProfile) %}
+
+{% if workingHoursData.status %}
+    <span class="now {% if workingHoursData.open %}open{% else %}closed{% endif %}">
+        {{ workingHoursData.text }}
+    </span>
+{% endif %}

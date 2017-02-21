@@ -1,5 +1,9 @@
 <div class="comparison__item" id="business-{{ item.id }}">
     <div class="comparison__row comparison__where">
+        {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': item } %}
+    </div>
+
+    <div class="comparison__row comparison__where">
         <span class="where">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
     </div>
 
@@ -86,21 +90,7 @@
                 </div>
             {% endif %}
 
-            {% if item.getWorkingHours() %}
-                <div class="highlights__item highlights__item--hours highlights__item_hours-row highlights__item_fixed-height">
-                    <h3>{% trans %}Business hours{% endtrans %}</h3>
-                    <ul>
-                        <li>
-                            {{ item.getWorkingHours() }}
-                        </li>
-                    </ul>
-                </div><!-- highlights__item -->
-
-            {% else %}
-                <div class="highlights__item highlights__item--checklist highlights__item_hours-row highlights__item_fixed-height empty">
-                  <ul></ul>
-                </div>
-            {% endif %}
+            {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': item, 'isCompare': true } %}
 
             {% if item.paymentMethods|length > 0 %}
                 <div class="highlights__item highlights__item--checklist highlights__item_payment-row highlights__item_fixed-height highlights__item--payment">
