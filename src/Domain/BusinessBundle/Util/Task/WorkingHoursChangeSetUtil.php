@@ -12,7 +12,7 @@ use Domain\BusinessBundle\Entity\ChangeSetEntry;
 class WorkingHoursChangeSetUtil
 {
     /**
-     * Prepare business profile phones collection
+     * Prepare business profile working hours collection
      *
      * @access public
      * @param ChangeSetEntry $change
