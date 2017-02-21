@@ -272,6 +272,35 @@ class SubscriptionStatusManager
     }
 
     /**
+     * Disable subscription if there are several of active subscription for 1 business
+     *
+     * @param BusinessProfile $entity
+     * @param EntityManager $em
+     * @return int
+     */
+    public function manageBusinessSubscriptionExcess(BusinessProfile $entity, EntityManager $em)
+    {
+        $updatedRecordsCount = 0;
+
+        $actualSubscriptions = $this->getBusinessActualSubscriptions($entity);
+
+        if ($actualSubscriptions) {
+            $prioritySubscription = $this->getPrioritySubscription($actualSubscriptions);
+
+            if ($prioritySubscription) {
+                foreach ($actualSubscriptions as $subscription) {
+                    if ($subscription->getId() != $prioritySubscription->getId()) {
+                        $subscription->setStatus(StatusInterface::STATUS_PENDING);
+                        $updatedRecordsCount ++;
+                    }
+                }
+            }
+        }
+
+        return $updatedRecordsCount;
+    }
+
+    /**
      * Get business actual subscriptions
      *
      * @param BusinessProfile $entity
