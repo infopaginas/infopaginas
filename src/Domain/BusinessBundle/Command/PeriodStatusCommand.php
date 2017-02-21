@@ -31,5 +31,9 @@ class PeriodStatusCommand extends ContainerAwareCommand
         $output->writeln('Processing...');
         $result = $datetimePeriodService->updateStatus();
         $output->writeln(sprintf('Done! Updated records count: %s', $result));
+
+        $output->writeln('Update active subscriptions...');
+        $result = $datetimePeriodService->updateActiveSubscriptions();
+        $output->writeln(sprintf('Done! Created records count: %s', $result));
     }
 }
