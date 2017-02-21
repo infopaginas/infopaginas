@@ -191,30 +191,36 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var adBottom = $( '.ad--bottom' );
 
     var openMapSequence = [
-        { e: adBottom, p: { translateY: 200 }, o: { duration: 400, easing: "easeOutCubic" } },
-        { e: showMap, p: { translateY: 140 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: resultsMap, p: { translateY: "-110vh" }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
+        { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: resultsMap, p: { translateY: "-115vh" }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
+        { e: hideMap, p: { translateX: 0, translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
     ];
 
     var closeMapSequence = [
-        { e: hideMap, p: { translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: resultsMap, p: { translateY: 0 }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: showMap, p: { translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: hideMap, p: { translateX: 0, translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
+        { e: resultsMap, p: { translateX: 0, translateY: 0 }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
+        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
     ];
 
     var openMapDeskSequence = [
-        { e: showMap, p: { translateX: 500 }, o: { duration: 400, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: -520 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
+        { e: showMap, p: { translateX: 500, translateY: 0 }, o: { duration: 200, easing: "easeOuCubic", sequenceQueue: false } },
+        { e: hideMap, p: { translateX: -520, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
     ];
 
     var closeMapDeskSequence = [
-        { e: hideMap, p: { translateX: 0 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: showMap, p: { translateX: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
+        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
     ];
 
+    var resizeSequenceDevice = [
+        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 0, easing: "easeOutCubic" } },
+        { e: hideMap, p: { translateX: 0, translateY: 120 }, o: { duration: 0, easing: "easeOutCubic" } },
+    ];
 
-
+    var resizeSequenceDesktop = [
+        { e: showMap, p: { translateX: 500, translateY: 0 }, o: { duration: 0, easing: "easeOutCubic" } },
+        { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 0, easing: "easeOutCubic" } },
+    ];
 
     $(document).ready( function() {
         if ($( '.ad--bottom' ).is( '.ad--active' )) {
@@ -462,41 +468,83 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
 //media querie conditional scripts
 
-    var mediaquery = window.matchMedia("(min-width: 320px)");
+    var mediaquery = window.matchMedia("(min-width: 804px)");
+
     if (mediaquery.matches) {
-        showMap.on( 'click', function() {
-            $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });
-            showMap.removeClass( 'floating-offset' );
-            $( 'body' ).addClass( 'body--no-scroll results--map-view' );
-        });
+      var mapStateSize = 'desktop';
+      var sources = document.querySelectorAll('#bgvid source');
+      var video = document.querySelector('#bgvid');
+      
+      for (var i = 0; i<sources.length;i++) {
+          sources[i].setAttribute('src', sources[i].getAttribute('data-src'));
+      }
 
-        hideMap.on( 'click', function() {
-            $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
-            $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
-        });
-
-        var sources = document.querySelectorAll('#bgvid source');
-        var video = document.querySelector('#bgvid');
-        for(var i = 0; i<sources.length;i++) {
-            sources[i].setAttribute('src', sources[i].getAttribute('data-src'));
-        }
-
-        if (video) {
-            video.load();
-        }
+      if (video) {
+          video.load();
+      }
 
     } else {
-        showMap.on( 'click', function() {
-            $.Velocity.RunSequence(openMapSequence, { mobileHA: true });
-            showMap.removeClass( 'floating-offset' );
-            $( 'body' ).addClass( 'body--no-scroll' );
-        });
-
-        hideMap.on( 'click', function() {
-            $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
-            $( 'body' ).removeClass( 'body--no-scroll' );
-        });
+      var mapStateSize = 'device';
     }
+
+    var mapState = 'default';
+
+    showMap.on( 'click', function() {
+      var mediaquery = window.matchMedia("(min-width: 804px)");
+
+      if (mediaquery.matches) {
+        $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });
+        showMap.removeClass( 'floating-offset' );
+        $( 'body' ).addClass( 'body--no-scroll results--map-view' );
+        $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
+        $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
+      } else {
+          $.Velocity.RunSequence(openMapSequence, { mobileHA: true });
+          showMap.removeClass( 'floating-offset' );
+          $( 'body' ).addClass( 'body--no-scroll' );
+      }
+      mapState = 'expanded';
+    });
+
+    hideMap.on( 'click', function() {
+      var mediaquery = window.matchMedia("(min-width: 804px)");
+
+      if (mediaquery.matches) {
+        $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
+        $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
+        $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
+        $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
+
+      } else {
+          $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
+          $( 'body' ).removeClass( 'body--no-scroll' );
+      }
+
+      mapState = 'default';
+    });
+
+    $( window ).resize(function() {
+      var mediaquery = window.matchMedia("(min-width: 804px)");
+
+      if (mapStateSize == 'desktop') {
+        $.Velocity.RunSequence(resizeSequenceDesktop, { mobileHA: true });
+        $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
+        $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
+        $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
+        $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
+      } else if (mediaquery.matches) {
+          $.Velocity.RunSequence(resizeSequenceDevice, { mobileHA: true });
+          $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
+          $( 'body' ).removeClass( 'body--no-scroll' );
+      }
+
+      if (mediaquery.matches) {
+        mapStateSize = 'desktop';
+      } else {
+        mapStateSize = 'device';
+      }
+    });
+
 
     var comparisonListToggle = $('#comparison-list-toggle');
     var comparisonListHide = $('#comparison-list-hide');

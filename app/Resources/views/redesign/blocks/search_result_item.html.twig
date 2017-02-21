@@ -20,7 +20,7 @@
 
         <div class="item__summary">
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
-                <div class="item__header">
+                <div class="item__header header-align-stars">
                     {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': item } %}
                     <div class="rank">
                         <div class="rank-ta rank-ta--5"></div>
@@ -63,6 +63,10 @@
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>
+            <a class="button button--small button--featured hide-mobile link-pointer" id="show-on-map-{{ item.id }}">
+                <i class="fa fa-location-arrow"></i>
+                {% trans %}Show on Map{% endtrans %}
+            </a>
             {% if item.getPhones() | length > 0 %}
                 <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
@@ -82,10 +86,6 @@
                   </ul>   
                 </div>
             {% endif %}
-            <a class="button button--small button--featured hide-mobile link-pointer" id="show-on-map-{{ item.id }}">
-                <i class="fa fa-location-arrow"></i>
-                {% trans %}Show on Map{% endtrans %}
-            </a>
         </div><!-- item__primary-actions -->
     </div>
 </div><!-- results__item -->

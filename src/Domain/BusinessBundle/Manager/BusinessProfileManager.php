@@ -501,8 +501,8 @@ class BusinessProfileManager extends Manager
                     }
                     break;
                 case ChangeSetCalculator::VIDEO_REMOVE:
-                    $businessProfile->setVideo(null);
                     $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
+                    $businessProfile->setVideo(null);
                     break;
                 case ChangeSetCalculator::VIDEO_UPDATE:
                     $data = json_decode($change->getNewValue());

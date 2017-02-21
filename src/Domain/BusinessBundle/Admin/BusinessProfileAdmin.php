@@ -880,8 +880,8 @@ class BusinessProfileAdmin extends OxaAdmin
         $files = current($request->files->all());
 
         if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
-            $entity->setVideo(null);
             $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
+            $entity->setVideo(null);
         }
 
         if ($files) {
