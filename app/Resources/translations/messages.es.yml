@@ -476,3 +476,6 @@ Open All Time: Abierto todo el tiempo
 Remove working hours: Eliminar horas de trabajo
 Add working hours: Añadir horas de trabajo
 Now: Ahora
+
+form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
+form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final

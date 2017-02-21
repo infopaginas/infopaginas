@@ -15,7 +15,7 @@ business_profile.admin.export.csv: csv
 task.media.change.title: Title
 task.media.change.description: Description
 form.collectionWorkingHours.overlap: Working Hours should not overlap
-form.collectionWorkingHours.duration: Time start should be more then time end
+form.collectionWorkingHours.duration: Time start should be more than time end
 timeStart: Time Start
 timeEnd: Time End
 openAllTime: Open All Time

@@ -476,3 +476,6 @@ Open All Time: Open All Time
 Remove working hours: Remove working hours
 Add working hours: Add working hours
 Now: Now
+
+form.collectionWorkingHours.overlap: Working Hours should not overlap
+form.collectionWorkingHours.duration: Time start should be more then time end
