@@ -103,17 +103,11 @@ class YoutubeManager
         $status  = false;
 
         try {
-            $check = $this->handleUserTokenAuth();
+            $youtube = new \Google_Service_YouTube($this->client);
 
-            if ($check['error'] === false and $check['status']) {
-                $youtube = new \Google_Service_YouTube($this->client);
-
-                // see https://developers.google.com/youtube/v3/docs/videos/delete
-                $response = $youtube->videos->delete($videoId);
-                $status   = true;
-            } else {
-                $error = $check['error'];
-            }
+            // see https://developers.google.com/youtube/v3/docs/videos/delete
+            $response = $youtube->videos->delete($videoId);
+            $status   = true;
         } catch (\Google_Service_Exception $e) {
             if (in_array($e->getCode(), $this->getYoutubeErrors())) {
                 $error = $e->getCode();
@@ -138,36 +132,30 @@ class YoutubeManager
         $status      = false;
 
         try {
-            $check = $this->handleUserTokenAuth();
+            $youtube = new \Google_Service_YouTube($this->client);
 
-            if ($check['error'] === false and $check['status']) {
-                $youtube = new \Google_Service_YouTube($this->client);
+            // Call the API's videos.list method to retrieve the video resource.
+            $listResponse = $youtube->videos->listVideos(
+                'snippet',
+                [
+                    'id' => $videoId,
+                ]
+            );
 
-                // Call the API's videos.list method to retrieve the video resource.
-                $listResponse = $youtube->videos->listVideos(
-                    'snippet',
-                    [
-                        'id' => $videoId,
-                    ]
-                );
-
-                // If $listResponse is empty, the specified video was not found.
-                // Since the request specified a video ID, the response only contains one video resource.
-                if (!$listResponse->getItems()) {
-                    $error = self::ERROR_NOT_FOUND;
-                } else {
-                    $video = $listResponse[0];
-
-                    $video['snippet']['title'] = $title;
-                    $video['snippet']['description'] = $description;
-
-                    // Update the video resource by calling the videos.update() method.
-                    // see https://developers.google.com/youtube/v3/docs/videos/update
-                    $updateResponse = $youtube->videos->update('snippet', $video);
-                    $status = true;
-                }
+            // If $listResponse is empty, the specified video was not found.
+            // Since the request specified a video ID, the response only contains one video resource.
+            if (!$listResponse->getItems()) {
+                $error = self::ERROR_NOT_FOUND;
             } else {
-                $error = $check['error'];
+                $video = $listResponse[0];
+
+                $video['snippet']['title'] = $title;
+                $video['snippet']['description'] = $description;
+
+                // Update the video resource by calling the videos.update() method.
+                // see https://developers.google.com/youtube/v3/docs/videos/update
+                $updateResponse = $youtube->videos->update('snippet', $video);
+                $status = true;
             }
         } catch (\Google_Service_Exception $e) {
             if (in_array($e->getCode(), $this->getYoutubeErrors())) {
@@ -196,65 +184,59 @@ class YoutubeManager
 
         if ($tempFilePath) {
             try {
-                $check = $this->handleUserTokenAuth();
+                $youtube = new \Google_Service_YouTube($this->client);
+                $snippet = new \Google_Service_YouTube_VideoSnippet();
 
-                if ($check['error'] === false and $check['status']) {
-                    $youtube = new \Google_Service_YouTube($this->client);
-                    $snippet = new \Google_Service_YouTube_VideoSnippet();
+                $snippet->setTitle($title);
+                $snippet->setDescription($description);
 
-                    $snippet->setTitle($title);
-                    $snippet->setDescription($description);
+                // Numeric video category. See https://developers.google.com/youtube/v3/docs/videoCategories/list
+                // Default category id = 22 "People & Blogs", see https://developers.google.com/youtube/v3/guides/uploading_a_video
+                $snippet->setCategoryId(self::DEFAULT_CATEGORY_ID);
 
-                    // Numeric video category. See https://developers.google.com/youtube/v3/docs/videoCategories/list
-                    // Default category id = 22 "People & Blogs", see https://developers.google.com/youtube/v3/guides/uploading_a_video
-                    $snippet->setCategoryId(self::DEFAULT_CATEGORY_ID);
+                // Set the video's status to "public". Valid statuses are "public", "private" and "unlisted".
+                $status = new \Google_Service_YouTube_VideoStatus();
 
-                    // Set the video's status to "public". Valid statuses are "public", "private" and "unlisted".
-                    $status = new \Google_Service_YouTube_VideoStatus();
+                $status->privacyStatus = $this->privacyStatus;
 
-                    $status->privacyStatus = $this->privacyStatus;
+                // Associate the snippet and status objects with a new video resource.
+                $video = new \Google_Service_YouTube_Video();
+                $video->setSnippet($snippet);
+                $video->setStatus($status);
 
-                    // Associate the snippet and status objects with a new video resource.
-                    $video = new \Google_Service_YouTube_Video();
-                    $video->setSnippet($snippet);
-                    $video->setStatus($status);
+                // Specify the size of each chunk of data, in bytes. Set a higher value for
+                // reliable connection as fewer chunks lead to faster uploads. Set a lower
+                // value for better recovery on less reliable connections.
+                $chunkSizeBytes = self::CHUNK_SIZE_BYTES;
 
-                    // Specify the size of each chunk of data, in bytes. Set a higher value for
-                    // reliable connection as fewer chunks lead to faster uploads. Set a lower
-                    // value for better recovery on less reliable connections.
-                    $chunkSizeBytes = self::CHUNK_SIZE_BYTES;
+                // Setting the defer flag to true tells the client to return a request which can be called with ->execute(); instead of making the API call immediately.
+                $this->client->setDefer(true);
 
-                    // Setting the defer flag to true tells the client to return a request which can be called with ->execute(); instead of making the API call immediately.
-                    $this->client->setDefer(true);
+                // Create a request for the API's videos.insert method to create and upload the video.
+                $insertRequest = $youtube->videos->insert('status,snippet', $video);
 
-                    // Create a request for the API's videos.insert method to create and upload the video.
-                    $insertRequest = $youtube->videos->insert('status,snippet', $video);
+                // Create a MediaFileUpload object for resumable uploads.
+                $media = new \Google_Http_MediaFileUpload(
+                    $this->client,
+                    $insertRequest,
+                    'video/*',
+                    null,
+                    true,
+                    $chunkSizeBytes
+                );
+                $media->setFileSize(filesize($tempFilePath));
 
-                    // Create a MediaFileUpload object for resumable uploads.
-                    $media = new \Google_Http_MediaFileUpload(
-                        $this->client,
-                        $insertRequest,
-                        'video/*',
-                        null,
-                        true,
-                        $chunkSizeBytes
-                    );
-                    $media->setFileSize(filesize($tempFilePath));
-
-                    // Read the media file and upload it chunk by chunk.
-                    $status = false;
-                    $handle = fopen($tempFilePath, 'rb');
-                    while (!$status && !feof($handle)) {
-                        $chunk = fread($handle, $chunkSizeBytes);
-                        $status = $media->nextChunk($chunk);
-                    }
-
-                    fclose($handle);
-
-                    $youtubeId = $status->id;
-                } else {
-                    $error = $check['error'];
+                // Read the media file and upload it chunk by chunk.
+                $status = false;
+                $handle = fopen($tempFilePath, 'rb');
+                while (!$status && !feof($handle)) {
+                    $chunk = fread($handle, $chunkSizeBytes);
+                    $status = $media->nextChunk($chunk);
                 }
+
+                fclose($handle);
+
+                $youtubeId = $status->id;
             } catch (\Google_Service_Exception $e) {
                 if (in_array($e->getCode(), $this->getYoutubeErrors())) {
                     $error = $e->getCode();

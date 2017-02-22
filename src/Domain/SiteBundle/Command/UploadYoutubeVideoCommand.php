@@ -58,17 +58,23 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
             $this->withDebug = false;
         }
 
-        $resultUpload = $this->uploadVideo();
-        $currentError = $resultUpload['error'];
+        $check = $this->youtubeVideoManager->handleUserTokenAuth();
 
-        if ($resultUpload['error'] === false) {
-            $resultUpdate = $this->updateVideo();
-            $currentError = $resultUpdate['error'];
+        if ($check['error'] === false and $check['status']) {
+            $resultUpload = $this->uploadVideo();
+            $currentError = $resultUpload['error'];
 
-            if ($resultUpdate['error'] === false) {
-                $resultRemove = $this->removeVideo();
-                $currentError = $resultRemove['error'];
+            if ($resultUpload['error'] === false) {
+                $resultUpdate = $this->updateVideo();
+                $currentError = $resultUpdate['error'];
+
+                if ($resultUpdate['error'] === false) {
+                    $resultRemove = $this->removeVideo();
+                    $currentError = $resultRemove['error'];
+                }
             }
+        } else {
+            $currentError = $check['error'];
         }
 
         if ($currentError !== false) {
