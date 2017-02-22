@@ -63,15 +63,15 @@ class DatetimePeriodStatusService
         return $updatedRecordsCount;
     }
 
-    public function updateActiveSubscriptions()
+    public function createActiveSubscriptions()
     {
-        $updatedRecordsCount = 0;
+        $createdRecordsCount = 0;
 
         $batchSize = 20;
         $i = 0;
 
         $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getActiveBusinessProfilesIterator();
+            ->getBusinessWithoutActiveSubscriptionIterator();
 
         foreach ($businessProfilesIterator as $row) {
             /* @var $entity BusinessProfile */
@@ -80,10 +80,43 @@ class DatetimePeriodStatusService
             // create default subscription if needed
             $subscription = $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $this->em);
 
+            if ($subscription) {
+                $createdRecordsCount ++;
+
+                if (($i % $batchSize) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $i ++;
+            }
+        }
+
+        if ($createdRecordsCount) {
+            $this->em->flush();
+        }
+
+        return $createdRecordsCount;
+    }
+
+    public function updateActiveSubscriptions()
+    {
+        $updatedRecordsCount = 0;
+
+        $batchSize = 20;
+        $i = 0;
+
+        $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+            ->getBusinessWithoutSeveralActiveSubscriptionIterator();
+
+        foreach ($businessProfilesIterator as $row) {
+            /* @var $entity BusinessProfile */
+            $entity = $row[0];
+
             // make sure that each business has only 1 active subscription
             $result = $this->subscriptionStatusManager->manageBusinessSubscriptionExcess($entity, $this->em);
 
-            if ($subscription or $result) {
+            if ($result) {
                 $updatedRecordsCount ++;
 
                 if (($i % $batchSize) === 0) {

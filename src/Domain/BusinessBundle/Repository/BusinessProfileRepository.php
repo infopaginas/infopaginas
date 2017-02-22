@@ -555,4 +555,59 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessWithoutActiveSubscriptionIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp.id')
+            ->distinct()
+            ->leftJoin('bp.subscriptions', 's', 'WITH', 's.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->andWhere('bp.isActive = TRUE')
+            ->andWhere('s.id IS NULL')
+        ;
+
+        $businessProfileIds = $qb->getQuery()->getArrayResult();
+
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->andWhere('bp.id IN (:businessProfileIds)')
+            ->setParameter('businessProfileIds', $businessProfileIds)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('businessProfileIds', $businessProfileIds);
+
+        return $query->iterate();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessWithoutSeveralActiveSubscriptionIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp.id')
+            ->distinct()
+            ->leftJoin('bp.subscriptions', 's', 'WITH', 's.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->andWhere('bp.isActive = TRUE')
+            ->groupBy('bp.id')
+            ->having('COUNT(s.id) > 1')
+        ;
+
+        $businessProfileIds = $qb->getQuery()->getArrayResult();
+
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->andWhere('bp.id IN (:businessProfileIds)')
+            ->setParameter('businessProfileIds', $businessProfileIds)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('businessProfileIds', $businessProfileIds);
+
+        return $query->iterate();
+    }
 }
