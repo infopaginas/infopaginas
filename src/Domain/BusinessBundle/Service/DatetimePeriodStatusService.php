@@ -71,7 +71,7 @@ class DatetimePeriodStatusService
         $i = 0;
 
         $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getBusinessWithoutActiveSubscriptionIterator();
+            ->getBusinessesWithoutActiveSubscriptionIterator();
 
         foreach ($businessProfilesIterator as $row) {
             /* @var $entity BusinessProfile */
@@ -81,7 +81,7 @@ class DatetimePeriodStatusService
             $subscription = $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $this->em);
 
             if ($subscription) {
-                $createdRecordsCount ++;
+                $createdRecordsCount++;
 
                 if (($i % $batchSize) === 0) {
                     $this->em->flush();
@@ -107,7 +107,7 @@ class DatetimePeriodStatusService
         $i = 0;
 
         $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getBusinessWithoutSeveralActiveSubscriptionIterator();
+            ->getBusinessesWithMultipleActiveSubscriptionsIterator();
 
         foreach ($businessProfilesIterator as $row) {
             /* @var $entity BusinessProfile */
