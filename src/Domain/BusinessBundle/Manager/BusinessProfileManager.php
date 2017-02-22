@@ -608,6 +608,7 @@ class BusinessProfileManager extends Manager
             case ChangeSetCalculator::VIDEO_ADD:
             case ChangeSetCalculator::VIDEO_REMOVE:
             case ChangeSetCalculator::VIDEO_UPDATE:
+            case ChangeSetCalculator::VIDEO_PROPERTY_UPDATE:
                 $data = json_decode($value);
                 $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
 

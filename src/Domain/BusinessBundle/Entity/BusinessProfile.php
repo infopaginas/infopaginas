@@ -662,8 +662,7 @@ class BusinessProfile implements
 
     /**
      * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
-     *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     *     inversedBy="businessProfiles"
      * )
      * @ORM\JoinColumn(name="video_id", referencedColumnName="id", nullable=true)
      */

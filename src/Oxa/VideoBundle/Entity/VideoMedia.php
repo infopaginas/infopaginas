@@ -126,8 +126,7 @@ class VideoMedia
      *
      * @ORM\OneToMany(
      *      targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
-     *      mappedBy="video",
-     *      cascade={"persist"}
+     *      mappedBy="video"
      * )
      */
     protected $businessProfiles;
