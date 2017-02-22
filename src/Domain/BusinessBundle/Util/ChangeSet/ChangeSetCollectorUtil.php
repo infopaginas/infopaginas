@@ -347,6 +347,10 @@ class ChangeSetCollectorUtil
                 return false;
             }
 
+            if ($entry) {
+                $entry->setClassName(VideoMedia::class);
+            }
+
             return $entry;
         }
 
