@@ -12,7 +12,7 @@
 
         <section class="main" id="searchResults">
             <div class="results active__toggle">
-                {% include ':redesign/blocks/banners:search-page-top.html.twig' %}
+                {% include ':redesign/blocks/banners:search-page-top.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_TOP } %}
 
                 {% if results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
                     {% for item in results.resultSet %}
@@ -31,7 +31,7 @@
                     {% endembed %}
                 {% endif %}
 
-                {% include ':redesign/blocks/banners:search-page-down.html.twig' %}
+                {% include ':redesign/blocks/banners:search-page-down.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_BOTTOM } %}
 
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
                     <i class="fa fa-map"></i>

@@ -59,3 +59,20 @@ twig:
             BACKGROUND_ADD:                 'BACKGROUND_ADD'
             BACKGROUND_REMOVE:              'BACKGROUND_REMOVE'
             BACKGROUND_UPDATE:              'BACKGROUND_UPDATE'
+
+#       banners - const of TypeInterface
+        BANNER_CODE:
+            HOME_VERTICAL:           1
+            PORTAL_RIGHT:            2
+            SEARCH_PAGE_BOTTOM:      3
+            SEARCH_PAGE_TOP:         4
+            STATIC_BOTTOM:           5
+            LANDING_PAGE_RIGHT:      6
+            BUSINESS_PAGE_RIGHT:     7
+            ARTICLE_PAGE_RIGHT:      8
+            VIDEO_PAGE_RIGHT:        9
+            COMPARE_PAGE_TOP:       10
+            COMPARE_PAGE_BOTTOM:    11
+            BUSINESS_PAGE_BOTTOM:   12
+            ARTICLE_PAGE_BOTTOM:    13
+            VIDEO_PAGE_BOTTOM:      14
