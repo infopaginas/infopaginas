@@ -40,7 +40,7 @@ class HomeController extends Controller
         $bannerFactory->prepearBanners(
             [
                 TypeInterface::CODE_HOME_VERTICAL,
-                TypeInterface::CODE_LANDING_PAGE_RIGHT
+                TypeInterface::CODE_LANDING_PAGE_RIGHT,
             ]
         );
 
