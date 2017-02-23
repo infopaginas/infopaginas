@@ -488,39 +488,42 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     }
 
     var mapState = 'default';
+    var searchAdBlocks = $( '.search-ad-block' );
 
     showMap.on( 'click', function() {
-      var mediaquery = window.matchMedia("(min-width: 804px)");
+        var mediaquery = window.matchMedia( '(min-width: 804px)' );
 
-      if (mediaquery.matches) {
-        $.Velocity.RunSequence(openMapDeskSequence, { mobileHA: true });
-        showMap.removeClass( 'floating-offset' );
-        $( 'body' ).addClass( 'body--no-scroll results--map-view' );
-        $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
-        $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
-      } else {
-          $.Velocity.RunSequence(openMapSequence, { mobileHA: true });
-          showMap.removeClass( 'floating-offset' );
-          $( 'body' ).addClass( 'body--no-scroll' );
-      }
-      mapState = 'expanded';
+        if ( mediaquery.matches ) {
+            $.Velocity.RunSequence( openMapDeskSequence, { mobileHA: true } );
+            showMap.removeClass( 'floating-offset' );
+            $( 'body' ).addClass( 'body--no-scroll results--map-view' );
+            $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
+            $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
+            searchAdBlocks.addClass( 'hidden' );
+        } else {
+            $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
+            showMap.removeClass( 'floating-offset' );
+            $( 'body' ).addClass( 'body--no-scroll' );
+        }
+
+        mapState = 'expanded';
     });
 
     hideMap.on( 'click', function() {
-      var mediaquery = window.matchMedia("(min-width: 804px)");
+        var mediaquery = window.matchMedia( '(min-width: 804px)' );
 
-      if (mediaquery.matches) {
-        $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
-        $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
-        $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
-        $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
+        if ( mediaquery.matches ) {
+            $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
+            $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
+            $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
+            $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
+            searchAdBlocks.removeClass( 'hidden' );
+        } else {
+            $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
+            $( 'body' ).removeClass( 'body--no-scroll' );
+        }
 
-      } else {
-          $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
-          $( 'body' ).removeClass( 'body--no-scroll' );
-      }
-
-      mapState = 'default';
+        mapState = 'default';
     });
 
     $( window ).resize(function() {

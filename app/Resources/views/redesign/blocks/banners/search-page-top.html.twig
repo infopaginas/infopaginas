@@ -1,5 +1,5 @@
-<div class="ad">
-    {% if bannerFactory is not null %}
-        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with {'banner': bannerFactory.getSearchPageTop()} %}
+<div class="ad search-ad-block">
+    {% if bannerFactory is not null and bannerType is defined %}
+        {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' with {'banner': bannerFactory.get(bannerType)} %}
     {% endif %}
 </div>

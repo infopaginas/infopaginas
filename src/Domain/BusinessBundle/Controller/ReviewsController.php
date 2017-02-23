@@ -57,8 +57,8 @@ class ReviewsController extends Controller
         $bannerFactory = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
-                TypeInterface::CODE_PORTAL_RIGHT,
-                TypeInterface::CODE_STATIC_BOTTOM,
+                TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
+                TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
             ]
         );
 
