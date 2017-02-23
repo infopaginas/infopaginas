@@ -109,6 +109,13 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $translations;
 
     /**
+     * @var string - Using this checkbox a Admin may define whether to show a banner block.
+     *
+     * @ORM\Column(name="is_published", type="boolean", options={"default" : 0})
+     */
+    protected $isPublished;
+
+    /**
      * Get id
      *
      * @return int
@@ -124,6 +131,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     public function __construct()
     {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->isPublished  = false;
     }
 
     public function getMarkCopyPropertyName()
@@ -330,5 +338,29 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     public function getCampaigns()
     {
         return $this->campaigns;
+    }
+
+    /**
+     * Set isPublished
+     *
+     * @param boolean $isPublished
+     *
+     * @return Banner
+     */
+    public function setIsPublished($isPublished)
+    {
+        $this->isPublished = $isPublished;
+
+        return $this;
+    }
+
+    /**
+     * Get isPublished
+     *
+     * @return boolean
+     */
+    public function getIsPublished()
+    {
+        return $this->isPublished;
     }
 }
