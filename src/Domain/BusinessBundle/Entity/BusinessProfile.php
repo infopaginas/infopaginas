@@ -99,6 +99,7 @@ class BusinessProfile implements
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const DEFAULT_MILES_FROM_MY_BUSINESS = 100;
+    const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     /**
      * @var int
@@ -2645,7 +2646,7 @@ class BusinessProfile implements
      */
     public function getDistanceUX() : string
     {
-        return number_format($this->getDistance(), 2, '.', '');
+        return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
     }
 
     /**

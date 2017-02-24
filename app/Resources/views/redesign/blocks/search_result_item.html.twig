@@ -49,7 +49,7 @@
                             {% if item.getCustomAddress() %}
                                 {{ item.getCustomAddress() }}
                             {% else %}
-                                {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                                {{ item.getCity() }}, {{ item.getStreetAddress() }}
                             {% endif %}
                             <span class="how-far">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
                         </address>
