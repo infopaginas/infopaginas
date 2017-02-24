@@ -27,7 +27,8 @@
             {% endif %}
                 <header class="page-section profile-header">
                     <div class="item__header container">
-                        {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': businessProfile } %}
+                        {% set workingHoursData = get_business_profile_open_status(businessProfile) %}
+                        {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
                         <div class="rank">
                             <div class="rank-ta rank-ta--5"></div>
                             <a data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
