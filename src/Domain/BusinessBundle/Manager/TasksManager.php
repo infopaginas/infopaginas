@@ -111,16 +111,14 @@ class TasksManager
             return [];
         }
 
+        $this->em->refresh($businessProfile);
+
         $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
         $task->setChangeSet($changeSet);
 
-        // symfony try to persist entity through ManyToOne relation detected in formType
-        // all update should be done via task system, data has already been saved in changeSet
-        $businessProfile->setVideo(null);
-        $businessProfile->setBackground(null);
-        $businessProfile->setLogo(null);
+        $result = $this->save($task, false);
 
-        return $this->save($task, false);
+        return $result;
     }
 
     /**
