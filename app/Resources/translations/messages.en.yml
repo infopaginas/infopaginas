@@ -446,6 +446,7 @@ interaction_report.visit.google: Visit Google
 interaction_report.visit.youtube: Visit Youtube
 interaction_report.video.watched: Video Watched
 interaction_report.review.click: Reviews
+interaction_report.email.click: Emails
 
 # working hours
 business.working.hours.open_all_time: Open 24 hours

@@ -23,10 +23,15 @@ define(['jquery', 'tools/reportTracker'], function( $, ReportTracker ) {
         var redirectionLink = current.data( 'href' );
         var id = current.data( 'id' );
         var type = current.data( 'type' );
+        var useCurrentTab = current.data( 'current-tab' );
 
         this.reportTracker.trackEvent( type, id );
 
-        window.open( redirectionLink );
+        if ( useCurrentTab ) {
+            window.location.href = redirectionLink;
+        } else {
+            window.open( redirectionLink );
+        }
     };
 
     redirect.prototype.bindRedirectEvents = function ( e ) {
