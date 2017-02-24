@@ -141,7 +141,7 @@
                                         <h3>Email</h3>
                                         <ul>
                                             <li>
-                                                <i class="fa fa-envelope"></i> <a href="mailto:{{ businessProfile.getEmail() }}">{{ businessProfile.getEmail() }}</a>
+                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick">{{ businessProfile.getEmail() }}</a>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->

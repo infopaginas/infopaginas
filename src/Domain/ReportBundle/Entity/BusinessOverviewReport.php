@@ -36,6 +36,7 @@ class BusinessOverviewReport implements ReportInterface
 
     const TYPE_CODE_VIDEO_WATCHED  = 'videoWatched';
     const TYPE_CODE_REVIEW_CLICK   = 'reviewClick';
+    const TYPE_CODE_EMAIL_CLICK    = 'emailClick';
 
     /**
      * @var int
@@ -161,6 +162,12 @@ class BusinessOverviewReport implements ReportInterface
     protected $reviewClick = 0;
 
     /**
+     * @var int
+     * @ORM\Column(name="email_click", type="integer", options={"default" : 0})
+     */
+    protected $emailClick = 0;
+
+    /**
      * @ORM\ManyToOne(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     inversedBy="businessOverviewReports",
@@ -199,6 +206,7 @@ class BusinessOverviewReport implements ReportInterface
             self::TYPE_CODE_YOUTUBE_VISIT,
             self::TYPE_CODE_VIDEO_WATCHED,
             self::TYPE_CODE_REVIEW_CLICK,
+            self::TYPE_CODE_EMAIL_CLICK,
         ];
     }
 
@@ -604,7 +612,25 @@ class BusinessOverviewReport implements ReportInterface
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getEmailClick()
+    {
+        return $this->emailClick;
+    }
 
+    /**
+     * @param int $emailClick
+     *
+     * @return BusinessOverviewReport
+     */
+    public function setEmailClick($emailClick)
+    {
+        $this->emailClick = $emailClick;
+
+        return $this;
+    }
 
     /**
      * Set businessProfile
