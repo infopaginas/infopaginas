@@ -1,6 +1,7 @@
 <div class="comparison__item" id="business-{{ item.id }}">
     <div class="comparison__row comparison__where">
-        {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': item } %}
+        {% set workingHoursData = get_business_profile_open_status(item) %}
+        {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
     </div>
 
     <div class="comparison__row comparison__where">

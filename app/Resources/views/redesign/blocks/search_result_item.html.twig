@@ -21,7 +21,8 @@
         <div class="item__summary">
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
                 <div class="item__header header-align-stars">
-                    {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': item } %}
+                    {% set workingHoursData = get_business_profile_open_status(item) %}
+                    {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
                     <div class="rank">
                         <div class="rank-ta rank-ta--5"></div>
                         <div class="stars rank__item">
@@ -40,7 +41,7 @@
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
                     {% endif %}
-                    {% if item.workingHours %}
+                    {% if item.workingHours and workingHoursData.status == false %}
                         <p>{% trans %}Working Hours{% endtrans %}: {{ item.workingHours }}</p>
                     {% endif %}
                     {% if not item.getHideAddress() %}
