@@ -87,6 +87,31 @@ class TypeModel implements TypeInterface
     }
 
     /**
+     * @return array
+     */
+    public static function getBannerResizable() : array
+    {
+        return [
+            self::CODE_HOME_VERTICAL,
+            self::CODE_BUSINESS_PAGE_BOTTOM,
+            self::CODE_ARTICLE_PAGE_BOTTOM,
+            self::CODE_VIDEO_PAGE_BOTTOM,
+            self::CODE_STATIC_BOTTOM,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getBannerResizableInBlock() : array
+    {
+        return [
+            self::CODE_SEARCH_PAGE_TOP,
+            self::CODE_SEARCH_PAGE_BOTTOM,
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getSize() : string
