@@ -2673,6 +2673,11 @@ a.tag {
   }
 }
 
+.search-ad-block {
+  max-width: 230px;
+  overflow: hidden;
+}
+
 .comparison {
   align-items: stretch;
   background: lighten($blue--dark, 70%);
