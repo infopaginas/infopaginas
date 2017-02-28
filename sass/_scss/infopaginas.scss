@@ -721,6 +721,7 @@ $side-padding-mb: 16px;
   background: $white;
   display: flex;
   z-index: 99;
+  overflow: hidden;
 }
 
 .sort-bar {
@@ -4205,6 +4206,7 @@ li.active {
     @media only screen and (min-width: 805px) {
       position: fixed;
       width: 25%;
+      min-width: 300px;;
     }
   }
 }
