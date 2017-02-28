@@ -15,27 +15,26 @@
 
 {% macro working_hours_prototype(workingHoursField) %}
     <div class="multi-field">
-        <div class="form__field field--multi-select">
-            {{ form_widget(workingHoursField.day ) }}
+        <div class="form__field field--multi-select select-weekday-user">
+            {{ form_widget(workingHoursField.day, {'attr': {'style': 'width: 100%'}}) }}
         </div><!-- form-field -->
-        <div class="form__field field-hour-select">
-            {{ form_widget(workingHoursField.timeStart ) }}
+        <div class="form__field field-hour-select hours-user">
+            {{ form_widget(workingHoursField.timeStart) }}
         </div><!-- form-field -->
         <div class="field-middle-text">to</div>
-        <div class="form__field field-hour-select">
-            {{ form_widget(workingHoursField.timeEnd ) }}
+        <div class="form__field field-hour-select hours-user">
+            {{ form_widget(workingHoursField.timeEnd) }}
         </div><!-- form-field -->
 
         <div class="form__field field--website">
             {{ form_label(workingHoursField.openAllTime) }}
             {{ form_widget(workingHoursField.openAllTime) }}
-        </div>
-
-        <button class="button button--small remove-working-hours">
-            <i class="fa fa-minus-square"></i>
-            {% trans %}Remove working hours{% endtrans %}
-        </button>
+        </div>        
     </div><!-- multifield -->
+    <button class="button button--small remove-working-hours">
+        <i class="fa fa-minus-square"></i>
+        {% trans %}Remove{% endtrans %}
+    </button>
 {% endmacro %}
 
 <div class="form-column__container clearfix">
@@ -104,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="form__row vertical__row">
+            <div class="form__row vertical__row category-first-level-user">
                 {{ custom_form_label.widget(businessProfileForm.categories) }}
                 {{ form_widget(businessProfileForm.categories) }}
             </div>
@@ -183,28 +182,7 @@
                 </div>
 
                 {% for collectionWorkingHoursField in businessProfileForm.collectionWorkingHours %}
-                    <div class="multi-field">
-                        <div class="form__field field--multi-select">
-                            {{ form_widget(collectionWorkingHoursField.day ) }}
-                        </div><!-- form-field -->
-                        <div class="form__field field-hour-select">
-                            {{ form_widget(collectionWorkingHoursField.timeStart ) }}
-                        </div><!-- form-field -->
-                        <div class="field-middle-text">to</div>
-                        <div class="form__field field-hour-select">
-                            {{ form_widget(collectionWorkingHoursField.timeEnd ) }}
-                        </div><!-- form-field -->
-
-                        <div class="form__field field--website">
-                            {{ form_label(collectionWorkingHoursField.openAllTime) }}
-                            {{ form_widget(collectionWorkingHoursField.openAllTime) }}
-                        </div>
-
-                        <button class="button button--small remove-working-hours">
-                            <i class="fa fa-minus-square"></i>
-                            {% trans %}Remove working hours{% endtrans %}
-                        </button>
-                    </div><!-- multifield -->
+                    {{ _self.working_hours_prototype(collectionWorkingHoursField) }}
                 {% endfor %}
             </div>
 
