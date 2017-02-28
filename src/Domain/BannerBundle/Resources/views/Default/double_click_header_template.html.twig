@@ -13,6 +13,9 @@
     var BANNER_BREAK_POINT_468x60 = 480;
     var BANNER_BREAK_POINT_320x50 = 320;
 
+    var BASE_BREAK_POINT = 805;
+    var RESPONSIVE_ADS_BLOCK_SIZE = 0.6;
+
     var BANNER_SIZE_728x90 = [728, 90];
     var BANNER_SIZE_468x60 = [468, 60];
     var BANNER_SIZE_320x50 = [320, 50];
@@ -24,18 +27,24 @@
         addSize([BANNER_BREAK_POINT_728x90, 0], BANNER_SIZE_728x90). // Desktop
         build();
 
-    var googleResponsiveBlockSize = googletag.sizeMapping();
-    var resizableWidth = document.getElementsByClassName( 'search-ad-block' ).offsetWidth;
+    var googleResponsiveBlockSize;
+    var windowWidth = window.innerWidth;
 
-    if (resizableWidth >= BANNER_BREAK_POINT_728x90) {
-        googleResponsiveBlockSize.addSize([0, 0], BANNER_SIZE_728x90);
-    } else if (resizableWidth >= BANNER_BREAK_POINT_468x60) {
-        googleResponsiveBlockSize.addSize([0, 0], BANNER_SIZE_468x60);
-    } else if (resizableWidth >= BANNER_BREAK_POINT_320x50) {
-        googleResponsiveBlockSize.addSize([0, 0], BANNER_SIZE_320x50);
+    var resizableWidth;
+
+    if (windowWidth >= BASE_BREAK_POINT) {
+        resizableWidth = windowWidth * RESPONSIVE_ADS_BLOCK_SIZE;
+    } else {
+        resizableWidth = windowWidth;
     }
 
-    googleResponsiveBlockSize.build();
+    if (resizableWidth >= BANNER_BREAK_POINT_728x90) {
+        googleResponsiveBlockSize = googletag.sizeMapping().addSize([0, 0], BANNER_SIZE_728x90).build();
+    } else if (resizableWidth >= BANNER_BREAK_POINT_468x60) {
+        googleResponsiveBlockSize = googletag.sizeMapping().addSize([0, 0], BANNER_SIZE_468x60).build();
+    } else if (resizableWidth >= BANNER_BREAK_POINT_320x50) {
+        googleResponsiveBlockSize = googletag.sizeMapping().addSize([0, 0], BANNER_SIZE_320x50).build();
+    }
 
     googletag.cmd.push(function() {
         {% for item in bannerHeaders %}
