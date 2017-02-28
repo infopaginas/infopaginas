@@ -1168,6 +1168,9 @@ $thumb-width-mb: 60px;
     width: calc(100% - 80px);
   }
 }
+.item__summary-no-logo {
+  width: 100%;
+}
 
 .badge,
 .ad-tag {
