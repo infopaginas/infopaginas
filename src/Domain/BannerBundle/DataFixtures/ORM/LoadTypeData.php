@@ -26,7 +26,7 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->getData() as $item) {
+        foreach (self::getData() as $item) {
             $config = new Type();
             $config->setCode($item['code']);
             $config->setName($item['name']);
@@ -38,38 +38,92 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
         $manager->flush();
     }
 
-    private function getData()
+    public static function getData()
     {
         return [
             [
-                'code'      => TypeInterface::CODE_HOME_VERTICAL,
-                'name'      => 'homepage-320x50-728x90',
-                'placement' => 'Homepage page',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising, (should be set up for both sizes)',
+                'code'      => TypeInterface::CODE_LANDING_PAGE_RIGHT,
+                'name'      => 'Landing Page 300x250',
+                'placement' => 'Landing Page',
+                'comment'   => 'Ad block in the right column of Landing Page',
             ],
             [
-                'code'      => TypeInterface::CODE_STATIC_BOTTOM,
-                'name'      => 'static-auto-bottom-320x50-728x90',
-                'placement' => 'Bottom banner of static pages, auto size',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising (should be set up for both sizes)',
+                'code'      => TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
+                'name'      => 'Business Profile Page 300x250',
+                'placement' => 'Business Profile Pages',
+                'comment'   => 'Ad block in the right column of Business Profile Pages',
+            ],
+            [
+                'code'      => TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
+                'name'      => 'Articles 300x250',
+                'placement' => 'Article List and Article Page',
+                'comment'   => 'Ad block in the right column of Article List and Article Page',
+            ],
+            [
+                'code'      => TypeInterface::CODE_VIDEO_PAGE_RIGHT,
+                'name'      => 'Videos 300x250',
+                'placement' => 'Video List',
+                'comment'   => 'Ad block in the right column of Video List',
             ],
             [
                 'code'      => TypeInterface::CODE_PORTAL_RIGHT,
-                'name'      => 'common-side-right-300x250',
-                'placement' => 'Static pages, and business profile view',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising',
+                'name'      => 'Static 300x250',
+                'placement' => 'Static pages (advertise, contact us, terms, privacy)',
+                'comment'   => 'Ad block in the right column of Static pages',
             ],
             [
-                'code'      => TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
-                'name'      => 'search-auto-bottom-320x50',
-                'placement' => 'Search, compare and catalog pages, auto size',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising',
+                'code'      => TypeInterface::CODE_HOME_VERTICAL,
+                'name'      => 'Landing Page 728x90 and 320x50',
+                'placement' => 'Landing Page',
+                'comment'   => 'Vertical ad block under search (should be set up for both sizes)',
             ],
             [
                 'code'      => TypeInterface::CODE_SEARCH_PAGE_TOP,
-                'name'      => 'search-auto-up-320x50',
-                'placement' => 'Search, compare and catalog pages',
-                'comment'   => 'By default are used for Google AdSence or Infopaginas advertising',
+                'name'      => 'Search Results Top 728x90 and 320x50',
+                'placement' => 'Search Results Page and Catalog',
+                'comment'   => 'Vertical ad block on top of search results (should be set up for both sizes)',
+            ],
+            [
+                'code'      => TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                'name'      => 'Search Results Bottom 728x90 and 320x50',
+                'placement' => 'Search Results Page and Catalog',
+                'comment'   => 'Vertical ad block at the bottom of search results (should be set up for both sizes)',
+            ],
+            [
+                'code'      => TypeInterface::CODE_COMPARE_PAGE_TOP,
+                'name'      => 'Compare Page Top 320x50',
+                'placement' => 'Compare page',
+                'comment'   => 'Vertical ad block on top of compare results',
+            ],
+            [
+                'code'      => TypeInterface::CODE_COMPARE_PAGE_BOTTOM,
+                'name'      => 'Compare Page Bottom 320x50',
+                'placement' => 'Compare page',
+                'comment'   => 'Vertical ad block at the bottom of compare results',
+            ],
+            [
+                'code'      => TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
+                'name'      => 'Business Profile Page 728x90 and 320x50',
+                'placement' => 'Business Profile Page',
+                'comment'   => 'Ad block at the bottom of Business Profile Pages',
+            ],
+            [
+                'code'      => TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
+                'name'      => 'Articles 728x90 and 320x50',
+                'placement' => 'Article List and Article Page',
+                'comment'   => 'Ad block at the bottom of Article List and Article Page',
+            ],
+            [
+                'code'      => TypeInterface::CODE_VIDEO_PAGE_BOTTOM,
+                'name'      => 'Videos 728x90 and 320x50',
+                'placement' => 'Video List',
+                'comment'   => 'Ad block at the bottom of Video List',
+            ],
+            [
+                'code'      => TypeInterface::CODE_STATIC_BOTTOM,
+                'name'      => 'Static 728x90 and 320x50',
+                'placement' => 'Static pages (advertise, contact us, terms, privacy)',
+                'comment'   => 'Ad block at the bottom of static pages',
             ],
         ];
     }

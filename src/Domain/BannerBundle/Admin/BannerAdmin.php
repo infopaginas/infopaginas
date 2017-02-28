@@ -33,6 +33,7 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('template')
+            ->add('isPublished')
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
@@ -44,14 +45,15 @@ class BannerAdmin extends OxaAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-                ->add('id')
-                ->addIdentifier('title')
-                ->add('description')
-                ->add('type')
-                ->add('size')
-                ->add('template')
-                ->add('updatedAt')
-                ->add('updatedUser')
+            ->add('id')
+            ->addIdentifier('title')
+            ->add('description')
+            ->add('type')
+            ->add('size')
+            ->add('template')
+            ->add('isPublished')
+            ->add('updatedAt')
+            ->add('updatedUser')
         ;
 
         $this->addGridActions($listMapper);
@@ -74,6 +76,7 @@ class BannerAdmin extends OxaAdmin
             ->with('General')
                 ->add('title')
                 ->add('description')
+                ->add('isPublished')
             ->end()
             ->with('Type')
                 ->add('type', 'sonata_type_model_list', [
@@ -101,6 +104,7 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('size')
+            ->add('isPublished')
             ->add('updatedAt')
             ->add('updatedUser')
         ;

@@ -37,10 +37,12 @@ class HomeController extends Controller
         $videos         = $videoManager->fetchHomepageVideos();
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_HOME_VERTICAL,
-            TypeInterface::CODE_PORTAL_RIGHT
-        ));
+        $bannerFactory->prepearBanners(
+            [
+                TypeInterface::CODE_HOME_VERTICAL,
+                TypeInterface::CODE_LANDING_PAGE_RIGHT,
+            ]
+        );
 
         $userRoles = $this->get('security.token_storage')->getToken()->getRoles();
         $roleForGA = GoogleAnalyticsHelper::getUserRoleForAnalytics($userRoles);

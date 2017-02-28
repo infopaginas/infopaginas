@@ -99,6 +99,7 @@ class BusinessProfile implements
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const DEFAULT_MILES_FROM_MY_BUSINESS = 100;
+    const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     /**
      * @var int
@@ -662,8 +663,7 @@ class BusinessProfile implements
 
     /**
      * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
-     *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     *     inversedBy="businessProfiles"
      * )
      * @ORM\JoinColumn(name="video_id", referencedColumnName="id", nullable=true)
      */
@@ -2646,7 +2646,7 @@ class BusinessProfile implements
      */
     public function getDistanceUX() : string
     {
-        return number_format($this->getDistance(), 2, '.', '');
+        return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
     }
 
     /**

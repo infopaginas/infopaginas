@@ -111,9 +111,14 @@ class TasksManager
             return [];
         }
 
+        $this->em->refresh($businessProfile);
+
         $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
         $task->setChangeSet($changeSet);
-        return $this->save($task, false);
+
+        $result = $this->save($task, false);
+
+        return $result;
     }
 
     /**

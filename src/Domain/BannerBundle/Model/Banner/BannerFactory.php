@@ -4,6 +4,7 @@ namespace Domain\BannerBundle\Model\Banner;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Domain\BannerBundle\Model\TypeModel;
 use Oxa\ManagerArchitectureBundle\Model\Factory\Factory;
 use Domain\BannerBundle\Model\TypeInterface as BannerType;
 use Domain\BannerBundle\Entity\Banner;
@@ -35,16 +36,9 @@ class BannerFactory extends Factory
     public function get($type)
     {
         $banner = null;
-        switch ($type) {
-            case BannerType::CODE_PORTAL_RIGHT:
-            case BannerType::CODE_HOME_VERTICAL:
-            case BannerType::CODE_SEARCH_PAGE_TOP:
-            case BannerType::CODE_SEARCH_PAGE_BOTTOM:
-            case BannerType::CODE_STATIC_BOTTOM:
-                $banner = $this->getBannerByCode($type);
-                break;
-            default:
-                throw new \Exception(self::UNDEFINED_BANNER_TYPE_ERROR);
+
+        if (in_array($type, TypeModel::getBannerTypes())) {
+            $banner = $this->getBannerByCode($type);
         }
 
         return $banner;
@@ -88,9 +82,20 @@ class BannerFactory extends Factory
     {
         return array_map(
             function ($item) {
-                if (null !== $item && null !== $item->getTemplate()) {
-                    return $item->getTemplate()->getTemplateHeader();
+                if (null !== $item && null !== $item->getTemplate() and null !== $item->getType()) {
+                    $bannerTypeCode = $item->getType()->getCode();
+
+                    if (in_array($bannerTypeCode, TypeModel::getBannerResizable())) {
+                        $header = $item->getTemplate()->getResizableHeader();
+                    } elseif (in_array($bannerTypeCode, TypeModel::getBannerResizableInBlock())) {
+                        $header = $item->getTemplate()->getResizableInBlockHeader();
+                    } else {
+                        $header = $item->getTemplate()->getTemplateHeader();
+                    }
+
+                    return $header;
                 }
+
                 return null;
             },
             $this->bannersCollection->toArray()

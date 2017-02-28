@@ -19,12 +19,27 @@ interface TypeInterface
     const CODE_SEARCH_PAGE_BOTTOM   = 3;
     const CODE_SEARCH_PAGE_TOP      = 4;
     const CODE_STATIC_BOTTOM        = 5;
+    const CODE_LANDING_PAGE_RIGHT   = 6;
+    const CODE_BUSINESS_PAGE_RIGHT  = 7;
+    const CODE_ARTICLE_PAGE_RIGHT   = 8;
+    const CODE_VIDEO_PAGE_RIGHT     = 9;
+    const CODE_COMPARE_PAGE_TOP     = 10;
+    const CODE_COMPARE_PAGE_BOTTOM  = 11;
+    const CODE_BUSINESS_PAGE_BOTTOM = 12;
+    const CODE_ARTICLE_PAGE_BOTTOM  = 13;
+    const CODE_VIDEO_PAGE_BOTTOM    = 14;
 
     const SIZE_300_250 = '300x250';
     const SIZE_AUTO_SEARCH = '320x50, 468x60';
     const SIZE_AUTO_STATIC = '320x50, 728x90';
 
     const MEDIA_FORMAT_HOME         = 'home';
+    const MEDIA_FORMAT_BUSINESS     = 'business';
+    const MEDIA_FORMAT_ARTICLE      = 'article';
+    const MEDIA_FORMAT_VIDEO        = 'video';
+    const MEDIA_FORMAT_SEARCH       = 'search';
+    const MEDIA_FORMAT_COMPARE      = 'compare';
+    const MEDIA_FORMAT_STATIC       = 'static';
     const MEDIA_FORMAT_PORTAL       = 'portal';
 
     /**

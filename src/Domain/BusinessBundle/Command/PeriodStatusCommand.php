@@ -28,8 +28,17 @@ class PeriodStatusCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $datetimePeriodService = $this->getContainer()->get('domain_business.service.datetime_period_status_service');
+
         $output->writeln('Processing...');
         $result = $datetimePeriodService->updateStatus();
+        $output->writeln(sprintf('Done! Updated records count: %s', $result));
+
+        $output->writeln('Create active subscriptions...');
+        $result = $datetimePeriodService->createActiveSubscriptions();
+        $output->writeln(sprintf('Done! Created records count: %s', $result));
+
+        $output->writeln('Check duplicate of active subscriptions...');
+        $result = $datetimePeriodService->updateActiveSubscriptions();
         $output->writeln(sprintf('Done! Updated records count: %s', $result));
     }
 }

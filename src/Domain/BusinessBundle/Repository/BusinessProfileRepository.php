@@ -555,4 +555,86 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithoutActiveSubscriptionIterator()
+    {
+        $qb = $this->getBusinessesAndActiveSubscriptionQb();
+
+        $qb->andWhere('s.id IS NULL');
+
+        $businessProfileIds = $qb->getQuery()->getArrayResult();
+
+        $businessesIterator = $this->getBusinessesIteratorByIds($businessProfileIds);
+
+        return $businessesIterator;
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithMultipleActiveSubscriptionsIterator()
+    {
+        $qb = $this->getBusinessesAndActiveSubscriptionQb();
+
+        $qb
+            ->groupBy('bp.id')
+            ->having('COUNT(s.id) > 1')
+        ;
+
+        $businessProfileIds = $qb->getQuery()->getArrayResult();
+
+        $businessesIterator = $this->getBusinessesIteratorByIds($businessProfileIds);
+
+        return $businessesIterator;
+    }
+
+    protected function getBusinessesAndActiveSubscriptionQb()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp.id')
+            ->distinct()
+            ->leftJoin('bp.subscriptions', 's', 'WITH', 's.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->andWhere('bp.isActive = TRUE')
+        ;
+
+        return $qb;
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return IterableResult
+     */
+    protected function getBusinessesIteratorByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->andWhere('bp.id IN (:businessProfileIds)')
+            ->setParameter('businessProfileIds', $ids)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('businessProfileIds', $ids);
+
+        return $query->iterate();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithTextWorkingHoursIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->where('bp.workingHours IS NOT NULL')
+            ->andWhere('bp.workingHours != \'\'')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
+    }
 }

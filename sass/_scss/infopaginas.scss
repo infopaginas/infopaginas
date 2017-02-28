@@ -1290,6 +1290,7 @@ $thumb-width-mb: 60px;
 
   .how-far {
     font-weight: 700;
+    float: right;
   }
 }
 
@@ -5004,7 +5005,7 @@ input[type='radio'], input[type='checkbox'] {
 .category-shopping-y-tiendas-de-especialidad {background-image: url('../redesign/img/category-backgrounds/bg_shopping.jpg')}
 .category-transportacion {background-image: url('../redesign/img/category-backgrounds/bg_transportacion.jpg')}
 .category-cementerios-y-funerarias {background-image: url('../redesign/img/category-backgrounds/bg_cementery.jpg')}
-
+.category-restaurantes {background-image: url('../redesign/img/category-backgrounds/bg_food_restaurantes.jpg')}
 
 .results__item--super_vm {
   background: lighten($blue, 50%);

@@ -21,7 +21,8 @@
         <div class="item__summary {% if hasSubscription(item, 'CODE_PREMIUM_PLUS') == false or item.getLogo() == null %}item__summary-no-logo{% endif %}">
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
                 <div class="item__header header-align-stars">
-                    {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'businessProfile': item } %}
+                    {% set workingHoursData = get_business_profile_open_status(item) %}
+                    {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
                     <div class="rank">
                         <div class="rank-ta rank-ta--5"></div>
                         <div class="stars rank__item">
@@ -31,7 +32,6 @@
                                     <i class="fa fa-star"></i>
                                 {% endfor %}
                             {% endif %}
-                            Plan: {{ item.plan }}; Score: {{ item.score }};
                         </div>
                     </div>
                 </div>
@@ -40,15 +40,12 @@
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
                     {% endif %}
-                    {% if item.workingHours %}
-                        <p>{% trans %}Working Hours{% endtrans %}: {{ item.workingHours }}</p>
-                    {% endif %}
                     {% if not item.getHideAddress() %}
                         <address>
                             {% if item.getCustomAddress() %}
                                 {{ item.getCustomAddress() }}
                             {% else %}
-                                {{ item.getCountry() }}, {{ item.getCity() }}, {{ item.getStreetAddress() }} {{ item.getZipCode() }}
+                                {{ item.getCity() }}, {{ item.getStreetAddress() }}
                             {% endif %}
                             <span class="how-far">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
                         </address>

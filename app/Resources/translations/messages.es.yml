@@ -48,7 +48,7 @@ Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
-Call: Llamar
+Call: Telefono
 Reviews: Comentarios
 list: Ok
 map: Mapa
@@ -411,7 +411,7 @@ View more articles: Ver más artículos
 To view this video please enable JavaScript, and consider upgrading to a web browser that: Para ver este video, habilita JavaScript y considera actualizar a un navegador web que
 supports HTML5 video: soporta video HTML5
 Video example: Ejemplo de video
-miles away: millas de distancia
+miles away: mi. away
 Where: Dónde
 Visit business profile on...: Visita el perfil de negocios en...
 Last review: Última revisión
@@ -446,6 +446,7 @@ interaction_report.visit.google: Visite Google
 interaction_report.visit.youtube: Visita Youtube
 interaction_report.video.watched: Video Visto
 interaction_report.review.click: Opiniones
+interaction_report.email.click: Correo
 
 # working hours
 business.working.hours.open_all_time: Abierto 24 horas

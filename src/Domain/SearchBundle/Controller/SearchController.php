@@ -235,8 +235,8 @@ class SearchController extends Controller
         $bannerFactory  = $this->get('domain_banner.factory.banner');
         $bannerFactory->prepearBanners(
             [
-                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
-                TypeInterface::CODE_SEARCH_PAGE_TOP,
+                TypeInterface::CODE_COMPARE_PAGE_BOTTOM,
+                TypeInterface::CODE_COMPARE_PAGE_TOP,
             ]
         );
 

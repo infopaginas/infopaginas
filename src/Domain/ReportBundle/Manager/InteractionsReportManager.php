@@ -35,6 +35,7 @@ class InteractionsReportManager extends BaseReportManager
         BusinessOverviewReport::TYPE_CODE_YOUTUBE_VISIT         => 'interaction_report.visit.youtube',
         BusinessOverviewReport::TYPE_CODE_VIDEO_WATCHED         => 'interaction_report.video.watched',
         BusinessOverviewReport::TYPE_CODE_REVIEW_CLICK          => 'interaction_report.review.click',
+        BusinessOverviewReport::TYPE_CODE_EMAIL_CLICK           => 'interaction_report.email.click',
     ];
 
     /** @var DataFetcher $gaDataSource */

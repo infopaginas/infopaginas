@@ -58,9 +58,6 @@ class Version20170105143049 extends AbstractMigration implements ContainerAwareI
             if ($locality && $parent) {
                 $businesses = $this->getBusinessIteratorByLocalityId($locality->getId());
 
-                $batchSize = 20;
-                $i = 0;
-
                 foreach ($businesses as $row) {
                     /* @var $business BusinessProfile */
                     $business = $row[0];
@@ -78,20 +75,12 @@ class Version20170105143049 extends AbstractMigration implements ContainerAwareI
 
                         $business->removeLocality($locality);
                     }
-
-                    if (($i % $batchSize) === 0) {
-                        $this->em->flush();
-                        $this->em->clear();
-
-                        $parent = $this->getParent($parentItem);
-                        $locality = $this->getLocalityItemByName($item['name']);
-                    }
-                    $i ++;
-
-                    $this->em->detach($row[0]);
                 }
 
+                $this->em->flush();
                 $this->em->remove($locality);
+
+                $this->em->clear();
             }
         }
 
