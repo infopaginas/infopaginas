@@ -82,9 +82,20 @@ class BannerFactory extends Factory
     {
         return array_map(
             function ($item) {
-                if (null !== $item && null !== $item->getTemplate()) {
-                    return $item->getTemplate()->getTemplateHeader();
+                if (null !== $item && null !== $item->getTemplate() and null !== $item->getType()) {
+                    $bannerTypeCode = $item->getType()->getCode();
+
+                    if (in_array($bannerTypeCode, TypeModel::getBannerResizable())) {
+                        $header = $item->getTemplate()->getResizableHeader();
+                    } elseif (in_array($bannerTypeCode, TypeModel::getBannerResizableInBlock())) {
+                        $header = $item->getTemplate()->getResizableInBlockHeader();
+                    } else {
+                        $header = $item->getTemplate()->getTemplateHeader();
+                    }
+
+                    return $header;
                 }
+
                 return null;
             },
             $this->bannersCollection->toArray()

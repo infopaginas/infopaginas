@@ -23,6 +23,9 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
+    const TAG_RESIZABLE_COMMON   = '.defineSizeMapping(googleResponsiveCommonSize)';
+    const TAG_RESIZABLE_IN_BLOCK = '.defineSizeMapping(googleResponsiveBlockSize)';
+
     /**
      * @var int
      *
@@ -239,5 +242,30 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    public function getResizableHeader()
+    {
+        return $this->getHeaderWithSizeTag(self::TAG_RESIZABLE_COMMON);
+    }
+
+    public function getResizableInBlockHeader()
+    {
+        return $this->getHeaderWithSizeTag(self::TAG_RESIZABLE_IN_BLOCK);
+    }
+
+    protected function getHeaderWithSizeTag($tag)
+    {
+        $header = $this->getTemplateHeader();
+
+        $position = strpos($header, '.addService');
+
+        if ($position !== false) {
+            $resizableHeader = substr_replace($header, $tag, $position, 0);
+        } else {
+            $resizableHeader = '';
+        }
+
+        return $resizableHeader;
     }
 }
