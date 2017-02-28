@@ -1063,14 +1063,14 @@ select {
 
 transition-timing-function: ease-in-out;
   @media only screen and (min-width: 805px) {
-    border-color: darken($grey--light, 5%);
+    border-color: #a2a5aa;
     display: flex;
     padding: 15px 25px;
     transition-duration: .2s;
     transition-property: background-color;
 
     &:hover {
-      background: lighten($blue, 60%);
+      background: rgba(178, 205, 237, 0.1);
     }
   }
 }
