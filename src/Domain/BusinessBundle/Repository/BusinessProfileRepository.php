@@ -621,4 +621,20 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         return $query->iterate();
     }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithTextWorkingHoursIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->where('bp.workingHours IS NOT NULL')
+            ->andWhere('bp.workingHours != \'\'')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
+    }
 }

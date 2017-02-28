@@ -18,12 +18,6 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
     /* @var EntityManager $em */
     protected $em;
 
-    const CSV_DELIMITER = ',';
-
-    const BUSINESS_ID = 0;
-
-    const WORKING_HOURS = 1;
-
     protected function configure()
     {
         $this->setName('data:working-hours:convert');
@@ -34,31 +28,24 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $qb = $this->em->createQueryBuilder()
-            ->select('bp')
-            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
-            ->where('bp.workingHours IS NOT NULL')
-            ->andWhere('bp.workingHours != \'\'')
-        ;
+        $businessesWithTextWorkingHours = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+            ->getBusinessesWithTextWorkingHoursIterator();
 
-        $query = $this->em->createQuery($qb->getDQL());
-
-        $businesses = $query->iterate();
-
-        foreach ($businesses as $row) {
+        foreach ($businessesWithTextWorkingHours as $row) {
+            /* @var BusinessProfile $business */
             $business = $row[0];
 
-            $data = $this->convertWorkingHours($business->getId(), $business->getWorkingHours());
+            $data = $this->convertWorkingHours($business->getWorkingHours());
 
-//            dump($data);
-//            die();
             if ($data) {
-                $this->createWorkingHours(current($data), $business);
-            }
+                $this->createWorkingHours($data, $business);
 
-            $this->em->flush();
-            $this->em->clear();
+                $this->em->flush();
+                $this->em->clear();
+            }
         }
+
+        $this->em->flush();
     }
 
     protected function createWorkingHours($data, BusinessProfile $business)
@@ -70,100 +57,84 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             $this->em->remove($oldWorkingHour);
         }
 
-        foreach ($data['days'] as $day) {
-            $workingHour = new BusinessProfileWorkingHour();
+        foreach ($data as $item) {
+            if (count($item['days'] == 2)) {
+                $day = '';
 
-            $workingHour->setDay($day);
-            $workingHour->setTimeStart($data['open']);
-
-            // todo
-            $workingHour->setTimeEnd($data['close']);
-            $workingHour->setOpenAllTime(false);
-
-            $workingHour->setBusinessProfile($business);
-
-            $this->em->persist($workingHour);
-
-            $business->addCollectionWorkingHour($workingHour);
-        }
-    }
-
-    protected function executeTemp(InputInterface $input, OutputInterface $output)
-    {
-        $original = $this->getContainer()->get('kernel')->getRootDir() . '/../web/working-hours-raw.csv';
-
-//        $businesses = $this->getContainer()->get('kernel')->getRootDir() . '/../web/businesses-undefined-new.csv';
-//        $businesses = $this->getContainer()->get('kernel')->getRootDir() . '/../web/category-undefined-3.csv';
-
-//        $outputPath = $this->getContainer()->get('kernel')->getRootDir() . '/../web/result3.txt';
-
-        $success = [];
-        $error = [];
-
-        $handle = fopen($original, 'r');
-
-        if ($handle !== false) {
-            $i = 0;
-
-            while (($data = fgetcsv($handle, 1000, self::CSV_DELIMITER)) !== false) {
-                $bid = $data[self::BUSINESS_ID];
-                $text = $data[self::WORKING_HOURS];
-
-                $data = $this->convertWorkingHours($bid, $text);
-
-                if ($data) {
-                    $success[] = $data;
-                } else {
-                    $error[$bid] = [
-                        'id' => $bid,
-                        'text' => $text,
-                    ];
+                if (in_array(DayOfWeekModel::CODE_MONDAY, $item['days']) and
+                    in_array(DayOfWeekModel::CODE_FRIDAY, $item['days'])
+                ) {
+                    $day = DayOfWeekModel::CODE_WEEKDAY;
+                } elseif (in_array(DayOfWeekModel::CODE_SATURDAY, $item['days']) and
+                    in_array(DayOfWeekModel::CODE_SUNDAY, $item['days'])
+                ) {
+                    $day = DayOfWeekModel::CODE_WEEKEND;
                 }
 
-                $i++;
-
-//                if ($i > 100) {
-//                    break;
-//                }
+                if ($day) {
+                    $this->addWorkingHours($day, $item, $business);
+                    continue;
+                }
             }
 
-            fclose($handle);
-
-            dump(count($success));
-            dump(count($error));
-
-//            dump($error);
+            foreach ($item['days'] as $day) {
+                $this->addWorkingHours($day, $item, $business);
+            }
         }
     }
 
-    protected function convertWorkingHours($bid, $text)
+    protected function addWorkingHours($day, $item, BusinessProfile $business)
     {
-        preg_match('/\d/', $text, $raw, PREG_OFFSET_CAPTURE);
+        $workingHour = new BusinessProfileWorkingHour();
 
+        $workingHour->setDay($day);
+        $workingHour->setTimeStart($item['open']);
+        $workingHour->setTimeEnd($item['close']);
+        $workingHour->setOpenAllTime(false);
+
+        $workingHour->setBusinessProfile($business);
+
+        $this->em->persist($workingHour);
+
+        $business->addCollectionWorkingHour($workingHour);
+    }
+
+    protected function convertWorkingHours($text)
+    {
         $data = [];
 
-        if (!empty($raw[0][1])) {
-            $rawDays = mb_strtolower(substr($text, 0, $raw[0][1]));
-            $rawHours = mb_strtolower(substr($text, $raw[0][1]));
+        $result = $this->parseWorkingHours($text);
 
-            $dayOfWeek = DayOfWeekModel::getDayOfWeekMapping();
+        if ($result) {
+            $data[] = $result;
+        }
 
-            $data = $this->checkRawData($dayOfWeek, $rawDays, $rawHours, $bid);
+        if (!$data) {
+            $dataItem = $this->explodeByArray($this->getLineDelimiters(), $text);
 
-            if (!$data) {
-                $dayOfWeek = $this->getDayOfWeekMappingAbrEn();
+            foreach ($dataItem as $textItem) {
+                $result = $this->parseWorkingHours($textItem);
 
-                $data = $this->checkRawData($dayOfWeek, $rawDays, $rawHours, $bid);
+                if ($result) {
+                    $data[] = $result;
+                }
+            }
+        }
 
-                if (!$data) {
-                    $dayOfWeek = $this->getDayOfWeekMappingEs();
+        if (!$data) {
+            $dataItem = $this->explodeByArray($this->getLineDelimiters(), $text);
 
-                    $data = $this->checkRawData($dayOfWeek, $rawDays, $rawHours, $bid);
+            foreach ($dataItem as $key => $textItem) {
+                if (!empty($dataItem[$key + 1])) {
+                    $rawDays = mb_strtolower($textItem);
+                    $rawHours = mb_strtolower($dataItem[$key + 1]);
 
-                    if (!$data) {
-                        $dayOfWeek = $this->getDayOfWeekMappingAbrEs();
+                    $dayOfWeek = $this->getDayOfWeekMapping();
 
-                        $data = $this->checkRawData($dayOfWeek, $rawDays, $rawHours, $bid);
+                    $result = $this->checkRawData($dayOfWeek, $rawDays, $rawHours);
+
+                    if ($result) {
+                        $data[] = $result;
                     }
                 }
             }
@@ -172,37 +143,36 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         return $data;
     }
 
-    protected function checkRawData($dayOfWeek, $rawDays, $rawHours, $bid)
+    protected function checkRawData($dayOfWeek, $rawDays, $rawHours)
     {
         $data = [];
+        $openDays = [];
 
         foreach ($dayOfWeek as $key => $day) {
-            $openDays = [];
+            if (strpos($rawDays, mb_strtolower($key)) !== false) {
+                $openDays[$day] = $day;
+            }
+        }
 
-            if (strpos($rawDays, mb_strtolower($day)) !== false) {
-                $openDays[] = $key;
+        if ($openDays) {
+            $hours = $this->explodeByArray($this->getHoursDelimiters(), $rawHours);
 
-                $hours = $this->explodeByArray($this->getHoursDelimiters(), $rawHours);
+            if (!empty($hours[0]) and !empty($hours[1])) {
+                $startTime = strtotime($hours[0]);
+                $endTime = strtotime($hours[1]);
 
-                if (!empty($hours[0]) and !empty($hours[1])) {
-                    $startTime = strtotime($hours[0]);
-                    $endTime = strtotime($hours[1]);
+                if ($startTime and $endTime) {
+                    $startDateTime = new \DateTime();
+                    $startDateTime->setTimestamp($startTime);
 
-                    if ($startTime and $endTime) {
-                        $startDateTime = new \DateTime();
-                        $startDateTime->setTimestamp($startTime);
+                    $endDateTime = new \DateTime();
+                    $endDateTime->setTimestamp($endTime);
 
-                        $endDateTime = new \DateTime();
-                        $endDateTime->setTimestamp($endTime);
-
-                        $data[$bid] =  [
-                            'id' => $bid,
-                            'open' => $startDateTime,
-                            'close' => $endDateTime,
-                            'days' => $openDays,
-
-                        ];
-                    }
+                    $data =  [
+                        'open' => $startDateTime,
+                        'close' => $endDateTime,
+                        'days' => $openDays,
+                    ];
                 }
             }
         }
@@ -210,44 +180,54 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         return $data;
     }
 
-    public function getDayOfWeekMappingAbrEn()
+    public function getDayOfWeekMapping()
     {
         return [
-            DayOfWeekModel::CODE_MONDAY    => 'Mon',
-            DayOfWeekModel::CODE_TUESDAY   => 'Tue',
-            DayOfWeekModel::CODE_WEDNESDAY => 'Wed',
-            DayOfWeekModel::CODE_THURSDAY  => 'Thu',
-            DayOfWeekModel::CODE_FRIDAY    => 'Fri',
-            DayOfWeekModel::CODE_SATURDAY  => 'Sat',
-            DayOfWeekModel::CODE_SUNDAY    => 'Sun',
-        ];
-    }
+            // Monday
+            'Mon'       => DayOfWeekModel::CODE_MONDAY,
+            'Monday'    => DayOfWeekModel::CODE_MONDAY,
+            'Lun'       => DayOfWeekModel::CODE_MONDAY,
+            'Lunes'     => DayOfWeekModel::CODE_MONDAY,
 
-    public function getDayOfWeekMappingAbrEs()
-    {
-        return [
-            DayOfWeekModel::CODE_MONDAY    => 'Lun',
-            DayOfWeekModel::CODE_TUESDAY   => 'Mar',
-            DayOfWeekModel::CODE_WEDNESDAY => 'Mié',
-            DayOfWeekModel::CODE_THURSDAY  => 'Jue',
-            DayOfWeekModel::CODE_FRIDAY    => 'Vie',
-            DayOfWeekModel::CODE_SATURDAY  => 'Sáb',
-            DayOfWeekModel::CODE_SUNDAY    => 'Dom',
-        ];
-    }
+            // Tuesday
+            'Tue'       => DayOfWeekModel::CODE_TUESDAY,
+            'Tuesday'   => DayOfWeekModel::CODE_TUESDAY,
+            'Mar'       => DayOfWeekModel::CODE_TUESDAY,
+            'Martes'    => DayOfWeekModel::CODE_TUESDAY,
 
-    public function getDayOfWeekMappingEs()
-    {
-        return [
-            DayOfWeekModel::CODE_WEEKDAY   => 'Dias de Semana',
-            DayOfWeekModel::CODE_WEEKEND   => 'Fin de Semana',
-            DayOfWeekModel::CODE_MONDAY    => 'Lunes',
-            DayOfWeekModel::CODE_TUESDAY   => 'Martes',
-            DayOfWeekModel::CODE_WEDNESDAY => 'Miércoles',
-            DayOfWeekModel::CODE_THURSDAY  => 'Jueves',
-            DayOfWeekModel::CODE_FRIDAY    => 'Viernes',
-            DayOfWeekModel::CODE_SATURDAY  => 'Sábado',
-            DayOfWeekModel::CODE_SUNDAY    => 'Domingo',
+            // Wednesday
+            'Wed'       => DayOfWeekModel::CODE_WEDNESDAY,
+            'Wednesday' => DayOfWeekModel::CODE_WEDNESDAY,
+            'Mié'       => DayOfWeekModel::CODE_WEDNESDAY,
+            'Mie'       => DayOfWeekModel::CODE_WEDNESDAY,
+            'Miércoles' => DayOfWeekModel::CODE_WEDNESDAY,
+            'Miercoles' => DayOfWeekModel::CODE_WEDNESDAY,
+
+            // Thursday
+            'Thu'       => DayOfWeekModel::CODE_THURSDAY,
+            'Thursday'  => DayOfWeekModel::CODE_THURSDAY,
+            'Jue'       => DayOfWeekModel::CODE_THURSDAY,
+            'Jueves'    => DayOfWeekModel::CODE_THURSDAY,
+
+            // Friday
+            'Fri'       => DayOfWeekModel::CODE_FRIDAY,
+            'Friday'    => DayOfWeekModel::CODE_FRIDAY,
+            'Vie'       => DayOfWeekModel::CODE_FRIDAY,
+            'Viernes'   => DayOfWeekModel::CODE_FRIDAY,
+
+            // Saturday
+            'Sat'       => DayOfWeekModel::CODE_SATURDAY,
+            'Saturday'  => DayOfWeekModel::CODE_SATURDAY,
+            'Sáb'       => DayOfWeekModel::CODE_SATURDAY,
+            'Sab'       => DayOfWeekModel::CODE_SATURDAY,
+            'Sábado'    => DayOfWeekModel::CODE_SATURDAY,
+            'Sabado'    => DayOfWeekModel::CODE_SATURDAY,
+
+            // Sunday
+            'Sun'       => DayOfWeekModel::CODE_SUNDAY,
+            'Sunday'    => DayOfWeekModel::CODE_SUNDAY,
+            'Dom'       => DayOfWeekModel::CODE_SUNDAY,
+            'Domingo'   => DayOfWeekModel::CODE_SUNDAY,
         ];
     }
 
@@ -261,10 +241,36 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         ];
     }
 
+    protected function getLineDelimiters()
+    {
+        return [
+            "\r",
+            "\r\n"
+        ];
+    }
+
     protected function explodeByArray($delimiters, $input) {
         $delimiter = $delimiters[0];
-        $raw = str_replace($delimiters, $delimiter, $input); //Extra step to create a uniform value
+        $raw = str_replace($delimiters, $delimiter, $input);
 
         return explode($delimiter, $raw);
+    }
+
+    protected function parseWorkingHours($text)
+    {
+        $result = [];
+
+        preg_match('/\d/', $text, $raw, PREG_OFFSET_CAPTURE);
+
+        if (!empty($raw[0][1])) {
+            $rawDays = mb_strtolower(substr($text, 0, $raw[0][1]));
+            $rawHours = mb_strtolower(substr($text, $raw[0][1]));
+
+            $dayOfWeek = $this->getDayOfWeekMapping();
+
+            $result = $this->checkRawData($dayOfWeek, $rawDays, $rawHours);
+        }
+
+        return $result;
     }
 }
