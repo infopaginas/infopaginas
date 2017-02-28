@@ -32,7 +32,6 @@
                                     <i class="fa fa-star"></i>
                                 {% endfor %}
                             {% endif %}
-                            Plan: {{ item.plan }}; Score: {{ item.score }};
                         </div>
                     </div>
                 </div>
@@ -40,9 +39,6 @@
                     <h2>{% if hasSubscription(item, "CODE_SUPER_VM") %} <i class="fa fa-star"></i> {% endif %}{{ item.name }}</h2>
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
-                    {% endif %}
-                    {% if item.workingHours and workingHoursData.status == false %}
-                        <p>{% trans %}Working Hours{% endtrans %}: {{ item.workingHours }}</p>
                     {% endif %}
                     {% if not item.getHideAddress() %}
                         <address>
