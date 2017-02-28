@@ -704,6 +704,7 @@ $side-padding-mb: 16px;
     height: $toolbar-height-mb;
     line-height: $toolbar-height-mb;
     padding: 0 10px;
+    overflow: hidden;
     @media only screen and (max-width: 420px) {
       letter-spacing: 0;
       font-size: 8px;
@@ -721,7 +722,6 @@ $side-padding-mb: 16px;
   background: $white;
   display: flex;
   z-index: 99;
-  overflow: hidden;
 }
 
 .sort-bar {
@@ -2797,6 +2797,7 @@ a.tag {
     @media only screen and (min-width: 805px) {
       flex-direction: row;
       flex-wrap: wrap;
+      height: 3em;
     }
 
     .button {
@@ -2825,7 +2826,7 @@ a.tag {
         padding-top: 0;
 
         span {
-          line-height: 3.5em;
+          line-height: 1.5em;
         }
 
         img {
@@ -2945,6 +2946,8 @@ a.tag {
 }
 
 .comparison__actions {
+  height: 96px;
+  overflow-y: hidden;
 }
 
 .button--remove {
@@ -4846,6 +4849,7 @@ input[type='radio'], input[type='checkbox'] {
 }
 
 .no-flex {
+  height: 116px;
   .button--small {
     flex: 0 !important;
   }
