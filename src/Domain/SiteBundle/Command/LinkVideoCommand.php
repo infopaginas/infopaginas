@@ -22,6 +22,7 @@ class LinkVideoCommand extends ContainerAwareCommand
     protected $output;
 
     protected $withDebug;
+    protected $youtube;
 
     protected $allowedFileType = 'file';
     protected $allowedFileExtensions = [
@@ -35,9 +36,10 @@ class LinkVideoCommand extends ContainerAwareCommand
         $this->setName('data:video:link');
         $this->setDescription('Download video files');
         $this->setDefinition(
-            new InputDefinition(array(
+            new InputDefinition([
                 new InputOption('withDebug', 'd'),
-            ))
+                new InputOption('youtube', 'y'),
+            ])
         );
     }
 
@@ -50,6 +52,12 @@ class LinkVideoCommand extends ContainerAwareCommand
             $this->withDebug = true;
         } else {
             $this->withDebug = false;
+        }
+
+        if ($input->getOption('youtube')) {
+            $this->youtube = true;
+        } else {
+            $this->youtube = false;
         }
 
         $videoMapping = VideoMappingModel::getVideoMapping();
@@ -76,7 +84,7 @@ class LinkVideoCommand extends ContainerAwareCommand
             $businessProfile = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
                 ->findOneBy(['uid' => $item['uid']]);
 
-            if (!empty($item['asset'])) {
+            if (!empty($item['asset']) or ($this->youtube and $item['youtubeUrl'])) {
                 if ($businessProfile) {
                     if ($businessProfile->getVideo()) {
                         if ($this->withDebug) {
@@ -199,7 +207,15 @@ class LinkVideoCommand extends ContainerAwareCommand
     protected function getBaseDownloadDir()
     {
         $container = $this->getContainer();
-        return $container->get('kernel')->getRootDir() .
-        $container->getParameter('video_back_up_path');
+
+        $path = $container->get('kernel')->getRootDir();
+
+        if ($this->youtube) {
+            $path .= $this->getContainer()->getParameter('youtube_back_up_path');
+        } else {
+            $path .= $this->getContainer()->getParameter('video_back_up_path');
+        }
+
+        return $path;
     }
 }
