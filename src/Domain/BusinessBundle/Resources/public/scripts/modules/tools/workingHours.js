@@ -67,8 +67,8 @@ define(['jquery', 'select2', 'bootstrap'], function( $, select2, bootstrap ) {
         var that = this;
 
         $( document ).on( 'click', that.html.removeLinkClass, function(event) {
-            var block = $( this ).parent( 'div' );
-            block.remove();
+            $( this ).prev().remove();
+            $( this ).remove();
             
             event.preventDefault();
         });

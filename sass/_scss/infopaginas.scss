@@ -441,6 +441,7 @@ $side-padding-mb: 16px;
     flex-wrap: nowrap;
     max-width: 570px;
     width: auto;
+    margin-left: 20px;
   }
 
   input {
@@ -704,6 +705,7 @@ $side-padding-mb: 16px;
     height: $toolbar-height-mb;
     line-height: $toolbar-height-mb;
     padding: 0 10px;
+    overflow: hidden;
     @media only screen and (max-width: 420px) {
       letter-spacing: 0;
       font-size: 8px;
@@ -1062,14 +1064,14 @@ select {
 
 transition-timing-function: ease-in-out;
   @media only screen and (min-width: 805px) {
-    border-color: darken($grey--light, 5%);
+    border-color: #a2a5aa;
     display: flex;
     padding: 15px 25px;
     transition-duration: .2s;
     transition-property: background-color;
 
     &:hover {
-      background: lighten($blue, 60%);
+      background: rgba(178, 205, 237, 0.1);
     }
   }
 }
@@ -1167,6 +1169,9 @@ $thumb-width-mb: 60px;
   @media only screen and (min-width: 805px) {
     width: calc(100% - 80px);
   }
+}
+.item__summary-no-logo {
+  width: 100%;
 }
 
 .badge,
@@ -2670,6 +2675,11 @@ a.tag {
   }
 }
 
+.search-ad-block {
+  max-width: 230px;
+  overflow: hidden;
+}
+
 .comparison {
   align-items: stretch;
   background: lighten($blue--dark, 70%);
@@ -2794,6 +2804,7 @@ a.tag {
     @media only screen and (min-width: 805px) {
       flex-direction: row;
       flex-wrap: wrap;
+      height: 3em;
     }
 
     .button {
@@ -2822,7 +2833,7 @@ a.tag {
         padding-top: 0;
 
         span {
-          line-height: 3.5em;
+          line-height: 1.5em;
         }
 
         img {
@@ -2942,6 +2953,8 @@ a.tag {
 }
 
 .comparison__actions {
+  height: 96px;
+  overflow-y: hidden;
 }
 
 .button--remove {
@@ -4203,6 +4216,7 @@ li.active {
     @media only screen and (min-width: 805px) {
       position: fixed;
       width: 25%;
+      min-width: 300px;;
     }
   }
 }
@@ -4842,6 +4856,7 @@ input[type='radio'], input[type='checkbox'] {
 }
 
 .no-flex {
+  height: 116px;
   .button--small {
     flex: 0 !important;
   }
@@ -5061,4 +5076,29 @@ input[type='radio'], input[type='checkbox'] {
 }
 a.link-pointer {
   cursor: pointer;
+}
+
+@media only screen and (max-width: 375px){
+  .select-weekday-user {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-right: 0 !important;
+    flex: 1 1 100%;
+  }
+  .field-active {
+    width: 100%;
+    margin: 5px;
+  }
+  .category-first-level-user {
+    flex: 1 1 100%;
+  }
+  .hours-user {
+    flex: 1 1 50%;
+    .select2-container--default {
+      width: 50px !important;
+    }
+  }
+  .form__row {
+    margin-bottom: 0;
+  }
 }
