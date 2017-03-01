@@ -1841,6 +1841,7 @@ $thumb-width-mb: 60px;
   flex: 0 0 100%;
   margin-bottom: 10px;
   padding-right: 10px;
+  word-break: break-word;
 
   @media only screen and (min-width: 805px) {
     flex: 0 0 33.3%;
@@ -2614,6 +2615,7 @@ a.tag {
       position: relative;
       top: 0;
       width: 20%;
+      min-width: 350px;
     }
 
     &.comparison-list--active {
@@ -2673,11 +2675,6 @@ a.tag {
       }
     }
   }
-}
-
-.search-ad-block {
-  max-width: 230px;
-  overflow: hidden;
 }
 
 .comparison {
@@ -3642,6 +3639,7 @@ a.button--login {
     margin: 0;
     padding: 0;
     position: relative;
+    font-size: 13px;
   }
 
   li {
