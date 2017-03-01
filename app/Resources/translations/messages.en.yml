@@ -480,3 +480,20 @@ Now: Now
 
 form.collectionWorkingHours.overlap: Working Hours should not overlap
 form.collectionWorkingHours.duration: Time start should be more then time end
+
+# reset password form
+user:
+  reset_password:
+    token:
+      invalid: You currently do not have valid link for update your password
+      empty: Error: Empty token.
+  auth:
+    validation_failure: Validation failure
+    registration_success: Successfully registered. Please login with your credentials
+    reset_link_sent: Reset password link sent to your email. Please check it
+    password_updated: Successfully updated password. You can login with new credentials now
+business_profile:
+  url:
+    invalid: This value is not a valid URL.
+
+
