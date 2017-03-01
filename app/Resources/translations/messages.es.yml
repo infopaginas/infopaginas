@@ -480,3 +480,18 @@ Now: Ahora
 
 form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
 form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
+
+# reset password form
+user:
+  reset_password:
+    token:
+      invalid: Actualmente no tienes un enlace válido para actualizar tu contraseña.
+      empty: Error: Vaciar símbolo.
+  auth:
+    validation_failure: Error de validación
+    registration_success: Successfully registered. Please login with your credentials
+    reset_link_sent: Registrado exitosamente. Inicia sesión con tus credenciales
+    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con nuevas credenciales
+business_profile:
+  url:
+    invalid: Este valor no es una URL válida.
