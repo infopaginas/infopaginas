@@ -1841,6 +1841,7 @@ $thumb-width-mb: 60px;
   flex: 0 0 100%;
   margin-bottom: 10px;
   padding-right: 10px;
+  word-break: break-word;
 
   @media only screen and (min-width: 805px) {
     flex: 0 0 33.3%;
