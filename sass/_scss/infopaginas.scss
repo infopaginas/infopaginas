@@ -1064,7 +1064,7 @@ select {
 
 transition-timing-function: ease-in-out;
   @media only screen and (min-width: 805px) {
-    border-color: #a2a5aa;
+    border-color: rgba(25, 47, 77, 0.2);
     display: flex;
     padding: 15px 25px;
     transition-duration: .2s;
@@ -4330,6 +4330,7 @@ li.active {
     padding-right: 10px;
     padding-right: 0;
     width: 19.9%;
+    min-width: 110px;
 
     &:last-child {
       padding-right: 0;
@@ -5078,27 +5079,63 @@ a.link-pointer {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 375px){
-  .select-weekday-user {
-    width: 100%;
-    margin-bottom: 10px;
-    margin-right: 0 !important;
-    flex: 1 1 100%;
+@media only screen and (min-width: 1024px){
+  .field--website {
+    flex: 1 1 20%;
   }
-  .field-active {
-    width: 100%;
-    margin: 5px;
+  .field-hour-select {
+    width: 5em;
   }
-  .category-first-level-user {
-    flex: 1 1 100%;
+  .field-middle-text {
+    margin: 0 10px 0 0;
   }
   .hours-user {
-    flex: 1 1 50%;
+    flex: 1 1 40%;
     .select2-container--default {
-      width: 50px !important;
+      width: 3em !important;
     }
   }
-  .form__row {
-    margin-bottom: 0;
+  button.remove-working-hours {
+    align-self: flex-start;
+    margin-bottom: 10px;
+    margin-top: 0;
+  }
+}
+
+@media only screen and (min-width: 768px){
+  button.remove-working-hours {
+    align-self: flex-start;
+    margin-top: 0;
+  }
+  .field-hour-select {
+    width: 2em;
+  }
+  .hours-user {
+    flex: 1 1 40%;
+    .select2-container--default {
+      width: 3em !important;
+    }
+  }
+  button.remove-working-hours {
+    align-self: flex-start;
+    margin-bottom: 10px;
+    margin-top: 0;
+  }
+}
+
+@media only screen and (max-width: 375px){
+  .hours-user {
+    flex: 1 1 100% !important;
+    .select2-container--default {
+      margin-top: 10px;
+      width: 3em !important;
+    }
+  }
+  .field-middle-text {
+    margin-top: 10px;
+  }
+  button.remove-working-hours {
+    align-self: flex-start;
+    margin-bottom: 10px;
   }
 }
