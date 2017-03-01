@@ -90,7 +90,12 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         $workingHour->setDay($day);
         $workingHour->setTimeStart($item['open']);
         $workingHour->setTimeEnd($item['close']);
-        $workingHour->setOpenAllTime(false);
+
+        if (!empty($item['allTime'])) {
+            $workingHour->setOpenAllTime(true);
+        } else {
+            $workingHour->setOpenAllTime(false);
+        }
 
         $workingHour->setBusinessProfile($business);
 
@@ -135,6 +140,41 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
 
                     if ($result) {
                         $data[] = $result;
+                    } else {
+                        preg_match('/pm/', mb_strtolower($textItem), $raw, PREG_OFFSET_CAPTURE);
+
+                        if (!empty($raw[0][1])) {
+                            $rawHours = mb_strtolower($textItem);
+                            $rawDays = mb_strtolower($dataItem[$key + 1]);
+
+                            $result = $this->checkRawData($dayOfWeek, $rawDays, $rawHours);
+
+                            if ($result) {
+                                $data[] = $result;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!$data) {
+                foreach ($this->getAllDayWorkingMapping() as $item) {
+                    if (strpos($text, $item) !== false) {
+                        $startDateTime = new \DateTime();
+                        $startDateTime->setTimestamp(0);
+
+                        $endDateTime = new \DateTime();
+                        $endDateTime->setTimestamp(0);
+
+                        $data[] =  [
+                            'open'  => $startDateTime,
+                            'close' => $endDateTime,
+                            'days'  => [
+                                DayOfWeekModel::CODE_WEEKDAY,
+                                DayOfWeekModel::CODE_WEEKEND,
+                            ],
+                            'allTime' => true,
+                        ];
                     }
                 }
             }
@@ -169,9 +209,9 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
                     $endDateTime->setTimestamp($endTime);
 
                     $data =  [
-                        'open' => $startDateTime,
+                        'open'  => $startDateTime,
                         'close' => $endDateTime,
-                        'days' => $openDays,
+                        'days'  => $openDays,
                     ];
                 }
             }
@@ -228,6 +268,28 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             'Sunday'    => DayOfWeekModel::CODE_SUNDAY,
             'Dom'       => DayOfWeekModel::CODE_SUNDAY,
             'Domingo'   => DayOfWeekModel::CODE_SUNDAY,
+            'Doming'    => DayOfWeekModel::CODE_SUNDAY,
+
+            'Todos los días' => [
+                DayOfWeekModel::CODE_WEEKDAY,
+                DayOfWeekModel::CODE_WEEKEND,
+            ],
+            'seven days a week' => [
+                DayOfWeekModel::CODE_WEEKDAY,
+                DayOfWeekModel::CODE_WEEKEND,
+            ],
+            'Todos los dias' => [
+                DayOfWeekModel::CODE_WEEKDAY,
+                DayOfWeekModel::CODE_WEEKEND,
+            ],
+            'everyday'       => [
+                DayOfWeekModel::CODE_WEEKDAY,
+                DayOfWeekModel::CODE_WEEKEND,
+            ],
+            'every day'      => [
+                DayOfWeekModel::CODE_WEEKDAY,
+                DayOfWeekModel::CODE_WEEKEND,
+            ],
         ];
     }
 
@@ -238,6 +300,11 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             '-',
             'through',
             ' a ',
+            ' A ',
+            '/',
+            'at',
+            ' y ',
+            'until',
         ];
     }
 
@@ -246,6 +313,34 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         return [
             "\r",
             "\r\n"
+        ];
+    }
+
+    protected function getAllDayWorkingMapping()
+    {
+        return [
+            '24/7',
+            '24 hours 7 days',
+            '24 horas los 7 días',
+            '24 horas los 7 dias',
+            '24 Hours a day, 7 days a week',
+            '7 days 24 hours',
+            '24 hours - 7 days a week',
+            '24 Horas 7 Días a la Semana',
+            '24 Horas 7 Dias a la Semana',
+            '24 hours seven days a week',
+            '24 horas/7 días',
+            '24 horas/7 dias',
+            '24 hr 7 days',
+            '24 hours every day',
+            '24 horas toda la semana',
+            '24 horas 7 dás de la semana',
+            '24 horas 7 das de la semana',
+            '7 días/ 24 horas',
+            '7 dias/ 24 horas',
+            '7 días a la semana/24 horas',
+            '7 dias a la semana/24 horas',
+            '24 horas, 7  dias',
         ];
     }
 
@@ -260,15 +355,24 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
     {
         $result = [];
 
+        $dayOfWeek = $this->getDayOfWeekMapping();
+
         preg_match('/\d/', $text, $raw, PREG_OFFSET_CAPTURE);
 
         if (!empty($raw[0][1])) {
             $rawDays = mb_strtolower(substr($text, 0, $raw[0][1]));
             $rawHours = mb_strtolower(substr($text, $raw[0][1]));
 
-            $dayOfWeek = $this->getDayOfWeekMapping();
-
             $result = $this->checkRawData($dayOfWeek, $rawDays, $rawHours);
+        } else {
+            preg_match('/pm/', mb_strtolower($text), $raw, PREG_OFFSET_CAPTURE);
+
+            if (!empty($raw[0][1])) {
+                $rawHours = mb_strtolower(substr($text, 0, $raw[0][1] + 2));
+                $rawDays  = mb_strtolower(substr($text, $raw[0][1] + 2));
+
+                $result = $this->checkRawData($dayOfWeek, $rawDays, $rawHours);
+            }
         }
 
         return $result;
