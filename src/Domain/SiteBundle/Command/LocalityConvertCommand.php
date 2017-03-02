@@ -159,6 +159,10 @@ class LocalityConvertCommand extends ContainerAwareCommand
             'San Antonio'       => 'Caguas',
             'San Antonio , Texas' => 'Caguas',
             'St. Just Station'  => 'Trujillo Alto',
+            'guayanilla'        => 'Guayanilla',
+            'Mayaguez PR'       => 'Mayaguez',
+            'Guyanabo'          => 'Guaynabo',
+            'PR'                => 'San Juan',
         ];
 
         return $localities;
