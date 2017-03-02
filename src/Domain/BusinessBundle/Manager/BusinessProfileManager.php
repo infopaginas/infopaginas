@@ -1393,28 +1393,10 @@ class BusinessProfileManager extends Manager
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
 
         $search['data'] = array_map(function ($item) {
-            $name = [];
-
-            $parent1 = $item->getParent();
-
-            if ($parent1) {
-                $parent2 = $parent1->getParent();
-
-                if ($parent2) {
-                    $name[] = $parent2->getName();
-                }
-
-                $name[] = $parent1->getName();
-            }
-
-            $name[] = $item->getName();
-
-            $data = implode(CategoryManager::AUTO_SUGGEST_SEPARATOR, $name);
-
             return [
                 'type' => CategoryManager::AUTO_COMPLETE_TYPE,
-                'name' => $data,
-                'data' => $data,
+                'name' => $item->getName(),
+                'data' => $item->getName(),
             ];
         }, $search['data']);
 
@@ -1482,19 +1464,6 @@ class BusinessProfileManager extends Manager
                 $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
 
                 if ($item) {
-                    $score = 0;
-                    $plan = 1;
-
-                    foreach ($result as $business) {
-                        if ($business['_id'] == $id) {
-                            $plan = $business['sort'][0];
-                            $score = number_format($business['sort'][1], ElasticSearchManager::ROTATION_RANK_PRECISION);
-                            break;
-                        }
-                    }
-
-                    $item->setScore($score);
-                    $item->setPlan($plan);
                     $data[] = $item;
                 }
             }
