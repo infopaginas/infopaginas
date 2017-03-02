@@ -1,4 +1,4 @@
-{% set showLinkCompareView = true %}
+{% set showLinkCompareView = results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block breadcrumbs %}
