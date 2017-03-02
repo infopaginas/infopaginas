@@ -500,6 +500,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
             searchAdBlocks.addClass( 'hidden' );
             $( '.featured-categories__list' ).addClass( 'resize-categories-list' );
+            $( '.filter__item' ).addClass( 'filter__item-resize' );
         } else {
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
@@ -519,6 +520,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
             searchAdBlocks.removeClass( 'hidden' );
             $( '.featured-categories__list' ).removeClass( 'resize-categories-list' );
+            $( '.filter__item' ).removeClass( 'filter__item-resize' );
         } else {
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );

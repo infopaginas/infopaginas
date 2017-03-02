@@ -846,8 +846,11 @@ $side-padding-mb: 16px;
 
     @media only screen and (min-width: 768px) {
       flex: 0 0 auto;
-    }
 
+      &.filter__item-resize {
+        width: 140px;
+      }
+    }
   }
 
   select {
