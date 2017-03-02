@@ -49,3 +49,7 @@ parameters:
     # prod - "Infopaginaspr" - 'UCWWRfV9jE0GoEgfGEc6QWVQ';
     # dev - user "nadyaoxatest@gmail.com" - 'UCQBIBb2bn2XFMaZURIeV18A'
     google_youtube_user_channel_id: 'UCQBIBb2bn2XFMaZURIeV18A'
+
+    # mongodb settings
+    mongodb.host: 'mongodb://54.197.13.71'
+    mongodb.db: 'infopaginas'

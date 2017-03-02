@@ -16,6 +16,7 @@ imports:
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
     - { resource: "@OxaDfpBundle/Resources/config/services.yml" }
     - { resource: "@ElasticSearchBundle/Resources/config/services.yml" }
+    - { resource: "@MongoDbBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -309,3 +310,6 @@ elastic_search:
     document_index: '%elastic_search.document_index%'
     indexing_page: 100
 
+mongo_db:
+    host: '%mongodb.host%'
+    db:   '%mongodb.db%'

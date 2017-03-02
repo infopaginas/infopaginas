@@ -84,7 +84,8 @@ class AppKernel extends Kernel
             new Oxa\DfpBundle\OxaDfpBundle(),
             // elastic search bundle
             new Oxa\ElasticSearchBundle\ElasticSearchBundle(),
-
+            // MongoDb Bundle
+            new Oxa\MongoDbBundle\MongoDbBundle(),
             //SiteMap bundle
             new Presta\SitemapBundle\PrestaSitemapBundle(),
         );
