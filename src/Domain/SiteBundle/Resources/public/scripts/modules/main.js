@@ -126,6 +126,17 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         $(this).openNav();
     });
 
+    $( document ).on( 'click', function (e) {
+        var navToggleButton = $( '#nav-toggle' );
+
+        if ( !nav.is(e.target) && nav.has(e.target).length === 0 &&
+            !navToggleButton.is(e.target) && navToggleButton.has(e.target).length === 0 ) {
+            nav.removeClass( 'nav--opened' );
+            $.Velocity.RunSequence(closeNav, { mobileHA: true });
+            $( 'body' ).removeClass( 'body--no-scroll' );
+        }
+    });
+
 //sort
 
     var sortToggle = $( '#sort-toggle' );
