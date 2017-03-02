@@ -2756,6 +2756,7 @@ a.tag {
   .comparison__row {
     border-bottom: 1px solid darken($grey--light, 10%);
     padding: 10px;
+    overflow-x: hidden;
 
     &:last-child {
       border-bottom: 0;
@@ -4328,10 +4329,15 @@ li.active {
     padding-right: 10px;
     padding-right: 0;
     width: 19.9%;
-    min-width: 110px;
 
     &:last-child {
       padding-right: 0;
+    }
+
+    &.resize-categories-list {
+      width: 115px;
+      flex: 1 0 40%;
+      max-width: 40%;
     }
   }
 

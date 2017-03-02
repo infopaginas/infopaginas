@@ -27,7 +27,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var openSearchSequence = [
         { e: header, p: { height: "190px" }, o: { duration: 300, easing: "easeOut"} },
         { e: logo, p: { translateX: -100 }, o: { duration: 200, sequenceQueue: false} },
-        { e: navToggle, p: { translateX: 100 }, o: { duration: 200, sequenceQueue: false } },
+        { e: navToggle, p: { translateX: 100 }, o: { duration: 200, sequenceQueue: false} },
         { e: geoField, p: { translateY: 65 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false} },
         { e: geoInput, p: { scale: 1 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false} },
         { e: closeSearch, p: { scale: 1 }, o: { duration: 200 } },
@@ -125,7 +125,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     navCloseButton.on( 'click', function() {
         $(this).openNav();
     });
-
 
 //sort
 
@@ -500,6 +499,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
             searchAdBlocks.addClass( 'hidden' );
+            $( '.featured-categories__list' ).addClass( 'resize-categories-list' );
         } else {
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
@@ -518,6 +518,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
             searchAdBlocks.removeClass( 'hidden' );
+            $( '.featured-categories__list' ).removeClass( 'resize-categories-list' );
         } else {
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
