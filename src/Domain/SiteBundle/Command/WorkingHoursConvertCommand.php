@@ -31,6 +31,9 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         $businessesWithTextWorkingHours = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
             ->getBusinessesWithTextWorkingHoursIterator();
 
+        $successItemCounter = 0;
+        $errorItemCounter   = 0;
+
         foreach ($businessesWithTextWorkingHours as $row) {
             /* @var BusinessProfile $business */
             $business = $row[0];
@@ -42,8 +45,14 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
 
                 $this->em->flush();
                 $this->em->clear();
+
+                $successItemCounter++;
+            } else {
+                $errorItemCounter++;
             }
         }
+
+        $output->writeln('Success:' . $successItemCounter . '; Error: ' . $errorItemCounter);
 
         $this->em->flush();
     }
@@ -69,6 +78,12 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
                     in_array(DayOfWeekModel::CODE_SUNDAY, $item['days'])
                 ) {
                     $day = DayOfWeekModel::CODE_WEEKEND;
+                } elseif (in_array(DayOfWeekModel::CODE_MONDAY, $item['days']) and
+                    in_array(DayOfWeekModel::CODE_SATURDAY, $item['days'])
+                ) {
+                    $this->addWorkingHours(DayOfWeekModel::CODE_WEEKDAY, $item, $business);
+
+                    $day = DayOfWeekModel::CODE_SATURDAY;
                 }
 
                 if ($day) {
@@ -108,12 +123,7 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
     {
         $data = [];
 
-        $result = $this->parseWorkingHours($text);
-
-        if ($result) {
-            $data[] = $result;
-        }
-
+        // days and hours at same line
         if (!$data) {
             $dataItem = $this->explodeByArray($this->getLineDelimiters(), $text);
 
@@ -126,11 +136,12 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             }
         }
 
+        // days and hours at different lines
         if (!$data) {
             $dataItem = $this->explodeByArray($this->getLineDelimiters(), $text);
 
             foreach ($dataItem as $key => $textItem) {
-                if (!empty($dataItem[$key + 1])) {
+                if (!empty($dataItem[$key + 1]) and ($key % 2) == 0) {
                     $rawDays = mb_strtolower($textItem);
                     $rawHours = mb_strtolower($dataItem[$key + 1]);
 
@@ -190,7 +201,13 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
 
         foreach ($dayOfWeek as $key => $day) {
             if (strpos($rawDays, mb_strtolower($key)) !== false) {
-                $openDays[$day] = $day;
+                if (is_array($day)) {
+                    foreach ($day as $dayItem) {
+                        $openDays[$dayItem] = $dayItem;
+                    }
+                } else {
+                    $openDays[$day] = $day;
+                }
             }
         }
 
@@ -214,6 +231,19 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
                         'days'  => $openDays,
                     ];
                 }
+            } elseif (strpos($rawHours, '24') !== false) {
+                $startDateTime = new \DateTime();
+                $startDateTime->setTimestamp(0);
+
+                $endDateTime = new \DateTime();
+                $endDateTime->setTimestamp(0);
+
+                $data =  [
+                    'open' => $startDateTime,
+                    'close' => $endDateTime,
+                    'days' => $openDays,
+                    'allTime' => true,
+                ];
             }
         }
 
