@@ -2813,7 +2813,6 @@ a.tag {
     @media only screen and (min-width: 805px) {
       flex-direction: row;
       flex-wrap: wrap;
-      height: 3em;
     }
 
     .button {
@@ -2842,15 +2841,11 @@ a.tag {
         padding-top: 0;
 
         span {
-          line-height: 1.5em;
+          line-height: 3em;
         }
 
         img {
           top: .3em;
-        }
-
-        &:nth-child(2n+2) {
-          margin-right: 0;
         }
       }
     }
