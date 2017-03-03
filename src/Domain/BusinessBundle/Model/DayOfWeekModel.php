@@ -219,8 +219,7 @@ class DayOfWeekModel
 
         $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
 
-        $now = new \DateTime();
-        $now->setTimestamp(0);
+        $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
         $now->modify($time);
 
         $dayOfWeek = strtoupper(date('D'));

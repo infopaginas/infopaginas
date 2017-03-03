@@ -631,6 +631,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->select('bp')
             ->where('bp.workingHours IS NOT NULL')
             ->andWhere('bp.workingHours != \'\'')
+            ->orderBy('bp.id')
         ;
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());

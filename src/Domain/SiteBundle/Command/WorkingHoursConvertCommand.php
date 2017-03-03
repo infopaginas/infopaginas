@@ -67,29 +67,32 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         }
 
         foreach ($data as $item) {
-            if (count($item['days'] == 2)) {
-                $day = '';
+            if (in_array(DayOfWeekModel::CODE_SATURDAY, $item['days']) and
+                in_array(DayOfWeekModel::CODE_SUNDAY, $item['days'])
+            ) {
+                $item['days'][DayOfWeekModel::CODE_WEEKEND] = DayOfWeekModel::CODE_WEEKEND;
 
-                if (in_array(DayOfWeekModel::CODE_MONDAY, $item['days']) and
-                    in_array(DayOfWeekModel::CODE_FRIDAY, $item['days'])
-                ) {
-                    $day = DayOfWeekModel::CODE_WEEKDAY;
-                } elseif (in_array(DayOfWeekModel::CODE_SATURDAY, $item['days']) and
-                    in_array(DayOfWeekModel::CODE_SUNDAY, $item['days'])
-                ) {
-                    $day = DayOfWeekModel::CODE_WEEKEND;
-                } elseif (in_array(DayOfWeekModel::CODE_MONDAY, $item['days']) and
-                    in_array(DayOfWeekModel::CODE_SATURDAY, $item['days'])
-                ) {
-                    $this->addWorkingHours(DayOfWeekModel::CODE_WEEKDAY, $item, $business);
+                unset(
+                    $item['days'][DayOfWeekModel::CODE_SATURDAY],
+                    $item['days'][DayOfWeekModel::CODE_SUNDAY]
+                );
+            }
 
-                    $day = DayOfWeekModel::CODE_SATURDAY;
-                }
+            if (in_array(DayOfWeekModel::CODE_MONDAY, $item['days']) and
+                in_array(DayOfWeekModel::CODE_TUESDAY, $item['days']) and
+                in_array(DayOfWeekModel::CODE_WEDNESDAY, $item['days']) and
+                in_array(DayOfWeekModel::CODE_THURSDAY, $item['days']) and
+                in_array(DayOfWeekModel::CODE_FRIDAY, $item['days'])
+            ) {
+                $item['days'][DayOfWeekModel::CODE_WEEKDAY] = DayOfWeekModel::CODE_WEEKDAY;
 
-                if ($day) {
-                    $this->addWorkingHours($day, $item, $business);
-                    continue;
-                }
+                unset(
+                    $item['days'][DayOfWeekModel::CODE_MONDAY],
+                    $item['days'][DayOfWeekModel::CODE_TUESDAY],
+                    $item['days'][DayOfWeekModel::CODE_WEDNESDAY],
+                    $item['days'][DayOfWeekModel::CODE_THURSDAY],
+                    $item['days'][DayOfWeekModel::CODE_FRIDAY]
+                );
             }
 
             foreach ($item['days'] as $day) {
@@ -171,11 +174,8 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             if (!$data) {
                 foreach ($this->getAllDayWorkingMapping() as $item) {
                     if (strpos($text, $item) !== false) {
-                        $startDateTime = new \DateTime();
-                        $startDateTime->setTimestamp(0);
-
-                        $endDateTime = new \DateTime();
-                        $endDateTime->setTimestamp(0);
+                        $startDateTime = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+                        $endDateTime   = clone $startDateTime;
 
                         $data[] =  [
                             'open'  => $startDateTime,
@@ -197,19 +197,7 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
     protected function checkRawData($dayOfWeek, $rawDays, $rawHours)
     {
         $data = [];
-        $openDays = [];
-
-        foreach ($dayOfWeek as $key => $day) {
-            if (strpos($rawDays, mb_strtolower($key)) !== false) {
-                if (is_array($day)) {
-                    foreach ($day as $dayItem) {
-                        $openDays[$dayItem] = $dayItem;
-                    }
-                } else {
-                    $openDays[$day] = $day;
-                }
-            }
-        }
+        $openDays = $this->parseDayText($dayOfWeek, $rawDays);
 
         if ($openDays) {
             $hours = $this->explodeByArray($this->getHoursDelimiters(), $rawHours);
@@ -232,11 +220,8 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
                     ];
                 }
             } elseif (strpos($rawHours, '24') !== false) {
-                $startDateTime = new \DateTime();
-                $startDateTime->setTimestamp(0);
-
-                $endDateTime = new \DateTime();
-                $endDateTime->setTimestamp(0);
+                $startDateTime = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+                $endDateTime   = clone $startDateTime;
 
                 $data =  [
                     'open' => $startDateTime,
@@ -374,6 +359,17 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         ];
     }
 
+    public function getDaySeparatorPeriod()
+    {
+        return [
+            'to',
+            'and',
+            'through',
+            'a',
+            '-',
+        ];
+    }
+
     protected function explodeByArray($delimiters, $input) {
         $delimiter = $delimiters[0];
         $raw = str_replace($delimiters, $delimiter, $input);
@@ -406,5 +402,87 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         }
 
         return $result;
+    }
+
+    protected function parseDayText($dayOfWeek, $rawDays)
+    {
+        $openDays = [];
+        $dayPositions = [];
+
+        foreach ($dayOfWeek as $key => $day) {
+            $dayPosition = strpos($rawDays, mb_strtolower($key));
+
+            if ($dayPosition !== false) {
+                $dayPositions[$dayPosition] = [
+                    'start' => $dayPosition,
+                    'end'   => $dayPosition + mb_strlen($key),
+                    'day'   => $day,
+                ];
+            }
+        }
+
+        ksort($dayPositions);
+
+        $previousDay = [];
+
+        foreach ($dayPositions as $dayPosition) {
+            $currentDay = $dayPosition['day'];
+
+            if (is_array($currentDay)) {
+                foreach ($currentDay as $dayItem) {
+                    $openDays[$dayItem] = $dayItem;
+                }
+
+                $previousDay = [];
+            } else {
+                $openDays[$currentDay] = $currentDay;
+
+                if ($previousDay) {
+                    $separator = mb_substr($rawDays, $previousDay['end'], $dayPosition['start'] - $previousDay['end']);
+                    $separator = str_replace('.', '', $separator);
+                    $separator = trim($separator);
+
+                    if (in_array($separator, $this->getDaySeparatorPeriod())) {
+                        $period = $this->getDayPeriod($dayOfWeek, $previousDay['day'], $currentDay);
+
+                        foreach ($period as $day) {
+                            $openDays[$day] = $day;
+                        }
+                    } else {
+                        $previousDay = $dayPosition;
+                    }
+                } else {
+                    $previousDay = $dayPosition;
+                }
+            }
+        }
+
+        return $openDays;
+    }
+
+    protected function getDayPeriod($dayOfWeek, $dayStart, $dayEnd)
+    {
+        $allowAddDay = false;
+        $periodRecorded = false;
+        $dayPeriod = [];
+
+        foreach ($dayOfWeek as $day) {
+            if ($day == $dayStart) {
+                $dayPeriod[] = $day;
+                $allowAddDay = true;
+            } elseif ($day == $dayEnd and $allowAddDay) {
+                $dayPeriod[] = $day;
+                $periodRecorded = true;
+                break;
+            } elseif ($allowAddDay) {
+                $dayPeriod[] = $day;
+            }
+        }
+
+        if (!$periodRecorded) {
+            $dayPeriod = [];
+        }
+
+        return $dayPeriod;
     }
 }
