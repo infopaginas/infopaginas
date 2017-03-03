@@ -82,7 +82,7 @@ class AuthController extends Controller
 
         try {
             if ($formHandler->process()) {
-                $message = $translator->trans(self::SUCCESS_RESET_LINK_SENT_MESSAGE);
+                $message = $translator->trans(self::SUCCESS_RESET_PASSWORD_MESSAGE);
 
                 return $this->getSuccessResponse($message);
             }
