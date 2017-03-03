@@ -241,18 +241,21 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             // Monday
             'Mon'       => DayOfWeekModel::CODE_MONDAY,
             'Monday'    => DayOfWeekModel::CODE_MONDAY,
+            'Mondays'   => DayOfWeekModel::CODE_MONDAY,
             'Lun'       => DayOfWeekModel::CODE_MONDAY,
             'Lunes'     => DayOfWeekModel::CODE_MONDAY,
 
             // Tuesday
             'Tue'       => DayOfWeekModel::CODE_TUESDAY,
             'Tuesday'   => DayOfWeekModel::CODE_TUESDAY,
+            'Tuesdays'  => DayOfWeekModel::CODE_TUESDAY,
             'Mar'       => DayOfWeekModel::CODE_TUESDAY,
             'Martes'    => DayOfWeekModel::CODE_TUESDAY,
 
             // Wednesday
             'Wed'       => DayOfWeekModel::CODE_WEDNESDAY,
             'Wednesday' => DayOfWeekModel::CODE_WEDNESDAY,
+            'Wednesdays' => DayOfWeekModel::CODE_WEDNESDAY,
             'Mié'       => DayOfWeekModel::CODE_WEDNESDAY,
             'Mie'       => DayOfWeekModel::CODE_WEDNESDAY,
             'Miércoles' => DayOfWeekModel::CODE_WEDNESDAY,
@@ -261,18 +264,21 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             // Thursday
             'Thu'       => DayOfWeekModel::CODE_THURSDAY,
             'Thursday'  => DayOfWeekModel::CODE_THURSDAY,
+            'Thursdays' => DayOfWeekModel::CODE_THURSDAY,
             'Jue'       => DayOfWeekModel::CODE_THURSDAY,
             'Jueves'    => DayOfWeekModel::CODE_THURSDAY,
 
             // Friday
             'Fri'       => DayOfWeekModel::CODE_FRIDAY,
             'Friday'    => DayOfWeekModel::CODE_FRIDAY,
+            'Fridays'   => DayOfWeekModel::CODE_FRIDAY,
             'Vie'       => DayOfWeekModel::CODE_FRIDAY,
             'Viernes'   => DayOfWeekModel::CODE_FRIDAY,
 
             // Saturday
             'Sat'       => DayOfWeekModel::CODE_SATURDAY,
             'Saturday'  => DayOfWeekModel::CODE_SATURDAY,
+            'Saturdays' => DayOfWeekModel::CODE_SATURDAY,
             'Sáb'       => DayOfWeekModel::CODE_SATURDAY,
             'Sab'       => DayOfWeekModel::CODE_SATURDAY,
             'Sábado'    => DayOfWeekModel::CODE_SATURDAY,
@@ -281,6 +287,7 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             // Sunday
             'Sun'       => DayOfWeekModel::CODE_SUNDAY,
             'Sunday'    => DayOfWeekModel::CODE_SUNDAY,
+            'Sundays'   => DayOfWeekModel::CODE_SUNDAY,
             'Dom'       => DayOfWeekModel::CODE_SUNDAY,
             'Domingo'   => DayOfWeekModel::CODE_SUNDAY,
             'Doming'    => DayOfWeekModel::CODE_SUNDAY,
