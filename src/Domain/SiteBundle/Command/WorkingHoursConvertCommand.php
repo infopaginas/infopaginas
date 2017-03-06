@@ -126,6 +126,9 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
     {
         $data = [];
 
+        // remove empty string
+        $text = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\r\n", $text);
+
         // days and hours at same line
         if (!$data) {
             $dataItem = $this->explodeByArray($this->getLineDelimiters(), $text);
@@ -202,9 +205,33 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         if ($openDays) {
             $hours = $this->explodeByArray($this->getHoursDelimiters(), $rawHours);
 
+            if (empty($hours[1])) {
+                preg_match('/am/', mb_strtolower($rawHours), $timeRaw, PREG_OFFSET_CAPTURE);
+
+                if (!empty($timeRaw[0][1])) {
+                    $hours[0] = mb_strtolower(substr($rawHours, 0, $timeRaw[0][1] + 2));
+                    $hours[1] = mb_strtolower(substr($rawHours, $timeRaw[0][1] + 2));
+                }
+            }
+
             if (!empty($hours[0]) and !empty($hours[1])) {
                 $startTime = strtotime($hours[0]);
                 $endTime = strtotime($hours[1]);
+
+                if (!$endTime) {
+                    preg_match('/pm/', mb_strtolower($hours[1]), $endTimeRaw, PREG_OFFSET_CAPTURE);
+
+                    if (!empty($endTimeRaw[0][1])) {
+                        $endTimeHours = mb_strtolower(substr($hours[1], 0, $endTimeRaw[0][1] + 2));
+                        $endTimeText  = mb_strtolower(substr($hours[1], $endTimeRaw[0][1] + 2));
+
+                        preg_match('/\d/', $endTimeText, $check, PREG_OFFSET_CAPTURE);
+
+                        if (empty($raw[0][1])) {
+                            $endTime = strtotime($endTimeHours);
+                        }
+                    }
+                }
 
                 if ($startTime and $endTime) {
                     $startDateTime = new \DateTime();
@@ -450,7 +477,7 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
                     $separator = trim($separator);
 
                     if (in_array($separator, $this->getDaySeparatorPeriod())) {
-                        $period = $this->getDayPeriod($dayOfWeek, $previousDay['day'], $currentDay);
+                        $period = $this->getDayPeriod($previousDay['day'], $currentDay);
 
                         foreach ($period as $day) {
                             $openDays[$day] = $day;
@@ -467,11 +494,17 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         return $openDays;
     }
 
-    protected function getDayPeriod($dayOfWeek, $dayStart, $dayEnd)
+    protected function getDayPeriod($dayStart, $dayEnd)
     {
         $allowAddDay = false;
         $periodRecorded = false;
         $dayPeriod = [];
+
+        if ($dayStart == DayOfWeekModel::CODE_SUNDAY) {
+            $dayOfWeek = DayOfWeekModel::getDaysOfWeekStartWithSunday();
+        } else {
+            $dayOfWeek = DayOfWeekModel::getDaysOfWeek();
+        }
 
         foreach ($dayOfWeek as $day) {
             if ($day == $dayStart) {
