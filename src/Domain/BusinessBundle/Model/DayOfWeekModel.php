@@ -72,6 +72,19 @@ class DayOfWeekModel
         ];
     }
 
+    public static function getDaysOfWeekStartWithSunday()
+    {
+        return [
+            self::CODE_SUNDAY,
+            self::CODE_MONDAY,
+            self::CODE_TUESDAY,
+            self::CODE_WEDNESDAY,
+            self::CODE_THURSDAY,
+            self::CODE_FRIDAY,
+            self::CODE_SATURDAY,
+        ];
+    }
+
     public static function getAllDaysOfWeek()
     {
         return [
