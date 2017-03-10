@@ -119,15 +119,6 @@ class ChangeSetCalculator
         return $changeSet;
     }
 
-    /**
-     * @param $fieldName
-     * @param $oldValue
-     * @param $newValue
-     * @param $action
-     * @param $class
-     *
-     * @return ChangeSetEntry
-     */
     private static function buildChangeSetEntryObject($fieldName, $oldValue, $newValue, $action, $class = '')
     {
         $entry = new ChangeSetEntry();
@@ -530,13 +521,8 @@ class ChangeSetCalculator
     {
         $changeSetEntries = [];
 
-        $locales = [
-            strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-            strtolower(BusinessProfile::TRANSLATION_LANG_ES),
-        ];
-
         foreach (BusinessProfile::getTranslatableFields() as $field) {
-            foreach ($locales as $locale) {
+            foreach (self::getLocales() as $locale) {
                 $valueNew = (string)$entityNew->getTranslationItem($field, $locale);
                 $valueOld = (string)$entityOld->getTranslationItem($field, $locale);
 
@@ -561,13 +547,8 @@ class ChangeSetCalculator
 
         $changeSetEntries = [];
 
-        $locales = [
-            strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-            strtolower(BusinessProfile::TRANSLATION_LANG_ES),
-        ];
-
         foreach (BusinessProfile::getTaskSeoBlock() as $field) {
-            foreach ($locales as $locale) {
+            foreach (self::getLocales() as $locale) {
                 $valueNew = (string)$entityNew->getTranslationItem($field, $locale);
                 $valueOld = (string)$entityOld->getTranslationItem($field, $locale);
 
@@ -596,5 +577,13 @@ class ChangeSetCalculator
         }
 
         return $changeSetEntries;
+    }
+
+    public static function getLocales()
+    {
+        return [
+            strtolower(BusinessProfile::TRANSLATION_LANG_EN),
+            strtolower(BusinessProfile::TRANSLATION_LANG_ES),
+        ];
     }
 }
