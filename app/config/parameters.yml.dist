@@ -34,7 +34,7 @@ parameters:
     sonata_media.cdn.folder: infopaginas
 
     # elastic search settings
-    elastic_search.host: 'http://52.55.24.17:9200'
+    elastic_search.host: 'http://34.193.8.184:9200'
     # unique document index preferably host
     elastic_search.document_index: 'infopaginas.com'
 
