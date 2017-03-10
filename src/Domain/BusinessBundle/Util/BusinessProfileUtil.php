@@ -33,6 +33,7 @@ class BusinessProfileUtil
         } else {
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $businessProfileName = $businessProfile->getName();
+            $locale = $businessProfile->getLocale();
         }
 
         $translator = $container->get('translator');
@@ -45,7 +46,7 @@ class BusinessProfileUtil
                 'company'  => mb_substr($companyName, 0, $brandMaxLength),
             ],
             'messages',
-            $businessProfile->getLocale()
+            strtolower($locale)
         );
 
         $seoTitle = mb_substr($seoTitle, 0, $titleMaxLength);
@@ -78,6 +79,7 @@ class BusinessProfileUtil
             $description = $businessProfile->getDescription();
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $workingHours = $businessProfile->getWorkingHours();
+            $locale = $businessProfile->getLocale();
         }
 
         $translator = $container->get('translator');
@@ -89,7 +91,7 @@ class BusinessProfileUtil
                 'location' => $catalogLocalityName,
             ],
             'messages',
-            $businessProfile->getLocale()
+            strtolower($locale)
         );
 
         if ($businessProfile->getWorkingHours() and mb_strlen($seoDescription) < $descriptionMaxLength) {
@@ -101,7 +103,7 @@ class BusinessProfileUtil
                     'hours' => $workingHours,
                 ],
                 'messages',
-                $businessProfile->getLocale()
+                strtolower($locale)
             );
         }
 
@@ -112,7 +114,7 @@ class BusinessProfileUtil
                     'link' => $businessProfile->getWebsiteLink(),
                 ],
                 'messages',
-                $businessProfile->getLocale()
+                strtolower($locale)
             );
         }
 
@@ -123,7 +125,7 @@ class BusinessProfileUtil
                     'phone' => $businessProfile->getPhones()->first()->getPhone(),
                 ],
                 'messages',
-                $businessProfile->getLocale()
+                strtolower($locale)
             );
         }
 

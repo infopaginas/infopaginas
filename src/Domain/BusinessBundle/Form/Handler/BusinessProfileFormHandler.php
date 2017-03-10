@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 29.06.16
- * Time: 19:48
- */
 
 namespace Domain\BusinessBundle\Form\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
@@ -18,7 +13,6 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,7 +27,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Class BusinessProfileFormHandler
  * @package Domain\BusinessBundle\Form\Handler
  */
-class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerInterface
+class BusinessProfileFormHandler extends BaseFormHandler
 {
     const MESSAGE_BUSINESS_PROFILE_CREATED = 'business_profile.message.created';
     const MESSAGE_BUSINESS_PROFILE_UPDATED = 'business_profile.message.updated';
@@ -43,8 +37,20 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
     /** @var Request  */
     protected $request;
 
+    /** @var array */
+    protected $requestParams;
+
+    /** @var EntityManager */
+    protected $em;
+
     /** @var BusinessProfileManager */
-    protected $manager;
+    protected $businessProfileManager;
+
+    /** @var BusinessProfile */
+    protected $businessProfileNew;
+
+    /** @var BusinessProfile|null */
+    protected $businessProfileOld;
 
     /** @var TasksManager */
     protected $tasksManager;
@@ -62,28 +68,25 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
      * FreeBusinessProfileFormHandler constructor.
      * @param FormInterface $form
      * @param Request $request
-     * @param BusinessProfileManager $manager
-     * @param TasksManager $tasksManager
      */
     public function __construct(
         FormInterface $form,
         Request $request,
-        BusinessProfileManager $manager,
-        TasksManager $tasksManager,
-        ValidatorInterface $validator,
-        TokenStorageInterface $tokenStorage,
-        UsersManager $userManager,
         ContainerInterface $container
     ) {
         $this->form               = $form;
         $this->request            = $request;
-        $this->manager            = $manager;
-        $this->tasksManager       = $tasksManager;
-        $this->validator          = $validator;
-        $this->currentUser        = $tokenStorage->getToken()->getUser();
-        $this->userManager        = $userManager;
         $this->container          = $container;
+
+        $this->businessProfileManager = $this->container->get('domain_business.manager.business_profile');
+        $this->tasksManager       = $this->container->get('domain_business.manager.tasks');
+        $this->userManager        = $this->container->get('oxa.manager.users');
+        $this->validator          = $this->container->get('validator');
         $this->translator         = $this->container->get('translator');
+        $this->em                 = $this->container->get('doctrine.orm.entity_manager');
+
+        $tokenStorage             = $this->container->get('security.token_storage');
+        $this->currentUser        = $tokenStorage->getToken()->getUser();
     }
 
     /**
@@ -91,86 +94,35 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
      */
     public function process()
     {
-        $businessProfileId = $this->request->get('businessProfileId', false);
-        $post   = $this->request->request->all()[$this->form->getName()];
+        $businessProfileId   = $this->request->get('businessProfileId', false);
 
-        $oldCategories  = [];
-        $oldImages      = [];
+        $this->requestParams = $this->request->request->all()[$this->form->getName()];
 
         if ($businessProfileId !== false) {
-            /* @var BusinessProfile $businessProfile */
-            $businessProfile = $this->manager->find($businessProfileId);
-
-            $this->form->setData($businessProfile);
-
-            //workaround for category/subcategories update
-            $oldCategories = clone $businessProfile->getCategories();
-
-            //workaround for businessGallery properties update
-            $oldImages     = $this->cloneBusinessGallery($businessProfile);
+            $this->businessProfileOld = $this->businessProfileManager->find($businessProfileId);
+        } else {
+            $this->businessProfileOld = null;
         }
 
-        if ($this->request->getMethod() == 'POST') {
-            $requestParams = $this->request->request->all();
+        if ($this->request->getMethod() == Request::METHOD_POST) {
             $this->form->handleRequest($this->request);
 
-            /** @var BusinessProfile $businessProfile */
-            $businessProfile = $this->form->getData();
+            $this->businessProfileNew = $this->form->getData();
 
-            $mediaItems = [
-                BusinessProfile::BUSINESS_PROFILE_FIELD_LOGO,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_BACKGROUND,
-            ];
+            $this->handleMediaUpdate();
+            $this->handleCategoriesUpdate();
 
-            foreach ($mediaItems as $mediaItem) {
-                if (empty($requestParams[$this->form->getName()][$mediaItem])) {
-                    $businessProfile->{'set' . ucfirst($mediaItem)}(null);
-                }
-            }
-
-            if (!isset($requestParams[$this->form->getName()]['video'])) {
-                $businessProfile->setVideo(null);
-
-                if ($businessProfile->getIsSetVideo()) {
-                    $businessProfile->setIsSetVideo(false);
-                }
-            } else {
-                $businessProfile->setIsSetVideo(true);
-            }
-
-            $newCategoryIds  = $this->getCategoriesIds($post);
-            $businessProfile = $this->handleCategoriesUpdate($businessProfile, $newCategoryIds);
-
-            if (!$newCategoryIds) {
-                $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
-            }
-
-            $this->checkTranslationBlock($post);
-            $this->checkCollectionWorkingHoursBlock($businessProfile->getCollectionWorkingHours());
+            $this->checkTranslationBlock($this->requestParams);
+            $this->checkCollectionWorkingHoursBlock($this->businessProfileNew->getCollectionWorkingHours());
 
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
-                if (isset($post['firstname']) && isset($post['lastname'])) {
-                    if (!empty($post['firstname']) && !empty($post['lastname']) && !empty($post['email'])) {
-                        $user = $this->getUsersManager()
-                            ->createMerchantForBusinessProfile($post['firstname'], $post['lastname'], $post['email']);
+                $this->handleBusinessOwner();
+                $this->handleTranslationBlock();
+                $this->handleSeoBlockUpdate();
+                $this->setSearchParams();
 
-                        $businessProfile->setUser($user);
-                    }
-                }
-
-                $translations = $businessProfile->getTranslations();
-
-                foreach ($translations as $item) {
-                    $businessProfile->removeTranslation($item);
-                }
-
-                $businessProfile = $this->handleTranslationBlock($businessProfile, $post);
-                $businessProfile = $this->handleSeoBlockUpdate($businessProfile);
-
-                $businessProfile = $this->setSearchParams($businessProfile);
-
-                $this->onSuccess($businessProfile, $oldCategories, $oldImages);
+                $this->onSuccess();
                 return true;
             }
         }
@@ -178,58 +130,103 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         return false;
     }
 
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param Collection      $oldCategories
-     * @param array           $oldImages
-     */
-    private function onSuccess(BusinessProfile $businessProfile, $oldCategories, $oldImages)
+    private function onSuccess()
     {
-        if (!$businessProfile->getId()) {
+        if (!$this->businessProfileOld) {
             if ($this->currentUser instanceof User) {
-                $businessProfile->setUser($this->currentUser);
+                $this->businessProfileNew->setUser($this->currentUser);
             }
 
-            $this->getBusinessProfilesManager()->saveProfile(
-                $businessProfile,
+            $this->businessProfileManager->saveProfile(
+                $this->businessProfileNew,
                 strtolower(BusinessProfile::TRANSLATION_LANG_ES)
             );
             $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
 
-            $this->getTasksManager()->createNewProfileConfirmationRequest($businessProfile);
+            $this->tasksManager->createNewProfileConfirmationRequest($this->businessProfileNew);
         } else {
             //create 'Update Business Profile' Task for Admin / CM
-            $this->getTasksManager()->createUpdateProfileConfirmationRequest(
-                $businessProfile,
-                $oldCategories,
-                $oldImages
+            $this->tasksManager->createUpdateProfileConfirmationRequest(
+                $this->businessProfileNew,
+                $this->businessProfileOld
             );
+
             $message = self::MESSAGE_BUSINESS_PROFILE_UPDATED;
         }
 
-        $this->container->get('request')->getSession()
-            ->getFlashBag()->add(self::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP, $this->translator->trans($message));
+        $session = $this->request->getSession();
+
+        if ($session) {
+            $session->getFlashBag()->add(
+                self::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
+                $this->translator->trans($message)
+            );
+        }
     }
 
-    private function getUsersManager() : UsersManager
+    private function handleMediaUpdate()
     {
-        return $this->userManager;
-    }
+        foreach (BusinessProfile::getTaskMediaManyToOneRelations() as $mediaItem) {
+            if (!empty($this->requestParams[$mediaItem])) {
+                if ($mediaItem == BusinessProfile::BUSINESS_PROFILE_RELATION_VIDEO) {
+                    $repository = $this->em->getRepository('OxaVideoBundle:VideoMedia');
+                } else {
+                    $repository = $this->em->getRepository('OxaSonataMediaBundle:Media');
+                }
 
-    /**
-     * @return TasksManager
-     */
-    private function getTasksManager() : TasksManager
-    {
-        return $this->tasksManager;
-    }
+                $entity = $repository->find($this->requestParams[$mediaItem]['id']);
 
-    /**
-     * @return BusinessProfileManager
-     */
-    private function getBusinessProfilesManager() : BusinessProfileManager
-    {
-        return $this->manager;
+                $entityNew = clone $entity;
+
+                foreach ($this->requestParams[$mediaItem] as $key => $property) {
+                    if (!in_array($key, $this->getSkippedProperties())) {
+                        $entityNew->{'set' . ucfirst($key)}($property);
+                    }
+                }
+
+                $this->businessProfileNew->{'set' . ucfirst($mediaItem)}($entityNew);
+            }
+        }
+
+        foreach (BusinessProfile::getTaskMediaOneToManyRelations() as $mediaItems) {
+            if ($mediaItems == BusinessProfile::BUSINESS_PROFILE_RELATION_IMAGES and
+                !empty($this->requestParams[$mediaItems])
+            ) {
+                $params = $this->requestParams[$mediaItems];
+
+                if ($this->businessProfileOld) {
+                    $galleries = $this->businessProfileOld->getImages();
+
+                    foreach ($galleries as $key => $gallery) {
+                        if (!empty($params[$key])) {
+                            /* @var BusinessGallery gallery */
+                            $galleryNew = clone $gallery;
+
+                            $media = $this->em->getRepository('OxaSonataMediaBundle:Media')->find($params[$key]['media']);
+
+                            $galleryNew->setMedia($media);
+                            $galleryNew->setDescription($params[$key]['description']);
+
+                            $this->businessProfileNew->addImage($galleryNew);
+                            unset($params[$key]);
+                        }
+                    }
+                }
+
+                foreach ($params as $item) {
+                    $galleryNew = new BusinessGallery();
+
+                    $media = $this->em->getRepository('OxaSonataMediaBundle:Media')->find($item['media']);
+
+                    $galleryNew->setMedia($media);
+                    $galleryNew->setDescription($item['description']);
+
+                    $this->businessProfileNew->addImage($galleryNew);
+                }
+            }
+        }
+
+        return $this->businessProfileNew;
     }
 
     /**
@@ -255,48 +252,53 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         return $ids;
     }
 
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param array           $newCategoryIds
-     * @return BusinessProfile
-     */
-    private function handleCategoriesUpdate($businessProfile, $newCategoryIds)
+    private function handleCategoriesUpdate()
     {
-        if ($newCategoryIds) {
-            foreach ($businessProfile->getCategories() as $item) {
-                $key = array_search($item->getId(), $newCategoryIds);
+        $newCategoryIds  = $this->getCategoriesIds($this->requestParams);
 
-                if ($key) {
-                    unset($newCategoryIds[$key]);
-                } else {
-                    $businessProfile->removeCategory($item);
-                }
-            }
+        if (!$newCategoryIds) {
+            $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
+        } else {
+            $categories = $this->businessProfileManager->getCategoriesByIds($newCategoryIds);
 
-            if ($newCategoryIds) {
-                $categories = $this->manager->getCategoriesByIds($newCategoryIds);
-
-                foreach ($categories as $category) {
-                    $businessProfile->addCategory($category);
-                }
+            foreach ($categories as $category) {
+                $this->businessProfileNew->addCategory($category);
             }
         }
 
-        return $businessProfile;
+        return $this->businessProfileNew;
     }
 
-    private function handleTranslationBlock(BusinessProfile $businessProfile, $post)
+    private function handleBusinessOwner()
+    {
+        if (!empty($this->requestParams['firstname']) and
+            !empty($this->requestParams['lastname']) and
+            !empty($this->requestParams['email'])
+        ) {
+            $user = $this->userManager->createMerchantForBusinessProfile(
+                $this->requestParams['firstname'],
+                $this->requestParams['lastname'],
+                $this->requestParams['email']
+            );
+
+            $this->businessProfileNew->setUser($user);
+        }
+
+        return $this->businessProfileNew;
+    }
+
+    private function handleTranslationBlock()
     {
         $fields = BusinessProfile::getTranslatableFields();
 
         foreach ($fields as $field) {
-            $businessProfile = $this->handleTranslationSet($businessProfile, $field, $post);
+            $this->handleTranslationSet($field, $this->requestParams);
         }
 
-        return $businessProfile;
+        return $this->businessProfileNew;
     }
 
-    private function handleTranslationSet(BusinessProfile $businessProfile, $property, $post)
+    private function handleTranslationSet($property, $data)
     {
         $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
         $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
@@ -304,117 +306,72 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         $dataEn = false;
         $dataEs = false;
 
-        if (!empty($post[$propertyEn])) {
-            $dataEn = trim($post[$propertyEn]);
+        if (!empty($data[$propertyEn])) {
+            $dataEn = trim($data[$propertyEn]);
         }
 
-        if (!empty($post[$propertyEs])) {
-            $dataEs = trim($post[$propertyEs]);
+        if (!empty($data[$propertyEs])) {
+            $dataEs = trim($data[$propertyEs]);
         }
 
-        if (property_exists($businessProfile, $property)) {
+        if (property_exists($this->businessProfileNew, $property)) {
             if ($dataEs) {
-                if ($businessProfile->{'get' . $property}() and $dataEn) {
-                    $businessProfile->{'set' . $property}($dataEn);
+                if ($this->businessProfileOld and $this->businessProfileOld->{'get' . $property}() and $dataEn) {
+                    $this->businessProfileNew->{'set' . $property}($dataEn);
                 } else {
-                    $businessProfile->{'set' . $property}($dataEs);
+                    $this->businessProfileNew->{'set' . $property}($dataEs);
                 }
 
-                $translation = new BusinessProfileTranslation(
-                    strtolower(BusinessProfile::TRANSLATION_LANG_ES),
-                    $property,
-                    $dataEs
-                );
-
-                $businessProfile->addTranslation($translation);
-
-                if (property_exists($businessProfile, $propertyEs)) {
-                    $businessProfile->{'set' . $propertyEs}($dataEs);
+                if (property_exists($this->businessProfileNew, $propertyEs)) {
+                    $this->businessProfileNew->{'set' . $propertyEs}($dataEs);
                 }
+
+                $this->addBusinessTranslation($property, $dataEs, BusinessProfile::TRANSLATION_LANG_ES);
             } elseif ($dataEn) {
-                if (!$businessProfile->{'get' . $property}()) {
-                    $businessProfile->{'set' . $property}($dataEn);
+                if (!$this->businessProfileNew->{'get' . $property}()) {
+                    $this->businessProfileNew->{'set' . $property}($dataEn);
                 }
             }
 
             if ($dataEn) {
-                $translation = new BusinessProfileTranslation(
-                    strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-                    $property,
-                    $dataEn
-                );
+                $this->addBusinessTranslation($property, $dataEn, BusinessProfile::TRANSLATION_LANG_EN);
 
-                $businessProfile->addTranslation($translation);
-
-                if (property_exists($businessProfile, $propertyEn)) {
-                    $businessProfile->{'set' . $propertyEn}($dataEn);
+                if (property_exists($this->businessProfileNew, $propertyEn)) {
+                    $this->businessProfileNew->{'set' . $propertyEn}($dataEn);
                 }
-            }
-
-            if (!$dataEn) {
-                if (property_exists($businessProfile, $propertyEn)) {
-                    $businessProfile->{'set' . $propertyEn}(null);
-                }
-
-                $translation = new BusinessProfileTranslation(
-                    strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-                    $property,
-                    null
-                );
-
-                $businessProfile->addTranslation($translation);
-            }
-
-            if (!$dataEs) {
-                if (property_exists($businessProfile, $propertyEs)) {
-                    $businessProfile->{'set' . $propertyEs}(null);
-                }
-
-                $translation = new BusinessProfileTranslation(
-                    strtolower(BusinessProfile::TRANSLATION_LANG_ES),
-                    $property,
-                    null
-                );
-
-                $businessProfile->addTranslation($translation);
-            }
-
-            if (!$dataEn and !$dataEs) {
-                $businessProfile->{'set' . $property}(null);
             }
         }
 
-        return $businessProfile;
+        return $this->businessProfileNew;
     }
 
-    private function handleSeoBlockUpdate(BusinessProfile $businessProfile)
+    private function handleSeoBlockUpdate()
     {
         $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
-            $businessProfile,
+            $this->businessProfileNew,
             $this->container,
             BusinessProfile::TRANSLATION_LANG_EN
         );
 
         $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
-            $businessProfile,
+            $this->businessProfileNew,
             $this->container,
             BusinessProfile::TRANSLATION_LANG_ES
         );
 
         $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
-            $businessProfile,
+            $this->businessProfileNew,
             $this->container,
             BusinessProfile::TRANSLATION_LANG_EN
         );
 
         $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
-            $businessProfile,
+            $this->businessProfileNew,
             $this->container,
             BusinessProfile::TRANSLATION_LANG_ES
         );
 
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
+        $this->handleTranslationSet(
             BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
             [
                 BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
@@ -422,8 +379,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             ]
         );
 
-        $businessProfile = $this->handleTranslationSet(
-            $businessProfile,
+        $this->handleTranslationSet(
             BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
             [
                 BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN => $seoDescriptionEn,
@@ -431,7 +387,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
             ]
         );
 
-        return $businessProfile;
+        return $this->businessProfileNew;
     }
 
     private function checkTranslationBlock($post)
@@ -536,7 +492,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         return false;
     }
 
-    private function setSearchParams(BusinessProfile $businessProfile)
+    private function setSearchParams()
     {
         $data = [
             BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
@@ -544,17 +500,17 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         ];
 
         foreach ($data as $field) {
-            $valueEn = $businessProfile->{'get' . $field . BusinessProfile::TRANSLATION_LANG_EN}();
-            $valueEs = $businessProfile->{'get' . $field . BusinessProfile::TRANSLATION_LANG_ES}();
+            $valueEn = $this->businessProfileNew->{'get' . $field . BusinessProfile::TRANSLATION_LANG_EN}();
+            $valueEs = $this->businessProfileNew->{'get' . $field . BusinessProfile::TRANSLATION_LANG_ES}();
 
             if ($valueEn and !$valueEs) {
-                $businessProfile->{'set' . $field . BusinessProfile::TRANSLATION_LANG_ES}($valueEn);
+                $this->businessProfileNew->{'set' . $field . BusinessProfile::TRANSLATION_LANG_ES}($valueEn);
             } elseif (!$valueEn and $valueEs) {
-                $businessProfile->{'set' . $field . BusinessProfile::TRANSLATION_LANG_EN}($valueEs);
+                $this->businessProfileNew->{'set' . $field . BusinessProfile::TRANSLATION_LANG_EN}($valueEs);
             }
         }
 
-        return $businessProfile;
+        return $this->businessProfileNew;
     }
 
     private function cloneBusinessGallery(BusinessProfile $businessProfile)
@@ -570,5 +526,46 @@ class BusinessProfileFormHandler extends BaseFormHandler implements FormHandlerI
         }
 
         return $data;
+    }
+
+    private function addBusinessTranslation($property, $data, $locale)
+    {
+        if ($this->businessProfileOld) {
+            $translation = $this->businessProfileOld->getTranslationItem(
+                $property,
+                mb_strtolower($locale)
+            );
+
+            if ($translation) {
+                $translationNew = clone $translation;
+
+                $translationNew->setContent($data);
+            } else {
+                $translationNew = new BusinessProfileTranslation(
+                    mb_strtolower($locale),
+                    $property,
+                    $data
+                );
+            }
+
+            $this->businessProfileNew->addTranslation($translationNew);
+        } else {
+            $translationNew = new BusinessProfileTranslation(
+                mb_strtolower($locale),
+                $property,
+                $data
+            );
+
+            $this->businessProfileNew->addTranslation($translationNew);
+        }
+
+        return $this->businessProfileNew;
+    }
+
+    private function getSkippedProperties()
+    {
+        return [
+            'id',
+        ];
     }
 }
