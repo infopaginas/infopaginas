@@ -91,16 +91,6 @@ class TasksManager
         return $this->save($task);
     }
 
-    /**
-     * Create new 'Update Business Profile' task
-     *
-     * @access public
-     *
-     * @param $entityNew
-     * @param $entityOld
-     *
-     * @return array
-     */
     public function createUpdateProfileConfirmationRequest($entityNew, $entityOld) : array
     {
         $changeSetCalculator = $this->getChangeSetCalculator($entityNew);

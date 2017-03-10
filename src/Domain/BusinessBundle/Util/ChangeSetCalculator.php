@@ -48,13 +48,6 @@ class ChangeSetCalculator
     const CHANGE_MEDIA_RELATION_MANY_TO_ONE = 'CHANGE_MEDIA_RELATION_MANY_TO_ONE';
     const CHANGE_MEDIA_RELATION_ONE_TO_MANY = 'CHANGE_MEDIA_RELATION_ONE_TO_MANY';
 
-    /**
-     * @param EntityManagerInterface $em
-     * @param $entityNew
-     * @param $entityOld
-     *
-     * @return ChangeSet
-     */
     public static function getChangeSet(EntityManagerInterface $em, $entityNew, $entityOld) : ChangeSet
     {
         $commonFieldsChangeSetEntries = self::getCommonFieldsChangeSetEntries(
@@ -132,11 +125,6 @@ class ChangeSetCalculator
         return $entry;
     }
 
-    /**
-     * @param $entity
-     *
-     * @return string
-     */
     private static function serializeEntityValue($entity)
     {
         $data = [
@@ -147,11 +135,6 @@ class ChangeSetCalculator
         return json_encode($data);
     }
 
-    /**
-     * @param $entities
-     *
-     * @return string
-     */
     private static function serializeEntitiesCollectionValue($entities)
     {
         $data = [];
