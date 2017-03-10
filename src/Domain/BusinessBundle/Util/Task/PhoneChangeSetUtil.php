@@ -37,6 +37,16 @@ class PhoneChangeSetUtil
         $collection = new ArrayCollection();
 
         $phones = json_decode($change->getNewValue());
+        $dataOld      = json_decode($change->getOldValue());
+
+        if ($dataOld) {
+            foreach ($dataOld as $key => $itemOld) {
+                if (!empty($phones[$key])) {
+                    $phones[$key]->id = $itemOld->id;
+                }
+            }
+        }
+
         if ($phones) {
             foreach ($phones as $item) {
                 if (!$item->id) {

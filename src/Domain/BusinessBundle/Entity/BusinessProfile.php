@@ -57,32 +57,12 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
-    const BUSINESS_PROFILE_FIELD_LOGO       = 'logo';
-    const BUSINESS_PROFILE_FIELD_BACKGROUND = 'background';
-
-    const BUSINESS_PROFILE_FIELD_NAME          = 'name';
-    const BUSINESS_PROFILE_FIELD_DESCRIPTION   = 'description';
-    const BUSINESS_PROFILE_FIELD_PRODUCT       = 'product';
-    const BUSINESS_PROFILE_FIELD_BRANDS        = 'brands';
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS = 'workingHours';
-    const BUSINESS_PROFILE_FIELD_SLOGAN        = 'slogan';
-
     const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 1000;
     const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 1000;
     const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 255;
     const BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH = 255;
     const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
-
-    const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
-    const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
-
-    const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY = 'catalogLocality';
-    const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
-    const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
-    const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
-
-    const WORKING_HOURS_ASSOCIATED_FIELD = 'collectionWorkingHours';
 
     const BUSINESS_STATUS_ACTIVE   = 'active';
     const BUSINESS_STATUS_INACTIVE = 'inactive';
@@ -100,6 +80,81 @@ class BusinessProfile implements
 
     const DEFAULT_MILES_FROM_MY_BUSINESS = 100;
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
+
+    // translatable fields
+    const BUSINESS_PROFILE_FIELD_NAME           = 'name';
+    const BUSINESS_PROFILE_FIELD_NAME_EN        = 'nameEn';
+    const BUSINESS_PROFILE_FIELD_NAME_ES        = 'nameEs';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION    = 'description';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION_EN = 'descriptionEn';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
+    const BUSINESS_PROFILE_FIELD_PRODUCT        = 'product';
+    const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
+    const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
+    const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
+
+    // common fields
+    const BUSINESS_PROFILE_FIELD_WEBSITE    = 'website';
+    const BUSINESS_PROFILE_FIELD_EMAIL      = 'email';
+
+    const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
+    const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS   = 'milesOfMyBusiness';
+
+    const BUSINESS_PROFILE_FIELD_STREET_ADDRESS     = 'streetAddress';
+    const BUSINESS_PROFILE_FIELD_STREET_NUMBER      = 'streetNumber';
+    const BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS   = 'extendedAddress';
+    const BUSINESS_PROFILE_FIELD_CROSS_STREET       = 'crossStreet';
+    const BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS     = 'googleAddress';
+    const BUSINESS_PROFILE_FIELD_STATE              = 'state';
+    const BUSINESS_PROFILE_FIELD_CITY               = 'city';
+    const BUSINESS_PROFILE_FIELD_ZIP_CODE           = 'zipCode';
+    const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS     = 'customAddress';
+    const BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS    = 'useMapAddress';
+    const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
+
+    const BUSINESS_PROFILE_FIELD_TWITTER_URL    = 'twitterURL';
+    const BUSINESS_PROFILE_FIELD_FACEBOOK_URL   = 'facebookURL';
+    const BUSINESS_PROFILE_FIELD_GOOGLE_URL     = 'googleURL';
+    const BUSINESS_PROFILE_FIELD_YOUTUBE_URL    = 'youtubeURL';
+
+    const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
+    const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
+
+    const BUSINESS_PROFILE_FIELD_LATITUDE = 'latitude';
+    const BUSINESS_PROFILE_FIELD_LONGITUDE = 'longitude';
+
+    // many-to-one relations
+    const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY = 'catalogLocality';
+    const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
+
+    // one-to-many relations
+    const BUSINESS_PROFILE_RELATION_WORKING_HOURS   = 'collectionWorkingHours';
+    const BUSINESS_PROFILE_RELATION_PHONES          = 'phones';
+
+    const WORKING_HOURS_ASSOCIATED_FIELD = 'collectionWorkingHours';
+
+    // many-to-many relations
+    const BUSINESS_PROFILE_RELATION_CATEGORIES      = 'categories';
+    const BUSINESS_PROFILE_RELATION_AREAS           = 'areas';
+    const BUSINESS_PROFILE_RELATION_PAYMENT_METHODS = 'paymentMethods';
+    const BUSINESS_PROFILE_RELATION_LOCALITIES      = 'localities';
+    const BUSINESS_PROFILE_RELATION_NEIGHBORHOODS   = 'neighborhoods';
+
+    // one-to-many media relations
+    const BUSINESS_PROFILE_RELATION_IMAGES   = 'images';
+
+    // many-to-one media relations
+    const BUSINESS_PROFILE_RELATION_VIDEO      = 'video';
+    const BUSINESS_PROFILE_RELATION_LOGO       = 'logo';
+    const BUSINESS_PROFILE_RELATION_BACKGROUND = 'background';
+
+    const BUSINESS_PROFILE_FIELD_LOGO       = 'logo';
+    const BUSINESS_PROFILE_FIELD_BACKGROUND = 'background';
+
+    const BUSINESS_PROFILE_RELATION_TRANSLATIONS = 'translations';
+
+    const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
+    const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
     /**
      * @var int
@@ -2773,22 +2828,6 @@ class BusinessProfile implements
     }
 
     /**
-     * get list of bilingual fields
-     * @return array
-     */
-    public static function getTranslatableFields()
-    {
-        return [
-            self::BUSINESS_PROFILE_FIELD_NAME,
-            self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
-            self::BUSINESS_PROFILE_FIELD_PRODUCT,
-            self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
-            self::BUSINESS_PROFILE_FIELD_SLOGAN,
-        ];
-    }
-
-    /**
      * Add businessOverviewReport
      *
      * @param BusinessOverviewReport $businessOverviewReport
@@ -2889,5 +2928,112 @@ class BusinessProfile implements
     public function removeCollectionWorkingHour(BusinessProfileWorkingHour $workingHours)
     {
         $this->collectionWorkingHours->removeElement($workingHours);
+    }
+
+    /**
+     * get list of bilingual fields
+     * @return array
+     */
+    public static function getTranslatableFields()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_NAME,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+            self::BUSINESS_PROFILE_FIELD_PRODUCT,
+            self::BUSINESS_PROFILE_FIELD_BRANDS,
+            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
+            self::BUSINESS_PROFILE_FIELD_SLOGAN,
+        ];
+    }
+
+    public static function getTaskCommonFields()
+    {
+        return [
+            // translatable field
+            self::BUSINESS_PROFILE_FIELD_NAME,
+            self::BUSINESS_PROFILE_FIELD_NAME_EN,
+            self::BUSINESS_PROFILE_FIELD_NAME_ES,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
+
+            self::BUSINESS_PROFILE_FIELD_WEBSITE,
+            self::BUSINESS_PROFILE_FIELD_EMAIL,
+
+            self::BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE,
+            self::BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS,
+
+            self::BUSINESS_PROFILE_FIELD_STREET_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_STREET_NUMBER,
+            self::BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_CROSS_STREET,
+            self::BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_STATE,
+            self::BUSINESS_PROFILE_FIELD_CITY,
+            self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
+            self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+
+            self::BUSINESS_PROFILE_FIELD_TWITTER_URL,
+            self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL,
+            self::BUSINESS_PROFILE_FIELD_GOOGLE_URL,
+            self::BUSINESS_PROFILE_FIELD_YOUTUBE_URL,
+
+            // geo
+            self::BUSINESS_PROFILE_FIELD_LATITUDE,
+            self::BUSINESS_PROFILE_FIELD_LONGITUDE,
+        ];
+    }
+
+    public static function getTaskManyToOneRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY,
+            self::BUSINESS_PROFILE_FIELD_COUNTRY,
+        ];
+    }
+
+    public static function getTaskOneToManyRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_WORKING_HOURS,
+            self::BUSINESS_PROFILE_RELATION_PHONES,
+        ];
+    }
+
+    public static function getTaskManyToManyRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_CATEGORIES,
+            self::BUSINESS_PROFILE_RELATION_AREAS,
+            self::BUSINESS_PROFILE_RELATION_PAYMENT_METHODS,
+            self::BUSINESS_PROFILE_RELATION_LOCALITIES,
+            self::BUSINESS_PROFILE_RELATION_NEIGHBORHOODS,
+        ];
+    }
+
+    public static function getTaskMediaManyToOneRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_VIDEO,
+            self::BUSINESS_PROFILE_RELATION_LOGO,
+            self::BUSINESS_PROFILE_RELATION_BACKGROUND,
+        ];
+    }
+
+    public static function getTaskMediaOneToManyRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_IMAGES,
+        ];
+    }
+
+    public static function getTaskSeoBlock()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_SEO_TITLE,
+            self::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
+        ];
     }
 }

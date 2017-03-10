@@ -153,11 +153,6 @@ services:
         arguments:
             - '@domain_business.form.business_profile'
             - '@request'
-            - '@domain_business.manager.business_profile'
-            - '@domain_business.manager.tasks'
-            - '@validator'
-            - '@security.token_storage'
-            - '@oxa.manager.users'
             - '@service_container'
 
     domain_business.form.handler.review:

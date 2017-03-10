@@ -60,6 +60,14 @@ twig:
             BACKGROUND_REMOVE:              'BACKGROUND_REMOVE'
             BACKGROUND_UPDATE:              'BACKGROUND_UPDATE'
 
+            COMMON_PROPERTY:                'CHANGE_COMMON_PROPERTY'
+            TRANSLATION:                    'CHANGE_TRANSLATION'
+            RELATION_MANY_TO_ONE:           'CHANGE_RELATION_MANY_TO_ONE'
+            RELATION_ONE_TO_MANY:           'CHANGE_RELATION_ONE_TO_MANY'
+            RELATION_MANY_TO_MANY:          'CHANGE_RELATION_MANY_TO_MANY'
+            MEDIA_RELATION_MANY_TO_ONE:     'CHANGE_MEDIA_RELATION_MANY_TO_ONE'
+            MEDIA_RELATION_ONE_TO_MANY:     'CHANGE_MEDIA_RELATION_ONE_TO_MANY'
+
 #       banners - const of TypeInterface
         BANNER_CODE:
             HOME_VERTICAL:           1
