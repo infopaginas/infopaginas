@@ -293,6 +293,28 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Youtube',
                 'required' => false,
             ])
+            ->add('instagramURL', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'instagram.example.email.placeholder',
+                ],
+                'constraints' => [
+                    new ConstraintUrlExpanded(),
+                ],
+                'label' => 'Instagram',
+                'required' => false,
+            ])
+            ->add('tripAdvisorURL', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'tripAdvisor.example.email.placeholder',
+                ],
+                'constraints' => [
+                    new ConstraintUrlExpanded(),
+                ],
+                'label' => 'TripAdvisor',
+                'required' => false,
+            ])
         ;
 
         if ($this->isUserSectionRequired) {

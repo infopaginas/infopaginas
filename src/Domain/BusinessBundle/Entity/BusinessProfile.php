@@ -116,6 +116,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_FACEBOOK_URL   = 'facebookURL';
     const BUSINESS_PROFILE_FIELD_GOOGLE_URL     = 'googleURL';
     const BUSINESS_PROFILE_FIELD_YOUTUBE_URL    = 'youtubeURL';
+    const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL  = 'instagramURL';
+    const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL = 'tripAdvisorURL';
 
     const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
     const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
@@ -647,6 +649,22 @@ class BusinessProfile implements
      * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $youtubeURL;
+
+    /**
+     * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL
+     * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     */
+    protected $instagramURL;
+
+    /**
+     * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL
+     * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     */
+    protected $tripAdvisorURL;
 
     /**
      * Field related to const BUSINESS_PROFILE_FIELD_COUNTRY
@@ -2196,6 +2214,46 @@ class BusinessProfile implements
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstagramURL()
+    {
+        return $this->instagramURL;
+    }
+
+    /**
+     * @param mixed $instagramURL
+     *
+     * @return User
+     */
+    public function setInstagramURL($instagramURL)
+    {
+        $this->instagramURL = $instagramURL;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTripAdvisorURL()
+    {
+        return $this->tripAdvisorURL;
+    }
+
+    /**
+     * @param mixed $tripAdvisorURL
+     *
+     * @return User
+     */
+    public function setTripAdvisorURL($tripAdvisorURL)
+    {
+        $this->tripAdvisorURL = $tripAdvisorURL;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getServiceAreasType()
@@ -2979,6 +3037,8 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL,
             self::BUSINESS_PROFILE_FIELD_GOOGLE_URL,
             self::BUSINESS_PROFILE_FIELD_YOUTUBE_URL,
+            self::BUSINESS_PROFILE_FIELD_INSTAGRAM_URL,
+            self::BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL,
 
             // geo
             self::BUSINESS_PROFILE_FIELD_LATITUDE,

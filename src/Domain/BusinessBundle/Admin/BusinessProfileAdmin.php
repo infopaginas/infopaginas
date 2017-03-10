@@ -297,6 +297,8 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('facebookURL')
                     ->add('googleURL')
                     ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
