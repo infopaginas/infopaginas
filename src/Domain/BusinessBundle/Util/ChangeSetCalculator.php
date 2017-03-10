@@ -522,20 +522,8 @@ class ChangeSetCalculator
         $changeSetEntries = [];
 
         foreach (BusinessProfile::getTranslatableFields() as $field) {
-            foreach (self::getLocales() as $locale) {
-                $valueNew = (string)$entityNew->getTranslationItem($field, $locale);
-                $valueOld = (string)$entityOld->getTranslationItem($field, $locale);
-
-                if ($valueNew != $valueOld) {
-                    $changeSetEntries[] = self::buildChangeSetEntryObject(
-                        $field,
-                        $valueOld,
-                        $valueNew,
-                        self::CHANGE_TRANSLATION,
-                        BusinessProfileTranslation::class
-                    );
-                }
-            }
+            $data = self::getTranslatableLocaleChangeSetEntries($entityNew, $entityOld, $field);
+            $changeSetEntries = array_merge($changeSetEntries, $data);
         }
 
         return $changeSetEntries;
@@ -548,20 +536,8 @@ class ChangeSetCalculator
         $changeSetEntries = [];
 
         foreach (BusinessProfile::getTaskSeoBlock() as $field) {
-            foreach (self::getLocales() as $locale) {
-                $valueNew = (string)$entityNew->getTranslationItem($field, $locale);
-                $valueOld = (string)$entityOld->getTranslationItem($field, $locale);
-
-                if ($valueNew != $valueOld) {
-                    $changeSetEntries[] = self::buildChangeSetEntryObject(
-                        $field,
-                        $valueOld,
-                        $valueNew,
-                        self::CHANGE_TRANSLATION,
-                        BusinessProfileTranslation::class
-                    );
-                }
-            }
+            $data = self::getTranslatableLocaleChangeSetEntries($entityNew, $entityOld, $field);
+            $changeSetEntries = array_merge($changeSetEntries, $data);
 
             $valueNew = $accessor->getValue($entityNew, $field);
             $valueOld = $accessor->getValue($entityOld, $field);
@@ -585,5 +561,27 @@ class ChangeSetCalculator
             strtolower(BusinessProfile::TRANSLATION_LANG_EN),
             strtolower(BusinessProfile::TRANSLATION_LANG_ES),
         ];
+    }
+
+    public static function getTranslatableLocaleChangeSetEntries($entityNew, $entityOld, $field)
+    {
+        $changeSetEntries = [];
+
+        foreach (self::getLocales() as $locale) {
+            $valueNew = (string)$entityNew->getTranslationItem($field, $locale);
+            $valueOld = (string)$entityOld->getTranslationItem($field, $locale);
+
+            if ($valueNew != $valueOld) {
+                $changeSetEntries[] = self::buildChangeSetEntryObject(
+                    $field,
+                    $valueOld,
+                    $valueNew,
+                    self::CHANGE_TRANSLATION,
+                    BusinessProfileTranslation::class
+                );
+            }
+        }
+
+        return $changeSetEntries;
     }
 }
