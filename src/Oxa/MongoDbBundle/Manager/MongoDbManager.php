@@ -7,6 +7,9 @@ use MongoDB\BSON\UTCDateTime;
 
 class MongoDbManager
 {
+    const AGGREGATE_FORMAT_DAILY = 'Y-m-d';
+    const DEFAULT_TIME_ZONE      = 'UTC';
+
     /**
      * @var MongoDB\Client
      */
@@ -29,7 +32,7 @@ class MongoDbManager
      *
      * @return mixed
      */
-    public function insertOne($collectionName, array $data)
+    public function insertOne($collectionName, $data)
     {
         return $this->client->$collectionName->insertOne($data);
     }
@@ -57,49 +60,14 @@ class MongoDbManager
     }
 
     /**
-     * @param array $options
-     *
-     *
+     * @param string $collectionName
+     * @param array  $options
      */
-    public function aggregateData(array $options, $collectionName)
+    public function aggregateData($collectionName, array $options)
     {
         $cursor = $this->client->$collectionName->aggregate($options);
 
-        /*
-
-        Controller:
-
-        $mongoDbManager = $this->get('mongodb.manager');
-        $mongoDbManager->createIndex('test_4', ['name' => 1]);
-        $mongoDbManager->insertOne('test_4', [
-            'name'     => 'name_1',
-            'datetime' => $mongoDbManager->typeUTCDateTime(new \DateTime())
-        ]);
-
-        -----------
-        Example:
-
-        ['$match' =>
-            [
-                'name' => [
-                    '$not'    => ['$type' => 10],
-                    '$exists' => true,
-                ],
-            ],
-        ],
-        ['$group' => ['_id' => '$word', 'count' => ['$sum' => 1]]],
-        ['$sort' => ['datetime' => 1]]
-
-
-        see: https://docs.mongodb.com/php-library/master/tutorial/collation/#aggregation
-        */
-
-        // TODO: move out
-        foreach ($cursor as $document) {
-            $document['_id'] = $this->gerenateId();
-            $document['datetime'] = $this->typeUTCDateTime(new \DateTime());
-            $this->insertOne($collectionName, $document)->insertOne($document);
-        }
+        return $cursor;
     }
 
     /**
@@ -110,6 +78,19 @@ class MongoDbManager
     public function typeUTCDateTime(\DateTime $datetime)
     {
         return new MongoDB\BSON\UTCDateTime($datetime);
+    }
+
+    /**
+     * @return UTCDateTime
+     */
+    public function typeUTCDateToday()
+    {
+        $today = new \DateTime(
+            date(self::AGGREGATE_FORMAT_DAILY),
+            new \DateTimeZone(self::DEFAULT_TIME_ZONE)
+        );
+
+        return $this->typeUTCDateTime($today);
     }
 
     /**

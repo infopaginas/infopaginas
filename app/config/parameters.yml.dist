@@ -52,4 +52,5 @@ parameters:
 
     # mongodb settings
     mongodb.host: 'mongodb://54.197.13.71'
+    # unique name preferably host (without special chars)
     mongodb.db: 'infopaginas'
