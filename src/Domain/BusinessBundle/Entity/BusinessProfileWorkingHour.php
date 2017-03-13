@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BusinessProfileWorkingHour
 {
     const DEFAULT_TASK_TIME_FORMAT = 'g:i A';
+    const DEFAULT_DATE = '1970-01-01';
 
     /**
      * @var int
@@ -121,8 +122,7 @@ class BusinessProfileWorkingHour
     public function setTimeStart($timeStart)
     {
         if (!$timeStart) {
-            $timeStart = new \DateTime();
-            $timeStart->setTimestamp(0);
+            $timeStart = new \DateTime(self::DEFAULT_DATE);
         }
 
         $this->timeStart = $timeStart;
@@ -146,8 +146,7 @@ class BusinessProfileWorkingHour
     public function setTimeEnd($timeEnd)
     {
         if (!$timeEnd) {
-            $timeEnd = new \DateTime();
-            $timeEnd->setTimestamp(0);
+            $timeEnd = new \DateTime(self::DEFAULT_DATE);
         }
 
         $this->timeEnd = $timeEnd;

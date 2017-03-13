@@ -72,6 +72,19 @@ class DayOfWeekModel
         ];
     }
 
+    public static function getDaysOfWeekStartWithSunday()
+    {
+        return [
+            self::CODE_SUNDAY,
+            self::CODE_MONDAY,
+            self::CODE_TUESDAY,
+            self::CODE_WEDNESDAY,
+            self::CODE_THURSDAY,
+            self::CODE_FRIDAY,
+            self::CODE_SATURDAY,
+        ];
+    }
+
     public static function getAllDaysOfWeek()
     {
         return [
@@ -219,8 +232,7 @@ class DayOfWeekModel
 
         $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
 
-        $now = new \DateTime();
-        $now->setTimestamp(0);
+        $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
         $now->modify($time);
 
         $dayOfWeek = strtoupper(date('D'));

@@ -40,12 +40,12 @@ class ChangeSetEntry
     private $className;
 
     /**
-     * @ORM\Column(name="old_value", type="text")
+     * @ORM\Column(name="old_value", type="text", nullable=true)
      */
     private $oldValue;
 
     /**
-     * @ORM\Column(name="new_value", type="text")
+     * @ORM\Column(name="new_value", type="text", nullable=true)
      */
     private $newValue;
 

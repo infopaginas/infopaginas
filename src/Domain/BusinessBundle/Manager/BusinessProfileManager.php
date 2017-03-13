@@ -330,10 +330,6 @@ class BusinessProfileManager extends Manager
             $businessProfile->setIsActive(false);
         }
 
-        if ($locale !== BusinessProfile::DEFAULT_LOCALE) {
-            $businessProfile->setLocale($locale);
-        }
-
         foreach ($businessProfile->getImages() as $gallery) {
             $businessProfile->removeImage($gallery);
             $gallery->setBusinessProfile($businessProfile);
@@ -370,184 +366,149 @@ class BusinessProfileManager extends Manager
         $this->drop($businessProfile);
     }
 
-    public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet, $locale = 'en')
+    public function publish(BusinessProfile $businessProfile, ChangeSet $changeSet)
     {
         $accessor = PropertyAccess::createPropertyAccessor();
 
         /** @var ChangeSetEntry $change */
         foreach ($changeSet->getEntries() as $change) {
             switch ($change->getAction()) {
-                case ChangeSetCalculator::PROPERTY_ADD:
+                case ChangeSetCalculator::CHANGE_COMMON_PROPERTY:
                     $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
                     break;
-                case ChangeSetCalculator::PROPERTY_REMOVE:
-                case ChangeSetCalculator::LOGO_REMOVE:
-                case ChangeSetCalculator::BACKGROUND_REMOVE:
-                    $accessor->setValue($businessProfile, $change->getFieldName(), null);
+                case ChangeSetCalculator::CHANGE_RELATION_MANY_TO_ONE:
+                    $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
+                        $change,
+                        $this->getEntityManager()
+                    );
+
+                    if ($item) {
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $item);
+                    }
+
                     break;
-                case ChangeSetCalculator::PROPERTY_CHANGE:
-                    if (!$change->getClassName()) {
-                        if (strstr($change->getFieldName(), 'isSet') && empty($change->getNewValue())) {
-                            $newValue = false;
-                        } else {
-                            $newValue = $change->getNewValue();
-                        }
-                        $accessor->setValue($businessProfile, $change->getFieldName(), $newValue);
-                    } else {
-                        if ($change->getClassName() === BusinessProfilePhone::class) {
+                case ChangeSetCalculator::CHANGE_RELATION_ONE_TO_MANY:
+                    switch ($change->getClassName()) {
+                        case BusinessProfilePhone::class:
                             $collection = PhoneChangeSetUtil::getPhonesCollectionsFromChangeSet(
                                 $change,
                                 $businessProfile,
                                 $this->getEntityManager()
                             );
 
-                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        } elseif ($change->getClassName() === BusinessProfileWorkingHour::class) {
+                            break;
+                        case BusinessProfileWorkingHour::class:
                             $collection = WorkingHoursChangeSetUtil::getWorkingHoursCollectionFromChangeSet(
                                 $change,
                                 $businessProfile,
                                 $this->getEntityManager()
                             );
 
-                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        } elseif ($change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_COUNTRY or
-                            $change->getFieldName() === BusinessProfile::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY) {
+                            break;
+                        default:
+                            $collection = null;
 
-                            $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
-                                $change,
-                                $this->getEntityManager()
-                            );
-
-                            $accessor->setValue($businessProfile, $change->getFieldName(), $item);
-
-                        } else {
-                            $ids = array_map(function($element) {
-                                return $element->id;
-                            }, json_decode($change->getNewValue()));
-
-                            $collection = $this->getEntitiesByIds($change->getClassName(), $ids);
-                            $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
-                        }
+                            break;
                     }
-                    break;
-                case ChangeSetCalculator::LOGO_ADD:
-                case ChangeSetCalculator::LOGO_UPDATE:
-                case ChangeSetCalculator::BACKGROUND_ADD:
-                case ChangeSetCalculator::BACKGROUND_UPDATE:
-                    $data  = json_decode($change->getNewValue());
-                    $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
 
-                    if ($media) {
-                        $accessor->setValue($businessProfile, $change->getFieldName(), $media);
+                    if ($collection) {
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
                     }
 
                     break;
-                case ChangeSetCalculator::IMAGE_ADD:
-                    $data = json_decode($change->getNewValue());
-                    $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
+                case ChangeSetCalculator::CHANGE_RELATION_MANY_TO_MANY:
+                    $ids = array_map(function($element) {
+                        return $element->id;
+                    }, json_decode($change->getNewValue()));
 
-                    if ($media) {
-                        $businessProfile->addImage(BusinessGallery::createFromChangeSet($data, $media));
-
-                        $this->getSonataMediaManager()->save($media, false);
-                    }
+                    $collection = $this->getEntitiesByIds($change->getClassName(), $ids);
+                    $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
 
                     break;
-                case ChangeSetCalculator::IMAGE_REMOVE:
-                    $data = json_decode($change->getOldValue());
-                    $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($data->id);
-                    if ($gallery) {
-                        $businessProfile->removeImage($gallery);
-                        $this->getEntityManager()->remove($gallery);
-                    }
-                    break;
-                case ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE:
-                    // update BusinessGallery properties - type and description
-                    $new = json_decode($change->getNewValue());
+                case ChangeSetCalculator::CHANGE_MEDIA_RELATION_MANY_TO_ONE:
+                    $dataNew  = json_decode($change->getNewValue());
+                    $dataOld  = json_decode($change->getOldValue());
 
-                    $dataNew = current($new);
-                    $itemNew = json_decode($dataNew->value);
-                    $gallery = $this->getEntityManager()->getRepository(BusinessGallery::class)->find($dataNew->id);
+                    if ($dataNew) {
+                        // add or update
+                        $media = $this->getEntityManager()->getRepository($change->getClassName())->find($dataNew->id);
 
-                    if (!$gallery) {
-                        break;
-                    }
+                        if ($media) {
+                            if ($change->getClassName() == VideoMedia::class) {
+                                $media->setTitle($dataNew->title);
+                                $media->setDescription($dataNew->description);
 
-                    $gallery->setDescription($itemNew->description);
+                                if (!$dataOld) {
+                                    // add
+                                    if ($media->getYoutubeSupport()) {
+                                        $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+                                    }
+                                } elseif ($dataOld->id != $dataNew->id) {
+                                    // replace
+                                    $this->getVideoManager()->removeMedia($dataOld->id);
 
-                    if (isset($data->type)) {
-                        $gallery->setType($itemNew->type);
-                    }
-
-                    break;
-                case ChangeSetCalculator::VIDEO_ADD:
-                    $data = json_decode($change->getNewValue());
-                    $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-
-                    if ($video) {
-                        if (!empty($data->title)) {
-                            $video->setTitle($data->title);
-                        }
-
-                        if (!empty($data->description)) {
-                            $video->setDescription($data->description);
-                        }
-
-                        if ($video->getYoutubeSupport()) {
-                            $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
-                        }
-
-                        $businessProfile->setVideo($video);
-                    }
-                    break;
-                case ChangeSetCalculator::VIDEO_REMOVE:
-                    $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
-                    $businessProfile->setVideo(null);
-                    break;
-                case ChangeSetCalculator::VIDEO_UPDATE:
-                    $data = json_decode($change->getNewValue());
-                    //if video was replaced
-                    if (!empty($change->getOldValue())) {
-                        $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-                        $manager = $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
-
-                        if ($video) {
-                            if (!empty($data->title)) {
-                                $video->setTitle($data->title);
+                                    if ($media->getYoutubeSupport()) {
+                                        $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+                                    }
+                                } else {
+                                    // update property
+                                    if ($media->getYoutubeSupport() and !$media->getYoutubeAction() and $media->getYoutubeId()) {
+                                        $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
+                                    }
+                                }
                             }
 
-                            if (!empty($data->description)) {
-                                $video->setDescription($data->description);
-                            }
-
-                            if ($video->getYoutubeSupport()) {
-                                $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
-                            }
-
-                            $businessProfile->setVideo($video);
+                            $accessor->setValue($businessProfile, $change->getFieldName(), $media);
                         }
+                    } else {
+                        // remove
+                        if ($change->getClassName() == VideoMedia::class and $businessProfile->getVideo()) {
+                            $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
+                        }
+
+                        $accessor->setValue($businessProfile, $change->getFieldName(), null);
                     }
+
                     break;
-                case ChangeSetCalculator::VIDEO_PROPERTY_UPDATE:
-                    $data = json_decode($change->getNewValue());
+                case ChangeSetCalculator::CHANGE_MEDIA_RELATION_ONE_TO_MANY:
+                    $dataNew = json_decode($change->getNewValue());
+                    $dataOld = json_decode($change->getOldValue());
 
-                    $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
-
-                    if ($video) {
-                        if (!empty($data->title)) {
-                            $video->setTitle($data->title);
+                    if ($dataOld) {
+                        foreach ($dataOld as $key => $itemOld) {
+                            if (!empty($dataNew[$key])) {
+                                $dataNew[$key]->id = $itemOld->id;
+                            }
                         }
-
-                        if (!empty($data->description)) {
-                            $video->setDescription($data->description);
-                        }
-
-                        if ($video->getYoutubeSupport() and !$video->getYoutubeAction() and $video->getYoutubeId()) {
-                            $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
-                        }
-
-                        $businessProfile->setVideo($video);
                     }
+
+                    $collection = new ArrayCollection();
+
+                    if ($dataNew) {
+                        foreach ($dataNew as $item) {
+                            $media = $this->em->getRepository(Media::class)->find($item->media);
+
+                            if ($media) {
+                                if (!$item->id) {
+                                    $gallery = new BusinessGallery();
+
+                                    $this->em->persist($gallery);
+                                } else {
+                                    $gallery = $this->em->getRepository(BusinessGallery::class)->find($item->id);
+                                }
+
+                                $gallery->setMedia($media);
+                                $gallery->setDescription($item->description);
+
+                                $collection->add($gallery);
+                            }
+                        }
+                    }
+
+                    if ($collection) {
+                        $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                    }
+
                     break;
             }
         }
@@ -559,17 +520,34 @@ class BusinessProfileManager extends Manager
         foreach ($changeSet->getEntries() as $change) {
             // workaround to override translation after gedmo translatable callback
             switch ($change->getAction()) {
-                case ChangeSetCalculator::PROPERTY_CHANGE:
+                case ChangeSetCalculator::CHANGE_TRANSLATION:
                     if ($change->getClassName() === BusinessProfileTranslation::class) {
-                        $collection = TranslationChangeSetUtil::getTranslationCollectionsFromChangeSet(
-                            $change,
-                            $businessProfile,
-                            $this->getEntityManager()
-                        );
+                        $dataNew = json_decode($change->getNewValue());
+                        $dataOld = json_decode($change->getOldValue());
 
-                        $accessor->setValue($businessProfile, $change->getFieldName(), $collection);
+                        if ($dataNew) {
+                            if ($dataNew->id) {
+                                $translation = $this->em->getRepository(BusinessProfileTranslation::class)->find($dataNew->id);
+                            } else {
+                                $translation = new BusinessProfileTranslation();
+
+                                $businessProfile->addTranslation($translation);
+
+                                $this->em->persist($translation);
+                            }
+
+                            $translation->setField($dataNew->field);
+                            $translation->setLocale($dataNew->locale);
+                            $translation->setContent($dataNew->value);
+
+                            $translation->setObject($businessProfile);
+                        } elseif ($dataOld and $dataOld->id) {
+                            $translation = $this->em->getRepository(BusinessProfileTranslation::class)->find($dataOld->id);
+
+                            $this->em->remove($translation);
+                        }
                     }
-                break;
+                    break;
             }
         }
 
@@ -580,13 +558,8 @@ class BusinessProfileManager extends Manager
     {
         $url = '';
 
-        switch ($change->getAction()) {
-            case ChangeSetCalculator::LOGO_ADD:
-            case ChangeSetCalculator::LOGO_UPDATE:
-            case ChangeSetCalculator::LOGO_REMOVE:
-            case ChangeSetCalculator::BACKGROUND_ADD:
-            case ChangeSetCalculator::BACKGROUND_UPDATE:
-            case ChangeSetCalculator::BACKGROUND_REMOVE:
+        switch ($change->getClassName()) {
+            case Media::class:
                 $data  = json_decode($value);
                 $media = $this->getEntityManager()->getRepository(Media::class)->find($data->id);
 
@@ -595,20 +568,15 @@ class BusinessProfileManager extends Manager
                 }
 
                 break;
-            case ChangeSetCalculator::IMAGE_ADD:
-            case ChangeSetCalculator::IMAGE_REMOVE:
-                $data = json_decode($value);
-                $media = $this->getEntityManager()->getRepository(Media::class)->find($data->media);
+            case BusinessGallery::class:
+                $media = $this->getEntityManager()->getRepository(Media::class)->find($value->media);
 
                 if ($media) {
                     $url = $this->getMediaPublicUrl($media, 'reference');
                 }
 
                 break;
-            case ChangeSetCalculator::VIDEO_ADD:
-            case ChangeSetCalculator::VIDEO_REMOVE:
-            case ChangeSetCalculator::VIDEO_UPDATE:
-            case ChangeSetCalculator::VIDEO_PROPERTY_UPDATE:
+            case VideoMedia::class:
                 $data = json_decode($value);
                 $video = $this->getEntityManager()->getRepository(VideoMedia::class)->find($data->id);
 
@@ -1393,28 +1361,10 @@ class BusinessProfileManager extends Manager
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
 
         $search['data'] = array_map(function ($item) {
-            $name = [];
-
-            $parent1 = $item->getParent();
-
-            if ($parent1) {
-                $parent2 = $parent1->getParent();
-
-                if ($parent2) {
-                    $name[] = $parent2->getName();
-                }
-
-                $name[] = $parent1->getName();
-            }
-
-            $name[] = $item->getName();
-
-            $data = implode(CategoryManager::AUTO_SUGGEST_SEPARATOR, $name);
-
             return [
                 'type' => CategoryManager::AUTO_COMPLETE_TYPE,
-                'name' => $data,
-                'data' => $data,
+                'name' => $item->getName(),
+                'data' => $item->getName(),
             ];
         }, $search['data']);
 
@@ -1482,19 +1432,6 @@ class BusinessProfileManager extends Manager
                 $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
 
                 if ($item) {
-                    $score = 0;
-                    $plan = 1;
-
-                    foreach ($result as $business) {
-                        if ($business['_id'] == $id) {
-                            $plan = $business['sort'][0];
-                            $score = number_format($business['sort'][1], ElasticSearchManager::ROTATION_RANK_PRECISION);
-                            break;
-                        }
-                    }
-
-                    $item->setScore($score);
-                    $item->setPlan($plan);
                     $data[] = $item;
                 }
             }

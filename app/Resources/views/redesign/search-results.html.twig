@@ -1,4 +1,4 @@
-{% set showLinkCompareView = true %}
+{% set showLinkCompareView = results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block breadcrumbs %}
@@ -12,9 +12,9 @@
 
         <section class="main" id="searchResults">
             <div class="results active__toggle">
-                {% include ':redesign/blocks/banners:search-page-top.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_TOP } %}
-
                 {% if results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
+                    {% include ':redesign/blocks/banners:search-page-top.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_TOP } %}
+
                     {% for item in results.resultSet %}
                         {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
                     {% endfor %}
@@ -24,14 +24,14 @@
                             {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
                         {% endblock %}
                     </div>
+
+                    {% include ':redesign/blocks/banners:search-page-down.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_BOTTOM } %}
                 {% else %}
                     {% embed ':redesign/errors:error-body.html.twig' with {'errorTitle': 'error.404.title', 'errorMessage': 'error.404.message', 'errorSearchText': 'error.404.search.text', 'errorSearchCatalog': 'error.404.search.catalog'} %}
                         {% block searchErrorInput %}{% endblock %}
                         {% block errorContainerClass %}{% endblock %}
                     {% endembed %}
                 {% endif %}
-
-                {% include ':redesign/blocks/banners:search-page-down.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_BOTTOM } %}
 
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
                     <i class="fa fa-map"></i>
@@ -47,7 +47,7 @@
 
         <section class="results-map">
             <div id="map" class="map"></div>
-            <span id="map-markers" hidden>{{ markers }}</span>
+            <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
 
     </div><!-- main container -->

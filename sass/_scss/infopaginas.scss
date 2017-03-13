@@ -846,8 +846,11 @@ $side-padding-mb: 16px;
 
     @media only screen and (min-width: 768px) {
       flex: 0 0 auto;
-    }
 
+      &.filter__item-resize {
+        width: 140px;
+      }
+    }
   }
 
   select {
@@ -1051,6 +1054,10 @@ select {
     overflow-y: auto;
     padding-top: 40px;
     width: 60%;
+
+    &.main-results-resize {
+      padding-top: 52px;
+    }
   }
 }
 
@@ -2133,6 +2140,10 @@ $thumb-width-mb: 60px;
 
     .item__summary {
       width: calc(100% - 30px);
+
+      &.item__summary-no-logo {
+        width: 100%;
+      }
     }
 
 
@@ -2756,6 +2767,7 @@ a.tag {
   .comparison__row {
     border-bottom: 1px solid darken($grey--light, 10%);
     padding: 10px;
+    overflow-x: hidden;
 
     &:last-child {
       border-bottom: 0;
@@ -2801,7 +2813,6 @@ a.tag {
     @media only screen and (min-width: 805px) {
       flex-direction: row;
       flex-wrap: wrap;
-      height: 3em;
     }
 
     .button {
@@ -2830,15 +2841,11 @@ a.tag {
         padding-top: 0;
 
         span {
-          line-height: 1.5em;
+          line-height: 3em;
         }
 
         img {
           top: .3em;
-        }
-
-        &:nth-child(2n+2) {
-          margin-right: 0;
         }
       }
     }
@@ -4328,10 +4335,15 @@ li.active {
     padding-right: 10px;
     padding-right: 0;
     width: 19.9%;
-    min-width: 110px;
 
     &:last-child {
       padding-right: 0;
+    }
+
+    &.resize-categories-list {
+      width: 115px;
+      flex: 1 0 40%;
+      max-width: 40%;
     }
   }
 
@@ -4991,7 +5003,7 @@ input[type='radio'], input[type='checkbox'] {
 .category-restaurantes-comida-y-bebida {background-image: url('../redesign/img/category-backgrounds/bg_restaurante.jpg')}
 .category-servicios-profesionales-y-a-negocios {background-image: url('../redesign/img/category-backgrounds/bg_serviciosynegocios.jpg')}
 .category-agricultura-pesca-y-forestal {background-image: url('../redesign/img/category-backgrounds/bg_agricultura.jpg')}
-.category-autos-camiones-y-motoras {background-image: url('../redesign/img/category-backgrounds/bg_auto.jpg')}
+.category-autos-carros-camiones-y-motoras {background-image: url('../redesign/img/category-backgrounds/bg_auto.jpg')}
 .category-bienes-raices-y-seguros {background-image: url('../redesign/img/category-backgrounds/bg_bienesraices.jpg')}
 .category-casa-y-hogar {background-image: url('../redesign/img/category-backgrounds/bg_hogar.jpg')}
 .category-comunidades-y-familia {background-image: url('../redesign/img/category-backgrounds/bg_familia.jpg')}
@@ -5077,6 +5089,18 @@ a.link-pointer {
   cursor: pointer;
 }
 
+.field--website {
+  margin-top: 0;
+  label {
+    left: 20px;
+  }
+  input[type=checkbox] {
+    top: 0;
+    width: 15px;
+    height: 15px;
+  }
+}
+
 @media only screen and (min-width: 1024px){
   .field--website {
     flex: 1 1 20%;
@@ -5121,7 +5145,7 @@ a.link-pointer {
   }
 }
 
-@media only screen and (max-width: 375px){
+@media only screen and (max-width: 414px){
   .hours-user {
     flex: 1 1 100% !important;
     .select2-container--default {
@@ -5135,5 +5159,11 @@ a.link-pointer {
   button.remove-working-hours {
     align-self: flex-start;
     margin-bottom: 10px;
+  }
+  .field--website {
+    margin-top: 10px;
+    label {
+      margin-top: 5px;
+    }
   }
 }

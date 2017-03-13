@@ -32,8 +32,8 @@ define(
         };
 
         var markersBlock = $( '#map-markers' );
-        if ( markersBlock.html() ) {
-            this.options.markers = JSON.parse( markersBlock.html() );
+        if ( markersBlock.data( 'google-markers' ) ) {
+            this.options.markers = markersBlock.data( 'google-markers' );
         }
 
         new select();

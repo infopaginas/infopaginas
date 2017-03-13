@@ -42,6 +42,14 @@ class NormalizerUtil
             ChangeSetCalculator::BACKGROUND_REMOVE              => 'Background Remove',
             ChangeSetCalculator::BACKGROUND_UPDATE              => 'Background Update',
             ChangeSetCalculator::PROPERTY_IMAGE_PROPERTY_UPDATE => 'Image Property Change',
+
+            ChangeSetCalculator::CHANGE_COMMON_PROPERTY              => 'Property changed',
+            ChangeSetCalculator::CHANGE_TRANSLATION                  => 'Translation changed',
+            ChangeSetCalculator::CHANGE_RELATION_MANY_TO_ONE         => 'Relation changed',
+            ChangeSetCalculator::CHANGE_RELATION_ONE_TO_MANY         => 'Relation changed',
+            ChangeSetCalculator::CHANGE_RELATION_MANY_TO_MANY        => 'Relation changed',
+            ChangeSetCalculator::CHANGE_MEDIA_RELATION_MANY_TO_ONE   => 'Media Relation changed',
+            ChangeSetCalculator::CHANGE_MEDIA_RELATION_ONE_TO_MANY   => 'Media Relation changed',
         ];
 
         return $translator->trans($actionLabels[$action]);

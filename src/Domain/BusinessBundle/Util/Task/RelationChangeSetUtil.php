@@ -24,15 +24,11 @@ class RelationChangeSetUtil
         ChangeSetEntry $change,
         EntityManagerInterface $entityManager
     ) {
-        $values = json_decode($change->getNewValue());
+        $item = json_decode($change->getNewValue());
         $entity = null;
 
-        if ($values) {
-            $item = current($values);
-
-            if ($item->id) {
-                $entity = $entityManager->getRepository($change->getClassName())->find($item->id);
-            }
+        if ($item and $item->id) {
+            $entity = $entityManager->getRepository($change->getClassName())->find($item->id);
         }
 
         return $entity;

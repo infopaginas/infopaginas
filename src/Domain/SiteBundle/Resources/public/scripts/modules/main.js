@@ -27,7 +27,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var openSearchSequence = [
         { e: header, p: { height: "190px" }, o: { duration: 300, easing: "easeOut"} },
         { e: logo, p: { translateX: -100 }, o: { duration: 200, sequenceQueue: false} },
-        { e: navToggle, p: { translateX: 100 }, o: { duration: 200, sequenceQueue: false } },
+        { e: navToggle, p: { translateX: 100 }, o: { duration: 200, sequenceQueue: false} },
         { e: geoField, p: { translateY: 65 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false} },
         { e: geoInput, p: { scale: 1 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false} },
         { e: closeSearch, p: { scale: 1 }, o: { duration: 200 } },
@@ -126,6 +126,16 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         $(this).openNav();
     });
 
+    $( document ).on( 'click', function (e) {
+        var navToggleButton = $( '#nav-toggle' );
+
+        if ( !nav.is(e.target) && nav.has(e.target).length === 0 &&
+            !navToggleButton.is(e.target) && navToggleButton.has(e.target).length === 0 ) {
+            nav.removeClass( 'nav--opened' );
+            $.Velocity.RunSequence(closeNav, { mobileHA: true });
+            $( 'body' ).removeClass( 'body--no-scroll' );
+        }
+    });
 
 //sort
 
@@ -500,6 +510,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
             searchAdBlocks.addClass( 'hidden' );
+            $( '.featured-categories__list' ).addClass( 'resize-categories-list' );
+            $( '.filter__item' ).addClass( 'filter__item-resize' );
+            $( '.main' ).addClass( 'main-results-resize' );
         } else {
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
@@ -518,6 +531,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
             searchAdBlocks.removeClass( 'hidden' );
+            $( '.featured-categories__list' ).removeClass( 'resize-categories-list' );
+            $( '.filter__item' ).removeClass( 'filter__item-resize' );
+            $( '.main' ).removeClass( 'main-results-resize' );
         } else {
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );

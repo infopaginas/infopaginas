@@ -28,6 +28,16 @@ class WorkingHoursChangeSetUtil
         $collection = new ArrayCollection();
 
         $workingHours = json_decode($change->getNewValue());
+        $dataOld      = json_decode($change->getOldValue());
+
+        if ($dataOld) {
+            foreach ($dataOld as $key => $itemOld) {
+                if (!empty($workingHours[$key])) {
+                    $workingHours[$key]->id = $itemOld->id;
+                }
+            }
+        }
+
         if ($workingHours) {
             foreach ($workingHours as $item) {
                 $data = json_decode($item->value);
