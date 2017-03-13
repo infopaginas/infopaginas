@@ -346,15 +346,19 @@ class BusinessProfileExtension extends \Twig_Extension
         return $data;
     }
 
-    public function getMediaChangeSet(string $value, $change)
+    public function getMediaChangeSet($value, $change)
     {
-        $data = ImagesChangeSetUtil::deserializeChangeSet($value);
-        $data->url = $this->businessProfileManager->getTaskMediaLink($change, $value);
+        $data = [];
+
+        if ($value) {
+            $data = ImagesChangeSetUtil::deserializeChangeSet($value);
+            $data->url = $this->businessProfileManager->getTaskMediaLink($change, $value);
+        }
 
         return $data;
     }
 
-    public function getImagesChangeSet(string $value, $change)
+    public function getImagesChangeSet($value, $change)
     {
         $images = json_decode($value);
         $data = [];
