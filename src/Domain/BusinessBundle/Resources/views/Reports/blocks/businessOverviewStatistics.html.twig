@@ -23,7 +23,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <th>{% trans %}Total{% endtrans %}</th>
+            <th>{% trans %}interaction_report.total{% endtrans %}</th>
             {% for key, item in overviewData.results|first %}
                 {% if overviewData.total[key] is defined %}
                     <th>{{ overviewData.total[key] }}</th>
@@ -31,7 +31,7 @@
             {% endfor %}
         </tr>
         <tr>
-            <th>{% trans %}Total Interactions{% endtrans %}</th>
+            <th>{% trans %}interaction_report.overall{% endtrans %}</th>
             <th>{{ overviewData.overall }}</th>
         </tr>
     </tfoot>
