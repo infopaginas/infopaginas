@@ -247,7 +247,7 @@ class ReportsController extends Controller
 
         $user = $token->getUser();
 
-        if (!$user || !$user instanceof User) {
+        if (!$user || !($user instanceof User)) {
             throw $this->createNotFoundException();
         }
 
