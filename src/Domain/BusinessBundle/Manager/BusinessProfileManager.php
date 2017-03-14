@@ -974,6 +974,8 @@ class BusinessProfileManager extends Manager
                 $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTwitterURL());
                 $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getGoogleURL());
                 $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getYoutubeURL());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getInstagramURL());
+                $sameAs = $this->addSameAsUrl($sameAs, $businessProfile->getTripAdvisorURL());
 
                 $photos = $this->getBusinessProfilePhotoImages($businessProfile);
 

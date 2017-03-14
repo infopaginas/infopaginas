@@ -14,7 +14,7 @@ services:
             - '@domain_business.manager.business_profile'
             - '@router'
             - '@kernel'
-#            - '@mongodb.manager'
+            - '@mongodb.manager'
         calls:
             - [ setContainer, [ '@service_container' ] ]
 

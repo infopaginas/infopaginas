@@ -1,18 +1,38 @@
 <table class="table table-bordered">
     <thead>
-    <tr>
-        <th>{% trans %}Date{% endtrans %}</th>
-        <th>{% trans %}Views{% endtrans %}</th>
-        <th>{% trans %}Impressions{% endtrans %}</th>
-    </tr>
+        <tr>
+            {% for key, item in overviewData.results|first %}
+                <th>
+                    {% if eventList[key] is defined %}
+                        {{ eventList[key]|trans }}
+                    {% else %}
+                        {{ key|trans }}
+                    {% endif %}
+                </th>
+            {% endfor %}
+        </tr>
     </thead>
     <tbody>
-    {% for row in overviewData.results %}
-        <tr>
-            <td>{{ row.date }}</td>
-            <td>{{ row.views }}</td>
-            <td>{{ row.impressions }}</td>
-        </tr>
-    {% endfor %}
+        {% for row in overviewData.results %}
+            <tr>
+                {% for item in row %}
+                    <td>{{ item }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
     </tbody>
+    <tfoot>
+        <tr>
+            <th>{% trans %}Total{% endtrans %}</th>
+            {% for key, item in overviewData.results|first %}
+                {% if overviewData.total[key] is defined %}
+                    <th>{{ overviewData.total[key] }}</th>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        <tr>
+            <th>{% trans %}Total Interactions{% endtrans %}</th>
+            <th>{{ overviewData.overall }}</th>
+        </tr>
+    </tfoot>
 </table>

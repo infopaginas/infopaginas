@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class ReportController
@@ -28,6 +29,11 @@ class ReportsController extends Controller
 {
     public function indexAction(int $businessProfileId)
     {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
         $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_DEFAULT);
 
         $params = [
@@ -36,11 +42,9 @@ class ReportsController extends Controller
         ];
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
 
         $filtersForm = $this->createForm(new BusinessReportFilterType());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
 
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
 
@@ -48,6 +52,7 @@ class ReportsController extends Controller
             ':redesign:business-profile-report.html.twig',
             [
                 'overviewData'             => $overviewData,
+                'eventList'                => InteractionsReportManager::EVENT_TYPES,
                 'filtersForm'              => $filtersForm->createView(),
                 'businessProfileId'        => $businessProfileId,
                 'businessProfile'          => $businessProfile,
@@ -60,13 +65,18 @@ class ReportsController extends Controller
     {
         $params = $this->prepareReportParameters($request->request->all());
 
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
 
         $stats = $this->renderView(
             'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
             [
                 'overviewData' => $overviewData,
+                'eventList'    => InteractionsReportManager::EVENT_TYPES,
             ]
         );
 
@@ -101,6 +111,10 @@ class ReportsController extends Controller
     {
         $params = $this->prepareReportParameters($request->request->all());
 
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
         $keywordsReportManager = $this->getKeywordsReportManager();
         $keywordsData = $keywordsReportManager->getKeywordsData($params);
 
@@ -116,27 +130,6 @@ class ReportsController extends Controller
             'keywords' => $keywordsData['keywords'],
             'searches' => $keywordsData['searches'],
         ]);
-    }
-
-    public function interactionsAction(Request $request)
-    {
-        $params = $this->prepareReportParameters($request->request->all());
-
-        $interactionsReportManager = $this->getInteractionsReportManager();
-        $interactionsData = $interactionsReportManager->getInteractionsData($params);
-
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/interactionStatistics.html.twig',
-            [
-                'interactionsData' => $interactionsData['category'],
-            ]
-        );
-
-        return new JsonResponse(
-            [
-                'stats' => $stats,
-            ]
-        );
     }
 
     public function interactionsTrackAction(Request $request)
@@ -243,5 +236,23 @@ class ReportsController extends Controller
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->get('domain_business.manager.business_profile');
+    }
+
+    protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
+    {
+        $token = $this->get('security.context')->getToken();
+        if (!$token) {
+            throw $this->createNotFoundException();
+        }
+
+        $user = $token->getUser();
+
+        if (!$user || !$user instanceof User) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!($businessProfile->getUser() and $businessProfile->getUser()->getId() == $user->getId())) {
+            throw $this->createNotFoundException();
+        }
     }
 }

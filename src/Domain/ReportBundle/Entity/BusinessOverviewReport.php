@@ -29,10 +29,12 @@ class BusinessOverviewReport implements ReportInterface
     const TYPE_CODE_FACEBOOK_SHARE  = 'facebookShare';
     const TYPE_CODE_TWITTER_SHARE   = 'twitterShare';
 
-    const TYPE_CODE_FACEBOOK_VISIT  = 'facebookVisit';
-    const TYPE_CODE_TWITTER_VISIT   = 'twitterVisit';
-    const TYPE_CODE_GOOGLE_VISIT    = 'googleVisit';
-    const TYPE_CODE_YOUTUBE_VISIT   = 'youtubeVisit';
+    const TYPE_CODE_FACEBOOK_VISIT     = 'facebookVisit';
+    const TYPE_CODE_TWITTER_VISIT      = 'twitterVisit';
+    const TYPE_CODE_GOOGLE_VISIT       = 'googleVisit';
+    const TYPE_CODE_YOUTUBE_VISIT      = 'youtubeVisit';
+    const TYPE_CODE_INSTAGRAM_VISIT    = 'instagramVisit';
+    const TYPE_CODE_TRIP_ADVISOR_VISIT = 'tripAdvisorVisit';
 
     const TYPE_CODE_VIDEO_WATCHED  = 'videoWatched';
     const TYPE_CODE_REVIEW_CLICK   = 'reviewClick';
@@ -204,6 +206,8 @@ class BusinessOverviewReport implements ReportInterface
             self::TYPE_CODE_TWITTER_VISIT,
             self::TYPE_CODE_GOOGLE_VISIT,
             self::TYPE_CODE_YOUTUBE_VISIT,
+            self::TYPE_CODE_INSTAGRAM_VISIT,
+            self::TYPE_CODE_TRIP_ADVISOR_VISIT,
             self::TYPE_CODE_VIDEO_WATCHED,
             self::TYPE_CODE_REVIEW_CLICK,
             self::TYPE_CODE_EMAIL_CLICK,

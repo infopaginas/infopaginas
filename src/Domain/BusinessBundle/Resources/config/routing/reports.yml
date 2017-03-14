@@ -20,12 +20,6 @@ domain_business_reports_keywords_data:
      options:
         expose: true
 
-domain_business_reports_interactions_data:
-     path:     /data/interactions
-     defaults: { _controller: DomainBusinessBundle:Reports:interactions }
-     options:
-        expose: true
-
 domain_business_reports_interactions_track:
      path:     /track/interactions
      defaults: { _controller: DomainBusinessBundle:Reports:interactionsTrack }

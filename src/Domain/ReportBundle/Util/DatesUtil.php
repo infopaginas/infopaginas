@@ -28,6 +28,9 @@ class DatesUtil
     const RANGE_LAST_MONTH = 'last_month';
     const RANGE_CUSTOM = 'custom';
 
+    const RANGE_YESTERDAY = 'yesterday';
+    const RANGE_LAST_HOUR = 'last_hour';
+
     const RANGE_THIS_YEAR = 'this_year';
     const RANGE_LAST_YEAR = 'last_year';
 
@@ -78,6 +81,17 @@ class DatesUtil
             case self::RANGE_LAST_YEAR:
                 $start = new \DateTime('first day of January ' . (date('Y') -1));
                 $end = new \DateTime('last day of December ' . (date('Y') - 1));
+                break;
+            case self::RANGE_YESTERDAY:
+                $start = new \DateTime('yesterday 00:00:00');
+                $end = new \DateTime('yesterday 23:59:59');
+                break;
+            case self::RANGE_LAST_HOUR:
+                $start = new \DateTime('last hour');
+                $start->setTime($start->format('G'), 0);
+
+                $end = new \DateTime('this hour');
+                $end->setTime($end->format('G'), 0);
                 break;
             default:
                 throw new \Exception('invalid param');

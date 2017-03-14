@@ -39,6 +39,18 @@ class MongoDbManager
 
     /**
      * @param       $collectionName
+     * @param array $query
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function find($collectionName, $query, $options = [])
+    {
+        return $this->client->$collectionName->find($query, $options);
+    }
+
+    /**
+     * @param       $collectionName
      * @param array $data
      *
      * @return mixed
@@ -78,19 +90,6 @@ class MongoDbManager
     public function typeUTCDateTime(\DateTime $datetime)
     {
         return new MongoDB\BSON\UTCDateTime($datetime);
-    }
-
-    /**
-     * @return UTCDateTime
-     */
-    public function typeUTCDateToday()
-    {
-        $today = new \DateTime(
-            date(self::AGGREGATE_FORMAT_DAILY),
-            new \DateTimeZone(self::DEFAULT_TIME_ZONE)
-        );
-
-        return $this->typeUTCDateTime($today);
     }
 
     /**

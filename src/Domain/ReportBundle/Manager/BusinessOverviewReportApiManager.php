@@ -129,24 +129,16 @@ class BusinessOverviewReportApiManager
             $result['businessStatus'] = $this->businessProfile->getActiveStatus();
             $result['data']           = [];
 
-            $overviewData = $this->businessOverviewReportManager->getBusinessOverviewData($params);
-            $interactionData = $this->interactionReportManager->getInteractionsData($params);
+            $overviewData = $this->businessOverviewReportManager->getBusinessOverviewReportData($params);
 
             foreach ($overviewData['results'] as $key => $data) {
-                $result['data'][$key] = [
-                    'date'        => $data['dateObject']->format(DatesUtil::DATE_DB_FORMAT),
-                    'views'       => $data['views'],
-                    'impressions' => $data['impressions'],
-                ];
+                $result['data'][$key] = $data;
 
-                if (!empty($interactionData['results'][$key])) {
-                    foreach (InteractionsReportManager::EVENT_TYPES as $eventKey => $event) {
-                        if (!empty($interactionData['results'][$key][$event])) {
-                            $result['data'][$key][$eventKey] = $interactionData['results'][$key][$event];
-                        } else {
-                            $result['data'][$key][$eventKey] = 0;
-                        }
-                    }
+                try {
+                    $date = new \DateTime($data['date']);
+                    $result['data'][$key]['date'] = $date->format(DatesUtil::DATE_DB_FORMAT);
+                } catch (\Exception $e) {
+                    $result['data'][$key]['date'] = $data['date'];
                 }
             }
         }

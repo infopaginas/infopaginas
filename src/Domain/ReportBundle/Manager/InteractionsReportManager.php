@@ -19,6 +19,8 @@ class InteractionsReportManager extends BaseReportManager
     protected $businessProfileManager;
 
     const EVENT_TYPES = [
+        BusinessOverviewReport::TYPE_CODE_VIEW                  => 'interaction_report.event.view',
+        BusinessOverviewReport::TYPE_CODE_IMPRESSION            => 'interaction_report.event.impression',
         BusinessOverviewReport::TYPE_CODE_DIRECTION_BUTTON      => 'interaction_report.button.direction',
         BusinessOverviewReport::TYPE_CODE_MAP_SHOW_BUTTON       => 'interaction_report.button.show_map',
         BusinessOverviewReport::TYPE_CODE_MAP_MARKER_BUTTON     => 'interaction_report.button.marker_map',
@@ -33,6 +35,8 @@ class InteractionsReportManager extends BaseReportManager
         BusinessOverviewReport::TYPE_CODE_TWITTER_VISIT         => 'interaction_report.visit.twitter',
         BusinessOverviewReport::TYPE_CODE_GOOGLE_VISIT          => 'interaction_report.visit.google',
         BusinessOverviewReport::TYPE_CODE_YOUTUBE_VISIT         => 'interaction_report.visit.youtube',
+        BusinessOverviewReport::TYPE_CODE_INSTAGRAM_VISIT       => 'interaction_report.visit.instagram',
+        BusinessOverviewReport::TYPE_CODE_TRIP_ADVISOR_VISIT    => 'interaction_report.visit.tripadvisor',
         BusinessOverviewReport::TYPE_CODE_VIDEO_WATCHED         => 'interaction_report.video.watched',
         BusinessOverviewReport::TYPE_CODE_REVIEW_CLICK          => 'interaction_report.review.click',
         BusinessOverviewReport::TYPE_CODE_EMAIL_CLICK           => 'interaction_report.email.click',

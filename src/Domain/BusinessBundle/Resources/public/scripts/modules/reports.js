@@ -7,7 +7,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             businessOverviewDataAction: Routing.generate('domain_business_reports_business_overview_data'),
             adUsageDataAction: Routing.generate('domain_business_reports_ad_usage_data'),
             keywordsDataAction: Routing.generate('domain_business_reports_keywords_data'),
-            interactionsDataAction: Routing.generate('domain_business_reports_interactions_data'),
             printAction: Routing.generate('domain_business_reports_print')
         };
 
@@ -18,8 +17,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 adUsageStatsContainerId: '#adUsageStatisticsContainer',
                 keywordChartContainerId: '#keywordChartContainer',
                 keywordStatsContainerId: '#keywordStatisticsContainer',
-                interactionsStatsContainerId: '#interactionsStatisticsContainer',
-
                 keywordsLimitContainerId: '#keywordsLimitContainer'
             }
         };
@@ -100,25 +97,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             success: function(response) {
                 $(self.html.containers.keywordStatsContainerId).html(response.stats);
                 self.loadKeywordsChart(response.keywords, response.searches);
-            }
-        });
-    };
-
-    reports.prototype.loadInteractionsReport = function()
-    {
-        var self = this;
-
-        $.ajax({
-            url: self.urls.interactionsDataAction,
-            data: self.getFilterValues(),
-            dataType: 'JSON',
-            type: 'POST',
-            beforeSend: function() {
-                $(self.html.containers.interactionsStatsContainerId).html('');
-                self.showLoader(self.html.containers.interactionsStatsContainerId);
-            },
-            success: function(response) {
-                $(self.html.containers.interactionsStatsContainerId).html(response.stats);
             }
         });
     };
@@ -254,9 +232,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             case 'keywords':
                 $('#keywordsLimitContainer').show();
                 this.loadKeywordsReport();
-                break;
-            case 'interactions':
-                this.loadInteractionsReport();
                 break;
         }
     };

@@ -430,6 +430,8 @@ action_restore: Restore
 action_delete_physical: Physical delete
 
 # interaction report
+interaction_report.event.view: Vista
+interaction_report.event.impression: Impresión
 interaction_report.button.direction: Direcciones
 interaction_report.button.show_map: Mostrar en el Mapa
 interaction_report.button.marker_map: Marcador en el Mapa
@@ -444,9 +446,15 @@ interaction_report.visit.facebook: Visita Facebook
 interaction_report.visit.twitter: Visita Twitter
 interaction_report.visit.google: Visite Google
 interaction_report.visit.youtube: Visita Youtube
+interaction_report.visit.instagram: Visita Instagram
+interaction_report.visit.tripadvisor: Visita TripAdvisor
 interaction_report.video.watched: Video Visto
 interaction_report.review.click: Opiniones
 interaction_report.email.click: Correo
+
+date: Fecha
+interaction_report.total: Total
+interaction_report.overall: Interacciones totales
 
 # working hours
 business.working.hours.open_all_time: Abierto 24 horas
