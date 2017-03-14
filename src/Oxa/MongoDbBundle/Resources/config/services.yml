@@ -1,9 +1,5 @@
-parameters:
-    db:   '%mongodb.db%'
-    host: '%mongodb.host%'
-
 services:
     mongodb.manager:
         class: Oxa\MongoDbBundle\Manager\MongoDbManager
         calls:
-            - [ setConfigData, [ '%db%', '%host%' ] ]
+            - [ setConfigData, [ '%mongodb.db%', '%mongodb.host%' ] ]

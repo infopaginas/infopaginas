@@ -1,10 +1,5 @@
-parameters:
-    document_index: '%elastic_search.document_index%'
-    indexing_page:  '%elastic_search.indexing_page%'
-    host:           '%elastic_search.host%'
-
 services:
     oxa_elastic_search.manager.search:
         class: Oxa\ElasticSearchBundle\Manager\ElasticSearchManager
         calls:
-            - [ setConfigData, [ '%document_index%', '%indexing_page%', '%host%' ] ]
+            - [ setConfigData, [ '%elastic_search.document_index%', '%elastic_search.indexing_page%', '%elastic_search.host%' ] ]
