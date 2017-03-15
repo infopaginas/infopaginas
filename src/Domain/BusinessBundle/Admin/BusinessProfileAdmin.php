@@ -12,6 +12,7 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
+use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -45,6 +46,8 @@ use Symfony\Component\Validator\Constraints\Length;
 class BusinessProfileAdmin extends OxaAdmin
 {
     use VideoUploadTrait;
+
+    const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
 
     /**
      * @param DatagridMapper $datagridMapper
@@ -127,14 +130,20 @@ class BusinessProfileAdmin extends OxaAdmin
                 $formMapper->tab('Profile')->with('Video')->end()->end();
             }
 
-            $formMapper->tab('Profile')->with('Status', array('class' => 'col-md-6'))->end()
-                ->with('Subscriptions')->end()
-                ->with('Coupons', array('class' => 'col-md-6'))->end()
-                ->with('Discount', array('class' => 'col-md-6'))->end()
-            ->end()
-            ->tab('Reviews', array('class' => 'col-md-6'))
-                ->with('User Reviews')->end()
-            ->end();
+            $formMapper
+                ->tab('Profile')
+                    ->with('Status', array('class' => 'col-md-6'))->end()
+                    ->with('Subscriptions')->end()
+                    ->with('Coupons', array('class' => 'col-md-6'))->end()
+                    ->with('Discount', array('class' => 'col-md-6'))->end()
+                ->end()
+                ->tab('Reviews', array('class' => 'col-md-6'))
+                    ->with('User Reviews')->end()
+                ->end()
+                ->tab('Interactions Report', array('class' => 'col-md-6'))
+                    ->with('Interactions Report')->end()
+                ->end()
+            ;
 
         $oxaConfig = $this->getConfigurationPool()
             ->getContainer()
@@ -543,6 +552,22 @@ class BusinessProfileAdmin extends OxaAdmin
                         'edit' => 'inline',
                         'inline' => 'table',
                         'allow_delete' => false,
+                    ])
+                ->end()
+            ->end()
+            ->tab('Interactions Report')
+                ->with('Interactions Report')
+                    ->add('interactionDateStart', 'sonata_type_date_picker', [
+                        'mapped'    => false,
+                        'required'  => false,
+                        'format'    => self::DATE_PICKER_FORMAT,
+                        'data'      => DatesUtil::getThisWeekStart(),
+                    ])
+                    ->add('interactionDateEnd', 'sonata_type_date_picker', [
+                        'mapped'    => false,
+                        'required'  => false,
+                        'format'    => self::DATE_PICKER_FORMAT,
+                        'data'      => DatesUtil::getThisWeekEnd(),
                     ])
                 ->end()
             ->end()

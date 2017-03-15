@@ -2,7 +2,8 @@
 
 namespace Domain\ReportBundle\Admin;
 
-use Domain\ReportBundle\Entity\BusinessOverviewReport;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -50,18 +51,9 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
     {
         $filterParam = $this->getFilterParameters();
 
-        $this->viewsAndVisitorsData = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('domain_report.manager.views_and_visitors')
-            ->getViewsAndVisitorsData($filterParam);
+        $this->viewsAndVisitorsData = $this->getViewsAndVisitorsReportManager()->getViewsAndVisitorsData($filterParam);
 
         $this->colors = ChartHelper::getColors();
-
-        $listMapper
-            ->add('date', null, ['sortable' => false])
-            ->add('views')
-            ->add('visitors')
-        ;
     }
 
     /**
@@ -69,7 +61,7 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
      */
     public function getExportFormats()
     {
-        return BusinessOverviewReport::getExportFormats();
+        return BusinessOverviewModel::getExportFormats();
     }
 
     /**
@@ -111,5 +103,10 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
         }
 
         return $parameters;
+    }
+
+    protected function getViewsAndVisitorsReportManager() : ViewsAndVisitorsReportManager
+    {
+        return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.views_and_visitors');
     }
 }

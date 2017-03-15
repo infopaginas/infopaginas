@@ -101,3 +101,7 @@ h4.filter_legend img {
     height: 32px;
     width: 75%;
 }
+
+div.scrollable-table {
+    overflow-x: scroll;
+}

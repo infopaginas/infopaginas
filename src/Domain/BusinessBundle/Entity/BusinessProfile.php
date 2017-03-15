@@ -782,17 +782,6 @@ class BusinessProfile implements
     protected $distance;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\ReportBundle\Entity\BusinessOverviewReport",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     * )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id")
-     */
-    private $businessOverviewReports;
-
-    /**
      * Related to WORKING_HOURS_ASSOCIATED_FIELD
      * @var BusinessProfileWorkingHour[] - Business Profile working hours
      *
@@ -898,7 +887,6 @@ class BusinessProfile implements
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->businessOverviewReports = new \Doctrine\Common\Collections\ArrayCollection();
         $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this->isClosed  = false;
@@ -2838,40 +2826,6 @@ class BusinessProfile implements
     public function getIsUpdated()
     {
         return $this->isUpdated;
-    }
-
-    /**
-     * Add businessOverviewReport
-     *
-     * @param BusinessOverviewReport $businessOverviewReport
-     *
-     * @return BusinessProfile
-     */
-    public function addBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport)
-    {
-        $this->businessOverviewReports[] = $businessOverviewReport;
-
-        return $this;
-    }
-
-    /**
-     * Remove businessOverviewReport
-     *
-     * @param BusinessOverviewReport $businessOverviewReport
-     */
-    public function removeBusinessOverviewReport(BusinessOverviewReport $businessOverviewReport)
-    {
-        $this->businessOverviewReports->removeElement($businessOverviewReport);
-    }
-
-    /**
-     * Get businessOverviewReports
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBusinessOverviewReports()
-    {
-        return $this->businessOverviewReports;
     }
 
     public function getActiveStatus()

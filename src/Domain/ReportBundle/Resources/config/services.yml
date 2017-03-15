@@ -77,14 +77,7 @@ services:
         arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager', '@cache.provider.my_file_system']
     domain_report.manager.views_and_visitors:
         class: Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager
-        arguments: ['@domain_report.google_analytics.data_fetcher']
-
-    domain_report.manager.interactions:
-        class: Domain\ReportBundle\Manager\InteractionsReportManager
-        arguments:
-            - '@domain_business.manager.business_profile'
-        calls:
-            - [ setContainer, [ '@service_container' ] ]
+        arguments: [ '@domain_report.manager.business_overview_report_manager' ]
 
     domain_report.exporter.excel:
         class: Domain\ReportBundle\Service\Export\BusinessReportExcelExporter

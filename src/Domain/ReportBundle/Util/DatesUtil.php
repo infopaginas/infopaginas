@@ -199,4 +199,14 @@ class DatesUtil
             return false;
         }
     }
+
+    public static function getThisWeekStart()
+    {
+        return new \DateTime('monday this week');
+    }
+
+    public static function getThisWeekEnd()
+    {
+        return new \DateTime('sunday this week');
+    }
 }

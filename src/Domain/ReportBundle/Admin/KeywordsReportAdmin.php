@@ -9,7 +9,7 @@
 namespace Domain\ReportBundle\Admin;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\ReportBundle\Entity\BusinessOverviewReport;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -68,7 +68,7 @@ class KeywordsReportAdmin extends ReportAdmin
      */
     public function getExportFormats()
     {
-        return BusinessOverviewReport::getExportFormats();
+        return BusinessOverviewModel::getExportFormats();
     }
 
     /**

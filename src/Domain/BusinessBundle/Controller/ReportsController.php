@@ -7,11 +7,10 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\ReportBundle\Entity\Keyword;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
-use Domain\ReportBundle\Manager\InteractionsReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
@@ -52,7 +51,7 @@ class ReportsController extends Controller
             ':redesign:business-profile-report.html.twig',
             [
                 'overviewData'             => $overviewData,
-                'eventList'                => InteractionsReportManager::EVENT_TYPES,
+                'eventList'                => BusinessOverviewModel::EVENT_TYPES,
                 'filtersForm'              => $filtersForm->createView(),
                 'businessProfileId'        => $businessProfileId,
                 'businessProfile'          => $businessProfile,
@@ -69,23 +68,17 @@ class ReportsController extends Controller
 
         $this->checkBusinessProfileAccess($businessProfile);
 
-        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
+        $data = $this->prepareOverviewResponse($params);
 
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
-            [
-                'overviewData' => $overviewData,
-                'eventList'    => InteractionsReportManager::EVENT_TYPES,
-            ]
-        );
+        return new JsonResponse($data);
+    }
 
-        return new JsonResponse([
-            'stats'       => $stats,
-            'dates'       => $overviewData['dates'],
-            'views'       => $overviewData['views'],
-            'impressions' => $overviewData['impressions'],
-        ]);
+    public function overviewAdminAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+        $data   = $this->prepareOverviewResponse($params);
+
+        return new JsonResponse($data);
     }
 
     public function adUsageAction(Request $request)
@@ -115,21 +108,17 @@ class ReportsController extends Controller
 
         $this->checkBusinessProfileAccess($businessProfile);
 
-        $keywordsReportManager = $this->getKeywordsReportManager();
-        $keywordsData = $keywordsReportManager->getKeywordsData($params);
+        $data = $this->prepareKeywordsResponse($params);
 
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/keywordStatistics.html.twig',
-            [
-                'keywordsData' => $keywordsData,
-            ]
-        );
+        return new JsonResponse($data);
+    }
 
-        return new JsonResponse([
-            'stats'    => $stats,
-            'keywords' => $keywordsData['keywords'],
-            'searches' => $keywordsData['searches'],
-        ]);
+    public function keywordsAdminAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+        $data   = $this->prepareKeywordsResponse($params);
+
+        return new JsonResponse($data);
     }
 
     public function interactionsTrackAction(Request $request)
@@ -200,6 +189,46 @@ class ReportsController extends Controller
         return $params;
     }
 
+    protected function prepareOverviewResponse($params)
+    {
+        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
+            [
+                'overviewData' => $overviewData,
+                'eventList'    => BusinessOverviewModel::EVENT_TYPES,
+            ]
+        );
+
+        return [
+            'stats'       => $stats,
+            'dates'       => $overviewData['dates'],
+            'views'       => $overviewData['views'],
+            'impressions' => $overviewData['impressions'],
+        ];
+    }
+
+    protected function prepareKeywordsResponse($params)
+    {
+        $keywordsReportManager = $this->getKeywordsReportManager();
+        $keywordsData = $keywordsReportManager->getKeywordsData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/keywordStatistics.html.twig',
+            [
+                'keywordsData' => $keywordsData,
+            ]
+        );
+
+        return [
+            'stats'    => $stats,
+            'keywords' => $keywordsData['keywords'],
+            'searches' => $keywordsData['searches'],
+        ];
+    }
+
     protected function getPdfExporterService()
     {
         return $this->get('domain_report.exporter.pdf');
@@ -211,11 +240,6 @@ class ReportsController extends Controller
     protected function getExcelExporterService() : BusinessReportExcelExporter
     {
         return $this->get('domain_report.exporter.excel');
-    }
-
-    protected function getInteractionsReportManager() : InteractionsReportManager
-    {
-        return $this->get('domain_report.manager.interactions');
     }
 
     protected function getKeywordsReportManager() : KeywordsReportManager

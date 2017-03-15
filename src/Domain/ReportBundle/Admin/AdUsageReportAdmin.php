@@ -9,7 +9,7 @@
 namespace Domain\ReportBundle\Admin;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\ReportBundle\Entity\BusinessOverviewReport;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\Helpers\ChartHelper;
 use Oxa\DfpBundle\Entity\DoubleClickLineItem;
 use Oxa\DfpBundle\Model\DataType\DateRangeVO;
@@ -59,7 +59,7 @@ class AdUsageReportAdmin extends ReportAdmin
      */
     public function getExportFormats()
     {
-        return BusinessOverviewReport::getExportFormats();
+        return BusinessOverviewModel::getExportFormats();
     }
 
     /**

@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 15.09.16
- * Time: 12:10
- */
 
 namespace Domain\ReportBundle\Manager;
 
-use Domain\ReportBundle\Google\Analytics\DataFetcher;
-use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\ReportBundle\Entity\BusinessOverviewReport;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
@@ -19,56 +13,113 @@ use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
  */
 class ViewsAndVisitorsReportManager
 {
-    /** @var DataFetcher $gaDataSource */
-    protected $gaDataSource;
+    const TYPE_SUM_INTERACTIONS = 'interactions';
 
-    public function __construct(DataFetcher $gaDataSource)
+    /** @var BusinessOverviewReportManager $businessOverviewReportManager */
+    protected $businessOverviewReportManager;
+
+    public function __construct(BusinessOverviewReportManager $businessOverviewReportManager)
     {
-        $this->gaDataSource = $gaDataSource;
+        $this->businessOverviewReportManager = $businessOverviewReportManager;
     }
 
-    public function getViewsAndVisitorsData(array $filterParams = [])
+    public function getViewsAndVisitorsData(array $params = [])
     {
-        $dates = $this->getDateRangeVOFromDateString(
-            $filterParams['date']['value']['start'],
-            $filterParams['date']['value']['end']
+        $params['businessProfileId'] = 0;
+
+        $result = [
+            'dates' => [],
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION => [],
+            BusinessOverviewModel::TYPE_CODE_VIEW       => [],
+            'results' => [],
+            'datePeriod' => [
+                'start' => $params['date']['value']['start'],
+                'end'   => $params['date']['value']['end'],
+            ],
+            'total' => []
+        ];
+
+        $dates = DatesUtil::getDateRangeVOFromDateString(
+            $params['date']['value']['start'],
+            $params['date']['value']['end']
         );
 
-        if (isset($filterParams['periodOption']) &&
-            $filterParams['periodOption']['value'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
+        if (!empty($params['periodOption']['value']) &&
+            $params['periodOption']['value'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
         ) {
-            $dimension = 'yearMonth';
+            $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
+            $step       = DatesUtil::STEP_MONTH;
         } else {
-            $dimension = 'date';
+            $dateFormat = AdminHelper::DATE_FORMAT;
+            $step       = DatesUtil::STEP_DAY;
         }
 
-        $data = $this->getGaDataSource()->getWebsiteViewsAndVisitors($dates, $dimension);
+        $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
 
-        $result['results'] = $data;
+        $params['dateObject'] = $dates;
 
-        $result['views'] = array_values(array_map(function($item) {
-            return $item['views'];
-        }, $data));
+        $overviewResult = $this->businessOverviewReportManager->getBusinessInteractionData($params);
 
-        $result['visitors'] = array_values(array_map(function($item) {
-            return $item['visitors'];
-        }, $data));
+        $businessProfileResult = $this->prepareBusinessOverviewReportStats(
+            $result['dates'],
+            $overviewResult,
+            $dateFormat
+        );
 
-        $result['dates'] = array_keys($data);
+        $result['results'] = $businessProfileResult['results'];
+        $result['total']   = $businessProfileResult['total'];
+
+        $viewKey       = BusinessOverviewModel::TYPE_CODE_VIEW;
+        $impressionKey = BusinessOverviewModel::TYPE_CODE_IMPRESSION;
+
+        $result[$viewKey]       = $businessProfileResult[$viewKey];
+        $result[$impressionKey] = $businessProfileResult[$impressionKey];
 
         return $result;
     }
 
-    protected function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
+    protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat) : array
     {
-        $startDate = \DateTime::createFromFormat('d-m-Y', $start);
-        $endDate   = \DateTime::createFromFormat('d-m-Y', $end);
+        $stats = [];
+        $dates = array_flip($dates);
 
-        return new ReportDatesRangeVO($startDate, $endDate);
-    }
+        foreach ($dates as $date => $key) {
+            $stats['results'][$date]['date'] = $date;
+            $stats['results'][$date][BusinessOverviewModel::TYPE_CODE_VIEW]       = 0;
+            $stats['results'][$date][BusinessOverviewModel::TYPE_CODE_IMPRESSION] = 0;
+            $stats['results'][$date][self::TYPE_SUM_INTERACTIONS]                 = 0;
 
-    protected function getGaDataSource() : DataFetcher
-    {
-        return $this->gaDataSource;
+            // for chart only
+            $stats[BusinessOverviewModel::TYPE_CODE_VIEW][$key]       = 0;
+            $stats[BusinessOverviewModel::TYPE_CODE_IMPRESSION][$key] = 0;
+        }
+
+        $stats['total'][BusinessOverviewModel::TYPE_CODE_VIEW]       = 0;
+        $stats['total'][BusinessOverviewModel::TYPE_CODE_IMPRESSION] = 0;
+        $stats['total'][self::TYPE_SUM_INTERACTIONS]                 = 0;
+
+        foreach ($rawResult as $item) {
+            $action = $item[BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION];
+
+            if (in_array($action, BusinessOverviewModel::getTypes())) {
+                $count    = $item[BusinessOverviewReportManager::MONGO_DB_FIELD_COUNT];
+                $datetime = $item[BusinessOverviewReportManager::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+
+                $viewDate = $datetime->format($dateFormat);
+
+                // for chart only
+                if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or $action == BusinessOverviewModel::TYPE_CODE_IMPRESSION) {
+                    $stats[$action][$dates[$viewDate]] += $count;
+                } else {
+                    $action = self::TYPE_SUM_INTERACTIONS;
+                }
+
+                // for table
+                $stats['results'][$viewDate][$action] += $count;
+                $stats['total'][$action] += $count;
+            }
+        }
+
+        return $stats;
     }
 }

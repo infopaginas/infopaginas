@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Entity\BusinessOverviewReport;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -85,8 +86,8 @@ class BusinessOverviewReportManager extends BaseReportManager
 
         $result = [
             'dates' => [],
-            BusinessOverviewReport::TYPE_CODE_IMPRESSION => [],
-            BusinessOverviewReport::TYPE_CODE_VIEW => [],
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION => [],
+            BusinessOverviewModel::TYPE_CODE_VIEW => [],
             'results' => [],
             'datePeriod' => [
                 'start' => $params['date']['start'],
@@ -122,8 +123,8 @@ class BusinessOverviewReportManager extends BaseReportManager
         $result['total']        = $businessProfileResult['total'];
         $result['overall']      = $businessProfileResult['overall'];
 
-        $viewKey = BusinessOverviewReport::TYPE_CODE_VIEW;
-        $impressionKey = BusinessOverviewReport::TYPE_CODE_IMPRESSION;
+        $viewKey       = BusinessOverviewModel::TYPE_CODE_VIEW;
+        $impressionKey = BusinessOverviewModel::TYPE_CODE_IMPRESSION;
 
         $result[$viewKey]       = $businessProfileResult[$viewKey];
         $result[$impressionKey] = $businessProfileResult[$impressionKey];
@@ -219,16 +220,16 @@ class BusinessOverviewReportManager extends BaseReportManager
             $stats['results'][$date]['date'] = $date;
 
             // for table and api
-            foreach (BusinessOverviewReport::getTypes() as $type) {
+            foreach (BusinessOverviewModel::getTypes() as $type) {
                 $stats['results'][$date][$type] = 0;
             }
 
             // for chart only
-            $stats[BusinessOverviewReport::TYPE_CODE_VIEW][$key]       = 0;
-            $stats[BusinessOverviewReport::TYPE_CODE_IMPRESSION][$key] = 0;
+            $stats[BusinessOverviewModel::TYPE_CODE_VIEW][$key]       = 0;
+            $stats[BusinessOverviewModel::TYPE_CODE_IMPRESSION][$key] = 0;
         }
 
-        foreach (BusinessOverviewReport::getTypes() as $type) {
+        foreach (BusinessOverviewModel::getTypes() as $type) {
             $stats['total'][$type] = 0;
         }
 
@@ -237,7 +238,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         foreach ($rawResult as $item) {
             $action = $item[self::MONGO_DB_FIELD_ACTION];
 
-            if (in_array($action, BusinessOverviewReport::getTypes())) {
+            if (in_array($action, BusinessOverviewModel::getTypes())) {
                 $count  = $item[self::MONGO_DB_FIELD_COUNT];
                 $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
 
@@ -247,7 +248,9 @@ class BusinessOverviewReportManager extends BaseReportManager
                 $stats['results'][$viewDate][$action] += $count;
 
                 // for chart only
-                if ($action == BusinessOverviewReport::TYPE_CODE_VIEW or $action == BusinessOverviewReport::TYPE_CODE_IMPRESSION) {
+                if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or
+                    $action == BusinessOverviewModel::TYPE_CODE_IMPRESSION
+                ) {
                     $stats[$action][$dates[$viewDate]] += $count;
                 }
 
@@ -273,7 +276,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     public function registerBusinessView(array $businessProfiles)
     {
         $this->registerBusinessEvent(
-            BusinessOverviewReport::TYPE_CODE_VIEW,
+            BusinessOverviewModel::TYPE_CODE_VIEW,
             $businessProfiles
         );
     }
@@ -281,7 +284,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     public function registerBusinessImpression(array $businessProfiles)
     {
         $this->registerBusinessEvent(
-            BusinessOverviewReport::TYPE_CODE_IMPRESSION,
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION,
             $businessProfiles
         );
     }
@@ -312,7 +315,7 @@ class BusinessOverviewReportManager extends BaseReportManager
      */
     private function registerBusinessEvent($type, array $businessProfiles)
     {
-        if (!in_array($type, BusinessOverviewReport::getTypes()) or !$businessProfiles) {
+        if (!in_array($type, BusinessOverviewModel::getTypes()) or !$businessProfiles) {
             return false;
         }
 
@@ -378,7 +381,7 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
-    protected function getBusinessInteractionData($params)
+    public function getBusinessInteractionData($params)
     {
         $cursor = $this->mongoDbManager->find(
             self::MONGO_DB_COLLECTION_NAME_AGGREGATE,

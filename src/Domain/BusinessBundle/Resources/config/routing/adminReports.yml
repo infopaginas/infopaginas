@@ -1,0 +1,11 @@
+domain_business_admin_reports_business_overview_data:
+     path:     /data/overview
+     defaults: { _controller: DomainBusinessBundle:Reports:overviewAdmin }
+     options:
+        expose: true
+
+domain_business_admin_reports_keywords_data:
+     path:     /data/keywords
+     defaults: { _controller: DomainBusinessBundle:Reports:keywordsAdmin }
+     options:
+        expose: true

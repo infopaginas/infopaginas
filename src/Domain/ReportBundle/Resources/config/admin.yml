@@ -30,11 +30,3 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Views & Visitors Report}
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:ViewsAndVisitorsReport\list.html.twig']]
-
-    domain_report.admin.interactions:
-        class: Domain\ReportBundle\Admin\InteractionsReportAdmin
-        arguments: [~, Domain\ReportBundle\Entity\Interaction, ~]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Interactions Report}
-        calls:
-            - [ setTemplate, ['list', 'DomainReportBundle:Admin:InteractionsReport\list.html.twig']]

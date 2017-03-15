@@ -30,9 +30,6 @@ class BusinessReportApiManager
     /** @var  BusinessProfileManager $businessOverviewReportManager */
     protected $businessOverviewReportManager;
 
-    /** @var  InteractionsReportManager $interactionReportManager */
-    protected $interactionReportManager;
-
     /** @var  KeywordsReportManager $keywordsReportManager */
     protected $keywordsReportManager;
 
@@ -48,8 +45,6 @@ class BusinessReportApiManager
 
         $this->businessOverviewReportManager =
             $container->get('domain_report.manager.business_overview_report_manager');
-
-        $this->interactionReportManager = $container->get('domain_report.manager.interactions');
 
         $this->keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
     }
