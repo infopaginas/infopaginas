@@ -1,7 +1,8 @@
 $( document ).ready( function() {
 
     var tabs = {
-        'interactionTab': 'a[href="#tab_' + formId + '_3"]'
+        'interactionTab': 'a[href="#tab_' + formId + '_3"]',
+        'keywordTab': 'a[href="#tab_' + formId + '_4"]'
     };
 
     var html = {
@@ -9,12 +10,14 @@ $( document ).ready( function() {
             businessOverviewChartContainerId: '#businessOverviewChartContainer',
             businessOverviewStatsContainerId: '#businessOverviewStatisticsContainer',
             keywordChartContainerId: '#keywordChartContainer',
-            keywordStatsContainerId: '#keywordStatisticsContainer',
-            keywordsLimitContainerId: '#keywordsLimitContainer'
+            keywordStatsContainerId: '#keywordStatisticsContainer'
         },
         inputs: {
-            interactionDateStart: '#' + formId + '_interactionDateStart',
-            interactionDateEnd: '#' + formId + '_interactionDateEnd'
+            interactionDateStart:   '#' + formId + '_interactionDateStart',
+            interactionDateEnd:     '#' + formId + '_interactionDateEnd',
+            keywordDateStart:       '#' + formId + '_keywordDateStart',
+            keywordDateEnd:         '#' + formId + '_keywordDateEnd',
+            keywordLimit:           '#' + formId + '_keywordLimit'
         },
         buttons: {
             keywordFilter: '#keywordFilter',
@@ -26,6 +29,11 @@ $( document ).ready( function() {
     interactionDateEndContainer.after( '<div class="form__section scrollable-table" id="businessOverviewStatisticsContainer"></div>' );
     interactionDateEndContainer.after( '<div id="businessOverviewChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
     interactionDateEndContainer.after( '<div class="form-group"><button id="interactionFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
+
+    var keywordLimitContainer = $( '#sonata-ba-field-container-' + formId + '_keywordLimit' );
+    keywordLimitContainer.after( '<div class="form__section scrollable-table" id="keywordStatisticsContainer"></div>' );
+    keywordLimitContainer.after( '<div id="keywordChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
+    keywordLimitContainer.after( '<div class="form-group"><button id="keywordFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     var reportUrls = {
         businessOverviewDataAction: Routing.generate( 'domain_business_admin_reports_business_overview_data' ),
@@ -52,7 +60,7 @@ $( document ).ready( function() {
     function loadKeywordsReport() {
         $.ajax({
             url: reportUrls.keywordsDataAction,
-            data: getFilterValues(),
+            data: getKeywordFilterValues(),
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
@@ -152,6 +160,20 @@ $( document ).ready( function() {
         };
     }
 
+    function getKeywordFilterValues() {
+        var keywordDateStart = $( html.inputs.keywordDateStart ).val();
+        var keywordDateEnd   = $( html.inputs.keywordDateEnd ).val();
+        var keywordLimit     = $( html.inputs.keywordLimit ).val();
+
+        return {
+            'businessProfileId': businessProfileId,
+            'start': keywordDateStart,
+            'end': keywordDateEnd,
+            'datesRange': 'custom',
+            'limit': keywordLimit
+        };
+    }
+
     handleReportUpdate();
 
     function handleReportUpdate() {
@@ -161,6 +183,14 @@ $( document ).ready( function() {
 
         $( tabs.interactionTab ).on( 'click', function() {
             loadBusinessOverviewReport();
+        });
+
+        $( html.buttons.keywordFilter ).on( 'click', function() {
+            loadKeywordsReport();
+        });
+
+        $( tabs.keywordTab ).on( 'click', function() {
+            loadKeywordsReport();
         });
     }
 });
