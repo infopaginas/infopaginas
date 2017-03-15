@@ -14,8 +14,6 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Repository\LocalityRepository;
-use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -783,17 +781,6 @@ class BusinessProfile implements
      */
     protected $distance;
 
-     /** @var SearchLog[]
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\ReportBundle\Entity\SearchLog",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     * )
-     */
-    private $searchLogs;
-
     /**
      * @ORM\OneToMany(
      *     targetEntity="Domain\ReportBundle\Entity\BusinessOverviewReport",
@@ -911,7 +898,6 @@ class BusinessProfile implements
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessOverviewReports = new \Doctrine\Common\Collections\ArrayCollection();
         $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
 
@@ -2755,42 +2741,11 @@ class BusinessProfile implements
     }
 
     /**
-     * Add searchLog
-     *
-     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
-     * @return BusinessProfile
-     */
-    public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
-    {
-        $this->searchLogs[] = $searchLog;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getDoubleClickExternalId()
     {
         return $this->getUser() ? $this->getUser()->getAdvertiserId() : '';
-    }
-
-    /** Remove searchLog
-     *
-     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
-     */
-    public function removeSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
-    {
-        $this->searchLogs->removeElement($searchLog);
-    }
-
-    /**
-     * Get searchLogs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getSearchLogs()
-    {
-        return $this->searchLogs;
     }
 
     public static function getServiceAreasTypes()

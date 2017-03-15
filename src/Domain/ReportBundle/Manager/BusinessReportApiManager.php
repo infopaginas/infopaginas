@@ -7,7 +7,7 @@ use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Util\DatesUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class BusinessOverviewReportApiManager
+class BusinessReportApiManager
 {
     const API_STATUS_SUCCESS = 'success';
     const API_STATUS_ERROR   = 'error';
@@ -37,7 +37,7 @@ class BusinessOverviewReportApiManager
     protected $keywordsReportManager;
 
     /**
-     * BusinessOverviewReportApiManager constructor
+     * BusinessReportApiManager constructor
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)

@@ -6,7 +6,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
-use Domain\ReportBundle\Manager\SearchLogManager;
+use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
-
 use Domain\BannerBundle\Model\TypeInterface;
 
 /**
@@ -46,7 +45,7 @@ class SearchController extends Controller
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-            $this->getSearchLogManager()
+            $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
@@ -163,7 +162,7 @@ class SearchController extends Controller
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-            $this->getSearchLogManager()
+            $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
@@ -213,7 +212,7 @@ class SearchController extends Controller
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-            $this->getSearchLogManager()
+            $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
@@ -262,11 +261,11 @@ class SearchController extends Controller
     }
 
     /**
-     * @return \Domain\ReportBundle\Manager\SearchLogManager
+     * @return KeywordsReportManager
      */
-    protected function getSearchLogManager() : SearchLogManager
+    protected function getKeywordsReportManager() : KeywordsReportManager
     {
-        return $this->get('domain_report.manager.search_log');
+        return $this->get('domain_report.manager.keywords_report_manager');
     }
 
     /**
@@ -434,7 +433,7 @@ class SearchController extends Controller
                 $this->getBusinessProfileManager()
                     ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-                $this->getSearchLogManager()
+                $this->getKeywordsReportManager()
                     ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
                 $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);

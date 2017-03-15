@@ -116,6 +116,17 @@ class DatesUtil
         return new DateRangeVO($start, $end);
     }
 
+    public static function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
+    {
+        $startDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $start);
+        $endDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $end);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        return new ReportDatesRangeVO($startDate, $endDate);
+    }
+
     public static function getDateAsArrayFromRequestData(array $requestData, string $format = self::DATE_DB_FORMAT)
     {
         $date['start'] = \DateTime::createFromFormat($format, $requestData['start'])

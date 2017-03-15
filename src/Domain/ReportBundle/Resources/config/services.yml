@@ -12,15 +12,13 @@ services:
         class: Domain\ReportBundle\Manager\BusinessOverviewReportManager
         arguments:
             - '@domain_business.manager.business_profile'
-            - '@router'
-            - '@kernel'
             - '@mongodb.manager'
         calls:
             - [ setContainer, [ '@service_container' ] ]
 
     domain_report.manager.keywords_report_manager:
         class: Domain\ReportBundle\Manager\KeywordsReportManager
-        arguments: [ '@doctrine.orm.entity_manager' ]
+        arguments: [ '@mongodb.manager' ]
 
     # export services
     domain_report.exporter:
@@ -74,17 +72,6 @@ services:
         class: Domain\ReportBundle\Google\Analytics\ClientProvider
         arguments: ['analytics@infopaginas-142911.iam.gserviceaccount.com', %kernel.root_dir%/config/key.p12]
 
-    domain_report.stemmer:
-        class: Domain\ReportBundle\Service\StemmerService
-
-    domain_report.manager.keywords:
-        class: Domain\ReportBundle\Manager\KeywordsManager
-        arguments: ['@doctrine.orm.entity_manager', '@domain_report.stemmer']
-
-    domain_report.manager.search_log:
-        class: Domain\ReportBundle\Manager\SearchLogManager
-        arguments: ['@doctrine.orm.entity_manager', '@domain_report.manager.keywords']
-
     domain_report.manager.ad_usage:
         class: Domain\ReportBundle\Manager\AdUsageReportManager
         arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager', '@cache.provider.my_file_system']
@@ -118,6 +105,6 @@ services:
             - '@templating'
             - '@spraed.pdf.generator'
 
-    domain_report.manager.business_overview_report_api_manager:
-            class: Domain\ReportBundle\Manager\BusinessOverviewReportApiManager
+    domain_report.manager.business_report_api_manager:
+            class: Domain\ReportBundle\Manager\BusinessReportApiManager
             arguments: [ '@service_container' ]

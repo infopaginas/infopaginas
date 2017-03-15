@@ -39,6 +39,17 @@ class MongoDbManager
 
     /**
      * @param       $collectionName
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function insertMany($collectionName, $data)
+    {
+        return $this->client->$collectionName->insertMany($data);
+    }
+
+    /**
+     * @param       $collectionName
      * @param array $query
      * @param array $options
      *

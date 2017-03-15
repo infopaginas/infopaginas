@@ -3,8 +3,8 @@
 namespace Domain\ReportBundle\Command;
 
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
+use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
-use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -56,6 +56,9 @@ class ReportAggregationCommand extends ContainerAwareCommand
         $output->writeln('Process overview report');
         $this->getBusinessOverviewReportManager()->aggregateBusinessInteractions($period);
 
+        $output->writeln('Process keyword report');
+        $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
+
         $output->writeln('done');
     }
 
@@ -65,6 +68,14 @@ class ReportAggregationCommand extends ContainerAwareCommand
     protected function getBusinessOverviewReportManager()
     {
         return $this->getContainer()->get('domain_report.manager.business_overview_report_manager');
+    }
+
+    /**
+     * @return KeywordsReportManager
+     */
+    protected function getKeywordsReportManager()
+    {
+        return $this->getContainer()->get('domain_report.manager.keywords_report_manager');
     }
 
     protected function getAggregationPeriod(InputInterface $input)

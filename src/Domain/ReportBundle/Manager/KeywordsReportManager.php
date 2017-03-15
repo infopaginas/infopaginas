@@ -1,22 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 06.09.16
- * Time: 11:54
- */
 
 namespace Domain\ReportBundle\Manager;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\ReportBundle\Admin\KeywordsReportAdmin;
-use Domain\ReportBundle\Entity\Keyword;
-use Domain\ReportBundle\Entity\SearchLog;
-use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\ReportBundle\Service\StemmerService;
 use Domain\ReportBundle\Util\DatesUtil;
-use Oxa\DfpBundle\Model\DataType\DateRangeVO;
+use Oxa\MongoDbBundle\Manager\MongoDbManager;
 
 /**
  * Class KeywordsReportManager
@@ -24,29 +13,38 @@ use Oxa\DfpBundle\Model\DataType\DateRangeVO;
  */
 class KeywordsReportManager
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
+    /** @var MongoDbManager $mongoDbManager */
+    protected $mongoDbManager;
 
-    const KEYWORDS_PER_PAGE_COUNT = [5 => 5, 10 => 10, 15 => 15, 20=> 20, 25 => 25];
+    const KEYWORDS_PER_PAGE_COUNT = [
+        5   => 5,
+        10  => 10,
+        15  => 15,
+        20  => 20,
+        25  => 25,
+        50  => 50,
+        100 => 100,
+        500 => 500,
+    ];
 
     const DEFAULT_KEYWORDS_COUNT = 15;
 
-    /**
-     * KeywordsReportManager constructor.
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(EntityManagerInterface $entityManager)
+    const MONGO_DB_COLLECTION_NAME_RAW       = 'keyword_raw';
+    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'keyword_aggregate';
+
+    const MONGO_DB_FIELD_KEYWORD     = 'keyword';
+    const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
+    const MONGO_DB_FIELD_COUNT       = 'count';
+    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+
+    public function __construct(MongoDbManager $mongoDbManager)
     {
-        $this->entityManager = $entityManager;
+        $this->mongoDbManager = $mongoDbManager;
     }
 
     public function getKeywordsData(array $params = [])
     {
-        $businessProfile = $this->getBusinessProfilesRepository()->find($params['businessProfileId']);
-
-        $stats = $this->getKeywordsDataFromRepo($businessProfile, $params);
+        $stats = $this->getKeywordsDataFromMongoDb($params);
 
         $keywordsData = [
             'results' => $stats,
@@ -58,41 +56,152 @@ class KeywordsReportManager
     }
 
     /**
-     * @param BusinessProfile $businessProfile
+     * @param string $search
+     * @param BusinessProfile[] $businessProfiles
+     */
+    public function saveProfilesDataSuggestedBySearchQuery($search, $businessProfiles)
+    {
+        $keywords = StemmerService::getWordsArrayFromString($search);
+
+        $data = $this->buildBusinessKeywords($businessProfiles, $keywords);
+
+        $this->insertBusinessKeywords($data);
+    }
+
+    /**
      * @param array $params
      * @return mixed
      */
-    protected function getKeywordsDataFromRepo(BusinessProfile $businessProfile, array $params)
+    protected function getKeywordsDataFromMongoDb(array $params)
     {
-        $start = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $params['date']['start']);
-        $end = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $params['date']['end']);
+        $params['dateObject'] = DatesUtil::getDateRangeVOFromDateString(
+            $params['date']['start'],
+            $params['date']['end']
+        );
 
-        $limit = $params['limit'];
-
-        return $this->getKeywordsRepository()->getTopKeywordsForBusinessProfile($businessProfile, $start, $end, $limit);
+        return $this->getBusinessKeywordsData($params);
     }
 
-    /**
-     * @return \Domain\BusinessBundle\Repository\BusinessProfileRepository
-     */
-    protected function getBusinessProfilesRepository()
+    protected function getBusinessKeywordsData($params)
     {
-        return $this->getEntityManager()->getRepository(BusinessProfile::class);
+        $cursor = $this->mongoDbManager->aggregateData(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            [
+                [
+                    '$match' => [
+                        self::MONGO_DB_FIELD_BUSINESS_ID => (int)$params['businessProfileId'],
+                        self::MONGO_DB_FIELD_DATE_TIME => [
+                            '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
+                            '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$' . self::MONGO_DB_FIELD_KEYWORD,
+                        self::MONGO_DB_FIELD_COUNT => [
+                            '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
+                        ],
+                    ],
+                ],
+                [
+                    '$sort'  => [
+                        self::MONGO_DB_FIELD_COUNT => -1,
+                    ],
+                ],
+                [
+                    '$limit' => (int)$params['limit'],
+                ],
+            ]
+        );
+
+        $result = [];
+
+        foreach ($cursor as $document) {
+            $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
+        }
+
+        return $result;
     }
 
-    /**
-     * @return \Domain\ReportBundle\Repository\KeywordRepository
-     */
-    protected function getKeywordsRepository()
+    protected function buildSingleBusinessKeyword($businessId, $keyword, $date)
     {
-        return $this->getEntityManager()->getRepository(Keyword::class);
+        $data = [
+            self::MONGO_DB_FIELD_BUSINESS_ID => $businessId,
+            self::MONGO_DB_FIELD_KEYWORD     => $keyword,
+            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+        ];
+
+        return $data;
     }
 
-    /**
-     * @return EntityManagerInterface
-     */
-    protected function getEntityManager()
+    protected function buildBusinessKeywords($businessProfiles, $keywords)
     {
-        return $this->entityManager;
+        $data = [];
+        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
+
+        foreach ($keywords as $keyword) {
+            foreach ($businessProfiles as $businessProfile) {
+                $data[] = $this->buildSingleBusinessKeyword($businessProfile->getId(), $keyword, $date);
+            }
+
+            $data[] = $this->buildSingleBusinessKeyword(0, $keyword, $date);
+        }
+
+        return $data;
+    }
+
+    protected function insertBusinessKeywords($data)
+    {
+        $this->mongoDbManager->insertMany(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            $data
+        );
+    }
+
+    public function aggregateBusinessKeywords($period)
+    {
+        $aggregateStartDate = $this->mongoDbManager->typeUTCDateTime($period->getStartDate());
+        $aggregateEndDate   = $this->mongoDbManager->typeUTCDateTime($period->getEndDate());
+
+        $cursor = $this->mongoDbManager->aggregateData(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            [
+                [
+                    '$match' => [
+                        self::MONGO_DB_FIELD_DATE_TIME => [
+                            '$gte' => $aggregateStartDate,
+                            '$lte' => $aggregateEndDate,
+                        ],
+                    ],
+                ],
+                [
+                    '$project' => [
+                        'query' => [
+                            'keyword' => '$' . self::MONGO_DB_FIELD_KEYWORD,
+                            'bid'     => '$' . self::MONGO_DB_FIELD_BUSINESS_ID,
+                        ],
+                    ]
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$query',
+                        self::MONGO_DB_FIELD_COUNT => [
+                            '$sum' => 1,
+                        ],
+                    ],
+                ]
+            ]
+        );
+
+        foreach ($cursor as $document) {
+            $document[self::MONGO_DB_FIELD_KEYWORD]     = $document['_id']['keyword'];
+            $document[self::MONGO_DB_FIELD_BUSINESS_ID] = $document['_id']['bid'];
+            $document[self::MONGO_DB_FIELD_DATE_TIME]   = $aggregateStartDate;
+
+            $document['_id'] = $this->mongoDbManager->generateId();
+
+            $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
+        }
     }
 }

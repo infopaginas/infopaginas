@@ -6,14 +6,10 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Entity\BusinessOverviewReport;
-use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
-use Ivory\CKEditorBundle\Exception\Exception;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Domain\ReportBundle\Manager\BaseReportManager;
-use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Routing\Router;
 
 class BusinessOverviewReportManager extends BaseReportManager
 {
@@ -28,12 +24,6 @@ class BusinessOverviewReportManager extends BaseReportManager
     /** @var  BusinessProfileManager $businessProfileManager */
     protected $businessProfileManager;
 
-    /** @var Kernel $kernel */
-    protected $kernel;
-
-    /** @var Router $router */
-    protected $router;
-
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
@@ -41,18 +31,10 @@ class BusinessOverviewReportManager extends BaseReportManager
      * BusinessOverviewReportManager constructor.
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function __construct(
-        BusinessProfileManager $businessProfileManager,
-        Router $router,
-        Kernel $kernel,
-        MongoDbManager $mongoDbManager
-    )
+    public function __construct(BusinessProfileManager $businessProfileManager, MongoDbManager $mongoDbManager)
     {
         $this->businessProfileManager = $businessProfileManager;
-
-        $this->kernel = $kernel;
-        $this->router = $router;
-        $this->mongoDbManager = $mongoDbManager;
+        $this->mongoDbManager         = $mongoDbManager;
     }
 
     /**
@@ -114,10 +96,7 @@ class BusinessOverviewReportManager extends BaseReportManager
             'businessProfile' => $businessProfileName
         ];
 
-        $dates = $this->getDateRangeVOFromDateString(
-            $params['date']['start'],
-            $params['date']['end']
-        );
+        $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
 
         if (isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
             $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
@@ -174,10 +153,7 @@ class BusinessOverviewReportManager extends BaseReportManager
             'businessProfile' => $businessProfileName
         ];
 
-        $dates = $this->getDateRangeVOFromDateString(
-            $params['date']['start'],
-            $params['date']['end']
-        );
+        $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
 
         if (isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
             $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
@@ -202,17 +178,6 @@ class BusinessOverviewReportManager extends BaseReportManager
         $result['impressions'] = $businessProfileResult['impressions'];
 
         return $result;
-    }
-
-    protected function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
-    {
-        $startDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $start);
-        $endDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $end);
-
-        $startDate->setTime(0, 0, 0);
-        $endDate->setTime(23, 59, 59);
-
-        return new ReportDatesRangeVO($startDate, $endDate);
     }
 
     protected function prepareBusinessProfileOverviewReportStats($dates, $views, $dateFormat) : array
@@ -353,11 +318,9 @@ class BusinessOverviewReportManager extends BaseReportManager
 
         $businessProfileIds = BusinessProfileUtil::extractBusinessProfiles($businessProfiles);
 
-        foreach ($businessProfileIds as $businessProfileId) {
-            $this->insertBusinessInteraction($businessProfileId, $type);
-        }
+        $data = $this->buildBusinessInteractions($businessProfileIds, $type);
 
-        $this->insertBusinessInteraction(0, $type);
+        $this->insertBusinessInteractions($data);
 
         return true;
     }
@@ -382,15 +345,36 @@ class BusinessOverviewReportManager extends BaseReportManager
         return [$businessOverviewData, $filename];
     }
 
-    protected function insertBusinessInteraction($businessProfileId, $action)
+    protected function buildSingleBusinessInteraction($businessId, $action, $date)
     {
-        $this->mongoDbManager->insertOne(
+        $data = [
+            self::MONGO_DB_FIELD_BUSINESS_ID => $businessId,
+            self::MONGO_DB_FIELD_ACTION      => $action,
+            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+        ];
+
+        return $data;
+    }
+
+    protected function buildBusinessInteractions($businessProfileIds, $action)
+    {
+        $data = [];
+        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
+
+        foreach ($businessProfileIds as $businessProfileId) {
+            $data[] = $this->buildSingleBusinessInteraction($businessProfileId, $action, $date);
+        }
+
+        $data[] = $this->buildSingleBusinessInteraction(0, $action, $date);
+
+        return $data;
+    }
+
+    protected function insertBusinessInteractions($data)
+    {
+        $this->mongoDbManager->insertMany(
             self::MONGO_DB_COLLECTION_NAME_RAW,
-            [
-                self::MONGO_DB_FIELD_BUSINESS_ID => $businessProfileId,
-                self::MONGO_DB_FIELD_ACTION      => $action,
-                self::MONGO_DB_FIELD_DATE_TIME   => $this->mongoDbManager->typeUTCDateTime(new \DateTime()),
-            ]
+            $data
         );
     }
 
@@ -454,16 +438,6 @@ class BusinessOverviewReportManager extends BaseReportManager
 
             $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
         }
-    }
-
-    protected function getKernel()
-    {
-        return $this->kernel;
-    }
-
-    protected function getRouter()
-    {
-        return $this->router;
     }
 
     protected function getBusinessProfileManager() : BusinessProfileManager

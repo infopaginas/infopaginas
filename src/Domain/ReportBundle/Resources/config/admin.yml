@@ -15,14 +15,6 @@ services:
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:CategoryReport\list.html.twig']]
 
-    domain_report.admin.keywords_report:
-        class: Domain\ReportBundle\Admin\KeywordsReportAdmin
-        arguments: [~, Domain\ReportBundle\Entity\SearchLog, DomainReportBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Keywords Report}
-        calls:
-            - [ setTemplate, ['list', 'DomainReportBundle:Admin:KeywordsReport\list.html.twig']]
-
     domain_report.admin.ad_usage_report:
         class: Domain\ReportBundle\Admin\AdUsageReportAdmin
         arguments: [~, Oxa\DfpBundle\Entity\DoubleClickLineItem, DomainReportBundle:CRUD]

@@ -456,6 +456,8 @@ date: Fecha
 interaction_report.total: Total
 interaction_report.overall: Interacciones totales
 
+keyword_report.total: Total
+
 # working hours
 business.working.hours.open_all_time: Abierto 24 horas
 business.working.hours.open_until: Abierto hasta {-TIME-}
