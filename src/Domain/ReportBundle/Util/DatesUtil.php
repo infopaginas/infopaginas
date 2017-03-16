@@ -209,4 +209,9 @@ class DatesUtil
     {
         return new \DateTime('sunday this week');
     }
+
+    public static function getYesterday()
+    {
+        return new \DateTime('yesterday');
+    }
 }

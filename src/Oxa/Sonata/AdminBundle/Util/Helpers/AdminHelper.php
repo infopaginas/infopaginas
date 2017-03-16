@@ -174,6 +174,25 @@ class AdminHelper
         ];
     }
 
+    public static function getReportDateTypeOptions()
+    {
+        return [
+            'show_filter' => true,
+            'field_type'  => 'sonata_type_datetime_range_picker',
+            'field_options' => [
+                'field_options' => [
+                    'format'        => self::FILTER_DATE_RANGE_FORMAT,
+                    'empty_value'   => false,
+                ],
+                'attr' => [
+                    'class' => self::FILTER_DATE_RANGE_CLASS,
+                ],
+                'mapped'    => false,
+                'required'  => true,
+            ]
+        ];
+    }
+
     /**
      * @return array
      */

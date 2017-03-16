@@ -1,141 +1,171 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/12/16
- * Time: 2:28 PM
- */
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Repository\SubscriptionPlanRepository;
-use Domain\ReportBundle\Entity\SubscriptionReport;
-use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
+use Domain\BusinessBundle\Repository\SubscriptionRepository;
+use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class SubscriptionReportManager extends BaseReportManager
 {
+    const MONGO_DB_COLLECTION_NAME = 'subscription';
+
+    const MONGO_DB_FIELD_PLAN_CODE = 'code';
+    const MONGO_DB_FIELD_COUNT     = 'count';
+    const MONGO_DB_FIELD_DATE_TIME = 'datetime';
+
+    /** @var MongoDbManager $mongoDbManager */
+    protected $mongoDbManager;
+
+    public function __construct(MongoDbManager $mongoDbManager)
+    {
+        $this->mongoDbManager = $mongoDbManager;
+    }
+
     /**
      * @return array|\Domain\BusinessBundle\Entity\SubscriptionPlan[]
      */
     public function getSubscriptionPlans()
     {
-        return $this->getEntityManager()
-            ->getRepository('DomainBusinessBundle:SubscriptionPlan')
-            ->findBy([], ['id' => 'ASC']);
+        return $this->getSubscriptionPlanRepository()->findBy([], ['id' => 'ASC']);
     }
 
-    /**
-     * @param SubscriptionReport[] $subscriptionReports
-     * @return array|\Domain\BusinessBundle\Entity\SubscriptionPlan[]
-     */
-    public function getSubscriptionsQuantities(array $subscriptionReports, $dates = [], $subscriptionPlans)
+    public function getSubscriptionsReportData(array $params = [])
     {
         $result = [
-            'dates' => $dates,
-            'subscription_quantities' => [],
-            'subscription_total_quantities' => [],
-            'total_quantity' => 0,
+            'dates'         => [],
+            'chart_results' => [],
+            'results'       => [],
         ];
 
-        $request = $this->container->get('request');
+        $params['dateObject'] = DatesUtil::getDateRangeVOFromDateString(
+            $params['date']['value']['start'],
+            $params['date']['value']['end']
+        );
 
-        foreach ($dates as $date) {
-            foreach ($subscriptionPlans as $plan) {
-                $code = $plan->getCode();
-                $subscriptionName = $plan->getTranslation('name', $request->getLocale());
+        $result['dates'] = DatesUtil::dateRange($params['dateObject']);
 
-                $result['subscription_quantities'][$code]['quantities'][] = 0;
-                $result['subscription_quantities'][$code]['name'] = $subscriptionName;
-            }
-        }
+        $subscriptionReports = $this->getSubscriptionPlanStats($params);
 
-        foreach ($subscriptionReports as $subscriptionReport) {
-            $date = $subscriptionReport->getDate()->format(AdminHelper::DATE_FORMAT);
+        $subscriptionStatResult = $this->prepareSubscriptionReportStats($result['dates'], $subscriptionReports);
 
-            foreach ($subscriptionReport->getSubscriptionReportSubscriptions() as $subscriptionReportSubscription) {
-                /** @var SubscriptionReportSubscription $subscriptionReportSubscription*/
-                $code = $subscriptionReportSubscription->getSubscriptionPlan()->getCode();
-
-                $subscriptionQuantity = $subscriptionReportSubscription->getQuantity();
-                $subscriptionName = $subscriptionReportSubscription
-                    ->getSubscriptionPlan()
-                    ->getTranslation('name', $request->getLocale());
-
-                $position = array_search($date, $result['dates']);
-
-                if ($position !== false) {
-                    $result['subscription_quantities'][$code]['quantities'][$position] += $subscriptionQuantity;
-                    $result['subscription_quantities'][$code]['name'] = $subscriptionName;
-                } else {
-                    $subscriptionQuantity = 0;
-                }
-
-                if (isset($result['subscription_total_quantities'][$code])) {
-                    $result['subscription_total_quantities'][$code]['quantity'] += $subscriptionQuantity;
-                } else {
-                    $result['subscription_total_quantities'][$code]['quantity'] = $subscriptionQuantity;
-                    $result['subscription_total_quantities'][$code]['name'] = $subscriptionName;
-                }
-
-                $result['total_quantity'] += $subscriptionQuantity;
-            }
-        }
-
-        ksort($result['subscription_total_quantities']);
+        $result['results']       = $subscriptionStatResult['results'];
+        $result['chart_results'] = $subscriptionStatResult['chart'];
+        $result['mapping']       = $subscriptionStatResult['mapping'];
 
         return $result;
     }
 
     public function saveSubscriptionStats()
     {
-        /** @var SubscriptionPlanRepository $repo */
-        $repo = $this->getSubscriptionPlanRepository();
+        $stats = $this->getSubscriptionRepository()->getSubscriptionStatistics();
+        $data  = $this->buildSubscriptionPlanStats($stats);
 
-        $stats = $repo->getSubscriptionStatistics();
+        $this->insertSubscriptionPlanStats($data);
+    }
 
-        //Doctrine's LEFT JOIN dirty fix
-        $counts = [];
+    protected function buildSingleSubscriptionPlanStat($code, $count, $date)
+    {
+        $data = [
+            self::MONGO_DB_FIELD_PLAN_CODE   => $code,
+            self::MONGO_DB_FIELD_COUNT       => $count,
+            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+        ];
 
-        foreach ($stats as $stat) {
-            $counts[$stat[0]->getId()] = $stat['cnt'];
+        return $data;
+    }
+
+    protected function buildSubscriptionPlanStats($stats)
+    {
+        $data = [];
+        $date = $this->mongoDbManager->typeUTCDateTime(DatesUtil::getYesterday());
+
+        foreach ($stats as $item) {
+            $data[] = $this->buildSingleSubscriptionPlanStat($item['code'], $item['cnt'], $date);
         }
 
-        foreach ($repo->findAll() as $subscriptionPlan) {
-            if (!isset($counts[$subscriptionPlan->getId()])) {
-                $stats[] = [
-                    0 => $subscriptionPlan,
-                    'cnt' => 0,
-                ];
+        return $data;
+    }
+
+    protected function insertSubscriptionPlanStats($data)
+    {
+        $this->mongoDbManager->insertMany(
+            self::MONGO_DB_COLLECTION_NAME,
+            $data
+        );
+    }
+
+    public function getSubscriptionPlanStats($params)
+    {
+        $cursor = $this->mongoDbManager->find(
+            self::MONGO_DB_COLLECTION_NAME,
+            [
+                self::MONGO_DB_FIELD_DATE_TIME => [
+                    '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
+                    '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
+                ],
+            ]
+        );
+
+        return $cursor;
+    }
+
+    protected function prepareSubscriptionReportStats($dates, $rawResult)
+    {
+        $subscriptionPlans = $this->getSubscriptionPlans();
+
+        $stats = [];
+        $dates = array_flip($dates);
+
+        foreach ($subscriptionPlans as $plan) {
+            $code = $plan->getCode();
+
+            $stats['mapping'][$code] = $plan->getName();
+        }
+
+        foreach ($dates as $date => $key) {
+            $stats['results'][$date]['date'] = $date;
+
+            foreach ($stats['mapping'] as $code => $name) {
+                $stats['results'][$date][$code] = 0;
+                $stats['chart'][$code][$key]    = 0;
             }
+
+            $stats['results'][$date]['total'] = 0;
         }
 
-        $date = new \DateTime('today');
+        $stats['mapping']['total'] = 'subscription_report.total';
 
-        $subscriptionReport = new SubscriptionReport();
-        $subscriptionReport->setDate($date);
+        foreach ($rawResult as $item) {
+            $code     = $item[self::MONGO_DB_FIELD_PLAN_CODE];
+            $count    = $item[self::MONGO_DB_FIELD_COUNT];
+            $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
 
-        $this->getEntityManager()->persist($subscriptionReport);
+            $viewDate = $datetime->format(AdminHelper::DATE_FORMAT);
 
-        foreach ($stats as $subscriptionStat) {
-            $subscriptionPlan = $subscriptionStat[0];
-            $quantity = $subscriptionStat['cnt'];
+            // for chart
+            $stats['chart'][$code][$dates[$viewDate]] += $count;
 
-            $subscriptionReportSubscription = new SubscriptionReportSubscription();
-            $subscriptionReportSubscription->setSubscriptionPlan($subscriptionPlan);
-            $subscriptionReportSubscription->setQuantity($quantity);
-            $subscriptionReportSubscription->setSubscriptionReport($subscriptionReport);
-
-            $this->getEntityManager()->persist($subscriptionReportSubscription);
+            // for table
+            $stats['results'][$viewDate][$code]       += $count;
+            $stats['results'][$viewDate]['total']     += $count;
         }
 
-        $this->getEntityManager()->flush();
+        return $stats;
     }
 
     protected function getSubscriptionPlanRepository() : SubscriptionPlanRepository
     {
         return $this->getEntityManager()->getRepository(SubscriptionPlan::class);
+    }
+
+    protected function getSubscriptionRepository() : SubscriptionRepository
+    {
+        return $this->getEntityManager()->getRepository(Subscription::class);
     }
 }

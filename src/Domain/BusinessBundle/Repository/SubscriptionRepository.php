@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 
@@ -60,5 +61,25 @@ class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
         $iterateResult = $query->iterate();
 
         return $iterateResult;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubscriptionStatistics()
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        $qb
+            ->select('count(s.id) as cnt')
+            ->addSelect('sp.code as code')
+            ->leftJoin('s.subscriptionPlan', 'sp', 'WITH', 'sp.isActive = true')
+            ->andWhere('s.isActive = true')
+            ->andWhere('s.status = :activeStatus')
+            ->groupBy('sp.code')
+            ->setParameter('activeStatus', StatusInterface::STATUS_ACTIVE)
+        ;
+
+        return $qb->getQuery()->getArrayResult();
     }
 }

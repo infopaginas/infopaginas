@@ -2,7 +2,6 @@
 
 namespace Domain\ReportBundle\Manager;
 
-use Domain\ReportBundle\Entity\BusinessOverviewReport;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -68,6 +67,7 @@ class ViewsAndVisitorsReportManager
 
         $result['results'] = $businessProfileResult['results'];
         $result['total']   = $businessProfileResult['total'];
+        $result['mapping'] = $businessProfileResult['mapping'];
 
         $viewKey       = BusinessOverviewModel::TYPE_CODE_VIEW;
         $impressionKey = BusinessOverviewModel::TYPE_CODE_IMPRESSION;
@@ -83,20 +83,27 @@ class ViewsAndVisitorsReportManager
         $stats = [];
         $dates = array_flip($dates);
 
+        $stats['mapping'] = [
+            BusinessOverviewModel::TYPE_CODE_VIEW       => 'interaction_report.event.view',
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION => 'interaction_report.event.impression',
+            self::TYPE_SUM_INTERACTIONS                 => 'interaction_report.sum.interaction',
+        ];
+
         foreach ($dates as $date => $key) {
             $stats['results'][$date]['date'] = $date;
-            $stats['results'][$date][BusinessOverviewModel::TYPE_CODE_VIEW]       = 0;
-            $stats['results'][$date][BusinessOverviewModel::TYPE_CODE_IMPRESSION] = 0;
-            $stats['results'][$date][self::TYPE_SUM_INTERACTIONS]                 = 0;
+
+            foreach ($stats['mapping'] as $code => $name) {
+                $stats['results'][$date][$code] = 0;
+            }
 
             // for chart only
             $stats[BusinessOverviewModel::TYPE_CODE_VIEW][$key]       = 0;
             $stats[BusinessOverviewModel::TYPE_CODE_IMPRESSION][$key] = 0;
         }
 
-        $stats['total'][BusinessOverviewModel::TYPE_CODE_VIEW]       = 0;
-        $stats['total'][BusinessOverviewModel::TYPE_CODE_IMPRESSION] = 0;
-        $stats['total'][self::TYPE_SUM_INTERACTIONS]                 = 0;
+        foreach ($stats['mapping'] as $code => $name) {
+            $stats['total'][$code] = 0;
+        }
 
         foreach ($rawResult as $item) {
             $action = $item[BusinessOverviewReportManager::MONGO_DB_FIELD_ACTION];
@@ -108,7 +115,9 @@ class ViewsAndVisitorsReportManager
                 $viewDate = $datetime->format($dateFormat);
 
                 // for chart only
-                if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or $action == BusinessOverviewModel::TYPE_CODE_IMPRESSION) {
+                if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or
+                    $action == BusinessOverviewModel::TYPE_CODE_IMPRESSION
+                ) {
                     $stats[$action][$dates[$viewDate]] += $count;
                 } else {
                     $action = self::TYPE_SUM_INTERACTIONS;

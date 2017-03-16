@@ -85,8 +85,8 @@
                             <tr class="sonata-ba-list-field-header">
                                 {% for key, item in admin.viewsAndVisitorsData.results|first %}
                                     <th class="sonata-ba-list-field-header-text ">
-                                        {% if eventList[key] is defined %}
-                                            {{ eventList[key]|trans }}
+                                        {% if admin.viewsAndVisitorsData.mapping[key] is defined %}
+                                            {{ admin.viewsAndVisitorsData.mapping[key]|trans }}
                                         {% else %}
                                             {{ key|trans }}
                                         {% endif %}

@@ -23,23 +23,7 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->remove('date')
-            ->remove('periodOption')
-            ->add('date', 'doctrine_orm_datetime_range', [
-                'show_filter' => true,
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'field_options' => [
-                        'format' => AdminHelper::FILTER_DATE_RANGE_FORMAT,
-                        'empty_value'  => false,
-                    ],
-                    'attr' => [
-                        'class' => AdminHelper::FILTER_DATE_RANGE_CLASS
-                    ],
-                    'mapped' => false,
-                    'required'  => true,
-                ]
-            ])
+            ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
             ->add('periodOption', 'doctrine_orm_choice', AdminHelper::getDatagridPeriodOptionOptions())
         ;
     }

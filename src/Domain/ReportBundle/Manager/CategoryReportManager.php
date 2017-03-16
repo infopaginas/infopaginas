@@ -13,8 +13,6 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Entity\CategoryReportCategory;
-use Domain\ReportBundle\Entity\SubscriptionReport;
-use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
 use Ivory\CKEditorBundle\Exception\Exception;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
