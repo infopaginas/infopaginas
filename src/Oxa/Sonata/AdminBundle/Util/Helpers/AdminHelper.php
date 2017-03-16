@@ -185,7 +185,7 @@ class AdminHelper
                     'empty_value'   => false,
                 ],
                 'attr' => [
-                    'class' => self::FILTER_DATE_RANGE_CLASS
+                    'class' => self::FILTER_DATE_RANGE_CLASS,
                 ],
                 'mapped'    => false,
                 'required'  => true,
