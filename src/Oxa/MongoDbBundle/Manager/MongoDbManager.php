@@ -34,7 +34,13 @@ class MongoDbManager
      */
     public function insertOne($collectionName, $data)
     {
-        return $this->client->$collectionName->insertOne($data);
+        try {
+            $result = $this->client->$collectionName->insertOne($data);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
@@ -45,7 +51,13 @@ class MongoDbManager
      */
     public function insertMany($collectionName, $data)
     {
-        return $this->client->$collectionName->insertMany($data);
+        try {
+            $result = $this->client->$collectionName->insertMany($data);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
@@ -57,7 +69,13 @@ class MongoDbManager
      */
     public function find($collectionName, $query, $options = [])
     {
-        return $this->client->$collectionName->find($query, $options);
+        try {
+            $result = $this->client->$collectionName->find($query, $options);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
@@ -68,7 +86,13 @@ class MongoDbManager
      */
     public function createIndex($collectionName, array $data)
     {
-        return $this->client->$collectionName->createIndex($data);
+        try {
+            $result = $this->client->$collectionName->createIndex($data);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
@@ -79,18 +103,30 @@ class MongoDbManager
      */
     public function dropIndex($collectionName, $indexName)
     {
-        return $this->client->$collectionName->dropIndex($indexName);
+        try {
+            $result = $this->client->$collectionName->dropIndex($indexName);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
      * @param string $collectionName
      * @param array  $options
+     *
+     * @return mixed
      */
     public function aggregateData($collectionName, array $options)
     {
-        $cursor = $this->client->$collectionName->aggregate($options);
+        try {
+            $result = $this->client->$collectionName->aggregate($options);
+        } catch (\Exception $e) {
+            $result = false;
+        }
 
-        return $cursor;
+        return $result;
     }
 
     /**
