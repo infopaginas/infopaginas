@@ -47,7 +47,7 @@ class KeywordsReportManager
         $stats = $this->getKeywordsDataFromMongoDb($params);
 
         $keywordsData = [
-            'results' => $stats,
+            'results'  => $stats,
             'keywords' => array_keys($stats),
             'searches' => array_values($stats),
         ];
@@ -61,7 +61,7 @@ class KeywordsReportManager
      */
     public function saveProfilesDataSuggestedBySearchQuery($search, $businessProfiles)
     {
-        $keywords = StemmerService::getWordsArrayFromString($search);
+        $keywords = mb_strtolower($search);
 
         $data = $this->buildBusinessKeywords($businessProfiles, $keywords);
 
@@ -140,13 +140,11 @@ class KeywordsReportManager
         $data = [];
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
-        foreach ($keywords as $keyword) {
-            foreach ($businessProfiles as $businessProfile) {
-                $data[] = $this->buildSingleBusinessKeyword($businessProfile->getId(), $keyword, $date);
-            }
-
-            $data[] = $this->buildSingleBusinessKeyword(0, $keyword, $date);
+        foreach ($businessProfiles as $businessProfile) {
+            $data[] = $this->buildSingleBusinessKeyword($businessProfile->getId(), $keywords, $date);
         }
+
+        $data[] = $this->buildSingleBusinessKeyword(0, $keywords, $date);
 
         return $data;
     }

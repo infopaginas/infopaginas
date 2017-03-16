@@ -460,6 +460,9 @@ interaction_report.overall: Interacciones totales
 keyword_report.total: Total
 subscription_report.total: Total
 
+category_report.label: Categoría
+category_report.counter: Visitantes
+
 # working hours
 business.working.hours.open_all_time: Abierto 24 horas
 business.working.hours.open_until: Abierto hasta {-TIME-}

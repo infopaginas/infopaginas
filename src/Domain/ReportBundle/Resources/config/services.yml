@@ -8,6 +8,7 @@ services:
             - [ setContainer, [ '@service_container' ] ]
     domain_report.manager.category_report_manager:
         class: Domain\ReportBundle\Manager\CategoryReportManager
+        arguments: [ '@mongodb.manager' ]
         calls:
             - [ setContainer, [ '@service_container' ] ]
     domain_report.manager.business_overview_report_manager:
