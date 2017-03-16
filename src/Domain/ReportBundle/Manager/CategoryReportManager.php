@@ -1,90 +1,103 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/12/16
- * Time: 2:28 PM
- */
 
 namespace Domain\ReportBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
-use Domain\BusinessBundle\Entity\SubscriptionPlan;
-use Domain\ReportBundle\Entity\CategoryReport;
-use Domain\ReportBundle\Entity\CategoryReportCategory;
-use Ivory\CKEditorBundle\Exception\Exception;
+use Domain\BusinessBundle\Repository\CategoryRepository;
+use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
-use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryReportManager extends BaseReportManager
 {
+    const MONGO_DB_COLLECTION_NAME_RAW       = 'category_raw';
+    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'category_aggregate';
+
+    const MONGO_DB_FIELD_CATEGORY_ID = 'category_id';
+    const MONGO_DB_FIELD_COUNT       = 'count';
+    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+
+    public function __construct(MongoDbManager $mongoDbManager)
+    {
+        $this->mongoDbManager = $mongoDbManager;
+    }
+
     /**
      * @return array|\Domain\BusinessBundle\Entity\Category[]
      */
     public function getCategories()
     {
-        return $this->getEntityManager()
-            ->getRepository('DomainBusinessBundle:Category')
-            ->findAll();
-    }
-
-    /**
-     * @param array $filterParams
-     * @return array
-     */
-    public function getCategoryVisitorsQuantitiesByFilterParams(array $filterParams = [])
-    {
-        $params = [];
-
-        if (isset($filterParams['_page'])) {
-            $params['page'] = $filterParams['_page'];
-        }
-
-        if (isset($filterParams['_per_page'])) {
-            $params['perPage'] = $filterParams['_per_page'];
-        }
-
-        if (isset($filterParams['categoryReportCategories__date'])) {
-            $params['date'] = $filterParams['categoryReportCategories__date']['value'];
-        }
-
-        return $this->getCategoryVisitorsQuantities($params);
+        return $this->getCategoryRepository()->findAll();
     }
 
     /**
      * @param array $params
      * @return array
      */
-    public function getCategoryVisitorsQuantities(array $params = [])
+    public function getCategoryReportData(array $params = [])
     {
-        $categoryReportElements = $this->getEntityManager()->getRepository('DomainReportBundle:CategoryReport')
-            ->getCategoryVisitors($params)
-        ;
+        $params['dateObject'] = DatesUtil::getDateRangeVOFromDateString(
+            $params['date']['value']['start'],
+            $params['date']['value']['end']
+        );
 
-        $result = [
-            'results' => [],
-            'categories' => [],
-            'categoryVisitors' => [],
-            'resultsArray' => [],
-            'datePeriod' => $categoryReportElements['datePeriod']
-        ];
+        $categoryResult = $this->getCategoryDataFromMongo($params);
 
-        $locale = $this->container->getParameter('locale');
+        $stats = $categoryResult['result'];
+        $total = $categoryResult['total'];
 
-        foreach ($categoryReportElements['results'] as $key => $element) {
-            $categoryName = $element['category']->getTranslation('name', $locale);
+        $categoryIds = array_keys($stats);
 
-            $result['results'][$key]        = $element;
-            $result['categories'][]         = $categoryName;
-            $result['categoryVisitors'][]   = $element['categoryVisitors'];
-            $result['resultsArray'][$key]   = [
-                'categoryName' => $categoryName,
-                'categoryVisitors' => $element['categoryVisitors']
-            ];
+        $mapping = $this->getCategoryMapping($categoryIds);
+
+        $data   = [];
+        $labels = [];
+        $counts = [];
+
+        foreach ($categoryIds as $categoryId) {
+            if (!empty($mapping[$categoryId])) {
+                $label = $mapping[$categoryId];
+                $count = $stats[$categoryId];
+
+                // chart data
+                $labels[] = $label;
+                $counts[] = $count;
+
+                // table
+                $data[] = [
+                    'name'  => $label,
+                    'count' => $count,
+                ];
+            }
         }
 
-        return $result;
+        $currentPage = $params['_page'];
+        $lastPage = ceil($total / $params['_per_page']);
+        $nextPage = $lastPage;
+        $previousPage = 1;
+
+        if ($currentPage + 1 < $lastPage) {
+            $nextPage = $currentPage + 1;
+        }
+
+        if ($currentPage - 1 > 1) {
+            $previousPage = $currentPage - 1;
+        }
+
+        $categoryData = [
+            'results'     => $data,
+            'labels'      => $labels,
+            'counts'      => $counts,
+            'total'       => $total,
+            'currentPage' => $currentPage,
+            'lastPage'    => $lastPage,
+            'nextPage'    => $nextPage,
+            'previousPage' => $previousPage,
+            'perPage'     => $params['_per_page'],
+        ];
+
+        return $categoryData;
     }
 
     /**
@@ -92,29 +105,164 @@ class CategoryReportManager extends BaseReportManager
      */
     public function registerBusinessVisit(BusinessProfile $businessProfile)
     {
-        foreach ($businessProfile->getCategories() as $category) {
-            $this->createNewCategoryReportRecord($category);
-        }
+        $data = $this->buildBusinessCategories($businessProfile);
 
-        $this->getEntityManager()->flush();
+        $this->insertBusinessCategories($data);
     }
 
-    protected function createNewCategoryReportRecord(Category $category)
+    protected function buildBusinessCategories(BusinessProfile $businessProfile)
     {
-        $em = $this->getEntityManager();
+        $data = [];
+        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
-        $categoryReport = $em->getRepository('DomainReportBundle:CategoryReport')
-            ->findOneBy(['category' => $category]);
-
-        if (!$categoryReport) {
-            $categoryReport = new CategoryReport();
-            $categoryReport->setCategory($category);
-            $em->persist($categoryReport);
+        foreach ($businessProfile->getCategories() as $category) {
+            $data[] = $this->buildSingleBusinessCategory($category->getId(), $date);
         }
 
-        $categoryReportCategory = new CategoryReportCategory();
-        $categoryReportCategory->setCategoryReport($categoryReport);
+        return $data;
+    }
 
-        $em->persist($categoryReportCategory);
+    protected function buildSingleBusinessCategory($categoryId, $date)
+    {
+        $data = [
+            self::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
+            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+        ];
+
+        return $data;
+    }
+
+    protected function insertBusinessCategories($data)
+    {
+        $this->mongoDbManager->insertMany(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            $data
+        );
+    }
+
+    protected function getCategoryDataFromMongo($params)
+    {
+        $cursor = $this->mongoDbManager->aggregateData(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            [
+                [
+                    '$match' => [
+                        self::MONGO_DB_FIELD_DATE_TIME => [
+                            '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
+                            '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
+                        self::MONGO_DB_FIELD_COUNT => [
+                            '$sum' => '$' . self::MONGO_DB_FIELD_COUNT,
+                        ],
+                    ],
+                ],
+                [
+                    '$sort'  => [
+                        self::MONGO_DB_FIELD_COUNT => -1,
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id'   => null,
+                        'total' => [
+                            '$sum' => 1,
+                        ],
+                        'results' => [
+                            '$push' => '$$ROOT',
+                        ]
+                    ],
+                ],
+                [
+                    '$project' => [
+                        'total' => 1,
+                        'results' => [
+                            '$slice' => [
+                                '$results',
+                                (int)(($params['_page'] - 1) * $params['_per_page']),
+                                (int)$params['_per_page'],
+                            ]
+                        ]
+                    ],
+                ],
+            ]
+        );
+
+        $result = [];
+        $total  = 0;
+
+        $data = current($cursor->toArray());
+
+        if ($data) {
+            foreach ($data->results as $document) {
+                $result[$document['_id']] = $document[self::MONGO_DB_FIELD_COUNT];
+            }
+
+            $total = $data->total;
+        }
+
+        return [
+            'result' => $result,
+            'total'  => $total,
+        ];
+    }
+
+    public function aggregateBusinessCategories($period)
+    {
+        $aggregateStartDate = $this->mongoDbManager->typeUTCDateTime($period->getStartDate());
+        $aggregateEndDate   = $this->mongoDbManager->typeUTCDateTime($period->getEndDate());
+
+        $cursor = $this->mongoDbManager->aggregateData(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            [
+                [
+                    '$match' => [
+                        self::MONGO_DB_FIELD_DATE_TIME => [
+                            '$gte' => $aggregateStartDate,
+                            '$lte' => $aggregateEndDate,
+                        ],
+                    ],
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$' . self::MONGO_DB_FIELD_CATEGORY_ID,
+                        self::MONGO_DB_FIELD_COUNT => [
+                            '$sum' => 1,
+                        ],
+                    ],
+                ]
+            ]
+        );
+
+        foreach ($cursor as $document) {
+            $document[self::MONGO_DB_FIELD_CATEGORY_ID] = $document['_id'];
+            $document[self::MONGO_DB_FIELD_DATE_TIME]   = $aggregateStartDate;
+
+            $document['_id'] = $this->mongoDbManager->generateId();
+
+            $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
+        }
+    }
+
+    protected function getCategoryMapping($categoryIds)
+    {
+        $data = [];
+
+        $categories = $this->getCategoryRepository()->getAvailableCategoriesByIds($categoryIds);
+
+        foreach ($categories as $category) {
+            $data[$category->getId()] = $category->getName();
+        }
+
+        return $data;
+    }
+
+    protected function getCategoryRepository() : CategoryRepository
+    {
+        return $this->getEntityManager()->getRepository(Category::class);
     }
 }
