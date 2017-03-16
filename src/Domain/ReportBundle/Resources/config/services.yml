@@ -2,6 +2,8 @@ services:
     # managers
     domain_report.manager.subscription_report_manager:
         class: Domain\ReportBundle\Manager\SubscriptionReportManager
+        arguments:
+            - '@mongodb.manager'
         calls:
             - [ setContainer, [ '@service_container' ] ]
     domain_report.manager.category_report_manager:

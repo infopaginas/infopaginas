@@ -451,12 +451,14 @@ interaction_report.visit.tripadvisor: Visita TripAdvisor
 interaction_report.video.watched: Video Visto
 interaction_report.review.click: Opiniones
 interaction_report.email.click: Correo
+interaction_report.sum.interaction: Interacciones
 
 date: Fecha
 interaction_report.total: Total
 interaction_report.overall: Interacciones totales
 
 keyword_report.total: Total
+subscription_report.total: Total
 
 # working hours
 business.working.hours.open_all_time: Abierto 24 horas

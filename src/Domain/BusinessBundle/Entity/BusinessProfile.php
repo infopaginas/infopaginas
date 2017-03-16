@@ -26,7 +26,6 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-use Domain\ReportBundle\Entity\BusinessOverviewReport;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 

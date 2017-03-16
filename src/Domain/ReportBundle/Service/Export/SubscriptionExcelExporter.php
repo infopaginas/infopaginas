@@ -8,7 +8,6 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Manager\SubscriptionReportManager;
 use Domain\ReportBundle\Model\Exporter\ExcelExporterModel;
 use Domain\ReportBundle\Model\ExporterInterface;
