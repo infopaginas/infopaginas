@@ -5166,6 +5166,15 @@ a.link-pointer {
       margin-top: 5px;
     }
   }
+  .form__row .form__field.select-weekday-user {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (min-width: 414px){
+  .form__row .form__field.select-weekday-user {
+    width: 10em;
+  }
 }
 
 div.scrollable-table {
