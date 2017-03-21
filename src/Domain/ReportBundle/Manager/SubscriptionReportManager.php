@@ -8,7 +8,6 @@ use Domain\BusinessBundle\Repository\SubscriptionPlanRepository;
 use Domain\BusinessBundle\Repository\SubscriptionRepository;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
-use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class SubscriptionReportManager extends BaseReportManager
@@ -18,6 +17,8 @@ class SubscriptionReportManager extends BaseReportManager
     const MONGO_DB_FIELD_PLAN_CODE = 'code';
     const MONGO_DB_FIELD_COUNT     = 'count';
     const MONGO_DB_FIELD_DATE_TIME = 'datetime';
+
+    protected $reportName = 'subscription_report';
 
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
@@ -48,7 +49,7 @@ class SubscriptionReportManager extends BaseReportManager
             $params['date']['value']['end']
         );
 
-        $result['dates'] = DatesUtil::dateRange($params['dateObject']);
+        $result['dates'] = DatesUtil::dateRange($params['dateObject'], DatesUtil::STEP_DAY, AdminHelper::DATE_FORMAT);
 
         $subscriptionReports = $this->getSubscriptionPlanStats($params);
 

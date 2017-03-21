@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 04.09.16
- * Time: 14:58
- */
 
 namespace Domain\ReportBundle\Util;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Oxa\DfpBundle\Model\DataType\DateRangeVO;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 /**
  * Class DatesUtil
@@ -20,6 +15,8 @@ class DatesUtil
     const STEP_DAY = '+1 day';
 
     const STEP_MONTH = '+1 month';
+
+    const DEFAULT_PERIOD = '-30 days';
 
     const RANGE_TODAY = 'today';
     const RANGE_THIS_WEEK = 'this_week';
@@ -163,12 +160,22 @@ class DatesUtil
     ) : array {
         $dates = [];
 
-        $from = $rangeVO->getStartDate()->getTimestamp();
-        $to = $rangeVO->getEndDate()->getTimestamp();
+        if ($step == self::STEP_DAY) {
+            $dateFrom = clone $rangeVO->getStartDate();
+            $dateTo   = clone $rangeVO->getEndDate();
+        } else {
+            $dateFrom = clone $rangeVO->getStartDate();
+            $dateFrom->modify('first day of this month');
 
-        while ($from <= $to) {
-            $dates[] = date($outputFormat, $from);
-            $from = strtotime($step, $from);
+            $dateTo = clone $rangeVO->getEndDate();
+            $dateTo->modify('last day of this month');
+        }
+
+        $interval = \DateInterval::createFromDateString($step);
+        $period   = new \DatePeriod($dateFrom, $interval, $dateTo);
+
+        foreach ($period as $date) {
+            $dates[] = $date->format($outputFormat);
         }
 
         return $dates;
@@ -177,18 +184,6 @@ class DatesUtil
     protected static function normalizeMonthNumber($timestamp)
     {
         return date('n', $timestamp) - 1;
-    }
-
-    public static function getReportDates(array $parameters)
-    {
-        $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData(
-            $parameters['date']['value'],
-            self::START_END_DATE_ARRAY_FORMAT
-        );
-
-        $dates = DatesUtil::dateRange($dateRange);
-
-        return $dates;
     }
 
     public static function isValidDateString($dateString, $dateFormat = self::START_END_DATE_ARRAY_FORMAT)
@@ -213,5 +208,16 @@ class DatesUtil
     public static function getYesterday()
     {
         return new \DateTime('yesterday');
+    }
+
+    public static function convertMonthlyFormattedDate($date, $format)
+    {
+        $newDate = \DateTime::createFromFormat(AdminHelper::DATE_MONTH_FORMAT, $date);
+
+        if ($newDate) {
+            return $newDate->format($format);
+        }
+
+        return $date;
     }
 }

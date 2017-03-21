@@ -9,7 +9,6 @@ use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use Domain\ReportBundle\Manager\BaseReportManager;
 
 class BusinessOverviewReportManager extends BaseReportManager
 {
@@ -20,6 +19,8 @@ class BusinessOverviewReportManager extends BaseReportManager
     const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
     const MONGO_DB_FIELD_COUNT       = 'count';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+
+    protected $reportName = 'business_overview_report';
 
     /** @var  BusinessProfileManager $businessProfileManager */
     protected $businessProfileManager;
@@ -35,43 +36,6 @@ class BusinessOverviewReportManager extends BaseReportManager
     {
         $this->businessProfileManager = $businessProfileManager;
         $this->mongoDbManager         = $mongoDbManager;
-    }
-
-    /**
-     * @param array $filterParams
-     * @return array
-     */
-    public function getBusinessOverviewDataByFilterParams(array $filterParams = [])
-    {
-        $params = [];
-
-        if (isset($filterParams['_page'])) {
-            $params['page'] = $filterParams['_page'];
-        }
-
-        if (isset($filterParams['_per_page'])) {
-            $params['perPage'] = $filterParams['_per_page'];
-        }
-
-        if (isset($filterParams['date'])) {
-            $params['date'] = $filterParams['date']['value'];
-        }
-
-        if (isset($filterParams['periodOption'])) {
-            $params['periodOption'] = $filterParams['periodOption']['value'];
-        }
-
-        $businessKey = 'businessOverviewReportBusinessProfiles__businessProfile';
-
-        if (isset($filterParams[$businessKey]) &&
-            $filterParams[$businessKey]['value'] != ''
-        ) {
-            $params['businessProfileId'] = $filterParams[$businessKey]['value'];
-        } else {
-            $params['businessProfileId'] = $this->businessProfileManager->findOneBusinessProfile()->getId();
-        }
-
-        return $this->getBusinessOverviewData($params);
     }
 
     public function getBusinessOverviewReportData(array $params = [])
@@ -131,85 +95,6 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $result;
     }
 
-    // see https://jira.oxagile.com/browse/INFT-913
-    public function getBusinessOverviewData(array $params = [])
-    {
-        $businessProfile = $this->getBusinessProfileManager()->find((int)$params['businessProfileId']);
-
-        $businessProfileName = $businessProfile->getTranslation(
-            'name',
-            $this->getContainer()->getParameter('locale')
-        );
-
-        $result = [
-            'dates' => [],
-            'impressions' => [],
-            'views' => [],
-            'results' => [],
-            'datePeriod' => [
-                'start' => $params['date']['start'],
-                'end' => $params['date']['end'],
-            ],
-            'businessProfile' => $businessProfileName
-        ];
-
-        $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
-
-        if (isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
-            $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
-            $step       = DatesUtil::STEP_MONTH;
-        } else {
-            $dateFormat = AdminHelper::DATE_FORMAT;
-            $step       = DatesUtil::STEP_DAY;
-        }
-
-        $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
-
-        $businessViews = $this->getBusinessProfileViews($params);
-
-        $businessProfileResult = $this->prepareBusinessProfileOverviewReportStats(
-            $result['dates'],
-            $businessViews['results'],
-            $dateFormat
-        );
-
-        $result['results'] = $businessProfileResult['results'];
-        $result['views'] = $businessProfileResult['views'];
-        $result['impressions'] = $businessProfileResult['impressions'];
-
-        return $result;
-    }
-
-    protected function prepareBusinessProfileOverviewReportStats($dates, $views, $dateFormat) : array
-    {
-        $stats = [];
-        $dates = array_flip($dates);
-
-        foreach ($dates as $date => $key) {
-            $stats['results'][$date] = [
-                'date' => $date,
-                'dateObject' => \DateTime::createFromFormat($dateFormat, $date),
-                'views' => 0,
-                'impressions' => 0,
-            ];
-            $stats['views'][$key] = 0;
-            $stats['impressions'][$key] = 0;
-        }
-
-        foreach ($views as $view) {
-            $viewDate    = $view->getDate()->format($dateFormat);
-            $views       = $view->getViews();
-            $impressions = $view->getImpressions();
-
-            $stats['results'][$viewDate]['views']       += $views;
-            $stats['results'][$viewDate]['impressions'] += $impressions;
-            $stats['views'][$dates[$viewDate]]          += $views;
-            $stats['impressions'][$dates[$viewDate]]    += $impressions;
-        }
-
-        return $stats;
-    }
-
     protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat) : array
     {
         $stats = [];
@@ -259,17 +144,6 @@ class BusinessOverviewReportManager extends BaseReportManager
         }
 
         return $stats;
-    }
-
-    protected function getBusinessProfileViews(array $params) : array
-    {
-        $em = $this->getEntityManager();
-        /** @var BusinessOverviewReport[] $businessViews */
-        $businessViews = $em->getRepository('DomainReportBundle:BusinessOverviewReport')->getBusinessOverviewReportData(
-            $params
-        );
-
-        return $businessViews;
     }
 
     public function registerBusinessView(array $businessProfiles)
@@ -328,23 +202,17 @@ class BusinessOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param array $filterParams
+     * @param string $businessSlug
      * @param string $format
-     * @return mixed
+     * @return string
      */
-    public function getBusinessOverviewReportDataAndName(array $filterParams, string $format) : array
+    public function getBusinessOverviewReportName($businessSlug, $format)
     {
-        $businessOverviewData = $this->getBusinessOverviewDataByFilterParams($filterParams);
+        $this->reportName = $businessSlug;
 
-        if ($businessOverviewData['businessProfile']) {
-            $reportName = str_replace(' ', '_', $businessOverviewData['businessProfile']);
-        } else {
-            $reportName = 'business_overview_report';
-        }
+        $filename = $this->generateReportName($format);
 
-        $filename = $this->generateReportName($format, $reportName);
-
-        return [$businessOverviewData, $filename];
+        return $filename;
     }
 
     protected function buildSingleBusinessInteraction($businessId, $action, $date)
@@ -440,6 +308,41 @@ class BusinessOverviewReportManager extends BaseReportManager
 
             $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
         }
+    }
+
+    public function getPreviousPeriodSearchParams($params, $period)
+    {
+        $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
+
+        $dates->getStartDate()->modify($period);
+        $dates->getEndDate()->modify($period);
+
+        $params['date']['start'] = $dates->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
+        $params['date']['end']   = $dates->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
+
+        return $params;
+    }
+
+    public function getThisYearSearchParams($params)
+    {
+        return $this->getYearSearchParam($params, DatesUtil::RANGE_THIS_YEAR);
+    }
+
+    public function getThisLastSearchParams($params)
+    {
+        return $this->getYearSearchParam($params, DatesUtil::RANGE_LAST_YEAR);
+    }
+
+    protected function getYearSearchParam($params, $range)
+    {
+        $dates = DatesUtil::getDateRangeValueObjectFromRangeType($range);
+
+        $params['date']['start'] = $dates->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
+        $params['date']['end']   = $dates->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
+
+        $params['periodOption'] = AdminHelper::PERIOD_OPTION_CODE_PER_MONTH;
+
+        return $params;
     }
 
     protected function getBusinessProfileManager() : BusinessProfileManager

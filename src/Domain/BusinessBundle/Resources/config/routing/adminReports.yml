@@ -1,11 +1,23 @@
 domain_business_admin_reports_business_overview_data:
-     path:     /data/overview
-     defaults: { _controller: DomainBusinessBundle:Reports:overviewAdmin }
-     options:
+    path:     /data/overview
+    defaults: { _controller: DomainBusinessBundle:Reports:overviewAdmin }
+    options:
         expose: true
 
 domain_business_admin_reports_keywords_data:
-     path:     /data/keywords
-     defaults: { _controller: DomainBusinessBundle:Reports:keywordsAdmin }
-     options:
+    path:     /data/keywords
+    defaults: { _controller: DomainBusinessBundle:Reports:keywordsAdmin }
+    options:
+        expose: true
+
+domain_business_admin_reports_excel_export:
+    path:     /export/excel
+    defaults: { _controller: DomainBusinessBundle:Reports:excelAdminExport }
+    options:
+        expose: true
+
+domain_business_admin_reports_pdf_export:
+    path:     /export/pdf
+    defaults: { _controller: DomainBusinessBundle:Reports:pdfAdminExport }
+    options:
         expose: true

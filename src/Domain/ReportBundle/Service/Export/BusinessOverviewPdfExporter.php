@@ -1,14 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/13/16
- * Time: 7:57 PM
- */
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
+use Domain\ReportBundle\Manager\ViewsAndVisitorsReportManager;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,46 +13,35 @@ use Symfony\Component\HttpFoundation\Response;
 class BusinessOverviewPdfExporter extends PdfExporterModel
 {
     /**
-     * @var BusinessOverviewReportManager $businessOverviewReportManager
+     * @var ViewsAndVisitorsReportManager $businessOverviewReportManager
      */
-    protected $businessOverviewReportManager;
+    protected $viewsAndVisitorsReportManager;
 
     /**
-     * @param BusinessOverviewReportManager $service
+     * @param ViewsAndVisitorsReportManager $service
      */
-    public function setBusinessOverviewReportManager(BusinessOverviewReportManager $service)
+    public function setViewsAndVisitorsReportManager(ViewsAndVisitorsReportManager $service)
     {
-        $this->businessOverviewReportManager = $service;
+        $this->viewsAndVisitorsReportManager = $service;
     }
 
     /**
-     * @param string $code
-     * @param string $format
-     * @param array $filterParams
      * @param array $params
      * @return Response
      */
-    public function getResponse(string $code, string $format, array $filterParams, $params = []) : Response
+    public function getResponse($params = []) : Response
     {
-        list($businessOverviewData, $filename) =
-            $this->businessOverviewReportManager->getBusinessOverviewReportDataAndName($filterParams, $format);
+        $filename = $this->viewsAndVisitorsReportManager->generateReportName(self::FORMAT);
+
+        $businessOverviewData = $this->viewsAndVisitorsReportManager->getViewsAndVisitorsData($params);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/BusinessOverviewReport:pdf_report.html.twig',
             array(
-                'data' => $businessOverviewData
+                'viewsAndVisitorsData' => $businessOverviewData
             )
         );
 
-        $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
-
-        return new Response(
-            $content,
-            200,
-            array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
-            )
-        );
+        return $this->sendResponse($html, $filename);
     }
 }
