@@ -52,10 +52,10 @@ abstract class PdfExporterModel implements ExporterInterface
         return new Response(
             $content,
             200,
-            array(
+            [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => sprintf('%s; filename=%s', $dispositionType, $filename)
-            )
+                'Content-Disposition' => sprintf('%s; filename=%s', $dispositionType, $filename),
+            ]
         );
     }
 }

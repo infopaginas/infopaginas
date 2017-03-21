@@ -310,12 +310,12 @@ class BusinessOverviewReportManager extends BaseReportManager
         }
     }
 
-    public function getPreviousMonthSearchParams($params)
+    public function getPreviousPeriodSearchParams($params, $period)
     {
         $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
 
-        $dates->getStartDate()->modify('-30 days');
-        $dates->getEndDate()->modify('-30 days');
+        $dates->getStartDate()->modify($period);
+        $dates->getEndDate()->modify($period);
 
         $params['date']['start'] = $dates->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
         $params['date']['end']   = $dates->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);

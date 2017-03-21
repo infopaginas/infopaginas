@@ -241,7 +241,7 @@ $( document ).ready( function() {
     {
         var filterParams;
 
-        if ( $( html.tabs.interactionTabId ).hasClass('active')) {
+        if ( $( html.tabs.interactionTabId ).hasClass('active') ) {
             filterParams = getInteractionFilterValues();
         } else {
             filterParams = getKeywordFilterValues();

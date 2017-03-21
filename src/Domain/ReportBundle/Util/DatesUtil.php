@@ -16,6 +16,8 @@ class DatesUtil
 
     const STEP_MONTH = '+1 month';
 
+    const DEFAULT_PERIOD = '-30 days';
+
     const RANGE_TODAY = 'today';
     const RANGE_THIS_WEEK = 'this_week';
     const RANGE_LAST_WEEK = 'last_week';

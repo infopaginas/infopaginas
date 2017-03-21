@@ -7,6 +7,7 @@ use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
+use Domain\ReportBundle\Util\DatesUtil;
 use Symfony\Component\HttpFoundation\Response;
 
 class BusinessReportPdfExporter extends PdfExporterModel
@@ -56,7 +57,10 @@ class BusinessReportPdfExporter extends PdfExporterModel
      */
     public function getResponse($params = []) : Response
     {
-        $previousParams     = $this->businessOverviewReportManager->getPreviousMonthSearchParams($params);
+        $previousParams     = $this->businessOverviewReportManager->getPreviousPeriodSearchParams(
+            $params,
+            DatesUtil::DEFAULT_PERIOD
+        );
         $currentYearParams  = $this->businessOverviewReportManager->getThisYearSearchParams($params);
         $previousYearParams = $this->businessOverviewReportManager->getThisLastSearchParams($params);
 

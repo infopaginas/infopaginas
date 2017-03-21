@@ -108,7 +108,10 @@ class BusinessReportExcelExporter extends ExcelExporterModel
      */
     protected function setData($parameters)
     {
-        $previousParams     = $this->businessOverviewReportManager->getPreviousMonthSearchParams($parameters);
+        $previousParams     = $this->businessOverviewReportManager->getPreviousPeriodSearchParams(
+            $parameters,
+            DatesUtil::DEFAULT_PERIOD
+        );
         $currentYearParams  = $this->businessOverviewReportManager->getThisYearSearchParams($parameters);
         $previousYearParams = $this->businessOverviewReportManager->getThisLastSearchParams($parameters);
 
