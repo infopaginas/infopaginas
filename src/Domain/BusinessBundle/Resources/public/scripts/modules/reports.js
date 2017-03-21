@@ -6,8 +6,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         this.urls = {
             businessOverviewDataAction: Routing.generate('domain_business_reports_business_overview_data'),
             adUsageDataAction: Routing.generate('domain_business_reports_ad_usage_data'),
-            keywordsDataAction: Routing.generate('domain_business_reports_keywords_data'),
-            printAction: Routing.generate('domain_business_reports_print')
+            keywordsDataAction: Routing.generate('domain_business_reports_keywords_data')
         };
 
         this.html = {
@@ -269,39 +268,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         });
 
         $(document).on('click', '#print', function (e) {
-            $.ajax({
-                url: self.urls.printAction,
-                data: self.getFilterValues(),
-                dataType: 'JSON',
-                type: 'POST',
-                beforeSend: function() {
-                    $('#export-spinner').html('');
-                    self.showLoader('#export-spinner');
-                },
-                success: function(response) {
-                    var popup = window.open( response.pdf );
+            var filterParams = self.getFilterValues();
+            filterParams.print = true;
 
-                    var closePrint = function() {
-                        if ( popup ) {
-                            popup.close();
-                        }
-                    };
+            var filtersData = $.param( filterParams );
 
-                    if ( popup ) {
-                        popup.onbeforeunload = closePrint;
-                        popup.onafterprint = closePrint;
-                        popup.focus(); // Required for IE
-                        popup.print();
-                    } else {
-                        // process blocked window case
-                    }
-                },
-                complete: function() {
-                    $('#export-spinner').html('');
-                }
-            });
-
-            e.preventDefault();
+            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
         });
     };
 

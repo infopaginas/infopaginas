@@ -1,19 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/13/16
- * Time: 7:57 PM
- */
 
 namespace Domain\ReportBundle\Service\Export;
 
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
-use Domain\ReportBundle\Model\ExporterInterface;
-use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class CategoryPdfExporter
@@ -35,18 +26,14 @@ class CategoryPdfExporter extends PdfExporterModel
     }
 
     /**
-     * @param string $code
-     * @param string $format
-     * @param array $filterParams
      * @param array $params
      * @return Response
      */
-    public function getResponse(string $code, string $format, array $filterParams, $params = []) : Response
+    public function getResponse($params = []) : Response
     {
-        $filename = $this->categoryReportManager->generateReportName($format, 'category_report');
+        $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
 
-        $categoryData = $this->categoryReportManager
-            ->getCategoryVisitorsQuantitiesByFilterParams($filterParams);
+        $categoryData = $this->categoryReportManager->getCategoryReportData($params);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/CategoryReport:pdf_report.html.twig',
@@ -55,15 +42,6 @@ class CategoryPdfExporter extends PdfExporterModel
             ]
         );
 
-        $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
-
-        return new Response(
-            $content,
-            200,
-            array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
-            )
-        );
+        return $this->sendResponse($html, $filename);
     }
 }

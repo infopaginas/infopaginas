@@ -10,6 +10,7 @@ namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\ReportBundle\Util\DatesUtil;
 
 /**
  * Class ReportExtension
@@ -34,6 +35,7 @@ class ReportExtension extends \Twig_Extension
     {
         return [
             'ad_usage_allowed_for_business' => new \Twig_Function_Method($this, 'isAdUsageAllowedForBusiness'),
+            'convert_monthly_formatted_date' => new \Twig_Function_Method($this, 'convertMonthlyFormattedDate'),
         ];
     }
 
@@ -44,6 +46,11 @@ class ReportExtension extends \Twig_Extension
     public function isAdUsageAllowedForBusiness(BusinessProfile $businessProfile)
     {
         return $this->getBusinessProfileManager()->isAdUsageReportAllowedForBusiness($businessProfile);
+    }
+
+    public function convertMonthlyFormattedDate($date, $format)
+    {
+        return DatesUtil::convertMonthlyFormattedDate($date, $format);
     }
 
     /**

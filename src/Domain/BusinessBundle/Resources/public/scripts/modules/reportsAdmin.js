@@ -21,24 +21,43 @@ $( document ).ready( function() {
         },
         buttons: {
             keywordFilter: '#keywordFilter',
-            interactionFilter: '#interactionFilter'
+            interactionFilter: '#interactionFilter',
+            exportExcel: '#export-excel',
+            exportPdf: '#export-pdf',
+            print: '#print'
+        },
+        tabs: {
+            interactionTabId: '#tab_' + formId + '_3',
+            keywordTabId: '#tab_' + formId + '_4'
         }
     };
 
+    var reportUrls = {
+        businessOverviewDataAction: Routing.generate( 'domain_business_admin_reports_business_overview_data' ),
+        keywordsDataAction: Routing.generate( 'domain_business_admin_reports_keywords_data' ),
+        pdfExportURL: Routing.generate( 'domain_business_admin_reports_pdf_export' ),
+        excelExportURL: Routing.generate( 'domain_business_admin_reports_excel_export' )
+    };
+
+    var pdfExportButton = '<div class="form-group"><button type="button" href="' + reportUrls.pdfExportURL + '" id="export-pdf" class="btn green-btn"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>PDF</button></div>';
+    var excelExportButton = '<div class="form-group"><button type="button" href="' + reportUrls.excelExportURL + '" id="export-excel" class="btn green-btn"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Excel</button></div>';
+    var printButton = '<div class="form-group"><button type="button" href="' + reportUrls.pdfExportURL + '" id="print" class="btn green-btn"><i class="fa fa-print" aria-hidden="true"></i>Print</button></div>';
+
     var interactionDateEndContainer = $( '#sonata-ba-field-container-' + formId + '_interactionDateEnd' );
+    interactionDateEndContainer.after( printButton );
+    interactionDateEndContainer.after( pdfExportButton );
+    interactionDateEndContainer.after( excelExportButton );
     interactionDateEndContainer.after( '<div class="form__section scrollable-table" id="businessOverviewStatisticsContainer"></div>' );
     interactionDateEndContainer.after( '<div id="businessOverviewChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
     interactionDateEndContainer.after( '<div class="form-group"><button id="interactionFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     var keywordLimitContainer = $( '#sonata-ba-field-container-' + formId + '_keywordLimit' );
+    keywordLimitContainer.after( printButton );
+    keywordLimitContainer.after( pdfExportButton );
+    keywordLimitContainer.after( excelExportButton );
     keywordLimitContainer.after( '<div class="form__section scrollable-table" id="keywordStatisticsContainer"></div>' );
     keywordLimitContainer.after( '<div id="keywordChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
     keywordLimitContainer.after( '<div class="form-group"><button id="keywordFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
-
-    var reportUrls = {
-        businessOverviewDataAction: Routing.generate( 'domain_business_admin_reports_business_overview_data' ),
-        keywordsDataAction: Routing.generate( 'domain_business_admin_reports_keywords_data' )
-    };
 
     function loadBusinessOverviewReport() {
         $.ajax({
@@ -192,5 +211,42 @@ $( document ).ready( function() {
         $( tabs.keywordTab ).on( 'click', function() {
             loadKeywordsReport();
         });
+    }
+
+    handleExport();
+
+    function handleExport()
+    {
+        $( document ).on( 'click', html.buttons.exportExcel, function (e) {
+            var filtersData = $.param( getFilterParams() );
+            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
+        });
+
+        $( document ).on('click', html.buttons.exportPdf, function (e) {
+            var filtersData = $.param( getFilterParams() );
+            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
+        });
+
+        $( document ).on('click', html.buttons.print, function (e) {
+            var filterParams = getFilterParams();
+            filterParams.print = true;
+
+            var filtersData = $.param( filterParams );
+
+            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
+        });
+    }
+
+    function getFilterParams()
+    {
+        var filterParams;
+
+        if ( $( html.tabs.interactionTabId ).hasClass('active')) {
+            filterParams = getInteractionFilterValues();
+        } else {
+            filterParams = getKeywordFilterValues();
+        }
+
+        return filterParams;
     }
 });

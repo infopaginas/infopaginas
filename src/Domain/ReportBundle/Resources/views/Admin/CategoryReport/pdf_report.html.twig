@@ -1,13 +1,36 @@
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/AdminLTE/css/AdminLTE.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/admin-lte/dist/css/AdminLTE.min.css', null, true) }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
 </head>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2}
+
+    div.box.box-primary.box-pdf {
+        display: block;
+        clear: both;
+        page-break-after: always;
+    }
+</style>
 
 <div>
     {{ 'export.title.category_report'|trans({}, 'AdminReportBundle') }},
 
-    {{ "now"|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATETIME_FORMAT')) }}
+    {{ "now"|date(report_generated_datetime_format) }}
 </div>
 
 <br>
@@ -32,10 +55,10 @@
         </tr>
         <tr>
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ categoryData['datePeriod']['start'] }}
+                {{ categoryData.dates.startDate|date(category_report_date_format) }}
             </td>
             <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ categoryData['datePeriod']['end'] }}
+                {{ categoryData.dates.endDate|date(category_report_date_format) }}
             </td>
         </tr>
         </tbody>
@@ -48,22 +71,22 @@
         <thead>
             <tr class="sonata-ba-list-field-header">
                 <th>
-                    {{ 'list.label_category'|trans({}, 'AdminReportBundle') }}
+                    {% trans %}category_report.label{% endtrans %}
                 </th>
                 <th>
-                    {{ 'list.label_category_visitors'|trans({}, 'AdminReportBundle') }}
+                    {% trans %}category_report.counter{% endtrans %}
                 </th>
             </tr>
         </thead>
 
         <tbody>
-        {% for element in categoryData['resultsArray'] %}
+        {% for item in categoryData.results %}
             <tr>
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                    {{ element['categoryName'] }}
+                    {{ item.name }}
                 </td>
                 <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                    {{ element['categoryVisitors'] }}
+                    {{ item.count }}
                 </td>
             </tr>
         {% endfor %}

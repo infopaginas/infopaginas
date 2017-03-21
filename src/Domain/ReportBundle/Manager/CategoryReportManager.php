@@ -7,7 +7,6 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
-use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
 class CategoryReportManager extends BaseReportManager
 {
@@ -17,6 +16,8 @@ class CategoryReportManager extends BaseReportManager
     const MONGO_DB_FIELD_CATEGORY_ID = 'category_id';
     const MONGO_DB_FIELD_COUNT       = 'count';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+
+    protected $reportName = 'category_report';
 
     public function __construct(MongoDbManager $mongoDbManager)
     {
@@ -86,15 +87,16 @@ class CategoryReportManager extends BaseReportManager
         }
 
         $categoryData = [
-            'results'     => $data,
-            'labels'      => $labels,
-            'counts'      => $counts,
-            'total'       => $total,
-            'currentPage' => $currentPage,
-            'lastPage'    => $lastPage,
-            'nextPage'    => $nextPage,
+            'results'      => $data,
+            'labels'       => $labels,
+            'counts'       => $counts,
+            'total'        => $total,
+            'currentPage'  => $currentPage,
+            'lastPage'     => $lastPage,
+            'nextPage'     => $nextPage,
             'previousPage' => $previousPage,
-            'perPage'     => $params['_per_page'],
+            'perPage'      => $params['_per_page'],
+            'dates'        => $params['dateObject'],
         ];
 
         return $categoryData;

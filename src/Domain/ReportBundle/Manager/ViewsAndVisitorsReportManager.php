@@ -10,12 +10,14 @@ use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
  * Class ViewsAndVisitorsReportManager
  * @package Domain\ReportBundle\Manager
  */
-class ViewsAndVisitorsReportManager
+class ViewsAndVisitorsReportManager extends BaseReportManager
 {
     const TYPE_SUM_INTERACTIONS = 'interactions';
 
     /** @var BusinessOverviewReportManager $businessOverviewReportManager */
     protected $businessOverviewReportManager;
+
+    protected $reportName = 'view_and_visitors_report';
 
     public function __construct(BusinessOverviewReportManager $businessOverviewReportManager)
     {

@@ -112,12 +112,16 @@ twig:
         google_map_default_zoom: '%google_map_default_zoom%'
         google_map_min_zoom: '%google_map_min_single_zoom%'
         breadcrumb_max_length: '%breadcrumb_max_length%'
+        keyword_max_length: 50
 
 #       todo confirm date formats
         review_date_format:        'd M Y H:i'
         article_date_format:       'M d, Y'
         business_date_format:      'Y-m-d'
         subscription_date_format:  'Y-m-d'
+        category_report_date_format: 'm/d/Y'
+        report_generated_datetime_format: 'm/d/Y H:i:s'
+        monthly_report_date_format: 'F, Y'
         ads_stat_date_format:      'd.m.Y'
         task_date_format:          'd M, Y, H:i:s A'
         working_hours_date_format: 'g:i A'

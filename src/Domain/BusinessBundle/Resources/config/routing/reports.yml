@@ -34,12 +34,6 @@ domain_business_reports_pdf_export:
      path:     /export/pdf
      defaults: { _controller: DomainBusinessBundle:Reports:pdfExport }
 
-domain_business_reports_print:
-     path:     /export/print
-     defaults: { _controller: DomainBusinessBundle:Reports:print }
-     options:
-        expose: true
-
 domain_business_reports_api_overview:
      path:     /api/overview
      defaults: { _controller: DomainBusinessBundle:Api:overview }

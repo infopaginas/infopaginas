@@ -17,9 +17,9 @@ class AdminHelper
 
     const PER_PAGE_ALL = 'all';
 
-    const DATE_FORMAT            = 'd.m.Y';
-    const DATE_MONTH_FORMAT      = 'm.Y';
-    const DATETIME_FORMAT        = 'd.m.Y H:i:s';
+    const DATE_FORMAT            = 'm/d/Y';
+    const DATE_MONTH_FORMAT      = 'm/Y';
+    const DATETIME_FORMAT        = 'm/d/Y H:i:s';
     const DATE_FULL_MONTH_FORMAT = 'F, Y';
 
     const DATE_RANGE_CODE_CUSTOM     = 'custom';

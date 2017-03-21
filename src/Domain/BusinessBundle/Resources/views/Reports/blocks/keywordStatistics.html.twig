@@ -10,7 +10,7 @@
     <tbody>
         {% for keyword, count in keywordsData['results'] %}
             <tr>
-                <td>{{ keyword }}</td>
+                <td>{{ keyword|truncate(keyword_max_length) }}</td>
                 <td>{{ count }}</td>
             </tr>
 

@@ -137,39 +137,50 @@ class ReportsController extends Controller
 
     public function excelExportAction(Request $request)
     {
-        $params = $request->query->all();
-        return $this->getExcelExporterService()->export($this->prepareReportParameters($params));
+        $params = $this->prepareReportParameters($request->query->all());
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $this->getExcelExporterService()->getResponse($params);
+    }
+
+    public function excelAdminExportAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->query->all());
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $this->getExcelExporterService()->getResponse($params);
     }
 
     public function pdfExportAction(Request $request)
     {
-        $params = $request->query->all();
-        list($filename, $content) = $this->getPdfExporterService()->export($this->prepareReportParameters($params));
+        $params = $this->prepareReportParameters($request->query->all());
 
-        return new Response(
-            $content,
-            200,
-            array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
-            )
-        );
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $this->getPdfExporterService()->getResponse($params);
     }
 
-    public function printAction(Request $request)
+    public function pdfAdminExportAction(Request $request)
     {
-        $params = $request->request->all();
-        list($filename, $content) = $this->getPdfExporterService()->export($this->prepareReportParameters($params));
+        $params = $this->prepareReportParameters($request->query->all());
 
-        $pdfPath = $this->getParameter('assetic.write_to') . '/uploads/' . $filename;
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
-        file_put_contents($pdfPath, $content);
+        $params['businessProfile'] = $businessProfile;
 
-        $url = $this->get('request')->getUriForPath('/uploads/' . $filename);
-
-        return new JsonResponse([
-            'pdf' => str_replace('/app_dev.php', '', $url)
-        ]);
+        return $this->getPdfExporterService()->getResponse($params);
     }
 
     protected function prepareReportParameters($requestData)
@@ -184,6 +195,12 @@ class ReportsController extends Controller
             $params['date'] = DatesUtil::getDateAsArrayFromVO($dateRange);
         } else {
             $params['date'] = DatesUtil::getDateAsArrayFromRequestData($requestData);
+        }
+
+        if (!empty($requestData['print'])) {
+            $params['print'] = true;
+        } else {
+            $params['print'] = false;
         }
 
         return $params;

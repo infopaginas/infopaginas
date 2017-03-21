@@ -100,7 +100,7 @@
                                         <ul class="dropdown-menu">
                                             {% for format in admin.getExportFormats() %}
                                             <li>
-                                                <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : format}) }}">
+                                                <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : format, '_page': admin.categoryData.currentPage}) }}">
                                                     <i class="glyphicon glyphicon-download"></i>
                                                     {{ format|upper }}
                                                 </a>
