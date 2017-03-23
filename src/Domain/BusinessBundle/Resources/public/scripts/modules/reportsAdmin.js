@@ -56,7 +56,7 @@ $( document ).ready( function() {
     interactionDateEndContainer.after( pdfExportButton );
     interactionDateEndContainer.after( excelExportButton );
     interactionDateEndContainer.after( '<div class="form__section scrollable-table" id="businessOverviewStatisticsContainer"></div>' );
-    interactionDateEndContainer.after( '<div id="businessOverviewChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
+    interactionDateEndContainer.after( '<div id="businessOverviewChartContainer" class="chart-container"></div>' );
     interactionDateEndContainer.after( '<div class="form-group"><button id="interactionFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     var keywordLimitContainer = $( '#sonata-ba-field-container-' + formId + '_keywordLimit' );
@@ -64,7 +64,7 @@ $( document ).ready( function() {
     keywordLimitContainer.after( pdfExportButton );
     keywordLimitContainer.after( excelExportButton );
     keywordLimitContainer.after( '<div class="form__section scrollable-table" id="keywordStatisticsContainer"></div>' );
-    keywordLimitContainer.after( '<div id="keywordChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
+    keywordLimitContainer.after( '<div id="keywordChartContainer" class="chart-container"></div>' );
     keywordLimitContainer.after( '<div class="form-group"><button id="keywordFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     var adUsageDateEndContainer = $( '#sonata-ba-field-container-' + formId + '_adUsageDateEnd' );
@@ -72,7 +72,7 @@ $( document ).ready( function() {
     adUsageDateEndContainer.after( pdfExportButton );
     adUsageDateEndContainer.after( excelExportButton );
     adUsageDateEndContainer.after( '<div class="form__section scrollable-table" id="adUsageStatisticsContainer"></div>' );
-    adUsageDateEndContainer.after( '<div id="adUsageChartContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>' );
+    adUsageDateEndContainer.after( '<div id="adUsageChartContainer" class="chart-container"></div>' );
     adUsageDateEndContainer.after( '<div class="form-group"><button id="adUsageFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     function loadBusinessOverviewReport() {

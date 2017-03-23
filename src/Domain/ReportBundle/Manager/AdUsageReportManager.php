@@ -57,7 +57,7 @@ class AdUsageReportManager extends BaseReportManager
 
         $result['dates'] = DatesUtil::dateRange($params['dateObject'], DatesUtil::STEP_DAY, AdminHelper::DATE_FORMAT);
 
-        $params['orderId'] = $businessProfile->getDCOrderId();
+        $params['orderId'] = $businessProfile->getDcOrderId();
 
         $adUsageData = $this->getAdUsageStats($params);
 

@@ -735,7 +735,7 @@ class BusinessProfileManager extends Manager
 
         $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
 
-        if ($businessProfile->getDCOrderId() and $code >= SubscriptionPlanInterface::CODE_PRIORITY) {
+        if ($businessProfile->getDcOrderId() and $code >= SubscriptionPlanInterface::CODE_PRIORITY) {
             $isAllowed = true;
         }
 

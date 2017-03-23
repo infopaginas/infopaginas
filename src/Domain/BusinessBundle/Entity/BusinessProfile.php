@@ -2782,7 +2782,7 @@ class BusinessProfile implements
     /**
      * @return string
      */
-    public function getDCOrderId()
+    public function getDcOrderId()
     {
         return $this->dcOrderId;
     }
@@ -2792,7 +2792,7 @@ class BusinessProfile implements
      *
      * @return BusinessProfile
      */
-    public function setDCOrderId($dcOrderId)
+    public function setDcOrderId($dcOrderId)
     {
         $this->dcOrderId = $dcOrderId;
 
