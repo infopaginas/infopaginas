@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Util;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Google\AdsApi\Dfp\v201702\DateRangeType;
 use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
@@ -209,6 +210,40 @@ class DatesUtil
     {
         return new \DateTime('yesterday');
     }
+
+    public static function getToday()
+    {
+        return new \DateTime('today');
+    }
+
+    public static function getAdUsageReportDateByPeriod($period)
+    {
+        switch ($period) {
+            case DateRangeType::YESTERDAY:
+                $date = self::getYesterday();
+                break;
+            default:
+                $date = self::getToday();
+                break;
+        }
+
+        return $date;
+    }
+
+    public static function getAdUsageReportRangeByPeriod($period)
+    {
+        switch ($period) {
+            case DateRangeType::YESTERDAY:
+                $range = self::RANGE_YESTERDAY;
+                break;
+            default:
+                $range = self::RANGE_TODAY;
+                break;
+        }
+
+        return $range;
+    }
+
 
     public static function convertMonthlyFormattedDate($date, $format)
     {

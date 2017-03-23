@@ -10,6 +10,12 @@ domain_business_admin_reports_keywords_data:
     options:
         expose: true
 
+domain_business_admin_reports_ad_usage_data:
+    path:     /data/adUsage
+    defaults: { _controller: DomainBusinessBundle:Reports:adUsageAdmin }
+    options:
+        expose: true
+
 domain_business_admin_reports_excel_export:
     path:     /export/excel
     defaults: { _controller: DomainBusinessBundle:Reports:excelAdminExport }

@@ -15,14 +15,6 @@ services:
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:CategoryReport\list.html.twig']]
 
-    domain_report.admin.ad_usage_report:
-        class: Domain\ReportBundle\Admin\AdUsageReportAdmin
-        arguments: [~, Oxa\DfpBundle\Entity\DoubleClickLineItem, DomainReportBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Ad Usage Report}
-        calls:
-            - [ setTemplate, ['list', 'DomainReportBundle:Admin:AdUsageReport\list.html.twig']]
-
     domain_report.admin.views_and_visitors_report:
         class: Domain\ReportBundle\Admin\ViewsAndVisitorsReportAdmin
         arguments: [~, Domain\ReportBundle\Entity\Visitor, DomainReportBundle:CRUD]

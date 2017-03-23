@@ -5179,4 +5179,10 @@ a.link-pointer {
 
 div.scrollable-table {
   overflow-x: scroll;
+
+  table.ad-usage-table {
+    tbody tr:nth-child(3n) {
+      border-bottom: 2px solid black;
+    }
+  }
 }

@@ -77,8 +77,6 @@
                 <th>Date</th>
                 <th>Impressions</th>
                 <th>Views</th>
-                <th>Previous Month Impressions</th>
-                <th>Previous Month Views</th>
             </tr>
         </thead>
         <tbody>
@@ -87,8 +85,6 @@
                     <td>{{ interactionCurrentData.dates[i] }}</td>
                     <td>{{ interactionCurrentData.impressions[i] }}</td>
                     <td>{{ interactionCurrentData.views[i] }}</td>
-                    <td>{{ interactionPreviousData.impressions[i] }}</td>
-                    <td>{{ interactionPreviousData.views[i] }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -146,6 +142,46 @@
 </div>
 
 <br>
+
+{% if businessProfile.dcOrderId %}
+    <div class="box box-primary box-pdf">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr class="sonata-ba-list-field-header">
+                <th>{% trans %}Date{% endtrans %}</th>
+                <th>{% trans %}ad_usage_report.device_category{% endtrans %}</th>
+                <th>{% trans %}ad_usage_report.clicks{% endtrans %}</th>
+                <th>{% trans %}ad_usage_report.impressions{% endtrans %}</th>
+                <th>{% trans %}ad_usage_report.ctr{% endtrans %}</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for key, date in adUsageData.dates %}
+                {% for id, deviceCategory in adUsageData.deviceCategories %}
+                    <tr>
+                        {% for item in adUsageData.results[id][key] %}
+                            <td>{{ item|trans }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th></th>
+                <th>{% trans %}ad_usage_report.total{% endtrans %}</th>
+                {% for item in adUsageData.total %}
+                    <th>{{ item }}</th>
+                {% endfor %}
+                <th></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <br>
+{% endif %}
 
 {% for page in paginatedInteractionData.results %}
     <div class="box box-primary box-pdf">

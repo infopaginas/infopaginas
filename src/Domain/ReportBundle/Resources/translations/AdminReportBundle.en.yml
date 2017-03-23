@@ -23,7 +23,6 @@ list.label_category: Category
 list.label_category_visitors: Category visitors
 list.label_views: Views
 list.label_impressions: Impressions
+list.label.clicks: Clicks
 all: All
-
-
-
+export.title.ad_usage_report: Ad Usage Report Data

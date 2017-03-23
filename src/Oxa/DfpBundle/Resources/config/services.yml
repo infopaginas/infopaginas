@@ -1,48 +1,18 @@
 parameters:
-    google_auth_ini_path:      "@@OxaDfpBundle/Resources/config/google/auth.ini"
-    google_settings_ini_path:  "@@OxaDfpBundle/Resources/config/google/settings.ini"
-    api_properties_path:       "@@OxaDfpBundle/Resources/config/google/api.properties"
+    google_auth_ini_path: 'src/Oxa/DfpBundle/Resources/config/google/adsapi_php.ini'
 
 services:
-    oxa_dfp.google.user:
-        class: Oxa\DfpBundle\Google\Api\Ads\Dfp\Lib\DfpUser
+    oxa_dpf.google.auth:
+        class: Oxa\DfpBundle\Manager\AuthManager
         arguments:
-            - "%google_auth_ini_path%"
-            - null
-            - null
-            - "%google_settings_ini_path%"
-            - null
-            - "%api_properties_path%"
-            - "@service_container"
-
-    oxa_dfp.service.report:
-        class: Oxa\DfpBundle\Service\Google\ReportService
-        arguments: ['@oxa_dfp.google.user']
-
-    oxa_dfp.service.order:
-        class: Oxa\DfpBundle\Service\Google\OrderService
-        arguments: ['@oxa_dfp.google.user']
-
-    oxa_dfp.service.company:
-        class: Oxa\DfpBundle\Service\Google\CompanyService
-        arguments: ['@oxa_dfp.google.user']
-
-    oxa_dfp.service.line_item:
-        class: Oxa\DfpBundle\Service\Google\LineItemService
-        arguments: ['@oxa_dfp.google.user']
+            - '%google_auth_ini_path%'
 
     oxa_dfp.manager:
         class: Oxa\DfpBundle\Manager\DfpManager
-        arguments: ['@oxa_dfp.service.report']
+        calls:
+            - [ setAuthManager, [ '@oxa_dpf.google.auth' ]]
+            - [ setOrderReportManager, [ '@oxa_dfp.manager.order_report' ]]
+            - [ setAdUsageReportManager, [ '@domain_report.manager.ad_usage' ]]
 
-    oxa_dfp.manager.doubleclick_companies:
-        class: Oxa\DfpBundle\Manager\DoubleClickCompaniesManager
-        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.service.company']
-
-    oxa_dfp.manager.doubleclick_orders:
-        class: Oxa\DfpBundle\Manager\DoubleClickOrdersManager
-        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager.doubleclick_companies', '@oxa_dfp.service.order']
-
-    oxa_dfp.manager.doubleclick_line_items:
-        class: Oxa\DfpBundle\Manager\DoubleClickLineItemsManager
-        arguments: ['@doctrine.orm.entity_manager', '@oxa_dfp.manager.doubleclick_orders', '@oxa_dfp.service.line_item']
+    oxa_dfp.manager.order_report:
+        class: Oxa\DfpBundle\Manager\OrderReportManager

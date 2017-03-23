@@ -731,8 +731,15 @@ class BusinessProfileManager extends Manager
 
     public function isAdUsageReportAllowedForBusiness(BusinessProfile $businessProfile)
     {
+        $isAllowed = false;
+
         $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
-        return $code >= SubscriptionPlanInterface::CODE_PRIORITY;
+
+        if ($businessProfile->getDCOrderId() and $code >= SubscriptionPlanInterface::CODE_PRIORITY) {
+            $isAllowed = true;
+        }
+
+        return $isAllowed;
     }
 
     public function findOneBusinessProfile()
@@ -1434,22 +1441,6 @@ class BusinessProfileManager extends Manager
                 $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
 
                 if ($item) {
-                    $score = 0;
-                    $plan = 1;
-
-                    foreach ($result as $business) {
-                        if ($business['_id'] == $id) {
-                            if (!empty($business['sort'][0])) {
-                                $plan = $business['sort'][0];
-                                $score = number_format($business['sort'][1], ElasticSearchManager::ROTATION_RANK_PRECISION);
-                                break;
-                            }
-                        }
-                    }
-
-                    $item->setScore($score);
-                    $item->setPlan($plan);
-
                     $data[] = $item;
                 }
             }

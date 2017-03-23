@@ -463,6 +463,16 @@ subscription_report.total: Total
 category_report.label: Category
 category_report.counter: Visitors
 
+ad_usage_report.device_category: Device Category
+ad_usage_report.clicks: Clicks
+ad_usage_report.impressions: Impressions
+ad_usage_report.ctr: CTR, %
+ad_usage_report.total: Total
+device_category_desktop: Desktop
+device_category_smart_phone: Smartphone
+device_category_tablet: Tablet
+ad_usage_report.chart.name: Ad Usage Statistics
+
 # working hours
 business.working.hours.open_all_time: Open 24 hours
 business.working.hours.open_until: Open until {-TIME-}

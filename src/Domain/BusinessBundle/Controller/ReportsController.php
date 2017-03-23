@@ -85,19 +85,28 @@ class ReportsController extends Controller
     {
         $params = $this->prepareReportParameters($request->request->all());
 
-        $businessAdUsageReportManager = $this->getAdUsageReportManager();
-        $adUsageData = $businessAdUsageReportManager->getAdUsageData($params);
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/adUsageStatistics.html.twig',
-            [
-                'adUsageData' => $adUsageData,
-            ]
-        );
+        $this->checkBusinessProfileAccess($businessProfile);
 
-        return new JsonResponse([
-            'stats' => $stats,
-        ]);
+        $params['businessProfile'] = $businessProfile;
+
+        $data = $this->prepareAdUsageResponse($params);
+
+        return new JsonResponse($data);
+    }
+
+    public function adUsageAdminAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $params['businessProfile'] = $businessProfile;
+
+        $data = $this->prepareAdUsageResponse($params);
+
+        return new JsonResponse($data);
     }
 
     public function keywordsAction(Request $request)
@@ -243,6 +252,25 @@ class ReportsController extends Controller
             'stats'    => $stats,
             'keywords' => $keywordsData['keywords'],
             'searches' => $keywordsData['searches'],
+        ];
+    }
+
+    protected function prepareAdUsageResponse($params)
+    {
+        $adUsageData = $this->getAdUsageReportManager()->getAdUsageData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/adUsageStatistics.html.twig',
+            [
+                'adUsageData' => $adUsageData,
+            ]
+        );
+
+        return [
+            'stats'       => $stats,
+            'dates'       => $adUsageData['dates'],
+            'clicks'      => $adUsageData['chart'][AdUsageReportManager::MONGO_DB_FIELD_CLICKS],
+            'impressions' => $adUsageData['chart'][AdUsageReportManager::MONGO_DB_FIELD_IMPRESSIONS],
         ];
     }
 
