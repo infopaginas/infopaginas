@@ -6,10 +6,6 @@ oxa_wistia:
     resource: "@OxaVideoBundle/Resources/config/routing.yml"
     prefix:   /
 
-oxa_dfp:
-    resource: "@OxaDfpBundle/Resources/config/routing.yml"
-    prefix:   /
-
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
     prefix:   /articles

@@ -53,16 +53,15 @@
                         {% include ':redesign/blocks/businessProfile/subTabs/report:overview.html.twig' %}
                     </div>
 
-                    {# see https://jira.oxagile.com/browse/INFT-778 #}
-                    {#{% if ad_usage_allowed_for_business(businessProfile) %}#}
-                        {#<div class="tab-pane" id="ad_usage" role="tabpanel">#}
-                            {#{% include ':redesign/blocks/businessProfile/subTabs/report:ad_usage.html.twig' %}#}
-                        {#</div>#}
-                    {#{% endif %}#}
-
                     <div class="tab-pane" id="keywords" role="tabpanel">
                         {% include ':redesign/blocks/businessProfile/subTabs/report:keywords.html.twig' %}
                     </div>
+
+                    {% if ad_usage_allowed_for_business(businessProfile) %}
+                        <div class="tab-pane" id="ad_usage" role="tabpanel">
+                            {% include ':redesign/blocks/businessProfile/subTabs/report:ad_usage.html.twig' %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="section-filters">

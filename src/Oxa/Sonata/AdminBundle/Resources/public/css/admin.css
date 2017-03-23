@@ -105,3 +105,13 @@ h4.filter_legend img {
 div.scrollable-table {
     overflow-x: scroll;
 }
+
+div.scrollable-table table.ad-usage-table tbody tr:nth-child(3n) {
+    border-bottom: 2px solid black;
+}
+
+div.chart-container {
+    min-width: 310px;
+    height: 400px;
+    margin: 0 auto
+}

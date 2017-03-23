@@ -14,6 +14,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 businessOverviewChartContainerId: '#businessOverviewChartContainer',
                 businessOverviewStatsContainerId: '#businessOverviewStatisticsContainer',
                 adUsageStatsContainerId: '#adUsageStatisticsContainer',
+                adUsageChartContainerId: '#adUsageChartContainer',
                 keywordChartContainerId: '#keywordChartContainer',
                 keywordStatsContainerId: '#keywordStatisticsContainer',
                 keywordsLimitContainerId: '#keywordsLimitContainer'
@@ -70,11 +71,13 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
-                $(self.html.containers.adUsageStatsContainerId).html('');
-                self.showLoader(self.html.containers.adUsageStatsContainerId);
+                $( self.html.containers.adUsageChartContainerId ).html( '' );
+                $( self.html.containers.adUsageStatsContainerId ).html( '' );
+                self.showLoader( self.html.containers.adUsageStatsContainerId );
             },
             success: function(response) {
-                $(self.html.containers.adUsageStatsContainerId).html(response.stats);
+                $( self.html.containers.adUsageStatsContainerId ).html( response.stats );
+                self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
             }
         });
     };
@@ -133,6 +136,45 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 },
                 {
                     name: $(this.html.containers.businessOverviewChartContainerId).data( "series-name-imp" ),
+                    data: impressions
+                }
+            ]
+        });
+    };
+
+    reports.prototype.loadAdUsageChart = function( dates, clicks, impressions )
+    {
+        $( this.html.containers.adUsageChartContainerId ).highcharts({
+            title: {
+                text: $( this.html.containers.adUsageChartContainerId ).data( "title" ),
+                x: -20 //center
+            },
+            xAxis: {
+                categories: dates
+            },
+            yAxis: {
+                title: {
+                    text: $( this.html.containers.adUsageChartContainerId ).data( "y-axis" )
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [
+                {
+                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-clicks" ),
+                    data: clicks
+                },
+                {
+                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-imp" ),
                     data: impressions
                 }
             ]

@@ -1,16 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 25.08.16
- * Time: 21:58
- */
 
 namespace Oxa\DfpBundle\Manager;
 
-use Oxa\DfpBundle\Model\DataType\DateRangeInterface;
-use Oxa\DfpBundle\Model\DataType\OrderStatsDTO;
-use Oxa\DfpBundle\Service\Google\ReportService;
+use Domain\ReportBundle\Manager\AdUsageReportManager;
 
 /**
  * Class DfpManager
@@ -19,35 +11,52 @@ use Oxa\DfpBundle\Service\Google\ReportService;
 class DfpManager
 {
     /**
-     * @var ReportService
+     * @var AuthManager
      */
-    protected $reportService;
+    protected $authManager;
 
     /**
-     * DfpManager constructor.
-     * @param ReportService $reportService
+     * @var OrderReportManager
      */
-    public function __construct(ReportService $reportService)
+    protected $orderReportManager;
+
+    /**
+     * @var AdUsageReportManager
+     */
+    protected $adUsageReportManager;
+
+    public function synchronizeOrderReport($period)
     {
-        $this->reportService = $reportService;
+        $reportOrderData = $this->orderReportManager->getOrderReportData($this->getDFPSession(), $period);
+        $this->adUsageReportManager->updateAdUsageStats($reportOrderData, $period);
     }
 
     /**
-     * @param array $lineItemIds
-     * @param DateRangeInterface $dateRange
-     * @return \Oxa\DfpBundle\Model\DataType\OrderStatsDTOCollection
+     * @param AuthManager $authManager
      */
-    public function getStatsForMultipleLineItems(array $lineItemIds, DateRangeInterface $dateRange)
+    public function setAuthManager(AuthManager $authManager)
     {
-        $columns = [ReportService::REPORT_CLICKS_COL_NAME, ReportService::REPORT_IMPRESSIONS_COL_NAME];
-        return $this->getReportService()->getStatsForMultipleLineItems($lineItemIds, $dateRange, $columns);
+        $this->authManager = $authManager;
     }
 
     /**
-     * @return ReportService
+     * @param OrderReportManager $orderReportManager
      */
-    protected function getReportService() : ReportService
+    public function setOrderReportManager(OrderReportManager $orderReportManager)
     {
-        return $this->reportService;
+        $this->orderReportManager = $orderReportManager;
+    }
+
+    /**
+     * @param AdUsageReportManager $adUsageReportManager
+     */
+    public function setAdUsageReportManager(AdUsageReportManager $adUsageReportManager)
+    {
+        $this->adUsageReportManager = $adUsageReportManager;
+    }
+
+    protected function getDFPSession()
+    {
+        return $this->authManager->getSession();
     }
 }

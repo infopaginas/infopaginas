@@ -37,20 +37,20 @@ class BusinessReportExcelExporter extends ExcelExporterModel
     protected $currentOverviewInitRow   = 9;
     protected $currentOverviewInitCol   = 'B';
 
-    protected $previousOverviewInitRow  = 9;
-    protected $previousOverviewInitCol  = 'E';
-
     protected $keywordsTableInitRow     = 9;
-    protected $keywordsTableInitCol     = 'H';
+    protected $keywordsTableInitCol     = 'F';
 
     protected $currentYearInitRow       = 9;
-    protected $currentYearInitCol       = 'K';
+    protected $currentYearInitCol       = 'I';
 
     protected $previousYearInitRow      = 9;
-    protected $previousYearInitCol      = 'N';
+    protected $previousYearInitCol      = 'L';
+
+    protected $adUsageInitRow           = 9;
+    protected $adUsageInitCol           = 'P';
 
     protected $interactionInitRow       = 9;
-    protected $interactionInitCol       = 'R';
+    protected $interactionInitCol       = 'V';
 
     /**
      * @param BusinessOverviewReportManager $service
@@ -108,15 +108,10 @@ class BusinessReportExcelExporter extends ExcelExporterModel
      */
     protected function setData($parameters)
     {
-        $previousParams     = $this->businessOverviewReportManager->getPreviousPeriodSearchParams(
-            $parameters,
-            DatesUtil::DEFAULT_PERIOD
-        );
         $currentYearParams  = $this->businessOverviewReportManager->getThisYearSearchParams($parameters);
         $previousYearParams = $this->businessOverviewReportManager->getThisLastSearchParams($parameters);
 
         $interactionCurrentData  = $this->businessOverviewReportManager->getBusinessOverviewReportData($parameters);
-        $interactionPreviousData = $this->businessOverviewReportManager->getBusinessOverviewReportData($previousParams);
 
         $keywordsData = $this->keywordsReportManager->getKeywordsData($parameters);
 
@@ -135,7 +130,6 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->generateBusinessInfoTable($parameters['businessProfile']);
 
         $this->generateCurrentOverviewTable($interactionCurrentData);
-        $this->generatePreviousOverviewTable($interactionPreviousData);
         $this->generateKeywordsTable($keywordsData);
         $this->generateYearTable(
             [
@@ -153,6 +147,14 @@ class BusinessReportExcelExporter extends ExcelExporterModel
                 'initCol'   => $this->previousYearInitCol,
             ]
         );
+
+        if ($parameters['businessProfile']->getDcOrderId()) {
+            $adUsageData = $this->adUsageReportManager->getAdUsageData($parameters);
+            $this->generateAdUsageTable($adUsageData);
+        } else {
+            $this->interactionInitCol = $this->adUsageInitCol;
+            $this->interactionInitRow = $this->adUsageInitRow;
+        }
 
         $this->generateInteractionTable($interactionCurrentData);
 
@@ -408,6 +410,92 @@ class BusinessReportExcelExporter extends ExcelExporterModel
 
             $row++;
         }
+    }
+
+    protected function generateAdUsageTable($adUsageData)
+    {
+        $row = $this->adUsageInitRow;
+        $col = $this->adUsageInitCol;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('list.label_date', [], 'AdminReportBundle')
+        );
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('ad_usage_report.device_category')
+        );
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('ad_usage_report.clicks')
+        );
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('ad_usage_report.impressions')
+        );
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('ad_usage_report.ctr')
+        );
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        foreach ($adUsageData['dates'] as $key => $date) {
+            foreach ($adUsageData['deviceCategories'] as $id => $category) {
+                $col = $this->adUsageInitCol;
+                $row++;
+
+                foreach ($adUsageData['results'][$id][$key] as $item) {
+                    $this->activeSheet->setCellValue($col . $row, $this->translator->trans($item));
+
+                    $this->setColumnSizeStyle($col);
+                    $this->setBorderStyle($col, $row);
+
+                    $col++;
+                }
+
+                $this->setRowSizeStyle($row);
+            }
+        }
+
+        $col = $this->adUsageInitCol;
+        $row++;
+        $col++;
+
+        $this->activeSheet->setCellValue(
+            $col . $row,
+            $this->translator->trans('ad_usage_report.total')
+        );
+        $this->setFontStyle($col, $row);
+        $this->setBorderStyle($col, $row);
+
+        foreach ($adUsageData['total'] as $item) {
+            $col++;
+
+            $this->activeSheet->setCellValue($col . $row, $item);
+
+            $this->setColumnSizeStyle($col);
+            $this->setFontStyle($col, $row);
+            $this->setBorderStyle($col, $row);
+        }
+
+        $this->setRowSizeStyle($row);
     }
 
     protected function getExcelService()

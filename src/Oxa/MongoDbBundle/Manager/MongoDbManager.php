@@ -62,6 +62,23 @@ class MongoDbManager
 
     /**
      * @param       $collectionName
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function deleteMany($collectionName, $data)
+    {
+        try {
+            $result = $this->client->$collectionName->deleteMany($data);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param       $collectionName
      * @param array $query
      * @param array $options
      *

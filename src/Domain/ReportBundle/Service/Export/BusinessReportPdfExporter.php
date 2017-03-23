@@ -57,15 +57,10 @@ class BusinessReportPdfExporter extends PdfExporterModel
      */
     public function getResponse($params = []) : Response
     {
-        $previousParams     = $this->businessOverviewReportManager->getPreviousPeriodSearchParams(
-            $params,
-            DatesUtil::DEFAULT_PERIOD
-        );
         $currentYearParams  = $this->businessOverviewReportManager->getThisYearSearchParams($params);
         $previousYearParams = $this->businessOverviewReportManager->getThisLastSearchParams($params);
 
         $interactionCurrentData  = $this->businessOverviewReportManager->getBusinessOverviewReportData($params);
-        $interactionPreviousData = $this->businessOverviewReportManager->getBusinessOverviewReportData($previousParams);
 
         $keywordsData = $this->keywordsReportManager->getKeywordsData($params);
 
@@ -73,6 +68,12 @@ class BusinessReportPdfExporter extends PdfExporterModel
             ->getBusinessOverviewReportData($currentYearParams);
         $interactionPreviousYearData = $this->businessOverviewReportManager
             ->getBusinessOverviewReportData($previousYearParams);
+
+        if ($params['businessProfile']->getDcOrderId()) {
+            $adUsageData = $this->adUsageReportManager->getAdUsageData($params);
+        } else {
+            $adUsageData = [];
+        }
 
         $filename = $this->businessOverviewReportManager
             ->getBusinessOverviewReportName($params['businessProfile']->getSlug(), self::FORMAT);
@@ -86,10 +87,10 @@ class BusinessReportPdfExporter extends PdfExporterModel
                 'businessProfile'             => $params['businessProfile'],
                 'interactionCurrentData'      => $interactionCurrentData,
                 'paginatedInteractionData'    => $paginatedInteractionData,
-                'interactionPreviousData'     => $interactionPreviousData,
                 'keywordsData'                => $keywordsData,
                 'interactionCurrentYearData'  => $interactionCurrentYearData,
                 'interactionPreviousYearData' => $interactionPreviousYearData,
+                'adUsageData'                 => $adUsageData,
             ]
         );
 

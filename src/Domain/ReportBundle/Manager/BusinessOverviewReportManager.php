@@ -310,19 +310,6 @@ class BusinessOverviewReportManager extends BaseReportManager
         }
     }
 
-    public function getPreviousPeriodSearchParams($params, $period)
-    {
-        $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
-
-        $dates->getStartDate()->modify($period);
-        $dates->getEndDate()->modify($period);
-
-        $params['date']['start'] = $dates->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
-        $params['date']['end']   = $dates->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
-
-        return $params;
-    }
-
     public function getThisYearSearchParams($params)
     {
         return $this->getYearSearchParam($params, DatesUtil::RANGE_THIS_YEAR);

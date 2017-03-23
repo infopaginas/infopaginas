@@ -754,26 +754,6 @@ class BusinessProfile implements
      */
     protected $isClosed;
 
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickSynchLog",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist"}
-     * )
-     */
-    private $doubleClickSynchLog;
-
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickCompany",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist"}
-     * )
-     */
-    private $doubleClickCompany;
-
     /** @var float
      *
      * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
@@ -870,6 +850,12 @@ class BusinessProfile implements
      * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
      */
     protected $isUpdated;
+
+    /**
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="dc_order_id", type="string", nullable=true, length=255)
+     */
+    protected $dcOrderId;
 
     /**
      * Constructor
@@ -2662,23 +2648,6 @@ class BusinessProfile implements
         return $citySlug;
     }
 
-    /**
-     * @return BusinessProfile
-     */
-    public function getDoubleClickSynchLog()
-    {
-        return $this->doubleClickSynchLog;
-    }
-
-    /**
-     * @param BusinessProfile $doubleClickSynchLog
-     * @return BusinessProfile
-     */
-    public function setDoubleClickSynchLog($doubleClickSynchLog)
-    {
-        $this->doubleClickSynchLog = $doubleClickSynchLog;
-    }
-
     /** getting distance
      *
      * @return float
@@ -2698,23 +2667,6 @@ class BusinessProfile implements
     {
         $this->distance = $distance;
         return $this;
-    }
-
-    /**
-     * @return BusinessProfile
-     */
-    public function getDoubleClickCompany()
-    {
-        return $this->doubleClickCompany;
-    }
-
-    /**
-     * @param BusinessProfile $doubleClickCompany
-     * @return BusinessProfile
-     */
-    public function setDoubleClickCompany($doubleClickCompany)
-    {
-        $this->doubleClickCompany = $doubleClickCompany;
     }
 
      /**
@@ -2825,6 +2777,26 @@ class BusinessProfile implements
     public function getIsUpdated()
     {
         return $this->isUpdated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDcOrderId()
+    {
+        return $this->dcOrderId;
+    }
+
+    /**
+     * @param string $dcOrderId
+     *
+     * @return BusinessProfile
+     */
+    public function setDcOrderId($dcOrderId)
+    {
+        $this->dcOrderId = $dcOrderId;
+
+        return $this;
     }
 
     public function getActiveStatus()

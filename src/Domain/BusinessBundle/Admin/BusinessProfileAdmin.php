@@ -540,6 +540,15 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                     ])
                 ->end()
+                ->with('DoubleClick')
+                    ->add(
+                        'dcOrderId',
+                        null,
+                        [
+                            'label' => 'DC Order Id for Ad Usage Report',
+                        ]
+                    )
+                ->end()
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
@@ -596,6 +605,35 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ->end()
         ;
+
+        if ($this->getSubject()->getDcOrderId()) {
+            $formMapper
+                ->tab('Ad Usage Report')
+                    ->with('Ad Usage Report')
+                        ->add(
+                            'adUsageDateStart',
+                            'sonata_type_date_picker',
+                            [
+                                'mapped'    => false,
+                                'required'  => false,
+                                'format'    => self::DATE_PICKER_FORMAT,
+                                'data'      => DatesUtil::getThisWeekStart(),
+                            ]
+                        )
+                        ->add(
+                            'adUsageDateEnd',
+                            'sonata_type_date_picker',
+                            [
+                                'mapped'    => false,
+                                'required'  => false,
+                                'format'    => self::DATE_PICKER_FORMAT,
+                                'data'      => DatesUtil::getThisWeekEnd(),
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+        }
     }
 
     /**
@@ -654,6 +692,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('isActive')
+            ->add('dcOrderId')
         ;
     }
 

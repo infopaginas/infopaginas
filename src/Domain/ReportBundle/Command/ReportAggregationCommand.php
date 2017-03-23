@@ -40,7 +40,7 @@ class ReportAggregationCommand extends ContainerAwareCommand
                         ),
                     ]
                 )
-            );
+            )
         ;
     }
 

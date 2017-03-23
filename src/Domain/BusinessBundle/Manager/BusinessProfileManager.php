@@ -731,8 +731,15 @@ class BusinessProfileManager extends Manager
 
     public function isAdUsageReportAllowedForBusiness(BusinessProfile $businessProfile)
     {
+        $isAllowed = false;
+
         $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
-        return $code >= SubscriptionPlanInterface::CODE_PRIORITY;
+
+        if ($businessProfile->getDcOrderId() and $code >= SubscriptionPlanInterface::CODE_PRIORITY) {
+            $isAllowed = true;
+        }
+
+        return $isAllowed;
     }
 
     public function findOneBusinessProfile()
