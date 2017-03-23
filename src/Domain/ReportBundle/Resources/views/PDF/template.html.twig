@@ -104,7 +104,7 @@
         <tbody>
             {% for keyword, searches in keywordsData.results %}
                 <tr>
-                    <td>{{ keyword }}</td>
+                    <td>{{ keyword|truncate(keyword_max_length) }}</td>
                     <td>{{ searches }}</td>
                 </tr>
             {% endfor %}
