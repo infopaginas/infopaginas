@@ -4,7 +4,6 @@ namespace Domain\ReportBundle\Util;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Google\AdsApi\Dfp\v201702\DateRangeType;
-use Oxa\DfpBundle\Model\DataType\DateRangeVO;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 /**
@@ -95,10 +94,10 @@ class DatesUtil
                 throw new \Exception('invalid param');
         }
 
-        return new DateRangeVO($start, $end);
+        return new ReportDatesRangeVO($start, $end);
     }
 
-    public static function getDateAsArrayFromVO(DateRangeVO $dateRange)
+    public static function getDateAsArrayFromVO(ReportDatesRangeVO $dateRange)
     {
         $date['start'] = $dateRange->getStartDate()->format(self::START_END_DATE_ARRAY_FORMAT);
         $date['end']   = $dateRange->getEndDate()->format(self::START_END_DATE_ARRAY_FORMAT);
@@ -111,7 +110,7 @@ class DatesUtil
         $start = \DateTime::createFromFormat($dateFormat, $requestData['start']);
         $end = \DateTime::createFromFormat($dateFormat, $requestData['end']);
 
-        return new DateRangeVO($start, $end);
+        return new ReportDatesRangeVO($start, $end);
     }
 
     public static function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
