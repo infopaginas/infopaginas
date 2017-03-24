@@ -14,7 +14,6 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
-use Domain\BusinessBundle\Repository\TagRepository;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\MediaBundle\Entity\Media as SonataMedia;
@@ -448,16 +447,6 @@ class BusinessProfileFormType extends AbstractType
     {
         $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
 
-        $form->add('isSetVideo', CheckboxType::class, [
-            'attr' => [
-                'readonly' => 'readonly',
-                'disabled' => 'disabled',
-            ],
-            'label' => 'yes',
-            'required' => false,
-            'read_only' => true,
-        ]);
-
         $form->add('videoFile', FileType::class, [
             'attr' => [
                 'style' => 'display:none',
@@ -477,6 +466,11 @@ class BusinessProfileFormType extends AbstractType
     private function setupPremiumGoldPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
+    }
+
+    private function setupPremiumPlusPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
+    {
+        $this->setupPriorityPlanFormFields($businessProfile, $form);
 
         $form
             ->add(
@@ -509,59 +503,6 @@ class BusinessProfileFormType extends AbstractType
                 'by_reference' => false,
             ])
         ;
-    }
-
-    private function setupPremiumPlusPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $this->setupPriorityPlanFormFields($businessProfile, $form);
-
-        $isSloganSet = !empty($businessProfile->getSlogan());
-
-        $isLogoSet = $businessProfile->getLogo() !== null;
-
-        $form
-            ->add('isSetLogo', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
-                'data' => $isLogoSet
-            ])
-            ->add('isSetSlogan', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
-                'data' => $isSloganSet,
-            ])
-            ->add(
-                'files',
-                'file',
-                [
-                    'attr' => [
-                        'style' => 'display:none',
-                        'accept' => 'jpg, png, gif, bmp, image/jpeg, image/pjpeg, image/png, image/gif,
-                            image/bmp, image/x-windows-bmp',
-                    ],
-                    'data_class' => null,
-                    'mapped' => false,
-                    'multiple' => true,
-                ]
-            )
-            ->add('images', \Symfony\Component\Form\Extension\Core\Type\CollectionType::class, [
-                'entry_type' => BusinessGalleryType::class,
-                'required' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'allow_extra_fields' => true,
-            ])
-        ;
 
         $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
         $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
@@ -570,58 +511,11 @@ class BusinessProfileFormType extends AbstractType
     private function setupPriorityPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupFreePlanFormFields($businessProfile, $form);
-
-        $isAdSet = false;
-
-        /** @var BusinessGallery $image */
-        foreach ($businessProfile->getImages() as $image) {
-            if ($image->getType() == OxaMediaInterface::CONTEXT_BANNER) {
-                $isAdSet = true;
-                break;
-            }
-        }
-
-        $form
-            ->add('isSetAd', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
-                'data' => $isAdSet,
-            ])
-        ;
     }
 
     private function setupFreePlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
-        $isMapSet = !empty($businessProfile->getLatitude()) && !empty($businessProfile->getLongitude());
-        $isDescriptionSet = !empty($businessProfile->getDescription());
 
-        $form
-            ->add('isSetDescription', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
-                'data' => $isDescriptionSet,
-            ])
-            ->add('isSetMap', CheckboxType::class, [
-                'attr' => [
-                    'readonly' => 'readonly',
-                    'disabled' => 'disabled',
-                ],
-                'label' => 'yes',
-                'required' => false,
-                'read_only' => true,
-                'data' => $isMapSet,
-            ])
-        ;
     }
 
     private function setupCategories(BusinessProfile $businessProfile, FormInterface $form)

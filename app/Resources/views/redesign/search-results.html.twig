@@ -9,7 +9,6 @@
 
 {% block body %}
     <div class="main__container">
-
         <section class="main" id="searchResults">
             <div class="results active__toggle">
                 {% if results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
@@ -49,9 +48,7 @@
             <div id="map" class="map"></div>
             <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
-
     </div><!-- main container -->
-
 {% endblock %}
 
 {% block scripts %}
