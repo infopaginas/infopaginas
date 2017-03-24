@@ -195,7 +195,7 @@ class AdUsageReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_DEVICE_CATEGORY_ID   => $orderData[OrderReportManager::DIMENSION_DEVICE_CATEGORY_ID],
             self::MONGO_DB_FIELD_CLICKS               => (int)$orderData[OrderReportManager::COLUMN_CLICKS],
             self::MONGO_DB_FIELD_IMPRESSIONS          => (int)$orderData[OrderReportManager::COLUMN_IMPRESSIONS],
-            self::MONGO_DB_FIELD_CTR                  => (float)$orderData[OrderReportManager::COLUMN_CTR],
+            self::MONGO_DB_FIELD_CTR                  => (float)$orderData[OrderReportManager::COLUMN_CTR] * 100,
             self::MONGO_DB_FIELD_DATE_TIME            => $date,
         ];
 
