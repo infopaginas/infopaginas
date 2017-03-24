@@ -5,7 +5,6 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
@@ -28,7 +27,6 @@ use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
-
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 
@@ -236,20 +234,6 @@ class BusinessProfile implements
     protected $coupons;
 
     /**
-     * @var Campaign[] - Business Campaigns
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     *     )
-     * @Assert\Valid
-     * @ORM\OrderBy({"status" = "ASC"})
-     */
-    protected $campaigns;
-
-    /**
      * @var Category[] - Business category
      * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category",
      *     inversedBy="businessProfiles",
@@ -386,48 +370,6 @@ class BusinessProfile implements
      * @ORM\JoinTable(name="business_profile_payment_methods")
      */
     protected $paymentMethods;
-
-    /**
-     * @var string - Field is checked, if Description field of profile is set.
-     *
-     * @ORM\Column(name="is_set_description", type="boolean", options={"default" : 0})
-     */
-    protected $isSetDescription = false;
-
-    /**
-     * @var string - Field is checked, if business is marked on map.
-     *
-     * @ORM\Column(name="is_set_map", type="boolean", options={"default" : 0})
-     */
-    protected $isSetMap = false;
-
-    /**
-     * @var string - Field is checked, if Ad is defined.
-     *
-     * @ORM\Column(name="is_set_ad", type="boolean", options={"default" : 0})
-     */
-    protected $isSetAd = false;
-
-    /**
-     * @var string - Field is checked, if Logo field of profile is set.
-     *
-     * @ORM\Column(name="is_set_logo", type="boolean", options={"default" : 0})
-     */
-    protected $isSetLogo = false;
-
-    /**
-     * @var string - Field is checked, if Slogan field of profile is set.
-     *
-     * @ORM\Column(name="is_set_slogan", type="boolean", options={"default" : 0})
-     */
-    protected $isSetSlogan = false;
-
-    /**
-     * @var string - Field is checked, if Video field of profile is set.
-     *
-     * @ORM\Column(name="is_set_video", type="boolean", options={"default" : 0})
-     */
-    protected $isSetVideo = false;
 
     /**
      * @var string - Used to create human like url
@@ -690,7 +632,6 @@ class BusinessProfile implements
      * @Assert\NotBlank(groups={"service_area_chosen"})
      * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
-     * 
      */
     protected $milesOfMyBusiness;
 
@@ -715,7 +656,7 @@ class BusinessProfile implements
     protected $neighborhoods;
 
     /**
-     * @var Campaign[] - Business Profile Phones
+     * @var BusinessProfilePhone[] - Business Profile Phones
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePhone",
@@ -1186,145 +1127,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set isSetDescription
-     *
-     * @param boolean $isSetDescription
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetDescription($isSetDescription)
-    {
-        $this->isSetDescription = $isSetDescription;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetDescription
-     *
-     * @return boolean
-     */
-    public function getIsSetDescription()
-    {
-        return $this->isSetDescription;
-    }
-
-    /**
-     * Set isSetMap
-     *
-     * @param boolean $isSetMap
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetMap($isSetMap)
-    {
-        $this->isSetMap = $isSetMap;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetMap
-     *
-     * @return boolean
-     */
-    public function getIsSetMap()
-    {
-        return $this->isSetMap;
-    }
-
-    /**
-     * Set isSetAd
-     *
-     * @param boolean $isSetAd
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetAd($isSetAd)
-    {
-        $this->isSetAd = $isSetAd;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetAd
-     *
-     * @return boolean
-     */
-    public function getIsSetAd()
-    {
-        return $this->isSetAd;
-    }
-
-    /**
-     * Set isSetLogo
-     *
-     * @param boolean $isSetLogo
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetLogo($isSetLogo)
-    {
-        $this->isSetLogo = $isSetLogo;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetLogo
-     *
-     * @return boolean
-     */
-    public function getIsSetLogo()
-    {
-        return $this->isSetLogo;
-    }
-
-    /**
-     * Set isSetSlogan
-     *
-     * @param boolean $isSetSlogan
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetSlogan($isSetSlogan)
-    {
-        $this->isSetSlogan = $isSetSlogan;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetSlogan
-     *
-     * @return boolean
-     */
-    public function getIsSetSlogan()
-    {
-        return $this->isSetSlogan;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIsSetVideo()
-    {
-        return $this->isSetVideo;
-    }
-
-    /**
-     * @param string $isSetVideo
-     * @return BusinessProfile
-     */
-    public function setIsSetVideo($isSetVideo)
-    {
-        $this->isSetVideo = $isSetVideo;
-
-        return $this;
-    }
-
-    /**
      * Set slug
      *
      * @param string $slug
@@ -1429,8 +1231,7 @@ class BusinessProfile implements
      */
     public function getCategory()
     {
-        foreach ($this->categories as $category)
-        {
+        foreach ($this->categories as $category) {
             if (!$category->getParent()) {
                 return $category;
             }
@@ -1448,8 +1249,7 @@ class BusinessProfile implements
     {
         $categories = [];
 
-        foreach ($this->categories as $category)
-        {
+        foreach ($this->categories as $category) {
             if ($category->getParent() and $category->getLvl() == $level) {
                 $categories[] = $category;
             }
@@ -2335,42 +2135,6 @@ class BusinessProfile implements
     public function __clone()
     {
         $this->id = null;
-    }
-
-    /**
-     * Add campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return BusinessProfile
-     */
-    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns[] = $campaign;
-
-        return $this;
-    }
-
-    /**
-     * Remove campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        return $this->campaigns->removeElement($campaign);
-    }
-
-    /**
-     * Get campaigns
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCampaigns()
-    {
-        return $this->campaigns;
     }
 
     /**

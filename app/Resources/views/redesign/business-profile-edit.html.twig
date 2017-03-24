@@ -1,4 +1,12 @@
 {% extends "redesign/layout/base.html.twig" %}
+
+{% block videoJs %}
+    {% include ':redesign/layout/widgets:video-js.html.twig' %}
+{% endblock %}
+
+{% block googleTagManagerScript %}{% endblock %}
+{% block googleTagManagerNoScript %}{% endblock %}
+
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
 {% block bodyClass %}generic-page user-profile{% endblock %}
@@ -87,7 +95,6 @@
                         </div><!-- form-actions -->
                     </form>
                 </section>
-
             </div>
         </div>
     </div>

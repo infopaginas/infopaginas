@@ -117,7 +117,7 @@ class VideosController extends Controller
         $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_VIDEO_PAGE_RIGHT,
                 TypeInterface::CODE_VIDEO_PAGE_BOTTOM,

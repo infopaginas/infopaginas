@@ -24,7 +24,8 @@ class ReportExtension extends \Twig_Extension
     /**
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager) {
+    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager)
+    {
         $this->businessProfileManager = $businessProfileManager;
     }
 

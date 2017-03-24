@@ -18,7 +18,7 @@ class StemmerService
     {
         $usefulWords = array_diff(explode(' ', $search), self::STOP_WORDS);
 
-        return array_map(function($keyword) {
+        return array_map(function ($keyword) {
             return mb_strtolower($keyword);
         }, $usefulWords);
     }

@@ -58,7 +58,7 @@ class VideoManager
 
         $totalResults = $this->getRepository()->countBusinessProfilesByVideosUpdate();
 
-        $pagesCount = ceil( $totalResults / $paramsDTO->limit );
+        $pagesCount = ceil($totalResults / $paramsDTO->limit);
 
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }

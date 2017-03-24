@@ -249,5 +249,4 @@ class DownloadCommand extends ContainerAwareCommand
     {
         return substr($url, strrpos($url, '/'));
     }
-
 }

@@ -22,7 +22,7 @@ class BannerFactory extends Factory
         $this->bannersCollection = new ArrayCollection;
     }
 
-    public function prepearBanners(array $banners)
+    public function prepareBanners(array $banners)
     {
         foreach ($banners as $bannerKey) {
             if ($this->bannersCollection->containsKey($bannerKey)) {
@@ -51,31 +51,6 @@ class BannerFactory extends Factory
         } else {
             throw new \Exception(sprintf("Banners with type %s have not been loaded.", $type), 1);
         }
-    }
-
-    public function getHomepageVertical()
-    {
-        return $this->retrieve(BannerType::CODE_HOME_VERTICAL);
-    }
-
-    public function getSearchPageBottom()
-    {
-        return $this->retrieve(BannerType::CODE_SEARCH_PAGE_BOTTOM);
-    }
-
-    public function getSearchPageTop()
-    {
-        return $this->retrieve(BannerType::CODE_SEARCH_PAGE_TOP);
-    }
-
-    public function getRightBlock()
-    {
-        return $this->retrieve(BannerType::CODE_PORTAL_RIGHT);
-    }
-
-    public function getStaticBlock()
-    {
-        return $this->retrieve(BannerType::CODE_STATIC_BOTTOM);
     }
 
     public function getItemsHeaders()

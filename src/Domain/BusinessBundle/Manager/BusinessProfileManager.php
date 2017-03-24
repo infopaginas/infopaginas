@@ -91,7 +91,8 @@ class BusinessProfileManager extends Manager
      *
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
 
         $this->em = $container->get('doctrine.orm.entity_manager');
@@ -417,7 +418,7 @@ class BusinessProfileManager extends Manager
 
                     break;
                 case ChangeSetCalculator::CHANGE_RELATION_MANY_TO_MANY:
-                    $ids = array_map(function($element) {
+                    $ids = array_map(function ($element) {
                         return $element->id;
                     }, json_decode($change->getNewValue()));
 
@@ -452,7 +453,9 @@ class BusinessProfileManager extends Manager
                                     }
                                 } else {
                                     // update property
-                                    if ($media->getYoutubeSupport() and !$media->getYoutubeAction() and $media->getYoutubeId()) {
+                                    if ($media->getYoutubeSupport() and !$media->getYoutubeAction() and
+                                        $media->getYoutubeId()
+                                    ) {
                                         $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
                                     }
                                 }
@@ -527,7 +530,8 @@ class BusinessProfileManager extends Manager
 
                         if ($dataNew) {
                             if ($dataNew->id) {
-                                $translation = $this->em->getRepository(BusinessProfileTranslation::class)->find($dataNew->id);
+                                $translation = $this->em->getRepository(BusinessProfileTranslation::class)
+                                    ->find($dataNew->id);
                             } else {
                                 $translation = new BusinessProfileTranslation();
 
@@ -542,7 +546,8 @@ class BusinessProfileManager extends Manager
 
                             $translation->setObject($businessProfile);
                         } elseif ($dataOld and $dataOld->id) {
-                            $translation = $this->em->getRepository(BusinessProfileTranslation::class)->find($dataOld->id);
+                            $translation = $this->em->getRepository(BusinessProfileTranslation::class)
+                                ->find($dataOld->id);
 
                             $this->em->remove($translation);
                         }
@@ -700,8 +705,7 @@ class BusinessProfileManager extends Manager
      */
     public function removeItemWithHiddenAddress($searchResultsDTO)
     {
-        foreach ($searchResultsDTO->resultSet as $key => $item)
-        {
+        foreach ($searchResultsDTO->resultSet as $key => $item) {
             if ($item->getHideAddress()) {
                 unset($searchResultsDTO->resultSet[$key]);
             }
@@ -1243,8 +1247,7 @@ class BusinessProfileManager extends Manager
         $locality = null,
         $categories = [],
         $isCatalog = false
-    )
-    {
+    ) {
         $translator  = $this->container->get('translator');
         $seoSettings = $this->container->getParameter('seo_custom_settings');
 
@@ -1733,6 +1736,17 @@ class BusinessProfileManager extends Manager
         $locationQuery = [];
 
         if (!$params->locationValue->ignoreLocality) {
+            $distanceScript = 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', '
+                . $params->locationValue->lng . ') < doc["miles_of_my_business"].value';
+
+            if ($params->locationValue->locality) {
+                $localityId = $params->locationValue->locality->getId();
+            } else {
+                $localityId = 0;
+            }
+
+            $serviceAreasTypeLocality = BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE;
+
             $locationQuery = [
                 'bool' => [
                     'minimum_should_match' => 1,
@@ -1742,7 +1756,7 @@ class BusinessProfileManager extends Manager
                                 'must' => [
                                     [
                                         'script' => [
-                                            'script' => 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', ' . $params->locationValue->lng . ') < doc["miles_of_my_business"].value'
+                                            'script' => $distanceScript,
                                         ],
                                     ],
                                     [
@@ -1758,12 +1772,12 @@ class BusinessProfileManager extends Manager
                                 'must' => [
                                     [
                                         'match' => [
-                                            'locality_ids' => $params->locationValue->locality ? $params->locationValue->locality->getId() : 0,
+                                            'locality_ids' => $localityId,
                                         ],
                                     ],
                                     [
                                         'term' => [
-                                            'service_areas_type' => BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE,
+                                            'service_areas_type' => $serviceAreasTypeLocality,
                                         ],
                                     ],
                                 ],
@@ -1889,13 +1903,19 @@ class BusinessProfileManager extends Manager
         $autoSuggest[$enLocale][] = $businessProfile->getNameEn();
         $autoSuggest[$esLocale][] = $businessProfile->getNameEs();
 
+        if ($businessProfile->getMilesOfMyBusiness()) {
+            $milesOfMyBusiness = $businessProfile->getMilesOfMyBusiness();
+        } else {
+            $milesOfMyBusiness = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
+        }
+
         $data = [
             'id'                   => $businessProfile->getId(),
             'name_en'              => $businessProfile->getNameEn(),
             'name_es'              => $businessProfile->getNameEs(),
             'description_en'       => $businessProfile->getDescriptionEn(),
             'description_es'       => $businessProfile->getDescriptionEs(),
-            'miles_of_my_business' => $businessProfile->getMilesOfMyBusiness() ?: BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS,
+            'miles_of_my_business' => $milesOfMyBusiness,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
             'auto_suggest_en'      => $autoSuggest[$enLocale],

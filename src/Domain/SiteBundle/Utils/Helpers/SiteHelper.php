@@ -46,7 +46,7 @@ class SiteHelper
 
         curl_exec($handle);
 
-        if(!curl_errno($handle)) {
+        if (!curl_errno($handle)) {
             $info = curl_getinfo($handle);
         }
 

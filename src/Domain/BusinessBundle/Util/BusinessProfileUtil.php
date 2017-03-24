@@ -29,7 +29,7 @@ class BusinessProfileUtil
         if ($locale) {
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation('name', strtolower($locale));
             $businessProfileName = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,  strtolower($locale));
+                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
         } else {
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $businessProfileName = $businessProfile->getName();
@@ -41,7 +41,7 @@ class BusinessProfileUtil
         $seoTitle = $translator->trans(
             'business_profile.seoTitle',
             [
-                'name'     => mb_substr($businessProfileName, 0 , $businessProfileMaxLength),
+                'name'     => mb_substr($businessProfileName, 0, $businessProfileMaxLength),
                 'location' => mb_substr($catalogLocalityName, 0, $localityMaxLength),
                 'company'  => mb_substr($companyName, 0, $brandMaxLength),
             ],
@@ -65,7 +65,7 @@ class BusinessProfileUtil
 
         if ($locale) {
             $description = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,  strtolower($locale));
+                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION, strtolower($locale));
 
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
                 BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,

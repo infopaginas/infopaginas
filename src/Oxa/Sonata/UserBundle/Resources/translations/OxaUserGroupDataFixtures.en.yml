@@ -2,7 +2,7 @@ group_administrator_name: Administrator
 group_administrator_description: Admin portal user. Infopaginas administrator, who has Employee permissions and who may manage page layout, admin portal including all features, and ad server configuration.
 
 group_content_manager_name: Content Manager
-group_content_manager_description: Admin portal user. Infopaginas employee, who performs responsibilities of site content manager. These Users are able to manage Businesses Profiles, advertisement configuration, ad campaigns, site content (specifically generating profiles and category reports, tasks and articles.
+group_content_manager_description: Admin portal user. Infopaginas employee, who performs responsibilities of site content manager. These Users are able to manage Businesses Profiles, advertisement configuration, site content (specifically generating profiles and category reports, tasks and articles.
 
 group_sales_manager_name: Sales Manager
 group_sales_manager_description: Admin portal user. Infopaginas sales department employee, who may perform the same actions as any Merchant with ability to view all profiles statistics reports.

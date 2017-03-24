@@ -4,10 +4,6 @@ namespace Oxa\VideoBundle\Twig\Extension;
 
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
-use Oxa\VideoBundle\Manager\VideoEmbedAPIManager;
-use Oxa\VideoBundle\Manager\VideoMediaEmbedManager;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class VideoMediaEmbedExtension
@@ -16,22 +12,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class VideoMediaEmbedExtension extends \Twig_Extension
 {
     const DEFAULT_VIDEO_WIDTH  = 640;
-
     const DEFAULT_VIDEO_HEIGHT = 480;
 
-    /**
-     * @var VideoMediaEmbedManager
-     */
-    private $templating;
     private $filesystem;
 
     /**
-     * VideoMediaEmbedExtension constructor.
-     * @param VideoMediaEmbedManager $videoMediaEmbedManager
+     * @param Filesystem $filesystem
      */
-    public function __construct(EngineInterface $templating, Filesystem $filesystem) {
-        $this->templating        = $templating;
-        $this->filesystem        = $filesystem;
+    public function __construct(Filesystem $filesystem)
+    {
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -39,15 +29,28 @@ class VideoMediaEmbedExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return ['render_video_embed' => new \Twig_Function_Method($this, 'renderVideoEmbed')];
+        return [
+            'render_video_embed' => new \Twig_Function_Method(
+                $this,
+                'renderVideoEmbed',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            )
+        ];
     }
 
     /**
-     * @param VideoMedia $media
-     * @param array $dimensions
+     * @param \Twig_Environment $env
+     * @param VideoMedia        $media
+     * @param array             $dimensions
+     *
      * @return string
      */
-    public function renderVideoEmbed(VideoMedia $media, array $dimensions = []) : string
+    public function renderVideoEmbed(\Twig_Environment $env, VideoMedia $media, array $dimensions = [])
     {
         if (empty($dimensions['height'])) {
             $dimensions['height'] = self::DEFAULT_VIDEO_HEIGHT;
@@ -59,16 +62,22 @@ class VideoMediaEmbedExtension extends \Twig_Extension
         $expires = new \DateTime();
         $expires->modify('+ 600 seconds');
 
+        $url = $this->filesystem->getAdapter()->getUrl(
+            $media->getFilepath() . $media->getFilename(),
+            [
+                'expires' => $expires->getTimestamp(),
+            ]
+        );
 
-        $url = $this->filesystem->getAdapter()->getUrl($media->getFilepath() . $media->getFilename(), ['expires' => $expires->getTimestamp()]);
-        $html = $this->templating
-                ->render(
-                    ":redesign/blocks/video:video_embed.html.twig", [
-                        'media'         => $media,
-                        'dimensions'    => $dimensions,
-                        'url'           => $url,
-                    ]
-                );
+        $html = $env->render(
+            ':redesign/blocks/video:video_embed.html.twig',
+            [
+                'media'         => $media,
+                'dimensions'    => $dimensions,
+                'url'           => $url,
+            ]
+        );
+
         return $html;
     }
 

@@ -187,16 +187,16 @@ class AdUsageReportManager extends BaseReportManager
         return $data;
     }
 
-    protected function buildOrderStat($dcOrderData, $date)
+    protected function buildOrderStat($orderData, $date)
     {
         $data = [
-            self::MONGO_DB_FIELD_ORDER_ID               => $dcOrderData[OrderReportManager::DIMENSION_ORDER_ID],
-            self::MONGO_DB_FIELD_DEVICE_CATEGORY_NAME   => $dcOrderData[OrderReportManager::DIMENSION_DEVICE_CATEGORY_NAME],
-            self::MONGO_DB_FIELD_DEVICE_CATEGORY_ID     => $dcOrderData[OrderReportManager::DIMENSION_DEVICE_CATEGORY_ID],
-            self::MONGO_DB_FIELD_CLICKS                 => (int)$dcOrderData[OrderReportManager::COLUMN_CLICKS],
-            self::MONGO_DB_FIELD_IMPRESSIONS            => (int)$dcOrderData[OrderReportManager::COLUMN_IMPRESSIONS],
-            self::MONGO_DB_FIELD_CTR                    => (float)$dcOrderData[OrderReportManager::COLUMN_CTR],
-            self::MONGO_DB_FIELD_DATE_TIME              => $date,
+            self::MONGO_DB_FIELD_ORDER_ID             => $orderData[OrderReportManager::DIMENSION_ORDER_ID],
+            self::MONGO_DB_FIELD_DEVICE_CATEGORY_NAME => $orderData[OrderReportManager::DIMENSION_DEVICE_CATEGORY_NAME],
+            self::MONGO_DB_FIELD_DEVICE_CATEGORY_ID   => $orderData[OrderReportManager::DIMENSION_DEVICE_CATEGORY_ID],
+            self::MONGO_DB_FIELD_CLICKS               => (int)$orderData[OrderReportManager::COLUMN_CLICKS],
+            self::MONGO_DB_FIELD_IMPRESSIONS          => (int)$orderData[OrderReportManager::COLUMN_IMPRESSIONS],
+            self::MONGO_DB_FIELD_CTR                  => (float)$orderData[OrderReportManager::COLUMN_CTR],
+            self::MONGO_DB_FIELD_DATE_TIME            => $date,
         ];
 
         return $data;

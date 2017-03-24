@@ -83,15 +83,6 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $type;
 
     /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
-     *     mappedBy="banners",
-     *     cascade={"persist"}
-     *     )
-     */
-    protected $campaigns;
-
-    /**
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer", nullable=false)
      */
@@ -304,40 +295,6 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
     {
         $this->translations->removeElement($translation);
-    }
-
-    /**
-     * Add campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return Banner
-     */
-    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns[] = $campaign;
-
-        return $this;
-    }
-
-    /**
-     * Remove campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     */
-    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns->removeElement($campaign);
-    }
-
-    /**
-     * Get campaigns
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCampaigns()
-    {
-        return $this->campaigns;
     }
 
     /**

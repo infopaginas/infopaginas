@@ -230,7 +230,7 @@ class TasksManager
                 );
             }
         } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
-            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet(), $this->getTaskLocale($task));
+            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet());
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
             $this->getBusinessReviewsManager()->publish($task->getReview());
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
