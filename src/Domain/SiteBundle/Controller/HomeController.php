@@ -37,7 +37,7 @@ class HomeController extends Controller
         $videos         = $videoManager->fetchHomepageVideos();
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_HOME_VERTICAL,
                 TypeInterface::CODE_LANDING_PAGE_RIGHT,

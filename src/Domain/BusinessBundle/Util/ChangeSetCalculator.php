@@ -202,7 +202,7 @@ class ChangeSetCalculator
     {
         $businessGalleryData[] = [
             'media'       => $gallery->getMedia()->getId(),
-            'description' => $gallery->getDescription(),
+            'description' => $gallery->getDescription() ?: null,
         ];
 
         return json_encode($businessGalleryData);

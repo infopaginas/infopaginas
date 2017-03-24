@@ -5000,7 +5000,7 @@ input[type='radio'], input[type='checkbox'] {
 .category-belleza-spa-y-cuidado-personal {background-image: url('../redesign/img/category-backgrounds/bg_belleza.jpg')}
 .category-viajes-y-hospederias {background-image: url('../redesign/img/category-backgrounds/bg_viajes.jpg')}
 .category-gobierno-servicios-publicos-y-medioambiente {background-image: url('../redesign/img/category-backgrounds/bg_gobierno.jpg')}
-.category-restaurantes-comida-y-bebida {background-image: url('../redesign/img/category-backgrounds/bg_restaurante.jpg')}
+.category-restaurantes-comida-y-bebida {background-image: url('../redesign/img/category-backgrounds/bg_food_restaurantes.jpg')}
 .category-servicios-profesionales-y-a-negocios {background-image: url('../redesign/img/category-backgrounds/bg_serviciosynegocios.jpg')}
 .category-agricultura-pesca-y-forestal {background-image: url('../redesign/img/category-backgrounds/bg_agricultura.jpg')}
 .category-autos-carros-camiones-y-motoras {background-image: url('../redesign/img/category-backgrounds/bg_auto.jpg')}
@@ -5016,7 +5016,6 @@ input[type='radio'], input[type='checkbox'] {
 .category-shopping-y-tiendas-de-especialidad {background-image: url('../redesign/img/category-backgrounds/bg_shopping.jpg')}
 .category-transportacion {background-image: url('../redesign/img/category-backgrounds/bg_transportacion.jpg')}
 .category-cementerios-y-funerarias {background-image: url('../redesign/img/category-backgrounds/bg_cementery.jpg')}
-.category-restaurantes {background-image: url('../redesign/img/category-backgrounds/bg_food_restaurantes.jpg')}
 
 .results__item--super_vm {
   background: lighten($blue, 50%);
@@ -5185,4 +5184,11 @@ div.scrollable-table {
       border-bottom: 2px solid black;
     }
   }
+}
+.tab-content > .tab-pane {
+  display: none;
+}
+
+.tab-content > .active {
+  display: block;
 }

@@ -37,7 +37,8 @@ class BusinessProfileExtension extends \Twig_Extension
     /**
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager) {
+    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager)
+    {
         $this->businessProfileManager = $businessProfileManager;
     }
 
@@ -207,7 +208,7 @@ class BusinessProfileExtension extends \Twig_Extension
             return $value;
         }
 
-        return implode(', ', array_map(function($element) {
+        return implode(', ', array_map(function ($element) {
             if (isset($element->value)) {
                 return $element->value;
             } elseif (isset($element->url)) {
@@ -376,7 +377,8 @@ class BusinessProfileExtension extends \Twig_Extension
     public function renderTaskMediaLink(\Twig_Environment $environment, $data)
     {
         $html = $environment->render(
-            ':redesign/blocks/task:task_media_link.html.twig', [
+            ':redesign/blocks/task:task_media_link.html.twig',
+            [
                 'data' => $data,
             ]
         );
@@ -387,7 +389,8 @@ class BusinessProfileExtension extends \Twig_Extension
     public function renderTaskImagesLink(\Twig_Environment $environment, $data)
     {
         $html = $environment->render(
-            ':redesign/blocks/task:task_images_link.html.twig', [
+            ':redesign/blocks/task:task_images_link.html.twig',
+            [
                 'data' => $data,
             ]
         );
@@ -421,7 +424,8 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         $html = $environment->render(
-            ':redesign/blocks/task:related_entity_changes.html.twig', [
+            ':redesign/blocks/task:related_entity_changes.html.twig',
+            [
                 'data' => $data,
             ]
         );

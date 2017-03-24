@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\BusinessBundle\Repository;
+
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Domain\BusinessBundle\Entity\Category;
 

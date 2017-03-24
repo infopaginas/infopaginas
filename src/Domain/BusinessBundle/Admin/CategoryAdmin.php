@@ -67,7 +67,7 @@ class CategoryAdmin extends OxaAdmin
 
         if ($lvl == Category::CATEGORY_LEVEL_1 and !$category->getBusinessProfiles()->isEmpty()) {
             $parentLvl = 0;
-        } elseif($lvl) {
+        } elseif ($lvl) {
             $maxLevel = $em->createQueryBuilder('c')
                 ->select('MAX(c.lvl)')
                 ->from(Category::class, 'c')

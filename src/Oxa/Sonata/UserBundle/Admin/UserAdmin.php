@@ -184,46 +184,71 @@ class UserAdmin extends OxaAdmin
         $formMapper
             ->tab('Profile')
                 ->with('General')
-                    ->add('email', 'email', [
-                        'required' => true,
-                        'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
-                    ])
-                    ->add('plainPassword', 'text', [
-                        'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                    ])
+                    ->add(
+                        'email',
+                        'email',
+                        [
+                            'required' => true,
+                            'pattern'  => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                        ]
+                    )
+                    ->add(
+                        'plainPassword',
+                        'text',
+                        [
+                            'required' => (!$this->getSubject() || is_null($this->getSubject()->getId())),
+                        ]
+                    )
                     ->add('phone')
-                    ->add('location', 'text', [
-                        'label'    => 'Location',
-                        'required' => false,
-                    ])
+                    ->add(
+                        'location',
+                        'text',
+                        [
+                            'label'    => 'Location',
+                            'required' => false,
+                        ]
+                    )
                 ->end()
                 ->with('Profile')
-                    ->add('firstname', null, [
-                        'label'     => 'First Name',
-                        'required'  => true,
-                    ])
-                    ->add('lastname', null, [
-                        'label'     => 'Last Name',
-                        'required'  => true,
-                    ])
+                    ->add(
+                        'firstname',
+                        null,
+                        [
+                            'label'     => 'First Name',
+                            'required'  => true,
+                        ]
+                    )
+                    ->add(
+                        'lastname',
+                        null,
+                        [
+                            'label'     => 'Last Name',
+                            'required'  => true,
+                        ]
+                    )
                 ->end()
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
-                    ->add('businessReviews', 'sonata_type_collection', [
-                        'label'        => 'Businesses Reviews',
-                        'by_reference' => true,
-                        'mapped'       => true,
-                        'btn_add'      => false,
-                        'disabled'     => true,
-                        'type_options' => [
-                            'delete' => false,
+                    ->add(
+                        'businessReviews',
+                        'sonata_type_collection',
+                        [
+                            'label'        => 'Businesses Reviews',
+                            'by_reference' => true,
+                            'mapped'       => true,
+                            'btn_add'      => false,
+                            'disabled'     => true,
+                            'type_options' => [
+                                'delete' => false,
+                            ]
+                        ],
+                        [
+                            'edit'         => 'inline',
+                            'inline'       => 'table',
+                            'allow_delete' => false,
                         ]
-                        ], [
-                        'edit'         => 'inline',
-                        'inline'       => 'table',
-                        'allow_delete' => false,
-                    ])
+                    )
                 ->end()
             ->end()
         ;

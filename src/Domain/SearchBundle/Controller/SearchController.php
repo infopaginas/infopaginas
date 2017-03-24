@@ -69,7 +69,7 @@ class SearchController extends Controller
         }
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
@@ -140,59 +140,6 @@ class SearchController extends Controller
         return (new JsonResponse)->setData($data);
     }
 
-    public function mapAction(Request $request)
-    {
-//        todo remove this
-        $searchManager = $this->get('domain_search.manager.search');
-
-        $searchDTO = $searchManager->getSearchDTO($request);
-
-        $searchData = $this->getSearchDataByRequest($request);
-
-        $locale = ucwords($request->getLocale());
-
-        if ($searchDTO) {
-            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
-
-            $businessProfileManager = $this->get('domain_business.manager.business_profile');
-
-            $searchResultsDTO   = $businessProfileManager->removeItemWithHiddenAddress($searchResultsDTO);
-            $locationMarkers    = $businessProfileManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
-
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-
-            $this->getKeywordsReportManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
-
-            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
-
-            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
-        } else {
-            $searchResultsDTO = null;
-            $locationMarkers = null;
-        }
-
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL
-        ));
-
-        $pageRouter = $this->container->get('request')->attributes->get('_route');
-
-        return $this->render(
-            'DomainSearchBundle:Search:map.html.twig',
-            [
-                'results'       => $searchResultsDTO,
-                'markers'       => $locationMarkers,
-                'bannerFactory' => $bannerFactory,
-                'searchData'    => $searchData,
-                'pageRouter'    => $pageRouter,
-                'schemaJsonLD'  => $schema,
-            ]
-        );
-    }
-
     public function compareAction(Request $request)
     {
         $searchManager = $this->get('domain_search.manager.search');
@@ -232,7 +179,7 @@ class SearchController extends Controller
         }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_COMPARE_PAGE_BOTTOM,
                 TypeInterface::CODE_COMPARE_PAGE_TOP,
@@ -322,7 +269,8 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories1 = $this->getCategoryManager()->getAvailableParentCategoriesWithContent($locality, $request->getLocale());
+            $categories1 = $this->getCategoryManager()
+                ->getAvailableParentCategoriesWithContent($locality, $request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
@@ -411,7 +359,7 @@ class SearchController extends Controller
         $locale = ucwords($request->getLocale());
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,

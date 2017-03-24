@@ -42,7 +42,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-
 /**
  * Class BusinessProfileFormType
  * @package Domain\BusinessBundle\Form\Type

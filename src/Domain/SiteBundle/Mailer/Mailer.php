@@ -165,7 +165,8 @@ class Mailer
      * @param BusinessReview $review
      * @param string $reason
      */
-    public function sendBusinessProfileReviewRejectEmailMessage(BusinessReview $review, string $reason) {
+    public function sendBusinessProfileReviewRejectEmailMessage(BusinessReview $review, string $reason)
+    {
         $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
         $message = str_replace('{REASON}', $reason, $message);
 
@@ -180,8 +181,8 @@ class Mailer
      * @param string $reason
      * @param User[] $users
      */
-    public function sendYoutubeTokenErrorEmailMessage($reason, $users) {
-
+    public function sendYoutubeTokenErrorEmailMessage($reason, $users)
+    {
         $message = $this->getConfigService()->getValue(ConfigInterface::YOUTUBE_ERROR_EMAIL_TEMPLATE);
         $link    = $this->getRouter()->generate(
             'oxa_youtube_oauth_notify',

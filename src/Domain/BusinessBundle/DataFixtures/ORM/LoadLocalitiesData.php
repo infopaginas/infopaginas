@@ -164,7 +164,17 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
                 'area' => 'Metro',
                 'neighborhood' =>
                     [
-                        'Carolina' => ['00979', '00981', '00982', '00983', '00984', '00985', '00986', '00987',  '00988'],
+                        'Carolina' => [
+                            '00979',
+                            '00981',
+                            '00982',
+                            '00983',
+                            '00984',
+                            '00985',
+                            '00986',
+                            '00987',
+                            '00988'
+                        ],
                     ],
             ],
             [

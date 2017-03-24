@@ -404,7 +404,8 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         ];
     }
 
-    protected function explodeByArray($delimiters, $input) {
+    protected function explodeByArray($delimiters, $input)
+    {
         $delimiter = $delimiters[0];
         $raw = str_replace($delimiters, $delimiter, $input);
 

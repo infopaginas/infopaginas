@@ -202,7 +202,8 @@ class BusinessProfileFormHandler extends BaseFormHandler
                             /* @var BusinessGallery gallery */
                             $galleryNew = clone $gallery;
 
-                            $media = $this->em->getRepository('OxaSonataMediaBundle:Media')->find($params[$key]['media']);
+                            $media = $this->em->getRepository('OxaSonataMediaBundle:Media')
+                                ->find($params[$key]['media']);
 
                             $galleryNew->setMedia($media);
                             $galleryNew->setDescription($params[$key]['description']);
@@ -379,11 +380,14 @@ class BusinessProfileFormHandler extends BaseFormHandler
             ]
         );
 
+        $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
+        $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
+
         $this->handleTranslationSet(
             BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
             [
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN => $seoDescriptionEn,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES => $seoDescriptionEs,
+                $seoDescKeyEn => $seoDescriptionEn,
+                $seoDescKeyEs => $seoDescriptionEs,
             ]
         );
 

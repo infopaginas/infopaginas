@@ -5,7 +5,6 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
@@ -234,20 +233,6 @@ class BusinessProfile implements
      * @Assert\Valid
      */
     protected $coupons;
-
-    /**
-     * @var Campaign[] - Business Campaigns
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     *     )
-     * @Assert\Valid
-     * @ORM\OrderBy({"status" = "ASC"})
-     */
-    protected $campaigns;
 
     /**
      * @var Category[] - Business category
@@ -690,7 +675,6 @@ class BusinessProfile implements
      * @Assert\NotBlank(groups={"service_area_chosen"})
      * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
-     * 
      */
     protected $milesOfMyBusiness;
 
@@ -715,7 +699,7 @@ class BusinessProfile implements
     protected $neighborhoods;
 
     /**
-     * @var Campaign[] - Business Profile Phones
+     * @var BusinessProfilePhone[] - Business Profile Phones
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePhone",
@@ -1429,8 +1413,7 @@ class BusinessProfile implements
      */
     public function getCategory()
     {
-        foreach ($this->categories as $category)
-        {
+        foreach ($this->categories as $category) {
             if (!$category->getParent()) {
                 return $category;
             }
@@ -1448,8 +1431,7 @@ class BusinessProfile implements
     {
         $categories = [];
 
-        foreach ($this->categories as $category)
-        {
+        foreach ($this->categories as $category) {
             if ($category->getParent() and $category->getLvl() == $level) {
                 $categories[] = $category;
             }
@@ -2335,42 +2317,6 @@ class BusinessProfile implements
     public function __clone()
     {
         $this->id = null;
-    }
-
-    /**
-     * Add campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return BusinessProfile
-     */
-    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns[] = $campaign;
-
-        return $this;
-    }
-
-    /**
-     * Remove campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        return $this->campaigns->removeElement($campaign);
-    }
-
-    /**
-     * Get campaigns
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCampaigns()
-    {
-        return $this->campaigns;
     }
 
     /**

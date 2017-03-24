@@ -1,5 +1,9 @@
 {% extends "redesign/layout/base.html.twig" %}
 
+{% block videoJs %}
+    {% include ':redesign/layout/widgets:video-js.html.twig' %}
+{% endblock %}
+
 {% block breadcrumbs %}
     {% set category1 = businessProfile.category %}
     {% set category3 = businessProfile.getSubcategories(CATEGORY_LEVEL_3)|first %}

@@ -14,7 +14,6 @@ use Domain\BusinessBundle\Util\DoctrineUtil;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\VideoBundle\Entity\VideoMedia;
 
-
 /**
  * Class ChangeSetSerializerUtil
  * @package Domain\BusinessBundle\Util\ChangeSet
