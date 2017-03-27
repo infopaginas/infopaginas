@@ -108,6 +108,7 @@ class BusinessProfileFormHandler extends BaseFormHandler
             $this->form->handleRequest($this->request);
 
             $this->businessProfileNew = $this->form->getData();
+            $this->businessProfileNew->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
 
             $this->handleMediaUpdate();
             $this->handleCategoriesUpdate();
