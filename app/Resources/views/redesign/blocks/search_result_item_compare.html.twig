@@ -5,7 +5,14 @@
     </div>
 
     <div class="comparison__row comparison__where">
-        <span class="where">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
+        <span class="where">
+            {{ item.getDistanceUX() }}
+            {% if search.locationValue.userGeo %}
+                {% trans %}search.miles_to.user{% endtrans %}
+            {% else %}
+                {% trans %}search.miles_to.location{% endtrans %} {{ search.locationValue.locality.name }}
+            {% endif %}
+        </span>
     </div>
 
     <div class="comparison__row comparison__rating">
