@@ -19,6 +19,6 @@ services:
         class: Domain\ReportBundle\Admin\ViewsAndVisitorsReportAdmin
         arguments: [~, Domain\ReportBundle\Entity\Visitor, DomainReportBundle:CRUD]
         tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Views & Visitors Report}
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Views and Impressions Report}
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:ViewsAndVisitorsReport\list.html.twig']]
