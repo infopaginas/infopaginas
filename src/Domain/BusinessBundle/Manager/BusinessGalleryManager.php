@@ -102,6 +102,8 @@ class BusinessGalleryManager
 
             $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
 
+            $this->getEntityManager()->flush();
+
             $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
 
             return $businessProfile;
