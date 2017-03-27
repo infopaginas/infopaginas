@@ -89,12 +89,13 @@
             {% javascripts filter="?jsqueeze" output="js/app.js"
                 'bundles/domainsite/scripts/require.js'
                 'bundles/fosjsrouting/js/router.js'
-                'js/fos_js_routes.js'
                 'bundles/domainsite/scripts/vendors/modernizr-2.7.1.min.js'
                 'bundles/domainsite/scripts/modules/helper.js'
             %}
                 <script src="{{ absolute_url(asset_url) }}"></script>
             {% endjavascripts %}
+
+            <script src="{{ absolute_url(asset('js/fos_js_routes.js')) }}"></script>
 
             <script type="text/javascript">
                 requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
