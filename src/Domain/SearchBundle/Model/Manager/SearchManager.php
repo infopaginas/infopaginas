@@ -174,7 +174,7 @@ class SearchManager extends Manager
 
     public function getSearchCatalogDTO($request, $locality, $category, $category2, $category3)
     {
-        $location = $this->geolocationManager->buildLocationValueFromRequest($request);
+        $location = $this->geolocationManager->buildLocationValueFromRequest($request, false);
 
         if (!$location) {
             return null;

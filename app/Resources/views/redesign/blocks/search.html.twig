@@ -23,7 +23,7 @@
         <input id='searchLocation' value="{{ geoValue }}" type="text" name="geo" class="search-geo" placeholder="{% trans %}Where?{% endtrans %}">
     </div>
     <div class="form__action">
-        <button id="searchButton" type="submit" name="submit-search" class="button button--action button--search">
+        <button id="searchButton" type="submit" class="button button--action button--search">
             {% trans %}Search{% endtrans %}
             <i class="fa fa-angle-right"></i>
         </button>
@@ -31,9 +31,9 @@
             <i class="fa fa-remove"></i>
         </button>
     </div>
-    <input type="hidden" id='searchLat' name='lat' value="">
-    <input type="hidden" id='searchLng' name='lng' value="">
-    <input type="hidden" id='searchLocationGeoLoc' name='geoLoc' value="">
+    <input type="hidden" id='searchLat' name='lat' value="{{ app.request.query.get('lat', '') }}">
+    <input type="hidden" id='searchLng' name='lng' value="{{ app.request.query.get('lng', '') }}">
+    <input type="hidden" id='searchLocationGeoLoc' name='geoLoc' value="{{ app.request.query.get('geoLoc', '') }}">
 </form><!-- header__search -->
 
 {% if showLinkListView is defined and showLinkListView %}

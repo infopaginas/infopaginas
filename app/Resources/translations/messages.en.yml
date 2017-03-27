@@ -521,4 +521,6 @@ business_profile:
   url:
     invalid: This value is not a valid URL.
 
-
+#search
+search.miles_to.user: mi. away
+search.miles_to.location: mi. from

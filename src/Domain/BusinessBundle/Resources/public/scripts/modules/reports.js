@@ -282,7 +282,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         var self = this;
 
         $( '.js-datepicker' ).datepicker({
-            dateFormat: 'yy-mm-d',
+            dateFormat: 'yy-mm-dd',
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
                 self.refreshActiveReport();

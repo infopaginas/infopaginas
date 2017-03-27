@@ -29,30 +29,37 @@ class GeolocationManager extends Manager
         $lat = null,
         $lng = null,
         $locality = null,
-        $ignoreLocality = false
+        $ignoreLocality = false,
+        $userGeo = null,
+        $userLat = null,
+        $userLng = null
     ) {
-        return new LocationValueObject($name, $lat, $lng, $locality, $ignoreLocality);
+        return new LocationValueObject($name, $lat, $lng, $locality, $ignoreLocality, $userGeo, $userLat, $userLng);
     }
 
-    public function buildLocationValueFromRequest(Request $request)
+    public function buildLocationValueFromRequest(Request $request, $useUserGeo = true)
     {
         $geo    = $request->get('geo', null);
-        $geoLoc = $request->get('geoLoc', null);
 
         $lat        = null;
         $lng        = null;
         $locality   = null;
+
+        $userLat    = null;
+        $userLng    = null;
+        $userGeo    = null;
+
+        if ($useUserGeo) {
+            $userLat    = $request->get('lat', null);
+            $userLng    = $request->get('lng', null);
+            $userGeo    = $request->get('geoLoc', null);
+        }
+
         $ignoreLocality = false;
 
         if ($geo) {
             // get locality by name and locale
             $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
-
-            // check is custom geo request not from geolocation - use coordinates
-            if ($geoLoc == $geo) {
-                $lat = $request->get('lat', null);
-                $lng = $request->get('lng', null);
-            }
         } else {
             // empty search - show default
             $locality = $this->localityManager->getLocalityByNameAndLocale(
@@ -60,16 +67,27 @@ class GeolocationManager extends Manager
                 $request->getLocale()
             );
 
+            $request->query->set('geo', $locality->getName());
+
             $ignoreLocality = true;
         }
 
-        if ($locality and !$lat) {
+        if ($locality) {
             $lat = $locality->getLatitude();
             $lng = $locality->getLongitude();
         }
 
         if ($lat and $lng) {
-            $return = $this->buildLocationValue($geo, $lat, $lng, $locality, $ignoreLocality);
+            $return = $this->buildLocationValue(
+                $geo,
+                $lat,
+                $lng,
+                $locality,
+                $ignoreLocality,
+                $userGeo,
+                $userLat,
+                $userLng
+            );
         } else {
             $return = null;
         }

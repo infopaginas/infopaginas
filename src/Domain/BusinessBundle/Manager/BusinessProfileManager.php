@@ -1334,10 +1334,20 @@ class BusinessProfileManager extends Manager
         $response = $this->searchBusinessElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response, $randomize);
 
-        $search['data'] = array_map(function ($item) use ($searchParams) {
+        if ($searchParams->locationValue->userLat and $searchParams->locationValue->userLng) {
+            // geo location on
+            $currentLat = $searchParams->locationValue->userLat;
+            $currentLng = $searchParams->locationValue->userLng;
+        } else {
+            // geo location off
+            $currentLat = $searchParams->locationValue->lat;
+            $currentLng = $searchParams->locationValue->lng;
+        }
+
+        $search['data'] = array_map(function ($item) use ($searchParams, $currentLat, $currentLng) {
             $distance = GeolocationUtils::getDistanceForPoint(
-                $searchParams->locationValue->lat,
-                $searchParams->locationValue->lng,
+                $currentLat,
+                $currentLng,
                 $item->getLatitude(),
                 $item->getLongitude()
             );
@@ -1687,11 +1697,19 @@ class BusinessProfileManager extends Manager
             'order' => 'desc'
         ];
 
+        if ($params->locationValue->userLat and $params->locationValue->userLng) {
+            $searchLat = $params->locationValue->userLat;
+            $searchLng = $params->locationValue->userLng;
+        } else {
+            $searchLat = $params->locationValue->lat;
+            $searchLng = $params->locationValue->lng;
+        }
+
         if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
             $sort['_geo_distance'] = [
                 'location' => [
-                    'lat' => $params->locationValue->lat,
-                    'lon' => $params->locationValue->lng,
+                    'lat' => $searchLat,
+                    'lon' => $searchLng,
                 ],
                 'unit' => 'mi',
                 'order' => 'asc'
@@ -1705,8 +1723,8 @@ class BusinessProfileManager extends Manager
             ];
             $sort['_geo_distance'] = [
                 'location' => [
-                    'lat' => $params->locationValue->lat,
-                    'lon' => $params->locationValue->lng,
+                    'lat' => $searchLat,
+                    'lon' => $searchLng,
                 ],
                 'unit' => 'mi',
                 'order' => 'asc'
