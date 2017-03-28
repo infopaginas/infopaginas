@@ -103,9 +103,15 @@ button {
     line-height: 2.5em;
     padding: 0;
   }
-  .button--show-map, .button--hide-map {
+  .button--show-map, .button--hide-map, .button--redo-search-in-map {
     i {
       display: none;
+    }
+  }
+
+  .button--auto-search-in-map {
+    i {
+      margin-left: 0.5em;
     }
   }
 }
