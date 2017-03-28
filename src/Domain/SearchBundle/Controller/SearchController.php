@@ -193,6 +193,7 @@ class SearchController extends Controller
         return $this->render(
             ':redesign:search-results-compare.html.twig',
             [
+                'search'            => $searchDTO,
                 'results'           => $searchResultsDTO,
                 'seoData'           => $seoData,
                 'bannerFactory'     => $bannerFactory,

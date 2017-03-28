@@ -105,4 +105,22 @@ class SearchDTO extends AbstractDTO
     {
         return $this->orderBy;
     }
+
+    public function getCurrentCoordinates()
+    {
+        if ($this->locationValue->userLat and $this->locationValue->userLng) {
+            // geo location on
+            $currentLat = $this->locationValue->userLat;
+            $currentLng = $this->locationValue->userLng;
+        } else {
+            // geo location off
+            $currentLat = $this->locationValue->lat;
+            $currentLng = $this->locationValue->lng;
+        }
+
+        return [
+            'lat' => $currentLat,
+            'lng' => $currentLng,
+        ];
+    }
 }

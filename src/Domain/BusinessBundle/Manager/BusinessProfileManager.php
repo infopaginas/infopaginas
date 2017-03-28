@@ -1334,10 +1334,12 @@ class BusinessProfileManager extends Manager
         $response = $this->searchBusinessElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response, $randomize);
 
-        $search['data'] = array_map(function ($item) use ($searchParams) {
+        $coordinates = $searchParams->getCurrentCoordinates();
+
+        $search['data'] = array_map(function ($item) use ($searchParams, $coordinates) {
             $distance = GeolocationUtils::getDistanceForPoint(
-                $searchParams->locationValue->lat,
-                $searchParams->locationValue->lng,
+                $coordinates['lat'],
+                $coordinates['lng'],
                 $item->getLatitude(),
                 $item->getLongitude()
             );
@@ -1687,11 +1689,13 @@ class BusinessProfileManager extends Manager
             'order' => 'desc'
         ];
 
+        $coordinates = $params->getCurrentCoordinates();
+
         if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
             $sort['_geo_distance'] = [
                 'location' => [
-                    'lat' => $params->locationValue->lat,
-                    'lon' => $params->locationValue->lng,
+                    'lat' => $coordinates['lat'],
+                    'lon' => $coordinates['lng'],
                 ],
                 'unit' => 'mi',
                 'order' => 'asc'
@@ -1705,8 +1709,8 @@ class BusinessProfileManager extends Manager
             ];
             $sort['_geo_distance'] = [
                 'location' => [
-                    'lat' => $params->locationValue->lat,
-                    'lon' => $params->locationValue->lng,
+                    'lat' => $coordinates['lat'],
+                    'lon' => $coordinates['lng'],
                 ],
                 'unit' => 'mi',
                 'order' => 'asc'

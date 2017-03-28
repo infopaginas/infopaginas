@@ -25,18 +25,19 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
             this.options.locationBox = this.$(this.options.searchLocation);
         }
 
-        if ( !this.options.locationBox.val()) {
-            // start geo if custom field is empty
+        var cookieString = cookie.get( this.options.cookieKey);
 
-            var cookieString = cookie.get( this.options.cookieKey);
+        if ( cookieString ) {
+            this.position = JSON.parse( cookieString );
 
-            if ( cookieString ) {
-                this.position = JSON.parse( cookieString );
-
+            if ( !this.options.locationBox.val() ) {
+                // start geo if custom field is empty
                 this.setToForm();
             } else {
-                this.initPosition();
+                this.setToUserLocationForm();
             }
+        } else {
+            this.initPosition();
         }
 
         this.locationAutocomplete();
@@ -87,6 +88,14 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         this.$( this.options.searchLatSelector ).val( this.position.coords.latitude );
         this.$( this.options.searchLngSelector ).val( this.position.coords.longitude );
     }
+
+    geolocation.prototype.setToUserLocationForm = function () {
+        // set to form fields coordinates and address
+        this.$( this.options.searchLocationGeoLoc ).val( this.position.address );
+
+        this.$( this.options.searchLatSelector ).val( this.position.coords.latitude );
+        this.$( this.options.searchLngSelector ).val( this.position.coords.longitude );
+    };
 
     geolocation.prototype.onGeoLocationError = function ( data ) {
     }

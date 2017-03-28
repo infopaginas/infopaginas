@@ -520,3 +520,7 @@ user:
 business_profile:
   url:
     invalid: Este valor no es una URL válida.
+
+#search
+search.miles_to.user: mi. away
+search.miles_to.location: mil. de
