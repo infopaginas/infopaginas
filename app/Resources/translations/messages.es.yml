@@ -524,3 +524,6 @@ business_profile:
 #search
 search.miles_to.user: mi. away
 search.miles_to.location: mil. de
+
+search.control.auto: Auto Búsqueda en el Mapa
+search.control.redo: Buscar en el Mapa

@@ -1601,6 +1601,109 @@ $thumb-width-mb: 60px;
   }
 }
 
+.button--auto-search-in-map {
+  background: $green;
+  bottom: 15px;
+  box-shadow: 0 2px 4px transparentize($black, .7), 0 6px 10px transparentize($black, .7);
+  color: $white;
+  position: fixed;
+  right: 15px;
+  z-index: 99;
+
+  span {
+    display: none;
+    @media only screen and (max-width: 805px) {
+      display: inline;
+      padding: 5px 10px;
+    }
+  }
+
+  &:hover,
+  &:active {
+    box-shadow: 0 1px 2px transparentize($black, .9), 0 2px 4px transparentize($black, .8);
+  }
+
+  @media only screen and (min-width: 805px) {
+    align-items: center;
+    border-radius: 3px;
+    bottom: auto;
+    font-size: 14px;
+    height: 2.4em !important;
+    line-height: 2.2em;
+    top: 150px;
+    width: 15em;
+
+    span {
+      display: inline-block;
+      line-height: 2em;
+    }
+
+    i {
+      display: inline-block;
+      font-size: 1.2em;
+      line-height: 2.2em;
+      margin-right: .5em;
+      position: relative;
+      top: -.01em;
+    }
+  }
+}
+
+.button--redo-search-in-map {
+  background: $green;
+  bottom: 15px;
+  box-shadow: 0 2px 4px transparentize($black, .7), 0 6px 10px transparentize($black, .7);
+  color: $white;
+  position: fixed;
+  right: 15px;
+  z-index: 99;
+
+  span {
+    display: none;
+    @media only screen and (max-width: 805px) {
+      display: inline;
+      padding: 5px 10px;
+    }
+  }
+
+  &:hover,
+  &:active {
+    box-shadow: 0 1px 2px transparentize($black, .9), 0 2px 4px transparentize($black, .8);
+  }
+
+  @media only screen and (min-width: 805px) {
+    align-items: center;
+    border-radius: 3px;
+    bottom: auto;
+    font-size: 14px;
+    height: 2.4em !important;
+    line-height: 2.2em;
+    top: 200px;
+    width: 15em;
+
+    span {
+      display: inline-block;
+      line-height: 2em;
+    }
+
+    i {
+      display: inline-block;
+      font-size: 1.2em;
+      line-height: 2.2em;
+      margin-right: .5em;
+      position: relative;
+      top: -.01em;
+    }
+  }
+}
+
+@media only screen and (max-width: 804px) {
+  .button--auto-search-in-map, .button--redo-search-in-map {
+    bottom: -100px!important;
+    right: 50px;
+  }
+}
+
 .floating-offset {
   bottom: 75px;
 
