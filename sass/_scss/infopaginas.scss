@@ -2767,7 +2767,6 @@ a.tag {
   .comparison__row {
     border-bottom: 1px solid darken($grey--light, 10%);
     padding: 10px;
-    overflow-x: hidden;
 
     &:last-child {
       border-bottom: 0;
@@ -2963,7 +2962,7 @@ a.tag {
 
 .comparison__actions {
   height: 96px;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .button--remove {
