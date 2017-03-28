@@ -123,4 +123,17 @@ class SearchDTO extends AbstractDTO
             'lng' => $currentLng,
         ];
     }
+
+    public function checkSearchInMap()
+    {
+        $location = $this->locationValue;
+
+        if ($location->searchBoxTopLeftLat and $location->searchBoxTopLeftLng and
+            $location->searchBoxBottomRightLat and $location->searchBoxBottomRightLng
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -208,6 +208,60 @@ class SearchController extends Controller
         );
     }
 
+    public function mapAction(Request $request)
+    {
+        $searchManager = $this->get('domain_search.manager.search');
+
+        $searchDTO = $searchManager->getSearchDTO($request);
+
+        $searchData = $this->getSearchDataByRequest($request);
+
+        $locale = ucwords($request->getLocale());
+
+        $locationName  = false;
+        $seoCategories = [];
+
+        if ($searchDTO) {
+            $searchResultsDTO = $searchManager->search($searchDTO, $locale, true);
+            $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
+
+            $this->getBusinessProfileManager()
+                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+            $this->getKeywordsReportManager()
+                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+
+            $locationMarkers = $this->getBusinessProfileManager()
+                ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+
+            if ($searchDTO->locationValue) {
+                $locationName = $searchDTO->locationValue->name;
+            }
+
+            if ($searchDTO->query) {
+                $seoCategories[] = $searchDTO->query;
+            }
+
+            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
+        } else {
+            $searchResultsDTO = null;
+            $dcDataDTO        = null;
+            $locationMarkers  = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
+        }
+
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
+
+        $data = [
+            'search'        => $searchDTO,
+            'results'       => $searchResultsDTO,
+            'seoData'       => $seoData,
+            'dcDataDTO'     => $dcDataDTO,
+            'searchData'    => $searchData,
+            'markers'       => $locationMarkers,
+        ];
+
+        return new JsonResponse($data);
+    }
+
     /**
      * @return KeywordsReportManager
      */

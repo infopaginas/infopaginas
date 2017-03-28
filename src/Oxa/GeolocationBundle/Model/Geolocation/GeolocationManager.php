@@ -24,17 +24,8 @@ class GeolocationManager extends Manager
         $this->localityManager = $localityManager;
     }
 
-    public function buildLocationValue(
-        string $name,
-        $lat = null,
-        $lng = null,
-        $locality = null,
-        $ignoreLocality = false,
-        $userGeo = null,
-        $userLat = null,
-        $userLng = null
-    ) {
-        return new LocationValueObject($name, $lat, $lng, $locality, $ignoreLocality, $userGeo, $userLat, $userLng);
+    public function buildLocationValue($geoData) {
+        return new LocationValueObject($geoData);
     }
 
     public function buildLocationValueFromRequest(Request $request, $useUserGeo = true)
@@ -48,6 +39,11 @@ class GeolocationManager extends Manager
         $userLat    = null;
         $userLng    = null;
         $userGeo    = null;
+
+        $searchBoxTopLeftLat = $request->get('tllt', null);
+        $searchBoxTopLeftLng = $request->get('tllg', null);
+        $searchBoxBottomRightLat = $request->get('brlt', null);
+        $searchBoxBottomRightLng = $request->get('brlg', null);
 
         if ($useUserGeo) {
             $userLat    = $request->get('lat', null);
@@ -78,16 +74,22 @@ class GeolocationManager extends Manager
         }
 
         if ($lat and $lng) {
-            $return = $this->buildLocationValue(
-                $geo,
-                $lat,
-                $lng,
-                $locality,
-                $ignoreLocality,
-                $userGeo,
-                $userLat,
-                $userLng
-            );
+            $geoData = [
+                'geo'                       => $geo,
+                'lat'                       => $lat,
+                'lng'                       => $lng,
+                'locality'                  => $locality,
+                'ignoreLocality'            => $ignoreLocality,
+                'userGeo'                   => $userGeo,
+                'userLat'                   => $userLat,
+                'userLng'                   => $userLng,
+                'searchBoxTopLeftLat'       => $searchBoxTopLeftLat,
+                'searchBoxTopLeftLng'       => $searchBoxTopLeftLng,
+                'searchBoxBottomRightLat'   => $searchBoxBottomRightLat,
+                'searchBoxBottomRightLng'   => $searchBoxBottomRightLng,
+            ];
+
+            $return = $this->buildLocationValue($geoData);
         } else {
             $return = null;
         }
