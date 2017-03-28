@@ -1737,6 +1737,59 @@ class BusinessProfileManager extends Manager
             ];
         }
 
+        $locationQuery  = [];
+        $locationFilter = $this->getElasticLocationFilter($params);
+
+        if (!$locationFilter) {
+            $locationQuery = $this->getElasticLocationQuery($params);
+        }
+
+        $searchQuery = [
+            'from' => ($params->page - 1) * $params->limit,
+            'size' => $params->limit,
+            'track_scores' => true,
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    [
+                                        'query_string' => [
+                                            'default_operator' => 'AND',
+                                            'fields' => $fields,
+                                            'query' => $params->query,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'sort' => [
+                $sort
+            ],
+        ];
+
+        if ($locationQuery) {
+            $searchQuery['query']['bool']['must'][] = $locationQuery;
+        }
+
+        foreach ($filters as $filter) {
+            $searchQuery['query']['bool']['must'][] = $filter;
+        }
+
+        if ($locationFilter) {
+            $searchQuery['query']['bool']['filter'][] = $locationFilter;
+        }
+
+        return $searchQuery;
+    }
+
+    protected function getElasticLocationQuery(SearchDTO $params)
+    {
         $locationQuery = [];
 
         if (!$params->locationValue->ignoreLocality) {
@@ -1792,44 +1845,31 @@ class BusinessProfileManager extends Manager
             ];
         }
 
-        $searchQuery = [
-            'from' => ($params->page - 1) * $params->limit,
-            'size' => $params->limit,
-            'track_scores' => true,
-            'query' => [
-                'bool' => [
-                    'must' => [
-                        [
-                            'bool' => [
-                                'minimum_should_match' => 1,
-                                'should' => [
-                                    [
-                                        'query_string' => [
-                                            'default_operator' => 'AND',
-                                            'fields' => $fields,
-                                            'query' => $params->query,
-                                        ],
-                                    ],
-                                ],
-                            ],
+        return $locationQuery;
+    }
+
+    protected function getElasticLocationFilter(SearchDTO $params)
+    {
+        $locationFilter = [];
+
+        if ($params->checkSearchInMap()) {
+            $locationFilter = [
+                'geo_bounding_box' => [
+                    'location' => [
+                        'top_left' => [
+                            'lat' => $params->locationValue->searchBoxTopLeftLat,
+                            'lon' => $params->locationValue->searchBoxTopLeftLng,
+                        ],
+                        'bottom_right' => [
+                            'lat' => $params->locationValue->searchBoxBottomRightLat,
+                            'lon' => $params->locationValue->searchBoxBottomRightLng,
                         ],
                     ],
                 ],
-            ],
-            'sort' => [
-                $sort
-            ],
-        ];
-
-        if ($locationQuery) {
-            $searchQuery['query']['bool']['must'][] = $locationQuery;
+            ];
         }
 
-        foreach ($filters as $filter) {
-            $searchQuery['query']['bool']['must'][] = $filter;
-        }
-
-        return $searchQuery;
+        return $locationFilter;
     }
 
     protected function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 0)
