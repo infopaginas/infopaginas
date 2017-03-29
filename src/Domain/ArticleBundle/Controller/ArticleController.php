@@ -26,7 +26,7 @@ class ArticleController extends Controller
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -64,7 +64,7 @@ class ArticleController extends Controller
         $schema = $articleManager->buildArticlesSchema([$article]);
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -105,7 +105,7 @@ class ArticleController extends Controller
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,

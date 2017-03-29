@@ -94,7 +94,8 @@ class MigrationCommand extends ContainerAwareCommand
         for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
 
             // see http://www.doctrine-project.org/2009/08/07/doctrine2-batch-processing.html
-            $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(['shortName' => 'PR']);
+            $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')
+                ->findOneBy(['shortName' => 'PR']);
 
             // get subscription plans
 
@@ -143,7 +144,10 @@ class MigrationCommand extends ContainerAwareCommand
 
                         $itemPrimary = $this->getCurlData($baseUrl . '/' . $itemId, $this->localePrimary);
                         $itemSecond = $this->getCurlData($baseUrl . '/' . $itemId, $this->localeSecond);
-                        $subscriptions = $this->getCurlData($baseUrl . '/' . $itemId . '/subscriptions', $this->localePrimary);
+                        $subscriptions = $this->getCurlData(
+                            $baseUrl . '/' . $itemId . '/subscriptions',
+                            $this->localePrimary
+                        );
 
                         if ($this->withDebug) {
                             $dbTimer = microtime(true);
@@ -158,7 +162,11 @@ class MigrationCommand extends ContainerAwareCommand
                             }
                         }
 
-                        $radius = empty($item->radius_served) ? BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS : $item->radius_served;
+                        if (empty($item->radius_served)) {
+                            $radius = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
+                        } else {
+                            $radius = $item->radius_served;
+                        }
 
                         $this->addBusinessProfileByApiData(
                             $itemPrimary,
@@ -233,8 +241,14 @@ class MigrationCommand extends ContainerAwareCommand
         }
     }
 
-    private function addBusinessProfileByApiData($itemPrimary, $itemSecond, $subscriptions, $localities, $radius, $country)
-    {
+    private function addBusinessProfileByApiData(
+        $itemPrimary,
+        $itemSecond,
+        $subscriptions,
+        $localities,
+        $radius,
+        $country
+    ) {
         $manager = $this->getContainer()->get('domain_business.manager.business_profile');
 
         $business = $itemPrimary->business;
@@ -728,7 +742,8 @@ class MigrationCommand extends ContainerAwareCommand
         return true;
     }
 
-    private function splitTags($value) {
+    private function splitTags($value)
+    {
         return explode(self::TAG_SEPARATOR, $value);
     }
 

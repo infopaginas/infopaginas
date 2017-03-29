@@ -6,9 +6,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         this.urls = {
             businessOverviewDataAction: Routing.generate('domain_business_reports_business_overview_data'),
             adUsageDataAction: Routing.generate('domain_business_reports_ad_usage_data'),
-            keywordsDataAction: Routing.generate('domain_business_reports_keywords_data'),
-            interactionsDataAction: Routing.generate('domain_business_reports_interactions_data'),
-            printAction: Routing.generate('domain_business_reports_print')
+            keywordsDataAction: Routing.generate('domain_business_reports_keywords_data')
         };
 
         this.html = {
@@ -16,10 +14,9 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 businessOverviewChartContainerId: '#businessOverviewChartContainer',
                 businessOverviewStatsContainerId: '#businessOverviewStatisticsContainer',
                 adUsageStatsContainerId: '#adUsageStatisticsContainer',
+                adUsageChartContainerId: '#adUsageChartContainer',
                 keywordChartContainerId: '#keywordChartContainer',
                 keywordStatsContainerId: '#keywordStatisticsContainer',
-                interactionsStatsContainerId: '#interactionsStatisticsContainer',
-
                 keywordsLimitContainerId: '#keywordsLimitContainer'
             }
         };
@@ -74,11 +71,13 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
-                $(self.html.containers.adUsageStatsContainerId).html('');
-                self.showLoader(self.html.containers.adUsageStatsContainerId);
+                $( self.html.containers.adUsageChartContainerId ).html( '' );
+                $( self.html.containers.adUsageStatsContainerId ).html( '' );
+                self.showLoader( self.html.containers.adUsageStatsContainerId );
             },
             success: function(response) {
-                $(self.html.containers.adUsageStatsContainerId).html(response.stats);
+                $( self.html.containers.adUsageStatsContainerId ).html( response.stats );
+                self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
             }
         });
     };
@@ -100,25 +99,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
             success: function(response) {
                 $(self.html.containers.keywordStatsContainerId).html(response.stats);
                 self.loadKeywordsChart(response.keywords, response.searches);
-            }
-        });
-    };
-
-    reports.prototype.loadInteractionsReport = function()
-    {
-        var self = this;
-
-        $.ajax({
-            url: self.urls.interactionsDataAction,
-            data: self.getFilterValues(),
-            dataType: 'JSON',
-            type: 'POST',
-            beforeSend: function() {
-                $(self.html.containers.interactionsStatsContainerId).html('');
-                self.showLoader(self.html.containers.interactionsStatsContainerId);
-            },
-            success: function(response) {
-                $(self.html.containers.interactionsStatsContainerId).html(response.stats);
             }
         });
     };
@@ -156,6 +136,45 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 },
                 {
                     name: $(this.html.containers.businessOverviewChartContainerId).data( "series-name-imp" ),
+                    data: impressions
+                }
+            ]
+        });
+    };
+
+    reports.prototype.loadAdUsageChart = function( dates, clicks, impressions )
+    {
+        $( this.html.containers.adUsageChartContainerId ).highcharts({
+            title: {
+                text: $( this.html.containers.adUsageChartContainerId ).data( "title" ),
+                x: -20 //center
+            },
+            xAxis: {
+                categories: dates
+            },
+            yAxis: {
+                title: {
+                    text: $( this.html.containers.adUsageChartContainerId ).data( "y-axis" )
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [
+                {
+                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-clicks" ),
+                    data: clicks
+                },
+                {
+                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-imp" ),
                     data: impressions
                 }
             ]
@@ -255,9 +274,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
                 $('#keywordsLimitContainer').show();
                 this.loadKeywordsReport();
                 break;
-            case 'interactions':
-                this.loadInteractionsReport();
-                break;
         }
     };
 
@@ -266,7 +282,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         var self = this;
 
         $( '.js-datepicker' ).datepicker({
-            dateFormat: 'yy-mm-d',
+            dateFormat: 'yy-mm-dd',
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
                 self.refreshActiveReport();
@@ -294,39 +310,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'busi
         });
 
         $(document).on('click', '#print', function (e) {
-            $.ajax({
-                url: self.urls.printAction,
-                data: self.getFilterValues(),
-                dataType: 'JSON',
-                type: 'POST',
-                beforeSend: function() {
-                    $('#export-spinner').html('');
-                    self.showLoader('#export-spinner');
-                },
-                success: function(response) {
-                    var popup = window.open( response.pdf );
+            var filterParams = self.getFilterValues();
+            filterParams.print = true;
 
-                    var closePrint = function() {
-                        if ( popup ) {
-                            popup.close();
-                        }
-                    };
+            var filtersData = $.param( filterParams );
 
-                    if ( popup ) {
-                        popup.onbeforeunload = closePrint;
-                        popup.onafterprint = closePrint;
-                        popup.focus(); // Required for IE
-                        popup.print();
-                    } else {
-                        // process blocked window case
-                    }
-                },
-                complete: function() {
-                    $('#export-spinner').html('');
-                }
-            });
-
-            e.preventDefault();
+            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
         });
     };
 

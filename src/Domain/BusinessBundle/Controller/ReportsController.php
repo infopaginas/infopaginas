@@ -7,11 +7,10 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\ReportBundle\Entity\Keyword;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
-use Domain\ReportBundle\Manager\InteractionsReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
@@ -19,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
  * Class ReportController
@@ -28,6 +28,11 @@ class ReportsController extends Controller
 {
     public function indexAction(int $businessProfileId)
     {
+        /** @var BusinessProfile $businessProfile */
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
         $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_DEFAULT);
 
         $params = [
@@ -36,11 +41,9 @@ class ReportsController extends Controller
         ];
 
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
 
         $filtersForm = $this->createForm(new BusinessReportFilterType());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
 
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
 
@@ -48,6 +51,7 @@ class ReportsController extends Controller
             ':redesign:business-profile-report.html.twig',
             [
                 'overviewData'             => $overviewData,
+                'eventList'                => BusinessOverviewModel::EVENT_TYPES,
                 'filtersForm'              => $filtersForm->createView(),
                 'businessProfileId'        => $businessProfileId,
                 'businessProfile'          => $businessProfile,
@@ -60,83 +64,70 @@ class ReportsController extends Controller
     {
         $params = $this->prepareReportParameters($request->request->all());
 
-        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
-        $overviewData = $businessOverviewReportManager->getBusinessOverviewData($params);
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
-            [
-                'overviewData' => $overviewData,
-            ]
-        );
+        $this->checkBusinessProfileAccess($businessProfile);
 
-        return new JsonResponse([
-            'stats'       => $stats,
-            'dates'       => $overviewData['dates'],
-            'views'       => $overviewData['views'],
-            'impressions' => $overviewData['impressions'],
-        ]);
+        $data = $this->prepareOverviewResponse($params);
+
+        return new JsonResponse($data);
+    }
+
+    public function overviewAdminAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+        $data   = $this->prepareOverviewResponse($params);
+
+        return new JsonResponse($data);
     }
 
     public function adUsageAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
 
-        $businessAdUsageReportManager = $this->getAdUsageReportManager();
-        $adUsageData = $businessAdUsageReportManager->getAdUsageData($params);
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/adUsageStatistics.html.twig',
-            [
-                'adUsageData' => $adUsageData,
-            ]
-        );
+        $this->checkBusinessProfileAccess($businessProfile);
 
-        return new JsonResponse([
-            'stats' => $stats,
-        ]);
+        $params['businessProfile'] = $businessProfile;
+
+        $data = $this->prepareAdUsageResponse($params);
+
+        return new JsonResponse($data);
+    }
+
+    public function adUsageAdminAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->request->all());
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $params['businessProfile'] = $businessProfile;
+
+        $data = $this->prepareAdUsageResponse($params);
+
+        return new JsonResponse($data);
     }
 
     public function keywordsAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
 
-        $keywordsReportManager = $this->getKeywordsReportManager();
-        $keywordsData = $keywordsReportManager->getKeywordsData($params);
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/keywordStatistics.html.twig',
-            [
-                'keywordsData' => $keywordsData,
-            ]
-        );
+        $this->checkBusinessProfileAccess($businessProfile);
 
-        return new JsonResponse([
-            'stats'    => $stats,
-            'keywords' => $keywordsData['keywords'],
-            'searches' => $keywordsData['searches'],
-        ]);
+        $data = $this->prepareKeywordsResponse($params);
+
+        return new JsonResponse($data);
     }
 
-    public function interactionsAction(Request $request)
+    public function keywordsAdminAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
+        $data   = $this->prepareKeywordsResponse($params);
 
-        $interactionsReportManager = $this->getInteractionsReportManager();
-        $interactionsData = $interactionsReportManager->getInteractionsData($params);
-
-        $stats = $this->renderView(
-            'DomainBusinessBundle:Reports:blocks/interactionStatistics.html.twig',
-            [
-                'interactionsData' => $interactionsData['category'],
-            ]
-        );
-
-        return new JsonResponse(
-            [
-                'stats' => $stats,
-            ]
-        );
+        return new JsonResponse($data);
     }
 
     public function interactionsTrackAction(Request $request)
@@ -155,39 +146,50 @@ class ReportsController extends Controller
 
     public function excelExportAction(Request $request)
     {
-        $params = $request->query->all();
-        return $this->getExcelExporterService()->export($this->prepareReportParameters($params));
+        $params = $this->prepareReportParameters($request->query->all());
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $this->getExcelExporterService()->getResponse($params);
+    }
+
+    public function excelAdminExportAction(Request $request)
+    {
+        $params = $this->prepareReportParameters($request->query->all());
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $this->getExcelExporterService()->getResponse($params);
     }
 
     public function pdfExportAction(Request $request)
     {
-        $params = $request->query->all();
-        list($filename, $content) = $this->getPdfExporterService()->export($this->prepareReportParameters($params));
+        $params = $this->prepareReportParameters($request->query->all());
 
-        return new Response(
-            $content,
-            200,
-            array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => sprintf('attachment; filename=%s', $filename)
-            )
-        );
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $this->getPdfExporterService()->getResponse($params);
     }
 
-    public function printAction(Request $request)
+    public function pdfAdminExportAction(Request $request)
     {
-        $params = $request->request->all();
-        list($filename, $content) = $this->getPdfExporterService()->export($this->prepareReportParameters($params));
+        $params = $this->prepareReportParameters($request->query->all());
 
-        $pdfPath = $this->getParameter('assetic.write_to') . '/uploads/' . $filename;
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
 
-        file_put_contents($pdfPath, $content);
+        $params['businessProfile'] = $businessProfile;
 
-        $url = $this->get('request')->getUriForPath('/uploads/' . $filename);
-
-        return new JsonResponse([
-            'pdf' => str_replace('/app_dev.php', '', $url)
-        ]);
+        return $this->getPdfExporterService()->getResponse($params);
     }
 
     protected function prepareReportParameters($requestData)
@@ -204,7 +206,72 @@ class ReportsController extends Controller
             $params['date'] = DatesUtil::getDateAsArrayFromRequestData($requestData);
         }
 
+        if (!empty($requestData['print'])) {
+            $params['print'] = true;
+        } else {
+            $params['print'] = false;
+        }
+
         return $params;
+    }
+
+    protected function prepareOverviewResponse($params)
+    {
+        $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
+        $overviewData = $businessOverviewReportManager->getBusinessOverviewReportData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/businessOverviewStatistics.html.twig',
+            [
+                'overviewData' => $overviewData,
+                'eventList'    => BusinessOverviewModel::EVENT_TYPES,
+            ]
+        );
+
+        return [
+            'stats'       => $stats,
+            'dates'       => $overviewData['dates'],
+            'views'       => $overviewData['views'],
+            'impressions' => $overviewData['impressions'],
+        ];
+    }
+
+    protected function prepareKeywordsResponse($params)
+    {
+        $keywordsReportManager = $this->getKeywordsReportManager();
+        $keywordsData = $keywordsReportManager->getKeywordsData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/keywordStatistics.html.twig',
+            [
+                'keywordsData' => $keywordsData,
+            ]
+        );
+
+        return [
+            'stats'    => $stats,
+            'keywords' => $keywordsData['keywords'],
+            'searches' => $keywordsData['searches'],
+        ];
+    }
+
+    protected function prepareAdUsageResponse($params)
+    {
+        $adUsageData = $this->getAdUsageReportManager()->getAdUsageData($params);
+
+        $stats = $this->renderView(
+            'DomainBusinessBundle:Reports:blocks/adUsageStatistics.html.twig',
+            [
+                'adUsageData' => $adUsageData,
+            ]
+        );
+
+        return [
+            'stats'       => $stats,
+            'dates'       => $adUsageData['dates'],
+            'clicks'      => $adUsageData['chart'][AdUsageReportManager::MONGO_DB_FIELD_CLICKS],
+            'impressions' => $adUsageData['chart'][AdUsageReportManager::MONGO_DB_FIELD_IMPRESSIONS],
+        ];
     }
 
     protected function getPdfExporterService()
@@ -218,11 +285,6 @@ class ReportsController extends Controller
     protected function getExcelExporterService() : BusinessReportExcelExporter
     {
         return $this->get('domain_report.exporter.excel');
-    }
-
-    protected function getInteractionsReportManager() : InteractionsReportManager
-    {
-        return $this->get('domain_report.manager.interactions');
     }
 
     protected function getKeywordsReportManager() : KeywordsReportManager
@@ -243,5 +305,23 @@ class ReportsController extends Controller
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->get('domain_business.manager.business_profile');
+    }
+
+    protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
+    {
+        $token = $this->get('security.context')->getToken();
+        if (!$token) {
+            throw $this->createNotFoundException();
+        }
+
+        $user = $token->getUser();
+
+        if (!$user || !($user instanceof User)) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!($businessProfile->getUser() and $businessProfile->getUser()->getId() == $user->getId())) {
+            throw $this->createNotFoundException();
+        }
     }
 }

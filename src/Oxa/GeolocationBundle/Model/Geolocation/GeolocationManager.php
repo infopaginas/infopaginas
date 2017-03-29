@@ -24,35 +24,38 @@ class GeolocationManager extends Manager
         $this->localityManager = $localityManager;
     }
 
-    public function buildLocationValue(
-        string $name,
-        $lat = null,
-        $lng = null,
-        $locality = null,
-        $ignoreLocality = false
-    ) {
-        return new LocationValueObject($name, $lat, $lng, $locality, $ignoreLocality);
+    public function buildLocationValue($geoData) {
+        return new LocationValueObject($geoData);
     }
 
-    public function buildLocationValueFromRequest(Request $request)
+    public function buildLocationValueFromRequest(Request $request, $useUserGeo = true)
     {
         $geo    = $request->get('geo', null);
-        $geoLoc = $request->get('geoLoc', null);
 
         $lat        = null;
         $lng        = null;
         $locality   = null;
+
+        $userLat    = null;
+        $userLng    = null;
+        $userGeo    = null;
+
+        $searchBoxTopLeftLat = $request->get('tllt', null);
+        $searchBoxTopLeftLng = $request->get('tllg', null);
+        $searchBoxBottomRightLat = $request->get('brlt', null);
+        $searchBoxBottomRightLng = $request->get('brlg', null);
+
+        if ($useUserGeo) {
+            $userLat    = $request->get('lat', null);
+            $userLng    = $request->get('lng', null);
+            $userGeo    = $request->get('geoLoc', null);
+        }
+
         $ignoreLocality = false;
 
         if ($geo) {
             // get locality by name and locale
             $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
-
-            // check is custom geo request not from geolocation - use coordinates
-            if ($geoLoc == $geo) {
-                $lat = $request->get('lat', null);
-                $lng = $request->get('lng', null);
-            }
         } else {
             // empty search - show default
             $locality = $this->localityManager->getLocalityByNameAndLocale(
@@ -60,16 +63,33 @@ class GeolocationManager extends Manager
                 $request->getLocale()
             );
 
+            $request->query->set('geo', $locality->getName());
+
             $ignoreLocality = true;
         }
 
-        if ($locality and !$lat) {
+        if ($locality) {
             $lat = $locality->getLatitude();
             $lng = $locality->getLongitude();
         }
 
         if ($lat and $lng) {
-            $return = $this->buildLocationValue($geo, $lat, $lng, $locality, $ignoreLocality);
+            $geoData = [
+                'geo'                       => $geo,
+                'lat'                       => $lat,
+                'lng'                       => $lng,
+                'locality'                  => $locality,
+                'ignoreLocality'            => $ignoreLocality,
+                'userGeo'                   => $userGeo,
+                'userLat'                   => $userLat,
+                'userLng'                   => $userLng,
+                'searchBoxTopLeftLat'       => $searchBoxTopLeftLat,
+                'searchBoxTopLeftLng'       => $searchBoxTopLeftLng,
+                'searchBoxBottomRightLat'   => $searchBoxBottomRightLat,
+                'searchBoxBottomRightLng'   => $searchBoxBottomRightLng,
+            ];
+
+            $return = $this->buildLocationValue($geoData);
         } else {
             $return = null;
         }

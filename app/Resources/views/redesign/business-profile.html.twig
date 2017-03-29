@@ -1,5 +1,9 @@
 {% extends "redesign/layout/base.html.twig" %}
 
+{% block videoJs %}
+    {% include ':redesign/layout/widgets:video-js.html.twig' %}
+{% endblock %}
+
 {% block breadcrumbs %}
     {% set category1 = businessProfile.category %}
     {% set category3 = businessProfile.getSubcategories(CATEGORY_LEVEL_3)|first %}
@@ -71,6 +75,8 @@
                         or businessProfile.getGoogleURL()
                         or businessProfile.getTwitterURL()
                         or businessProfile.getYoutubeURL()
+                        or businessProfile.getInstagramURL()
+                        or businessProfile.getTripAdvisorURL()
                     %}
 
                     {% if socialLinksExists %}
@@ -93,6 +99,16 @@
                             {% if businessProfile.getYoutubeURL() %}
                                 <div class="share__item youtube">
                                     <a data-href="{{ businessProfile.getYoutubeURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
+                                </div><!-- share__item -->
+                            {% endif %}
+                            {% if businessProfile.getInstagramURL() %}
+                                <div class="share__item instagram">
+                                    <a data-href="{{ businessProfile.getInstagramURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-instagram"></i></a>
+                                </div><!-- share__item -->
+                            {% endif %}
+                            {% if businessProfile.getTripAdvisorURL() %}
+                                <div class="share__item instagram">
+                                    <a data-href="{{ businessProfile.getTripAdvisorURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-tripadvisor"></i></a>
                                 </div><!-- share__item -->
                             {% endif %}
                         </div>
@@ -270,7 +286,7 @@
 
                         <section class="page-section profile-map">
                             <div id="map"></div>
-                            <span id="map-markers" hidden>{{ markers }}</span>
+                            <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
                         </section>
 
                     </article><!-- profile -->

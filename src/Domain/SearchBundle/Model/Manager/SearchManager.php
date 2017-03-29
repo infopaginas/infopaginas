@@ -75,7 +75,7 @@ class SearchManager extends Manager
         $this->getRepository()->getSearchQuery($phrase, $location);
     }
 
-    public function search(SearchDTO $searchParams, string $locale) : SearchResultsDTO
+    public function search(SearchDTO $searchParams, string $locale, $ignoreFilters = false) : SearchResultsDTO
     {
         $search = $this->businessProfileManager->search($searchParams, $locale);
         $results = $search['data'];
@@ -86,16 +86,23 @@ class SearchManager extends Manager
             $results  = [];
         }
 
+        $categories    = [];
+        $neighborhoods = [];
+
         if ($results) {
-            $categories     = $this->categoriesManager->getCategoriesByProfiles($results);
-            $pagesCount     = ceil($totalResults/$searchParams->limit);
+            if (!$ignoreFilters) {
+                $categories = $this->categoriesManager->getCategoriesByProfiles($results);
+            }
+
+            $pagesCount = ceil($totalResults/$searchParams->limit);
         } else {
             $totalResults = 0;
-            $categories = [];
-            $pagesCount = 0;
+            $pagesCount   = 0;
         }
 
-        $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+        if (!$ignoreFilters) {
+            $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+        }
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
@@ -137,7 +144,7 @@ class SearchManager extends Manager
         return $response;
     }
 
-    public function getSearchDTO(Request $request)
+    public function getSearchDTO(Request $request, $isRandomized = true)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
         $query = $this->getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
@@ -169,12 +176,16 @@ class SearchManager extends Manager
             $searchDTO->setOrderBy($orderBy);
         }
 
+        if (!$searchDTO->checkSearchInMap()) {
+            $searchDTO->setIsRandomized($isRandomized);
+        }
+
         return $searchDTO;
     }
 
     public function getSearchCatalogDTO($request, $locality, $category, $category2, $category3)
     {
-        $location = $this->geolocationManager->buildLocationValueFromRequest($request);
+        $location = $this->geolocationManager->buildLocationValueFromRequest($request, false);
 
         if (!$location) {
             return null;

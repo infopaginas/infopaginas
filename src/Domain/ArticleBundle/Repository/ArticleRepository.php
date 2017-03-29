@@ -1,6 +1,7 @@
 <?php
 
 namespace Domain\ArticleBundle\Repository;
+
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 

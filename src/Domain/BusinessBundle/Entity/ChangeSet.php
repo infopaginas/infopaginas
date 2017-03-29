@@ -28,7 +28,11 @@ class ChangeSet
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\ChangeSetEntry", mappedBy="changeSet", cascade={"persist"})
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\ChangeSetEntry",
+     *      mappedBy="changeSet",
+     *      cascade={"persist"}
+     * )
      */
     private $entries;
 
@@ -78,4 +82,3 @@ class ChangeSet
         $this->entries->removeElement($changeSetEntry);
     }
 }
-

@@ -323,7 +323,7 @@ Log In with Google: Iniciar sesión con Google
 Old password: Contraseña anterior
 New password: Nueva contraseña
 
-Directions: Como Llegar
+Directions: Como&nbsp;Llegar
 Displayed Name: Nombre mostrado
 Go to homepage: Ir a la página de inicio
 Personal information: Informacion personal
@@ -430,6 +430,8 @@ action_restore: Restore
 action_delete_physical: Physical delete
 
 # interaction report
+interaction_report.event.view: Vista
+interaction_report.event.impression: Impresión
 interaction_report.button.direction: Direcciones
 interaction_report.button.show_map: Mostrar en el Mapa
 interaction_report.button.marker_map: Marcador en el Mapa
@@ -444,9 +446,32 @@ interaction_report.visit.facebook: Visita Facebook
 interaction_report.visit.twitter: Visita Twitter
 interaction_report.visit.google: Visite Google
 interaction_report.visit.youtube: Visita Youtube
+interaction_report.visit.instagram: Visita Instagram
+interaction_report.visit.tripadvisor: Visita TripAdvisor
 interaction_report.video.watched: Video Visto
 interaction_report.review.click: Opiniones
 interaction_report.email.click: Correo
+interaction_report.sum.interaction: Interacciones
+
+date: Fecha
+interaction_report.total: Total
+interaction_report.overall: Interacciones totales
+
+keyword_report.total: Total
+subscription_report.total: Total
+
+category_report.label: Categoría
+category_report.counter: Visitantes
+
+ad_usage_report.device_category: Categoría del dispositivo
+ad_usage_report.clicks: Clics
+ad_usage_report.impressions: Impresiones
+ad_usage_report.ctr: CTR, %
+ad_usage_report.total: Total
+device_category_desktop: Desktop
+device_category_smart_phone: Smartphone
+device_category_tablet: Tablet
+ad_usage_report.chart.name: Estadísticas de uso de anuncios
 
 # working hours
 business.working.hours.open_all_time: Abierto 24 horas
@@ -480,3 +505,25 @@ Now: Ahora
 
 form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
 form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
+
+# reset password form
+user:
+  reset_password:
+    token:
+      invalid: Actualmente no tienes un enlace válido para actualizar tu contraseña.
+      empty: Error: Vaciar símbolo.
+  auth:
+    validation_failure: Error de validación
+    registration_success: Successfully registered. Please login with your credentials
+    reset_link_sent: Registrado exitosamente. Inicia sesión con tus credenciales
+    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con nuevas credenciales
+business_profile:
+  url:
+    invalid: Este valor no es una URL válida.
+
+#search
+search.miles_to.user: mi. away
+search.miles_to.location: mil. de
+
+search.control.auto: Auto Búsqueda en el Mapa
+search.control.redo: Buscar en el Mapa

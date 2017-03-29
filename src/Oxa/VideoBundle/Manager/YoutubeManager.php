@@ -191,7 +191,8 @@ class YoutubeManager
                 $snippet->setDescription($description);
 
                 // Numeric video category. See https://developers.google.com/youtube/v3/docs/videoCategories/list
-                // Default category id = 22 "People & Blogs", see https://developers.google.com/youtube/v3/guides/uploading_a_video
+                // Default category id = 22 "People & Blogs"
+                // see https://developers.google.com/youtube/v3/guides/uploading_a_video
                 $snippet->setCategoryId(self::DEFAULT_CATEGORY_ID);
 
                 // Set the video's status to "public". Valid statuses are "public", "private" and "unlisted".
@@ -209,7 +210,8 @@ class YoutubeManager
                 // value for better recovery on less reliable connections.
                 $chunkSizeBytes = self::CHUNK_SIZE_BYTES;
 
-                // Setting the defer flag to true tells the client to return a request which can be called with ->execute(); instead of making the API call immediately.
+                // Setting the defer flag to true tells the client to return a request
+                // which can be called with ->execute();instead of making the API call immediately.
                 $this->client->setDefer(true);
 
                 // Create a request for the API's videos.insert method to create and upload the video.

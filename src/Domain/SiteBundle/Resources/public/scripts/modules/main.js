@@ -200,6 +200,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     var hideMap = $( '#hide-map' );
     var adBottom = $( '.ad--bottom' );
 
+    // search in map controls
+    var autoSearchMap = $( '#auto-search-in-map' );
+    var redoSearchMap = $( '#redo-search-in-map' );
+
     var openMapSequence = [
         { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
         { e: resultsMap, p: { translateY: "-115vh" }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
@@ -504,6 +508,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var mediaquery = window.matchMedia( '(min-width: 804px)' );
 
         if ( mediaquery.matches ) {
+            showDesktopMapControlButtons();
             $.Velocity.RunSequence( openMapDeskSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll results--map-view' );
@@ -514,6 +519,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.filter__item' ).addClass( 'filter__item-resize' );
             $( '.main' ).addClass( 'main-results-resize' );
         } else {
+            showDeviceMapControlButtons();
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll' );
@@ -526,6 +532,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var mediaquery = window.matchMedia( '(min-width: 804px)' );
 
         if ( mediaquery.matches ) {
+            showDesktopMapControlButtons();
             $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
             $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
@@ -535,11 +542,16 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.filter__item' ).removeClass( 'filter__item-resize' );
             $( '.main' ).removeClass( 'main-results-resize' );
         } else {
+            hideMapControlButtons();
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
         }
 
         mapState = 'default';
+    });
+
+    autoSearchMap.on( 'click', function() {
+        switchAutoSearchInMapControl();
     });
 
     $( window ).resize(function() {
@@ -556,6 +568,12 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
           $( 'body' ).removeClass( 'body--no-scroll' );
       }
+
+        if ( mediaquery.matches ) {
+            showDesktopMapControlButtons();
+        } else {
+            hideMapControlButtons();
+        }
 
       if (mediaquery.matches) {
         mapStateSize = 'desktop';
@@ -643,9 +661,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     }
 
     //call
-    var phoneCall = $( '.phone-call' );
+    var phoneCall = '.phone-call';
 
-    phoneCall.on( 'click', function() {
+    $( document ).on( 'click', phoneCall, function() {
         var itemId = $( this ).data( 'id' );
         var type = $( this ).data( 'type' );
 
@@ -661,4 +679,68 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         $( document ).trigger( 'resize' );
         $( '.section--slider' ).removeClass( 'hide-before' );
     };
+
+    // map controls
+    function showDeviceMapControlButtons() {
+        autoSearchMap.css( 'transform', 'translateX(0px) translateY(-160px)' );
+        redoSearchMap.css( 'transform', 'translateX(0px) translateY(-200px)' );
+
+        autoSearchMap.removeClass( 'hidden' );
+
+        if ( !checkAutoSearchInMapEnabled() ) {
+            redoSearchMap.removeClass( 'hidden' );
+        }
+    }
+
+    function showDesktopMapControlButtons() {
+        autoSearchMap.css( 'transform', 'translateX(0px) translateY(0px)' );
+        redoSearchMap.css( 'transform', 'translateX(0px) translateY(0px)' );
+
+        autoSearchMap.removeClass( 'hidden' );
+
+        if ( !checkAutoSearchInMapEnabled() ) {
+            redoSearchMap.removeClass( 'hidden' );
+        }
+    }
+
+    function hideMapControlButtons() {
+        autoSearchMap.addClass( 'hidden' );
+        redoSearchMap.addClass( 'hidden' );
+    }
+
+    function switchAutoSearchInMapControl() {
+        if ( checkAutoSearchInMapEnabled() ) {
+            disableAutoSearchInMap();
+        } else {
+            enableAutoSearchInMap();
+        }
+    }
+
+    function enableAutoSearchInMap() {
+        var checker = autoSearchMap.find( 'i' );
+
+        checker.removeClass( 'fa-square-o' );
+        checker.addClass( 'fa-check' );
+
+        redoSearchMap.addClass( 'hidden' );
+
+        $( document ).trigger( 'autoSearchRequestEnabled' );
+    }
+
+    function disableAutoSearchInMap() {
+        var checker = autoSearchMap.find( 'i' );
+
+        checker.removeClass( 'fa-check' );
+        checker.addClass( 'fa-square-o' );
+
+        redoSearchMap.removeClass( 'hidden' );
+
+        $( document ).trigger( 'autoSearchRequestDisabled' );
+    }
+
+    function checkAutoSearchInMapEnabled() {
+        var checker = autoSearchMap.find( 'i' );
+
+        return checker.hasClass( 'fa-check' );
+    }
 });

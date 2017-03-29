@@ -6,7 +6,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
-use Domain\ReportBundle\Manager\SearchLogManager;
+use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
-
 use Domain\BannerBundle\Model\TypeInterface;
 
 /**
@@ -38,15 +37,20 @@ class SearchController extends Controller
 
         $schema       = false;
         $locationName = false;
+        $disableFilters = false;
         $seoCategories = [];
 
         if ($searchDTO) {
-            $searchResultsDTO = $searchManager->search($searchDTO, $locale);
+            if ($searchDTO->checkSearchInMap()) {
+                $disableFilters = true;
+            }
+
+            $searchResultsDTO = $searchManager->search($searchDTO, $locale, $disableFilters);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-            $this->getSearchLogManager()
+            $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
@@ -70,7 +74,7 @@ class SearchController extends Controller
         }
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
@@ -98,6 +102,7 @@ class SearchController extends Controller
                 'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'disableFilters'    => $disableFilters,
             ]
         );
     }
@@ -141,59 +146,6 @@ class SearchController extends Controller
         return (new JsonResponse)->setData($data);
     }
 
-    public function mapAction(Request $request)
-    {
-//        todo remove this
-        $searchManager = $this->get('domain_search.manager.search');
-
-        $searchDTO = $searchManager->getSearchDTO($request);
-
-        $searchData = $this->getSearchDataByRequest($request);
-
-        $locale = ucwords($request->getLocale());
-
-        if ($searchDTO) {
-            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
-
-            $businessProfileManager = $this->get('domain_business.manager.business_profile');
-
-            $searchResultsDTO   = $businessProfileManager->removeItemWithHiddenAddress($searchResultsDTO);
-            $locationMarkers    = $businessProfileManager->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
-
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-
-            $this->getSearchLogManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
-
-            $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
-
-            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
-        } else {
-            $searchResultsDTO = null;
-            $locationMarkers = null;
-        }
-
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_PORTAL
-        ));
-
-        $pageRouter = $this->container->get('request')->attributes->get('_route');
-
-        return $this->render(
-            'DomainSearchBundle:Search:map.html.twig',
-            [
-                'results'       => $searchResultsDTO,
-                'markers'       => $locationMarkers,
-                'bannerFactory' => $bannerFactory,
-                'searchData'    => $searchData,
-                'pageRouter'    => $pageRouter,
-                'schemaJsonLD'  => $schema,
-            ]
-        );
-    }
-
     public function compareAction(Request $request)
     {
         $searchManager = $this->get('domain_search.manager.search');
@@ -213,7 +165,7 @@ class SearchController extends Controller
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-            $this->getSearchLogManager()
+            $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
@@ -233,7 +185,7 @@ class SearchController extends Controller
         }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_COMPARE_PAGE_BOTTOM,
                 TypeInterface::CODE_COMPARE_PAGE_TOP,
@@ -247,6 +199,7 @@ class SearchController extends Controller
         return $this->render(
             ':redesign:search-results-compare.html.twig',
             [
+                'search'            => $searchDTO,
                 'results'           => $searchResultsDTO,
                 'seoData'           => $seoData,
                 'bannerFactory'     => $bannerFactory,
@@ -261,12 +214,86 @@ class SearchController extends Controller
         );
     }
 
-    /**
-     * @return \Domain\ReportBundle\Manager\SearchLogManager
-     */
-    protected function getSearchLogManager() : SearchLogManager
+    public function mapAction(Request $request)
     {
-        return $this->get('domain_report.manager.search_log');
+        $searchManager = $this->get('domain_search.manager.search');
+
+        $searchDTO = $searchManager->getSearchDTO($request);
+
+        $searchData = $this->getSearchDataByRequest($request);
+
+        $locale = ucwords($request->getLocale());
+
+        $locationName  = false;
+        $seoCategories = [];
+
+        if ($searchDTO) {
+            $searchResultsDTO = $searchManager->search($searchDTO, $locale, true);
+            $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
+
+            $this->getBusinessProfileManager()
+                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
+            $this->getKeywordsReportManager()
+                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
+
+            $locationMarkers = $this->getBusinessProfileManager()
+                ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
+
+            if ($searchDTO->locationValue) {
+                $locationName = $searchDTO->locationValue->name;
+            }
+
+            if ($searchDTO->query) {
+                $seoCategories[] = $searchDTO->query;
+            }
+
+            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
+        } else {
+            $searchResultsDTO = null;
+            $dcDataDTO        = null;
+            $locationMarkers  = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
+        }
+
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
+
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
+            ]
+        );
+
+        $data = [
+            'search'        => $searchDTO,
+            'results'       => $searchResultsDTO,
+            'bannerFactory' => $bannerFactory,
+        ];
+
+        $html = $this->renderView(
+            ':redesign/blocks:search_result_item_ajax.html.twig',
+            $data
+        );
+
+        $staticUrl = $this->get('router')->generate('domain_search_index', $request->query->all(), true);
+
+        return new JsonResponse(
+            [
+                'html'      => $html,
+                'seoData'   => $seoData,
+                'markers'   => $locationMarkers,
+                'targeting' => $dcDataDTO,
+                'staticUrl' => $staticUrl,
+            ]
+        );
+    }
+
+    /**
+     * @return KeywordsReportManager
+     */
+    protected function getKeywordsReportManager() : KeywordsReportManager
+    {
+        return $this->get('domain_report.manager.keywords_report_manager');
     }
 
     /**
@@ -323,7 +350,8 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories1 = $this->getCategoryManager()->getAvailableParentCategoriesWithContent($locality, $request->getLocale());
+            $categories1 = $this->getCategoryManager()
+                ->getAvailableParentCategoriesWithContent($locality, $request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
@@ -412,7 +440,7 @@ class SearchController extends Controller
         $locale = ucwords($request->getLocale());
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
@@ -434,7 +462,7 @@ class SearchController extends Controller
                 $this->getBusinessProfileManager()
                     ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
-                $this->getSearchLogManager()
+                $this->getKeywordsReportManager()
                     ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
                 $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);

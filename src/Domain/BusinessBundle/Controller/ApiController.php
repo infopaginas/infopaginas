@@ -5,7 +5,7 @@ namespace Domain\BusinessBundle\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Domain\ReportBundle\Manager\BusinessOverviewReportApiManager;
+use Domain\ReportBundle\Manager\BusinessReportApiManager;
 
 /**
  * Class ApiController
@@ -16,7 +16,7 @@ class ApiController extends Controller
     {
         $params = $request->query->all();
 
-        $result = $this->getBusinessOverviewReportApiManager()->getBusinessViewsAndImpressions($params);
+        $result = $this->getBusinessReportApiManager()->getBusinessViewsAndImpressions($params);
 
         return new JsonResponse($result);
     }
@@ -25,13 +25,13 @@ class ApiController extends Controller
     {
         $params = $request->query->all();
 
-        $result = $this->getBusinessOverviewReportApiManager()->getBusinessKeywords($params);
+        $result = $this->getBusinessReportApiManager()->getBusinessKeywords($params);
 
         return new JsonResponse($result);
     }
 
-    private function getBusinessOverviewReportApiManager() : BusinessOverviewReportApiManager
+    private function getBusinessReportApiManager() : BusinessReportApiManager
     {
-        return $this->get('domain_report.manager.business_overview_report_api_manager');
+        return $this->get('domain_report.manager.business_report_api_manager');
     }
 }

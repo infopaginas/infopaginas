@@ -72,6 +72,19 @@ class DayOfWeekModel
         ];
     }
 
+    public static function getDaysOfWeekStartWithSunday()
+    {
+        return [
+            self::CODE_SUNDAY,
+            self::CODE_MONDAY,
+            self::CODE_TUESDAY,
+            self::CODE_WEDNESDAY,
+            self::CODE_THURSDAY,
+            self::CODE_FRIDAY,
+            self::CODE_SATURDAY,
+        ];
+    }
+
     public static function getAllDaysOfWeek()
     {
         return [
@@ -193,9 +206,7 @@ class DayOfWeekModel
      */
     public static function checkWorkingHourOverlap($workingHour, $checkWorkingHour)
     {
-        if (
-            (
-                $workingHour->getOpenAllTime() or $checkWorkingHour->getOpenAllTime()
+        if (($workingHour->getOpenAllTime() or $checkWorkingHour->getOpenAllTime()
             ) or (
                 $workingHour->getTimeStart() >= $checkWorkingHour->getTimeStart() and
                 $workingHour->getTimeStart() < $checkWorkingHour->getTimeEnd()
@@ -219,8 +230,7 @@ class DayOfWeekModel
 
         $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
 
-        $now = new \DateTime();
-        $now->setTimestamp(0);
+        $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
         $now->modify($time);
 
         $dayOfWeek = strtoupper(date('D'));
@@ -238,10 +248,7 @@ class DayOfWeekModel
                 /* @var $workingHour BusinessProfileWorkingHour */
                 $workingHourDay = $workingHour->getDay();
 
-                if (
-                    (
-                        (
-                            $workingHourDay == self::CODE_WEEKDAY and in_array($dayOfWeek, self::getWeekday())
+                if ((($workingHourDay == self::CODE_WEEKDAY and in_array($dayOfWeek, self::getWeekday())
                         ) or (
                             $workingHourDay == self::CODE_WEEKEND and in_array($dayOfWeek, self::getWeekend())
                         ) or (
@@ -349,7 +356,7 @@ class DayOfWeekModel
     {
         foreach ($dailyHours as $key => $hours) {
             // working hours can't overlap that's why sort by time start
-            usort($dailyHours[$key], function($a, $b) {
+            usort($dailyHours[$key], function ($a, $b) {
                 return $a->getTimeStart()->getTimestamp() - $b->getTimeStart()->getTimestamp();
             });
         }
@@ -357,7 +364,8 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
-    public static function orderDailyWorkingDayByDay($dailyHours) {
+    public static function orderDailyWorkingDayByDay($dailyHours)
+    {
         $ordered = [];
         $dayOrder = self::getDaysOfWeek();
 

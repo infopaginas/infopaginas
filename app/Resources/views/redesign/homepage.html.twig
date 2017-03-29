@@ -15,7 +15,7 @@
                     {% include ':redesign/blocks:homepage_search.html.twig' %}
                 {% endblock %}
 
-                {% include ':redesign/blocks/banners:homepage.html.twig' %}
+                {% include ':redesign/blocks/banners:homepage.html.twig' with { 'bannerType': BANNER_CODE.HOME_VERTICAL } %}
             </div><!-- container -->
 
             <div class="profile-body__container">

@@ -323,7 +323,7 @@ Log In with Google: Log In with Google
 Old password: Old password
 New password: New password
 
-Directions: Get Directions
+Directions: Get&nbsp;Directions
 Displayed Name: Displayed Name
 Go to homepage: Go to homepage
 Personal information: Personal information
@@ -430,6 +430,8 @@ action_restore: Restore
 action_delete_physical: Physical delete
 
 # interaction report
+interaction_report.event.view: Views
+interaction_report.event.impression: Impressions
 interaction_report.button.direction: Directions
 interaction_report.button.show_map: Show on Map
 interaction_report.button.marker_map: Marker on Map
@@ -444,9 +446,32 @@ interaction_report.visit.facebook: Visit Facebook
 interaction_report.visit.twitter: Visit Twitter
 interaction_report.visit.google: Visit Google
 interaction_report.visit.youtube: Visit Youtube
+interaction_report.visit.instagram: Visit Instagram
+interaction_report.visit.tripadvisor: Visit TripAdvisor
 interaction_report.video.watched: Video Watched
 interaction_report.review.click: Reviews
 interaction_report.email.click: Emails
+interaction_report.sum.interaction: Interactions
+
+date: Date
+interaction_report.total: Total
+interaction_report.overall: Total Interactions
+
+keyword_report.total: Total
+subscription_report.total: Total
+
+category_report.label: Category
+category_report.counter: Visitors
+
+ad_usage_report.device_category: Device Category
+ad_usage_report.clicks: Clicks
+ad_usage_report.impressions: Impressions
+ad_usage_report.ctr: CTR, %
+ad_usage_report.total: Total
+device_category_desktop: Desktop
+device_category_smart_phone: Smartphone
+device_category_tablet: Tablet
+ad_usage_report.chart.name: Ad Usage Statistics
 
 # working hours
 business.working.hours.open_all_time: Open 24 hours
@@ -480,3 +505,25 @@ Now: Now
 
 form.collectionWorkingHours.overlap: Working Hours should not overlap
 form.collectionWorkingHours.duration: Time start should be more then time end
+
+# reset password form
+user:
+  reset_password:
+    token:
+      invalid: You currently do not have valid link for update your password
+      empty: Error: Empty token.
+  auth:
+    validation_failure: Validation failure
+    registration_success: Successfully registered. Please login with your credentials
+    reset_link_sent: Reset password link sent to your email. Please check it
+    password_updated: Successfully updated password. You can login with new credentials now
+business_profile:
+  url:
+    invalid: This value is not a valid URL.
+
+#search
+search.miles_to.user: mi. away
+search.miles_to.location: mi. from
+
+search.control.auto: Auto Search in Map
+search.control.redo: Search in Map

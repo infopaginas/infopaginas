@@ -53,19 +53,15 @@
                         {% include ':redesign/blocks/businessProfile/subTabs/report:overview.html.twig' %}
                     </div>
 
+                    <div class="tab-pane" id="keywords" role="tabpanel">
+                        {% include ':redesign/blocks/businessProfile/subTabs/report:keywords.html.twig' %}
+                    </div>
+
                     {% if ad_usage_allowed_for_business(businessProfile) %}
                         <div class="tab-pane" id="ad_usage" role="tabpanel">
                             {% include ':redesign/blocks/businessProfile/subTabs/report:ad_usage.html.twig' %}
                         </div>
                     {% endif %}
-
-                    <div class="tab-pane" id="keywords" role="tabpanel">
-                        {% include ':redesign/blocks/businessProfile/subTabs/report:keywords.html.twig' %}
-                    </div>
-
-                    <div class="tab-pane" id="interactions" role="tabpanel">
-                        {% include ':redesign/blocks/businessProfile/subTabs/report:interactions.html.twig' %}
-                    </div>
                 </div>
 
                 <div class="section-filters">
@@ -83,7 +79,7 @@
                                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 {% trans %}Excel{% endtrans %}
                             </button>
-                            <button type="button" id="print" class="btn green-btn">
+                            <button type="button" id="print" href="{{ pdfExportURL }}" class="btn green-btn">
                                 <i class="fa fa-print" aria-hidden="true"></i>
                                 {% trans %}Print{% endtrans %}
                             </button>
@@ -91,7 +87,6 @@
                     </div>
                 </div>
             </div>
-
         </div><!-- main -->
     </div><!-- main__container -->
 {% endblock %}

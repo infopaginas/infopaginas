@@ -1,4 +1,4 @@
-define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
+define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin ) {
     'use strict';
 
     //init resetPassword object variables
@@ -20,7 +20,9 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
                 resetPasswordFormId: '#resetPasswordForm'
             },
             fields: {
-                emailInputId: '#domain_site_reset_password_request_email'
+                emailInputId: '#domain_site_reset_password_request_email',
+                resetPasswordRequestMessage: '#resetPasswordRequestMessage',
+                resetPasswordMessage: '#resetPasswordMessage'
             },
             buttons: {
                 resetPasswordRequestButtonId: '#resetPasswordRequestButton',
@@ -94,9 +96,36 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
         return $( '#' + $( '.modal--opened' ).attr('id') );
     };
 
+    resetPassword.prototype.handleForm = function() {
+        var $resetRequestButton = $( this.html.buttons.resetPasswordRequestButtonId );
+        var $resetButton        = $( this.html.buttons.resetPasswordButtonId );
+
+        $( this.html.forms.resetPasswordRequestFormId ).keypress( function ( event ) {
+            if ( (event.which && event.which == 13) || (event.keyCode && event.keyCode == 13) ) {
+                $resetRequestButton.click();
+
+                return false;
+            }
+
+            return true;
+        });
+
+        $( this.html.forms.resetPasswordFormId ).keypress( function ( event ) {
+            if ( (event.which && event.which == 13) || (event.keyCode && event.keyCode == 13) ) {
+                $resetButton.click();
+
+                return false;
+            }
+
+            return true;
+        });
+    };
+
     //action before ajax send
     resetPassword.prototype.beforeRequestHandler = function () {
         this.disableFieldsHighlight();
+
+        $( this.html.fields.resetPasswordRequestMessage).text( '' );
 
         var spinnerId = this.getActiveModal().find( this.html.loadingSpinnerContainerClass).attr('id');
 
@@ -115,18 +144,16 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
 
         if( response.success ) {
             if ( activeModal == this.html.forms.resetPasswordFormId ) {
-                $( this.modals.resetModalId ).modal( 'hide' );
-                $( this.modals.loginModalId ).modal( 'show' );
+                $( this.html.fields.resetPasswordMessage ).text( response.message );
             } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
-                $( this.modals.resetRequesModalId ).modal( 'hide' );
-                $( this.modals.loginModalId ).modal( 'show' );
+                $( this.html.fields.resetPasswordRequestMessage ).text( response.message );
             }
         } else {
             if ( !$.isEmptyObject( response.errors ) ) {
                 this.enableFieldsHighlight( response.errors );
             } else {
                 if ( activeModal == this.html.forms.resetPasswordFormId ) {
-                    this.enableFieldsHighlight( { 'plainPassword': [response.message] } );
+                    this.enableFieldsHighlight( { 'plainPassword_first': [response.message] } );
                 } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
                     this.enableFieldsHighlight( { 'email': [response.message] } );
                 }
@@ -196,7 +223,8 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
     //check token existance in URL. If exists - show 'reset password' modal
     resetPassword.prototype.checkPasswordResetToken = function() {
         if( window.location.pathname.indexOf('password_reset') !== -1 ) {
-            $( this.modals.resetModalId ).modal( 'show' );
+            $( this.modals.resetModalId ).addClass('modal--opened');
+            $( 'body' ).addClass( 'body--no-scroll' );
         }
     };
 
@@ -205,6 +233,7 @@ define(['jquery', 'tools/spin', 'jquery-ui'], function( $, Spin ) {
         this.handlePasswordRequestForm();
         this.handleResetPasswordForm();
         this.checkPasswordResetToken();
+        this.handleForm();
     };
 
     return resetPassword;

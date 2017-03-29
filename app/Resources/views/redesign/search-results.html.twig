@@ -9,33 +9,25 @@
 
 {% block body %}
     <div class="main__container">
-
         <section class="main" id="searchResults">
             <div class="results active__toggle">
-                {% include ':redesign/blocks/banners:search-page-top.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_TOP } %}
-
-                {% if results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
-                    {% for item in results.resultSet %}
-                        {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
-                    {% endfor %}
-
-                    <div>
-                        {% block pagination %}
-                            {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
-                        {% endblock %}
-                    </div>
-                {% else %}
-                    {% embed ':redesign/errors:error-body.html.twig' with {'errorTitle': 'error.404.title', 'errorMessage': 'error.404.message', 'errorSearchText': 'error.404.search.text', 'errorSearchCatalog': 'error.404.search.catalog'} %}
-                        {% block searchErrorInput %}{% endblock %}
-                        {% block errorContainerClass %}{% endblock %}
-                    {% endembed %}
-                {% endif %}
-
-                {% include ':redesign/blocks/banners:search-page-down.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_BOTTOM } %}
+                <div id="searchContainer">
+                    {% include ':redesign/blocks:search_result_item_block.html.twig' %}
+                </div>
 
                 <button id="show-map" type="button" class="button button-round button--show-map button- floating-offset">
                     <i class="fa fa-map"></i>
                     <span>{% trans %}Map view{% endtrans %}</span>
+                </button>
+
+                <button id="auto-search-in-map" type="button" class="button button-round button--auto-search-in-map button- floating-offset">
+                    <i class="fa fa-square-o"></i>
+                    <span>{% trans %}search.control.auto{% endtrans %}</span>
+                </button>
+
+                <button id="redo-search-in-map" type="button" class="button button-round button--redo-search-in-map button- floating-offset">
+                    <i class="fa fa-search"></i>
+                    <span>{% trans %}search.control.redo{% endtrans %}</span>
                 </button>
 
                 <button id="hide-map" type="button" class="button button-round button--hide-map">
@@ -47,11 +39,9 @@
 
         <section class="results-map">
             <div id="map" class="map"></div>
-            <span id="map-markers" hidden>{{ markers }}</span>
+            <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
-
     </div><!-- main container -->
-
 {% endblock %}
 
 {% block scripts %}

@@ -37,7 +37,8 @@ class BusinessProfileExtension extends \Twig_Extension
     /**
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager) {
+    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager)
+    {
         $this->businessProfileManager = $businessProfileManager;
     }
 
@@ -83,7 +84,8 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'getTaskImagePropertyChangeSetRow'
             ),
-            'get_business_profile_image_changes' => new \Twig_Function_Method($this, 'getImageChangeSet'),
+            'get_business_profile_media_changes' => new \Twig_Function_Method($this, 'getMediaChangeSet'),
+            'get_business_profile_images_changes' => new \Twig_Function_Method($this, 'getImagesChangeSet'),
             'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
@@ -93,6 +95,16 @@ class BusinessProfileExtension extends \Twig_Extension
             'render_task_media_link' => new \Twig_Function_Method(
                 $this,
                 'renderTaskMediaLink',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'render_task_images_link' => new \Twig_Function_Method(
+                $this,
+                'renderTaskImagesLink',
                 [
                     'needs_environment' => true,
                     'is_safe' => [
@@ -114,6 +126,14 @@ class BusinessProfileExtension extends \Twig_Extension
             'get_business_profile_working_hours_list' => new \Twig_Function_Method(
                 $this,
                 'getBusinessProfileWorkingHoursList'
+            ),
+            'get_business_profile_many_to_one_relations_changes_string' => new \Twig_Function_Method(
+                $this,
+                'unpackManyToOneRelationsChangeSetRow'
+            ),
+            'get_business_profile_translation_changes_string' => new \Twig_Function_Method(
+                $this,
+                'unpackTranslationChangeSetRow'
             ),
         ];
     }
@@ -188,7 +208,7 @@ class BusinessProfileExtension extends \Twig_Extension
             return $value;
         }
 
-        return implode(', ', array_map(function($element) {
+        return implode(', ', array_map(function ($element) {
             if (isset($element->value)) {
                 return $element->value;
             } elseif (isset($element->url)) {
@@ -197,6 +217,32 @@ class BusinessProfileExtension extends \Twig_Extension
 
             return '';
         }, json_decode($value)));
+    }
+
+    public function unpackManyToOneRelationsChangeSetRow($value)
+    {
+        if ($this->isJson($value)) {
+            $item = json_decode($value);
+
+            if ($item->value) {
+                return $item->value;
+            }
+        }
+
+        return $value;
+    }
+
+    public function unpackTranslationChangeSetRow($value)
+    {
+        if ($this->isJson($value)) {
+            $item = json_decode($value);
+
+            if ($item->value and $item->locale) {
+                return $item;
+            }
+        }
+
+        return [];
     }
 
     public function getTaskTranslationChangeSetRow($oldValue, $newValue)
@@ -301,10 +347,29 @@ class BusinessProfileExtension extends \Twig_Extension
         return $data;
     }
 
-    public function getImageChangeSet(string $value, $change)
+    public function getMediaChangeSet($value, $change)
     {
-        $data = ImagesChangeSetUtil::deserializeChangeSet($value);
-        $data->url = $this->businessProfileManager->getTaskMediaLink($change, $value);
+        $data = [];
+
+        if ($value) {
+            $data = ImagesChangeSetUtil::deserializeChangeSet($value);
+            $data->url = $this->businessProfileManager->getTaskMediaLink($change, $value);
+        }
+
+        return $data;
+    }
+
+    public function getImagesChangeSet($value, $change)
+    {
+        $images = json_decode($value);
+        $data = [];
+
+        if ($images) {
+            foreach ($images as $key => $item) {
+                $data[$key] = $item;
+                $data[$key]->url = $this->businessProfileManager->getTaskMediaLink($change, $item);
+            }
+        }
 
         return $data;
     }
@@ -312,7 +377,20 @@ class BusinessProfileExtension extends \Twig_Extension
     public function renderTaskMediaLink(\Twig_Environment $environment, $data)
     {
         $html = $environment->render(
-            ':redesign/blocks/task:task_media_link.html.twig', [
+            ':redesign/blocks/task:task_media_link.html.twig',
+            [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    public function renderTaskImagesLink(\Twig_Environment $environment, $data)
+    {
+        $html = $environment->render(
+            ':redesign/blocks/task:task_images_link.html.twig',
+            [
                 'data' => $data,
             ]
         );
@@ -327,22 +405,27 @@ class BusinessProfileExtension extends \Twig_Extension
 
         if ($raw) {
             foreach ($raw as $key => $item) {
-                $property = json_decode($item->value);
+                if ($this->isJson($item->value)) {
+                    $property = json_decode($item->value);
 
-                foreach ($property as $name => $value) {
-                    if (!empty($value->date)) {
-                        $date = new \DateTime($value->date);
+                    foreach ($property as $name => $value) {
+                        if (!empty($value->date)) {
+                            $date = new \DateTime($value->date);
 
-                        $data[$key][$name] = $date->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
-                    } else {
-                        $data[$key][$name] = $value;
+                            $data[$key][$name] = $date->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+                        } else {
+                            $data[$key][$name] = $value;
+                        }
                     }
+                } else {
+                    $data[$key]['value'] = $item->value;
                 }
             }
         }
 
         $html = $environment->render(
-            ':redesign/blocks/task:related_entity_changes.html.twig', [
+            ':redesign/blocks/task:related_entity_changes.html.twig',
+            [
                 'data' => $data,
             ]
         );
@@ -457,7 +540,7 @@ class BusinessProfileExtension extends \Twig_Extension
      */
     private function isJson($json)
     {
-        $result = json_decode($json);
+        $result = json_decode($json, true);
 
         if (!is_array($result)) {
             return false;

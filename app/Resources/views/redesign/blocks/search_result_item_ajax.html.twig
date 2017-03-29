@@ -1,0 +1,5 @@
+{% embed ':redesign/blocks:search_result_item_block.html.twig' %}
+    {% block pagination %}
+        {% include ':redesign/layout/widgets:pagination-ajax.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+    {% endblock %}
+{% endembed %}

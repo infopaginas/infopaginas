@@ -12,6 +12,8 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
+use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -45,6 +47,8 @@ use Symfony\Component\Validator\Constraints\Length;
 class BusinessProfileAdmin extends OxaAdmin
 {
     use VideoUploadTrait;
+
+    const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
 
     /**
      * @param DatagridMapper $datagridMapper
@@ -121,24 +125,32 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Categories', array('class' => 'col-md-6'))->end()
                 ->with('Social Networks', array('class' => 'col-md-6'))->end()
                 ->with('Gallery')->end()
-            ->end();
+            ->end()
+        ;
 
-            if ($subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
-                $formMapper->tab('Profile')->with('Video')->end()->end();
-            }
+        if ($subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $formMapper->tab('Profile')->with('Video')->end()->end();
+        }
 
-            $formMapper->tab('Profile')->with('Status', array('class' => 'col-md-6'))->end()
+        $formMapper
+            ->tab('Profile')
+                ->with('Status', array('class' => 'col-md-6'))->end()
                 ->with('Subscriptions')->end()
                 ->with('Coupons', array('class' => 'col-md-6'))->end()
                 ->with('Discount', array('class' => 'col-md-6'))->end()
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
-            ->end();
+            ->end()
+            ->tab('Interactions Report', array('class' => 'col-md-6'))
+                ->with('Interactions Report')->end()
+            ->end()
+            ->tab('Keywords Report', array('class' => 'col-md-6'))
+                ->with('Keywords Report')->end()
+            ->end()
+        ;
 
-        $oxaConfig = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('oxa_config');
+        $oxaConfig = $this->getConfigurationPool()->getContainer()->get('oxa_config');
 
         if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
             $latitude   = $this->getSubject()->getLatitude();
@@ -297,6 +309,8 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('facebookURL')
                     ->add('googleURL')
                     ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
@@ -526,6 +540,15 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                     ])
                 ->end()
+                ->with('DoubleClick')
+                    ->add(
+                        'dcOrderId',
+                        null,
+                        [
+                            'label' => 'DC Order Id for Ad Usage Report',
+                        ]
+                    )
+                ->end()
             ->end()
             ->tab('Reviews')
                 ->with('User Reviews')
@@ -544,7 +567,73 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
             ->end()
+            ->tab('Interactions Report')
+                ->with('Interactions Report')
+                    ->add('interactionDateStart', 'sonata_type_date_picker', [
+                        'mapped'    => false,
+                        'required'  => false,
+                        'format'    => self::DATE_PICKER_FORMAT,
+                        'data'      => DatesUtil::getThisWeekStart(),
+                    ])
+                    ->add('interactionDateEnd', 'sonata_type_date_picker', [
+                        'mapped'    => false,
+                        'required'  => false,
+                        'format'    => self::DATE_PICKER_FORMAT,
+                        'data'      => DatesUtil::getThisWeekEnd(),
+                    ])
+                ->end()
+            ->end()
+            ->tab('Keywords Report')
+                ->with('Keywords Report')
+                    ->add('keywordDateStart', 'sonata_type_date_picker', [
+                        'mapped'    => false,
+                        'required'  => false,
+                        'format'    => self::DATE_PICKER_FORMAT,
+                        'data'      => DatesUtil::getThisWeekStart(),
+                    ])
+                    ->add('keywordDateEnd', 'sonata_type_date_picker', [
+                        'mapped'    => false,
+                        'required'  => false,
+                        'format'    => self::DATE_PICKER_FORMAT,
+                        'data'      => DatesUtil::getThisWeekEnd(),
+                    ])
+                    ->add('keywordLimit', ChoiceType::class, [
+                        'mapped'    => false,
+                        'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
+                        'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+                    ])
+                ->end()
+            ->end()
         ;
+
+        if ($this->getSubject()->getDcOrderId()) {
+            $formMapper
+                ->tab('Ad Usage Report')
+                    ->with('Ad Usage Report')
+                        ->add(
+                            'adUsageDateStart',
+                            'sonata_type_date_picker',
+                            [
+                                'mapped'    => false,
+                                'required'  => false,
+                                'format'    => self::DATE_PICKER_FORMAT,
+                                'data'      => DatesUtil::getThisWeekStart(),
+                            ]
+                        )
+                        ->add(
+                            'adUsageDateEnd',
+                            'sonata_type_date_picker',
+                            [
+                                'mapped'    => false,
+                                'required'  => false,
+                                'format'    => self::DATE_PICKER_FORMAT,
+                                'data'      => DatesUtil::getThisWeekEnd(),
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+        }
     }
 
     /**
@@ -603,6 +692,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('isActive')
+            ->add('dcOrderId')
         ;
     }
 
@@ -929,7 +1019,8 @@ class BusinessProfileAdmin extends OxaAdmin
 
                 if ($form->has('videoUrl') && $form->get('videoUrl')->getData()) {
                     try {
-                        $media = $container->get('oxa.manager.video')->uploadRemoteFile($form->get('videoUrl')->getData());
+                        $media = $container->get('oxa.manager.video')
+                            ->uploadRemoteFile($form->get('videoUrl')->getData());
                     } catch (\Exception $e) {
                         $media = null;
                     }

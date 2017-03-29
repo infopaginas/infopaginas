@@ -1,0 +1,7 @@
+<script src="{{ absolute_url(asset('bundles/oxavideo/scripts/video.5.8.8.js')) }}"></script>
+
+{% javascripts filter="?jsqueeze" output="js/app-video-share.js"
+    'assets/scripts/video-js-social-share.js'
+%}
+    <script src="{{ absolute_url(asset_url) }}"></script>
+{% endjavascripts %}

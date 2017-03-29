@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 04.09.16
- * Time: 14:58
- */
 
 namespace Domain\ReportBundle\Util;
 
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
-use Oxa\DfpBundle\Model\DataType\DateRangeVO;
+use Google\AdsApi\Dfp\v201702\DateRangeType;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 /**
  * Class DatesUtil
@@ -21,12 +16,17 @@ class DatesUtil
 
     const STEP_MONTH = '+1 month';
 
+    const DEFAULT_PERIOD = '-30 days';
+
     const RANGE_TODAY = 'today';
     const RANGE_THIS_WEEK = 'this_week';
     const RANGE_LAST_WEEK = 'last_week';
     const RANGE_THIS_MONTH = 'this_month';
     const RANGE_LAST_MONTH = 'last_month';
     const RANGE_CUSTOM = 'custom';
+
+    const RANGE_YESTERDAY = 'yesterday';
+    const RANGE_LAST_HOUR = 'last_hour';
 
     const RANGE_THIS_YEAR = 'this_year';
     const RANGE_LAST_YEAR = 'last_year';
@@ -79,14 +79,25 @@ class DatesUtil
                 $start = new \DateTime('first day of January ' . (date('Y') -1));
                 $end = new \DateTime('last day of December ' . (date('Y') - 1));
                 break;
+            case self::RANGE_YESTERDAY:
+                $start = new \DateTime('yesterday 00:00:00');
+                $end = new \DateTime('yesterday 23:59:59');
+                break;
+            case self::RANGE_LAST_HOUR:
+                $start = new \DateTime('last hour');
+                $start->setTime($start->format('G'), 0);
+
+                $end = new \DateTime('this hour');
+                $end->setTime($end->format('G'), 0);
+                break;
             default:
                 throw new \Exception('invalid param');
         }
 
-        return new DateRangeVO($start, $end);
+        return new ReportDatesRangeVO($start, $end);
     }
 
-    public static function getDateAsArrayFromVO(DateRangeVO $dateRange)
+    public static function getDateAsArrayFromVO(ReportDatesRangeVO $dateRange)
     {
         $date['start'] = $dateRange->getStartDate()->format(self::START_END_DATE_ARRAY_FORMAT);
         $date['end']   = $dateRange->getEndDate()->format(self::START_END_DATE_ARRAY_FORMAT);
@@ -99,7 +110,18 @@ class DatesUtil
         $start = \DateTime::createFromFormat($dateFormat, $requestData['start']);
         $end = \DateTime::createFromFormat($dateFormat, $requestData['end']);
 
-        return new DateRangeVO($start, $end);
+        return new ReportDatesRangeVO($start, $end);
+    }
+
+    public static function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
+    {
+        $startDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $start);
+        $endDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $end);
+
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        return new ReportDatesRangeVO($startDate, $endDate);
     }
 
     public static function getDateAsArrayFromRequestData(array $requestData, string $format = self::DATE_DB_FORMAT)
@@ -138,12 +160,22 @@ class DatesUtil
     ) : array {
         $dates = [];
 
-        $from = $rangeVO->getStartDate()->getTimestamp();
-        $to = $rangeVO->getEndDate()->getTimestamp();
+        if ($step == self::STEP_DAY) {
+            $dateFrom = clone $rangeVO->getStartDate();
+            $dateTo   = clone $rangeVO->getEndDate();
+        } else {
+            $dateFrom = clone $rangeVO->getStartDate();
+            $dateFrom->modify('first day of this month');
 
-        while ($from <= $to) {
-            $dates[] = date($outputFormat, $from);
-            $from = strtotime($step, $from);
+            $dateTo = clone $rangeVO->getEndDate();
+            $dateTo->modify('last day of this month');
+        }
+
+        $interval = \DateInterval::createFromDateString($step);
+        $period   = new \DatePeriod($dateFrom, $interval, $dateTo);
+
+        foreach ($period as $date) {
+            $dates[] = $date->format($outputFormat);
         }
 
         return $dates;
@@ -154,18 +186,6 @@ class DatesUtil
         return date('n', $timestamp) - 1;
     }
 
-    public static function getReportDates(array $parameters)
-    {
-        $dateRange = DatesUtil::getDateAsDateRangeVOFromRequestData(
-            $parameters['date']['value'],
-            self::START_END_DATE_ARRAY_FORMAT
-        );
-
-        $dates = DatesUtil::dateRange($dateRange);
-
-        return $dates;
-    }
-
     public static function isValidDateString($dateString, $dateFormat = self::START_END_DATE_ARRAY_FORMAT)
     {
         try {
@@ -173,5 +193,65 @@ class DatesUtil
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    public static function getThisWeekStart()
+    {
+        return new \DateTime('monday this week');
+    }
+
+    public static function getThisWeekEnd()
+    {
+        return new \DateTime('sunday this week');
+    }
+
+    public static function getYesterday()
+    {
+        return new \DateTime('yesterday');
+    }
+
+    public static function getToday()
+    {
+        return new \DateTime('today');
+    }
+
+    public static function getAdUsageReportDateByPeriod($period)
+    {
+        switch ($period) {
+            case DateRangeType::YESTERDAY:
+                $date = self::getYesterday();
+                break;
+            default:
+                $date = self::getToday();
+                break;
+        }
+
+        return $date;
+    }
+
+    public static function getAdUsageReportRangeByPeriod($period)
+    {
+        switch ($period) {
+            case DateRangeType::YESTERDAY:
+                $range = self::RANGE_YESTERDAY;
+                break;
+            default:
+                $range = self::RANGE_TODAY;
+                break;
+        }
+
+        return $range;
+    }
+
+
+    public static function convertMonthlyFormattedDate($date, $format)
+    {
+        $newDate = \DateTime::createFromFormat(AdminHelper::DATE_MONTH_FORMAT, $date);
+
+        if ($newDate) {
+            return $newDate->format($format);
+        }
+
+        return $date;
     }
 }

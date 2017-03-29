@@ -5,7 +5,14 @@
     </div>
 
     <div class="comparison__row comparison__where">
-        <span class="where">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
+        <span class="where">
+            {{ item.getDistanceUX() }}
+            {% if search.locationValue.userGeo %}
+                {% trans %}search.miles_to.user{% endtrans %}
+            {% else %}
+                {% trans %}search.miles_to.location{% endtrans %} {{ search.locationValue.locality.name }}
+            {% endif %}
+        </span>
     </div>
 
     <div class="comparison__row comparison__rating">
@@ -112,6 +119,8 @@
                 or item.getGoogleURL()
                 or item.getTwitterURL()
                 or item.getYoutubeURL()
+                or item.getInstagramURL()
+                or item.getTripAdvisorURL()
             %}
 
             {% if socialLinksExists %}
@@ -135,6 +144,16 @@
                         {% if item.getYoutubeURL() %}
                             <div class="share__item youtube">
                                 <a data-href="{{ item.getYoutubeURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
+                            </div><!-- share__item -->
+                        {% endif %}
+                        {% if item.getInstagramURL() %}
+                            <div class="share__item instagram">
+                                <a data-href="{{ item.getInstagramURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-instagram"></i></a>
+                            </div><!-- share__item -->
+                        {% endif %}
+                        {% if item.getTripAdvisorURL() %}
+                            <div class="share__item instagram">
+                                <a data-href="{{ item.getTripAdvisorURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-tripadvisor"></i></a>
                             </div><!-- share__item -->
                         {% endif %}
                     </div>

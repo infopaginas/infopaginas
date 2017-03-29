@@ -91,29 +91,22 @@ class TasksManager
         return $this->save($task);
     }
 
-    /**
-     * Create new 'Update Business Profile' task
-     *
-     * @access public
-     * @param BusinessProfile $businessProfile
-     * @param Collection      $oldCategories
-     * @param array           $oldImages
-     * @return array
-     */
-    public function createUpdateProfileConfirmationRequest(
-        BusinessProfile $businessProfile,
-        $oldCategories,
-        $oldImages
-    ) : array {
-        $changeSet = ChangeSetCalculator::getChangeSet($this->em, $businessProfile, $oldCategories, $oldImages);
+    public function createUpdateProfileConfirmationRequest($entityNew, $entityOld) : array
+    {
+        $changeSetCalculator = $this->getChangeSetCalculator($entityNew);
 
-        if ($changeSet->getEntries()->isEmpty()) {
+        if ($changeSetCalculator) {
+            $changeSet = $changeSetCalculator::getChangeSet($this->em, $entityNew, $entityOld);
+        } else {
+            $changeSet = null;
+        }
+
+        if ($changeSet and $changeSet->getEntries()->isEmpty()) {
             return [];
         }
 
-        $this->em->refresh($businessProfile);
+        $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $entityOld);
 
-        $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
         $task->setChangeSet($changeSet);
 
         $result = $this->save($task, false);
@@ -237,7 +230,7 @@ class TasksManager
                 );
             }
         } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
-            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet(), $this->getTaskLocale($task));
+            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet());
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
             $this->getBusinessReviewsManager()->publish($task->getReview());
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
@@ -356,5 +349,16 @@ class TasksManager
         ];
 
         return $response;
+    }
+
+    private function getChangeSetCalculator($entity)
+    {
+        if ($entity instanceof BusinessProfile) {
+            $changeSetCalculator = new ChangeSetCalculator();
+        } else {
+            $changeSetCalculator = null;
+        }
+
+        return $changeSetCalculator;
     }
 }

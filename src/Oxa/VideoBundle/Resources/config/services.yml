@@ -28,7 +28,6 @@ services:
     oxa.twig_extension.video_media_embed:
         class: Oxa\VideoBundle\Twig\Extension\VideoMediaEmbedExtension
         arguments:
-            - '@templating'
             - '@video_storage_filesystem'
         public: false
         tags:

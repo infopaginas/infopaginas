@@ -16,11 +16,12 @@ imports:
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
     - { resource: "@OxaDfpBundle/Resources/config/services.yml" }
     - { resource: "@ElasticSearchBundle/Resources/config/services.yml" }
+    - { resource: "@MongoDbBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '0.7.0'
+    app_version: '0.9.0'
     locale: en
     locales: [en, es]
     locale_data:
@@ -60,6 +61,7 @@ parameters:
         description_category_cut: '...'
     image_back_up_path: '/../web/imageBackUp/'
     video_back_up_path: '/../web/imageBackUp/video/'
+    youtube_back_up_path: '/../web/imageBackUp/youtube/'
     breadcrumb_max_length: 22
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
@@ -110,12 +112,16 @@ twig:
         google_map_default_zoom: '%google_map_default_zoom%'
         google_map_min_zoom: '%google_map_min_single_zoom%'
         breadcrumb_max_length: '%breadcrumb_max_length%'
+        keyword_max_length: 50
 
 #       todo confirm date formats
         review_date_format:        'd M Y H:i'
         article_date_format:       'M d, Y'
         business_date_format:      'Y-m-d'
         subscription_date_format:  'Y-m-d'
+        category_report_date_format: 'm/d/Y'
+        report_generated_datetime_format: 'm/d/Y H:i:s'
+        monthly_report_date_format: 'F, Y'
         ads_stat_date_format:      'd.m.Y'
         task_date_format:          'd M, Y, H:i:s A'
         working_hours_date_format: 'g:i A'
@@ -308,3 +314,6 @@ elastic_search:
     document_index: '%elastic_search.document_index%'
     indexing_page: 100
 
+mongo_db:
+    host: '%mongodb.host%'
+    db:   '%mongodb.db%'

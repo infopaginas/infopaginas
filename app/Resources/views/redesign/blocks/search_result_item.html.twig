@@ -47,7 +47,14 @@
                             {% else %}
                                 {{ item.getCity() }}, {{ item.getStreetAddress() }}
                             {% endif %}
-                            <span class="how-far">{{ item.getDistanceUX() }} {% trans %}miles away{% endtrans %}</span>
+                            <span class="how-far">
+                                {{ item.getDistanceUX() }}
+                                {% if search.locationValue.userGeo %}
+                                    {% trans %}search.miles_to.user{% endtrans %}
+                                {% else %}
+                                    {% trans %}search.miles_to.location{% endtrans %} {{ search.locationValue.locality.name }}
+                                {% endif %}
+                            </span>
                         </address>
                     {% endif %}
                 </div>

@@ -17,9 +17,9 @@ class AdminHelper
 
     const PER_PAGE_ALL = 'all';
 
-    const DATE_FORMAT            = 'd.m.Y';
-    const DATE_MONTH_FORMAT      = 'm.Y';
-    const DATETIME_FORMAT        = 'd.m.Y H:i:s';
+    const DATE_FORMAT            = 'm/d/Y';
+    const DATE_MONTH_FORMAT      = 'm/Y';
+    const DATETIME_FORMAT        = 'm/d/Y H:i:s';
     const DATE_FULL_MONTH_FORMAT = 'F, Y';
 
     const DATE_RANGE_CODE_CUSTOM     = 'custom';
@@ -170,6 +170,25 @@ class AdminHelper
                 'attr' => [
                     'class' => self::FILTER_DATE_RANGE_CLASS
                 ]
+            ]
+        ];
+    }
+
+    public static function getReportDateTypeOptions()
+    {
+        return [
+            'show_filter' => true,
+            'field_type'  => 'sonata_type_datetime_range_picker',
+            'field_options' => [
+                'field_options' => [
+                    'format'        => self::FILTER_DATE_RANGE_FORMAT,
+                    'empty_value'   => false,
+                ],
+                'attr' => [
+                    'class' => self::FILTER_DATE_RANGE_CLASS,
+                ],
+                'mapped'    => false,
+                'required'  => true,
             ]
         ];
     }

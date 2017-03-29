@@ -54,7 +54,7 @@ class DefaultController extends Controller
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
 
-        $bannerFactory->prepearBanners(
+        $bannerFactory->prepareBanners(
             [
                 TypeInterface::CODE_PORTAL_RIGHT,
                 TypeInterface::CODE_STATIC_BOTTOM,

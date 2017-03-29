@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
-use Domain\ReportBundle\Entity\CategoryReport;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -208,18 +207,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
      */
     protected $isUpdated;
-
-    /** @var CategoryReport[]
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\ReportBundle\Entity\CategoryReport",
-     *     mappedBy="category",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     * )
-     */
-    private $reports;
-
 
     /**
      * @var ArrayCollection
@@ -617,27 +604,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getIsUpdated()
     {
         return $this->isUpdated;
-    }
-
-    /**
-     * Add category report
-     *
-     * @param CategoryReport $report
-     * @return BusinessProfile
-     */
-    public function addReport(CategoryReport $report)
-    {
-        $this->reports[] = $report;
-        return $this;
-    }
-
-    /** Remove category report
-     *
-     * @param CategoryReport $report
-     */
-    public function removeReport(CategoryReport $report)
-    {
-        $this->reports->removeElement($report);
     }
 
     /**

@@ -29,10 +29,11 @@ class BusinessProfileUtil
         if ($locale) {
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation('name', strtolower($locale));
             $businessProfileName = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,  strtolower($locale));
+                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
         } else {
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $businessProfileName = $businessProfile->getName();
+            $locale = $businessProfile->getLocale();
         }
 
         $translator = $container->get('translator');
@@ -40,12 +41,12 @@ class BusinessProfileUtil
         $seoTitle = $translator->trans(
             'business_profile.seoTitle',
             [
-                'name'     => mb_substr($businessProfileName, 0 , $businessProfileMaxLength),
+                'name'     => mb_substr($businessProfileName, 0, $businessProfileMaxLength),
                 'location' => mb_substr($catalogLocalityName, 0, $localityMaxLength),
                 'company'  => mb_substr($companyName, 0, $brandMaxLength),
             ],
             'messages',
-            $businessProfile->getLocale()
+            strtolower($locale)
         );
 
         $seoTitle = mb_substr($seoTitle, 0, $titleMaxLength);
@@ -64,7 +65,7 @@ class BusinessProfileUtil
 
         if ($locale) {
             $description = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,  strtolower($locale));
+                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION, strtolower($locale));
 
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
                 BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
@@ -78,6 +79,7 @@ class BusinessProfileUtil
             $description = $businessProfile->getDescription();
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $workingHours = $businessProfile->getWorkingHours();
+            $locale = $businessProfile->getLocale();
         }
 
         $translator = $container->get('translator');
@@ -89,7 +91,7 @@ class BusinessProfileUtil
                 'location' => $catalogLocalityName,
             ],
             'messages',
-            $businessProfile->getLocale()
+            strtolower($locale)
         );
 
         if ($businessProfile->getWorkingHours() and mb_strlen($seoDescription) < $descriptionMaxLength) {
@@ -101,7 +103,7 @@ class BusinessProfileUtil
                     'hours' => $workingHours,
                 ],
                 'messages',
-                $businessProfile->getLocale()
+                strtolower($locale)
             );
         }
 
@@ -112,7 +114,7 @@ class BusinessProfileUtil
                     'link' => $businessProfile->getWebsiteLink(),
                 ],
                 'messages',
-                $businessProfile->getLocale()
+                strtolower($locale)
             );
         }
 
@@ -123,7 +125,7 @@ class BusinessProfileUtil
                     'phone' => $businessProfile->getPhones()->first()->getPhone(),
                 ],
                 'messages',
-                $businessProfile->getLocale()
+                strtolower($locale)
             );
         }
 

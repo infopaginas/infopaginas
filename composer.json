@@ -8,9 +8,8 @@
         "classmap": [
             "app/AppKernel.php",
             "app/AppCache.php",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Lib",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201605",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Common"
+            "vendor/googleads/googleads-php-lib/src/Google/AdsApi/Dfp/Util/v201702",
+            "vendor/googleads/googleads-php-lib/src/Google/AdsApi/Common"
         ]
     },
     "require": {
@@ -57,7 +56,7 @@
         "oneup/flysystem-bundle": "^1.4",
         "cache/adapter-bundle": "^0.4.0",
         "happyr/google-site-authenticator-bundle": "^0.3.2",
-        "googleads/googleads-php-lib": "^10.1",
+        "googleads/googleads-php-lib": "^25.3",
         "presta/sitemap-bundle": "1.5.1",
         "leafo/scssphp": "^0.6.6",
         "patchwork/jsqueeze": "^2.0",
@@ -67,7 +66,8 @@
         "aws/aws-sdk-php-symfony": "~1.2",
         "guzzle/guzzle": "3.9.3",
         "elasticsearch/elasticsearch": "^5.1",
-        "google/apiclient": "1.1.7"
+        "google/apiclient": "1.1.7",
+        "mongodb/mongodb": "1.1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

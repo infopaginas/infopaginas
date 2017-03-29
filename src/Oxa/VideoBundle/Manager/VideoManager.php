@@ -98,7 +98,9 @@ class VideoManager
         $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
 
         if (!$uploadedSize) {
-            $message = $this->container->get('translator')->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
+            $message = $this->container->get('translator')
+                ->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
+
             throw new \InvalidArgumentException(sprintf($message, $filename));
         }
 

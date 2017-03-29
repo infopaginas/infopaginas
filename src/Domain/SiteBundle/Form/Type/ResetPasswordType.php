@@ -23,6 +23,7 @@ class ResetPasswordType extends AbstractType
     {
         $builder->add('plainPassword', RepeatedType::class, [
             'type' => 'password',
+            'label' => 'Password',
             'first_options'  => [
                 'attr' => [
                     'class'       => 'form-control',
@@ -30,6 +31,7 @@ class ResetPasswordType extends AbstractType
                 ],
             ],
             'second_options' => [
+                'label' => 'Confirm Password',
                 'attr' => [
                     'class'       => 'form-control',
                     'placeholder' => 'Confirm Password',
