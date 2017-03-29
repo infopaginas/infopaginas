@@ -839,9 +839,9 @@ $side-padding-mb: 16px;
       display: inline-block;
       font-family: fontAwesome;
       position: absolute;
-      left: 0;
+      left: 10px;
       top: .3em;
-      z-index: 100;
+      z-index: 1;
     }
 
     @media only screen and (min-width: 768px) {
@@ -854,18 +854,19 @@ $side-padding-mb: 16px;
   }
 
   select {
-    background: $grey--light;
+    background: rgba(240, 241, 243, 0);
     background-image: none;
     border: 0;
     border-radius: 0;
     margin-left: 10px;
     padding: 0 20px;
-    padding-left: 10px;
+    padding-left: 20px;
     position: relative;
     text-align: left;
     width: 100%;
     -webkit-appearance: none;
     -moz-appearance:none;
+    z-index: 2;
   }
 }
 
