@@ -655,4 +655,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     $( 'video' ).one( 'play', function() {
         handleReportTracker( 'videoWatched' );
     });
+
+    //slider
+    window.onload = function() {
+        $( document ).trigger( 'resize' );
+        $( '.section--slider' ).removeClass( 'hide-before' );
+    };
 });
