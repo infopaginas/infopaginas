@@ -857,7 +857,7 @@ $side-padding-mb: 16px;
     background: rgba(240, 241, 243, 0);
     background-image: none;
     border: 0;
-    border-radius: 0;
+    border-radius: 2px;
     margin-left: 10px;
     padding: 0 20px;
     padding-left: 20px;
@@ -874,7 +874,7 @@ select {
   background: $grey--light;
   background-image: none;
   border: 0;
-  border-radius: 0;
+  border-radius: 2px;
   border: 1px solid $grey--medium;
   margin-left: 10px;
   padding: 10px 20px;
@@ -3414,6 +3414,16 @@ input[type='checkbox'] {
   }
 
   .reports-form__row {
+    flex-wrap: wrap;
+
+    @media only screen and (min-width: 376px) and (max-width: 768px) and (orientation: portrait) {
+      flex-wrap: nowrap;
+    }
+
+    @media only screen and (min-width: 376px) and (max-width: 768px) and (orientation: landscape) {
+      flex-wrap: nowrap;
+    }
+
     input {
       background: #f0f1f3;
       border: 1px solid #64666a;
@@ -3426,14 +3436,19 @@ input[type='checkbox'] {
 
       @media only screen and (max-width: 805px) {
         height: 42px;
-        margin: 10px 10px 0 20px;
+        margin: 10px 10px 0 46px;
         padding: 5px 10px;
       }
 
+      @media only screen and (min-width: 376px) and (max-width: 768px) and (orientation: portrait) {
+        margin: 10px 10px 0 30px;
+      }
+
+      @media only screen and (max-width: 667px) and (orientation: landscape) {
+          margin: 10px 10px 0 62px;
+      }
+
       @media only screen and (max-width: 375px) {
-        background: none;
-        border: none;
-        padding: 0;
         margin: 0;
       }
 
