@@ -144,7 +144,7 @@ class SearchManager extends Manager
         return $response;
     }
 
-    public function getSearchDTO(Request $request)
+    public function getSearchDTO(Request $request, $isRandomized = true)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
         $query = $this->getSafeSearchString(SearchDataUtil::getQueryFromRequest($request));
@@ -175,6 +175,8 @@ class SearchManager extends Manager
         if ($orderBy) {
             $searchDTO->setOrderBy($orderBy);
         }
+
+        $searchDTO->setIsRandomized($isRandomized);
 
         return $searchDTO;
     }

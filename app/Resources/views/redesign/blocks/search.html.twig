@@ -15,7 +15,7 @@
     {% endif %}
 {% endif %}
 
-<form class="header__search search-form" action="{{ absolute_url(path('domain_search_index')) }}" {% if isHomePage is defined and isHomePage %}data-homepage="1"{% endif %}>
+<form class="header__search search-form" action="{{ absolute_url(path('domain_search_index')) }}" id="header-search-form" {% if isHomePage is defined and isHomePage %}data-homepage="1"{% endif %}>
     <div class="form__field field--search">
         <input id="searchBox" type="text" name="q" value="{{ qValue }}" class="search-trigger" placeholder="{% trans %}What?{% endtrans %}" data-error-placeholder="{% trans %}Please enter a search term{% endtrans %}">
     </div>
