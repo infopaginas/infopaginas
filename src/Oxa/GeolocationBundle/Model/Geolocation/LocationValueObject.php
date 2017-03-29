@@ -57,19 +57,19 @@ class LocationValueObject extends AbstractValueObject
         }
 
         if (!(empty($geoData['searchBoxTopLeftLat']))) {
-            $this->searchBoxTopLeftLat = $geoData['searchBoxTopLeftLat'];
+            $this->searchBoxTopLeftLat = (float)$geoData['searchBoxTopLeftLat'];
         }
 
         if (!(empty($geoData['searchBoxTopLeftLng']))) {
-            $this->searchBoxTopLeftLng = $geoData['searchBoxTopLeftLng'];
+            $this->searchBoxTopLeftLng = (float)$geoData['searchBoxTopLeftLng'];
         }
 
         if (!(empty($geoData['searchBoxBottomRightLat']))) {
-            $this->searchBoxBottomRightLat = $geoData['searchBoxBottomRightLat'];
+            $this->searchBoxBottomRightLat = (float)$geoData['searchBoxBottomRightLat'];
         }
 
         if (!(empty($geoData['searchBoxBottomRightLng']))) {
-            $this->searchBoxBottomRightLng = $geoData['searchBoxBottomRightLng'];
+            $this->searchBoxBottomRightLng = (float)$geoData['searchBoxBottomRightLng'];
         }
     }
 }

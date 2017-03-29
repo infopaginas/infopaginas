@@ -176,7 +176,9 @@ class SearchManager extends Manager
             $searchDTO->setOrderBy($orderBy);
         }
 
-        $searchDTO->setIsRandomized($isRandomized);
+        if (!$searchDTO->checkSearchInMap()) {
+            $searchDTO->setIsRandomized($isRandomized);
+        }
 
         return $searchDTO;
     }

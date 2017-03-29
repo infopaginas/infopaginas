@@ -12,6 +12,10 @@ define(
             search: Routing.generate( 'domain_search_map' )
         };
 
+        this.storage = {
+            mapSearchUrl: 'mapSearchUrl'
+        };
+
         this.html = {
             containers: {
                 searchContainer: '#searchContainer'
@@ -292,6 +296,8 @@ define(
         this.updateMapMarkers( markers );
         this.updateGoogleTagTargeting( response.targeting );
         this.options.directions.bindEventsDirections();
+
+        window.history.replaceState( this.storage.mapSearchUrl, response.seoData.seoTitle, response.staticUrl );
 
         $( document ).trigger( 'searchRequestReady' );
     };
