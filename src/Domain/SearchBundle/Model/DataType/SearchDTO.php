@@ -2,6 +2,7 @@
 
 namespace Domain\SearchBundle\Model\DataType;
 
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Doctrine\Common\Collections\ArrayCollection;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
@@ -20,6 +21,7 @@ class SearchDTO extends AbstractDTO
     protected $neighborhood;
 
     protected $orderBy;
+    protected $isRandomized;
 
     public function __construct(string $query, LocationValueObject $locationValue, int $page, int $limit)
     {
@@ -135,5 +137,21 @@ class SearchDTO extends AbstractDTO
         }
 
         return false;
+    }
+
+    public function setIsRandomized($isRandomized)
+    {
+        $this->isRandomized = $isRandomized;
+    }
+
+    public function randomizeAllowed()
+    {
+        $randomizeAllowed = false;
+
+        if ($this->isRandomized and SearchDataUtil::ORDER_BY_RELEVANCE == $this->getOrderBy()) {
+            $randomizeAllowed = true;
+        }
+
+        return $randomizeAllowed;
     }
 }

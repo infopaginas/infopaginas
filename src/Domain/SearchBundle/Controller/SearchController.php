@@ -212,7 +212,7 @@ class SearchController extends Controller
     {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $searchDTO = $searchManager->getSearchDTO($request);
+        $searchDTO = $searchManager->getSearchDTO($request, false);
 
         $searchData = $this->getSearchDataByRequest($request);
 
@@ -250,16 +250,33 @@ class SearchController extends Controller
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
 
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
+                TypeInterface::CODE_SEARCH_PAGE_TOP,
+            ]
+        );
+
         $data = [
             'search'        => $searchDTO,
             'results'       => $searchResultsDTO,
-            'seoData'       => $seoData,
-            'dcDataDTO'     => $dcDataDTO,
-            'searchData'    => $searchData,
-            'markers'       => $locationMarkers,
+            'bannerFactory' => $bannerFactory,
         ];
 
-        return new JsonResponse($data);
+        $html = $this->renderView(
+            ':redesign/blocks:search_result_item_ajax.html.twig',
+            $data
+        );
+
+        return new JsonResponse(
+            [
+                'html'      => $html,
+                'seoData'   => $seoData,
+                'markers'   => $locationMarkers,
+                'targeting' => $dcDataDTO,
+            ]
+        );
     }
 
     /**

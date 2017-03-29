@@ -1324,11 +1324,7 @@ class BusinessProfileManager extends Manager
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         //randomize feature works only for relevance sorting ("Best match")
-        if (SearchDataUtil::ORDER_BY_RELEVANCE == $searchParams->getOrderBy()) {
-            $randomize = true;
-        } else {
-            $randomize = false;
-        }
+        $randomize = $searchParams->randomizeAllowed();
 
         $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
         $response = $this->searchBusinessElastic($searchQuery);

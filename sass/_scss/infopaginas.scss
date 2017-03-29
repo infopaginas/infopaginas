@@ -5345,3 +5345,12 @@ div.scrollable-table {
   height: 500px;
   border: 1px solid #ccc;
 }
+
+div.pagination a[data-page] {
+  cursor: pointer;
+}
+
+a.disabledLink {
+  pointer-events: none;
+  cursor: default;
+}

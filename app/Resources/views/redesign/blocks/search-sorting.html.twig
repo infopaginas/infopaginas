@@ -18,13 +18,13 @@
             </button>
 
             <div class="sort__options sort sort--on">
-                <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchRelevance}))) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %}>
+                <a id="sort-match-link" href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchRelevance}))) }}" {% if noFollowRelevance %} rel="nofollow"{% endif %}>
                     <button id="sort-match" type="button" class="button sort-button {% if app.request.get('order') != searchDistance %}sort--active{% endif %}">
                         {% trans %}Best match{% endtrans %}
                         <i class="fa fa-sort-amount-desc"></i>
                     </button>
                 </a>
-                <a href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchDistance}))) }}" {% if noFollowDistance %} rel="nofollow"{% endif %}>
+                <a id="sort-distance-link" href="{{ absolute_url(path(pageRouter, searchData|merge({'order': searchDistance}))) }}" {% if noFollowDistance %} rel="nofollow"{% endif %}>
                     <button id="sort-distance" type="button" class="button sort-button {% if app.request.get('order') == searchDistance %}sort--active{% endif %}">
                         {% trans %}Distance{% endtrans %}
                         <i class="fa fa-location-arrow"></i>

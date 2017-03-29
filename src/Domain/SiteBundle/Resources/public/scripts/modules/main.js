@@ -554,10 +554,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         switchAutoSearchInMapControl();
     });
 
-    redoSearchMap.on( 'click', function() {
-        location.reload();
-    });
-
     $( window ).resize(function() {
       var mediaquery = window.matchMedia("(min-width: 804px)");
 
@@ -721,6 +717,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         checker.addClass( 'fa-check' );
 
         redoSearchMap.addClass( 'hidden' );
+
+        $( document ).trigger( 'autoSearchRequestEnabled' );
     }
 
     function disableAutoSearchInMap() {
@@ -730,6 +728,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         checker.addClass( 'fa-square-o' );
 
         redoSearchMap.removeClass( 'hidden' );
+
+        $( document ).trigger( 'autoSearchRequestDisabled' );
     }
 
     function checkAutoSearchInMapEnabled() {
