@@ -661,9 +661,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     }
 
     //call
-    var phoneCall = $( '.phone-call' );
+    var phoneCall = '.phone-call';
 
-    phoneCall.on( 'click', function() {
+    $( document ).on( 'click', phoneCall, function() {
         var itemId = $( this ).data( 'id' );
         var type = $( this ).data( 'type' );
 

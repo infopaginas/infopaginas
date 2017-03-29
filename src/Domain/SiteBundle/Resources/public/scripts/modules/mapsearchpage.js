@@ -291,6 +291,7 @@ define(
 
         this.updateMapMarkers( markers );
         this.updateGoogleTagTargeting( response.targeting );
+        this.options.directions.bindEventsDirections();
 
         $( document ).trigger( 'searchRequestReady' );
     };
