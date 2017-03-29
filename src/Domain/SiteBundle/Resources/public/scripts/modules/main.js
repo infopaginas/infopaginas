@@ -674,6 +674,12 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         handleReportTracker( 'videoWatched' );
     });
 
+    //slider
+    window.onload = function() {
+        $( document ).trigger( 'resize' );
+        $( '.section--slider' ).removeClass( 'hide-before' );
+    };
+
     // map controls
     function showDeviceMapControlButtons() {
         autoSearchMap.css( 'transform', 'translateX(0px) translateY(-160px)' );
