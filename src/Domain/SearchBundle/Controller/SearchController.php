@@ -37,10 +37,15 @@ class SearchController extends Controller
 
         $schema       = false;
         $locationName = false;
+        $disableFilters = false;
         $seoCategories = [];
 
         if ($searchDTO) {
-            $searchResultsDTO = $searchManager->search($searchDTO, $locale);
+            if ($searchDTO->checkSearchInMap()) {
+                $disableFilters = true;
+            }
+
+            $searchResultsDTO = $searchManager->search($searchDTO, $locale, $disableFilters);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
             $this->getBusinessProfileManager()
@@ -97,6 +102,7 @@ class SearchController extends Controller
                 'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'disableFilters'    => $disableFilters,
             ]
         );
     }
@@ -212,7 +218,7 @@ class SearchController extends Controller
     {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $searchDTO = $searchManager->getSearchDTO($request, false);
+        $searchDTO = $searchManager->getSearchDTO($request);
 
         $searchData = $this->getSearchDataByRequest($request);
 
@@ -269,12 +275,15 @@ class SearchController extends Controller
             $data
         );
 
+        $staticUrl = $this->get('router')->generate('domain_search_index', $request->query->all(), true);
+
         return new JsonResponse(
             [
                 'html'      => $html,
                 'seoData'   => $seoData,
                 'markers'   => $locationMarkers,
                 'targeting' => $dcDataDTO,
+                'staticUrl' => $staticUrl,
             ]
         );
     }
