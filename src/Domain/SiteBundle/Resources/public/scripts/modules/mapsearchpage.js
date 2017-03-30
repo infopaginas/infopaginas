@@ -45,7 +45,8 @@ define(
             },
             tabs: {
                 sort: 'div.sort-bar .sort__options.sort',
-                filter: 'div.sort-bar .sort__options.filter'
+                filter: 'div.sort-bar .sort__options.filter',
+                filterPanel: '#searchResults div.results'
             }
         };
 
@@ -417,6 +418,7 @@ define(
 
         $( this.html.tabs.sort ).removeClass( 'sort--on' );
         $( this.html.tabs.filter ).removeClass( 'filter--on' );
+        $( this.html.tabs.filterPanel ).removeClass( 'active__toggle' );
     };
 
     mapSearchPage.prototype.disableButton = function( button ) {

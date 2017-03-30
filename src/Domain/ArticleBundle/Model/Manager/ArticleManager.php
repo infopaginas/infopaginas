@@ -43,7 +43,7 @@ class ArticleManager extends Manager
             [],
             '',
             [
-                $article->getCategory()->getSlug()
+                $article->getCategory()->getSlug(),
             ],
             $article->getSlug()
         );
@@ -65,7 +65,7 @@ class ArticleManager extends Manager
             [],
             '',
             [
-                $category->getSlug()
+                $category->getSlug(),
             ],
             ''
         );
