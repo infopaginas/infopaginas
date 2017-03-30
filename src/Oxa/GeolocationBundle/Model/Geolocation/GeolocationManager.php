@@ -44,6 +44,8 @@ class GeolocationManager extends Manager
         $searchBoxTopLeftLng = $request->get('tllg', null);
         $searchBoxBottomRightLat = $request->get('brlt', null);
         $searchBoxBottomRightLng = $request->get('brlg', null);
+        $searchCenterLat = $request->get('clt', null);
+        $searchCenterLng = $request->get('clg', null);
 
         if ($useUserGeo) {
             $userLat    = $request->get('lat', null);
@@ -87,6 +89,8 @@ class GeolocationManager extends Manager
                 'searchBoxTopLeftLng'       => $searchBoxTopLeftLng,
                 'searchBoxBottomRightLat'   => $searchBoxBottomRightLat,
                 'searchBoxBottomRightLng'   => $searchBoxBottomRightLng,
+                'searchCenterLat'           => $searchCenterLat,
+                'searchCenterLng'           => $searchCenterLng,
             ];
 
             $return = $this->buildLocationValue($geoData);

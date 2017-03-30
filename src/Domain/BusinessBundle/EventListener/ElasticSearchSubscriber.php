@@ -8,8 +8,10 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Manager\BusinessStatusManager;
+use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 
 /**
  * set is updated flag for elastic search synchronization
@@ -24,12 +26,23 @@ class ElasticSearchSubscriber implements EventSubscriber
      */
     private $businessStatusManager;
 
+    /** @var ElasticSearchManager $elasticSearchManager */
+    private $elasticSearchManager;
+
     /**
      * @param BusinessStatusManager $businessStatusManager
      */
     public function setBusinessStatusManager(BusinessStatusManager $businessStatusManager)
     {
         $this->businessStatusManager = $businessStatusManager;
+    }
+
+    /**
+     * @param ElasticSearchManager $elasticSearchManager
+     */
+    public function setElasticSearchManager(ElasticSearchManager $elasticSearchManager)
+    {
+        $this->elasticSearchManager = $elasticSearchManager;
     }
 
     public function getSubscribedEvents()
@@ -39,6 +52,7 @@ class ElasticSearchSubscriber implements EventSubscriber
             Events::postUpdate,
             Events::postPersist,
             Events::postRemove,
+            Events::preRemove,
         ];
     }
 
@@ -55,6 +69,10 @@ class ElasticSearchSubscriber implements EventSubscriber
 
         if ($entity instanceof Category) {
             $this->businessStatusManager->manageCategoryStatusPreUpdate($entity, $args->getEntityManager());
+        }
+
+        if ($entity instanceof Locality) {
+            $this->businessStatusManager->manageLocalityStatusPreUpdate($entity, $args->getEntityManager());
         }
     }
 
@@ -93,6 +111,19 @@ class ElasticSearchSubscriber implements EventSubscriber
         }
     }
 
+    public function preRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof Category) {
+            $this->handleCategoryPreRemove($entity);
+        }
+
+        if ($entity instanceof Locality) {
+            $this->handleLocalityPreRemove($entity);
+        }
+    }
+
     public function handleCategoryUpdate(Category $category, EntityManager $em)
     {
         $businessProfiles = $category->getBusinessProfiles();
@@ -105,5 +136,15 @@ class ElasticSearchSubscriber implements EventSubscriber
         $businessProfile = $subscription->getBusinessProfile();
 
         $this->businessStatusManager->manageBusinessStatusPostUpdate([$businessProfile], $em);
+    }
+
+    public function handleLocalityPreRemove(Locality $locality)
+    {
+        $this->businessStatusManager->removeLocalityFromElastic($locality, $this->elasticSearchManager);
+    }
+
+    public function handleCategoryPreRemove(Category $category)
+    {
+        $this->businessStatusManager->removeCategoryFromElastic($category, $this->elasticSearchManager);
     }
 }

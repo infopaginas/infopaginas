@@ -65,6 +65,9 @@ class BusinessProfileManager extends Manager
      */
     protected $categoryManager;
 
+    /** @var LocalityManager */
+    protected $localityManager;
+
     /** @var UserInterface */
     private $currentUser = null;
 
@@ -98,6 +101,7 @@ class BusinessProfileManager extends Manager
         $this->em = $container->get('doctrine.orm.entity_manager');
 
         $this->categoryManager = $container->get('domain_business.manager.category');
+        $this->localityManager = $container->get('domain_business.manager.locality');
 
         $tokenStorage = $container->get('security.token_storage');
 
@@ -1381,6 +1385,22 @@ class BusinessProfileManager extends Manager
         return $search['data'];
     }
 
+    public function searchClosestLocalityInElastic(SearchDTO $params)
+    {
+        $closestLocality = '';
+
+        if ($params->locationValue->searchCenterLat and $params->locationValue->searchCenterLng) {
+            $searchQuery = $this->localityManager->getElasticClosestSearchQuery($params);
+            $response = $this->searchLocalityElastic($searchQuery);
+
+            $search = $this->localityManager->getLocalityFromElasticResponse($response);
+
+            $closestLocality = current($search['data']);
+        }
+
+        return $closestLocality;
+    }
+
     protected function searchElastic($searchQuery, $documentType)
     {
         try {
@@ -1402,6 +1422,13 @@ class BusinessProfileManager extends Manager
     protected function searchCategoryElastic($searchQuery)
     {
         $response = $this->searchElastic($searchQuery, Category::ELASTIC_DOCUMENT_TYPE);
+
+        return $response;
+    }
+
+    protected function searchLocalityElastic($searchQuery)
+    {
+        $response = $this->searchElastic($searchQuery, Locality::ELASTIC_DOCUMENT_TYPE);
 
         return $response;
     }
@@ -1496,6 +1523,8 @@ class BusinessProfileManager extends Manager
             if ($createStatus) {
                 $this->getRepository()->setUpdatedAllBusinessProfiles();
                 $this->categoryManager->setUpdatedAllCategories();
+                $this->localityManager->setUpdatedAllLocalities();
+
                 $status = true;
             }
         }
@@ -1507,8 +1536,9 @@ class BusinessProfileManager extends Manager
     {
         $businessMapping = $this->getBusinessElasticSearchMapping();
         $categoryMapping = $this->categoryManager->getCategoryElasticSearchMapping();
+        $localityMapping = $this->localityManager->getLocalityElasticSearchMapping();
 
-        $mappings = array_merge($businessMapping, $categoryMapping);
+        $mappings = array_merge($businessMapping, $categoryMapping, $localityMapping);
 
         return $mappings;
     }
@@ -1616,6 +1646,18 @@ class BusinessProfileManager extends Manager
         return $response;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function addLocalitiesToElasticIndex($data)
+    {
+        $response = $this->addElasticBulkItemData($data, Locality::ELASTIC_DOCUMENT_TYPE);
+
+        return $response;
+    }
+
     protected function addElasticBulkItemData($data, $documentType)
     {
         try {
@@ -1638,6 +1680,8 @@ class BusinessProfileManager extends Manager
 
     protected function removeItemFromElastic($id, $documentType)
     {
+        $status = true;
+
         try {
             $response = $this->elasticSearchManager->deleteItem($id, $documentType);
         } catch (\Exception $e) {
@@ -1664,6 +1708,13 @@ class BusinessProfileManager extends Manager
     public function removeCategoryFromElastic($id)
     {
         $status = $this->removeItemFromElastic($id, Category::ELASTIC_DOCUMENT_TYPE);
+
+        return $status;
+    }
+
+    public function removeLocalityFromElastic($id)
+    {
+        $status = $this->removeItemFromElastic($id, Locality::ELASTIC_DOCUMENT_TYPE);
 
         return $status;
     }
@@ -2179,6 +2230,57 @@ class BusinessProfileManager extends Manager
 
             if ($data) {
                 $this->addCategoriesToElasticIndex($data);
+            }
+
+            $this->em->flush();
+        }
+    }
+
+    public function handleLocalityElasticSync()
+    {
+        $index = $this->createElasticSearchIndex();
+
+        if ($index) {
+            $localities = $this->localityManager->getUpdatedLocalitiesIterator();
+
+            $countDoctrine = 0;
+            $batchDoctrine = 20;
+
+            $countElastic = 0;
+            $batchElastic = $this->elasticSearchManager->getIndexingPage();
+
+            $data = [];
+
+            foreach ($localities as $localityRow) {
+                /* @var $locality Locality */
+                $locality = current($localityRow);
+
+                $item = $this->localityManager->buildLocalityElasticData($locality);
+
+                if ($item) {
+                    $data[] = $item;
+                } else {
+                    $this->removeLocalityFromElastic($locality->getId());
+                }
+
+                $locality->setIsUpdated(false);
+
+                if (($countElastic % $batchElastic) === 0) {
+                    $this->addLocalitiesToElasticIndex($data);
+                    $data = [];
+                }
+
+                if (($countDoctrine % $batchDoctrine) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $countElastic ++;
+                $countDoctrine ++;
+            }
+
+            if ($data) {
+                $this->addLocalitiesToElasticIndex($data);
             }
 
             $this->em->flush();

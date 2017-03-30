@@ -33,6 +33,11 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     const ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES = 'businessProfiles';
     const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS     = 'catalogItems';
 
+    const ELASTIC_DOCUMENT_TYPE = 'Locality';
+
+    const FLAG_IS_UPDATED       = 'isUpdated';
+    const LOCALITY_FIELD_NAME   = 'name';
+
     /**
      * @var int
      *
@@ -123,6 +128,14 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $catalogItems;
 
     /**
+     * Related to FLAG_IS_UPDATED const
+     * @var bool
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
+     */
+    protected $isUpdated;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -132,6 +145,8 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->translations     = new ArrayCollection();
         $this->neighborhoods    = new ArrayCollection();
         $this->catalogItems     = new ArrayCollection();
+
+        $this->isUpdated = true;
     }
 
     /**
@@ -351,5 +366,25 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->catalogItems->removeElement($catalogItem);
 
         return $this;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return Locality
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
     }
 }

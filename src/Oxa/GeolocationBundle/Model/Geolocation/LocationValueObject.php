@@ -22,6 +22,9 @@ class LocationValueObject extends AbstractValueObject
     public $searchBoxBottomRightLat = null;
     public $searchBoxBottomRightLng = null;
 
+    public $searchCenterLat = null;
+    public $searchCenterLng = null;
+
     public function __construct($geoData = [])
     {
         if (!(empty($geoData['geo']))) {
@@ -70,6 +73,14 @@ class LocationValueObject extends AbstractValueObject
 
         if (!(empty($geoData['searchBoxBottomRightLng']))) {
             $this->searchBoxBottomRightLng = (float)$geoData['searchBoxBottomRightLng'];
+        }
+
+        if (!(empty($geoData['searchCenterLat']))) {
+            $this->searchCenterLat = (float)$geoData['searchCenterLat'];
+        }
+
+        if (!(empty($geoData['searchCenterLng']))) {
+            $this->searchCenterLng = (float)$geoData['searchCenterLng'];
         }
     }
 }

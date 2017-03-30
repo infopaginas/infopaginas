@@ -2,8 +2,10 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\SlugUtil;
+use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
@@ -78,5 +80,159 @@ class LocalityManager extends Manager
         $catalogLocalitiesWithContent = $this->getRepository()->getCatalogLocalitiesWithContent();
 
         return $catalogLocalitiesWithContent;
+    }
+
+    public function getUpdatedLocalitiesIterator()
+    {
+        $localities = $this->getRepository()->getUpdatedLocalitiesIterator();
+
+        return $localities;
+    }
+
+    public function setUpdatedAllLocalities()
+    {
+        $data = $this->getRepository()->setUpdatedAllLocalities();
+
+        return $data;
+    }
+
+    public function buildLocalityElasticData(Locality $locality)
+    {
+        $localityEn = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_EN);
+        $localityEs = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_ES);
+
+        if (!$locality->getIsActive() or !$locality->getLatitude() or !$locality->getLongitude()) {
+            return false;
+        }
+
+        $data = [
+            'id'              => $locality->getId(),
+            'auto_suggest_en' => $localityEn,
+            'auto_suggest_es' => $localityEs,
+            'location'             => [
+                'lat' => $locality->getLatitude(),
+                'lon' => $locality->getLongitude(),
+            ],
+        ];
+
+        return $data;
+    }
+
+    public function getLocalityElasticSearchMapping($sourceEnabled = true)
+    {
+        $properties = $this->getLocalityElasticSearchIndexParams();
+
+        $data = [
+            Locality::ELASTIC_DOCUMENT_TYPE => [
+                '_source' => [
+                    'enabled' => $sourceEnabled,
+                ],
+                'properties' => $properties,
+            ],
+        ];
+
+        return $data;
+    }
+
+    protected function getLocalityElasticSearchIndexParams()
+    {
+        $params = [
+            'auto_suggest_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'auto_suggest_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'location' => [
+                'type' => 'geo_point',
+            ],
+        ];
+
+        return $params;
+    }
+
+    public function getElasticClosestSearchQuery(SearchDTO $params)
+    {
+        $searchQuery = [
+            'from' => 0,
+            'size' => 1,
+            'track_scores' => true,
+            'sort' => [
+                '_geo_distance' => [
+                    'location' => [
+                        'lat' => $params->locationValue->searchCenterLat,
+                        'lon' => $params->locationValue->searchCenterLng,
+                    ],
+                    'unit' => 'mi',
+                    'order' => 'asc',
+                ],
+                '_score' => [
+                    'order' => 'desc',
+                ],
+            ],
+        ];
+
+        return $searchQuery;
+    }
+
+    public function getLocalityFromElasticResponse($response)
+    {
+        $data  = [];
+        $total = 0;
+
+        if (!empty($response['hits']['total'])) {
+            $total = $response['hits']['total'];
+        }
+
+        if (!empty($response['hits']['hits'])) {
+            $result = $response['hits']['hits'];
+            $dataIds = [];
+
+            foreach ($result as $item) {
+                $dataIds[] = $item['_id'];
+            }
+
+            $dataRaw = $this->getRepository()->getAvailableLocalitiesByIds($dataIds);
+
+            foreach ($dataIds as $id) {
+                $item = $this->getLocalityByIdsInArray($dataRaw, $id);
+
+                if ($item) {
+                    $data[] = $item;
+                }
+            }
+        }
+
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
+    }
+
+    protected function getLocalityByIdsInArray($data, $id)
+    {
+        foreach ($data as $item) {
+            if ($item->getId() == $id) {
+                return $item;
+            }
+        }
+
+        return false;
     }
 }

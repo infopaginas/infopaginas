@@ -37,12 +37,15 @@ class SearchController extends Controller
 
         $schema       = false;
         $locationName = false;
+        $closestLocality = '';
         $disableFilters = false;
         $seoCategories = [];
 
         if ($searchDTO) {
             if ($searchDTO->checkSearchInMap()) {
                 $disableFilters = true;
+
+                $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
             }
 
             $searchResultsDTO = $searchManager->search($searchDTO, $locale, $disableFilters);
@@ -58,7 +61,10 @@ class SearchController extends Controller
             $locationMarkers = $this->getBusinessProfileManager()
                 ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
-            if ($searchDTO->locationValue) {
+            if ($closestLocality) {
+                $locationName = $closestLocality->getName();
+                $searchData['geo'] = $locationName;
+            } elseif ($searchDTO->locationValue) {
                 $locationName = $searchDTO->locationValue->name;
             }
 
@@ -157,9 +163,14 @@ class SearchController extends Controller
         $locale = ucwords($request->getLocale());
 
         $locationName = false;
+        $closestLocality = '';
         $seoCategories = [];
 
         if ($searchDTO) {
+            if ($searchDTO->checkSearchInMap()) {
+                $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
+            }
+
             $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
 
             $this->getBusinessProfileManager()
@@ -170,7 +181,10 @@ class SearchController extends Controller
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
-            if ($searchDTO->locationValue) {
+            if ($closestLocality) {
+                $locationName = $closestLocality->getName();
+                $searchData['geo'] = $locationName;
+            } elseif ($searchDTO->locationValue) {
                 $locationName = $searchDTO->locationValue->name;
             }
 
@@ -224,12 +238,14 @@ class SearchController extends Controller
 
         $locale = ucwords($request->getLocale());
 
-        $locationName  = false;
+        $locationName  = '';
         $seoCategories = [];
 
         if ($searchDTO) {
             $searchResultsDTO = $searchManager->search($searchDTO, $locale, true);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
+
+            $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
@@ -239,8 +255,9 @@ class SearchController extends Controller
             $locationMarkers = $this->getBusinessProfileManager()
                 ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
-            if ($searchDTO->locationValue) {
-                $locationName = $searchDTO->locationValue->name;
+            if ($closestLocality) {
+                $locationName = $closestLocality->getName();
+                $request->query->set('geo', $locationName);
             }
 
             if ($searchDTO->query) {
@@ -275,7 +292,10 @@ class SearchController extends Controller
             $data
         );
 
-        $staticUrl = $this->get('router')->generate('domain_search_index', $request->query->all(), true);
+        $router = $this->get('router');
+
+        $staticSearchUrl  = $router->generate('domain_search_index', $request->query->all(), true);
+        $staticCompareUrl = $router->generate('domain_search_compare', $request->query->all(), true);
 
         return new JsonResponse(
             [
@@ -283,7 +303,9 @@ class SearchController extends Controller
                 'seoData'   => $seoData,
                 'markers'   => $locationMarkers,
                 'targeting' => $dcDataDTO,
-                'staticUrl' => $staticUrl,
+                'location'  => $locationName,
+                'staticSearchUrl'  => $staticSearchUrl,
+                'staticCompareUrl' => $staticCompareUrl,
             ]
         );
     }
