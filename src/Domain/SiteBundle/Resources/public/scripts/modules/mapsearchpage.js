@@ -302,6 +302,9 @@ define(
 
         window.history.replaceState( this.storage.mapSearchUrl, response.seoData.seoTitle, response.staticSearchUrl );
 
+        document.title = response.seoData.seoTitle;
+        $( 'meta[name=description]' ).attr( 'content', response.seoData.seoDescription );
+
         $( this.html.links.compareListView ).attr( 'href', response.staticCompareUrl );
         $( this.html.forms.searchLocationInput ).val( response.location );
 
