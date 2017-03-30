@@ -230,11 +230,57 @@ class SearchManager extends Manager
 
     public function getDoubleClickData(SearchDTO $searchDTO) : DCDataDTO
     {
+        $categoriesSlugSet = [];
+
+        $categorySlug = $this->getCategorySlugFromFilters($searchDTO);
+
+        if ($categorySlug) {
+            $categoriesSlugSet[] = $categorySlug;
+        }
+
         return new DCDataDTO(
             explode(' ', $searchDTO->query),
             $searchDTO->locationValue->name,
-            $searchDTO->getCategory1()
+            $categoriesSlugSet
         );
+    }
+
+    public function getDoubleClickCatalogData(SearchDTO $searchDTO) : DCDataDTO
+    {
+        $categoriesSlugSet = [];
+
+        if ($searchDTO->getCategory1()) {
+            $categoriesSlugSet[] = $searchDTO->getCategory1()->getSlug();
+        }
+
+        if ($searchDTO->getCategory2()) {
+            $categoriesSlugSet[] = $searchDTO->getCategory2()->getSlug();
+        }
+
+        if ($searchDTO->getCategory3()) {
+            $categoriesSlugSet[] = $searchDTO->getCategory3()->getSlug();
+        }
+
+        return new DCDataDTO(
+            explode(' ', $searchDTO->query),
+            $searchDTO->locationValue->name,
+            $categoriesSlugSet
+        );
+    }
+
+    protected function getCategorySlugFromFilters(SearchDTO $searchDTO)
+    {
+        $categorySlug = '';
+
+        if ($searchDTO->getCategory1()) {
+            $category = $this->categoriesManager->getRepository()->find((int)$searchDTO->getCategory1());
+
+            if ($category) {
+                $categorySlug = $category->getSlug();
+            }
+        }
+
+        return $categorySlug;
     }
 
     public function searchCatalogLocality($localitySlug)

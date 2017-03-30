@@ -42,7 +42,9 @@ class ArticleManager extends Manager
         return new DCDataDTO(
             [],
             '',
-            [$article->getCategory()->getName()],
+            [
+                $article->getCategory()->getSlug()
+            ],
             $article->getSlug()
         );
     }
@@ -62,7 +64,9 @@ class ArticleManager extends Manager
         return new DCDataDTO(
             [],
             '',
-            [$category->getName()],
+            [
+                $category->getSlug()
+            ],
             ''
         );
     }
