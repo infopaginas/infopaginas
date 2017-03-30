@@ -511,7 +511,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $.Velocity.RunSequence( openMapDeskSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll results--map-view' );
-            $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
             $( '.featured-categories__list' ).addClass( 'resize-categories-list' );
             $( '.filter__item' ).addClass( 'filter__item-resize' );
@@ -521,6 +520,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll' );
+            $( '.sort__options' ).removeClass( 'sort--on' );
+            $( '.sort__options' ).removeClass( 'filter--on' );
         }
 
         mapState = 'expanded';
@@ -533,7 +534,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             showDesktopMapControlButtons();
             $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
-            $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
             $( '.featured-categories__list' ).removeClass( 'resize-categories-list' );
             $( '.filter__item' ).removeClass( 'filter__item-resize' );
@@ -542,6 +542,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             hideMapControlButtons();
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
+            $( '.sort__options' ).addClass( 'sort--on' );
+            $( '.sort__options' ).addClass( 'filter--on' );
         }
 
         mapState = 'default';
@@ -558,7 +560,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         $.Velocity.RunSequence(resizeSequenceDesktop, { mobileHA: true });
         $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
         $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
-        $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
         $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
       } else if (mediaquery.matches) {
           $.Velocity.RunSequence(resizeSequenceDevice, { mobileHA: true });
@@ -679,8 +680,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     // map controls
     function showDeviceMapControlButtons() {
-        autoSearchMap.css( 'transform', 'translateX(0px) translateY(-160px)' );
-        redoSearchMap.css( 'transform', 'translateX(0px) translateY(-200px)' );
+        autoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
+        redoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
 
         autoSearchMap.removeClass( 'hidden' );
 
