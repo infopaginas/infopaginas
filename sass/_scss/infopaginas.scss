@@ -5174,13 +5174,17 @@ input[type='radio'], input[type='checkbox'] {
   }
 }
 
-.small-subscriptions-icons {
-  right: 0;
-  i {
-    width: 12px;
-    height: 12px;
-    font-size: 6px;
-    line-height: 12px;
+#searchResults {
+  &.main-results-resize {
+    .att-icons {
+      right: 0;
+      i {
+        width: 12px;
+        height: 12px;
+        font-size: 6px;
+        line-height: 12px;
+      }
+    }
   }
 }
 
