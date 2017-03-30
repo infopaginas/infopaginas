@@ -523,6 +523,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll' );
+            $( '.sort__options' ).removeClass( 'sort--on' );
+            $( '.sort__options' ).removeClass( 'filter--on' );
         }
 
         mapState = 'expanded';
@@ -545,6 +547,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             hideMapControlButtons();
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
+            $( '.sort__options' ).addClass( 'sort--on' );
+            $( '.sort__options' ).addClass( 'filter--on' );
         }
 
         mapState = 'default';
@@ -682,8 +686,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     // map controls
     function showDeviceMapControlButtons() {
-        autoSearchMap.css( 'transform', 'translateX(0px) translateY(-160px)' );
-        redoSearchMap.css( 'transform', 'translateX(0px) translateY(-200px)' );
+        autoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
+        redoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
 
         autoSearchMap.removeClass( 'hidden' );
 
