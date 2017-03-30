@@ -196,6 +196,7 @@ services:
             - { name: doctrine.event_subscriber, connection: default, priority: 5 }
         calls:
             - [ setBusinessStatusManager, [ '@domain_business.manager.business_status_manager' ] ]
+            - [ setElasticSearchManager, [ '@oxa_elastic_search.manager.search' ] ]
 
     #services section
     domain_business.service.datetime_period_status_service:

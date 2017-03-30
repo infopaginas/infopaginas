@@ -34,6 +34,7 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
     {
         $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
+        $businessProfileManager->handleLocalityElasticSync();
         $businessProfileManager->handleCategoryElasticSync();
         $businessProfileManager->handleBusinessElasticSync();
     }

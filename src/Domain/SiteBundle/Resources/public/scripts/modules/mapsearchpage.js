@@ -32,13 +32,16 @@ define(
             },
             links: {
                 sortMatch: '#sort-match-link',
-                sortDistance: '#sort-distance-link'
+                sortDistance: '#sort-distance-link',
+                searchListView: '#searchListView',
+                compareListView: '#compareListView'
             },
             checkboxes: {
                 autoSearch: '#auto-search-in-map'
             },
             forms: {
-                searchForm: '#header-search-form'
+                searchForm: '#header-search-form',
+                searchLocationInput: '#searchLocation'
             },
             tabs: {
                 sort: 'div.sort-bar .sort__options.sort',
@@ -297,7 +300,10 @@ define(
         this.updateGoogleTagTargeting( response.targeting );
         this.options.directions.bindEventsDirections();
 
-        window.history.replaceState( this.storage.mapSearchUrl, response.seoData.seoTitle, response.staticUrl );
+        window.history.replaceState( this.storage.mapSearchUrl, response.seoData.seoTitle, response.staticSearchUrl );
+
+        $( this.html.links.compareListView ).attr( 'href', response.staticCompareUrl );
+        $( this.html.forms.searchLocationInput ).val( response.location );
 
         $( document ).trigger( 'searchRequestReady' );
     };
@@ -349,11 +355,14 @@ define(
             );
 
             var mapBounds = map.getBounds();
+            var mapCenter = map.getCenter();
 
             data.tllt = mapBounds.f.b;
             data.tllg = mapBounds.b.b;
             data.brlt = mapBounds.f.f;
             data.brlg = mapBounds.b.f;
+            data.clt  = mapCenter.lat;
+            data.clg  = mapCenter.lng;
 
             data.geo = '';
         }

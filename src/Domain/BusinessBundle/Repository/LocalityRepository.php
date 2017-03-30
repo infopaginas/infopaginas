@@ -135,4 +135,44 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getAvailableLocalitiesByIds($ids)
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->andWhere('l.id IN (:ids)')
+            ->setParameter('ids', $ids)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getUpdatedLocalitiesIterator()
+    {
+        $qb = $this->getAvailableLocalitiesQb();
+        $qb->andWhere('l.isUpdated = TRUE');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    public function setUpdatedAllLocalities()
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:Locality', 'l')
+            ->where('l.isActive = true')
+            ->set('l.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
 }
