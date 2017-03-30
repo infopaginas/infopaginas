@@ -10,7 +10,7 @@
 {% block body %}
     <div class="main__container">
         <section class="main" id="searchResults">
-            <div class="results {% if disableFilters == false %}active__toggle{% endif %}">
+            <div class="results {% if not disableFilters %}active__toggle{% endif %}">
                 <div id="searchContainer">
                     {% include ':redesign/blocks:search_result_item_block.html.twig' %}
                 </div>
