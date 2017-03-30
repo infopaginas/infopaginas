@@ -512,7 +512,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $.Velocity.RunSequence( openMapDeskSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll results--map-view' );
-            $( '.att-icons' ).addClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).addClass( 'dropdown-call-button-additional' );
             searchAdBlocks.addClass( 'hidden' );
             $( '.featured-categories__list' ).addClass( 'resize-categories-list' );
@@ -537,7 +536,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             showDesktopMapControlButtons();
             $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
-            $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
             searchAdBlocks.removeClass( 'hidden' );
             $( '.featured-categories__list' ).removeClass( 'resize-categories-list' );
@@ -565,7 +563,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         $.Velocity.RunSequence(resizeSequenceDesktop, { mobileHA: true });
         $.Velocity.RunSequence(closeMapDeskSequence, { mobileHA: true });
         $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
-        $( '.att-icons' ).removeClass( 'small-subscriptions-icons' );
         $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
       } else if (mediaquery.matches) {
           $.Velocity.RunSequence(resizeSequenceDevice, { mobileHA: true });
