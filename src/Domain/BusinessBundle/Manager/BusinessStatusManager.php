@@ -16,6 +16,7 @@ class BusinessStatusManager
 {
     /**
      * @param BusinessProfile $entity
+     * @param EntityManager   $em
      */
     public function manageBusinessStatusPreUpdate(BusinessProfile $entity, EntityManager $em)
     {
@@ -27,7 +28,8 @@ class BusinessStatusManager
     }
 
     /**
-     * @param Category $entity
+     * @param Category        $entity
+     * @param EntityManager   $em
      */
     public function manageCategoryStatusPreUpdate(Category $entity, EntityManager $em)
     {
@@ -39,7 +41,8 @@ class BusinessStatusManager
     }
 
     /**
-     * @param Locality $entity
+     * @param Locality        $entity
+     * @param EntityManager   $em
      */
     public function manageLocalityStatusPreUpdate(Locality $entity, EntityManager $em)
     {
@@ -66,7 +69,7 @@ class BusinessStatusManager
     }
 
     /**
-     * @param Category $entity
+     * @param Category             $entity
      * @param ElasticSearchManager $elasticSearch
      */
     public function removeCategoryFromElastic(Category $entity, ElasticSearchManager $elasticSearch)
@@ -75,7 +78,7 @@ class BusinessStatusManager
     }
 
     /**
-     * @param Locality $entity
+     * @param Locality             $entity
      * @param ElasticSearchManager $elasticSearch
      */
     public function removeLocalityFromElastic(Locality $entity, ElasticSearchManager $elasticSearch)
@@ -83,6 +86,13 @@ class BusinessStatusManager
         $this->removeItemFromElastic($entity->getId(), Locality::ELASTIC_DOCUMENT_TYPE, $elasticSearch);
     }
 
+    /**
+     * @param int       $id
+     * @param string    $documentType
+     * @param ElasticSearchManager $elasticSearch
+     *
+     * @return bool
+     */
     protected function removeItemFromElastic($id, $documentType, ElasticSearchManager $elasticSearch)
     {
         $status = true;

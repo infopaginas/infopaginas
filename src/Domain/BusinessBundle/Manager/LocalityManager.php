@@ -160,7 +160,7 @@ class LocalityManager extends Manager
                 ],
             ],
             'location' => [
-                'type' => 'geo_point'
+                'type' => 'geo_point',
             ],
         ];
 
@@ -180,10 +180,10 @@ class LocalityManager extends Manager
                         'lon' => $params->locationValue->searchCenterLng,
                     ],
                     'unit' => 'mi',
-                    'order' => 'asc'
+                    'order' => 'asc',
                 ],
                 '_score' => [
-                    'order' => 'desc'
+                    'order' => 'desc',
                 ],
             ],
         ];
@@ -211,7 +211,7 @@ class LocalityManager extends Manager
             $dataRaw = $this->getRepository()->getAvailableLocalitiesByIds($dataIds);
 
             foreach ($dataIds as $id) {
-                $item = $this->searchLocalityByIdsInArray($dataRaw, $id);
+                $item = $this->getLocalityByIdsInArray($dataRaw, $id);
 
                 if ($item) {
                     $data[] = $item;
@@ -225,7 +225,7 @@ class LocalityManager extends Manager
         ];
     }
 
-    protected function searchLocalityByIdsInArray($data, $id)
+    protected function getLocalityByIdsInArray($data, $id)
     {
         foreach ($data as $item) {
             if ($item->getId() == $id) {

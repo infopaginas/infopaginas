@@ -136,6 +136,10 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param array $ids
+     * @return array
+     */
     public function getAvailableLocalitiesByIds($ids)
     {
         $qb = $this->getAvailableLocalitiesQb()
@@ -161,6 +165,9 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $iterateResult;
     }
 
+    /**
+     * @return mixed
+     */
     public function setUpdatedAllLocalities()
     {
         $result = $this->getEntityManager()
