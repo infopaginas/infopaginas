@@ -1607,7 +1607,7 @@ $thumb-width-mb: 60px;
   overflow: hidden;
   text-align: center;
   position: absolute;
-  top: 50px;
+  top: 5px;
   right: 10px;
   color: rgb(86, 86, 86);
   font-family: Roboto, Arial, sans-serif;
@@ -1633,23 +1633,33 @@ $thumb-width-mb: 60px;
 
   @media only screen and (min-width: 600px) and (max-width: 768px) and (orientation: portrait) {
     right: 10px;
-    top: 48px;
+    top: 100px;
     padding: 10px 8px 8px;
   }
 
   @media only screen and (max-width: 414px) and (orientation: portrait) {
     padding: 10px 8px 9px;
-    top: 48px;
+    top: 70px;
   }
 
   @media only screen and (max-width: 667px) and (orientation: landscape){
     padding: 10px 8px 9px;
-    top: 48px;
+    top: 50px;
   }
 }
 
 .button--auto-search-in-map {
   right: 127px;
+
+  @media only screen and (max-width: 414px) and (orientation: portrait) {
+    right: 10px;
+  }
+}
+
+.button--redo-search-in-map {
+  @media only screen and (max-width: 414px) and (orientation: portrait) {
+    top: 105px;
+  }
 }
 
 .floating-offset {

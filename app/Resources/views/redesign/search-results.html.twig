@@ -20,16 +20,6 @@
                     <span>{% trans %}Map view{% endtrans %}</span>
                 </button>
 
-                <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map">
-                    <i class="fa fa-search"></i>
-                    <span>{% trans %}search.control.redo{% endtrans %}</span>
-                </button>
-
-                <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map">
-                    <i class="fa fa-square-o"></i>
-                    <span>{% trans %}search.control.auto{% endtrans %}</span>
-                </button>
-
                 <button id="hide-map" type="button" class="button button-round button--hide-map">
                     <i class="fa fa-list"></i>
                     <span>{% trans %}List view{% endtrans %}</span>
@@ -38,6 +28,16 @@
         </section><!-- main -->
 
         <section class="results-map">
+            <button id="redo-search-in-map" type="button" class="button-like-google button--redo-search-in-map">
+                <i class="fa fa-search"></i>
+                <span>{% trans %}search.control.redo{% endtrans %}</span>
+            </button>
+
+            <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map">
+                <i class="fa fa-square-o"></i>
+                <span>{% trans %}search.control.auto{% endtrans %}</span>
+            </button>
+
             <div id="map" class="map"></div>
             <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->

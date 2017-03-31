@@ -508,7 +508,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var mediaquery = window.matchMedia( '(min-width: 804px)' );
 
         if ( mediaquery.matches ) {
-            showDesktopMapControlButtons();
             $.Velocity.RunSequence( openMapDeskSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll results--map-view' );
@@ -518,7 +517,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.filter__item' ).addClass( 'filter__item-resize' );
             $( '.main' ).addClass( 'main-results-resize' );
         } else {
-            showDeviceMapControlButtons();
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
             showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll' );
@@ -533,7 +531,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var mediaquery = window.matchMedia( '(min-width: 804px)' );
 
         if ( mediaquery.matches ) {
-            showDesktopMapControlButtons();
             $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
@@ -542,7 +539,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.filter__item' ).removeClass( 'filter__item-resize' );
             $( '.main' ).removeClass( 'main-results-resize' );
         } else {
-            hideMapControlButtons();
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
             $( '.sort__options' ).addClass( 'sort--on' );
@@ -569,12 +565,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           $.Velocity.RunSequence(closeMapSequence, { mobileHA: true });
           $( 'body' ).removeClass( 'body--no-scroll' );
       }
-
-        if ( mediaquery.matches ) {
-            showDesktopMapControlButtons();
-        } else {
-            hideMapControlButtons();
-        }
 
       if (mediaquery.matches) {
         mapStateSize = 'desktop';
