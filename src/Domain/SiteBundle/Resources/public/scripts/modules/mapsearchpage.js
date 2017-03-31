@@ -171,6 +171,8 @@ define(
         });
 
         marker.addListener( 'click', function( event ) {
+            $( document ).trigger( 'disableAutoSearchInMap' );
+
             self.closeAllLables();
             self.scrollTo( markerData.id );
             infoWindow.open( self.map, marker );
@@ -184,6 +186,7 @@ define(
 
         if ( document.getElementById( 'show-on-map-' + markerData.id ) ) {
             google.maps.event.addDomListener(document.getElementById( 'show-on-map-' + markerData.id ), "click", function( e ) {
+                $( document ).trigger( 'disableAutoSearchInMap' );
                 self.map.setCenter( marker.getPosition() );
 
                 self.reportTracker.trackEvent( 'mapShowButton', markerData.id );

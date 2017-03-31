@@ -679,6 +679,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     };
 
     // map controls
+    $( document ).on( 'disableAutoSearchInMap', function() {
+        disableAutoSearchInMap();
+    });
+
     function showDeviceMapControlButtons() {
         autoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
         redoSearchMap.css( 'transform', 'translateX(0px) translateY(45px)' );
