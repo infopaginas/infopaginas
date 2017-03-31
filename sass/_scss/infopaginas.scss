@@ -1931,6 +1931,12 @@ $thumb-width-mb: 60px;
   .highlights__item--payment ul {
     height: 6.2em;
     overflow: hidden;
+
+    li {
+      &:before {
+        margin-right: 5px;
+      }
+    }
   }
 }
 .highlights__item--checklist {
@@ -3385,13 +3391,14 @@ input[type='checkbox'] {
         height: 42px;
         margin: 10px 10px 0 46px;
         padding: 5px 10px;
+        width: 115px;
       }
 
       @media only screen and (min-width: 376px) and (max-width: 768px) and (orientation: portrait) {
-        margin: 10px 10px 0 30px;
+        margin: 10px 10px 0 62px;
       }
 
-      @media only screen and (max-width: 667px) and (orientation: landscape) {
+      @media only screen and (max-width: 667px) and (max-height: 375px) and (orientation: landscape) {
         margin: 10px 10px 0 62px;
       }
 
