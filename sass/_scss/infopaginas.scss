@@ -5325,3 +5325,10 @@ a.disabledLink {
 .hide-before {
   display: none;
 }
+
+body.results-list.results--map-view {
+  .search-ad-block {
+    display: none !important;
+    visibility: hidden;
+  }
+}

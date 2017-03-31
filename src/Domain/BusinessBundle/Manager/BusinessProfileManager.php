@@ -825,7 +825,6 @@ class BusinessProfileManager extends Manager
             $categoriesSet[] = $category->getSlug();
         }
 
-
         return new DCDataDTO(
             [],
             '',
