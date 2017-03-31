@@ -242,10 +242,17 @@ class SearchController extends Controller
         $seoCategories = [];
 
         if ($searchDTO) {
+            $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
+
+            if ($closestLocality) {
+                $searchDTO->locationValue->name = $closestLocality->getName();
+                $searchDTO->locationValue->lat  = $closestLocality->getLatitude();
+                $searchDTO->locationValue->lng  = $closestLocality->getLongitude();
+                $searchDTO->locationValue->locality = $closestLocality;
+            }
+
             $searchResultsDTO = $searchManager->search($searchDTO, $locale, true);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
-
-            $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
