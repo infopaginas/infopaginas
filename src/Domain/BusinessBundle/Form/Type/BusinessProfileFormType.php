@@ -645,9 +645,6 @@ class BusinessProfileFormType extends AbstractType
             'required' => false,
             'mapped'   => false,
             'data'     => $businessProfile->getTranslation('slogan', strtolower($locale)),
-            'constraints' => [
-                new Length(array('max' => 10)),
-            ],
         ]);
     }
 
