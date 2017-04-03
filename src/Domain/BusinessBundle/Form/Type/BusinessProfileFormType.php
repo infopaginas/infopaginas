@@ -15,6 +15,7 @@ use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\MediaBundle\Entity\Media as SonataMedia;
 use Oxa\VideoBundle\Form\Type\VideoMediaType;
@@ -594,14 +595,18 @@ class BusinessProfileFormType extends AbstractType
                 'mapped'   => false,
                 'data'     => $businessProfile->getTranslation('name', strtolower($locale)),
             ])
-            ->add('description' . $locale, TextareaType::class, [
-                'attr' => [
-                    'rows' => 5,
-                ],
+            ->add('description' . $locale, CKEditorType::class, [
                 'label'    => 'Description',
                 'required' => false,
                 'mapped'   => false,
                 'data'     => $businessProfile->getTranslation('description', strtolower($locale)),
+                'config_name' => 'extended_text',
+                'config'      => [
+                    'width'  => '100%',
+                ],
+                'attr' => [
+                    'class' => 'text-editor',
+                ],
             ])
             ->add('product' . $locale, TextareaType::class, [
                 'attr' => [

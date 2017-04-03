@@ -39,6 +39,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 /**
  * Class BusinessProfileAdmin
@@ -236,11 +237,13 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Description')
                     ->add('slogan')
                     ->add('product')
-                    ->add('description', null, [
-                        'attr' => [
-                            'rows' => 5,
-                        ],
-                    ])
+                    ->add(
+                        'description',
+                        CKEditorType::class,
+                        [
+                            'config_name' => 'extended_text',
+                        ]
+                    )
                     ->add('workingHours')
                     ->add(
                         'collectionWorkingHours',

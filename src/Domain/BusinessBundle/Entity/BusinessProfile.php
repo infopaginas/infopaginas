@@ -309,22 +309,22 @@ class BusinessProfile implements
      * @var string - Description of Business
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="description", type="text", length=1000, nullable=true)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="description", type="text", length=10000, nullable=true)
+     * @Assert\Length(max=10000, maxMessage="business_profile.max_length")
      */
     protected $description;
 
     /**
      * @var string - Description of Business en
      *
-     * @ORM\Column(name="description_en", type="text", length=1000, nullable=true)
+     * @ORM\Column(name="description_en", type="text", length=10000, nullable=true)
      */
     protected $descriptionEn;
 
     /**
      * @var string - Description of Business es
      *
-     * @ORM\Column(name="description_es", type="text", length=1000, nullable=true)
+     * @ORM\Column(name="description_es", type="text", length=10000, nullable=true)
      */
     protected $descriptionEs;
 
@@ -2645,6 +2645,14 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_BRANDS,
             self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
+        ];
+    }
+
+    public static function getCommonBooleanFields()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
         ];
     }
 

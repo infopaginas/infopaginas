@@ -6,6 +6,11 @@ ivory_ck_editor:
             filebrowserBrowseRouteParameters: []
             toolbar: full
             width: 100%
+        extended_text:
+            toolbar:
+                - [Maximize, -, Source]
+                - [Bold, Italic, Underline, -, Cut, Copy, Paste, PasteText, PasteFromWord, -, Undo, Redo, -, NumberedList, BulletedList, -, Outdent, Indent, -, Blockquote, -, Link, Unlink, Table]
+                - [Styles, Format, Font, FontSize, -, TextColor, BGColor]
 
 fm_elfinder:
     instances:

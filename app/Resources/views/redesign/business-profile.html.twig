@@ -154,10 +154,10 @@
 
                                 {% if businessProfile.getEmail() %}
                                     <div class="highlights__item">
-                                        <h3>Email</h3>
+                                        <h3>{% trans %}Email{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick">{{ businessProfile.getEmail() }}</a>
+                                                <i class="fa fa-envelope"></i> <a data-href="mailto:{{ businessProfile.getEmail() }}" class="link-pointer redirect-event" data-id="{{ businessProfile.id }}" data-current-tab="1" data-type="emailClick">{% trans %}Contact Us{% endtrans %}</a>
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -218,7 +218,7 @@
                         {% if businessProfile.getDescription() %}
                             <section class="page-section description-section">
                                 <div class="container">
-                                    <p>{{ businessProfile.getDescription()|raw }}</p>
+                                    <div class="business-view-description">{{ businessProfile.getDescription()|raw }}</div>
                                 </div>
                             </section>
                         {% endif %}
