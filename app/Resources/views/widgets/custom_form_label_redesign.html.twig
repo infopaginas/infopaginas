@@ -3,7 +3,13 @@
     {% set required = field.vars.required %}
     {% set translation_domain = field.vars.translation_domain %}
 
-    <label for="{{ field.vars.id }}">
+    {% if field.vars.attr.class is defined %}
+        {% set class = field.vars.attr.class %}
+    {% else %}
+        {% set class = '' %}
+    {% endif %}
+
+    <label for="{{ field.vars.id }}" class="{{ class }}">
         {{ label|trans({}, translation_domain) }}{% if required %}*{% endif %}
     </label>
 {% endmacro %}

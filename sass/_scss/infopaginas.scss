@@ -3445,6 +3445,10 @@ input[type='checkbox'] {
       color: $green;
     }
   }
+
+  label.text-editor {
+    position: static;
+  }
 }
 
 .field-active {

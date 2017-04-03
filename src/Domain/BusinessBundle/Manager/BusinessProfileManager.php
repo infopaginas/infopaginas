@@ -379,7 +379,14 @@ class BusinessProfileManager extends Manager
         foreach ($changeSet->getEntries() as $change) {
             switch ($change->getAction()) {
                 case ChangeSetCalculator::CHANGE_COMMON_PROPERTY:
-                    $accessor->setValue($businessProfile, $change->getFieldName(), $change->getNewValue());
+                    $newValue = $change->getNewValue();
+
+                    if (in_array($change->getFieldName(), BusinessProfile::getCommonBooleanFields())) {
+                        $newValue = (bool)$newValue;
+                    }
+
+                    $accessor->setValue($businessProfile, $change->getFieldName(), $newValue);
+
                     break;
                 case ChangeSetCalculator::CHANGE_RELATION_MANY_TO_ONE:
                     $item = RelationChangeSetUtil::getRelationEntityFromChangeSet(
@@ -993,7 +1000,7 @@ class BusinessProfileManager extends Manager
             if ($showAll) {
                 $description = $businessProfile->getDescription();
                 if ($description) {
-                    $schemaItem['description'] = $description;
+                    $schemaItem['description'] = strip_tags($description);
                 }
 
                 $sameAs = $this->addSameAsUrl([], $businessProfile->getFacebookURL());

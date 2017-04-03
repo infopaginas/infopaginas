@@ -33,8 +33,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         //10Mb (per specification)
         this.maxAllowedFileSize = 10000000;
 
-        //max business profile images count - 10
-        this.maxAllowedFilesCount = 10;
+        //max business profile images count - 25
+        this.maxAllowedFilesCount = 25;
         // single logo and background
         this.maxAllowedMediaItemCount = 1;
 

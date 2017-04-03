@@ -39,7 +39,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
-    const MAX_IMAGES_PER_BUSINESS = 10;
+    const MAX_IMAGES_PER_BUSINESS = 25;
 
     /**
      * @var integer
