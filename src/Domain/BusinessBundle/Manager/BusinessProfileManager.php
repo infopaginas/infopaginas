@@ -2332,7 +2332,7 @@ class BusinessProfileManager extends Manager
         return $result;
     }
 
-    public function updatedMangedBusinessCounter()
+    public function updatedManagedBusinessesCounter()
     {
         $updated = 0;
 

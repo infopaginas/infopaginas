@@ -22,15 +22,12 @@ class ManagedBusinessesCounterCommand extends ContainerAwareCommand
         ;
     }
 
-    /**
-     * Used manage objects statuses
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
         $output->writeln('Processing...');
-        $result = $businessProfileManager->updatedMangedBusinessCounter();
+        $result = $businessProfileManager->updatedManagedBusinessesCounter();
         $output->writeln(sprintf('Done! Updated records count: %s', $result));
     }
 }

@@ -124,7 +124,7 @@ class UserAdmin extends OxaAdmin
                     'businessProfiles',
                     null,
                     [
-                        'label' => 'Managed Business',
+                        'label' => 'Managed Businesses',
                     ]
                 )
             ->end()
