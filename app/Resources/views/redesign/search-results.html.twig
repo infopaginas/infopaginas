@@ -19,11 +19,6 @@
                     <i class="fa fa-map"></i>
                     <span>{% trans %}Map view{% endtrans %}</span>
                 </button>
-
-                <button id="hide-map" type="button" class="button button-round button--hide-map">
-                    <i class="fa fa-list"></i>
-                    <span>{% trans %}List view{% endtrans %}</span>
-                </button>
             </div><!-- results -->
         </section><!-- main -->
 
@@ -36,6 +31,11 @@
             <button id="auto-search-in-map" type="button" class="button-like-google button--auto-search-in-map">
                 <i class="fa fa-square-o"></i>
                 <span>{% trans %}search.control.auto{% endtrans %}</span>
+            </button>
+
+            <button id="hide-map" type="button" class="button button-round button--hide-map">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}List view{% endtrans %}</span>
             </button>
 
             <div id="map" class="map"></div>
