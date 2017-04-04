@@ -27,4 +27,15 @@ class UserRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getManagedBusinessesData()
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(bp.id) as cnt, u.id as userId')
+            ->leftJoin('u.businessProfiles', 'bp')
+            ->groupBy('u.id')
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }

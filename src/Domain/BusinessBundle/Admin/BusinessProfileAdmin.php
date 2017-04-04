@@ -64,6 +64,13 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('country')
             ->add('catalogLocality')
             ->add(
+                'user',
+                null,
+                [
+                    'label' => 'Business Admin',
+                ]
+            )
+            ->add(
                 'phones.phone',
                 null,
                 [
@@ -99,6 +106,13 @@ class BusinessProfileAdmin extends OxaAdmin
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])
             ->add('registrationDate')
+            ->add(
+                'user',
+                null,
+                [
+                    'label' => 'Business Admin',
+                ]
+            )
             ->add('isActive')
         ;
 

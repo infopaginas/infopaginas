@@ -110,6 +110,13 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     private $googleAccessToken;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="businesses_count", type="integer", options={"default" : 0})
+     */
+    protected $businessesCount;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -476,6 +483,24 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setGoogleAccessToken($googleAccessToken)
     {
         $this->googleAccessToken = $googleAccessToken;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBusinessesCount()
+    {
+        return $this->businessesCount;
+    }
+
+    /**
+     * @param int $businessesCount
+     * @return User
+     */
+    public function setBusinessesCount($businessesCount)
+    {
+        $this->businessesCount = $businessesCount;
         return $this;
     }
 }
