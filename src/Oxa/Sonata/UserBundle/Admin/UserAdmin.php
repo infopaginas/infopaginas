@@ -20,6 +20,8 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class UserAdmin extends OxaAdmin
 {
+    public $advancedFilterMode = true;
+
     /**
      * Default values to the datagrid.
      *
@@ -63,7 +65,15 @@ class UserAdmin extends OxaAdmin
             ->add('email')
             ->add('role.name')
             ->add('enabled', null, array('editable' => false))
-            ->add('createdAt');
+            ->add('createdAt')
+            ->add(
+                'businessesCount',
+                null,
+                [
+                    'label' => 'Number of Businesses',
+                ]
+            )
+        ;
 
         $this->addGridActions($listMapper);
     }
@@ -81,6 +91,13 @@ class UserAdmin extends OxaAdmin
             ->add('role')
             ->add('enabled')
             ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add(
+                'businessesCount',
+                null,
+                [
+                    'label' => 'Number of Businesses',
+                ]
+            )
         ;
     }
 
@@ -101,6 +118,15 @@ class UserAdmin extends OxaAdmin
                 ->add('firstname')
                 ->add('lastname')
                 ->add('locale')
+            ->end()
+            ->with('Managed Businesses')
+                ->add(
+                    'businessProfiles',
+                    null,
+                    [
+                        'label' => 'Managed Business',
+                    ]
+                )
             ->end()
         ;
     }

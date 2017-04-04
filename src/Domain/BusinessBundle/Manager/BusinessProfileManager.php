@@ -2331,4 +2331,22 @@ class BusinessProfileManager extends Manager
 
         return $result;
     }
+
+    public function updatedMangedBusinessCounter()
+    {
+        $updated = 0;
+
+        $businessCounter = $this->em->getRepository(User::class)->getManagedBusinessesAmount();
+
+        foreach ($businessCounter as $item) {
+            $user = $this->em->getReference(User::class, $item['userId']);
+            $user->setBusinessesCount($item['cnt']);
+
+            $updated++;
+        }
+
+        $this->em->flush();
+
+       return $updated;
+    }
 }
