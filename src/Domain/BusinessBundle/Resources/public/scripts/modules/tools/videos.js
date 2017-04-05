@@ -51,12 +51,18 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     videos.prototype.beforeRequestHandler = function () {
         this.spinner.show( this.spinnerContainerId );
         this.removeVideoErrors();
+
+        $( '#' + this.html.buttons.startUploadRemoteFileButtonId ).attr( 'disabled', 'disabled' );
+        $( '#' + this.html.buttons.fileInputId ).attr( 'disabled', 'disabled' );
     };
 
     //hide loader spinner on complete
     videos.prototype.completeHandler = function() {
         this.spinner.hide();
         $( this.html.remoteVideoURLInputId ).val( '' );
+
+        $( '#' + this.html.buttons.startUploadRemoteFileButtonId ).removeAttr( 'disabled' );
+        $( '#' + this.html.buttons.fileInputId ).removeAttr( 'disabled' );
     };
 
     //actions on ajax success

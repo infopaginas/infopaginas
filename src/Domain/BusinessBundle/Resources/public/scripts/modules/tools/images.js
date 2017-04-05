@@ -107,6 +107,9 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         this.removeImageErrors();
         $( document ).find( '.' + this.html.imageEditFormClassname ).hide();
         this.spinner.show( this.spinnerContainerId );
+
+        $( '#' + this.html.buttons.startUploadRemoteFileButtonId ).attr( 'disabled', 'disabled' );
+        $( '#' + this.html.buttons.fileInputId ).attr( 'disabled', 'disabled' );
     };
 
     //action on ajax compelete
@@ -124,6 +127,9 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             $galleryContainer.parent().find( '.blank__message' ).show();
             $galleryContainer.hide();
         }
+
+        $( '#' + this.html.buttons.startUploadRemoteFileButtonId ).removeAttr( 'disabled' );
+        $( '#' + this.html.buttons.fileInputId ).removeAttr( 'disabled' );
     };
 
     //actions on ajax success
