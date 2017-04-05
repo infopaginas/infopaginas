@@ -5353,3 +5353,10 @@ body.results-list.results--map-view {
     visibility: hidden;
   }
 }
+
+#images-spin-container, #videos-spin-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+}
