@@ -135,6 +135,16 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'unpackTranslationChangeSetRow'
             ),
+            'get_wysiwyg_preview_block' => new \Twig_Function_Method(
+                $this,
+                'renderWysiwygPreviewForm',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
         ];
     }
 
@@ -427,6 +437,20 @@ class BusinessProfileExtension extends \Twig_Extension
             ':redesign/blocks/task:related_entity_changes.html.twig',
             [
                 'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    public function renderWysiwygPreviewForm(\Twig_Environment $environment, $name, $raw)
+    {
+        $form = $this->businessProfileManager->getWysiwygPreviewForm($name, $raw);
+
+        $html = $environment->render(
+            'DomainBusinessBundle:TaskAdmin/fields:wysiwig_field.html.twig',
+            [
+                'form' => $form->createView(),
             ]
         );
 
