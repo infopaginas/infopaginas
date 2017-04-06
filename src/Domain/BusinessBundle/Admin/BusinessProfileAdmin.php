@@ -1133,7 +1133,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['Level 1 category name'] = 'category.name';
         $exportFields['Level 2 name+ID']       = 'exportCategoryLvl2';
         $exportFields['Level 3 name+ID']       = 'exportCategoryLvl3';
-        $exportFields['User Id']               = 'exportBusinessAdmin';
+        $exportFields['User Id']               = 'exportBusinessAdminFullName';
 
         return $exportFields;
     }

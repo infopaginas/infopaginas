@@ -2581,7 +2581,7 @@ class BusinessProfile implements
     /**
      * @return string
      */
-    public function getExportBusinessAdmin()
+    public function getExportBusinessAdminFullName()
     {
         return $this->getUser() ? $this->getUser()->getFullName() : '';
     }
