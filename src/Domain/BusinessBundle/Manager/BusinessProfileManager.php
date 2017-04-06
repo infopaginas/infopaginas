@@ -632,6 +632,7 @@ class BusinessProfileManager extends Manager
                 'config_name' => 'preview_text',
                 'config'      => [
                     'width'  => '100%',
+                    'readOnly' => true,
                 ],
                 'attr' => [
                     'class' => 'text-editor',

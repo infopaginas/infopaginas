@@ -14,6 +14,8 @@ ivory_ck_editor:
         preview_text:
             toolbar:
                 - [Maximize, -, Source]
+                - [Bold, Italic, Underline, -, Cut, Copy, Paste, PasteText, PasteFromWord, -, Undo, Redo, -, NumberedList, BulletedList, -, Outdent, Indent, -, Blockquote, -, Link, Unlink]
+                - [Styles, Format, Font, FontSize, -, TextColor, BGColor]
 
 fm_elfinder:
     instances:
