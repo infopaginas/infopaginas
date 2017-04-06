@@ -4,8 +4,8 @@
         <i class="glyphicon glyphicon-pencil"></i>
     </a>
 {% endif %}
-{% if admin.hasRoute('copy') %}
-    <a href="{{ admin.generateObjectUrl('copy', object) }}" class="btn btn-sm btn-default btn-list-action"
+{% if admin.isGranted('EDIT', object) %}
+    <a href="{{ admin.generateObjectUrl('create', object) }}" class="btn btn-sm btn-default btn-list-action"
        title="{{ 'action_copy'|trans({}, 'SonataAdminBundle') }}">
         <i class="glyphicon glyphicon-subtitles"></i>
     </a>

@@ -6,7 +6,9 @@ use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -50,6 +52,31 @@ class BusinessProfileAdmin extends OxaAdmin
     use VideoUploadTrait;
 
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
+
+    protected $translations = [];
+
+    /**
+     * @return BusinessProfile
+     */
+    public function getNewInstance()
+    {
+        $instance = parent::getNewInstance();
+
+        if ($this->getRequest()->getMethod() == Request::METHOD_GET) {
+            $parentId = $this->getRequest()->get('id', null);
+
+            if ($parentId) {
+                $container = $this->getConfigurationPool()->getContainer();
+                $parent    = $container->get('doctrine')->getRepository(BusinessProfile::class)->find($parentId);
+
+                if ($parent) {
+                    $instance = $this->cloneParentEntity($parent);
+                }
+            }
+        }
+
+        return $instance;
+    }
 
     /**
      * @param DatagridMapper $datagridMapper
@@ -127,23 +154,76 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getSubject();
 
+        $businessProfile->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
+
         $subscriptionPlan = $businessProfile->getSubscription() ?
             $businessProfile->getSubscription()->getSubscriptionPlan() : new SubscriptionPlan();
 
         // define group zoning
         $formMapper
-            ->tab('Profile', array('class' => 'col-md-6'))
-                ->with('General', array('class' => 'col-md-4'))->end()
-                ->with('Description', array('class' => 'col-md-8'))->end()
-                ->with('Address', array('class' => 'col-md-4'))->end()
-                ->with('Map', array('class' => 'col-md-8'))->end()
-                ->with('Categories', array('class' => 'col-md-6'))->end()
-                ->with('Social Networks', array('class' => 'col-md-6'))->end()
-                ->with('Gallery')->end()
+            ->tab(
+                'Profile',
+                [
+                    'class' => 'col-md-12',
+                ]
+            )
+                ->with(
+                    'English',
+                    [
+                        'class' => 'col-md-6',
+                    ]
+                )
+                ->end()
+                ->with(
+                    'Spanish',
+                    [
+                        'class' => 'col-md-6',
+                    ]
+                )
+                ->end()
+                ->with(
+                    'Main',
+                    [
+                        'class' => 'col-md-12',
+                    ]
+                )
+                ->end()
+                ->with(
+                    'Address',
+                    [
+                        'class' => 'col-md-4',
+                    ]
+                )
+                ->end()
+                ->with(
+                    'Map',
+                    [
+                        'class' => 'col-md-8',
+                    ]
+                )
+                ->end()
+                ->with(
+                    'Categories',
+                    [
+                        'class' => 'col-md-6',
+                    ]
+                )
+                ->end()
+                ->with(
+                    'Social Networks',
+                    [
+                        'class' => 'col-md-6',
+                    ]
+                )
+                ->end()
+                ->with('Gallery')
+                ->end()
             ->end()
         ;
 
-        if ($subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+        if ($businessProfile->getId() and
+            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+        ) {
             $formMapper->tab('Profile')->with('Video')->end()->end();
         }
 
@@ -156,12 +236,6 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
             ->tab('Reviews', array('class' => 'col-md-6'))
                 ->with('User Reviews')->end()
-            ->end()
-            ->tab('Interactions Report', array('class' => 'col-md-6'))
-                ->with('Interactions Report')->end()
-            ->end()
-            ->tab('Keywords Report', array('class' => 'col-md-6'))
-                ->with('Keywords Report')->end()
             ->end()
         ;
 
@@ -222,8 +296,25 @@ class BusinessProfileAdmin extends OxaAdmin
 
         $formMapper
             ->tab('Profile')
-                ->with('General')
-                    ->add('name')
+            ->with('English')
+        ;
+
+        $this->addTranslationBlock($formMapper, $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
+
+        $formMapper->end()->end();
+
+        $formMapper
+            ->tab('Profile')
+            ->with('Spanish')
+        ;
+
+        $this->addTranslationBlock($formMapper, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
+
+        $formMapper->end()->end();
+
+        $formMapper
+            ->tab('Profile')
+                ->with('Main')
                     ->add('user', 'sonata_type_model', [
                         'required' => false,
                         'btn_delete' => false,
@@ -247,18 +338,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => false,
                     ])
                     ->add('slug', null, ['read_only' => true, 'required' => false])
-                ->end()
-                ->with('Description')
-                    ->add('slogan')
-                    ->add('product')
-                    ->add(
-                        'description',
-                        CKEditorType::class,
-                        [
-                            'config_name' => 'extended_text',
-                        ]
-                    )
-                    ->add('workingHours')
                     ->add(
                         'collectionWorkingHours',
                         'sonata_type_collection',
@@ -286,6 +365,11 @@ class BusinessProfileAdmin extends OxaAdmin
                         ]
                     )
                 ->end()
+            ->end()
+        ;
+
+        $formMapper
+            ->tab('Profile')
                 ->with('Address')
                     ->add('country', 'sonata_type_model_list', [
                         'required' => true,
@@ -361,7 +445,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'mapped' => false,
                         'class' => \Domain\BusinessBundle\Entity\Category::class,
                     ])
-                    ->add('brands', null, ['required' => false])
                     ->add('areas', null, ['multiple' => true, 'required' => false])
                     ->add('serviceAreasType', ChoiceType::class, [
                         'choices' => BusinessProfile::getServiceAreasTypes(),
@@ -392,10 +475,12 @@ class BusinessProfileAdmin extends OxaAdmin
                         ]
                     ])
                 ->end()
-            ->end();
+            ->end()
+        ;
 
-
-        if ($subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+        if ($businessProfile->getId() and
+            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+        ) {
             if (!$businessProfile->getVideo()) {
                 $formMapper
                     ->tab('Profile')
@@ -584,72 +669,77 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
             ->end()
-            ->tab('Interactions Report')
-                ->with('Interactions Report')
-                    ->add('interactionDateStart', 'sonata_type_date_picker', [
-                        'mapped'    => false,
-                        'required'  => false,
-                        'format'    => self::DATE_PICKER_FORMAT,
-                        'data'      => DatesUtil::getThisWeekStart(),
-                    ])
-                    ->add('interactionDateEnd', 'sonata_type_date_picker', [
-                        'mapped'    => false,
-                        'required'  => false,
-                        'format'    => self::DATE_PICKER_FORMAT,
-                        'data'      => DatesUtil::getThisWeekEnd(),
-                    ])
-                ->end()
-            ->end()
-            ->tab('Keywords Report')
-                ->with('Keywords Report')
-                    ->add('keywordDateStart', 'sonata_type_date_picker', [
-                        'mapped'    => false,
-                        'required'  => false,
-                        'format'    => self::DATE_PICKER_FORMAT,
-                        'data'      => DatesUtil::getThisWeekStart(),
-                    ])
-                    ->add('keywordDateEnd', 'sonata_type_date_picker', [
-                        'mapped'    => false,
-                        'required'  => false,
-                        'format'    => self::DATE_PICKER_FORMAT,
-                        'data'      => DatesUtil::getThisWeekEnd(),
-                    ])
-                    ->add('keywordLimit', ChoiceType::class, [
-                        'mapped'    => false,
-                        'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
-                        'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
-                    ])
-                ->end()
-            ->end()
         ;
 
-        if ($this->getSubject()->getDcOrderId()) {
+        if ($this->getSubject()->getId()) {
             $formMapper
-                ->tab('Ad Usage Report')
-                    ->with('Ad Usage Report')
-                        ->add(
-                            'adUsageDateStart',
-                            'sonata_type_date_picker',
-                            [
-                                'mapped'    => false,
-                                'required'  => false,
-                                'format'    => self::DATE_PICKER_FORMAT,
-                                'data'      => DatesUtil::getThisWeekStart(),
-                            ]
-                        )
-                        ->add(
-                            'adUsageDateEnd',
-                            'sonata_type_date_picker',
-                            [
-                                'mapped'    => false,
-                                'required'  => false,
-                                'format'    => self::DATE_PICKER_FORMAT,
-                                'data'      => DatesUtil::getThisWeekEnd(),
-                            ]
-                        )
+                ->tab('Interactions Report')
+                    ->with('Interactions Report')
+                        ->add('interactionDateStart', 'sonata_type_date_picker', [
+                            'mapped'    => false,
+                            'required'  => false,
+                            'format'    => self::DATE_PICKER_FORMAT,
+                            'data'      => DatesUtil::getThisWeekStart(),
+                        ])
+                        ->add('interactionDateEnd', 'sonata_type_date_picker', [
+                            'mapped'    => false,
+                            'required'  => false,
+                            'format'    => self::DATE_PICKER_FORMAT,
+                            'data'      => DatesUtil::getThisWeekEnd(),
+                        ])
+                    ->end()
+                ->end()
+                ->tab('Keywords Report')
+                    ->with('Keywords Report')
+                        ->add('keywordDateStart', 'sonata_type_date_picker', [
+                            'mapped'    => false,
+                            'required'  => false,
+                            'format'    => self::DATE_PICKER_FORMAT,
+                            'data'      => DatesUtil::getThisWeekStart(),
+                        ])
+                        ->add('keywordDateEnd', 'sonata_type_date_picker', [
+                            'mapped'    => false,
+                            'required'  => false,
+                            'format'    => self::DATE_PICKER_FORMAT,
+                            'data'      => DatesUtil::getThisWeekEnd(),
+                        ])
+                        ->add('keywordLimit', ChoiceType::class, [
+                            'mapped'    => false,
+                            'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
+                            'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+                        ])
                     ->end()
                 ->end()
             ;
+
+            if ($this->getSubject()->getDcOrderId()) {
+                $formMapper
+                    ->tab('Ad Usage Report')
+                        ->with('Ad Usage Report')
+                            ->add(
+                                'adUsageDateStart',
+                                'sonata_type_date_picker',
+                                [
+                                    'mapped'    => false,
+                                    'required'  => false,
+                                    'format'    => self::DATE_PICKER_FORMAT,
+                                    'data'      => DatesUtil::getThisWeekStart(),
+                                ]
+                            )
+                            ->add(
+                                'adUsageDateEnd',
+                                'sonata_type_date_picker',
+                                [
+                                    'mapped'    => false,
+                                    'required'  => false,
+                                    'format'    => self::DATE_PICKER_FORMAT,
+                                    'data'      => DatesUtil::getThisWeekEnd(),
+                                ]
+                            )
+                        ->end()
+                    ->end()
+                ;
+            }
         }
     }
 
@@ -819,7 +909,12 @@ class BusinessProfileAdmin extends OxaAdmin
             }
         }
 
-        if (!trim($object->getName())) {
+        $fieldNameEn = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_EN;
+        $fieldNameEs = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_ES;
+
+        $formData = $this->getRequest()->request->all()[$this->getUniqid()];
+
+        if (!trim($formData[$fieldNameEn]) and !trim($formData[$fieldNameEs])) {
             $errorElement->with('name')
                 ->addViolation($this->getTranslator()->trans(
                     'form.name.required',
@@ -887,28 +982,52 @@ class BusinessProfileAdmin extends OxaAdmin
         return $query;
     }
 
+    /**
+     * @param BusinessProfile $entity
+     */
     public function prePersist($entity)
     {
         $this->preSave($entity);
     }
 
+    /**
+     * @param BusinessProfile $entity
+     */
     public function preUpdate($entity)
     {
-        /** @var BusinessProfile $entity */
         $this->preSave($entity);
     }
 
+    /**
+     * @param BusinessProfile $entity
+     */
     public function postPersist($entity)
     {
         $this->createFreeSubscription($entity);
+
+        // workaround for translation callback
+        $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
+        $this->handleTranslationPostUpdate($entity);
     }
 
+    /**
+     * @param BusinessProfile $entity
+     */
+    public function postUpdate($entity)
+    {
+        // workaround for translation callback
+        $this->handleTranslationPostUpdate($entity);
+    }
+
+    /**
+     * @param BusinessProfile $entity
+     */
     private function preSave($entity)
     {
-        $entity = $this->setSearchValues($entity);
+        $entity = $this->handleTranslationBlock($entity);
         $entity = $this->setVideoValue($entity);
         $entity = $this->setSubcategories($entity);
-        $entity = $this->setSeoDate($entity);
+        $entity = $this->handleSeoBlockUpdate($entity);
     }
 
     private function createFreeSubscription($entity)
@@ -922,59 +1041,6 @@ class BusinessProfileAdmin extends OxaAdmin
         $subscription = $subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $em);
 
         $em->flush($subscription);
-    }
-
-    private function setSearchValues($entity)
-    {
-        $nameEn = '';
-        $nameEs = '';
-
-        $descEn = '';
-        $descEs = '';
-
-        if ($entity->getLocale() == 'en') {
-            $nameEn = $entity->getName();
-
-            if (!$entity->getNameEs()) {
-                $nameEs = $entity->getName();
-            }
-
-            $descEn = $entity->getDescription();
-
-            if ($descEn and !$entity->getDescriptionEs()) {
-                $descEs = $descEn;
-            }
-        } else {
-            $nameEs = $entity->getName();
-
-            if (!$entity->getNameEn()) {
-                $nameEn = $entity->getName();
-            }
-
-            $descEs = $entity->getDescription();
-
-            if ($descEs and !$entity->getDescriptionEn()) {
-                $descEn = $descEs;
-            }
-        }
-
-        if ($nameEn) {
-            $entity->setNameEn($nameEn);
-        }
-
-        if ($nameEs) {
-            $entity->setNameEs($nameEs);
-        }
-
-        if ($descEn) {
-            $entity->setDescriptionEn($descEn);
-        }
-
-        if ($descEs) {
-            $entity->setDescriptionEs($descEs);
-        }
-
-        return $entity;
     }
 
     private function setVideoValue($entity)
@@ -1090,16 +1156,55 @@ class BusinessProfileAdmin extends OxaAdmin
      *
      * @return BusinessProfile
      */
-    private function setSeoDate($entity)
+    private function handleSeoBlockUpdate(BusinessProfile $entity)
     {
         /** @var ContainerInterface $container */
         $container    = $this->getConfigurationPool()->getContainer();
 
-        $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $container);
-        $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $container);
+        $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
+            $entity,
+            $container,
+            BusinessProfile::TRANSLATION_LANG_EN
+        );
 
-        $entity->setSeoTitle($seoTitle);
-        $entity->setSeoDescription($seoDescription);
+        $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
+            $entity,
+            $container,
+            BusinessProfile::TRANSLATION_LANG_ES
+        );
+
+        $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
+            $entity,
+            $container,
+            BusinessProfile::TRANSLATION_LANG_EN
+        );
+
+        $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
+            $entity,
+            $container,
+            BusinessProfile::TRANSLATION_LANG_ES
+        );
+
+        $this->handleTranslationSet(
+            $entity,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
+            [
+                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
+                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_ES => $seoTitleEs,
+            ]
+        );
+
+        $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
+        $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
+
+        $this->handleTranslationSet(
+            $entity,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
+            [
+                $seoDescKeyEn => $seoDescriptionEn,
+                $seoDescKeyEs => $seoDescriptionEs,
+            ]
+        );
 
         return $entity;
     }
@@ -1135,5 +1240,319 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['Level 3 name+ID']       = 'exportCategoryLvl3';
 
         return $exportFields;
+    }
+
+    /**
+     * @param BusinessProfile $parent
+     *
+     * @return BusinessProfile
+     */
+    protected function cloneParentEntity(BusinessProfile $parent)
+    {
+        $entity = clone $parent;
+
+        $entity->setSlug(null);
+
+        $subscriptions = $entity->getSubscriptions();
+
+        foreach ($subscriptions as $subscription) {
+            $entity->removeSubscription($subscription);
+
+            if (!$subscription->isExpired() and
+                in_array($subscription->getStatus(), Subscription::getActualStatuses())
+            ) {
+                $cloneSubscription = clone $subscription;
+
+                $entity->addSubscription($cloneSubscription);
+            }
+        }
+
+        $translations = $parent->getTranslations();
+
+        foreach ($translations as $translation) {
+            $cloneTranslation = clone $translation;
+
+            $cloneTranslation->setObject($entity);
+
+            $entity->addTranslation($cloneTranslation);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param FormMapper        $formMapper
+     * @param BusinessProfile   $businessProfile
+     * @param string            $locale
+     *
+     * @return BusinessProfile
+     */
+    private function addTranslationBlock(FormMapper $formMapper, BusinessProfile $businessProfile, $locale)
+    {
+        $formMapper
+            ->add('name' . $locale, TextType::class, [
+                'label'    => 'Name',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale)),
+                'constraints' => [
+                    new Length(
+                        [
+                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_NAME_LENGTH,
+                        ]
+                    )
+                ],
+            ])
+            ->add('slogan' . $locale, TextType::class, [
+                'label'    => 'Slogan',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, strtolower($locale)),
+                'constraints' => [
+                    new Length(
+                        [
+                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH,
+                        ]
+                    )
+                ],
+            ])
+            ->add('description' . $locale, CKEditorType::class, [
+                'label'    => 'Description',
+                'required' => false,
+                'mapped'   => false,
+                'config_name' => 'extended_text',
+                'config'      => [
+                    'width'  => '100%',
+                ],
+                'attr' => [
+                    'class' => 'text-editor',
+                ],
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION, strtolower($locale)),
+                'constraints' => [
+                    new Length(
+                        [
+                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH,
+                        ]
+                    )
+                ],
+            ])
+            ->add('product' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 3,
+                ],
+                'label'    => 'Products',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, strtolower($locale)),
+                'constraints' => [
+                    new Length(
+                        [
+                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH,
+                        ]
+                    )
+                ],
+            ])
+            ->add('brands' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 3,
+                ],
+                'label'    => 'Brands',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS, strtolower($locale)),
+                'constraints' => [
+                    new Length(
+                        [
+                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH,
+                        ]
+                    )
+                ],
+            ])
+            ->add('workingHours' . $locale, TextareaType::class, [
+                'attr' => [
+                    'rows' => 3,
+                ],
+                'label'    => 'Working hours',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS, strtolower($locale)),
+                'constraints' => [
+                    new Length(
+                        [
+                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH,
+                        ]
+                    )
+                ],
+            ])
+        ;
+    }
+
+    /**
+     * @param BusinessProfile   $entity
+     *
+     * @return BusinessProfile
+     */
+    private function handleTranslationBlock(BusinessProfile $entity)
+    {
+        $fields = BusinessProfile::getTranslatableFields();
+
+        foreach ($fields as $field) {
+            $this->handleTranslationSet($entity, $field, $this->getRequest()->request->all()[$this->getUniqid()]);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param BusinessProfile   $entity
+     * @param string            $property
+     * @param array             $data
+     *
+     * @return BusinessProfile
+     */
+    private function handleTranslationSet(BusinessProfile $entity, $property, $data)
+    {
+        $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
+        $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
+
+        $dataEn = false;
+        $dataEs = false;
+
+        if (!empty($data[$propertyEn])) {
+            $dataEn = trim($data[$propertyEn]);
+        }
+
+        if (!empty($data[$propertyEs])) {
+            $dataEs = trim($data[$propertyEs]);
+        }
+
+        if (property_exists($entity, $property)) {
+            if ($dataEs) {
+                if ($entity->getId() and $dataEn) {
+                    $entity->{'set' . $property}($dataEn);
+                } else {
+                    $entity->{'set' . $property}($dataEs);
+                }
+
+                if (property_exists($entity, $propertyEs)) {
+                    $entity->{'set' . $propertyEs}($dataEs);
+                }
+
+                $this->addBusinessTranslation($entity, $property, $dataEs, BusinessProfile::TRANSLATION_LANG_ES);
+            } elseif ($dataEn) {
+                if (!$entity->{'get' . $property}()) {
+                    $entity->{'set' . $property}($dataEn);
+                }
+            }
+
+            if ($dataEn) {
+                $this->addBusinessTranslation($entity, $property, $dataEn, BusinessProfile::TRANSLATION_LANG_EN);
+
+                if (property_exists($entity, $propertyEn)) {
+                    $entity->{'set' . $propertyEn}($dataEn);
+                }
+            } else {
+                $this->prepareTranslationDelete(BusinessProfile::TRANSLATION_LANG_EN, $property);
+            }
+
+            if (!$dataEs) {
+                $this->prepareTranslationDelete(BusinessProfile::TRANSLATION_LANG_ES, $property);
+            }
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param BusinessProfile   $entity
+     * @param string            $property
+     * @param array             $data
+     * @param string            $locale
+     *
+     * @return BusinessProfile
+     */
+    private function addBusinessTranslation(BusinessProfile $entity, $property, $data, $locale)
+    {
+        if ($entity->getId()) {
+            $translation = $entity->getTranslationItem(
+                $property,
+                mb_strtolower($locale)
+            );
+
+            if ($translation) {
+                $translation->setContent($data);
+            } else {
+                $translation = new BusinessProfileTranslation(
+                    mb_strtolower($locale),
+                    $property,
+                    $data
+                );
+
+                $entity->addTranslation($translation);
+            }
+        } else {
+            $translation = new BusinessProfileTranslation(
+                mb_strtolower($locale),
+                $property,
+                $data
+            );
+
+            $entity->addTranslation($translation);
+        }
+
+        $this->translations[] = [
+            'locale'  => $locale,
+            'field'   => $property,
+            'content' => $data,
+        ];
+
+        return $entity;
+    }
+
+    /**
+     * @param string    $locale
+     * @param string    $field
+     */
+    protected function prepareTranslationDelete($locale, $field)
+    {
+        $this->translations[] = [
+            'locale'  => $locale,
+            'field'   => $field,
+            'content' => null,
+        ];
+    }
+
+    /**
+     * @param BusinessProfile   $entity
+     */
+    protected function handleTranslationPostUpdate(BusinessProfile $entity)
+    {
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
+
+        foreach ($this->translations as $translation) {
+            $newTranslation = $entity->getTranslationItem(
+                $translation['field'],
+                mb_strtolower($translation['locale'])
+            );
+
+            if (!$translation['content']) {
+                if ($newTranslation) {
+                    $em->remove($newTranslation);
+                }
+            } elseif ($newTranslation) {
+                $newTranslation->setContent($translation['content']);
+            } else {
+                $translation = new BusinessProfileTranslation(
+                    mb_strtolower($translation['locale']),
+                    $translation['field'],
+                    $translation['content']
+                );
+
+                $entity->addTranslation($translation);
+                $em->persist($newTranslation);
+            }
+        }
+
+        $em->flush();
     }
 }
