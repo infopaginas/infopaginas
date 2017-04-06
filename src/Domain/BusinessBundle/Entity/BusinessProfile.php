@@ -2578,6 +2578,14 @@ class BusinessProfile implements
         return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_3);
     }
 
+    /**
+     * @return string
+     */
+    public function getExportBusinessAdmin()
+    {
+        return $this->getUser() ? $this->getUser()->getFullName() : '';
+    }
+
     public function getExportCategoryByLvl($lvl)
     {
         $data = [];
