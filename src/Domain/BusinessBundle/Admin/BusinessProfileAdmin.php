@@ -716,26 +716,18 @@ class BusinessProfileAdmin extends OxaAdmin
                 $formMapper
                     ->tab('Ad Usage Report')
                         ->with('Ad Usage Report')
-                            ->add(
-                                'adUsageDateStart',
-                                'sonata_type_date_picker',
-                                [
-                                    'mapped'    => false,
-                                    'required'  => false,
-                                    'format'    => self::DATE_PICKER_FORMAT,
-                                    'data'      => DatesUtil::getThisWeekStart(),
-                                ]
-                            )
-                            ->add(
-                                'adUsageDateEnd',
-                                'sonata_type_date_picker',
-                                [
-                                    'mapped'    => false,
-                                    'required'  => false,
-                                    'format'    => self::DATE_PICKER_FORMAT,
-                                    'data'      => DatesUtil::getThisWeekEnd(),
-                                ]
-                            )
+                            ->add('adUsageDateStart', 'sonata_type_date_picker', [
+                                'mapped'    => false,
+                                'required'  => false,
+                                'format'    => self::DATE_PICKER_FORMAT,
+                                'data'      => DatesUtil::getThisWeekStart(),
+                            ])
+                            ->add('adUsageDateEnd', 'sonata_type_date_picker', [
+                                'mapped'    => false,
+                                'required'  => false,
+                                'format'    => self::DATE_PICKER_FORMAT,
+                                'data'      => DatesUtil::getThisWeekEnd(),
+                            ])
                         ->end()
                     ->end()
                 ;
