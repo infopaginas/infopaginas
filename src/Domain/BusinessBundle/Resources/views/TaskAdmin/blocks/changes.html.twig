@@ -42,8 +42,29 @@
                     {% set oldData = get_business_profile_translation_changes_string(row.oldValue) %}
                     {% set newData = get_business_profile_translation_changes_string(row.newValue) %}
 
-                    <td>{% if oldData %}{{ oldData.locale }} - {{ oldData.value }}{% endif %}</td>
-                    <td>{% if newData %}{{ newData.locale }} - {{ newData.value }}{% endif %}</td>
+                    {% if row.fieldName == BUSINESS_PROFILE_FIELD.DESCRIPTION %}
+                        <td>
+                            {% if oldData %}
+                                {{ oldData.locale }}
+                                <br/>
+                                {{ get_wysiwyg_preview_block(row.fieldName ~ loop.index ~ 'old', oldData.value) }}
+                                <br/>
+                                {{ oldData.value }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if newData %}
+                                {{ newData.locale }}
+                                <br/>
+                                {{ get_wysiwyg_preview_block(row.fieldName ~ loop.index ~ 'new', newData.value) }}
+                                <br/>
+                                {{ newData.value }}
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td>{% if oldData %}{{ oldData.locale }} - {{ oldData.value }}{% endif %}</td>
+                        <td>{% if newData %}{{ newData.locale }} - {{ newData.value }}{% endif %}</td>
+                    {% endif %}
                 </tr>
             {% elseif row.action == CHANGE_SET_TYPE.RELATION_MANY_TO_ONE %}
                 <tr class="sonata-ba-view-container">

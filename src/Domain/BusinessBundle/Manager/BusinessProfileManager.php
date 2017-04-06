@@ -32,6 +32,7 @@ use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -613,6 +614,32 @@ class BusinessProfileManager extends Manager
     public function getBusinessProfileAsForm(BusinessProfile $businessProfile)
     {
         return $this->formFactory->create(new BusinessProfileFormType(), $businessProfile);
+    }
+
+    /**
+     * @param string $name
+     * @param string $data
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    public function getWysiwygPreviewForm($name, $data)
+    {
+        $form = $this->formFactory->createNamedBuilder($name)
+            ->add('description', CKEditorType::class, [
+                'label'    => 'Description',
+                'required' => false,
+                'mapped'   => false,
+                'data'     => $data,
+                'config_name' => 'preview_text',
+                'config'      => [
+                    'width'  => '100%',
+                ],
+                'attr' => [
+                    'class' => 'text-editor',
+                ],
+            ])
+            ->getForm();
+
+        return $form;
     }
 
     /**
