@@ -443,6 +443,12 @@ class BusinessProfileExtension extends \Twig_Extension
         return $html;
     }
 
+    /**
+     * @param \Twig_Environment $environment
+     * @param string $name
+     * @param string $raw
+     * @return string
+     */
     public function renderWysiwygPreviewForm(\Twig_Environment $environment, $name, $raw)
     {
         $form = $this->businessProfileManager->getWysiwygPreviewForm($name, $raw);

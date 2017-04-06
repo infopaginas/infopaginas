@@ -623,7 +623,6 @@ class BusinessProfileManager extends Manager
      */
     public function getWysiwygPreviewForm($name, $data)
     {
-
         $form = $this->formFactory->createNamedBuilder($name)
             ->add('description', CKEditorType::class, [
                 'label'    => 'Description',
