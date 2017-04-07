@@ -1,15 +1,5 @@
 {% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
 
-{% block actions %}
-    {{ parent() }}
-    <li class="dropdown sonata-actions">
-        <a href="{{ admin.generateObjectUrl('create', object) }}">
-            <i class="glyphicon glyphicon-subtitles"></i>
-            {{ 'action_copy'|trans({}, 'SonataAdminBundle') }}
-        </a>
-    </li>
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script>
