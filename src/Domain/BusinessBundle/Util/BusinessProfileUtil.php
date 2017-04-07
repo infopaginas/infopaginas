@@ -64,8 +64,8 @@ class BusinessProfileUtil
         $descriptionMaxLength = $seoSettings['description_max_length'];
 
         if ($locale) {
-            $description = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION, strtolower($locale));
+            $name = $businessProfile
+                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
 
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
                 BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
@@ -76,7 +76,7 @@ class BusinessProfileUtil
                 $locale
             );
         } else {
-            $description = $businessProfile->getDescription();
+            $name = $businessProfile->getName();
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $workingHours = $businessProfile->getWorkingHours();
             $locale = $businessProfile->getLocale();
@@ -87,7 +87,7 @@ class BusinessProfileUtil
         $seoDescription = $translator->trans(
             'business_profile.seoDescription.main',
             [
-                'name'     => $description,
+                'name'     => $name,
                 'location' => $catalogLocalityName,
             ],
             'messages',
