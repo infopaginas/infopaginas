@@ -76,6 +76,10 @@ class ProfileController extends Controller
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
 
+        if (!$businessProfile or !$businessProfile->getIsActive()) {
+            throw $this->createNotFoundException();
+        }
+
         $this->checkBusinessProfileAccess($businessProfile);
 
         $businessProfileForm      = $this->getBusinessProfileForm($businessProfile);
@@ -127,8 +131,8 @@ class ProfileController extends Controller
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
-        if (!$businessProfile) {
-            throw $this->createNotFoundException('');
+        if (!$businessProfile or !$businessProfile->getIsActive()) {
+            throw $this->createNotFoundException();
         }
 
         $catalogLocalitySlug = $businessProfile->getCatalogLocality()->getSlug();

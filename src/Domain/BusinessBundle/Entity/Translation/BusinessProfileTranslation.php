@@ -36,9 +36,4 @@ class BusinessProfileTranslation extends AbstractPersonalTranslation
 
         return json_encode($data) ?: '';
     }
-
-    public function __clone()
-    {
-        $this->id = null;
-    }
 }

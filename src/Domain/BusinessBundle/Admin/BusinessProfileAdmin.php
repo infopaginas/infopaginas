@@ -55,6 +55,8 @@ class BusinessProfileAdmin extends OxaAdmin
 
     protected $translations = [];
 
+    public $copyAvailable = true;
+
     /**
      * @return BusinessProfile
      */
