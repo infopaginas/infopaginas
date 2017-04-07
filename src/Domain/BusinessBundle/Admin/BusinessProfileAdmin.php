@@ -161,63 +161,15 @@ class BusinessProfileAdmin extends OxaAdmin
 
         // define group zoning
         $formMapper
-            ->tab(
-                'Profile',
-                [
-                    'class' => 'col-md-12',
-                ]
-            )
-                ->with(
-                    'English',
-                    [
-                        'class' => 'col-md-6',
-                    ]
-                )
-                ->end()
-                ->with(
-                    'Spanish',
-                    [
-                        'class' => 'col-md-6',
-                    ]
-                )
-                ->end()
-                ->with(
-                    'Main',
-                    [
-                        'class' => 'col-md-12',
-                    ]
-                )
-                ->end()
-                ->with(
-                    'Address',
-                    [
-                        'class' => 'col-md-4',
-                    ]
-                )
-                ->end()
-                ->with(
-                    'Map',
-                    [
-                        'class' => 'col-md-8',
-                    ]
-                )
-                ->end()
-                ->with(
-                    'Categories',
-                    [
-                        'class' => 'col-md-6',
-                    ]
-                )
-                ->end()
-                ->with(
-                    'Social Networks',
-                    [
-                        'class' => 'col-md-6',
-                    ]
-                )
-                ->end()
-                ->with('Gallery')
-                ->end()
+            ->tab('Profile', ['class' => 'col-md-12',])
+                ->with('English', ['class' => 'col-md-6',])->end()
+                ->with('Spanish', ['class' => 'col-md-6',])->end()
+                ->with('Main', ['class' => 'col-md-12',])->end()
+                ->with('Address', ['class' => 'col-md-4',])->end()
+                ->with('Map', ['class' => 'col-md-8',])->end()
+                ->with('Categories', ['class' => 'col-md-6',])->end()
+                ->with('Social Networks', ['class' => 'col-md-6',])->end()
+                ->with('Gallery')->end()
             ->end()
         ;
 
