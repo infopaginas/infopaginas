@@ -278,10 +278,12 @@ class BusinessProfileManager extends Manager
     {
         $business = $this->getRepository()->find($id);
 
-        $this->getTranslatableListener()->setTranslatableLocale($locale);
-        $this->getTranslatableListener()->setTranslationFallback('');
+        if ($business) {
+            $this->getTranslatableListener()->setTranslatableLocale($locale);
+            $this->getTranslatableListener()->setTranslationFallback('');
 
-        $this->getEntityManager()->refresh($business);
+            $this->getEntityManager()->refresh($business);
+        }
 
         return $business;
     }
