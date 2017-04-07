@@ -80,6 +80,24 @@ class BusinessProfileAdmin extends OxaAdmin
         return $instance;
     }
 
+    public function configureActionButtons($action, $object = null)
+    {
+        $list = parent::configureActionButtons($action, $object);
+
+        $accessToCopy = [
+            'show',
+            'edit',
+        ];
+
+        if ($object and in_array($action, $accessToCopy)) {
+            $list['copy'] = [
+                'template' => 'DomainBusinessBundle:Admin/BusinessProfile:copy_action_button.html.twig',
+            ];
+        }
+
+        return $list;
+    }
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -952,6 +970,10 @@ class BusinessProfileAdmin extends OxaAdmin
         $this->createFreeSubscription($entity);
 
         // workaround for translation callback
+        $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
+        $entity = $this->handleEntityPostPersist($entity);
+
+        // workaround for spanish slug
         $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
         $this->handleTranslationPostUpdate($entity);
     }
@@ -1502,5 +1524,27 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         $em->flush();
+    }
+
+    /**
+     * @param BusinessProfile   $entity
+     *
+     * @return BusinessProfile   $entity
+     */
+    protected function handleEntityPostPersist(BusinessProfile $entity)
+    {
+        $em = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
+
+        foreach ($this->translations as $translation) {
+            if (strtolower($translation['locale']) == BusinessProfile::DEFAULT_LOCALE) {
+                if (property_exists($entity, $translation['field'])) {
+                    $entity->{'set' . ucfirst($translation['field'])}($translation['content']);
+                }
+            }
+        }
+
+        $em->flush();
+
+        return $entity;
     }
 }
