@@ -2135,6 +2135,15 @@ class BusinessProfile implements
     public function __clone()
     {
         $this->id = null;
+        $this->isUpdated = true;
+        $this->createdAt = null;
+        $this->updatedAt = null;
+        $this->updatedUser = null;
+        $this->createdUser = null;
+        $this->businessReviews = new ArrayCollection();
+        $this->video = null;
+
+        $this->translations = new ArrayCollection();
     }
 
     /**

@@ -1,4 +1,9 @@
 $( document ).ready( function() {
+
+    if ( parentId && !businessProfileId ) {
+        businessProfileId = parentId
+    }
+
     var removeVideo   = $( '#' + formId + '_removeVideo' );
 
     var categoryField = $( '#' + formId + '_categories' );

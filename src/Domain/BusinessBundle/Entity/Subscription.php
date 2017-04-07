@@ -104,6 +104,11 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
         return $result;
     }
 
+    public function __clone()
+    {
+        $this->id = null;
+    }
+
     /**
      * Set businessProfile
      *
