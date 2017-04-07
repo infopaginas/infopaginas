@@ -25,6 +25,10 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
         $this->setDescription('Fix business seo description');
     }
 
+    /**
+     * @param InputInterface    $input
+     * @param OutputInterface   $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -50,6 +54,11 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
         $this->em->flush();
     }
 
+    /**
+     * @param BusinessProfile $entity
+     *
+     * @return BusinessProfile
+     */
     private function handleSeoBlockUpdate($entity)
     {
         $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
@@ -76,7 +85,7 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
             BusinessProfile::TRANSLATION_LANG_ES
         );
 
-        $this->handleTranslationSet(
+        $this->handleTranslations(
             $entity,
             BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
             [
@@ -88,7 +97,7 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
         $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
         $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
 
-        $this->handleTranslationSet(
+        $this->handleTranslations(
             $entity,
             BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
             [
@@ -100,7 +109,14 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
         return $entity;
     }
 
-    private function handleTranslationSet($entity, $property, $data)
+    /**
+     * @param BusinessProfile $entity
+     * @param string          $property
+     * @param string|null     $data
+     *
+     * @return BusinessProfile
+     */
+    private function handleTranslations($entity, $property, $data)
     {
         $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
         $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
@@ -147,6 +163,14 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
         return $entity;
     }
 
+    /**
+     * @param BusinessProfile $entity
+     * @param string          $property
+     * @param string|null     $data
+     * @param string          $locale
+     *
+     * @return BusinessProfile
+     */
     private function addBusinessTranslation($entity, $property, $data, $locale)
     {
         $translation = $entity->getTranslationItem(
