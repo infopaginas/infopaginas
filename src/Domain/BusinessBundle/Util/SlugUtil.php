@@ -25,7 +25,7 @@ class SlugUtil
     /**
      * @param string $slug
      *
-     * @return string|null
+     * @return string
      */
     public static function convertCustomSlug($slug)
     {
@@ -35,6 +35,6 @@ class SlugUtil
             return $customSlug;
         }
 
-        return null;
+        return '';
     }
 }
