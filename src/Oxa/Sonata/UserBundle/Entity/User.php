@@ -126,6 +126,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessesCount = 0;
     }
 
     public function __toString()
