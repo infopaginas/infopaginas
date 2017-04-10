@@ -205,10 +205,10 @@ class MigrationCommand extends ContainerAwareCommand
                         }
                     }
                 }
-
-                $this->em->flush();
-                $this->em->clear();
             }
+
+            $this->em->flush();
+            $this->em->clear();
         }
 
         if ($this->withDebug) {
