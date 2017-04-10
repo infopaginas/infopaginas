@@ -33,7 +33,7 @@ class CategoryManager extends Manager
 
     public function getCategoryBySlug($categorySlug)
     {
-        $customSlug = SlugUtil::convertSlug($categorySlug);
+        $customSlug = SlugUtil::convertCustomSlug($categorySlug);
 
         $category = $this->getRepository()->getCategoryBySlug($categorySlug, $customSlug);
 

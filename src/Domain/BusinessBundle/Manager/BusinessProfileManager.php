@@ -307,7 +307,7 @@ class BusinessProfileManager extends Manager
      */
     public function findBySlug(string $slug)
     {
-        $customSlug = SlugUtil::convertSlug($slug);
+        $customSlug = SlugUtil::convertCustomSlug($slug);
 
         $businessProfile = $this->getRepository()->findBySlug($slug, $customSlug);
 

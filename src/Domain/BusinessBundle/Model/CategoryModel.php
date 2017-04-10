@@ -4,7 +4,7 @@ namespace Domain\BusinessBundle\Model;
 
 class CategoryModel
 {
-    const UNDEFINED_CATEGORY = 'Undefined';
+    const UNDEFINED_CATEGORY = 'Unclassified';
 
     public static function getUndefinedCategory()
     {

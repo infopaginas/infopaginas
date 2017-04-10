@@ -33,6 +33,7 @@ class MigrationCommand extends ContainerAwareCommand
     const SYSTEM_CATEGORY_SEPARATOR = ' / ';
     const CATEGORY_NAME_MAX_LENGTH = 250;
     const TAG_SEPARATOR = ';';
+    const TWITTER_URL_PREFIX = 'https://twitter.com/';
 
     protected function configure()
     {
@@ -44,6 +45,7 @@ class MigrationCommand extends ContainerAwareCommand
                 new InputOption('skipImages', 'i'),
                 new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
                 new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
+                new InputOption('twitterOnly', 't'),
             ))
         );
     }
@@ -80,6 +82,12 @@ class MigrationCommand extends ContainerAwareCommand
             $this->skipImages = true;
         } else {
             $this->skipImages = false;
+        }
+
+        if ($input->getOption('twitterOnly')) {
+            $this->twitterOnly = true;
+        } else {
+            $this->twitterOnly = false;
         }
 
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
@@ -135,7 +143,7 @@ class MigrationCommand extends ContainerAwareCommand
                     $businessProfile = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
                         ->findOneBy(['uid' => $itemId]);
 
-                    if (!$businessProfile) {
+                    if (!$businessProfile or ($businessProfile and $this->twitterOnly)) {
                         if ($this->withDebug) {
                             $itemCounter ++;
                             $output->writeln('Starts request item with id ' . $itemId);
@@ -168,14 +176,18 @@ class MigrationCommand extends ContainerAwareCommand
                             $radius = $item->radius_served;
                         }
 
-                        $this->addBusinessProfileByApiData(
-                            $itemPrimary,
-                            $itemSecond,
-                            $subscriptions,
-                            $localities,
-                            $radius,
-                            $country
-                        );
+                        if ($this->twitterOnly) {
+                            $this->updateTwitter($businessProfile, $itemPrimary->business->profile);
+                        } else {
+                            $this->addBusinessProfileByApiData(
+                                $itemPrimary,
+                                $itemSecond,
+                                $subscriptions,
+                                $localities,
+                                $radius,
+                                $country
+                            );
+                        }
 
                         if ($this->withDebug) {
                             $curlInterval = $dbTimer - $curlTimer;
@@ -314,6 +326,8 @@ class MigrationCommand extends ContainerAwareCommand
 
         $entity->setGoogleURL($this->handleUrl($profile->google_plus_url));
         $entity->setYoutubeURL($this->handleUrl($profile->yt_url));
+
+        $entity = $this->updateTwitter($entity, $profile);
 
         // process assigned items
 
@@ -756,5 +770,21 @@ class MigrationCommand extends ContainerAwareCommand
         }
 
         return $url;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param mixed           $profile
+     *
+     * @return BusinessProfile
+     */
+    private function updateTwitter($businessProfile, $profile)
+    {
+        if (trim($profile->twitter_handle)) {
+            $twitterUrl = $this->handleUrl(self::TWITTER_URL_PREFIX . trim($profile->twitter_handle));
+            $businessProfile->setTwitterURL($twitterUrl);
+        }
+
+        return $businessProfile;
     }
 }
