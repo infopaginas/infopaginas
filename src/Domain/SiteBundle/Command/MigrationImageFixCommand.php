@@ -45,7 +45,7 @@ class MigrationImageFixCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('data:migration:image-fix');
-        $this->setDescription('Migrate all site data');
+        $this->setDescription('Add images to businesses');
         $this->setDefinition(
             new InputDefinition([
                 new InputOption('withDebug', 'd'),
