@@ -80,6 +80,12 @@ class BusinessProfileAdmin extends OxaAdmin
         return $instance;
     }
 
+    /**
+     * @param string                  $action
+     * @param BusinessProfile|null    $object
+     *
+     * @return array
+     */
     public function configureActionButtons($action, $object = null)
     {
         $list = parent::configureActionButtons($action, $object);
