@@ -147,7 +147,7 @@ class MigrationImageFixCommand extends ContainerAwareCommand
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Authorization: Token token=coh6fQgxVkK989OTnVoP3w",
-            "Accept-Language: " . $locale
+            "Accept-Language: " . $locale,
         ]);
 
         $htmlContent = curl_exec($ch);
@@ -203,13 +203,13 @@ class MigrationImageFixCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param int $page
+     * @param int $pageNumber
      *
      * @return string
      */
-    private function getBusinessesByPageUrl($page)
+    private function getBusinessesByPageUrl($pageNumber)
     {
-        return self::API_BASE_URL . '?page=' . $page;
+        return self::API_BASE_URL . '?page=' . $pageNumber;
     }
 
     /**
