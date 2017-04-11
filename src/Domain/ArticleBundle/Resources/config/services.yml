@@ -8,6 +8,10 @@ services:
         class: Domain\ArticleBundle\Model\Manager\ArticleManager
         arguments: ['@service_container']
 
+    domain_article.manager.api:
+        class: Domain\ArticleBundle\Model\Manager\ArticleApiManager
+        arguments: ['@service_container']
+
     domain_article.twig_extension.cut_body:
         class: Domain\ArticleBundle\Twig\Extension\CutBodyExtension
         public: false

@@ -237,6 +237,40 @@ class BusinessGalleryManager
     }
 
     /**
+     * @param string $url
+     *
+     * @return Media|null
+     * @throws \Exception
+     */
+    public function uploadArticleImageFromRemoteFile($url)
+    {
+        $headers = SiteHelper::checkUrlExistence($url);
+
+        if ($headers && in_array($headers['content_type'], SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
+            $file = tmpfile();
+
+            if ($file !== false) {
+                $ext = pathinfo($url, PATHINFO_EXTENSION);
+                // Put content in this file
+                $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext  ;
+                file_put_contents($path, file_get_contents($url));
+
+                // the UploadedFile of the user image
+                // referencing the temp file (used for validation only)
+                $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+                $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, Media::CONTEXT_ARTICLE);
+
+                $this->getEntityManager()->flush();
+
+                return $media;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return \Sonata\MediaBundle\Entity\MediaManager
      */
     private function getSonataMediaManager() : MediaManager

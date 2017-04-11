@@ -47,6 +47,8 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     const CATEGORY_UNDEFINED_CODE = '54016';
     const CATEGORY_UNDEFINED_SLUG = 'undefined';
 
+    const CATEGORY_ARTICLE_CODE = '99999';
+
     const ELASTIC_DOCUMENT_TYPE = 'Category';
     const FLAG_IS_UPDATED = 'isUpdated';
 
@@ -655,5 +657,13 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->catalogItems->removeElement($catalogItem);
 
         return $this;
+    }
+
+    public static function getDefaultCategories()
+    {
+        return [
+            self::CATEGORY_ARTICLE_CODE,
+            self::CATEGORY_UNDEFINED_CODE,
+        ];
     }
 }
