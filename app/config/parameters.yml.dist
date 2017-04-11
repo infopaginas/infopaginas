@@ -54,3 +54,6 @@ parameters:
     mongodb.host: 'mongodb://54.197.13.71'
     # unique name preferably host (without special chars)
     mongodb.db: 'infopaginas'
+
+    # article api access token
+    infopaginas_media_access_token: '29a993b3f5d302f222ad1b208098b31ac0eb70ed'

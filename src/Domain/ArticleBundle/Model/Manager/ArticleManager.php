@@ -128,7 +128,7 @@ class ArticleManager extends Manager
             'description'   => $article->getBody(),
             'author' => [
                 '@type' => 'Person',
-                'name'  => $article->getCreatedUser()->getFullName(),
+                'name'  => $article->getAuthorName(),
             ],
             'publisher' => [
                 '@type' => 'Organization',

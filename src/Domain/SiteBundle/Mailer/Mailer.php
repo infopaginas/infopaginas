@@ -213,6 +213,35 @@ class Mailer
     }
 
     /**
+     * @param string $reason
+     * @param User[] $users
+     */
+    public function sendArticlesApiErrorEmailMessage($reason, $users)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::ARTICLE_API_ERROR_EMAIL_TEMPLATE);
+
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'Articles API error';
+
+        $emails = [];
+
+        foreach ($users as $user) {
+            $email = $user->getEmail();
+
+            if ($email and filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emails[] = $email;
+            }
+        }
+
+        if ($emails) {
+            $this->send($emails, $subject, $message, $contentType);
+        }
+    }
+
+    /**
      * @param mixed $toEmail
      * @param string $subject
      * @param string $body

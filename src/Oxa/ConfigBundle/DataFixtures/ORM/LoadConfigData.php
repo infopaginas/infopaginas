@@ -192,6 +192,14 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 ),
                 'format' => 'html',
                 'description' => 'Notify if youtube token is invalid',
+            ], [
+                'key' => ConfigInterface::ARTICLE_API_ERROR_EMAIL_TEMPLATE,
+                'title' => 'Article API error template',
+                'value' => $this->container->get('twig')->render(
+                    'OxaConfigBundle:Fixtures:mail_article_api_response_invalid.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Notify if article API response returns error',
             ],
         ];
     }
