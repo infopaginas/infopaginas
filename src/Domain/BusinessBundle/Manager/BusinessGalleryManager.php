@@ -240,7 +240,6 @@ class BusinessGalleryManager
      * @param string $url
      *
      * @return Media|null
-     * @throws \Exception
      */
     public function uploadArticleImageFromRemoteFile($url)
     {

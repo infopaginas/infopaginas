@@ -22,7 +22,6 @@ class UpdateExternalArticlesCommand extends ContainerAwareCommand
                     [
                         new InputOption('updateAll'),
                         new InputOption('numberOfItemToUpdate', null, InputOption::VALUE_OPTIONAL),
-
                     ]
                 )
             )
@@ -32,8 +31,6 @@ class UpdateExternalArticlesCommand extends ContainerAwareCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     *
-     * @return mixed
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
