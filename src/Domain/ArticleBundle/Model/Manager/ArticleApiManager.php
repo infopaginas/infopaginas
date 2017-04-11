@@ -396,7 +396,12 @@ class ArticleApiManager
             $this->handleTranslation($article, $textEng, Article::ARTICLE_FIELD_BODY, $this->localeEng);
 
             $seoDescriptionEng = $this->buildSeoDescription($textEng);
-            $this->handleTranslation($article, $seoDescriptionEng, Article::ARTICLE_FIELD_SEO_DESCRIPTION, $this->localeEng);
+            $this->handleTranslation(
+                $article,
+                $seoDescriptionEng,
+                Article::ARTICLE_FIELD_SEO_DESCRIPTION,
+                $this->localeEng
+            );
         }
 
         if (!empty($item->text_esp)) {
@@ -404,7 +409,12 @@ class ArticleApiManager
             $this->handleTranslation($article, $textEsp, Article::ARTICLE_FIELD_BODY, $this->localeEsp);
 
             $seoDescriptionEsp = $this->buildSeoDescription($textEsp);
-            $this->handleTranslation($article, $seoDescriptionEsp, Article::ARTICLE_FIELD_SEO_DESCRIPTION, $this->localeEsp);
+            $this->handleTranslation(
+                $article,
+                $seoDescriptionEsp,
+                Article::ARTICLE_FIELD_SEO_DESCRIPTION,
+                $this->localeEsp
+            );
         }
 
         if ((!$article->getSlug() and $titleEsp) or !$titleEng) {
