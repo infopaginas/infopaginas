@@ -505,6 +505,7 @@ Now: Ahora
 
 form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
 form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
+form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
 
 # reset password form
 user:

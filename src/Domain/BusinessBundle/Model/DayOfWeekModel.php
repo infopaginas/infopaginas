@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Model;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
+use Domain\ReportBundle\Util\DatesUtil;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DayOfWeekModel
 {
@@ -25,6 +27,7 @@ class DayOfWeekModel
     const SCHEMA_ORG_CLOSE_ALL_DAY_CLOSE_TIME = '00:00';
 
     const SCHEMA_ORG_OPEN_TIME_FORMAT = 'H:i';
+    const FORM_DEFAULT_FORMAT = 'h:i a';
 
     public static function getDayOfWeekMapping()
     {
@@ -126,8 +129,14 @@ class DayOfWeekModel
      */
     public static function validateWorkingHoursTime($workingHours)
     {
+        $defaultDate = DatesUtil::getToday();
+
         foreach ($workingHours as $workingHour) {
-            if (!$workingHour->getOpenAllTime() and $workingHour->getTimeStart() >= $workingHour->getTimeEnd()) {
+            if (!$workingHour->getOpenAllTime() and
+                ($workingHour->getTimeStart() >= $workingHour->getTimeEnd() and
+                $workingHour->getTimeEnd() != $defaultDate or
+                $workingHour->getTimeStart() == $workingHour->getTimeEnd())
+            ) {
                 return false;
             }
         }
@@ -150,6 +159,25 @@ class DayOfWeekModel
             $check = self::validateDayWorkingHours($dailyHoursSet);
 
             if (!$check) {
+                break;
+            }
+        }
+
+        return $check;
+    }
+
+    /**
+     * @param BusinessProfileWorkingHour[] $workingHours
+     *
+     * @return bool
+     */
+    public static function validateWorkingHoursTimeBlank($workingHours)
+    {
+        $check = true;
+
+        foreach ($workingHours as $workingHour) {
+            if (!$workingHour->getOpenAllTime() and (!$workingHour->getTimeEnd() or !$workingHour->getTimeStart())) {
+                $check = false;
                 break;
             }
         }
@@ -206,13 +234,28 @@ class DayOfWeekModel
      */
     public static function checkWorkingHourOverlap($workingHour, $checkWorkingHour)
     {
+        $defaultDate = DatesUtil::getToday();
+
+        $timeEnd      = $workingHour->getTimeEnd();
+        $checkTimeEnd = $checkWorkingHour->getTimeEnd();
+
+        if ($timeEnd == $defaultDate) {
+            $timeEnd = clone $timeEnd;
+            $timeEnd->modify('+1 day');
+        }
+
+        if ($checkTimeEnd == $defaultDate) {
+            $checkTimeEnd = clone $checkTimeEnd;
+            $checkTimeEnd->modify('+1 day');
+        }
+
         if (($workingHour->getOpenAllTime() or $checkWorkingHour->getOpenAllTime()
             ) or (
                 $workingHour->getTimeStart() >= $checkWorkingHour->getTimeStart() and
-                $workingHour->getTimeStart() < $checkWorkingHour->getTimeEnd()
+                $workingHour->getTimeStart() < $checkTimeEnd
             ) or (
                 $checkWorkingHour->getTimeStart() >= $workingHour->getTimeStart() and
-                $checkWorkingHour->getTimeStart() < $workingHour->getTimeEnd()
+                $checkWorkingHour->getTimeStart() < $timeEnd
             )
         ) {
             $check = false;
@@ -244,9 +287,18 @@ class DayOfWeekModel
                 'hours'  => false,
             ];
 
+            $defaultDate = self::getDefaultDateTime();
+
             foreach ($workingHours as $workingHour) {
                 /* @var $workingHour BusinessProfileWorkingHour */
                 $workingHourDay = $workingHour->getDay();
+
+                if ($workingHour->getTimeEnd() == $defaultDate) {
+                    $timeEnd = clone $workingHour->getTimeEnd();
+                    $timeEnd->modify('+1 day');
+                } else {
+                    $timeEnd = $workingHour->getTimeEnd();
+                }
 
                 if ((($workingHourDay == self::CODE_WEEKDAY and in_array($dayOfWeek, self::getWeekday())
                         ) or (
@@ -256,7 +308,7 @@ class DayOfWeekModel
                         )
                     ) and (
                         (
-                            $now < $workingHour->getTimeEnd() and $now >= $workingHour->getTimeStart()
+                            $now < $timeEnd and $now >= $workingHour->getTimeStart()
                         ) or $workingHour->getOpenAllTime()
                     )
                 ) {
@@ -447,5 +499,27 @@ class DayOfWeekModel
         }
 
         return $check;
+    }
+
+    /**
+     * @param \DateTime|null $time
+     *
+     * @return string
+     */
+    public static function getFormFormattedTime($time)
+    {
+        if (!$time) {
+            $time = self::getDefaultDateTime();
+        }
+
+        return $time->format(self::FORM_DEFAULT_FORMAT);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public static function getDefaultDateTime()
+    {
+        return new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
     }
 }

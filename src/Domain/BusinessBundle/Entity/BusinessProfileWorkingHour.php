@@ -28,14 +28,18 @@ class BusinessProfileWorkingHour
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="time_start", type="time")
+     * @ORM\Column(name="time_start", type="time", nullable=true)
+     * @Assert\Time()
+     * @Assert\NotBlank()
      */
     private $timeStart;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="time_end", type="time")
+     * @ORM\Column(name="time_end", type="time", nullable=true)
+     * @Assert\Time()
+     * @Assert\NotBlank()
      */
     private $timeEnd;
 
@@ -121,7 +125,9 @@ class BusinessProfileWorkingHour
      */
     public function setTimeStart($timeStart)
     {
-        if (!$timeStart) {
+        if (!($timeStart instanceof \DateTime) and strtotime($timeStart)) {
+            $timeStart = new \DateTime($timeStart);
+        } else {
             $timeStart = new \DateTime(self::DEFAULT_DATE);
         }
 
@@ -145,7 +151,9 @@ class BusinessProfileWorkingHour
      */
     public function setTimeEnd($timeEnd)
     {
-        if (!$timeEnd) {
+        if (!($timeEnd instanceof \DateTime) and strtotime($timeEnd)) {
+            $timeEnd = new \DateTime($timeEnd);
+        } else {
             $timeEnd = new \DateTime(self::DEFAULT_DATE);
         }
 

@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BusinessProfileWorkingHourAdmin extends OxaAdmin
 {
@@ -43,14 +44,40 @@ class BusinessProfileWorkingHourAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $workingHours = $this->getSubject();
+
+        if ($workingHours) {
+            $timeStart = $workingHours->getTimeStart();
+            $timeEnd   = $workingHours->getTimeEnd();
+        } else {
+            $timeStart = null;
+            $timeEnd   = null;
+        }
+
         $formMapper
             ->add('day', ChoiceType::class, [
                 'choices' => DayOfWeekModel::getDayOfWeekMapping(),
                 'multiple' => false,
                 'required' => true,
             ])
-            ->add('timeStart')
-            ->add('timeEnd')
+            ->add('timeStart', TextType::class, [
+                'label' => 'Time Start',
+                'required' => false,
+                'data' => DayOfWeekModel::getFormFormattedTime($timeStart),
+                'attr' => [
+                    'class' => 'working-hours-time-start',
+                    'type' => 'time',
+                ],
+            ])
+            ->add('timeEnd', TextType::class, [
+                'label' => 'Time End',
+                'required' => false,
+                'data' => DayOfWeekModel::getFormFormattedTime($timeEnd),
+                'attr' => [
+                    'class' => 'working-hours-time-start',
+                    'type' => 'time',
+                ],
+            ])
             ->add('openAllTime')
         ;
     }

@@ -53,11 +53,17 @@ class WorkingHoursChangeSetUtil
                 $workingHour->setDay($data->day);
                 $workingHour->setOpenAllTime($data->openAllTime);
 
-                $timeStart = new \DateTime($data->timeStart->date);
-                $timeEnd   = new \DateTime($data->timeEnd->date);
+                if (!empty($data->timeStart->date)) {
+                    $workingHour->setTimeStart($data->timeStart->date);
+                } else {
+                    $workingHour->setTimeStart(new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE));
+                }
 
-                $workingHour->setTimeStart($timeStart);
-                $workingHour->setTimeEnd($timeEnd);
+                if (!empty($data->timeEnd->date)) {
+                    $workingHour->setTimeEnd($data->timeEnd->date);
+                } else {
+                    $workingHour->setTimeEnd(new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE));
+                }
 
                 $collection->add($workingHour);
             }

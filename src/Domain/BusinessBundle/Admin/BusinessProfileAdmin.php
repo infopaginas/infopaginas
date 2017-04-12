@@ -917,6 +917,17 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                 ;
             }
+
+            if (!DayOfWeekModel::validateWorkingHoursTimeBlank($object->getCollectionWorkingHours())) {
+                $errorElement->with('collectionWorkingHours')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.collectionWorkingHours.blank',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+            }
         }
     }
 
