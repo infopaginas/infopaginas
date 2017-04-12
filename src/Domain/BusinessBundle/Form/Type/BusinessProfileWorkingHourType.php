@@ -2,12 +2,15 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
+use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -33,22 +36,6 @@ class BusinessProfileWorkingHourType extends AbstractType
                 'required' => true,
                 'choice_translation_domain' => true,
             ])
-            ->add('timeStart', TimeType::class, [
-                'label' => 'Time Start',
-                'input'  => 'datetime',
-                'widget' => 'choice',
-                'attr' => [
-                    'class' => 'working-hours-time-start',
-                ],
-            ])
-            ->add('timeEnd', TimeType::class, [
-                'label' => 'Time End',
-                'input'  => 'datetime',
-                'widget' => 'choice',
-                'attr' => [
-                    'class' => 'working-hours-time-end',
-                ],
-            ])
             ->add('openAllTime', CheckboxType::class, [
                 'label' => 'Open All Time',
                 'required' => false,
@@ -57,6 +44,41 @@ class BusinessProfileWorkingHourType extends AbstractType
                 ],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            /** @var BusinessProfileWorkingHour $workingHours */
+            $workingHours = $event->getData();
+            $form = $event->getForm();
+
+            if ($workingHours) {
+                $timeStart = $workingHours->getTimeStart();
+                $timeEnd   = $workingHours->getTimeEnd();
+            } else {
+                $timeStart = null;
+                $timeEnd   = null;
+            }
+
+            $form
+                ->add('timeStart', TextType::class, [
+                    'label' => 'Time Start',
+                    'required' => true,
+                    'data' => DayOfWeekModel::getFormFormattedTime($timeStart),
+                    'attr' => [
+                        'class' => 'working-hours-time-start',
+                        'type' => 'time',
+                    ],
+                ])
+                ->add('timeEnd', TextType::class, [
+                    'label' => 'Time End',
+                    'required' => true,
+                    'data' => DayOfWeekModel::getFormFormattedTime($timeEnd),
+                    'attr' => [
+                        'class' => 'working-hours-time-start',
+                        'type' => 'time',
+                    ],
+                ])
+            ;
+        });
     }
 
     /**

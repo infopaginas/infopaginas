@@ -1,4 +1,4 @@
-define(['jquery', 'select2', 'bootstrap'], function( $, select2, bootstrap ) {
+define(['jquery', 'select2', 'bootstrap', 'moment', 'dateTimePicker'], function( $, select2, bootstrap ) {
     'use strict';
 
     var workingHours = function() {
@@ -61,6 +61,15 @@ define(['jquery', 'select2', 'bootstrap'], function( $, select2, bootstrap ) {
 
             event.preventDefault();
         });
+
+        $( 'body' ).on( 'focus', '.working-hours-time-start', function(){
+            $( this ).datetimepicker({
+                format: 'hh:mm a',
+                pickDate: false,
+                pickSeconds: false,
+                pick12HourFormat: false
+            });
+        });
     };
 
     workingHours.prototype.handleRemove = function() {
@@ -75,9 +84,6 @@ define(['jquery', 'select2', 'bootstrap'], function( $, select2, bootstrap ) {
     };
 
     workingHours.prototype.handleSelect = function() {
-        var timeSelects = $( this.html.timeStart + ', ' + this.html.timeEnd );
-
-        timeSelects.find( 'select' ).select2();
         $( this.html.day ).select2();
     };
 
@@ -110,19 +116,12 @@ define(['jquery', 'select2', 'bootstrap'], function( $, select2, bootstrap ) {
         function checkCollectionWorkingHours( openAllTimeCheckbox ) {
             var workingHourBlock = $( openAllTimeCheckbox ).parents( 'div.multi-field' ).first();
 
-            var timeSelects = workingHourBlock.find( that.html.timeStart + ', ' + that.html.timeEnd );
+            var timeInputs = workingHourBlock.find( that.html.timeStart + ', ' + that.html.timeEnd );
 
             if ( $( openAllTimeCheckbox ).prop( 'checked' ) ) {
-                timeSelects.find( 'select' ).val( 0 ).trigger( 'change' );
-
-                timeSelects.find( 'select' ).select2( 'destroy' );
-                timeSelects.find( 'select' ).prop( 'disabled', true );
-                timeSelects.find( 'select' ).select2();
-
+                timeInputs.prop( 'disabled', true );
             } else {
-                timeSelects.find( 'select' ).select2( 'destroy' );
-                timeSelects.find( 'select' ).prop( 'disabled', false );
-                timeSelects.find( 'select' ).select2();
+                timeInputs.prop( 'disabled', false );
             }
         }
     };

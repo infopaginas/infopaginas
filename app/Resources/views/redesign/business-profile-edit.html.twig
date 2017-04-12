@@ -1,5 +1,10 @@
 {% extends "redesign/layout/base.html.twig" %}
 
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ absolute_url(asset('assets/styles/bootstrap-datetimepicker-standalone.css')) }}" />
+{% endblock %}
+
 {% block videoJs %}
     {% include ':redesign/layout/widgets:video-js.html.twig' %}
 {% endblock %}

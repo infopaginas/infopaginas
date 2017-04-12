@@ -29,6 +29,7 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
+use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
@@ -1204,7 +1205,13 @@ class BusinessProfileManager extends Manager
                                 $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
                             } else {
                                 $openTime  = $item->getTimeStart()->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
-                                $closeTime = $item->getTimeEnd()->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+
+                                if ($item->getTimeEnd() == DayOfWeekModel::getDefaultDateTime()) {
+                                    $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
+                                } else {
+                                    $closeTime = $item->getTimeEnd()
+                                        ->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                                }
                             }
 
                             $schemaItemTemplate['opens'] = $openTime;

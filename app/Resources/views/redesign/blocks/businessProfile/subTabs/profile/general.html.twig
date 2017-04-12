@@ -19,10 +19,12 @@
             {{ form_widget(workingHoursField.day, {'attr': {'style': 'width: 100%'}}) }}
         </div><!-- form-field -->
         <div class="form__field field-hour-select hours-user">
+            {{ form_label(workingHoursField.timeStart) }}
             {{ form_widget(workingHoursField.timeStart, {'attr': {'style': 'width: 6.5em'}}) }}
         </div><!-- form-field -->
         <div class="field-middle-text">to</div>
         <div class="form__field field-hour-select hours-user">
+            {{ form_label(workingHoursField.timeEnd) }}
             {{ form_widget(workingHoursField.timeEnd, {'attr': {'style': 'width: 6.5em'}}) }}
         </div><!-- form-field -->
 

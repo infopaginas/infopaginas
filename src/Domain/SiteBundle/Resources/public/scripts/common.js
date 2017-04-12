@@ -71,6 +71,8 @@ requirejs.config({
         'jquery-mobile' : 'domainsite/scripts/vendors/jquery.mobile.custom.min',
         'js-cookie'     : 'domainsite/scripts/vendors/js.cookie.min',
         'bootstrap'     : 'domainsite/scripts/vendors/bootstrap.min',
+        'moment'        : '/bundles/sonatacore/vendor/moment/min/moment.min',
+        'dateTimePicker': '/bundles/sonatacore/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
         'underscore'    : 'domainsite/scripts/vendors/underscore-min',
         'alertify'      : 'domainsite/scripts/vendors/alertify.min',
         'spin'          : 'domainsite/scripts/vendors/spin.min',

@@ -42,10 +42,8 @@ $( document ).ready( function() {
         } );
     } );
 
-    $.each( openAllTimeCheckboxes, function( index, openAllTimeCheckbox ) {
-        $( openAllTimeCheckbox ).on( 'ifChecked ifUnchecked' , function( e, aux ) {
-            checkCollectionWorkingHours( openAllTimeCheckbox );
-        });
+    $( 'body' ).on( 'ifChecked ifUnchecked', '[ id *= "_openAllTime" ]', function( index, openAllTimeCheckbox ) {
+        checkCollectionWorkingHours( this );
     });
 
     checkAllCollectionWorkingHours( openAllTimeCheckboxes );
@@ -58,23 +56,15 @@ $( document ).ready( function() {
 
     function checkCollectionWorkingHours( openAllTimeCheckbox ) {
         var workingHourBlock = $( openAllTimeCheckbox ).parents( 'tr' ).first();
-        var timeStart = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeStart" ]' );
-        var timeEnd = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeEnd" ]' );
+        var timeStart = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeStart" ]').find( 'input' );
+        var timeEnd = workingHourBlock.find( '[ class *= "_collectionWorkingHours-timeEnd" ]' ).find( 'input' );
 
         if ( $( openAllTimeCheckbox ).prop( 'checked' ) ) {
-            timeStart.find( 'select' ).val( 0 ).trigger( 'change' );
-            timeStart.find( 'select' ).attr( 'readonly', 'readonly' );
-            timeStart.find( 'select' ).select2( 'disable' );
-
-            timeEnd.find( 'select' ).val( 0 ).trigger( 'change' );
-            timeEnd.find( 'select' ).attr( 'readonly', 'readonly' );
-            timeEnd.find( 'select' ).select2( 'disable' );
+            timeStart.prop( 'readonly', true );
+            timeEnd.prop( 'readonly', true );
         } else {
-            timeStart.find( 'select' ).removeAttr( 'readonly' );
-            timeStart.find( 'select' ).select2( 'enable' );
-
-            timeEnd.find( 'select' ).removeAttr( 'readonly' );
-            timeEnd.find( 'select' ).select2( 'enable' );
+            timeStart.prop( 'readonly', false );
+            timeEnd.prop( 'readonly', false );
         }
     }
 
@@ -200,4 +190,13 @@ $( document ).ready( function() {
     }
 
     setUseMapAddress();
+
+    $( 'body' ).on( 'focus', '.working-hours-time-start', function(){
+        $( this ).datetimepicker({
+            format: 'hh:mm a',
+            pickDate: false,
+            pickSeconds: false,
+            pick12HourFormat: false
+        });
+    });
 } );
