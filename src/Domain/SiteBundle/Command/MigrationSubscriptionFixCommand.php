@@ -138,6 +138,9 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                             $output->writeln('Skip item with id ' . $itemId);
                         }
                     }
+
+                    $this->em->flush();
+                    $this->em->clear();
                 }
             }
 
