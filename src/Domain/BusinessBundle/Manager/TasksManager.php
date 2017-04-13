@@ -130,6 +130,20 @@ class TasksManager
     }
 
     /**
+     * @param BusinessProfile   $businessProfile
+     * @param string            $message
+     *
+     * @return array
+     */
+    public function createClaimProfileConfirmationRequest($businessProfile, $message)
+    {
+        $task = TasksFactory::create(TaskType::TASK_PROFILE_CLAIM, $businessProfile);
+        $task->setClosureReason($message);
+
+        return $this->save($task);
+    }
+
+    /**
      * Create new 'Approve Business Review' task
      *
      * @access public
@@ -235,9 +249,27 @@ class TasksManager
             $this->getBusinessReviewsManager()->publish($task->getReview());
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
             $this->getBusinessProfileManager()->deactivate($task->getBusinessProfile());
+        } elseif ($task->getType() == TaskType::TASK_PROFILE_CLAIM) {
+            $this->getBusinessProfileManager()->claim($task->getBusinessProfile(), $task->getCreatedUser());
+            $this->rejectOtherClaimRequests($task->getBusinessProfile()->getId(), $task->getId());
         }
 
         return $this->save($task);
+    }
+
+    /**
+     * @param int $businessProfileId
+     * @param int $currentTaskId
+     */
+    public function rejectOtherClaimRequests($businessProfileId, $currentTaskId)
+    {
+        $tasks = $this->em->getRepository(Task::class)
+            ->getOtherClaimRequestsForBusiness($businessProfileId, $currentTaskId);
+
+        foreach ($tasks as $task) {
+            $task->setRejectReason(Task::REJECT_REASON_BUSINESS_ALREADY_CLAIMED);
+            $this->reject($task);
+        }
     }
 
     /**
@@ -294,6 +326,9 @@ class TasksManager
             case TaskType::TASK_REVIEW_APPROVE:
                 $review = $task->getReview();
                 $this->getMailer()->sendBusinessProfileReviewRejectEmailMessage($review, $rejectReason);
+                break;
+            case TaskType::TASK_PROFILE_CLAIM:
+                $this->getMailer()->sendBusinessProfileClaimRejectEmailMessage($task, $rejectReason);
                 break;
         }
     }

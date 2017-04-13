@@ -70,9 +70,6 @@ class BusinessProfileManager extends Manager
     /** @var LocalityManager */
     protected $localityManager;
 
-    /** @var UserInterface */
-    private $currentUser = null;
-
     /** @var  TranslatableListener */
     private $translatableListener;
 
@@ -104,14 +101,6 @@ class BusinessProfileManager extends Manager
 
         $this->categoryManager = $container->get('domain_business.manager.category');
         $this->localityManager = $container->get('domain_business.manager.locality');
-
-        $tokenStorage = $container->get('security.token_storage');
-
-        if ($tokenStorage->getToken() !== null) {
-            $this->currentUser = $tokenStorage->getToken()->getUser();
-        }
-
-        $this->currentUser = $this->em->getRepository(User::class)->find(1);
 
         $this->translatableListener = $container->get('sonata_translation.listener.translatable');
 
@@ -364,6 +353,17 @@ class BusinessProfileManager extends Manager
     {
         $businessProfile->setIsActive(false);
         $businessProfile->setIsClosed(true);
+        $this->commit($businessProfile);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param User            $user
+     */
+    public function claim(BusinessProfile $businessProfile, User $user)
+    {
+        $businessProfile->setUser($user);
+
         $this->commit($businessProfile);
     }
 
@@ -2385,5 +2385,35 @@ class BusinessProfileManager extends Manager
         $this->em->flush();
 
        return $updated;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return bool
+     */
+    public function getClaimButtonPermitted($businessProfile)
+    {
+        if ($this->getCurrentUser() and !$businessProfile->getUser()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return User|null
+     */
+    protected function getCurrentUser()
+    {
+        $currentUser = null;
+
+        $tokenStorage = $this->container->get('security.token_storage');
+
+        if ($tokenStorage->getToken() !== null and $tokenStorage->getToken()->getUser() instanceof User) {
+            $currentUser = $tokenStorage->getToken()->getUser();
+        }
+
+        return $currentUser;
     }
 }

@@ -37,3 +37,9 @@ domain_business_get_subcategories:
         categoryId: \d+
     options:
         expose: true
+
+domain_business_claim:
+    path:     /claim
+    defaults: { _controller: DomainBusinessBundle:Profile:claim }
+    options:
+        expose: true

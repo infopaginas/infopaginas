@@ -187,6 +187,17 @@
                                     </div><!-- highlights__item -->
                                 {% endif %}
 
+                                {% if showClaimButton %}
+                                    <div class="highlights__item">
+                                        <button class="button button--action" data-show-modal-id="claimBusinessModal">
+                                            <i class="fa fa-suitcase"></i>
+                                            {% trans %}claim_business.button{% endtrans %}
+                                        </button>
+                                    </div><!-- highlights__item -->
+
+                                    {% include ':redesign/blocks/modals:claim_business.html.twig' %}
+                                {% endif %}
+
                             </div><!-- container -->
                         </section>
 

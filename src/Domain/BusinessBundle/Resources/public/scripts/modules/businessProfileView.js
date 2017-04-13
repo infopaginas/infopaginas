@@ -6,20 +6,26 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         this.html = {
             buttons: {
                 createReviewButtonId: '#createReviewButton',
+                claimBusinessButtonId: '#claimBusinessButton',
                 couponsClass: '.coupon'
             },
             forms: {
                 createReviewFormId: '#createReviewForm',
-                createReviewFormPrefix: 'domain_business_bundle_business_review_type'
+                claimBusinessFormId: '#claimBusinessForm',
+                createReviewFormPrefix: 'domain_business_bundle_business_review_type',
+                claimBusinessFormPrefix: '#domain_business_bundle_business_claim_request_type'
             },
             modals: {
-                createReviewModalId: '#writeReviewModal'
+                createReviewModalId: '#writeReviewModal',
+                claimBusinessModalId: '#claimBusinessModal'
             },
-            loadingSpinnerContainerId: 'create-review-spinner-container'
+            loadingSpinnerContainerId: 'create-review-spinner-container',
+            claimBusinessMessage: '#claimBusinessMessage'
         };
 
         this.urls = {
-            createReviewURL: Routing.generate( 'domain_business_review_save' )
+            createReviewURL: Routing.generate( 'domain_business_review_save' ),
+            claimBusinessURL: Routing.generate( 'domain_business_claim' )
         };
 
         this.spinner = new Spin();
@@ -35,6 +41,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         new interactionsTracker();
 
         this.handleReviewCreation();
+        this.handleBusinessClaim();
         this.handlePrintableCoupons();
     };
 
@@ -126,6 +133,50 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     this.enableFieldsHighlight( { 'username': [errorThrown] } );
+                },
+                complete: function() {
+                    self.spinner.hide();
+                }
+            } );
+
+            event.preventDefault();
+        });
+    };
+
+    businessProfileView.prototype.handleBusinessClaim = function() {
+        var self = this;
+
+        $( document ).on( 'click', this.html.buttons.claimBusinessButtonId, function( event ) {
+
+            var data = $( self.html.forms.claimBusinessFormId ).serializeArray();
+            data.push({
+                'name': 'businessProfileId',
+                'value': $( this ).data( 'business-profile-id' )
+            });
+
+            $.ajax({
+                url: self.urls.claimBusinessURL,
+                method: 'POST',
+                data: data,
+                dataType: 'JSON',
+                beforeSend: function() {
+                    $( self.html.claimBusinessMessage ).text( '' );
+                    self.disableFieldsHighlight( self.html.forms.claimBusinessFormId );
+                    self.spinner.show( self.html.loadingSpinnerContainerId );
+                },
+                success: function( response ) {
+                    if( response.success ) {
+                        $( self.html.claimBusinessMessage ).text( response.message );
+                    } else {
+                        if ( !$.isEmptyObject( response.errors ) ) {
+                            self.enableFieldsHighlight( self.html.forms.claimBusinessFormId, response.errors, self.html.forms.claimBusinessFormPrefix )
+                        } else {
+                            self.enableFieldsHighlight( { 'message': [errorThrown] } );
+                        }
+                    }
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    self.enableFieldsHighlight( { 'message': [errorThrown] } );
                 },
                 complete: function() {
                     self.spinner.hide();

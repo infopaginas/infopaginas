@@ -121,6 +121,12 @@ services:
         tags:
             - { name: form.type, alias: domain_business_bundle_business_close_request_type }
 
+    domain_business.form.type.claim:
+        class: Domain\BusinessBundle\Form\Type\BusinessClaimRequestType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_claim_request_type }
+
     #forms section
     domain_business.form.business_profile:
         factory_method: createNamed
@@ -129,6 +135,14 @@ services:
         arguments:
             - 'domain_business_bundle_business_profile_form_type'
             - 'domain_business_bundle_business_profile_form_type'
+
+    domain_business.form.claim:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_business_claim_request_type'
+            - 'domain_business_bundle_business_claim_request_type'
 
     domain_business.form.review:
         factory_method: createNamed
@@ -152,6 +166,14 @@ services:
         scope: request
         arguments:
             - '@domain_business.form.business_profile'
+            - '@request'
+            - '@service_container'
+
+    domain_business.form.handler.claim:
+        class: Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.claim'
             - '@request'
             - '@service_container'
 

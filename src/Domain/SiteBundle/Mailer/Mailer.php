@@ -10,6 +10,7 @@ namespace Domain\SiteBundle\Mailer;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Entity\Task;
 use FOS\UserBundle\Model\UserInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
@@ -175,6 +176,22 @@ class Mailer
         $subject = 'BUSINESS PROFILE REVIEW [' . $review->getBusinessProfile()->getName() . '] - Rejected';
 
         $this->send($review->getUser()->getEmail(), $subject, $message, $contentType);
+    }
+
+    /**
+     * @param Task   $task
+     * @param string $reason
+     */
+    public function sendBusinessProfileClaimRejectEmailMessage($task, $reason)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'BUSINESS PROFILE CLAIM [' . $task->getBusinessProfile()->getName() . '] - Rejected';
+
+        $this->send($task->getCreatedUser()->getEmail(), $subject, $message, $contentType);
     }
 
     /**
