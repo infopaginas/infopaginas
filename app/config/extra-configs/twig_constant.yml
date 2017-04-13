@@ -87,3 +87,6 @@ twig:
 
         SECURITY_ROLE:
             ADMINISTRATOR: ROLE_ADMINISTRATOR
+
+        TASK:
+            PROFILE_CLAIM: PROFILE_CLAIM

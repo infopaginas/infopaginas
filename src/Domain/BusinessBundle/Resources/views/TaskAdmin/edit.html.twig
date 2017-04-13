@@ -57,6 +57,38 @@
             {{ form_row(form.businessProfile__businessReviews) }}
         {% endif %}
 
+        {% if (object.type == TASK.PROFILE_CLAIM) %}
+            <hr>
+            <div class="form-group" id="sonata-ba-field-container-s57af15dda91b9_businessProfile__businessReviews">
+                <label class="control-label">{% trans %}Business Profile Claim Request{% endtrans %}</label>
+                <div class="sonata-ba-view">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>
+                                {{ admin.trans('User ID') }}
+                            </th>
+                            <th>
+                                {{ admin.trans('User Name') }}
+                            </th>
+                            <th>
+                                {{ admin.trans('Message') }}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="sonata-ba-view-container">
+                            <td>{{ object.createdUser.id }}</td>
+                            <td>{{ object.createdUser.fullName }}</td>
+                            <td>{{ object.closureReason }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        {% endif %}
+
         {% if (object.status == constant('Domain\\BusinessBundle\\DBAL\\Types\\TaskStatusType::TASK_STATUS_OPEN')) %}
             <div class="well well-small form-actions">
                 <button class="btn btn-success" type="submit"  name="status"

@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Repository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
+use Domain\BusinessBundle\DBAL\Types\TaskType;
+use Domain\BusinessBundle\Entity\Task;
 
 /**
  * TaskRepository
@@ -72,6 +74,28 @@ class TaskRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $count;
+    }
+
+    /**
+     * @param int $businessProfileId
+     * @param int $currentTaskId
+     *
+     * @return Task[]
+     */
+    public function getOtherClaimRequestsForBusiness($businessProfileId, $currentTaskId)
+    {
+        $qb = $this->getQueryBuilder()
+            ->where('task.type = :claim')
+            ->andWhere('task.businessProfile = :businessProfileId')
+            ->andWhere('task.status = :open')
+            ->andWhere('task.id != :taskId')
+            ->setParameter('claim', TaskType::TASK_PROFILE_CLAIM)
+            ->setParameter('businessProfileId', $businessProfileId)
+            ->setParameter('open', TaskStatusType::TASK_STATUS_OPEN)
+            ->setParameter('taskId', $currentTaskId)
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

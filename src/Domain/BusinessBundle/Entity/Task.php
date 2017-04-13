@@ -24,6 +24,8 @@ class Task implements DefaultEntityInterface, TaskInterface
 {
     use DefaultEntityTrait;
 
+    const REJECT_REASON_BUSINESS_ALREADY_CLAIMED = 'Business already claimed';
+
     /**
      * @var int
      *
@@ -34,8 +36,7 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $id;
 
     /**
-     * @ORM\Column(name="type", type="TaskType", nullable=false)
-     * @DoctrineAssert\Enum(entity="Domain\BusinessBundle\DBAL\Types\TaskType")
+     * @ORM\Column(name="type", type="string", length=255, nullable=false)
      * @Assert\NotBlank()
      */
     protected $type;

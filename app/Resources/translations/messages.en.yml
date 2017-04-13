@@ -528,3 +528,9 @@ search.miles_to.location: mi. from
 
 search.control.auto: Auto Search in Map
 search.control.redo: Search in Map
+
+# claim business
+claim_business.button: Claim this business
+claim_business.modal.title: Claim
+claim_business.modal.message: Message
+claim_business.response.success: Business Claim Request send. Please wait for approval

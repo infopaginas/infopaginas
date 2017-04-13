@@ -4,6 +4,8 @@ namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
+use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,6 +37,7 @@ class ProfileController extends Controller
 
     const SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE = 'Business Profile Request send. Please wait for approval';
     const SUCCESS_PROFILE_CLOSE_REQUEST_CREATED_MESSAGE = 'Close Profile Request send. Please wait for approval';
+    const SUCCESS_PROFILE_CLAIM_REQUEST_CREATED_MESSAGE = 'claim_business.response.success';
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
     const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
@@ -173,6 +176,14 @@ class ProfileController extends Controller
 
         $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
+        $showClaimBlock =  $this->getBusinessProfilesManager()->getClaimButtonPermitted($businessProfile);
+
+        if ($showClaimBlock) {
+            $claimBusinessForm = $this->createForm(new BusinessClaimRequestType())->createView();
+        } else {
+            $claimBusinessForm = null;
+        }
+
         return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,
             'seoData'         => $businessProfile,
@@ -184,7 +195,28 @@ class ProfileController extends Controller
             'dcDataDTO'       => $dcDataDTO,
             'schemaJsonLD'    => $schema,
             'markers'         => $locationMarkers,
+            'showClaimButton' => $showClaimBlock,
+            'claimBusinessForm' => $claimBusinessForm,
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function claimAction(Request $request) : JsonResponse
+    {
+        $formHandler = $this->getBusinessClaimFormHandler();
+
+        try {
+            if ($formHandler->process()) {
+                return $this->getSuccessResponse(self::SUCCESS_PROFILE_CLAIM_REQUEST_CREATED_MESSAGE);
+            }
+        } catch (\Exception $e) {
+            return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
     public function closeAction(Request $request)
@@ -298,5 +330,13 @@ class ProfileController extends Controller
         }
 
         return $this->get('domain_business.form.business_profile')->setData($businessProfile);
+    }
+
+    /**
+     * @return BusinessClaimFormHandler
+     */
+    private function getBusinessClaimFormHandler()
+    {
+        return $this->get('domain_business.form.handler.claim');
     }
 }
