@@ -85,7 +85,9 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getPublishedArticlesQueryBuilder($categorySlug);
         $queryBuilder = $queryBuilder
             ->setMaxResults($limit)
-            ->setFirstResult($offset);
+            ->setFirstResult($offset)
+            ->orderBy('a.activationDate', 'DESC')
+        ;
 
         return $queryBuilder->getQuery()->getResult();
     }
