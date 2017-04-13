@@ -57,7 +57,7 @@ class ArticleController extends Controller
 
         $article = $articleManager->getArticleBySlug($slug);
 
-        if (!$article) {
+        if (!$article or !$article->getIsPublished() or ($article->getExpirationDate() and $article->isExpired())) {
             throw $this->createNotFoundException();
         }
 

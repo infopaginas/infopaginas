@@ -12,6 +12,7 @@ namespace Oxa\Sonata\AdminBundle\Manager;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -140,6 +141,11 @@ class AdminManager extends DefaultManager
                     );
                 }
             }
+        }
+
+        // prevent deletion of external article
+        if ($entity instanceof Article and $entity->getIsExternal()) {
+            $existDependentField[] = 'External Article';
         }
 
         return $existDependentField;
