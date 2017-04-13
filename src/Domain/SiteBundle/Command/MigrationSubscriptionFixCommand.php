@@ -321,7 +321,7 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     {
         if ($this->missingSubscriptions) {
             foreach ($this->missingSubscriptions as $key => $amount) {
-                $this->output->writeln('Missing subscription id ' . $key .', amount ' . $amount);
+                $this->output->writeln('Missing subscription id ' . $key . ', amount ' . $amount);
             }
         }
     }
