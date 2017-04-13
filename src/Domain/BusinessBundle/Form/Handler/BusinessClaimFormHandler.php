@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class BusinessClaimFormHandler extends BaseFormHandler
 {
-    const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id is not found';
+    const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id not found';
     const USER_NOT_FOUND_ERROR_MESSAGE = 'Unknown user';
 
     /** @var Request $request */
@@ -38,7 +38,7 @@ class BusinessClaimFormHandler extends BaseFormHandler
         $this->container          = $container;
 
         $this->businessProfileManager = $this->container->get('domain_business.manager.business_profile');
-        $this->tasksManager       = $this->container->get('domain_business.manager.tasks');
+        $this->tasksManager           = $this->container->get('domain_business.manager.tasks');
 
         $tokenStorage             = $this->container->get('security.token_storage');
         $this->currentUser        = $tokenStorage->getToken()->getUser();
@@ -78,6 +78,6 @@ class BusinessClaimFormHandler extends BaseFormHandler
 
         $message = $this->form->get('message')->getData();
 
-        $response = $this->tasksManager->createClaimProfileConfirmationRequest($businessProfile, $message);
+        $this->tasksManager->createClaimProfileConfirmationRequest($businessProfile, $message);
     }
 }
