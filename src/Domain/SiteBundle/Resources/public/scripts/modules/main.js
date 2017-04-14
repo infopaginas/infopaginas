@@ -486,7 +486,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 //ad
 
     $('#ad-close').on( 'click', function() {
-        $( this ).parent().hide();
+        $( this ).parent().remove();
         showMap.removeClass( 'floating-offset' );
     });
 
@@ -508,6 +508,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           video.load();
       }
 
+      $( '#search-float-bottom' ).remove();
     } else {
       var mapStateSize = 'device';
     }
