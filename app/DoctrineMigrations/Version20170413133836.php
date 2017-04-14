@@ -36,7 +36,7 @@ class Version20170413133836 extends AbstractMigration implements ContainerAwareI
         $bannersData = LoadTypeData::getData();
 
         foreach ($bannersData as $item) {
-            $bannerType = $this->getBannerTypeByItem($item);
+            $bannerType = $this->getBannerTypeByCode($item['code']);
 
             $bannerType->setName($item['name']);
             $bannerType->setPlacement($item['placement']);
@@ -55,21 +55,21 @@ class Version20170413133836 extends AbstractMigration implements ContainerAwareI
     }
 
     /**
-     * @param array $item
+     * @param int $code
      *
      * @return BannerType
      */
-    protected function getBannerTypeByItem($item)
+    protected function getBannerTypeByCode($code)
     {
         $bannerType = $this->em->getRepository('DomainBannerBundle:Type')->findOneBy(
             [
-                'code' => $item['code'],
+                'code' => $code,
             ]
         );
 
         if (!$bannerType) {
             $bannerType = new BannerType();
-            $bannerType->setCode($item['code']);
+            $bannerType->setCode($code);
 
             $this->em->persist($bannerType);
         }
