@@ -48,7 +48,13 @@
 
     googletag.cmd.push(function() {
         {% for item in bannerHeaders %}
-            {{ item | raw }}
+            {% if item.code == BANNER_CODE.SEARCH_FLOAT_BOTTOM %}
+                if (windowWidth < BASE_BREAK_POINT) {
+                    {{ item.data | raw }}
+                }
+            {% else %}
+                {{ item.data | raw }}
+            {% endif %}
         {% endfor %}
 
         {% if dcDataDTO is defined and dcDataDTO is not null %}

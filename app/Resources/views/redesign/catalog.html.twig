@@ -67,6 +67,8 @@
             <div id="map" class="map"></div>
             <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
+
+        {% include ':redesign/blocks/banners:search-page-float.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_FLOAT_BOTTOM } %}
     </div><!-- main container -->
 {% endblock %}
 

@@ -84,6 +84,7 @@ twig:
             BUSINESS_PAGE_BOTTOM:   12
             ARTICLE_PAGE_BOTTOM:    13
             VIDEO_PAGE_BOTTOM:      14
+            SEARCH_FLOAT_BOTTOM:    15
 
         SECURITY_ROLE:
             ADMINISTRATOR: ROLE_ADMINISTRATOR

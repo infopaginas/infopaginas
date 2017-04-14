@@ -84,6 +84,7 @@ class SearchController extends Controller
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
+                TypeInterface::CODE_SEARCH_FLOAT_BOTTOM,
             ]
         );
 
@@ -473,6 +474,7 @@ class SearchController extends Controller
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
+                TypeInterface::CODE_SEARCH_FLOAT_BOTTOM,
             ]
         );
 

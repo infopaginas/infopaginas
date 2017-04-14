@@ -37,6 +37,7 @@ class TypeModel implements TypeInterface
             self::CODE_VIDEO_PAGE_BOTTOM    => self::MEDIA_FORMAT_VIDEO,
             self::CODE_PORTAL_RIGHT         => self::MEDIA_FORMAT_STATIC,
             self::CODE_STATIC_BOTTOM        => self::MEDIA_FORMAT_STATIC,
+            self::CODE_SEARCH_FLOAT_BOTTOM  => self::MEDIA_FORMAT_FLOAT,
         ];
     }
 
@@ -60,6 +61,7 @@ class TypeModel implements TypeInterface
             self::CODE_VIDEO_PAGE_BOTTOM    => self::SIZE_AUTO_STATIC,
             self::CODE_PORTAL_RIGHT         => self::SIZE_300_250,
             self::CODE_STATIC_BOTTOM        => self::SIZE_AUTO_STATIC,
+            self::CODE_SEARCH_FLOAT_BOTTOM  => self::SIZE_320_50,
         ];
     }
 
@@ -83,6 +85,7 @@ class TypeModel implements TypeInterface
             self::CODE_VIDEO_PAGE_BOTTOM,
             self::CODE_PORTAL_RIGHT,
             self::CODE_STATIC_BOTTOM,
+            self::CODE_SEARCH_FLOAT_BOTTOM,
         ];
     }
 
