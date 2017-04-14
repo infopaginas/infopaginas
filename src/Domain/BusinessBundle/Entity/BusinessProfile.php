@@ -54,7 +54,7 @@ class BusinessProfile implements
 
     const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
-    const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 1000;
+    const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
     const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 255;
     const BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH = 255;
     const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
@@ -334,8 +334,8 @@ class BusinessProfile implements
      * @var string - Products of Business
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="product", type="text", length=1000, nullable=true)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="product", type="text", length=10000, nullable=true)
+     * @Assert\Length(max=10000, maxMessage="business_profile.max_length")
      */
     protected $product;
 
