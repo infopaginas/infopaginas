@@ -68,7 +68,10 @@ class BannerFactory extends Factory
                         $header = $item->getTemplate()->getTemplateHeader();
                     }
 
-                    return $header;
+                    return [
+                        'data' => $header,
+                        'code' => $bannerTypeCode,
+                    ];
                 }
 
                 return null;

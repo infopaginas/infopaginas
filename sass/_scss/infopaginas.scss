@@ -1468,7 +1468,7 @@ $thumb-width-mb: 60px;
   width: 320px;
 
   @media only screen and (min-width: 805px) {
-    display: none;
+    display: none!important;
   }
 }
 
@@ -5207,6 +5207,8 @@ input[type='radio'], input[type='checkbox'] {
       }
     }
   }
+
+  padding-bottom: 50px;
 }
 
 .vjs-social-share {

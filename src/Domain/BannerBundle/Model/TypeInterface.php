@@ -28,8 +28,10 @@ interface TypeInterface
     const CODE_BUSINESS_PAGE_BOTTOM = 12;
     const CODE_ARTICLE_PAGE_BOTTOM  = 13;
     const CODE_VIDEO_PAGE_BOTTOM    = 14;
+    const CODE_SEARCH_FLOAT_BOTTOM  = 15;
 
     const SIZE_300_250 = '300x250';
+    const SIZE_320_50  = '320x50';
     const SIZE_AUTO_SEARCH = '320x50, 468x60';
     const SIZE_AUTO_STATIC = '320x50, 728x90';
 
@@ -41,6 +43,7 @@ interface TypeInterface
     const MEDIA_FORMAT_COMPARE      = 'compare';
     const MEDIA_FORMAT_STATIC       = 'static';
     const MEDIA_FORMAT_PORTAL       = 'portal';
+    const MEDIA_FORMAT_FLOAT        = 'float';
 
     /**
      * @return integer

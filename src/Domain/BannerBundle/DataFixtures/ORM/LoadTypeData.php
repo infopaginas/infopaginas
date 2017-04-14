@@ -125,6 +125,12 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
                 'placement' => 'Static pages (advertise, contact us, terms, privacy)',
                 'comment'   => 'Ad block at the bottom of static pages',
             ],
+            [
+                'code'      => TypeInterface::CODE_SEARCH_FLOAT_BOTTOM,
+                'name'      => 'Floating Banner at Search Page 320x50',
+                'placement' => 'Search Results Page and Catalog',
+                'comment'   => 'Floating ad block at the bottom of search and catalog pages',
+            ],
         ];
     }
 
