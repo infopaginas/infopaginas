@@ -508,7 +508,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           video.load();
       }
 
-      $( '#search-float-bottom').remove();
+      $( '#search-float-bottom' ).remove();
     } else {
       var mapStateSize = 'device';
     }
