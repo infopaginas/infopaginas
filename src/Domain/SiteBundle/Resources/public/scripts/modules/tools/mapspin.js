@@ -88,6 +88,8 @@ define(['jquery', 'spin'], function( $, _spin ) {
         $( document ).on( 'autoSearchRequestEnabled', function() {
             self.autoSearch = true;
             self.mapLoadingEnd();
+
+            $( document ).trigger( 'autoSearchRequestTriggered' );
         });
 
         $( document ).on( 'autoSearchRequestDisabled', function() {

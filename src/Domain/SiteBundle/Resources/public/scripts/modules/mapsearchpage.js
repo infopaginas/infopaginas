@@ -76,7 +76,8 @@ define(
             mapContainer : 'map',
             mapOptions   : {
                 center: new google.maps.LatLng( googleMapDefaultCenter ),
-                zoom: googleMapDefaultZoom
+                zoom: googleMapDefaultZoom,
+                fullscreenControl: false
             },
             directions: new directions
         };
