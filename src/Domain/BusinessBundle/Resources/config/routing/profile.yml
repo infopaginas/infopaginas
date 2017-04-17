@@ -38,6 +38,18 @@ domain_business_get_subcategories:
     options:
         expose: true
 
+domain_business_get_localities:
+    path:     /locality/list/{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Profile:localityList, businessProfileId: null }
+    options:
+        expose: true
+
+domain_business_get_neighborhoods:
+    path:     /neighborhood/list/{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Profile:neighborhoodList, businessProfileId: null }
+    options:
+        expose: true
+
 domain_business_claim:
     path:     /claim
     defaults: { _controller: DomainBusinessBundle:Profile:claim }

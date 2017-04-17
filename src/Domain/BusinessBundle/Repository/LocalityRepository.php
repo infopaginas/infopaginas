@@ -182,4 +182,35 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    /**
+     * @param array  $areas
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
+    public function getAvailableLocalitiesByAres($areas, $locale)
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->andWhere('l.area IN (:areas)')
+            ->setParameter('areas', $areas)
+        ;
+
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            $query->setHint(
+                \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+                'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+            );
+
+            // Force the locale
+            $query->setHint(
+                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+                $locale
+            );
+        }
+
+        return $query->getResult();
+    }
 }

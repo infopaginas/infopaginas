@@ -115,3 +115,9 @@ div.chart-container {
     height: 400px;
     margin: 0 auto
 }
+
+a.select-all-button {
+    position: relative;
+    float: right;
+    cursor: pointer;
+}

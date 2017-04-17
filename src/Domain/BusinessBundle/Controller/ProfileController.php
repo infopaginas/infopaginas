@@ -259,6 +259,51 @@ class ProfileController extends Controller
 
         return new JsonResponse(['data' => $subcategories]);
     }
+
+    /**
+     * @param Request  $request
+     * @param int|null $businessProfileId
+     *
+     * @return JsonResponse
+     */
+    public function localityListAction(Request $request, $businessProfileId = null)
+    {
+        $areas  = $request->request->get('areas', []);
+        $locale = $request->request->get('currentLocale', $request->getLocale());
+
+        if (!$areas) {
+            return new JsonResponse(['data' => []]);
+        }
+
+        $businessProfilesManager = $this->getBusinessProfilesManager();
+
+        $localities = $businessProfilesManager->getAreaLocalities($businessProfileId, $areas, $locale);
+
+        return new JsonResponse(['data' => $localities]);
+    }
+
+    /**
+     * @param Request  $request
+     * @param int|null $businessProfileId
+     *
+     * @return JsonResponse
+     */
+    public function neighborhoodListAction(Request $request, $businessProfileId = null)
+    {
+        $localities = $request->request->get('localities', []);
+        $locale     = $request->request->get('currentLocale', $request->getLocale());
+
+        if (!$localities) {
+            return new JsonResponse(['data' => []]);
+        }
+
+        $businessProfilesManager = $this->getBusinessProfilesManager();
+
+        $neighborhoods = $businessProfilesManager->getLocalitiesNeighborhoods($businessProfileId, $localities, $locale);
+
+        return new JsonResponse(['data' => $neighborhoods]);
+    }
+
     /**
      * @return \Symfony\Component\Form\Form
      */

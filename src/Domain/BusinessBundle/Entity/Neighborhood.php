@@ -170,7 +170,7 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     /**
      *  Get owning Locality for this Neighborhood
      *
-     * @return Neighborhood
+     * @return Locality
      */
     public function getLocality()
     {

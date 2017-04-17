@@ -7,6 +7,7 @@ use AntiMattr\GoogleBundle\Analytics\Impression;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
@@ -15,6 +16,7 @@ use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\Neighborhood;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
@@ -910,6 +912,151 @@ class BusinessProfileManager extends Manager
             ];
 
             if (in_array($subcategory->getId(), $checkedSubcategoryIds)) {
+                $data[$key]['selected'] = true;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param int|null      $businessProfileId
+     * @param array         $areas
+     * @param string|null   $locale
+     *
+     * @return array
+     */
+    public function getAreaLocalities($businessProfileId, $areas, $locale)
+    {
+        $checkedLocalityIds = [];
+
+        if ($businessProfileId) {
+            /* @var BusinessProfile $businessProfile */
+            $businessProfile    = $this->getRepository()->find($businessProfileId);
+            $checkedLocalityIds = $this->getBusinessProfileLocalityIds($businessProfile);
+        }
+
+        $localities = $this->getLocalitiesByAreas($areas, $locale);
+
+        $data = $this->getEntitiesMultiSelectResponseForData($localities, $checkedLocalityIds);
+
+        return $data;
+    }
+
+    /**
+     * @param int|null      $businessProfileId
+     * @param array         $localities
+     * @param string|null   $locale
+     *
+     * @return array
+     */
+    public function getLocalitiesNeighborhoods($businessProfileId, $localities, $locale)
+    {
+        $checkedNeighborhoodIds = [];
+
+        if ($businessProfileId) {
+            /* @var BusinessProfile $businessProfile */
+            $businessProfile    = $this->getRepository()->find($businessProfileId);
+            $checkedNeighborhoodIds = $this->getBusinessProfileNeighborhoodIds($businessProfile);
+        }
+
+        $neighborhoods = $this->getNeighborhoodsByLocalities($localities, $locale);
+
+        $data = $this->getEntitiesMultiSelectResponseForData($neighborhoods, $checkedNeighborhoodIds);
+
+        return $data;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
+    public function getBusinessProfileLocalityIds($businessProfile)
+    {
+        $localities = $businessProfile->getLocalities();
+
+        $data = $this->getEntitiesId($localities);
+
+        return $data;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
+    public function getBusinessProfileNeighborhoodIds($businessProfile)
+    {
+        $neighborhoods = $businessProfile->getNeighborhoods();
+
+        $data = $this->getEntitiesId($neighborhoods);
+
+        return $data;
+    }
+
+    /**
+     * @param array  $areas
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
+    public function getLocalitiesByAreas($areas, $locale)
+    {
+        $localities = $this->getEntityManager()->getRepository(Locality::class)
+            ->getAvailableLocalitiesByAres($areas, $locale);
+
+        return $localities;
+    }
+
+    /**
+     * @param array  $localities
+     * @param string $locale
+     *
+     * @return Neighborhood[]
+     */
+    public function getNeighborhoodsByLocalities($localities, $locale)
+    {
+        $neighborhoods = $this->getEntityManager()->getRepository(Neighborhood::class)
+            ->getAvailableNeighborhoodsByLocalities($localities, $locale);
+
+        return $neighborhoods;
+    }
+
+    /**
+     * @param array $entities
+     *
+     * @return array
+     */
+    private function getEntitiesId($entities)
+    {
+        $data = [];
+
+        foreach ($entities as $item) {
+            $data[] = $item->getId();
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $entities
+     * @param array $checkedIds
+     *
+     * @return array
+     */
+    private function getEntitiesMultiSelectResponseForData($entities, $checkedIds)
+    {
+        $data = [];
+
+        foreach ($entities as $key => $item) {
+            $data[$key] = [
+                'id'       => $item->getId(),
+                'name'     => $item->getName(),
+                'selected' => false,
+            ];
+
+            if (in_array($item->getId(), $checkedIds)) {
                 $data[$key]['selected'] = true;
             }
         }

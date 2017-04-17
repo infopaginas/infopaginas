@@ -310,6 +310,14 @@ class ChangeSetCalculator
             $valueNew = $accessor->getValue($entityNew, $field);
             $valueOld = $accessor->getValue($entityOld, $field);
 
+            if (!$valueOld) {
+                $valueOld = [];
+            }
+
+            if (!$valueNew) {
+                $valueNew = [];
+            }
+
             $updated = false;
             $class   = '';
 
