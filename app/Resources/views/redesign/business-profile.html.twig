@@ -186,18 +186,6 @@
                                         </ul>
                                     </div><!-- highlights__item -->
                                 {% endif %}
-
-                                {% if showClaimButton %}
-                                    <div class="highlights__item">
-                                        <button class="button button--action" data-show-modal-id="claimBusinessModal">
-                                            <i class="fa fa-suitcase"></i>
-                                            {% trans %}claim_business.button{% endtrans %}
-                                        </button>
-                                    </div><!-- highlights__item -->
-
-                                    {% include ':redesign/blocks/modals:claim_business.html.twig' %}
-                                {% endif %}
-
                             </div><!-- container -->
                         </section>
 
@@ -320,6 +308,21 @@
                                     {% endfor %}
                                 </div>
                             </div><!-- sidebar__section -->
+                        {% endif %}
+
+                        {% if showClaimButton %}
+                            <div class="sidebar__section section--social">
+                                <ul>
+                                    <li>
+                                        <a class="button" data-show-modal-id="claimBusinessModal">
+                                            <i class="fa fa-suitcase"></i>
+                                            <span>{% trans %}claim_business.button{% endtrans %}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {% include ':redesign/blocks/modals:claim_business.html.twig' %}
                         {% endif %}
 
                     </aside>

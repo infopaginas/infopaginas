@@ -172,6 +172,7 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 success: function( response ) {
                     if( response.success ) {
                         $( self.html.claimBusinessMessage ).text( response.message );
+                        $( self.html.buttons.claimBusinessButtonId ).remove();
                     } else {
                         if ( !$.isEmptyObject( response.errors ) ) {
                             self.enableFieldsHighlight( self.html.forms.claimBusinessFormId, response.errors, self.html.forms.claimBusinessFormPrefix )
