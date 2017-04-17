@@ -107,6 +107,8 @@ class BusinessProfileUtil
             );
         }
 
+        $hasLink = false;
+
         if ($businessProfile->getWebsite() and mb_strlen($seoDescription) < $descriptionMaxLength) {
             $seoDescription .= ' ' . $translator->trans(
                 'business_profile.seoDescription.link',
@@ -116,11 +118,19 @@ class BusinessProfileUtil
                 'messages',
                 strtolower($locale)
             );
+
+            $hasLink = true;
         }
 
         if (!$businessProfile->getPhones()->isEmpty() and mb_strlen($seoDescription) < $descriptionMaxLength) {
+            if ($hasLink) {
+                $phoneTranslate = 'business_profile.seoDescription.phone_has_link';
+            } else {
+                $phoneTranslate = 'business_profile.seoDescription.phone';
+            }
+
             $seoDescription .= ' ' . $translator->trans(
-                'business_profile.seoDescription.phone',
+                $phoneTranslate,
                 [
                     'phone' => $businessProfile->getPhones()->first()->getPhone(),
                 ],
