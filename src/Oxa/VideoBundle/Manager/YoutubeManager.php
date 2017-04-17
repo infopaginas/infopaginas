@@ -26,6 +26,7 @@ class YoutubeManager
     const ERROR_LOGIN_REQUIRED  = 401;
     const ERROR_FORBIDDEN       = 403;
     const ERROR_NOT_FOUND       = 404;
+    const ERROR_BAD_TOKEN       = 0;
 
     const ERROR_UNKNOWN         = 'ERROR_UNKNOWN';
     const ERROR_ASSET_NOT_EXIST = 'ERROR_ASSET_NOT_EXIST';
@@ -144,7 +145,7 @@ class YoutubeManager
 
             // If $listResponse is empty, the specified video was not found.
             // Since the request specified a video ID, the response only contains one video resource.
-            if (!$listResponse->getItems()) {
+            if (!is_object($listResponse) or !method_exists($listResponse, 'getItems') or !$listResponse->getItems()) {
                 $error = self::ERROR_NOT_FOUND;
             } else {
                 $video = $listResponse[0];
@@ -340,11 +341,30 @@ class YoutubeManager
 
     public function handleUserTokenAuth()
     {
+        $error  = false;
+        $status = false;
+
         $token = $this->configService->getValue(ConfigInterface::YOUTUBE_ACCESS_TOKEN);
 
-        $this->client->setAccessToken($token);
+        try {
+            $this->client->setAccessToken($token);
+            $status = true;
+        } catch (\Google_Auth_Exception $e) {
+            if (in_array($e->getCode(), $this->getYoutubeErrors())) {
+                $error = $e->getCode();
+            }
+        } catch (\Google_Exception $e) {
+            $error = self::ERROR_UNKNOWN;
+        }
 
-        $check = $this->checkYoutubeAccount();
+        if ($error !== false) {
+            $check = [
+                'status' => $status,
+                'error'  => $error,
+            ];
+        } else {
+            $check = $this->checkYoutubeAccount();
+        }
 
         return $check;
     }
@@ -367,6 +387,7 @@ class YoutubeManager
             self::ERROR_LOGIN_REQUIRED,
             self::ERROR_FORBIDDEN,
             self::ERROR_NOT_FOUND,
+            self::ERROR_BAD_TOKEN,
         ];
     }
 

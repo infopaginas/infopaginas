@@ -123,6 +123,9 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
                 }
 
                 $i ++;
+            } else {
+                $videoMedia->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ERROR);
+                $videoMedia->setYoutubeSupport(false);
             }
         }
 
