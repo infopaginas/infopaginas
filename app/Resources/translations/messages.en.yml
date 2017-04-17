@@ -364,7 +364,8 @@ business_profile.seoTitle: name in location | company
 business_profile.seoDescription.main: name in location
 business_profile.seoDescription.open: is open hours.
 business_profile.seoDescription.link: For more information, visit link
-business_profile.seoDescription.phone: or call phone
+business_profile.seoDescription.phone_has_link: or call phone
+business_profile.seoDescription.phone: Call phone
 
 in: in
 for: for
