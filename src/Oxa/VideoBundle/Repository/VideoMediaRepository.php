@@ -3,6 +3,7 @@
 namespace Oxa\VideoBundle\Repository;
 
 use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Oxa\VideoBundle\Entity\VideoMedia;
 
 /**
  * VideoMediaRepository
@@ -25,6 +26,10 @@ class VideoMediaRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('youtubeSupport', true)
             ->setParameter('youtubeAction', $action)
         ;
+
+        if ($action != VideoMedia::YOUTUBE_ACTION_ADD) {
+            $qb->andWhere('v.youtubeId IS NOT NULL');
+        }
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
         $query
