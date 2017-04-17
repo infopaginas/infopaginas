@@ -57,7 +57,9 @@ class NeighborhoodAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('locality')
+            ->add('locality', null, [
+                'required' => true,
+            ])
             ->add(
                 'zips',
                 'sonata_type_collection',

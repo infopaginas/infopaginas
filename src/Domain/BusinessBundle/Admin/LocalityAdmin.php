@@ -60,7 +60,9 @@ class LocalityAdmin extends OxaAdmin
             ->add('name')
             ->add('latitude')
             ->add('longitude')
-            ->add('area')
+            ->add('area', null, [
+                'required' => true,
+            ])
         ;
     }
 

@@ -534,3 +534,10 @@ claim_business.button: Reclama este Negocio
 claim_business.modal.title: Reclamación
 claim_business.modal.message: Mensaje
 claim_business.response.success: Solicitud de reclamación de empresa enviar. Espere por favor la aprobación
+
+# business owner
+Time Start: Tiempo de Inicio
+Time End: Fin de tiempo
+Select all: Seleccionar todo
+Instagram: Instagram
+TripAdvisor: TripAdvisor

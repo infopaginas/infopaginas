@@ -240,10 +240,21 @@ class BusinessProfileAdmin extends OxaAdmin
             'required' => true,
         ];
 
+        $areasFieldOptions = [
+            'multiple' => true,
+            'required' => true,
+            'attr' => [
+                'data-select-all' => true,
+            ],
+        ];
+
         $localitiesFieldOptions = [
             'multiple' => true,
             'required' => true,
             'label' => 'Localities',
+            'attr' => [
+                'data-select-all' => true,
+            ],
             'query_builder' => function (\Domain\BusinessBundle\Repository\LocalityRepository $rep) {
                 return $rep->getAvailableLocalitiesQb();
             },
@@ -253,6 +264,9 @@ class BusinessProfileAdmin extends OxaAdmin
             'multiple' => true,
             'required' => false,
             'label' => 'Neighborhoods',
+            'attr' => [
+                'data-select-all' => true,
+            ],
             'query_builder' => function (\Domain\BusinessBundle\Repository\NeighborhoodRepository $rep) {
                 return $rep->getAvailableNeighborhoodsQb();
             },
@@ -261,6 +275,9 @@ class BusinessProfileAdmin extends OxaAdmin
         if ($businessProfile->getServiceAreasType() === BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE) {
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
             $localitiesFieldOptions['required'] = false;
+
+            $areasFieldOptions['attr']['disabled'] = 'disabled';
+            $areasFieldOptions['required'] = false;
 
             $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
@@ -423,7 +440,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'mapped' => false,
                         'class' => \Domain\BusinessBundle\Entity\Category::class,
                     ])
-                    ->add('areas', null, ['multiple' => true, 'required' => false])
                     ->add('serviceAreasType', ChoiceType::class, [
                         'choices' => BusinessProfile::getServiceAreasTypes(),
                         'multiple' => false,
@@ -431,6 +447,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'required' => true,
                     ])
                     ->add('milesOfMyBusiness', null, $milesOfMyBusinessFieldOptions)
+                    ->add('areas', null, $areasFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
                     ->add('neighborhoods', null, $neighborhoodsFieldOptions)
                     ->add('paymentMethods', null, [

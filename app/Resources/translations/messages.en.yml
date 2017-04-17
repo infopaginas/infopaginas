@@ -534,3 +534,10 @@ claim_business.button: Claim this business
 claim_business.modal.title: Claim
 claim_business.modal.message: Message
 claim_business.response.success: Business Claim Request send. Please wait for approval
+
+# business owner
+Time Start: Time Start
+Time End: Time End
+Select all: Select all
+Instagram: Instagram
+TripAdvisor: TripAdvisor

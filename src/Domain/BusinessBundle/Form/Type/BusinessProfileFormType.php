@@ -103,23 +103,6 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'hidden',
                 ],
             ])
-            ->add('areas', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'placeholder' => 'Select areas',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Area',
-                'label' => 'Areas',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'required' => false,
-                'multiple' => true,
-                'query_builder' => function (AreaRepository $repository) {
-                    return $repository->getAvailableAreasQb();
-                }
-            ])
             ->add('email', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -393,6 +376,24 @@ class BusinessProfileFormType extends AbstractType
             'required' => true,
         ];
 
+        $areasFieldOptions = [
+            'attr' => [
+                'class' => 'form-control selectize-control select-multiple',
+                'placeholder' => 'Select areas',
+                'multiple' => 'multiple',
+            ],
+            'class' => 'Domain\BusinessBundle\Entity\Area',
+            'label' => 'Areas',
+            'label_attr' => [
+                'class' => 'title-label',
+            ],
+            'required' => true,
+            'multiple' => true,
+            'query_builder' => function (AreaRepository $repository) {
+                return $repository->getAvailableAreasQb();
+            },
+        ];
+
         $localitiesFieldOptions = [
             'attr' => [
                 'class' => 'form-control selectize-control',
@@ -433,6 +434,9 @@ class BusinessProfileFormType extends AbstractType
             $localitiesFieldOptions['attr']['disabled'] = 'disabled';
             $localitiesFieldOptions['required'] = false;
 
+            $areasFieldOptions['attr']['disabled'] = 'disabled';
+            $areasFieldOptions['required'] = false;
+
             $neighborhoodsFieldOptions['attr']['disabled'] = 'disabled';
         } else {
             $milesOfMyBusinessFieldOptions['attr']['disabled'] = 'disabled';
@@ -440,6 +444,7 @@ class BusinessProfileFormType extends AbstractType
         }
 
         $form->add('milesOfMyBusiness', TextType::class, $milesOfMyBusinessFieldOptions);
+        $form->add('areas', EntityType::class, $areasFieldOptions);
         $form->add('localities', EntityType::class, $localitiesFieldOptions);
         $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }

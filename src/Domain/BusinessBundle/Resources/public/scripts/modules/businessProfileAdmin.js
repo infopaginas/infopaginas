@@ -4,9 +4,14 @@ $( document ).ready( function() {
         businessProfileId = parentId
     }
 
-    var removeVideo   = $( '#' + formId + '_removeVideo' );
+    var localityAjaxCall;
+    var neighborhoodAjaxCall;
 
-    var categoryField = $( '#' + formId + '_categories' );
+    var removeVideo         = $( '#' + formId + '_removeVideo' );
+    var categoryField       = $( '#' + formId + '_categories' );
+    var areasField          = $( '#' + formId + '_areas' );
+    var localitiesField     = $( '#' + formId + '_localities' );
+    var neighborhoodsField  = $( '#' + formId + '_neighborhoods' );
 
     var openAllTimeCheckboxes = $( '[ id *= "_openAllTime" ]' );
 
@@ -15,28 +20,21 @@ $( document ).ready( function() {
             var $self = $( this).parent().find( 'input[name="' + formId + '[serviceAreasType]"]' );
             var withinMilesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
             var withinMilesOfMyBusinessLabel = $( '#sonata-ba-field-container-' + formId + '_milesOfMyBusiness label' );
-            var localitiesField = $( '#' + formId + '_localities' );
-            var neighborhoodsField = $( '#' + formId + '_neighborhoods' );
-            var localitiesLabel = $( '#sonata-ba-field-container-' + formId + '_localities label' );
-            var localitiesDropdown = localitiesField.parent( '.sonata-ba-field' ).find( '.select2-container-multi' );
 
             if ( $self.val() == 'area' ) {
-                withinMilesOfMyBusinessField.removeAttr( 'disabled' );
-                localitiesField.attr('disabled', 'disabled');
-                neighborhoodsField.attr('disabled', 'disabled');
+                disableServiceAreaTypeLocalityFields();
 
+                withinMilesOfMyBusinessField.removeAttr( 'disabled' );
                 withinMilesOfMyBusinessField.attr('required', 'required');
 
                 if ( !withinMilesOfMyBusinessLabel.hasClass( 'required' ) ) {
                     withinMilesOfMyBusinessLabel.addClass( 'required' );
                 }
             } else {
-                localitiesField.removeAttr( 'disabled' );
-                neighborhoodsField.removeAttr( 'disabled' );
-                withinMilesOfMyBusinessField.attr( 'disabled', 'disabled' );
+                enableServiceAreaTypeLocalityFields();
 
+                withinMilesOfMyBusinessField.attr( 'disabled', 'disabled' );
                 withinMilesOfMyBusinessField.removeAttr( 'required' );
-                localitiesDropdown.removeClass( 'select2-container-disabled' );
                 withinMilesOfMyBusinessLabel.removeClass( 'required' );
             }
         } );
@@ -85,6 +83,49 @@ $( document ).ready( function() {
             setUseMapAddress();
         } );
     } );
+
+    updatedLocalities();
+    updatedNeighborhoods();
+
+    localitiesField.on( 'change', function() {
+        updatedNeighborhoods();
+    });
+
+    areasField.on( 'change', function() {
+        updatedLocalities();
+    });
+
+    function updatedNeighborhoods() {
+        var localities = localitiesField.val();
+        var data = {
+            'currentLocale': currentLocale,
+            'localities':    localities
+        };
+
+        if ( neighborhoodAjaxCall ) {
+            neighborhoodAjaxCall.abort();
+        }
+
+        neighborhoodAjaxCall = $.post( Routing.generate( 'domain_business_get_neighborhoods', { businessProfileId: businessProfileId } ), data, function( response ) {
+            updateSelect2FieldValues( neighborhoodsField, response.data );
+        });
+    }
+
+    function updatedLocalities() {
+        var areas = areasField.val();
+        var data = {
+            'currentLocale': currentLocale,
+            'areas':         areas
+        };
+
+        if ( localityAjaxCall ) {
+            localityAjaxCall.abort();
+        }
+
+        localityAjaxCall = $.post( Routing.generate( 'domain_business_get_localities', { businessProfileId: businessProfileId } ), data, function( response ) {
+            updateSelect2FieldValues( localitiesField, response.data );
+        });
+    }
 
     getSubcategories( defaultCategoryLevel );
 
@@ -188,6 +229,71 @@ $( document ).ready( function() {
         $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().show();
         $( '#' + formId + '_videoName' ).parent().parent().hide();
     }
+
+    function updateSelect2FieldValues( field, data ) {
+        var html = '';
+
+        if ( data ) {
+            $.each( data, function ( key, value ) {
+                html += '<option value="' + value.id + '">' + value.name + '</option>';
+            });
+        }
+
+        field.html( html );
+
+        if ( html ) {
+            field.attr( 'disabled', false );
+        } else {
+            field.attr( 'disabled', 'disabled' );
+        }
+
+        field.val( null ).trigger( 'change.select2' );
+
+        var selectedValues = [];
+
+        $.each( data, function ( key, value ) {
+            if ( value.selected ) {
+                selectedValues.push( value.id );
+            }
+        });
+
+        field.select2( 'val', selectedValues );
+
+        field.trigger( 'change' );
+    }
+
+    function disableServiceAreaTypeLocalityFields() {
+        localitiesField.attr( 'disabled', 'disabled' );
+        neighborhoodsField.attr( 'disabled', 'disabled' );
+        areasField.attr( 'disabled', 'disabled' );
+    }
+
+    function enableServiceAreaTypeLocalityFields() {
+        localitiesField.removeAttr( 'disabled' );
+        neighborhoodsField.removeAttr( 'disabled' );
+        areasField.removeAttr( 'disabled' );
+    }
+
+    $( 'select[data-select-all]' ).after( '<a class="select-all-button">Select all</a>' );
+
+    $( 'body' ).on( 'click', 'a.select-all-button', function( e ) {
+        e.preventDefault();
+
+        var selectField = $( this ).parent().find( 'select' );
+
+        if ( !selectField.attr( 'disabled' ) ) {
+            var allOptions = selectField.find( 'option' );
+            var selectedItems = [];
+
+            allOptions.each(function() {
+                selectedItems.push( $(this).val() );
+            });
+
+            selectField.select2( 'val', selectedItems );
+
+            selectField.trigger( 'change' );
+        }
+    });
 
     setUseMapAddress();
 
