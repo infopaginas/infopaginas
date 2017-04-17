@@ -2291,7 +2291,7 @@ $thumb-width-mb: 60px;
     }
   }
 
-  a.button-share--twitter[data-href], a.button-share--facebook[data-href] {
+  a.button-share--twitter[data-href], a.button-share--facebook[data-href], a.button[data-show-modal-id] {
     cursor: pointer;
   }
 }
