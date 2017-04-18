@@ -29,6 +29,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     use LocationTrait;
     use PersonalTranslatable;
 
+    const ALL_LOCALITY = 'PR';
     const DEFAULT_CATALOG_LOCALITY_SLUG = 'san-juan';
     const ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES = 'businessProfiles';
     const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS     = 'catalogItems';

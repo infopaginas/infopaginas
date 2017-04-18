@@ -104,11 +104,14 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
         var mainAddr = arrayData.results[0];
 
         var city = null, zip = null, fullAddr;
-        _.each(mainAddr.address_components, function( item ) {
-            if ( _.contains( item.types, 'locality') ) {
-                city = item.long_name;
-            }
-        })
+
+        if( mainAddr && 'address_components' in mainAddr && mainAddr.address_components ) {
+            _.each( mainAddr.address_components, function( item ) {
+                if ( _.contains( item.types, 'locality' ) ) {
+                    city = item.long_name;
+                }
+            })
+        }
 
         fullAddr = ( !_.isNull(city) ? city : '' );
 
