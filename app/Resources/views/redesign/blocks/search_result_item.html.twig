@@ -3,7 +3,7 @@
 {% set itemSubscriptionClass = getItemSubscriptionClass(item) %}
 
 <div class="results__item results__item--{{ itemSubscriptionClass }}" id="{{ item.id }}">
-    <div class="item__content clearfix">
+    <div class="item__content clearfix" data-item-content>
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
                 <img width="80" src="{% path item.getLogo(), 'preview' %}">
