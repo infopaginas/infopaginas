@@ -55,15 +55,15 @@
                     <i class="fa fa-map"></i>
                     <span>{% trans %}Map view{% endtrans %}</span>
                 </button>
-
-                <button id="hide-map" type="button" class="button button-round button--hide-map">
-                    <i class="fa fa-list"></i>
-                    <span>{% trans %}List view{% endtrans %}</span>
-                </button>
             </div><!-- results -->
         </section><!-- main -->
 
         <section class="results-map">
+            <button id="hide-map" type="button" class="button button-round button--hide-map">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}List view{% endtrans %}</span>
+            </button>
+
             <div id="map" class="map"></div>
             <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
