@@ -550,8 +550,11 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         } else {
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
-            $( '.sort__options' ).addClass( 'sort--on' );
-            $( '.sort__options' ).addClass( 'filter--on' );
+
+            if ( !$( '#filter-toggle' ).attr( 'disabled' ) ) {
+                $( '.sort__options' ).addClass( 'sort--on' );
+                $( '.sort__options' ).addClass( 'filter--on' );
+            }
         }
 
         mapState = 'default';
