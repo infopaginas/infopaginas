@@ -17,16 +17,12 @@ define(['jquery', 'abstract/view', 'js-cookie', 'tools/reportTracker'],
     }
 
     directions.prototype.bindEventsDirections = function () {
-        this.events = {
-            ".get-dir click" : "openDirection"
-        };
+        var self = this;
 
-        this.bindEvents( );
-    }
-
-    directions.prototype.openDirection = function ( e, latlngEvent ) {
-        var directionLink = this.getDirection( e, latlngEvent );
-        window.open( directionLink );
+        $( document ).on( 'click', '.get-dir', function( e, latlngEvent ) {
+            var directionLink = self.getDirection( e, latlngEvent );
+            window.open( directionLink );
+        });
     }
 
     directions.prototype.getDirection = function ( e, latlngEvent ) {

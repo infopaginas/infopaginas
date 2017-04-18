@@ -250,9 +250,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                     var canvas = document.createElement( 'canvas' );
                     var context = canvas.getContext( '2d' );
 
-
-                    console.log(width, height);
-
                     canvas.width = width;
                     canvas.height = height;
 

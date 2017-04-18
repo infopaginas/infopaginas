@@ -159,16 +159,7 @@ define(
         });
 
         var infoWindow = new google.maps.InfoWindow({
-            content: this.getInfoHTML(
-                markerData.name,
-                markerData.address,
-                markerData.reviewsCount,
-                markerData.rating,
-                markerData.logo,
-                markerData.longitude,
-                markerData.latitude,
-                markerData.profileUrl
-            )
+            content: this.getInfoHTML( markerData )
         });
 
         marker.addListener( 'click', function( event ) {
@@ -248,41 +239,26 @@ define(
         });
     };
 
-    mapSearchPage.prototype.getInfoHTML = function ( name, address, reviewsCount, avgMark, icon, longitude, latitude, profileUrl )
+    mapSearchPage.prototype.getInfoHTML = function ( data )
     {
-        var directionLink = this.options.directions.getDirection(null, latitude + ',' + longitude);
+        var template;
+        var directionLink = this.options.directions.getDirection(null, data.latitude + ',' + data.longitude);
 
-        var template = "<div class='business-info'>" +
-            "<div>" + name + "</div>";
+        var item = $( '#' + data.id );
 
-        if ( address ) {
-            template += "<div>" + address + "</div>" +
-            "<a href='" + directionLink + "' target='_blank'>Get Direction <span>&#187;</span></a>";
-        }
+        var itemContent = item.find( 'div[data-item-content]' );
+        var directionButton = item.find( 'a.get-dir' );
 
-        if ( reviewsCount ) {
-            template += "<div class=\"reviews\"><div class=\"star-rating\">";
+        if ( itemContent.length ) {
+            var content = $( '<div class="map-info-window">' ).append( itemContent.clone());
 
-            for ( var i = 1; i < 6; i++ ) {
-                if ( i <= avgMark ) {
-                    var additionClass = ' fa-star-selected';
-                } else {
-                    additionClass = '';
-                }
-
-                template += "<span class='fa fa-star-o" + additionClass + "' data-rating=\"" + i + "\"></span>";
+            if ( directionButton.length ) {
+                content.append( directionButton.clone() );
             }
-            template += "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
-                "</div>" +
-                "<a href='" + profileUrl + "#reviews' target='_blank'><span class=\"reviews-value\">" + reviewsCount + " Reviews</span></a>" +
-                "</div>" +
-                "</div>";
-        }
 
-        if ( !_.isUndefined(icon) && !_.isNull(icon) ) {
-            template += "<div class='business-logo'>" +
-                "<img width='60' src='" + icon + "'>" +
-            "</div>";
+            template = content.html();
+        } else {
+            template = "<div class='business-info'><div>" + data.name + "</div></div>";
         }
 
         return template;

@@ -5367,3 +5367,21 @@ a.select-all-button {
   cursor: pointer;
   float: right;
 }
+
+#map {
+  div[data-item-content] {
+    padding-right: 0px;
+
+    .item__img {
+      width: 60px;
+    }
+
+    .item__summary {
+      width: calc(100% - 80px);
+    }
+  }
+
+  a.get-dir:hover {
+    color: $blue;
+  }
+}
