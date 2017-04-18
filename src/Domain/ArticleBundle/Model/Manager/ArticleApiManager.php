@@ -157,6 +157,7 @@ class ArticleApiManager
 
                     if ($date and $date > $article->getCreatedAt()) {
                         $article->setCreatedAt($date);
+                        $article->setActivationDate($date);
                     } else {
                         continue;
                     }
@@ -223,7 +224,14 @@ class ArticleApiManager
         $article->setExternalId($data->id);
         $article->setIsPublished(true);
         $article->setIsOnHomepage(true);
-        $article->setActivationDate(new \DateTime());
+
+        if (!empty($data->date) and strtotime($data->date)) {
+            $date = new \DateTime($data->date);
+        } else {
+            $date = new \DateTime();
+        }
+
+        $article->setActivationDate($date);
 
         return $article;
     }
