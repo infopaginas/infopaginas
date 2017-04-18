@@ -7,18 +7,18 @@
             <div class="form__column">
                 <div class="form__row vertical__row">
                     {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
-                        <div>
-                            {{ form_label(serviceType) }}
+                        <div class="service-type">
                             {{ form_widget(serviceType) }}
+                            {{ form_label(serviceType) }}
                         </div>
                     {% endfor %}
                 </div>
             </div>
 
-            <div class="form__column">
+            <div class="form__column service-area-column-right">
                 <div class="form__row vertical__row">
+                    {{ form_label(businessProfileForm.milesOfMyBusiness) }}
                     <div class="form__field field--website">
-                        {{ form_label(businessProfileForm.milesOfMyBusiness) }}
                         {{ form_widget(businessProfileForm.milesOfMyBusiness, {'attr': {'placeholder': ''}}) }}
                     </div>
                 </div>

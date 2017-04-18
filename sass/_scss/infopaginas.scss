@@ -3334,6 +3334,32 @@ input[type='checkbox'] {
   }
 }
 
+.service-type {
+  .required {
+    font-size: 16px;
+    color: #1e4b82;
+  }
+}
+
+.service-area-column-right {
+  .form__row {
+    margin-bottom: 0;
+
+    p {
+      margin: 0;
+    }
+
+    .title-label {
+      margin: 10px 0 0;
+      color: #1e4b82;
+    }
+
+    .required {
+      color: #1e4b82;
+    }
+  }
+}
+
 .form__row {
   display: -webkit-box;
   display: flex;
