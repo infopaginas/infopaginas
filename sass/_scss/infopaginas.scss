@@ -3589,6 +3589,20 @@ a.button--login {
   }
 }
 
+.article-page {
+  .toolbar {
+    width: 100%;
+  }
+
+  .profile__sidebar {
+    margin-top: 50px;
+  }
+
+  .breadcrumb {
+    height: 37px;
+  }
+}
+
 .has-sidebar {
   .main-column,
   .sidebar {
