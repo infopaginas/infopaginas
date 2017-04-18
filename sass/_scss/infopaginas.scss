@@ -3334,6 +3334,32 @@ input[type='checkbox'] {
   }
 }
 
+.service-type {
+  .required {
+    font-size: 16px;
+    color: #1e4b82;
+  }
+}
+
+.service-area-column-right {
+  .form__row {
+    margin-bottom: 0;
+
+    p {
+      margin: 0;
+    }
+
+    .title-label {
+      margin: 10px 0 0;
+      color: #1e4b82;
+    }
+
+    .required {
+      color: #1e4b82;
+    }
+  }
+}
+
 .form__row {
   display: -webkit-box;
   display: flex;
@@ -3589,6 +3615,20 @@ a.button--login {
   }
 }
 
+.article-page {
+  .toolbar {
+    width: 100%;
+  }
+
+  .profile__sidebar {
+    margin-top: 50px;
+  }
+
+  .breadcrumb {
+    height: 37px;
+  }
+}
+
 .has-sidebar {
   .main-column,
   .sidebar {
@@ -3702,6 +3742,10 @@ a.button--login {
   flex: 0 0 auto;
   margin-right: 0 !important;
   width: 5em;
+}
+
+.working-hours-time-start {
+  cursor: pointer;
 }
 
 .field-middle-text {
