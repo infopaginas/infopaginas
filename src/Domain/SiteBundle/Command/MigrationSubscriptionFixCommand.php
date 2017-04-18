@@ -5,6 +5,9 @@ namespace Domain\SiteBundle\Command;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\EventListener\DatetimePeriodStatusSubscriber;
+use Domain\BusinessBundle\EventListener\ElasticSearchSubscriber;
+use Domain\BusinessBundle\EventListener\SubscriptionListener;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -78,6 +81,8 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
 
         $this->subscriptionManager = $this->getContainer()->get('domain_business.manager.subscription_status_manager');
 
+        $this->disableSubscriptionEventListener();
+
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
         } else {
@@ -138,9 +143,6 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                             $output->writeln('Skip item with id ' . $itemId);
                         }
                     }
-
-                    $this->em->flush();
-                    $this->em->clear();
                 }
             }
 
@@ -325,6 +327,19 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
         if ($this->missingSubscriptions) {
             foreach ($this->missingSubscriptions as $key => $amount) {
                 $this->output->writeln('Missing subscription id ' . $key . ', amount ' . $amount);
+            }
+        }
+    }
+
+    protected function disableSubscriptionEventListener()
+    {
+        foreach ($this->em->getEventManager()->getListeners() as $eventName => $listeners) {
+            foreach ($listeners as $listener) {
+                if ($listener instanceof SubscriptionListener or $listener instanceof ElasticSearchSubscriber
+                    or $listener instanceof DatetimePeriodStatusSubscriber
+                ) {
+                    $this->em->getEventManager()->removeEventListener($eventName, $listener);
+                }
             }
         }
     }
