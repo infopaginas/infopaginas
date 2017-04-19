@@ -1311,7 +1311,10 @@ $thumb-width-mb: 60px;
   .item__primary-actions {
     display: flex;
     @media only screen and (max-width: 805px) {
-      margin-top: 10px;
+      margin-top: 15px;
+    }
+    @media only screen and (max-width: 375px) {
+      margin-top: 0;
     }
     @media only screen and (min-width: 805px) {
       display: flex;
@@ -3339,9 +3342,15 @@ input[type='checkbox'] {
     font-size: 16px;
     color: #1e4b82;
   }
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 
 .service-area-column-right {
+  margin-top: 10px;
+
   .form__row {
     margin-bottom: 0;
 
@@ -3398,7 +3407,7 @@ input[type='checkbox'] {
 #customDatesContainer {
   .title-label {
     @media only screen and (max-width: 805px) {
-      margin-top: 10px; 
+      margin: 10px 20px 0 0;
     }
   }
 
@@ -3428,14 +3437,6 @@ input[type='checkbox'] {
         margin: 10px 10px 0 46px;
         padding: 5px 10px;
         width: 115px;
-      }
-
-      @media only screen and (min-width: 376px) and (max-width: 768px) and (orientation: portrait) {
-        margin: 10px 10px 0 62px;
-      }
-
-      @media only screen and (max-width: 667px) and (max-height: 375px) and (orientation: landscape) {
-        margin: 10px 10px 0 62px;
       }
 
       @media only screen and (max-width: 375px) {
@@ -3612,6 +3613,42 @@ a.button--login {
   .main {
     overflow-y: visible;
     width: 100%;
+  }
+}
+
+.user-profile {
+  .form {
+    h2 {
+      margin-left: 10px;
+    }
+  }
+
+  label.select-multiple,
+  label.selectize-control {
+    margin-left: 10px;
+  }
+
+  .field--website {
+    label.form-control,
+    label.label-active {
+      left: 10px;
+    }
+  }
+
+  .field-checkbox-label {
+    label {
+      margin-left: 10px;
+    }
+
+    #domain_business_bundle_business_profile_form_type_hideAddress {
+      margin-left: 0;
+    }
+  }
+
+  .field-active {
+    label {
+      left: 10px;
+    }
   }
 }
 
@@ -4005,6 +4042,14 @@ li.active {
 
 .article__header {
   margin-bottom: 40px;
+}
+
+.article-photo {
+  img {
+    max-width: 700px;
+    width: 700px;
+    height: auto;
+  }
 }
 
 .article__footer {
@@ -5224,7 +5269,7 @@ input[type='radio'], input[type='checkbox'] {
 }
 
 .att-icons {
-  bottom: -11px;
+  bottom: -25px;
   position: absolute;
   right: 3px;
   i {
@@ -5243,6 +5288,7 @@ input[type='radio'], input[type='checkbox'] {
   &.main-results-resize {
     .att-icons {
       right: 0;
+      bottom: -15px;
       i {
         width: 12px;
         height: 12px;
@@ -5350,6 +5396,12 @@ a.link-pointer {
   }
 }
 
+.select-weekday-user {
+  .select2-selection__arrow {
+    display: block !important;
+  }
+}
+
 @media only screen and (min-width: 414px){
   .form__row .form__field.select-weekday-user {
     width: 10em;
@@ -5427,5 +5479,10 @@ a.select-all-button {
 
   a.get-dir:hover {
     color: $blue;
+  }
+
+  .get-dir {
+    float: right;
+    margin-top: 8px;
   }
 }
