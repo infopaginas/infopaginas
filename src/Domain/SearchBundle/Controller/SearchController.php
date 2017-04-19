@@ -587,22 +587,30 @@ class SearchController extends Controller
         ];
 
         if ($locality) {
-            if (!$category1->getParent()) {
-                $data['categorySlug1'] = $category1->getSlug();
+            if ($category1) {
+                if (!$category1->getParent()) {
+                    $data['categorySlug1'] = $category1->getSlug();
 
-                if ($category2->getLvl() == Category::CATEGORY_LEVEL_2 and $category2->getParent() == $category1) {
-                    $data['categorySlug2'] = $category2->getSlug();
+                    if ($category2) {
+                        if ($category2->getLvl() == Category::CATEGORY_LEVEL_2 and $category2->getParent() == $category1) {
+                            $data['categorySlug2'] = $category2->getSlug();
 
-                    if ($category3->getLvl() == Category::CATEGORY_LEVEL_3 and $category3->getParent() == $category2) {
-                        $data['categorySlug3'] = $category3->getSlug();
-                    } else {
-                        $data = $this->getCategoryManager()->getCategoryParents($category3);
+                            if ($category3) {
+                                if ($category3 and $category3->getLvl() == Category::CATEGORY_LEVEL_3 and
+                                    $category3->getParent() == $category2
+                                ) {
+                                    $data['categorySlug3'] = $category3->getSlug();
+                                } else {
+                                    $data = $this->getCategoryManager()->getCategoryParents($category3);
+                                }
+                            }
+                        } else {
+                            $data = $this->getCategoryManager()->getCategoryParents($category2);
+                        }
                     }
                 } else {
-                    $data = $this->getCategoryManager()->getCategoryParents($category2);
+                    $data = $this->getCategoryManager()->getCategoryParents($category1);
                 }
-            } else {
-                $data = $this->getCategoryManager()->getCategoryParents($category1);
             }
 
             $data['localitySlug'] = $locality->getSlug();
