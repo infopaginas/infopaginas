@@ -28,6 +28,10 @@ $(document).ready(function () {
                 return message;
             }
         });
+
+        $( 'form' ).on( 'submit', function() {
+            ckEditorChanged = false;
+        });
     }
 });
 var FilterSwitcher = {
