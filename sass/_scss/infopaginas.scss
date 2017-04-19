@@ -3610,6 +3610,31 @@ a.button--login {
   }
 }
 
+.user-profile {
+  .form {
+    h2 {
+      margin-left: 10px;
+    }
+  }
+
+  label.select-multiple {
+    margin-left: 10px;
+  }
+
+  .field--website {
+    label.form-control,
+    label.label-active {
+      left: 10px;
+    }
+  }
+
+  .field-active {
+    label {
+      left: 10px;
+    }
+  }
+}
+
 .article-page {
   .toolbar {
     width: 100%;
