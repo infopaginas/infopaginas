@@ -1311,7 +1311,10 @@ $thumb-width-mb: 60px;
   .item__primary-actions {
     display: flex;
     @media only screen and (max-width: 805px) {
-      margin-top: 10px;
+      margin-top: 15px;
+    }
+    @media only screen and (max-width: 375px) {
+      margin-top: 0;
     }
     @media only screen and (min-width: 805px) {
       display: flex;
@@ -5224,7 +5227,7 @@ input[type='radio'], input[type='checkbox'] {
 }
 
 .att-icons {
-  bottom: -11px;
+  bottom: -25px;
   position: absolute;
   right: 3px;
   i {
@@ -5243,6 +5246,7 @@ input[type='radio'], input[type='checkbox'] {
   &.main-results-resize {
     .att-icons {
       right: 0;
+      bottom: -15px;
       i {
         width: 12px;
         height: 12px;
@@ -5350,6 +5354,12 @@ a.link-pointer {
   }
 }
 
+.select-weekday-user {
+  .select2-selection__arrow {
+    display: block !important;
+  }
+}
+
 @media only screen and (min-width: 414px){
   .form__row .form__field.select-weekday-user {
     width: 10em;
@@ -5427,5 +5437,10 @@ a.select-all-button {
 
   a.get-dir:hover {
     color: $blue;
+  }
+
+  .get-dir {
+    float: right;
+    margin-top: 8px;
   }
 }
