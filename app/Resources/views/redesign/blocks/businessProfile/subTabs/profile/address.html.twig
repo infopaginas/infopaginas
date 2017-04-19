@@ -4,7 +4,7 @@
     <h3 class="language-title">{% trans %}Service Areas{% endtrans %}</h3>
     <div class="form__section">
         <div class="form-column__container clearfix">
-            <div class="form__column">
+            <div class="form__column service-area-column-right">
                 <div class="form__row vertical__row">
                     {% for key, serviceType in businessProfileForm.serviceAreasType.children %}
                         <div class="service-type">
@@ -13,9 +13,7 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>
 
-            <div class="form__column service-area-column-right">
                 <div class="form__row vertical__row">
                     {{ form_label(businessProfileForm.milesOfMyBusiness) }}
                     <div class="form__field field--website">

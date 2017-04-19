@@ -3342,9 +3342,15 @@ input[type='checkbox'] {
     font-size: 16px;
     color: #1e4b82;
   }
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 
 .service-area-column-right {
+  margin-top: 10px;
+
   .form__row {
     margin-bottom: 0;
 
@@ -3617,7 +3623,8 @@ a.button--login {
     }
   }
 
-  label.select-multiple {
+  label.select-multiple,
+  label.selectize-control {
     margin-left: 10px;
   }
 
