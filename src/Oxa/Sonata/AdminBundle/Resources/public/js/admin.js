@@ -6,6 +6,29 @@ $(document).ready(function () {
     FilterSwitcher.$listContainer = $('.sonata-ba-list');
     FilterSwitcher.$switcher = $('#filter-switch');
 
+    if ( window.SONATA_CONFIG && window.SONATA_CONFIG.CONFIRM_EXIT && typeof CKEDITOR != 'undefined' ) {
+        var ckEditorChanged = false;
+
+        for ( var i in CKEDITOR.instances ) {
+            CKEDITOR.instances[ i ].on( 'change', function() {
+                ckEditorChanged = true;
+            });
+        }
+
+        $( window ).on( 'beforeunload', function( event ) {
+            var e = event || window.event;
+            var message = window.SONATA_TRANSLATIONS.CONFIRM_EXIT;
+
+            if (ckEditorChanged) {
+                // For old IE and Firefox
+                if (e) {
+                    e.returnValue = message;
+                }
+
+                return message;
+            }
+        });
+    }
 });
 var FilterSwitcher = {
     open: true,
