@@ -101,4 +101,32 @@ class GeolocationManager extends Manager
 
         return $return;
     }
+
+    /**
+     * @param Locality $locality
+     *
+     * @return LocationValueObject|null
+     */
+    public function buildCatalogLocationValue($locality)
+    {
+        $locationValueObject = null;
+
+        if ($locality) {
+            $lat = $locality->getLatitude();
+            $lng = $locality->getLongitude();
+
+            if ($lat and $lng) {
+                $geoData = [
+                    'geo'       => $locality->getName(),
+                    'lat'       => $lat,
+                    'lng'       => $lng,
+                    'locality'  => $locality,
+                ];
+
+                $locationValueObject = $this->buildLocationValue($geoData);
+            }
+        }
+
+        return $locationValueObject;
+    }
 }
