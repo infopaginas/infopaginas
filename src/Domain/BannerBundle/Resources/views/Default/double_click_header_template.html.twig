@@ -48,12 +48,14 @@
 
     googletag.cmd.push(function() {
         {% for item in bannerHeaders %}
-            {% if item.code == BANNER_CODE.SEARCH_FLOAT_BOTTOM %}
-                if (windowWidth < BASE_BREAK_POINT) {
+            {% if item %}
+                {% if item.code == BANNER_CODE.SEARCH_FLOAT_BOTTOM %}
+                    if (windowWidth < BASE_BREAK_POINT) {
+                        {{ item.data | raw }}
+                    }
+                {% else %}
                     {{ item.data | raw }}
-                }
-            {% else %}
-                {{ item.data | raw }}
+                {% endif %}
             {% endif %}
         {% endfor %}
 
