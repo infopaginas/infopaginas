@@ -203,7 +203,9 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     {
         if ($subscriptions) {
             foreach ($subscriptions->subscriptions as $item) {
-                $key = $item->plan->contract_id;
+                $contractId = $item->plan->contract_id;
+
+                $key = $this->convertSubscriptionContractId($contractId);
 
                 if (isset($this->subscriptionPlans[$key])) {
                     $subscription = new Subscription();
@@ -280,8 +282,6 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
 
         $plans = $this->em->getRepository(SubscriptionPlan::class)->findAll();
 
-        $this->subscriptionPlans = [];
-
         foreach ($plans as $item) {
             $subscriptionPlans[$planMapping[$item->getCode()]] = $item->getId();
         }
@@ -342,5 +342,22 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                 }
             }
         }
+    }
+
+    protected function convertSubscriptionContractId($contractId)
+    {
+        switch ($contractId) {
+            case 'IP':
+                $subscription = 'Priority';
+                break;
+            case 'Platinum Plus':
+                $subscription = 'Premium Platinum';
+                break;
+            default:
+                $subscription = $contractId;
+                break;
+        }
+
+        return $subscription;
     }
 }

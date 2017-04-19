@@ -23,6 +23,10 @@ class ElasticSearchManager
     protected $numberOfShards = 5;
     protected $numberOfReplicas = 1;
 
+    // see https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html
+    protected $maxResultWindow  = 1000000;
+    protected $maxRescoreWindow = 1000000;
+
     protected $bulkData = [];
 
     /**
@@ -102,6 +106,8 @@ class ElasticSearchManager
                     'number_of_shards'   => $this->numberOfShards,
                     'number_of_replicas' => $this->numberOfReplicas,
                     'refresh_interval'   => $this->indexRefreshInterval,
+                    'max_result_window'  => $this->maxResultWindow,
+                    'max_rescore_window' => $this->maxRescoreWindow,
                     'analysis' => [
                         'analyzer' => [
                             'folding' => [

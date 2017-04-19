@@ -28,10 +28,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
             claimBusinessURL: Routing.generate( 'domain_business_claim' )
         };
 
-        this.options = {
-            videoPosterOffset: 2
-        };
-
         this.spinner = new Spin();
         this.redirect = new Redirect;
 
@@ -47,7 +43,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
         this.handleReviewCreation();
         this.handleBusinessClaim();
         this.handlePrintableCoupons();
-        this.handleVideoPoster();
     };
 
     //build form field id
@@ -212,64 +207,6 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
 
             event.preventDefault();
         } );
-    };
-
-    // set video poster from 2 second
-    businessProfileView.prototype.handleVideoPoster = function() {
-        var self = this;
-
-        window.onload = function (){
-            var videoBlock = $( 'video' );
-            var width = videoBlock.width();
-            var height = videoBlock.height();
-
-            videoBlock.find( 'source' ).each(function() {
-                var i = self.options.videoPosterOffset;
-                var poster = false;
-
-                var videoItem = document.createElement( 'video' );
-                videoItem.crossOrigin = 'Anonymous';
-
-                var src = $( this ).attr( 'src' );
-
-                videoItem.preload = "auto";
-
-                videoItem.src = src;
-
-                videoItem.addEventListener( 'loadeddata', function() {
-                    videoItem.currentTime = i;
-                }, false);
-
-                videoItem.addEventListener( 'seeked', function() {
-                    if (!poster) {
-                        generateThumbnail();
-                    }
-                }, false);
-
-                function generateThumbnail() {
-                    var canvas = document.createElement( 'canvas' );
-                    var context = canvas.getContext( '2d' );
-
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    context.drawImage( videoItem, 0, 0, width, height );
-
-                    var src = canvas.toDataURL( 'image/png' );
-
-                    if (video.paused()) {
-                        videoBlock.attr( 'poster', src );
-
-                        videoBlock.parent().find( '.vjs-poster' ).css( 'background-image', 'url(' + src + ')' ).show();
-                        video.posterImage.show();
-                    }
-                }
-            });
-        };
-
-        $( 'body' ).on( 'click', 'button.vjs-big-play-button', function() {
-            video.posterImage.hide()
-        });
     };
 
     return businessProfileView;

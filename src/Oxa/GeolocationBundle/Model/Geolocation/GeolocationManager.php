@@ -2,6 +2,7 @@
 
 namespace Oxa\GeolocationBundle\Model\Geolocation;
 
+use Domain\BusinessBundle\Entity\Locality;
 use Oxa\ManagerArchitectureBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -55,7 +56,7 @@ class GeolocationManager extends Manager
 
         $ignoreLocality = false;
 
-        if ($geo) {
+        if ($geo and $geo != Locality::ALL_LOCALITY) {
             // get locality by name and locale
             $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
         } else {
@@ -65,7 +66,7 @@ class GeolocationManager extends Manager
                 $request->getLocale()
             );
 
-            $request->query->set('geo', $locality->getName());
+            $request->query->set('geo', Locality::ALL_LOCALITY);
 
             $ignoreLocality = true;
         }
@@ -99,5 +100,33 @@ class GeolocationManager extends Manager
         }
 
         return $return;
+    }
+
+    /**
+     * @param Locality $locality
+     *
+     * @return LocationValueObject|null
+     */
+    public function buildCatalogLocationValue($locality)
+    {
+        $locationValueObject = null;
+
+        if ($locality) {
+            $lat = $locality->getLatitude();
+            $lng = $locality->getLongitude();
+
+            if ($lat and $lng) {
+                $geoData = [
+                    'geo'       => $locality->getName(),
+                    'lat'       => $lat,
+                    'lng'       => $lng,
+                    'locality'  => $locality,
+                ];
+
+                $locationValueObject = $this->buildLocationValue($geoData);
+            }
+        }
+
+        return $locationValueObject;
     }
 }
