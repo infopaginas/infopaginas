@@ -9,9 +9,12 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\LockHandler;
 
 class SyncBusinessElasticCommand extends ContainerAwareCommand
 {
+    const ELASTIC_SYNC_LOCK = 'ELASTIC_SYNC.lock';
+
     /**
      * @var OutputInterface $output
      */
@@ -32,10 +35,18 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $lockHandler = new LockHandler(self::ELASTIC_SYNC_LOCK);
+
+        if (!$lockHandler->lock()) {
+            return $output->writeln('Command is locked by another process');
+        }
+
         $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
         $businessProfileManager->handleLocalityElasticSync();
         $businessProfileManager->handleCategoryElasticSync();
         $businessProfileManager->handleBusinessElasticSync();
+
+        $lockHandler->release();
     }
 }
