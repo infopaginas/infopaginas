@@ -301,7 +301,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( itemId ).velocity( { opacity: 1, top: 0 }, { display: "flex" } );
         });
 
-        var formInput                 = $( '.form__field input, .form__field textarea' );
+        var formInputSelector         = '.form__field input, .form__field textarea';
+        var formInput                 = $( formInputSelector );
         var formInputEmailSelector    = '.form__field input[type="email"]';
         var formInputPasswordSelector = '.form__field input[type="password"]';
         var loginForm                 = $( '.login-form' );
@@ -323,12 +324,12 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             loginForm.find( formInputPasswordSelector ).parent().addClass( 'field-active' );
         }
 
-        formInput.focus(function () {
+        $( document).on( 'focus', formInputSelector, function () {
             $(this).parent().addClass( 'field-active' );
             $(this).parent().find( 'label' ).addClass( 'label-active' );
         });
 
-        formInput.blur(function () {
+        $( document).on( 'blur', formInputSelector, function () {
             $( this ).checkInputValue();
         });
 
