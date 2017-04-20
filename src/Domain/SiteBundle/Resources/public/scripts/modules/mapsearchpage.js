@@ -253,7 +253,7 @@ define(
             var content = $( '<div class="map-info-window">' ).append( itemContent.clone());
 
             if ( directionButton.length ) {
-                content.append( directionButton.clone() );
+                content.find( '.item__summary' ).append( directionButton.clone() );
             }
 
             template = content.html();
