@@ -10,6 +10,7 @@ use Domain\BusinessBundle\EventListener\ElasticSearchSubscriber;
 use Domain\BusinessBundle\EventListener\SubscriptionListener;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\BusinessBundle\Model\SubscriptionModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -51,9 +52,14 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     protected $missingSubscriptions = [];
 
     /**
+     * @var array $superVmSubscriptions
+     */
+    protected $superVmSubscriptions = [];
+
+    /**
      * @var SubscriptionStatusManager $subscriptionManager
      */
-    protected $subscriptionManager = [];
+    protected $subscriptionManager;
 
     protected function configure()
     {
@@ -80,6 +86,7 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
         $this->output = $output;
 
         $this->subscriptionManager = $this->getContainer()->get('domain_business.manager.subscription_status_manager');
+        $this->superVmSubscriptions = SubscriptionModel::getSuperVmSubscriptions();
 
         $this->disableSubscriptionEventListener();
 
@@ -130,8 +137,8 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                         );
 
                         $businessProfile = $this->removeOldSubscriptions($businessProfile);
-
-                        $this->updateBusinessSubscriptions($subscriptions, $businessProfile);
+                        $businessProfile = $this->updateBusinessSubscriptions($subscriptions, $businessProfile);
+                        $businessProfile = $this->handleSuperVmSubscription($businessProfile);
 
                         $this->handleDefaultSubscription($businessProfile);
 
@@ -198,6 +205,8 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     /**
      * @param mixed             $subscriptions
      * @param BusinessProfile   $businessProfile
+     *
+     * @return BusinessProfile
      */
     private function updateBusinessSubscriptions($subscriptions, $businessProfile)
     {
@@ -242,6 +251,8 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                 }
             }
         }
+
+        return $businessProfile;
     }
 
     /**
@@ -317,6 +328,50 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
 
         if (!$subscription) {
             $this->subscriptionManager->setBusinessProfileFreeSubscription($businessProfile, $this->em);
+        }
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return BusinessProfile
+     */
+    private function handleSuperVmSubscription($businessProfile)
+    {
+        if (array_key_exists($businessProfile->getSlug(), $this->superVmSubscriptions)) {
+
+            $subscriptionData = $this->superVmSubscriptions[$businessProfile->getSlug()];
+
+            $now = new \DateTime();
+
+            if (!empty($subscriptionData['date'])) {
+                $startDate = \DateTime::createFromFormat('d.m.Y', $subscriptionData['date']);
+            } else {
+                $startDate = new \DateTime();
+            }
+
+            $endDate = clone $startDate;
+            $endDate->modify('+1 year');
+
+            $subscription = new Subscription();
+
+            $subscriptionPlan = $this->em->getReference(SubscriptionPlan::class, $this->subscriptionPlans['SuperVM']);
+
+            $subscription->setSubscriptionPlan($subscriptionPlan);
+            $subscription->setBusinessProfile($businessProfile);
+            $subscription->setStartDate($startDate);
+
+            $subscription->setEndDate($endDate);
+
+            if ($endDate >= $now) {
+                $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+            } else {
+                $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
+            }
+
+            $businessProfile->addSubscription($subscription);
         }
 
         return $businessProfile;
