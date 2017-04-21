@@ -10,7 +10,7 @@
                 {% endif %}
                 <h3 class="news__title">{{ item.getName() }}</h3>
                 {% if item.getDescription() %}
-                    <p>{{ item.getDescription() }}</p>
+                    <p>{{ cut_body_extension(item.getDescription()) }}</p>
                 {% endif %}
             </a>
         {% endfor %}

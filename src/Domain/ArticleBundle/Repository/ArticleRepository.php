@@ -31,7 +31,7 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getArticlesQueryBuilder()
             ->andWhere('a.isOnHomepage = true')
-            ->addOrderBy('a.createdAt', "DESC");
+            ->orderBy('a.activationDate', 'DESC');
     }
 
     /**
