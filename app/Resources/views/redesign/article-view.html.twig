@@ -36,7 +36,9 @@
                             </div>
                         </section>
 
-                        {{ article.getBody()|raw }}
+                        <div class="article-wysiwyg-body">
+                            {{ article.getBody()|raw }}
+                        </div>
                     </section>
 
                     {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.ARTICLE_PAGE_BOTTOM } %}

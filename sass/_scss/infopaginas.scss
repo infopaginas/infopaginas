@@ -1163,6 +1163,10 @@ $thumb-width-mb: 60px;
       max-width: 80px;
     }
   }
+
+  @media only screen and (max-width: 375px) {
+    margin-bottom: 22px;
+  }
 }
 
 .item__summary {
@@ -4045,6 +4049,10 @@ li.active {
     @media only screen and (min-width: 1100px) {
       margin: 30px -50px;
     }
+  }
+
+  div.article-wysiwyg-body {
+    overflow-x: auto;
   }
 }
 
