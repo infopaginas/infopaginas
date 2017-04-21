@@ -93,5 +93,6 @@ requirejs.config({
         'velocity': 'domainsite/scripts/vendors/min/velocity-min',
         'velocity-ui': 'domainsite/scripts/vendors/min/velocity-ui-min',
         'maps-redesign': 'domainsite/scripts/modules/mapsearchpage'
-    }
+    },
+    waitSeconds: 0
 });

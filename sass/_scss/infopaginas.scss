@@ -1156,12 +1156,16 @@ $thumb-width-mb: 60px;
 
   @media only screen and (min-width: 805px) {
     max-width: 80px;
-    margin-bottom: 0px;
+    margin-bottom: 12px;
 
     img {
       max-height: 80px;
       max-width: 80px;
     }
+  }
+
+  @media only screen and (max-width: 375px) {
+    margin-bottom: 22px;
   }
 }
 
@@ -4046,6 +4050,10 @@ li.active {
       margin: 30px -50px;
     }
   }
+
+  div.article-wysiwyg-body {
+    overflow-x: auto;
+  }
 }
 
 .article__header {
@@ -5487,6 +5495,7 @@ a.select-all-button {
 
     .item__summary {
       width: calc(100% - 80px);
+      min-height: 85px;
     }
 
     .item__summary-no-logo {
