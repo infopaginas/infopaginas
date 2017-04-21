@@ -1465,10 +1465,11 @@ class SubscriptionModel
                     'slug' => 'spazzio-bath-gallery',
                     'date' => '30.11.2016',
                 ),
-            'marbella-events-and-décor' =>
+            'marbella-events-and-decor' =>
                 array (
                     'name' => 'Marbella Events & Decor',
-                    'slug' => 'marbella-events-and-décor',
+                    'slug' => 'marbella-events-and-decor',
+                    'oldSlug' => 'marbella-events-and-décor',
                     'date' => '30.11.2016',
                 ),
             'laboratorio-clinico-oriental' =>
@@ -1819,10 +1820,11 @@ class SubscriptionModel
                     'slug' => 'arecibo-light-sport-aviation',
                     'date' => '08.02.2017',
                 ),
-            'rgf-law-firm-accidentes-caidas-choques-danos-practica-civil-notarios' =>
+            'rivera-aspinall-garriga-and-fernandini-law-firm' =>
                 array (
                     'name' => 'RGF Law Firm',
-                    'slug' => 'rgf-law-firm-accidentes-caidas-choques-danos-practica-civil-notarios',
+                    'slug' => 'rivera-aspinall-garriga-and-fernandini-law-firm',
+                    'oldSlug' => 'rgf-law-firm-accidentes-caidas-choques-danos-practica-civil-notarios',
                     'date' => '09.02.2017',
                 ),
             'laboratorio-clinico-colon-1' =>
@@ -1903,10 +1905,11 @@ class SubscriptionModel
                     'slug' => 'lcdo-jose-a-leon-landrau',
                     'date' => '21.02.2017',
                 ),
-            'dr-roberto-davila-de-pedro-dermatology-practice' =>
+            'davila-de-pedro-roberto-l' =>
                 array (
                     'name' => 'Dr. Roberto Dávila De Pedro Dermatology Practice.',
-                    'slug' => 'dr-roberto-davila-de-pedro-dermatology-practice',
+                    'slug' => 'davila-de-pedro-roberto-l',
+                    'oldSlug' => 'dr-roberto-davila-de-pedro-dermatology-practice',
                     'date' => '23.02.2017',
                 ),
             'bruno-steel-1' =>
@@ -1957,10 +1960,11 @@ class SubscriptionModel
                     'slug' => 'paco-buena-cocina',
                     'date' => '01.03.2017',
                 ),
-            'profesionales-legales' =>
+            'estudio-legal-lcda-sandra-m-lugo' =>
                 array (
                     'name' => 'Profesionales Legales',
-                    'slug' => 'profesionales-legales',
+                    'slug' => 'estudio-legal-lcda-sandra-m-lugo',
+                    'oldSlug' => 'profesionales-legales',
                     'date' => '02.03.2017',
                 ),
             'fonseca-salgado-carlos-a-dr-facog' =>
@@ -2035,10 +2039,11 @@ class SubscriptionModel
                     'slug' => 'la-familia-tire-inc-alineamiento-hnos-ibarra',
                     'date' => '15.03.2017',
                 ),
-            'lcdo-cesar-hernandez-gonzalez' =>
+            'hernandez-gonzalez-cesar-lcdo' =>
                 array (
                     'name' => 'Hernández González César',
-                    'slug' => 'lcdo-cesar-hernandez-gonzalez',
+                    'slug' => 'hernandez-gonzalez-cesar-lcdo',
+                    'oldSlug' => 'lcdo-cesar-hernandez-gonzalez',
                     'date' => '15.03.2017',
                 ),
             'flowers-by-john' =>
@@ -2095,10 +2100,11 @@ class SubscriptionModel
                     'slug' => 'vesalius-natural-wellness',
                     'date' => '20.03.2017',
                 ),
-            'clinica-de-terapia-fisica-milagros-otero-iturregui-rehab-center' =>
+            'iturregui-rehab-center' =>
                 array (
                     'name' => 'CLINICA DE TERAPIA FISICA MILAGROS OTERO (Iturregui Rehab Center)',
-                    'slug' => 'clinica-de-terapia-fisica-milagros-otero-iturregui-rehab-center',
+                    'slug' => 'iturregui-rehab-center',
+                    'oldSlug' => 'clinica-de-terapia-fisica-milagros-otero-iturregui-rehab-center',
                     'date' => '22.03.2017',
                 ),
             'licenciado-ramon-llorach' =>
@@ -2119,10 +2125,11 @@ class SubscriptionModel
                     'slug' => 'ponce-wholesale',
                     'date' => '24.03.2017',
                 ),
-            'condado-travel' =>
+            'condado-travel-inc' =>
                 array (
                     'name' => 'Condado Travel',
-                    'slug' => 'condado-travel',
+                    'slug' => 'condado-travel-inc',
+                    'oldSlug' => 'condado-travel',
                     'date' => '27.03.2017',
                 ),
             'bedford-and-brooklyn-bakers' =>
