@@ -59,6 +59,12 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             spinnerId: this.html.newProfileRequestSpinnerContainerId
         });
 
+        this.selectizeOptions = {
+            plugins: ['remove_button'],
+            delimiter: ',',
+            persist: true
+        };
+
         this.geocoder = new google.maps.Geocoder();
         this.businessProfileClose = new businessProfileClose;
         this.mapSpinner = new MapSpin( this.html.mapContainerId );
@@ -300,9 +306,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             var localities = $( that.html.fields.localitiesFieldId );
             var neighborhoods = $( that.html.fields.neighborhoodsFieldId );
 
-            var areasSelectize          = areas.selectize()[0].selectize;
-            var localitiesSelectize     = localities.selectize()[0].selectize;
-            var neighborhoodsSelectize  = neighborhoods.selectize()[0].selectize;
+            var areasSelectize          = areas.selectize( that.selectizeOptions )[0].selectize;
+            var localitiesSelectize     = localities.selectize( that.selectizeOptions )[0].selectize;
+            var neighborhoodsSelectize  = neighborhoods.selectize( that.selectizeOptions )[0].selectize;
 
             if ( $self.val() == that.serviceAreasAreaChoiceValue ) {
                 withinMiles.removeAttr( 'disabled' );
@@ -436,7 +442,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
             if (subcategories.length) {
                 var selectOptions = [];
-                var selectBlock = subcategories.selectize();
+                var selectBlock = subcategories.selectize( self.selectizeOptions );
                 var selectize = selectBlock[0].selectize;
 
                 subcategories.html( '' );
@@ -524,7 +530,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 var selectField = $( this ).parent().parent().find( 'select' );
 
                 if ( !selectField.attr( 'disabled' ) ) {
-                    var selectBlock = selectField.selectize();
+                    var selectBlock = selectField.selectize( self.selectizeOptions );
                     var selectize = selectBlock[0].selectize;
 
                     selectize.setValue( _.keys( selectize.options ) );
@@ -540,7 +546,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             };
 
             if ( localitiesField.length ) {
-                var selectBlock = localitiesField.selectize();
+                var selectBlock = localitiesField.selectize( self.selectizeOptions );
                 var selectize = selectBlock[0].selectize;
 
                 localitiesField.html( '' );
@@ -562,7 +568,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             };
 
             if ( neighborhoodsField.length ) {
-                var selectBlock = neighborhoodsField.selectize();
+                var selectBlock = neighborhoodsField.selectize( self.selectizeOptions );
                 var selectize = selectBlock[0].selectize;
 
                 neighborhoodsField.html( '' );
