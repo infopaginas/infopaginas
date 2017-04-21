@@ -357,6 +357,7 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
             ]);
 
             if ($businessProfile) {
+                $businessProfile = $this->removeOldSubscriptions($businessProfile);
                 $subscriptionData = $this->superVmSubscriptions[$businessProfile->getSlug()];
 
                 $now = new \DateTime();
