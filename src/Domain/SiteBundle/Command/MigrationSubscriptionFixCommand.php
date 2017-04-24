@@ -10,6 +10,8 @@ use Domain\BusinessBundle\EventListener\ElasticSearchSubscriber;
 use Domain\BusinessBundle\EventListener\SubscriptionListener;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Model\SubscriptionModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,6 +43,11 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     protected $withDebug;
 
     /**
+     * @var bool $superVmOnly
+     */
+    protected $superVmOnly;
+
+    /**
      * @var array $subscriptionPlans
      */
     protected $subscriptionPlans = [];
@@ -51,9 +58,14 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     protected $missingSubscriptions = [];
 
     /**
+     * @var array $superVmSubscriptions
+     */
+    protected $superVmSubscriptions = [];
+
+    /**
      * @var SubscriptionStatusManager $subscriptionManager
      */
-    protected $subscriptionManager = [];
+    protected $subscriptionManager;
 
     protected function configure()
     {
@@ -64,6 +76,7 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                 new InputOption('withDebug', 'd'),
                 new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
                 new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
+                new InputOption('superVmOnly'),
             ])
         );
     }
@@ -80,6 +93,7 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
         $this->output = $output;
 
         $this->subscriptionManager = $this->getContainer()->get('domain_business.manager.subscription_status_manager');
+        $this->superVmSubscriptions = SubscriptionModel::getSuperVmSubscriptions();
 
         $this->disableSubscriptionEventListener();
 
@@ -101,54 +115,63 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
             $this->withDebug = false;
         }
 
+        if ($input->getOption('superVmOnly')) {
+            $this->superVmOnly = true;
+        } else {
+            $this->superVmOnly = false;
+        }
+
         $this->subscriptionPlans = $this->getSubscriptionPlans();
 
-        for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
-            if ($this->withDebug) {
-                $output->writeln('Start request page number ' . $page);
+        if (!$this->superVmOnly) {
+            for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
+                if ($this->withDebug) {
+                    $output->writeln('Start request page number ' . $page);
 
-                $this->printMissingSubscription();
-            }
+                    $this->printMissingSubscription();
+                }
 
-            $data = $this->getCurlData($this->getBusinessesByPageUrl($page), self::DEFAULT_LOCALE);
+                $data = $this->getCurlData($this->getBusinessesByPageUrl($page), self::DEFAULT_LOCALE);
 
-            if ($data) {
-                foreach ($data as $item) {
-                    $itemId = $item->_id;
+                if ($data) {
+                    foreach ($data as $item) {
+                        $itemId = $item->_id;
 
-                    /* @var BusinessProfile $businessProfile */
-                    $businessProfile = $this->em->getRepository(BusinessProfile::class)->findOneBy(
-                        [
-                            'uid' => $itemId,
-                        ]
-                    );
-
-                    if ($businessProfile) {
-                        $subscriptions = $this->getCurlData(
-                            $this->getBusinessSubscriptionsByUid($itemId),
-                            self::DEFAULT_LOCALE
+                        /* @var BusinessProfile $businessProfile */
+                        $businessProfile = $this->em->getRepository(BusinessProfile::class)->findOneBy(
+                            [
+                                'uid' => $itemId,
+                            ]
                         );
 
-                        $businessProfile = $this->removeOldSubscriptions($businessProfile);
+                        if ($businessProfile) {
+                            $subscriptions = $this->getCurlData(
+                                $this->getBusinessSubscriptionsByUid($itemId),
+                                self::DEFAULT_LOCALE
+                            );
 
-                        $this->updateBusinessSubscriptions($subscriptions, $businessProfile);
+                            $businessProfile = $this->removeOldSubscriptions($businessProfile);
+                            $businessProfile = $this->updateBusinessSubscriptions($subscriptions, $businessProfile);
 
-                        $this->handleDefaultSubscription($businessProfile);
+                            $this->handleDefaultSubscription($businessProfile);
 
-                        if ($this->withDebug) {
-                            $output->writeln('Finish request item with id ' . $itemId);
-                        }
-                    } else {
-                        if ($this->withDebug) {
-                            $output->writeln('Skip item with id ' . $itemId);
+                            if ($this->withDebug) {
+                                $output->writeln('Finish request item with id ' . $itemId);
+                            }
+                        } else {
+                            if ($this->withDebug) {
+                                $output->writeln('Skip item with id ' . $itemId);
+                            }
                         }
                     }
                 }
-            }
 
-            $this->em->flush();
-            $this->em->clear();
+                $this->em->flush();
+                $this->em->clear();
+            }
         }
+
+        $this->handleSuperVmSubscriptions();
 
         if ($this->withDebug) {
             $output->writeln('Finish requests');
@@ -198,6 +221,8 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
     /**
      * @param mixed             $subscriptions
      * @param BusinessProfile   $businessProfile
+     *
+     * @return BusinessProfile
      */
     private function updateBusinessSubscriptions($subscriptions, $businessProfile)
     {
@@ -242,6 +267,8 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
                 }
             }
         }
+
+        return $businessProfile;
     }
 
     /**
@@ -320,6 +347,61 @@ class MigrationSubscriptionFixCommand extends ContainerAwareCommand
         }
 
         return $businessProfile;
+    }
+
+    private function handleSuperVmSubscriptions()
+    {
+        foreach ($this->superVmSubscriptions as $slug => $item) {
+            $businessProfile = $this->em->getRepository(BusinessProfile::class)->findOneBy([
+                'slug' => $slug
+            ]);
+
+            if ($businessProfile) {
+                $businessProfile = $this->removeOldSubscriptions($businessProfile);
+                $subscriptionData = $this->superVmSubscriptions[$businessProfile->getSlug()];
+
+                $now = new \DateTime();
+
+                if (!empty($subscriptionData['date'])) {
+                    $startDate = \DateTime::createFromFormat('d.m.Y', $subscriptionData['date']);
+                } else {
+                    $startDate = new \DateTime();
+                }
+
+                $endDate = clone $startDate;
+                $endDate->modify('+1 year');
+
+                $subscription = new Subscription();
+
+                $subscriptionPlan = $this->em->getReference(SubscriptionPlan::class, $this->subscriptionPlans['SuperVM']);
+                $subscription->setSubscriptionPlan($subscriptionPlan);
+
+                $subscription->setStartDate($startDate);
+                $subscription->setEndDate($endDate);
+
+                if ($endDate >= $now) {
+                    $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+
+                    $currentSubscriptions = $businessProfile->getSubscriptions();
+
+                    foreach ($currentSubscriptions as $currentSubscription) {
+                        $status = $currentSubscription->getStatus();
+
+                        if ($status == StatusInterface::STATUS_ACTIVE) {
+                            $currentSubscription->setStatus(StatusInterface::STATUS_PENDING);
+                        }
+                    }
+                } else {
+                    $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
+                }
+
+                $subscription->setBusinessProfile($businessProfile);
+                $businessProfile->addSubscription($subscription);
+            }
+
+            $this->em->flush();
+            $this->em->clear();
+        }
     }
 
     private function printMissingSubscription()
