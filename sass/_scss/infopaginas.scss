@@ -3498,6 +3498,12 @@ input[type='checkbox'] {
   }
 }
 
+.field-active-time {
+  label {
+    margin-left: 10px;
+  }
+}
+
 .field-filled {
   label {
     color: $blue !important;
