@@ -111,8 +111,8 @@ class BusinessProfileFormHandler extends BaseFormHandler
             $this->businessProfileNew->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
 
             $this->handleMediaUpdate();
-            $this->handleCategoriesUpdate();
 
+            $this->checkCategories();
             $this->checkTranslationBlock($this->requestParams);
             $this->checkCollectionWorkingHoursBlock($this->businessProfileNew->getCollectionWorkingHours());
 
@@ -231,44 +231,12 @@ class BusinessProfileFormHandler extends BaseFormHandler
         return $this->businessProfileNew;
     }
 
-    /**
-     * @param array $data
-     * @return array
-     */
-    private function getCategoriesIds($data)
+    private function checkCategories()
     {
-        $ids = [];
-
-        if (!empty($data['categories'])) {
-            $ids[] = $data['categories'];
-
-            if (!empty($data['categories2'])) {
-                $ids = array_merge($ids, $data['categories2']);
-
-                if (!empty($data['categories3'])) {
-                    $ids = array_merge($ids, $data['categories3']);
-                }
-            }
+        if ($this->businessProfileNew->getCategories()->isEmpty()) {
+            $error = new FormError($this->translator->trans('business_profile.category.required'));
+            $this->form->get('categories')->addError($error);
         }
-
-        return $ids;
-    }
-
-    private function handleCategoriesUpdate()
-    {
-        $newCategoryIds  = $this->getCategoriesIds($this->requestParams);
-
-        if (!$newCategoryIds) {
-            $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
-        } else {
-            $categories = $this->businessProfileManager->getCategoriesByIds($newCategoryIds);
-
-            foreach ($categories as $category) {
-                $this->businessProfileNew->addCategory($category);
-            }
-        }
-
-        return $this->businessProfileNew;
     }
 
     private function handleBusinessOwner()

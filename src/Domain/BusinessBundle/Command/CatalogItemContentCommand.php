@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Command;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\CatalogItem;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\Locality;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -33,15 +34,13 @@ class CatalogItemContentCommand extends ContainerAwareCommand
 
     protected function updateCatalogItem()
     {
-        $catalogLocalities = $this->em->getRepository('DomainBusinessBundle:Locality')
-            ->getAllLocalitiesIterator();
+        $catalogLocalities = $this->em->getRepository(Locality::class)->getAllLocalitiesIterator();
 
         foreach ($catalogLocalities as $localityRow) {
             /* @var $catalogLocality \Domain\BusinessBundle\Entity\Locality */
             $catalogLocality = current($localityRow);
 
-            $categories = $this->em->getRepository('DomainBusinessBundle:Category')
-                ->getAllCategoriesIterator();
+            $categories = $this->em->getRepository(Category::class)->getAllCategoriesIterator();
 
             $countLocalityContent = 0;
 
@@ -49,7 +48,7 @@ class CatalogItemContentCommand extends ContainerAwareCommand
                 /* @var $category \Domain\BusinessBundle\Entity\Category */
                 $category = current($categoryRow);
 
-                $catalogItem = $this->em->getRepository('DomainBusinessBundle:CatalogItem')->findOneBy(
+                $catalogItem = $this->em->getRepository(CatalogItem::class)->findOneBy(
                     [
                         'locality' => $catalogLocality->getId(),
                         'category' => $category->getId(),
@@ -57,11 +56,7 @@ class CatalogItemContentCommand extends ContainerAwareCommand
                 );
 
                 if (!$catalogItem) {
-                    $catalogItem = new CatalogItem();
-                    $catalogItem->setLocality($catalogLocality);
-                    $catalogItem->setCategory($category);
-
-                    $this->em->persist($catalogItem);
+                    $catalogItem = $this->createCatalogItem($catalogLocality, $category);
                 }
 
                 if ($catalogLocality->getIsActive() and $category->getIsActive()) {
@@ -75,7 +70,7 @@ class CatalogItemContentCommand extends ContainerAwareCommand
                 }
             }
 
-            $catalogItem = $this->em->getRepository('DomainBusinessBundle:CatalogItem')->findOneBy(
+            $catalogItem = $this->em->getRepository(CatalogItem::class)->findOneBy(
                 [
                     'locality' => $catalogLocality->getId(),
                     'category' => null,
@@ -83,11 +78,7 @@ class CatalogItemContentCommand extends ContainerAwareCommand
             );
 
             if (!$catalogItem) {
-                $catalogItem = new CatalogItem();
-                $catalogItem->setLocality($catalogLocality);
-                $catalogItem->setCategory(null);
-
-                $this->em->persist($catalogItem);
+                $catalogItem = $this->createCatalogItem($catalogLocality);
             }
 
             if ($catalogLocality->getIsActive()) {
@@ -103,9 +94,26 @@ class CatalogItemContentCommand extends ContainerAwareCommand
 
     protected function getCountCatalogItemContent($catalogLocality, $category)
     {
-        $countCatalogItemContent = $this->em->getRepository('DomainBusinessBundle:CatalogItem')
+        $countCatalogItemContent = $this->em->getRepository(CatalogItem::class)
             ->getCountCatalogItemContent($catalogLocality, $category);
 
         return $countCatalogItemContent;
+    }
+
+    /**
+     * @param Locality      $locality
+     * @param Category|null $category
+     *
+     * @return CatalogItem
+     */
+    protected function createCatalogItem($locality, $category = null)
+    {
+        $catalogItem = new CatalogItem();
+        $catalogItem->setLocality($locality);
+        $catalogItem->setCategory($category);
+
+        $this->em->persist($catalogItem);
+
+        return $catalogItem;
     }
 }

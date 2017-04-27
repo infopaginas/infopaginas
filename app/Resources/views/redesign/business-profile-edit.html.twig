@@ -116,10 +116,6 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        var defaultCategoryLevel    = {{ CATEGORY_DEFAULT_LEVEL }};
-        var defaultSubCategoryLevel = {{ SUBCATEGORY_DEFAULT_LEVEL }};
-        var maxCategoryLevel        = {{ CATEGORY_MAX_LEVEL }};
-
         requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
             requirejs(['{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/businessProfile.js")) }}'], function(businessProfile) {
                 var profile = new businessProfile();

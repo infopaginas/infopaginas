@@ -7,9 +7,6 @@
         var parentId = '{{ app.request.get('id', null) }}';
         var businessProfileId = '{{ form.vars.value.id }}';
         var currentLocale = '{{ form.vars.value.locale }}';
-        var defaultCategoryLevel    = {{ CATEGORY_DEFAULT_LEVEL }};
-        var defaultSubCategoryLevel = {{ SUBCATEGORY_DEFAULT_LEVEL }};
-        var maxCategoryLevel        = {{ CATEGORY_MAX_LEVEL }};
     </script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>

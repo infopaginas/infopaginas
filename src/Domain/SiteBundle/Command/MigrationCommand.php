@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Model\CategoryModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
@@ -35,6 +36,21 @@ class MigrationCommand extends ContainerAwareCommand
     const TAG_SEPARATOR = ';';
     const TWITTER_URL_PREFIX = 'https://twitter.com/';
 
+    /**
+     * @var EntityManager $em
+     */
+    protected $em;
+
+    /**
+     * @var array $categoryEnMergeMapping
+     */
+    protected $categoryEnMergeMapping;
+
+    /**
+     * @var array $categoryEsMergeMapping
+     */
+    protected $categoryEsMergeMapping;
+
     protected function configure()
     {
         $this->setName('data:migration');
@@ -59,6 +75,9 @@ class MigrationCommand extends ContainerAwareCommand
         $this->localeSecond = 'es';
 
         $this->totalTimer = 0;
+
+        $this->categoryEnMergeMapping = CategoryModel::getCategoryEnMergeMapping();
+        $this->categoryEsMergeMapping = CategoryModel::getCategoryEsMergeMapping();
 
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
@@ -404,10 +423,7 @@ class MigrationCommand extends ContainerAwareCommand
             //add categories
             foreach ($profile->headings as $value) {
                 $category = $this->getCategory($value);
-
-                if ($category) {
-                    $entity = $this->addBusinessProfileCategory($entity, $category);
-                }
+                $entity = $this->addBusinessProfileCategory($entity, $category);
             }
         }
 
@@ -575,16 +591,31 @@ class MigrationCommand extends ContainerAwareCommand
     {
         $slug = SlugUtil::convertSlug($name);
 
-        //search category by slugEn, slugEs
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryByCustomSlug($slug);
+        $entity = $this->em->getRepository(Category::class)->getCategoryByOldSlugs($slug);
+
+        if (!$entity) {
+            $newSlug = '';
+
+            if (!empty($this->categoryEnMergeMapping[$slug])) {
+                $newSlug = $this->categoryEnMergeMapping[$slug];
+            } elseif (!empty($this->categoryEsMergeMapping[$slug])) {
+                $newSlug = $this->categoryEsMergeMapping[$slug];
+            }
+
+            if ($newSlug) {
+                $entity = $this->em->getRepository(Category::class)->getCategoryByOldSlugs($newSlug);
+            }
+        }
 
         return $entity;
     }
 
     private function getDefaultCategory()
     {
-        $slug = SlugUtil::convertSlug(CategoryModel::UNDEFINED_CATEGORY);
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryBySlug($slug);
+        $slug = Category::CATEGORY_UNDEFINED_SLUG;
+        $entity = $this->em->getRepository(Category::class)->findOneBy([
+            'slug' => $slug,
+        ]);
 
         return $entity;
     }
@@ -710,38 +741,14 @@ class MigrationCommand extends ContainerAwareCommand
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param Category $category
+     * @param Category|null   $category
      *
      * @return BusinessProfile
      */
-    private function addBusinessProfileCategory(BusinessProfile $businessProfile, Category $category)
+    private function addBusinessProfileCategory($businessProfile, $category)
     {
-        //get all parent categories and current category
-        $categories = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryParents($category);
-
-        //sort categories
-        foreach ($categories as $item) {
-            $categoriesData[$item->getLvl()] = $item;
-        }
-
-        if (!empty($categoriesData[Category::CATEGORY_LEVEL_1])) {
-            $businessProfileCategory = $businessProfile->getCategory();
-
-            if ($businessProfileCategory) {
-                //avoid duplicate
-                if ($businessProfileCategory->getChildren()->contains($categoriesData[Category::CATEGORY_LEVEL_1])) {
-
-                    foreach ($categories as $item) {
-                        if (!$businessProfile->getCategories()->contains($item)) {
-                            $businessProfile->addCategory($item);
-                        }
-                    }
-                }
-            } else {
-                foreach ($categories as $item) {
-                    $businessProfile->addCategory($item);
-                }
-            }
+        if ($category and !$businessProfile->getCategories()->contains($category)) {
+            $businessProfile->addCategory($category);
         }
 
         return $businessProfile;

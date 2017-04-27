@@ -40,43 +40,9 @@ class CategoryManager extends Manager
         return $category;
     }
 
-    public function getAvailableParentCategories($locale = false)
+    public function getAvailableCategoriesWithContent($locality, $locale = false)
     {
-        return $this->getRepository()->getAvailableParentCategories($locale);
-    }
-
-    public function getAvailableParentCategoriesWithContent($locality, $locale = false)
-    {
-        return $this->getRepository()->getAvailableParentCategoriesWithContent($locality, $locale);
-    }
-
-    public function searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale)
-    {
-        $subcategoriesWithContent = $this->getRepository()
-            ->searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale);
-
-        return $subcategoriesWithContent;
-    }
-
-    public function searchSubcategoryByCategory($category, $level, $locale)
-    {
-        return $this->getRepository()->searchSubcategoryByCategory($category, $level, $locale);
-    }
-
-    public function getCategoryParents($category)
-    {
-        $data = $this->getRepository()->getCategoryParents($category);
-        $slugs = [
-            'categorySlug1' => null,
-            'categorySlug2' => null,
-            'categorySlug3' => null,
-        ];
-
-        foreach ($data as $item) {
-            $slugs['categorySlug' . $item->getLvl()] = $item->getSlug();
-        }
-
-        return $slugs;
+        return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }
 
     public function buildCategoryElasticData(Category $category)

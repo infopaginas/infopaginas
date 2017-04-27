@@ -148,8 +148,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addBusinessProfilesCatalog()
     {
-        $catalogItems = $this->manager->getRepository('DomainBusinessBundle:CatalogItem')
-            ->getCatalogItemsWithContentIterator();
+        $catalogItems = $this->manager->getRepository(CatalogItem::class)->getCatalogItemsWithContentIterator();
 
         $this->addCatalogUrl();
 
@@ -294,21 +293,14 @@ class SitemapSubscriber implements EventSubscriberInterface
         return $priority;
     }
 
-    protected function addCatalogUrl(
-        $catalogLocalitySlug = null,
-        $categorySlug1 = null,
-        $categorySlug2 = null,
-        $categorySlug3 = null
-    ) {
+    protected function addCatalogUrl($catalogLocalitySlug = null, $categorySlug = null) {
         $this->context->setHost($this->defaultHost);
 
         $loc = $this->urlGenerator->generate(
             'domain_search_catalog',
             [
                 'localitySlug'  => $catalogLocalitySlug,
-                'categorySlug1' => $categorySlug1,
-                'categorySlug2' => $categorySlug2,
-                'categorySlug3' => $categorySlug3,
+                'categorySlug' => $categorySlug,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
@@ -325,9 +317,7 @@ class SitemapSubscriber implements EventSubscriberInterface
                     'domain_search_catalog',
                     [
                         'localitySlug'  => $catalogLocalitySlug,
-                        'categorySlug1' => $categorySlug1,
-                        'categorySlug2' => $categorySlug2,
-                        'categorySlug3' => $categorySlug3,
+                        'categorySlug' => $categorySlug,
                     ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
@@ -414,22 +404,14 @@ class SitemapSubscriber implements EventSubscriberInterface
         $category = $catalogItem->getCategory();
 
         $localitySlug = $locality->getSlug();
-        $categorySlug1 = null;
-        $categorySlug2 = null;
-        $categorySlug3 = null;
+        $categorySlug = null;
 
         if ($category) {
-            $categoryManager = $this->container->get('domain_business.manager.category');
-
-            $slugs = $categoryManager->getCategoryParents($category);
-
-            $categorySlug1 = $slugs['categorySlug1'];
-            $categorySlug2 = $slugs['categorySlug2'];
-            $categorySlug3 = $slugs['categorySlug3'];
+            $categorySlug = $category->getSlug();
         }
 
-        $this->addCatalogUrl($localitySlug, $categorySlug1, $categorySlug2, $categorySlug3);
+        $this->addCatalogUrl($localitySlug, $categorySlug);
 
-        unset($locality, $category, $localitySlug, $categorySlug1, $categorySlug2, $categorySlug3);
+        unset($locality, $category, $localitySlug, $categorySlug);
     }
 }

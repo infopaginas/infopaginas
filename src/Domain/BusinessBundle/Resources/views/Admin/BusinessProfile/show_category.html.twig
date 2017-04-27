@@ -1,7 +1,0 @@
-{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
-
-{% block field%}
-    {% if value %}
-        <a href="{{ path('admin_domain_business_category_edit', {id: value.id}) }}">{{ value|render_relation_element(field_description) }}</a>
-    {% endif %}
-{% endblock %}

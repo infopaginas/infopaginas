@@ -21,33 +21,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="category")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
- * @Gedmo\Tree(type="materializedPath")
  */
 class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
-    const TYPE_CATEGORY_PATTERN = 'TYPE_CATEGORY_';
-
-    const TYPE_CATEGORY_1 = 'type_category_1';
-    const TYPE_CATEGORY_2 = 'type_category_2';
-    const TYPE_CATEGORY_3 = 'type_category_3';
-
-    const CATEGORY_DEFAULT_LEVEL    = 1;
-    const SUBCATEGORY_DEFAULT_LEVEL = 2;
-    const CATEGORY_MAX_LEVEL        = 3;
-
-    const CATEGORY_LEVEL_1 = 1;
-    const CATEGORY_LEVEL_2 = 2;
-    const CATEGORY_LEVEL_3 = 3;
-
     const CATEGORY_FIELD_NAME = 'name';
 
     const CATEGORY_UNDEFINED_CODE = '54016';
-    const CATEGORY_UNDEFINED_SLUG = 'undefined';
+    const CATEGORY_UNDEFINED_SLUG = 'unclassified';
 
     const CATEGORY_ARTICLE_CODE = '99999';
+    const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
 
     const ELASTIC_DOCUMENT_TYPE = 'Category';
     const FLAG_IS_UPDATED = 'isUpdated';
@@ -60,7 +46,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Gedmo\TreePathSource
      */
     protected $id;
 
@@ -151,51 +136,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $locale;
 
     /**
-     * @Gedmo\TreePath
-     * @ORM\Column(length=3000, nullable=true)
-     */
-    private $path;
-
-    /**
-     * @Gedmo\TreeLeft
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $lft;
-
-    /**
-     * @Gedmo\TreeLevel
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $lvl;
-
-    /**
-     * @Gedmo\TreeRight
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $rgt;
-
-    /**
-     * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $root;
-
-    /**
-     * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
-     */
-    private $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
-     * @ORM\OrderBy({"name" = "ASC"})
-     */
-    private $children;
-
-
-    /**
      * @var string - Category code
      *
      * @ORM\Column(name="code", type="string", length=255, nullable=true)
@@ -243,7 +183,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->businessProfiles = new ArrayCollection();
         $this->translations     = new ArrayCollection();
         $this->articles         = new ArrayCollection();
-        $this->children         = new ArrayCollection();
         $this->reports          = new ArrayCollection();
         $this->catalogItems     = new ArrayCollection();
 
@@ -448,82 +387,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         return $this->slug;
     }
 
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    public function getRoot()
-    {
-        return $this->root;
-    }
-
-    public function setLvl($level)
-    {
-        $this->lvl = $level;
-    }
-
-    public function getLvl()
-    {
-        return $this->lvl;
-    }
-
-    public function setParent(Category $parent = null)
-    {
-        $this->parent = $parent;
-    }
-
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Add child category
-     *
-     * @param Category
-     *
-     * @return Category
-     */
-    public function addChild(Category $category)
-    {
-        $this->children[] = $category;
-        $category->setParent($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove child category
-     *
-     * @param Category $category
-     */
-    public function removeChild(Category $category)
-    {
-        $this->children->removeElement($category);
-        $category->setParent(null);
-    }
-
-    /**
-     * Get children
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getChildren()
-    {
-        return $this->children;
-    }
-
-    public function getCategoryType()
-    {
-        return constant('self::' . self::TYPE_CATEGORY_PATTERN . $this->getLvl());
-    }
-
     /**
      * @param string $slugEn
      *
@@ -664,6 +527,14 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         return [
             self::CATEGORY_ARTICLE_CODE,
             self::CATEGORY_UNDEFINED_CODE,
+        ];
+    }
+
+    public static function getSystemCategorySlugs()
+    {
+        return [
+            self::CATEGORY_ARTICLE_SLUG,
+            self::CATEGORY_UNDEFINED_SLUG,
         ];
     }
 }

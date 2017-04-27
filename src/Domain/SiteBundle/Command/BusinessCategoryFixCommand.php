@@ -27,14 +27,14 @@ class BusinessCategoryFixCommand extends ContainerAwareCommand
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $businessProfiles = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getActiveBusinessProfilesIterator();
+        $businessProfiles = $this->em->getRepository(BusinessProfile::class)
+            ->getBusinessProfilesWithoutCategoriesIterator();
 
         foreach ($businessProfiles as $row) {
             /* @var BusinessProfile $businessProfile */
             $businessProfile = $row[0];
 
-            $this->handleBusinessCategories($businessProfile);
+            $this->handleDefaultCategory($businessProfile);
 
             $this->em->flush();
             $this->em->clear();
@@ -43,96 +43,27 @@ class BusinessCategoryFixCommand extends ContainerAwareCommand
         $this->em->flush();
     }
 
-    protected function handleBusinessCategories(BusinessProfile $businessProfile)
+    /**
+     * @param BusinessProfile   $businessProfile
+     *
+     * @return BusinessProfile   $businessProfile
+     */
+    protected function handleDefaultCategory($businessProfile)
     {
-        $newCategories     = [];
-        $parentCategoryIds = [];
-        $currentCategories = [];
-
-        $oldCategories = $businessProfile->getCategories();
-
-        foreach ($oldCategories as $category) {
-            $currentCategories[$category->getLvl()][$category->getId()] = $category;
+        if ($businessProfile->getCategories()->isEmpty()) {
+            //add undefined categories
+            $category = $this->getDefaultCategory();
+            $businessProfile->addCategory($category);
         }
 
-        if (!empty($currentCategories[Category::CATEGORY_LEVEL_3])) {
-            foreach ($currentCategories[Category::CATEGORY_LEVEL_3] as $key => $category3) {
-                $parent = $category3->getParent();
+        return $businessProfile;
+    }
 
-                if ($parent) {
-                    if (empty($currentCategories[Category::CATEGORY_LEVEL_2][$parent->getId()])) {
-                        $currentCategories[Category::CATEGORY_LEVEL_2][$parent->getId()] = $parent;
-                    }
-                } else {
-                    unset($currentCategories[Category::CATEGORY_LEVEL_3][$key]);
-                    $businessProfile->removeCategory($category3);
-                }
-            }
-        }
+    protected function getDefaultCategory()
+    {
+        $slug = Category::CATEGORY_UNDEFINED_SLUG;
+        $entity = $this->em->getRepository(Category::class)->getCategoryBySlug($slug);
 
-        if (!empty($currentCategories[Category::CATEGORY_LEVEL_2])) {
-            foreach ($currentCategories[Category::CATEGORY_LEVEL_2] as $key => $category2) {
-                $parent = $category2->getParent();
-
-                if ($parent) {
-                    if (empty($currentCategories[Category::CATEGORY_LEVEL_1][$parent->getId()])) {
-                        $currentCategories[Category::CATEGORY_LEVEL_1][$parent->getId()] = $parent;
-                    }
-                } else {
-                    unset($currentCategories[Category::CATEGORY_LEVEL_2][$key]);
-                    $businessProfile->removeCategory($category2);
-                }
-            }
-        }
-
-        if (!empty($currentCategories[Category::CATEGORY_LEVEL_1])) {
-            $first = true;
-            foreach ($currentCategories[Category::CATEGORY_LEVEL_1] as $key => $category) {
-                if ($first) {
-                    $first = false;
-                    $category1 = $category;
-                } else {
-                    unset($currentCategories[Category::CATEGORY_LEVEL_1][$key]);
-                    $businessProfile->removeCategory($category);
-                }
-            }
-        } else {
-            $category1 = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(
-                [
-                    'slug' => 'unclassified',
-                ]
-            );
-        }
-
-        $parentCategoryIds[] = $category1->getId();
-        $newCategories[$category1->getId()] = $category1;
-
-        if (!empty($currentCategories[Category::CATEGORY_LEVEL_2])) {
-            foreach ($currentCategories[Category::CATEGORY_LEVEL_2] as $category2) {
-                if (in_array($category2->getParent()->getId(), $parentCategoryIds)) {
-                    $newCategories[$category2->getId()] = $category2;
-                    $parentCategoryIds[] = $category2->getId();
-                } elseif ($businessProfile->getCategories()->contains($category2)) {
-                    $businessProfile->removeCategory($category2);
-                }
-            }
-        }
-
-        if (!empty($currentCategories[Category::CATEGORY_LEVEL_3])) {
-            foreach ($currentCategories[Category::CATEGORY_LEVEL_3] as $category3) {
-                if (in_array($category3->getParent()->getId(), $parentCategoryIds)) {
-                    $newCategories[$category3->getId()] = $category3;
-                    $parentCategoryIds[] = $category3->getId();
-                } elseif ($businessProfile->getCategories()->contains($category3)) {
-                    $businessProfile->removeCategory($category3);
-                }
-            }
-        }
-
-        foreach ($newCategories as $category) {
-            if (!$businessProfile->getCategories()->contains($category)) {
-                $businessProfile->addCategory($category);
-            }
-        }
+        return $entity;
     }
 }

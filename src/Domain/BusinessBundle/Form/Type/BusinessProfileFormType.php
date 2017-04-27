@@ -89,6 +89,22 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Phone number',
                 'required' => false,
             ])
+            ->add('categories', EntityType::class, [
+                'attr' => [
+                    'class' => 'form-control selectize-control select-multiple',
+                    'data-placeholder' => 'Select categories',
+                    'multiple' => true,
+                ],
+                'class' => 'Domain\BusinessBundle\Entity\Category',
+                'label' => 'Categories',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
+                'multiple' => true,
+                'query_builder' => function (CategoryRepository $repository) {
+                    return $repository->getAvailableCategoriesQb();
+                }
+            ])
             ->add('collectionWorkingHours', CollectionType::class, [
                 'allow_add'    => true,
                 'allow_delete' => true,
@@ -358,8 +374,6 @@ class BusinessProfileFormType extends AbstractType
                     $this->setupFreePlanFormFields($businessProfile, $event->getForm());
             }
 
-            $this->setupCategories($businessProfile, $event->getForm());
-
             $this->addTranslationBlock($event->getForm(), $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
             $this->addTranslationBlock($event->getForm(), $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
         });
@@ -522,73 +536,6 @@ class BusinessProfileFormType extends AbstractType
     private function setupFreePlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
 
-    }
-
-    private function setupCategories(BusinessProfile $businessProfile, FormInterface $form)
-    {
-        $category   = $businessProfile->getCategory();
-        $categories2 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_2);
-        $categories3 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_3);
-
-        $form
-            ->add('categories', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'placeholder' => 'Select category',
-                    'multiple' => false,
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'user.business.type_category_1',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'multiple' => false,
-                'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableParentCategoriesQb();
-                },
-                'data' => $category,
-                'mapped' => false,
-                'validation_groups' => ['userBusinessProfile'],
-            ])
-            ->add('categories2', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'placeholder' => 'Select subcategories',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'user.business.type_category_2',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'multiple' => true,
-                'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_2);
-                },
-                'data' => $categories2,
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('categories3', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'placeholder' => 'Select subcategories',
-                    'multiple' => 'multiple',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'user.business.type_category_3',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'multiple' => true,
-                'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_3);
-                },
-                'data' => $categories3,
-                'mapped' => false,
-                'required' => false,
-            ])
-        ;
     }
 
     private function addTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)

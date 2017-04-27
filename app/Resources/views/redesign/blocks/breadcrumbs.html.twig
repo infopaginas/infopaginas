@@ -8,7 +8,7 @@
         </a>
 
         {% if catalogLocality %}
-            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug() })) }}" title="{{ catalogLocality.name }}">
+            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug })) }}" title="{{ catalogLocality.name }}">
                 <button id="breadcrumb_location" type="button" class="button button--action button--location">
                     <i class="fa fa-map-marker"></i>
                     <span>{{ catalogLocality.name|truncate(breadcrumb_max_length) }}</span>
@@ -16,27 +16,11 @@
             </a>
 
             {% if category %}
-                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug(), 'categorySlug1': category.getSlug() })) }}" title="{{ category.name }}">
+                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug, 'categorySlug': category.slug })) }}" title="{{ category.name }}">
                     <button id="category-toggle" type="button" class="button button--action category__toggle">
                         {{ category.name|truncate(breadcrumb_max_length) }}
                     </button>
                 </a>
-
-                {% if category2 %}
-                    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug(), 'categorySlug1': category.getSlug(), 'categorySlug2': category2.getSlug() })) }}" title="{{ category2.name }}">
-                        <button id="category-toggle" type="button" class="button button--action category__toggle">
-                            {{ category2.name|truncate(breadcrumb_max_length) }}
-                        </button>
-                    </a>
-
-                    {% if category3 %}
-                        <div class="breadcrumb">
-                            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.getSlug(), 'categorySlug1': category.getSlug(), 'categorySlug2': category2.getSlug(), 'categorySlug3': category3.getSlug() })) }}" title="{{ category3.name }}" class="button categorie__item categorie__parent">
-                                <span>{{ category3.name|truncate(breadcrumb_max_length) }}</span>
-                            </a>
-                        </div>
-                    {% endif %}
-                {% endif %}
             {% endif %}
         {% endif %}
 

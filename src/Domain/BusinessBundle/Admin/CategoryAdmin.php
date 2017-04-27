@@ -20,12 +20,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name', null, [
-                'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
-            ])
-            ->add('parent.name', null, [
-                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain())
-            ])
+            ->add('name')
         ;
     }
 
@@ -36,19 +31,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('name', null, [
-                'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
-            ])
-            ->add('parent', null, [
-                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain()),
-                'sortable' => true,
-                'sort_field_mapping'=> ['fieldName' => 'name'],
-                'sort_parent_association_mappings' => [['fieldName' => 'parent']]
-            ])
-            ->add('categoryType', null, [
-                'label' => $this->trans('business.list.category_type', [], $this->getTranslationDomain()),
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_category_type.html.twig'
-            ])
+            ->add('name')
         ;
 
         $this->addGridActions($listMapper);
@@ -59,71 +42,9 @@ class CategoryAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $category = $this->getSubject();
-
-        $em = $this->modelManager->getEntityManager(Category::class);
-
-        $lvl = $category->getLvl();
-
-        if ($lvl == Category::CATEGORY_LEVEL_1 and !$category->getBusinessProfiles()->isEmpty()) {
-            $parentLvl = 0;
-        } elseif ($lvl) {
-            $maxLevel = $em->createQueryBuilder('c')
-                ->select('MAX(c.lvl)')
-                ->from(Category::class, 'c')
-                ->andWhere('c.path LIKE :path')
-                ->setParameter('path', $category->getPath() . '%')
-                ->getQuery()
-                ->getSingleScalarResult()
-            ;
-
-            $levelDiff = $maxLevel - $lvl;
-
-            if ($levelDiff == 0) {
-                $parentLvl = Category::CATEGORY_LEVEL_2;
-            } elseif ($levelDiff == 1) {
-                $parentLvl = Category::CATEGORY_LEVEL_1;
-            } else {
-                $parentLvl = 0;
-            }
-        } else {
-            $parentLvl = Category::CATEGORY_LEVEL_2;
-        }
-
-        $parentQuery = $this->modelManager->createQuery(Category::class, 'c')
-            ->where('c.isActive = TRUE')
-            ->andWhere('c.lvl <= :maxLevel')
-            ->setParameter('maxLevel', $parentLvl)
-            ->orderBy('c.name')
-        ;
-
-        if ($category->getId()) {
-            $parentQuery
-                ->andWhere('c.id != :id')
-                ->setParameter('id', $category->getId())
-            ;
-        }
-
         $formMapper
             ->add('name')
             ->add('slug', null, ['read_only' => true, 'required' => false])
-            ->add('articles', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
-                'required' => false,
-                'by_reference' => false,
-            ])
-            ->add('parent', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => false,
-                'required' => false,
-                'by_reference' => false,
-                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain()),
-                'attr' => [
-                    'disabled' => $parentLvl ? false : true,
-                ],
-                'query' => $parentQuery,
-            ])
         ;
     }
 
@@ -134,12 +55,7 @@ class CategoryAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('name', null, [
-                'label' => $this->trans('business.list.category_column', [], $this->getTranslationDomain())
-            ])
-            ->add('parent.name', null, [
-                'label' => $this->trans('business.list.parent_category_column', [], $this->getTranslationDomain())
-            ])
+            ->add('name')
             ->add('slug')
         ;
     }
@@ -183,38 +99,6 @@ class CategoryAdmin extends OxaAdmin
         if ($textEs) {
             $entity->setSearchTextEs($textEs);
         }
-
-        //remove category form business only for lvl 2 and 3 (lvl 1 is forbidden to update if binded to business)
-        $businesses = $entity->getBusinessProfiles();
-
-        if (!$businesses->isEmpty()) {
-            $parentCategory = $entity->getParent();
-            $childrenCategory = $entity->getChildren();
-
-            foreach ($businesses as $business) {
-                /* @var $business BusinessProfile */
-                if ($parentCategory) {
-                    if (!$business->getCategories()->contains($parentCategory)) {
-                        $business->removeCategory($entity);
-
-                        foreach ($childrenCategory as $child) {
-                            if ($business->getCategories()->contains($child)) {
-                                $business->removeCategory($child);
-                            }
-                        }
-                    }
-                } else {
-                    $categories = $business->getCategories();
-
-                    foreach ($categories as $category) {
-                        if ($category->getLvl() == Category::CATEGORY_LEVEL_1 and $category != $entity) {
-                            $business->removeCategory($entity);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -227,7 +111,7 @@ class CategoryAdmin extends OxaAdmin
         $deniedActions = $this->getDeleteDeniedAction();
 
         if ($object and in_array($name, $deniedActions) and (!$object->getBusinessProfiles()->isEmpty()
-            or in_array($object->getCode(), Category::getDefaultCategories()))
+            or in_array($object->getCode(), Category::getDefaultCategories()) or !$object->getArticles()->isEmpty())
         ) {
             return false;
         }
