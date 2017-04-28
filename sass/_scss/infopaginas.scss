@@ -3498,6 +3498,12 @@ input[type='checkbox'] {
   }
 }
 
+.field-active-time {
+  label {
+    margin-left: 10px;
+  }
+}
+
 .field-filled {
   label {
     color: $blue !important;
@@ -4450,6 +4456,26 @@ li.active {
 
 }
 
+.results--map-view {
+  #map {
+    .att-icons {
+      right: 0;
+      bottom: -15px;
+      i {
+        width: 12px;
+        height: 12px;
+        font-size: 6px;
+        line-height: 12px;
+      }
+    }
+
+    .item__img {
+      img {
+        width: 30px;
+      }
+    }
+  }
+}
 
 .results--map-view {
   .pagination {
@@ -5310,6 +5336,12 @@ input[type='radio'], input[type='checkbox'] {
         height: 12px;
         font-size: 6px;
         line-height: 12px;
+      }
+    }
+
+    .item__img {
+      img {
+        width: 30px;
       }
     }
   }
