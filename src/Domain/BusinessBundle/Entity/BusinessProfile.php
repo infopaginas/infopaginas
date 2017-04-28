@@ -1209,56 +1209,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set category
-     *
-     * @param \Domain\BusinessBundle\Entity\Category $category
-     *
-     * @return BusinessProfile
-     */
-    public function setCategories(\Domain\BusinessBundle\Entity\Category $category)
-    {
-        $this->categories->clear();
-
-        $this->addCategory($category);
-
-        return $this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return Category
-     */
-    public function getCategory()
-    {
-        foreach ($this->categories as $category) {
-            if (!$category->getParent()) {
-                return $category;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get subcategories
-     *
-     * @return Category[]
-     */
-    public function getSubcategories($level)
-    {
-        $categories = [];
-
-        foreach ($this->categories as $category) {
-            if ($category->getParent() and $category->getLvl() == $level) {
-                $categories[] = $category;
-            }
-        }
-
-        return $categories;
-    }
-
-    /**
      * Add area
      *
      * @param \Domain\BusinessBundle\Entity\Area $area
@@ -2577,29 +2527,17 @@ class BusinessProfile implements
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
     }
 
-    public function getExportCategoryLvl2()
-    {
-        return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_2);
-    }
-
-    public function getExportCategoryLvl3()
-    {
-        return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_3);
-    }
-
-    public function getExportCategoryByLvl($lvl)
+    public function getExportCategories()
     {
         $data = [];
 
         $categories = $this->getCategories();
 
         foreach ($categories as $category) {
-            if ($category->getLvl() === $lvl) {
-                $data[] = [
-                    'id'   => $category->getId(),
-                    'name' => $category->getName(),
-                ];
-            }
+            $data[] = [
+                'id'   => $category->getId(),
+                'name' => $category->getName(),
+            ];
         }
 
         return json_encode($data);

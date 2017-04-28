@@ -423,24 +423,14 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      */
     protected function addCatalogSearchQueryBuilder($queryBuilder, SearchDTO $searchParams)
     {
-        $category1       = $searchParams->getCategory1();
-        $category2       = $searchParams->getCategory2();
-        $category3       = $searchParams->getCategory3();
+        $category = $searchParams->getCategory();
         $catalogLocality = $searchParams->getCatalogLocality();
 
         if ($catalogLocality) {
             $this->addSearchByCatalogLocalityQueryBuilder($queryBuilder, $catalogLocality);
 
-            if ($category1) {
-                if ($category2) {
-                    if ($category3) {
-                        $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category3);
-                    } else {
-                        $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category2);
-                    }
-                } else {
-                    $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category1);
-                }
+            if ($category) {
+                $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category);
             }
         }
     }
@@ -570,6 +560,20 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $businessesIterator = $this->getBusinessesIteratorByIds($businessProfileIds);
 
         return $businessesIterator;
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessProfilesWithoutCategoriesIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->andWhere('bp.categories IS EMPTY')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
     }
 
     /**

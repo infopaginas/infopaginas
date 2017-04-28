@@ -1,7 +1,7 @@
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block breadcrumbs %}
-    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory1, 'category2': currentCategory2, 'category3': currentCategory3} %}
+    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory} %}
 {% endblock %}
 
 {% block bodyClass %}results-list{% endblock %}

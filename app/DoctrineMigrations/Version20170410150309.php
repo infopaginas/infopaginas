@@ -44,7 +44,14 @@ class Version20170410150309 extends AbstractMigration implements ContainerAwareI
             'code' => Category::CATEGORY_ARTICLE_CODE,
         ];
 
-        $this->addCategory($data);
+        $category = $this->em->getRepository(Category::class)->findOneBy([
+            'code' => Category::CATEGORY_ARTICLE_CODE,
+        ]);
+
+        if (!$category) {
+            $this->addCategory($data);
+        }
+
         $this->addNotificationTemplate();
         $this->updateArticlesAuthorName();
         $this->em->flush();

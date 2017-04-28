@@ -7,7 +7,7 @@
             <ul>
                 {% for category in item.categories %}
                     <li class="cat-list__item">
-                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': item.locality.slug, 'categorySlug1': category.slug})) }}" title="{{ category.name }}">
+                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': item.locality.slug, 'categorySlug': category.slug})) }}" title="{{ category.name }}">
                             <span>{{ category.name }}</span>
                         </a>
                     </li>

@@ -285,10 +285,6 @@ class BusinessProfileAdmin extends OxaAdmin
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
-        $categories1 = $businessProfile->getCategory();
-        $categories2 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_2);
-        $categories3 = $businessProfile->getSubcategories(Category::CATEGORY_LEVEL_3);
-
         $formMapper
             ->tab('Profile')
             ->with('English')
@@ -410,35 +406,11 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
-                        'label' => 'Category lvl 1',
-                        'multiple' => false,
+                        'multiple' => true,
                         'required' => true,
                         'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
-                            return $rep->getAvailableParentCategoriesQb();
+                            return $rep->getAvailableCategoriesQb();
                         },
-                        'data' => $categories1,
-                    ])
-                    ->add('categories2', EntityType::class, [
-                        'label' => 'Categories lvl 2',
-                        'multiple' => true,
-                        'required' => false,
-                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
-                            return $rep->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_2);
-                        },
-                        'data' => $categories2,
-                        'mapped' => false,
-                        'class' => \Domain\BusinessBundle\Entity\Category::class,
-                    ])
-                    ->add('categories3', EntityType::class, [
-                        'label' => 'Categories lvl 3',
-                        'multiple' => true,
-                        'required' => false,
-                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
-                            return $rep->getAvailableChildCategoriesQb(Category::CATEGORY_LEVEL_3);
-                        },
-                        'data' => $categories3,
-                        'mapped' => false,
-                        'class' => \Domain\BusinessBundle\Entity\Category::class,
                     ])
                     ->add('serviceAreasType', ChoiceType::class, [
                         'choices' => BusinessProfile::getServiceAreasTypes(),
@@ -750,15 +722,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('subscriptions')
             ->add('discount')
             ->add('coupons')
-            ->add('category', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_category.html.twig'
-            ])
-            ->add('categories2', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_subcategories.html.twig'
-            ])
-            ->add('categories3', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_subcategories.html.twig'
-            ])
+            ->add('categories')
             ->add('catalogLocality')
             ->add('areas')
             ->add('localities')
@@ -881,6 +845,14 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
                 break;
             }
+        }
+
+        // at least 1 category is required
+        if ($object->getCategories()->isEmpty()) {
+            $errorElement->with('categories')
+                ->addViolation($this->getTranslator()->trans('business_profile.category.required'))
+                ->end()
+            ;
         }
 
         foreach ($object->getSubscriptions() as $subscription) {
@@ -1028,7 +1000,6 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $entity = $this->handleTranslationBlock($entity);
         $entity = $this->setVideoValue($entity);
-        $entity = $this->setSubcategories($entity);
         $entity = $this->handleSeoBlockUpdate($entity);
     }
 
@@ -1137,27 +1108,6 @@ class BusinessProfileAdmin extends OxaAdmin
      *
      * @return BusinessProfile
      */
-    private function setSubcategories($entity)
-    {
-        $categories2 = $this->getForm()->get('categories2')->getData();
-        $categories3 = $this->getForm()->get('categories3')->getData();
-
-        foreach ($categories2 as $subcategory) {
-            $entity->addCategory($subcategory);
-        }
-
-        foreach ($categories3 as $subcategory) {
-            $entity->addCategory($subcategory);
-        }
-
-        return $entity;
-    }
-
-    /**
-     * @param BusinessProfile $entity
-     *
-     * @return BusinessProfile
-     */
     private function handleSeoBlockUpdate(BusinessProfile $entity)
     {
         /** @var ContainerInterface $container */
@@ -1236,12 +1186,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['ID']   = 'id';
         $exportFields['Name'] = 'nameEn';
         $exportFields['Slug'] = 'slug';
-        $exportFields['Level 1 category ID']   = 'category.id';
-        $exportFields['Level 1 category name'] = 'category.name';
-        $exportFields['Level 2 name+ID']       = 'exportCategoryLvl2';
-        $exportFields['Level 3 name+ID']       = 'exportCategoryLvl3';
-        $exportFields['Business Admin ID']     = 'user.id';
-        $exportFields['Business Admin Name']   = 'user.fullName';
+        $exportFields['Categories name+ID']  = 'exportCategories';
+        $exportFields['Business Admin ID']   = 'user.id';
+        $exportFields['Business Admin Name'] = 'user.fullName';
 
         return $exportFields;
     }

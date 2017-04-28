@@ -885,40 +885,6 @@ class BusinessProfileManager extends Manager
         return $objects;
     }
 
-    public function getSubcategories($categoryId, $businessProfileId, $request)
-    {
-        $data = [];
-        $checkedSubcategoryIds = [];
-
-        if ($businessProfileId) {
-            /* @var BusinessProfile $businessProfile */
-            $businessProfile       = $this->getRepository()->find($businessProfileId);
-            $checkedSubcategoryIds = $this->getBusinessProfileSubcategoryIds($businessProfile, $request);
-        }
-
-        $subcategories = $this->getSubcategoriesForCategory($categoryId, $request);
-
-        foreach ($subcategories as $key => $subcategory) {
-            if ($request['locale']) {
-                $name = $subcategory->{'getSearchText' . ucfirst($request['locale'])}();
-            } else {
-                $name = $subcategory->getName();
-            }
-
-            $data[$key] = [
-                'id'       => $subcategory->getId(),
-                'name'     => $name,
-                'selected' => false,
-            ];
-
-            if (in_array($subcategory->getId(), $checkedSubcategoryIds)) {
-                $data[$key]['selected'] = true;
-            }
-        }
-
-        return $data;
-    }
-
     /**
      * @param int|null      $businessProfileId
      * @param array         $areas
@@ -1059,46 +1025,6 @@ class BusinessProfileManager extends Manager
             if (in_array($item->getId(), $checkedIds)) {
                 $data[$key]['selected'] = true;
             }
-        }
-
-        return $data;
-    }
-
-    public function getSubcategoriesForCategory($categoryId, $request)
-    {
-        if ($request['level'] == Category::CATEGORY_LEVEL_2) {
-            $categoryIds = [$categoryId];
-        } else {
-            $categoryIds = $request['subcategories'];
-        }
-
-        $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
-            ->getAvailableSubCategories($categoryIds, $request['level']);
-
-        return $subcategories;
-    }
-
-    public function getCategoriesByIds($ids)
-    {
-        $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
-            ->getAvailableCategoriesByIds($ids);
-
-        return $subcategories;
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param array           $request
-     *
-     * @return array
-     */
-    public function getBusinessProfileSubcategoryIds(BusinessProfile $businessProfile, $request)
-    {
-        $data = [];
-        $subcategories = $businessProfile->getSubcategories($request['level']);
-
-        foreach ($subcategories as $subcategory) {
-            $data[] = $subcategory->getId();
         }
 
         return $data;
@@ -1966,7 +1892,7 @@ class BusinessProfileManager extends Manager
             ];
         }
 
-        $category = $params->getCategory1();
+        $category = $params->getCategory();
 
         if ($category) {
             $filters[] = [

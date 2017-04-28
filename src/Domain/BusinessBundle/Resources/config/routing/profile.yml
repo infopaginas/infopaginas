@@ -30,14 +30,6 @@ domain_business_register_view:
     options:
         expose: true
 
-domain_business_get_subcategories:
-    path:     /subcategories/list/{categoryId}/{businessProfileId}
-    defaults: { _controller: DomainBusinessBundle:Profile:subcategoryList, businessProfileId: null }
-    requirements:
-        categoryId: \d+
-    options:
-        expose: true
-
 domain_business_get_localities:
     path:     /locality/list/{businessProfileId}
     defaults: { _controller: DomainBusinessBundle:Profile:localityList, businessProfileId: null }
