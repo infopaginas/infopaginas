@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\CatalogItem;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\SearchBundle\Model\Manager\SearchManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,6 +18,9 @@ class CatalogItemContentCommand extends ContainerAwareCommand
 {
     /* @var EntityManager $em */
     protected $em;
+
+    /* @var SearchManager $searchManager */
+    protected $searchManager;
 
     protected function configure()
     {
@@ -28,6 +33,7 @@ class CatalogItemContentCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->searchManager = $this->getContainer()->get('domain_search.manager.search');
 
         $this->updateCatalogItem();
     }
@@ -94,8 +100,15 @@ class CatalogItemContentCommand extends ContainerAwareCommand
 
     protected function getCountCatalogItemContent($catalogLocality, $category)
     {
-        $countCatalogItemContent = $this->em->getRepository(CatalogItem::class)
-            ->getCountCatalogItemContent($catalogLocality, $category);
+        $request = new Request();
+
+        $countCatalogItemContent = 0;
+        $searchDTO = $this->searchManager->getSearchCatalogDTO($request, $catalogLocality, $category);
+
+        if ($searchDTO) {
+            $searchResultsDTO = $this->searchManager->searchCatalog($searchDTO);
+            $countCatalogItemContent = $searchResultsDTO->resultCount;
+        }
 
         return $countCatalogItemContent;
     }

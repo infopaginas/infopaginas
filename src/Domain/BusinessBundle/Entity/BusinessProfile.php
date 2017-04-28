@@ -73,7 +73,7 @@ class BusinessProfile implements
     const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
     const FLAG_IS_UPDATED = 'isUpdated';
 
-    const DEFAULT_MILES_FROM_MY_BUSINESS = 100;
+    const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     // translatable fields

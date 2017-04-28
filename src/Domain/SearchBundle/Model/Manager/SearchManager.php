@@ -116,21 +116,22 @@ class SearchManager extends Manager
         return $response;
     }
 
-    public function searchCatalog(SearchDTO $searchParams, $locale) : SearchResultsDTO
+    public function searchCatalog(SearchDTO $searchParams) : SearchResultsDTO
     {
-        $results = $this->businessProfileManager->searchCatalog($searchParams, $locale);
+        $search = $this->businessProfileManager->searchCatalog($searchParams);
+
+        $results = $search['data'];
+        $totalResults = $search['total'];
 
         if ($results) {
-            $categories    = [];
-            $totalResults  = $this->businessProfileManager->countCatalogSearchResults($searchParams, $locale);
-            $pagesCount    = ceil($totalResults/$searchParams->limit);
+            $pagesCount   = ceil($totalResults/$searchParams->limit);
         } else {
             $totalResults  = 0;
-            $categories    = [];
             $pagesCount    = 0;
         }
 
-        $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+        $categories    = [];
+        $neighborhoods = [];
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
