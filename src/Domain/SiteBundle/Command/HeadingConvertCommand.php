@@ -26,14 +26,27 @@ class HeadingConvertCommand extends ContainerAwareCommand
     {
         $this->setName('data:heading-mapping:convert');
         $this->setDescription('Heading conversion');
+        $this->setDefinition(
+            new InputDefinition([
+                new InputOption('createMode')
+            ])
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        // remove old categories
-        $this->clearCategories();
+        if ($input->getOption('createMode')) {
+            $createMode = true;
+        } else {
+            $createMode = false;
+        }
+
+        if ($createMode) {
+            // remove old categories
+            $this->clearCategories();
+        }
 
         $this->em->flush();
         $this->em->clear();
@@ -49,8 +62,10 @@ class HeadingConvertCommand extends ContainerAwareCommand
 
         $this->em->flush();
 
-        $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
-        $businessProfileManager->handleElasticSearchIndexRefresh();
+        if ($createMode) {
+            $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
+            $businessProfileManager->handleElasticSearchIndexRefresh();
+        }
 
         $output->writeln($this->updatedCategoriesCount . ' categories were updated');
         $output->writeln($this->createdCategoriesCount . ' categories were created');
