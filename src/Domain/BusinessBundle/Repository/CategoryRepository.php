@@ -119,6 +119,8 @@ class CategoryRepository extends EntityRepository
             ;
         }
 
+        $query->setMaxResults(1);
+
         return $query->getQuery()->getOneOrNullResult();
     }
 
@@ -127,6 +129,7 @@ class CategoryRepository extends EntityRepository
         $query = $this->getAvailableCategoriesQb()
             ->andWhere('c.slugEn = :customSlug OR c.slugEs = :customSlug')
             ->setParameter('customSlug', $customSlug)
+            ->setMaxResults(1)
         ;
 
         return $query->getQuery()->getOneOrNullResult();
@@ -154,6 +157,7 @@ class CategoryRepository extends EntityRepository
             ->orWhere('c.slugEn IN (:slugs)')
             ->orWhere('c.slugEs IN (:slugs)')
             ->setParameter('slugs', $slugs)
+            ->setMaxResults(1)
         ;
 
         return $query->getQuery()->getOneOrNullResult();
