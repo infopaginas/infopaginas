@@ -111,7 +111,8 @@ class CategoryAdmin extends OxaAdmin
         $deniedActions = $this->getDeleteDeniedAction();
 
         if ($object and in_array($name, $deniedActions) and (!$object->getBusinessProfiles()->isEmpty()
-            or in_array($object->getCode(), Category::getDefaultCategories()) or !$object->getArticles()->isEmpty())
+            or in_array($object->getCode(), Category::getDefaultCategories()) or !$object->getArticles()->isEmpty() or
+            $object->getSlugEn() or $object->getSlugEs())
         ) {
             return false;
         }

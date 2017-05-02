@@ -381,28 +381,26 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        if ($localities) {
-            $entity->setServiceAreasType('locality');
-
-            foreach ($localities as $item) {
-                $locality = $this->loadLocality($item);
-
-                $entity->addLocality($locality);
-
-                if ($locality->getNeighborhoods()) {
-                    foreach ($locality->getNeighborhoods() as $neighborhood) {
-                        $entity->addNeighborhood($neighborhood);
-                    }
-                }
-            }
-        } else {
-            $entity->setMilesOfMyBusiness($radius);
-            $entity->setServiceAreasType('area');
-        }
-
         if (!$entity->getCatalogLocality()) {
             $catalogLocality = $this->loadLocality($address);
             $entity->setCatalogLocality($catalogLocality);
+        }
+
+        if ($localities) {
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
+
+            foreach ($localities as $item) {
+                $locality = $this->loadLocality($item);
+                $entity = $this->handleLocalityServiceType($entity, $locality);
+            }
+        } elseif ($radius) {
+            $entity->setMilesOfMyBusiness($radius);
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE);
+        } else {
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
+
+            $locality = $entity->getCatalogLocality();
+            $entity = $this->handleLocalityServiceType($entity, $locality);
         }
 
         if ($address->postal_code and $this->checkZipCode($address->postal_code)) {
@@ -790,6 +788,31 @@ class MigrationCommand extends ContainerAwareCommand
         if (trim($profile->twitter_handle)) {
             $twitterUrl = $this->handleUrl(self::TWITTER_URL_PREFIX . trim($profile->twitter_handle));
             $businessProfile->setTwitterURL($twitterUrl);
+        }
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile   $businessProfile
+     * @param Locality          $locality
+     *
+     * @return BusinessProfile
+     */
+    private function handleLocalityServiceType($businessProfile, $locality)
+    {
+        $area = $locality->getArea();
+
+        $businessProfile->addLocality($locality);
+
+        if ($area and !$businessProfile->getAreas()->contains($area)) {
+            $businessProfile->addArea($area);
+        }
+
+        if ($locality->getNeighborhoods()) {
+            foreach ($locality->getNeighborhoods() as $neighborhood) {
+                $businessProfile->addNeighborhood($neighborhood);
+            }
         }
 
         return $businessProfile;

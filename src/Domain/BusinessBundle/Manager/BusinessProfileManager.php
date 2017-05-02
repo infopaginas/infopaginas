@@ -250,13 +250,9 @@ class BusinessProfileManager extends Manager
         return $searchResultsData;
     }
 
-    public function searchCatalog(SearchDTO $searchParams, string $locale)
+    public function searchCatalog(SearchDTO $searchParams)
     {
-        $searchResultsData = $this->getRepository()->searchCatalog($searchParams, $locale);
-
-        $searchResultsData = array_map(function ($item) {
-            return $item[0]->setDistance($item['distance']);
-        }, $searchResultsData);
+        $searchResultsData = $this->searchCatalogBusinessInElastic($searchParams);
 
         return $searchResultsData;
     }
@@ -1453,6 +1449,29 @@ class BusinessProfileManager extends Manager
         return $country;
     }
 
+    protected function searchCatalogBusinessInElastic(SearchDTO $searchParams)
+    {
+        $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams);
+
+        $response = $this->searchBusinessElastic($searchQuery);
+        $search = $this->getBusinessDataFromElasticResponse($response);
+
+        $coordinates = $searchParams->getCurrentCoordinates();
+
+        $search['data'] = array_map(function ($item) use ($searchParams, $coordinates) {
+            $distance = GeolocationUtils::getDistanceForPoint(
+                $coordinates['lat'],
+                $coordinates['lng'],
+                $item->getLatitude(),
+                $item->getLongitude()
+            );
+
+            return $item->setDistance($distance);
+        }, $search['data']);
+
+        return $search;
+    }
+
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         //randomize feature works only for relevance sorting ("Best match")
@@ -1943,6 +1962,83 @@ class BusinessProfileManager extends Manager
                     ],
                 ],
             ],
+            'sort' => [
+                $sort
+            ],
+        ];
+
+        if ($locationQuery) {
+            $searchQuery['query']['bool']['must'][] = $locationQuery;
+        }
+
+        foreach ($filters as $filter) {
+            $searchQuery['query']['bool']['must'][] = $filter;
+        }
+
+        if ($locationFilter) {
+            $searchQuery['query']['bool']['filter'][] = $locationFilter;
+        }
+
+        return $searchQuery;
+    }
+
+    protected function getCatalogBusinessSearchQuery(SearchDTO $params)
+    {
+        $filters = [];
+
+        $sort['subscr_rank'] = [
+            'order' => 'desc'
+        ];
+
+        $coordinates = $params->getCurrentCoordinates();
+
+        if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
+            $sort['_geo_distance'] = [
+                'location' => [
+                    'lat' => $coordinates['lat'],
+                    'lon' => $coordinates['lng'],
+                ],
+                'unit' => 'mi',
+                'order' => 'asc'
+            ];
+            $sort['_score'] = [
+                'order' => 'desc'
+            ];
+        } else {
+            $sort['_score'] = [
+                'order' => 'desc'
+            ];
+            $sort['_geo_distance'] = [
+                'location' => [
+                    'lat' => $coordinates['lat'],
+                    'lon' => $coordinates['lng'],
+                ],
+                'unit' => 'mi',
+                'order' => 'asc'
+            ];
+        }
+
+        $category = $params->getCategory()->getId();
+
+        if ($category) {
+            $filters[] = [
+                'match' => [
+                    'categories_ids' => $category
+                ],
+            ];
+        }
+
+        $locationQuery  = [];
+        $locationFilter = $this->getElasticLocationFilter($params);
+
+        if (!$locationFilter) {
+            $locationQuery = $this->getElasticLocationQuery($params);
+        }
+
+        $searchQuery = [
+            'from' => ($params->page - 1) * $params->limit,
+            'size' => $params->limit,
+            'track_scores' => true,
             'sort' => [
                 $sort
             ],

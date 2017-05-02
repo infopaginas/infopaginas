@@ -434,7 +434,7 @@ class SearchController extends Controller
             //locality lat and lan required
             if ($searchDTO) {
                 $dcDataDTO = $searchManager->getDoubleClickCatalogData($searchDTO);
-                $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
+                $searchResultsDTO = $searchManager->searchCatalog($searchDTO);
 
                 $this->getBusinessProfileManager()
                     ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
