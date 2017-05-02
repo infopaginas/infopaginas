@@ -173,8 +173,8 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param mixed             $item
-     * @param mixed             $data
+     * @param \stdClass         $item
+     * @param \stdClass         $data
      * @param BusinessProfile   $businessProfile
      *
      * @return BusinessProfile   $businessProfile
@@ -182,20 +182,20 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
     private function updateBusinessLocalities($item, $data, $businessProfile)
     {
         $address    = $data->business->address;
-        $localities = $this->getLocalitiesFormResponse($item);
-        $radius     = $this->getServiceRadiusFormResponse($item);
+        $localities = $this->getLocalitiesFromApiResponse($item);
+        $radius     = $this->getServiceRadiusFromApiResponse($item);
 
         if (!$this->checkCatalogLocality($address, $businessProfile)) {
-            $catalogLocality = $this->loadLocality($address);
+            $catalogLocality = $this->getLocality($address);
             $businessProfile->setCatalogLocality($catalogLocality);
         }
 
         if ($localities) {
             $businessProfile->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
 
-            foreach ($localities as $item) {
-                $locality = $this->loadLocality($item);
-                $businessProfile = $this->handleLocalityServiceType($businessProfile, $locality);
+            foreach ($localities as $localityData) {
+                $locality = $this->getLocality($localityData);
+                $businessProfile = $this->processLocalityServiceType($businessProfile, $locality);
             }
         } elseif ($radius) {
             $businessProfile->setMilesOfMyBusiness($radius);
@@ -204,7 +204,7 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
             $businessProfile->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
 
             $locality = $businessProfile->getCatalogLocality();
-            $businessProfile = $this->handleLocalityServiceType($businessProfile, $locality);
+            $businessProfile = $this->processLocalityServiceType($businessProfile, $locality);
         }
 
         return $businessProfile;
@@ -263,7 +263,7 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
      *
      * @return Locality
      */
-    private function loadLocality($item)
+    private function getLocality($item)
     {
         $slug = $this->getLocalitySlug($item);
 
@@ -303,7 +303,7 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
      *
      * @return BusinessProfile
      */
-    private function handleLocalityServiceType($businessProfile, $locality)
+    private function processLocalityServiceType($businessProfile, $locality)
     {
         $area = $locality->getArea();
 
@@ -327,7 +327,7 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
      *
      * @return array
      */
-    private function getLocalitiesFormResponse($commonData)
+    private function getLocalitiesFromApiResponse($commonData)
     {
         $localities = [];
 
@@ -345,7 +345,7 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
      *
      * @return int
      */
-    private function getServiceRadiusFormResponse($commonData)
+    private function getServiceRadiusFromApiResponse($commonData)
     {
         if (empty($commonData->radius_served)) {
             $radius = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
