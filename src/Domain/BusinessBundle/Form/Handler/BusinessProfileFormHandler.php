@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Form\Handler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
@@ -111,8 +112,8 @@ class BusinessProfileFormHandler extends BaseFormHandler
             $this->businessProfileNew->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
 
             $this->handleMediaUpdate();
+            $this->handleCategoriesUpdate();
 
-            $this->checkCategories();
             $this->checkTranslationBlock($this->requestParams);
             $this->checkCollectionWorkingHoursBlock($this->businessProfileNew->getCollectionWorkingHours());
 
@@ -231,11 +232,16 @@ class BusinessProfileFormHandler extends BaseFormHandler
         return $this->businessProfileNew;
     }
 
-    private function checkCategories()
+    private function handleCategoriesUpdate()
     {
-        if ($this->businessProfileNew->getCategories()->isEmpty()) {
-            $error = new FormError($this->translator->trans('business_profile.category.required'));
-            $this->form->get('categories')->addError($error);
+        if (!empty($this->requestParams['categoryIds'])) {
+            foreach ($this->requestParams['categoryIds'] as $categoryId) {
+                $category = $this->em->getRepository(Category::class)->find((int)$categoryId);
+
+                if ($category) {
+                    $this->businessProfileNew->addCategory($category);
+                }
+            }
         }
     }
 

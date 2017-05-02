@@ -51,8 +51,11 @@ class CategoryManager extends Manager
             return false;
         }
 
-        $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_EN);
-        $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
+        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+
+        $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
+        $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);
 
         $data = [
             'id'              => $category->getId(),

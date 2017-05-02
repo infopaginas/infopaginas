@@ -139,6 +139,19 @@ class BusinessProfileManager extends Manager
         return $result;
     }
 
+    /**
+     * @param string $query
+     * @param string $locale
+     *
+     * @return array
+     */
+    public function searchCategoryAutosuggestByPhrase($query, $locale)
+    {
+        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale);
+
+        return $categories;
+    }
+
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
         if (!$location) {
@@ -1526,6 +1539,7 @@ class BusinessProfileManager extends Manager
                 'type' => CategoryManager::AUTO_COMPLETE_TYPE,
                 'name' => $item->getName(),
                 'data' => $item->getName(),
+                'id'   => $item->getId(),
             ];
         }, $search['data']);
 

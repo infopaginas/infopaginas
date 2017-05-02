@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
@@ -72,7 +73,6 @@ class BusinessProfileFormType extends AbstractType
             $emailConstraints = [];
         }
 
-
         $builder
             ->add('website', TextType::class, [
                 'attr' => [
@@ -88,22 +88,6 @@ class BusinessProfileFormType extends AbstractType
                 'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
-            ])
-            ->add('categories', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control select-multiple',
-                    'data-placeholder' => 'Select categories',
-                    'multiple' => true,
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Category',
-                'label' => 'Categories',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'multiple' => true,
-                'query_builder' => function (CategoryRepository $repository) {
-                    return $repository->getAvailableCategoriesQb();
-                }
             ])
             ->add('collectionWorkingHours', CollectionType::class, [
                 'allow_add'    => true,
@@ -314,6 +298,8 @@ class BusinessProfileFormType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        $this->addCategoryAutoComplete($builder);
 
         if ($this->isUserSectionRequired) {
             $builder
@@ -536,6 +522,35 @@ class BusinessProfileFormType extends AbstractType
     private function setupFreePlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
 
+    }
+
+    /**
+     * @param FormBuilderInterface  $builder
+     */
+    private function addCategoryAutoComplete($builder)
+    {
+        $builder
+            ->add('categoryIds', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'form-control selectize-control select-multiple',
+                    'data-placeholder' => 'Select categories',
+                    'multiple' => true,
+                ],
+                'label' => 'Categories',
+                'label_attr' => [
+                    'class' => 'title-label'
+                ],
+                'multiple' => true,
+                'mapped' => false,
+                'constraints' => [
+                    new Count([
+                        'min' => 1,
+                    ]),
+                ]
+            ])
+        ;
+
+        $builder->get('categoryIds')->resetViewTransformers();
     }
 
     private function addTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)

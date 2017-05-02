@@ -47,3 +47,9 @@ domain_business_claim:
     defaults: { _controller: DomainBusinessBundle:Profile:claim }
     options:
         expose: true
+
+domain_business_category_autocomplite:
+    path:     /category/autocomplete
+    defaults: { _controller: DomainBusinessBundle:Profile:categoryAutocomplete }
+    options:
+        expose: true

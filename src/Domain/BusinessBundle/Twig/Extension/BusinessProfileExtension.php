@@ -145,6 +145,10 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
+            'get_business_profile_categories_json' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileCategoriesJson'
+            ),
         ];
     }
 
@@ -546,6 +550,34 @@ class BusinessProfileExtension extends \Twig_Extension
         $advertisements = $this->getBusinessProfileManager()->getBusinessProfileAdvertisementImages($businessProfile);
 
         return $advertisements;
+    }
+
+    /**
+     * @param BusinessProfile|null  $businessProfile
+     * @param string                $locale
+     *
+     * @return string
+     */
+    public function getBusinessProfileCategoriesJson($businessProfile, $locale)
+    {
+        $categoriesData = [];
+
+        if ($locale == strtolower(BusinessProfile::TRANSLATION_LANG_EN)) {
+            $currentLocale = BusinessProfile::TRANSLATION_LANG_EN;
+        } else {
+            $currentLocale = BusinessProfile::TRANSLATION_LANG_ES;
+        }
+
+        if ($businessProfile) {
+            foreach ($businessProfile->getCategories() as $category) {
+                $categoriesData[$category->getId()] = [
+                    'id'    => $category->getId(),
+                    'name'  => $category->{'getSearchText' . $currentLocale}(),
+                ];
+            }
+        }
+
+        return json_encode($categoriesData);
     }
 
     /**

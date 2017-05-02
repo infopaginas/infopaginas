@@ -4,7 +4,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     //init businessProfile object variables
     var businessProfile = function() {
         this.urls = {
-            saveBusinessProfile: Routing.generate('domain_business_profile_save')
+            saveBusinessProfile: Routing.generate( 'domain_business_profile_save' ),
+            categoryAutoComplete: Routing.generate( 'domain_business_category_autocomplite' )
         };
 
         this.serviceAreasAreaChoiceValue = 'area';
@@ -33,7 +34,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
                 neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
                 serviceAreaRadioName: '[serviceAreasType]',
-                categoriesId: '#' + this.freeProfileFormName + '_categories'
+                categoriesId: '#' + this.freeProfileFormName + '_categories',
+                categoryOptions: '#category_options'
             },
             closeBusinessProfileLoadingSpinnerContainerId: 'close-business-profile-spinner-container',
             loadingSpinnerContainerClass: '.spinner-container',
@@ -542,6 +544,47 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         });
     };
 
+    businessProfile.prototype.initAutoCompleteCategoriesField = function () {
+        var that = this;
+        var optionsData = $( this.html.fields.categoryOptions ).data( 'category-ids' );
+        var options = $.map( optionsData, function( value, index ) {
+            return [ value ];
+        });
+        var optionIds = $.map( optionsData, function( value, index ) {
+            return [ value.id ];
+        });
+
+        var categories = $( '#domain_business_bundle_business_profile_form_type_categoryIds' ).selectize({
+            plugins: ['remove_button'],
+            delimiter: ',',
+            persist: true,
+            create: false,
+            options: options,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                $.ajax({
+                    url: that.urls.categoryAutoComplete,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        q: query,
+                    },
+                    error: function() {
+                        callback();
+                    },
+                    success: function(res) {
+                        callback(res);
+                    }
+                });
+            }
+        });
+
+        categories[0].selectize.setValue( optionIds );
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
@@ -550,6 +593,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         this.handleServiceAreaChange();
         this.handleFormChange();
         this.handleBusinessProfileAreas();
+        this.initAutoCompleteCategoriesField();
 
         var that = this;
 
