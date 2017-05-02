@@ -41,6 +41,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
             ->setParameter('name', strtolower($localityName))
             ->setParameter('locale', $locale)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
@@ -55,6 +56,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->leftJoin('l.translations', 't')
             ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
             ->setParameter('name', strtolower($localityName))
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -74,6 +76,8 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter('customSlug', $customSlug)
             ;
         }
+
+        $query->setMaxResults(1);
 
         return $query->getQuery()->getOneOrNullResult();
     }
