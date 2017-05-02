@@ -279,6 +279,24 @@ class ProfileController extends Controller
     }
 
     /**
+     * @param Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function categoryAutocompleteAction(Request $request)
+    {
+        $query = $request->query->get('q', '');
+
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
+            $query,
+            $request->getLocale()
+        );
+
+        return new JsonResponse($results);
+    }
+
+    /**
      * @return \Symfony\Component\Form\Form
      */
     private function getBusinessReviewForm()

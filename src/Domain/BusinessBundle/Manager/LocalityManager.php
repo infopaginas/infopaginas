@@ -98,8 +98,11 @@ class LocalityManager extends Manager
 
     public function buildLocalityElasticData(Locality $locality)
     {
-        $localityEn = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_EN);
-        $localityEs = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
+        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+
+        $localityEn = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, $enLocale);
+        $localityEs = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, $esLocale);
 
         if (!$locality->getIsActive() or !$locality->getLatitude() or !$locality->getLongitude()) {
             return false;
