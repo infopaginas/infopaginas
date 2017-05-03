@@ -235,3 +235,8 @@ services:
     domain_business.video:
         class: Domain\BusinessBundle\Manager\VideoManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    domain_business.manager.landing_page_short_cut_manager:
+        class: Domain\BusinessBundle\Manager\LandingPageShortCutManager
+        arguments:
+            - '@service_container'

@@ -91,3 +91,7 @@ twig:
 
         TASK:
             PROFILE_CLAIM: PROFILE_CLAIM
+
+        SHORT_CUT_ITEMS:
+            LANDING: LANDING
+            ERROR: ERROR

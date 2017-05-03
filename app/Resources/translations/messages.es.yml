@@ -334,12 +334,12 @@ Search whatever you need and find it instantly: Busca lo que necesites y lo encu
 error.404.title: No pudimos encontrar el negocio que buscabas.
 error.404.message: Es posible que la página no esté disponible temporalmente, que se haya eliminado o que la URL sea incorrecta.
 error.404.search.text: Por favor, busque de nuevo
-error.404.search.catalog: O navegar por nuestro catálogo
+error.404.search.catalog: O utiliza nuestras búsquedas populares
 
 error.403.title: Error 403 - Prohibido.
 error.403.message: No se me permite acceder a esta página.
 error.403.search.text: Busque algo más
-error.403.search.catalog: O navegar por nuestro catálogo
+error.403.search.catalog: O utiliza nuestras búsquedas populares
 
 List view: Lista
 Add to compare: Añadir a comparar
@@ -543,3 +543,5 @@ Time End: Fin de tiempo
 Select all: Seleccionar todo
 Instagram: Instagram
 TripAdvisor: TripAdvisor
+
+popular_searches.title: Búsquedas populares
