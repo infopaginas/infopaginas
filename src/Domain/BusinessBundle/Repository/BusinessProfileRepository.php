@@ -492,8 +492,9 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getUpdatedBusinessProfilesIterator()
     {
-        $qb = $this->getQueryBuilder();
-        $qb->andWhere('bp.isUpdated = TRUE');
+        $qb = $this->createQueryBuilder('bp')
+            ->andWhere('bp.isUpdated = TRUE')
+        ;
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
 
