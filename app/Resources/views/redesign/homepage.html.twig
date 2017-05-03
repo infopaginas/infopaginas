@@ -21,10 +21,7 @@
             <div class="profile-body__container">
                 <div class="container columns-container clearfix">
                     <div class="main-column">
-                        <section class="page-section page-section--no-box">
-                            <h2 class="section__title">{% trans %}Categories{% endtrans %}</h2>
-                            {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
-                        </section>
+                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems', {'type': SHORT_CUT_ITEMS.LANDING, 'title': 'popular_searches.title'})) }}
 
                         {% embed ':redesign/blocks:homepage_article_list.html.twig' %}
                             {% block titleTag %}

@@ -16,11 +16,7 @@
                         {% endblock %}
                     </section>
 
-                    <section class="error-section error__categories">
-                        <h2>{{ errorSearchCatalog|trans }}</h2>
-
-                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
-                    </section>
+                    {{ render(controller('DomainSiteBundle:Home:popularMenuItems', {'type': SHORT_CUT_ITEMS.ERROR, 'title': errorSearchCatalog})) }}
                 </div>
             </div>
         </div>
