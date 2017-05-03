@@ -229,7 +229,7 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
-    protected function getAllowViewAndEditActions()
+    protected function getDeniedAllButViewAndEditActions()
     {
         return [
             'CREATE',

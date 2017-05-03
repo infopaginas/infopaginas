@@ -77,7 +77,7 @@ class PaymentMethodAdmin extends OxaAdmin
      */
     public function isGranted($name, $object = null)
     {
-        $deniedActions = $this->getAllowViewAndEditActions();
+        $deniedActions = $this->getDeniedAllButViewAndEditActions();
 
         if ($object && in_array($name, $deniedActions)) {
             return false;
