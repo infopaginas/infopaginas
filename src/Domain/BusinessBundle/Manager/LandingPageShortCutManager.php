@@ -39,8 +39,7 @@ class LandingPageShortCutManager
      */
     public function getLandingPageShortCutItems($locale)
     {
-        $shortCutItems      = $this->getRepository()->getAvailableShortCutItems();
-        $shortCutItemsData  = $this->prepareShortCutItems($shortCutItems, $locale);
+        $shortCutItemsData = $this->prepareShortCutItems($this->getRepository()->getAvailableShortCutItems(), $locale);
 
         return $shortCutItemsData;
     }
@@ -76,7 +75,6 @@ class LandingPageShortCutManager
                         'geo'   => $localitySearch,
                     ],
                 ];
-
             }
 
             $data[] = [

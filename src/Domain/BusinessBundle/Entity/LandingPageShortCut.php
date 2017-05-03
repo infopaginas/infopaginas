@@ -110,10 +110,7 @@ class LandingPageShortCut implements DefaultEntityInterface
     public function addSearchItem($searchItem)
     {
         $this->searchItems[] = $searchItem;
-
-        if ($searchItem) {
-            $searchItem->setLandingPageShortCut($this);
-        }
+        $searchItem->setLandingPageShortCut($this);
 
         return $this;
     }
