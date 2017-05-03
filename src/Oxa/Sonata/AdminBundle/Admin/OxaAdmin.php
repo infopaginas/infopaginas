@@ -228,4 +228,12 @@ class OxaAdmin extends BaseAdmin
             'DELETE',
         ];
     }
+
+    protected function getDeniedAllButViewAndEditActions()
+    {
+        return [
+            'CREATE',
+            'DELETE',
+        ];
+    }
 }

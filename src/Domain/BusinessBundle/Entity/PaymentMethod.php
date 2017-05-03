@@ -222,4 +222,43 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
             self::PAYMENT_METHOD_TYPE_DEBIT,
         ];
     }
+
+    /**
+     * @return array
+     */
+    public static function getPaymentMethodData()
+    {
+        return [
+            self::PAYMENT_METHOD_TYPE_CASH => [
+                'nameEn' => 'Cash',
+                'nameEs' => 'Efectivo',
+                'type' => self::PAYMENT_METHOD_TYPE_CASH,
+            ],
+            self::PAYMENT_METHOD_TYPE_CHECK => [
+                'nameEn' => 'Check',
+                'nameEs' => 'Cheque',
+                'type' => self::PAYMENT_METHOD_TYPE_CHECK,
+            ],
+            self::PAYMENT_METHOD_TYPE_PAYPAL => [
+                'nameEn' => 'PayPal',
+                'nameEs' => 'PayPal',
+                'type' => self::PAYMENT_METHOD_TYPE_PAYPAL,
+            ],
+            self::PAYMENT_METHOD_TYPE_ATH_MOVIL => [
+                'nameEn' => 'ATHMovil',
+                'nameEs' => 'ATHMovil',
+                'type' => self::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            ],
+            self::PAYMENT_METHOD_TYPE_ONLINE => [
+                'nameEn' => 'Online Payment',
+                'nameEs' => 'Online Payment',
+                'type' => self::PAYMENT_METHOD_TYPE_ONLINE,
+            ],
+            self::PAYMENT_METHOD_TYPE_DEBIT => [
+                'nameEn' => 'Debit Card',
+                'nameEs' => 'Debito',
+                'type' => self::PAYMENT_METHOD_TYPE_DEBIT,
+            ],
+        ];
+    }
 }
