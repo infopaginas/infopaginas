@@ -75,7 +75,6 @@ class AppKernel extends Kernel
             new Domain\BannerBundle\DomainBannerBundle(),
             new Domain\PageBundle\DomainPageBundle(),
 
-            new Domain\MenuBundle\DomainMenuBundle(),
             new Domain\ArticleBundle\DomainArticleBundle(),
             new Domain\SearchBundle\DomainSearchBundle(),
             new Domain\ReportBundle\DomainReportBundle(),
