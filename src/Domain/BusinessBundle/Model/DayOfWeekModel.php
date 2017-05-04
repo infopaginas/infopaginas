@@ -424,8 +424,8 @@ class DayOfWeekModel
     public static function convertWorkingHoursToArray($workingHours)
     {
         return [
-            'timeStart'   => $workingHours->getTimeStart()->format('H:i'),
-            'timeEnd'     => $workingHours->getTimeEnd()->format('H:i'),
+            'timeStart'   => $workingHours->getTimeStart()->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
+            'timeEnd'     => $workingHours->getTimeEnd()->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
             'openAllTime' => $workingHours->getOpenAllTime(),
         ];
     }
