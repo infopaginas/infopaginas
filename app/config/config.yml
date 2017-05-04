@@ -10,7 +10,6 @@ imports:
     - { resource: extra-configs/sonata_translation.yml }
     - { resource: extra-configs/twig_constant.yml }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
-    - { resource: "@DomainMenuBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
