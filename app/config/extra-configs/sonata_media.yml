@@ -18,51 +18,51 @@ sonata_media:
             providers:
                 - sonata.media.provider.image
             formats:
-                preview:    { width: 120, height: 120, quality: 100}
-                normal:     { width: 300, height: 300, quality: 100}
+                preview:    { width: 120, height: 120, quality: 70}
+                normal:     { width: 300, height: 300, quality: 70}
         business_profile_images:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                preview:   { width: 150, height: 150, quality: 100}
-                normal:    { width: 500, height: 500, quality: 100}
+                preview:   { width: 150, height: 150, quality: 70}
+                normal:    { width: 500, height: 500, quality: 70}
         business_profile_background:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                preview:   { width: 150, height: 150, quality: 100}
-                normal:    { width: 500, height: 500, quality: 100}
+                preview:   { width: 150, height: 150, quality: 70}
+                normal:    { width: 500, height: 500, quality: 70}
         coupon:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                preview:    { width: 150, height: 150, quality: 100}
-                normal:     { width: 500, height: 500, quality: 100}
+                preview:    { width: 150, height: 150, quality: 70}
+                normal:     { width: 500, height: 500, quality: 70}
         banner:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                home:       { width: 120, height: 420, quality: 100}
-                portal:     { width: 300, height: 250, quality: 100}
-                serp:       { width: 728, height: 90, quality: 100}
-                serp_boxed: { width: 250, height: 250, quality: 100}
+                home:       { width: 120, height: 420, quality: 70}
+                portal:     { width: 300, height: 250, quality: 70}
+                serp:       { width: 728, height: 90, quality: 70}
+                serp_boxed: { width: 250, height: 250, quality: 70}
         article:
             download:
                 mode: http
             providers:
                 - sonata.media.provider.image
             formats:
-                preview:      { width: 150, height: 150, quality: 100}
-                homepage:     { width: 312, height: 260, quality: 100}
-                list:         { width: 500, height: 170, quality: 100}
+                preview:      { width: 150, height: 150, quality: 70}
+                homepage:     { width: 312, height: 260, quality: 70}
+                list:         { width: 500, height: 170, quality: 70}
     cdn:
         #define the public base url for the uploaded media
         server:

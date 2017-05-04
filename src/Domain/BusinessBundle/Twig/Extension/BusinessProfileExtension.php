@@ -475,10 +475,10 @@ class BusinessProfileExtension extends \Twig_Extension
 
         if ($workingHourData['status']) {
             if ($workingHourData['hours']) {
-                if ($workingHourData['hours']->getOpenAllTime()) {
+                if ($workingHourData['hours']->openAllTime) {
                     $text = $this->translator->trans('business.working.hours.open_all_time');
                 } else {
-                    $endTime = $workingHourData['hours']->getTimeEnd()
+                    $endTime = $workingHourData['hours']->timeEnd
                         ->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
 
                     $text = $this->translator->trans(
@@ -500,7 +500,7 @@ class BusinessProfileExtension extends \Twig_Extension
 
     public function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
     {
-        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursList($businessProfile);
+        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListView($businessProfile);
 
         return $workingHourData;
     }
