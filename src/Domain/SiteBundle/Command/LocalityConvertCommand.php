@@ -163,6 +163,7 @@ class LocalityConvertCommand extends ContainerAwareCommand
             'Mayaguez PR'       => 'Mayaguez',
             'Guyanabo'          => 'Guaynabo',
             'PR'                => 'San Juan',
+            'VEGA BAJA 00693'   => 'Vega Baja',
         ];
 
         return $localities;
