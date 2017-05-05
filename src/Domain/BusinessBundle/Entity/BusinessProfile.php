@@ -715,6 +715,14 @@ class BusinessProfile implements
     protected $collectionWorkingHours;
 
     /**
+     * @var int - Subscription code
+     *
+     * @Gedmo\Translatable(fallback=true)
+     * @ORM\Column(name="subscription_plan_code", type="string", length=100, nullable=true)
+     */
+    protected $subscriptionPlanCode;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -2577,6 +2585,22 @@ class BusinessProfile implements
     public function removeCollectionWorkingHour(BusinessProfileWorkingHour $workingHours)
     {
         $this->collectionWorkingHours->removeElement($workingHours);
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubscriptionPlanCode()
+    {
+        return $this->subscriptionPlanCode;
+    }
+
+    /**
+     * @param string $subscriptionPlanCode
+     */
+    public function setSubscriptionPlanCode($subscriptionPlanCode)
+    {
+        $this->subscriptionPlanCode = $subscriptionPlanCode;
     }
 
     /**
