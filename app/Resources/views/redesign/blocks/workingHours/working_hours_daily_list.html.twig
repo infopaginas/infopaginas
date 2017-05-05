@@ -2,8 +2,6 @@
     {% set isCompare = false %}
 {% endif %}
 
-{% set workingHoursData = get_business_profile_open_status(businessProfile) %}
-
 {% set workingHoursCollection = get_business_profile_working_hours_list(businessProfile) %}
 
 {% if workingHoursCollection %}

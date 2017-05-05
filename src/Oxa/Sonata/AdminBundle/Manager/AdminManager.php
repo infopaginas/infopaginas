@@ -15,6 +15,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\PaymentMethod;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
@@ -151,6 +153,16 @@ class AdminManager extends DefaultManager
         // prevent deletion of hardcoded categories
         if ($entity instanceof Category and ($entity->getSlugEn() or $entity->getSlugEs())) {
             $existDependentField[] = 'Protected Category';
+        }
+
+        // prevent deletion of hardcoded subscription plans
+        if ($entity instanceof SubscriptionPlan) {
+            $existDependentField[] = 'Protected Item';
+        }
+
+        // prevent deletion of hardcoded paymentMethods
+        if ($entity instanceof PaymentMethod and $entity->getType()) {
+            $existDependentField[] = 'Protected Item';
         }
 
         return $existDependentField;

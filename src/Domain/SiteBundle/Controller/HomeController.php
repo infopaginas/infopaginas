@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\CustomVariable;
 use Domain\BusinessBundle\Manager\LandingPageShortCutManager;
+use Domain\PageBundle\Model\PageInterface;
 use Domain\SiteBundle\Form\Type\RegistrationType;
 use Domain\SiteBundle\Form\Type\LoginType;
 use Domain\SiteBundle\Form\Type\ResetPasswordRequestType;
@@ -47,6 +48,8 @@ class HomeController extends Controller
         $this->get('google.analytics')->addCustomVariable(new CustomVariable('default', 'dimension1', $roleForGA));
         $schema = $articleManager->buildArticlesSchema($articles);
 
+        $landingPage = $this->get('domain_page.manager.page')->getPageByCode(PageInterface::CODE_LANDING);
+
         return $this->render(
             ':redesign:homepage.html.twig',
             [
@@ -56,6 +59,7 @@ class HomeController extends Controller
                 'locale'        => $locale,
                 'schemaJsonLD'  => $schema,
                 'hideHeaderSearch' => true,
+                'landingPage'   => $landingPage,
             ]
         );
     }

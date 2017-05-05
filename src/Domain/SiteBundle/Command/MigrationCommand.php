@@ -465,7 +465,11 @@ class MigrationCommand extends ContainerAwareCommand
 
         if ($profile->payment_methods) {
             foreach ($profile->payment_methods as $item) {
-                $entity->addPaymentMethod($this->loadPaymentMethod($item));
+                $paymentMethod = $this->getPaymentMethod($item);
+
+                if ($paymentMethod and !$entity->getPaymentMethods()->contains($paymentMethod)) {
+                    $entity->addPaymentMethod($paymentMethod);
+                }
             }
         }
 
@@ -634,32 +638,34 @@ class MigrationCommand extends ContainerAwareCommand
         return $entity;
     }
 
-    private function loadPaymentMethod($key)
+    private function getPaymentMethod($key)
     {
         $hardCodedList = [
-            'american_express' => 'American Express',
-            'ath_movil' => 'ATH Movil',
-            'cash' => 'Cash',
-            'check' => 'Check',
-            'debit_atm' => 'Debit/ATM',
-            'diners_club' => 'Diners Club',
-            'discover' => 'Discover',
-            'giros' => 'Giros',
-            'mastercard' => 'MasterCard',
-            'online_payment' => 'Online Payment',
-            'paypal' => 'Paypal',
-            'visa' => 'Visa',
+            'american_express'  => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'debit_atm'         => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'diners_club'       => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'discover'          => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'mastercard'        => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'visa'              => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'ath_movil'         => PaymentMethod::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            'cash'              => PaymentMethod::PAYMENT_METHOD_TYPE_CASH,
+            'check'             => PaymentMethod::PAYMENT_METHOD_TYPE_CHECK,
+            'online_payment'    => PaymentMethod::PAYMENT_METHOD_TYPE_ONLINE,
+            'paypal'            => PaymentMethod::PAYMENT_METHOD_TYPE_PAYPAL,
         ];
 
         if (isset($hardCodedList[$key])) {
             $valuePrimary = $hardCodedList[$key];
+
+            $paymentMethod = $this->em->getRepository(PaymentMethod::class)->findOneBy([
+                'type' => $valuePrimary,
+            ]);
         } else {
             $this->output->writeln('Unknown Payment Method key: ' . $key);
-
-            $valuePrimary = $key;
+            $paymentMethod = null;
         }
 
-        return $this->loadEntity('PaymentMethod', $valuePrimary, $valuePrimary);
+        return $paymentMethod;
     }
 
     private function loadLocality($item)

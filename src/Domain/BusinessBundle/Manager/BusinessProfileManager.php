@@ -1260,10 +1260,8 @@ class BusinessProfileManager extends Manager
      */
     private function getBusinessProfileWorkingHoursSchema($businessProfile, $schemaItem = [])
     {
-        $openingHoursCollection = $businessProfile->getCollectionWorkingHours();
-
-        if (!$openingHoursCollection->isEmpty()) {
-            $dailyHours = DayOfWeekModel::getBusinessProfileWorkingHoursList($businessProfile);
+        if ($businessProfile->getWorkingHoursJsonAsObject()) {
+            $dailyHours = DayOfWeekModel::getBusinessProfileWorkingHoursListView($businessProfile);
             $dayOfWeekSchemaOrgMapping = DayOfWeekModel::getDayOfWeekSchemaOrgMapping();
 
             foreach ($dailyHours as $key => $workingHourItems) {
@@ -1282,18 +1280,17 @@ class BusinessProfileManager extends Manager
 
                     if ($workingHourItems) {
                         foreach ($workingHourItems as $item) {
-                            if ($item->getOpenAllTime()) {
+                            if ($item->openAllTime) {
                                 // open all time
                                 $openTime  = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_OPEN_TIME;
                                 $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
                             } else {
-                                $openTime  = $item->getTimeStart()->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                                $openTime  = $item->timeStart->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
 
-                                if ($item->getTimeEnd() == DayOfWeekModel::getDefaultDateTime()) {
+                                if ($item->timeEnd == DayOfWeekModel::getDefaultDateTime()) {
                                     $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
                                 } else {
-                                    $closeTime = $item->getTimeEnd()
-                                        ->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                                    $closeTime = $item->timeEnd->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
                                 }
                             }
 

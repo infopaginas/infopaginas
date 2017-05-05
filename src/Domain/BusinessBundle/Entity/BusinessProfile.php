@@ -715,6 +715,13 @@ class BusinessProfile implements
     protected $collectionWorkingHours;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="working_hours_json", type="text", nullable=true)
+     */
+    protected $workingHoursJson;
+
+    /**
      * @var int - Subscription code
      *
      * @Gedmo\Translatable(fallback=true)
@@ -2588,22 +2595,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return int
-     */
-    public function getSubscriptionPlanCode()
-    {
-        return $this->subscriptionPlanCode;
-    }
-
-    /**
-     * @param string $subscriptionPlanCode
-     */
-    public function setSubscriptionPlanCode($subscriptionPlanCode)
-    {
-        $this->subscriptionPlanCode = $subscriptionPlanCode;
-    }
-
-    /**
      * get list of bilingual fields
      * @return array
      */
@@ -2722,5 +2713,64 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_SEO_TITLE,
             self::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
         ];
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateWorkingHoursData()
+    {
+        $workingHours = DayOfWeekModel::getBusinessProfileWorkingHoursJson($this);
+
+        $this->workingHoursJson = $workingHours;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkingHoursJson()
+    {
+        return $this->workingHoursJson;
+    }
+
+    /**
+     * @param string $workingHoursJson
+     *
+     * @return BusinessProfile
+     */
+    public function setWorkingHoursJson($workingHoursJson)
+    {
+        $this->workingHoursJson = $workingHoursJson;
+
+        return $this;
+    }
+
+    /**
+     * @return \stdClass
+     */
+    public function getWorkingHoursJsonAsObject()
+    {
+        return json_decode($this->getWorkingHoursJson());
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubscriptionPlanCode()
+    {
+        return $this->subscriptionPlanCode;
+    }
+
+    /**
+     * @param int $subscriptionPlanCode
+     *
+     * @return BusinessProfile
+     */
+    public function setSubscriptionPlanCode($subscriptionPlanCode)
+    {
+        $this->subscriptionPlanCode = $subscriptionPlanCode;
+
+        return $this;
     }
 }
