@@ -529,7 +529,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.main' ).addClass( 'main-results-resize' );
         } else {
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
-            showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll' );
             $( '.sort__options' ).removeClass( 'sort--on' );
             $( '.sort__options' ).removeClass( 'filter--on' );
