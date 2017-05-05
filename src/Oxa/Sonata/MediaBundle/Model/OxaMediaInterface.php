@@ -18,6 +18,7 @@ interface OxaMediaInterface
     const CONTEXT_COUPON                        = 'coupon';
     const CONTEXT_BANNER                        = 'banner';
     const CONTEXT_ARTICLE                       = 'article';
+    const CONTEXT_PAGE_BACKGROUND               = 'page_background';
 
     /**
      * @return mixed
