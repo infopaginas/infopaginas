@@ -31,7 +31,7 @@ class LandingPageShortCutAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('locality', null, [
-                'template' => 'DomainBusinessBundle:Admin:LandingPageShortCut/list_locality.html.twig'
+                'template' => 'DomainBusinessBundle:Admin:LandingPageShortCut/list_locality.html.twig',
             ])
             ->add('useAllLocation')
             ->add('isActive')
