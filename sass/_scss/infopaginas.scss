@@ -4459,19 +4459,29 @@ li.active {
 .results--map-view {
   #map {
     .att-icons {
-      right: 0;
-      bottom: -15px;
+      left: 0;
+      bottom: -18px;
       i {
-        width: 12px;
-        height: 12px;
-        font-size: 6px;
-        line-height: 12px;
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+        line-height: 15px;
       }
     }
 
     .item__img {
       img {
-        width: 30px;
+        width: 60px;
+      }
+    }
+
+    .item__summary {
+      width: calc(100% - 60px);
+      padding-left: 3em;
+
+      &.item__summary-no-logo {
+        padding-left: 0.7em;
+        width: 100%;
       }
     }
   }
@@ -5329,19 +5339,29 @@ input[type='radio'], input[type='checkbox'] {
 #searchResults {
   &.main-results-resize {
     .att-icons {
-      right: 0;
-      bottom: -15px;
+      left: 0;
+      bottom: -18px;
       i {
-        width: 12px;
-        height: 12px;
-        font-size: 6px;
-        line-height: 12px;
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+        line-height: 15px;
       }
     }
 
     .item__img {
       img {
-        width: 30px;
+        width: 60px;
+      }
+    }
+
+    .item__summary {
+      width: calc(100% - 60px);
+      padding-left: 3em;
+
+      &.item__summary-no-logo {
+        padding-left: 0.7em;
+        width: 100%;
       }
     }
   }
