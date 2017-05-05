@@ -4852,9 +4852,17 @@ table {
   list-style: none;
   li.category a {
     color: #08418c;
-  } 
+  }
   li.business a {
     color: #8a8d90;
+  }
+  @media only screen and (max-width: 414px) {
+    li {
+      border-bottom: .1px solid #d3d7dd;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }
 
