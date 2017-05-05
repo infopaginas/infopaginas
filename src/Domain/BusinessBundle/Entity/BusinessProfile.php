@@ -725,7 +725,7 @@ class BusinessProfile implements
      * @var int - Subscription code
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="subscription_plan_code", type="string", length=100, nullable=true)
+     * @ORM\Column(name="subscription_plan_code", type="int", length=100, nullable=true)
      */
     protected $subscriptionPlanCode;
 
