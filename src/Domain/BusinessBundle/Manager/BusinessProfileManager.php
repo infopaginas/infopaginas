@@ -2188,7 +2188,6 @@ class BusinessProfileManager extends Manager
     public function buildBusinessProfileElasticData(BusinessProfile $businessProfile)
     {
         $businessSubscription     = $businessProfile->getSubscription();
-        $businessSubscriptionPlan = $businessProfile->getSubscriptionPlan();
 
         if (!$businessSubscription || $businessSubscription->getStatus() != StatusInterface::STATUS_ACTIVE ||
             !$businessProfile->getIsActive()
@@ -2253,7 +2252,7 @@ class BusinessProfileManager extends Manager
             ],
             'service_areas_type'   => $businessProfile->getServiceAreasType(),
             'locality_ids'         => $localityIds,
-            'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
+            'subscr_rank'          => $businessProfile->getSubscriptionPlanCode(),
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
         ];
