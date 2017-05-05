@@ -1,0 +1,11 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    {% if object.useAllLocation %}
+        {{ PR_ALL_LOCALITIES|trans }}
+    {% else %}
+        <a class="sonata-link-identifier" href="{{ admin.generateObjectUrl(route, object, field_description.options.route.parameters) }}">
+            {{ value }}
+        </a>
+    {% endif %}
+{% endblock %}
