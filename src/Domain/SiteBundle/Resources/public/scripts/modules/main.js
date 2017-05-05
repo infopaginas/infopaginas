@@ -764,4 +764,28 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
         return checker.hasClass( 'fa-check' );
     }
+
+//    background
+    updateBackgroundElements();
+
+    $( window ).resize(function() {
+        updateBackgroundElements();
+    });
+
+    function updateBackgroundElements() {
+        var mediaQueryMobile = window.matchMedia( "(min-width: 415px)" );
+        var isDesktop = mediaQueryMobile.matches;
+
+        var backgroundElements = $( '[data-desktop-background]' );
+
+        backgroundElements.each( function() {
+            var background = $( this ).data( 'desktop-background' );
+
+            if ( isDesktop ) {
+                $( this ).css( 'background-image', 'url(' + background + ')' );
+            } else {
+                $( this ).css( 'background-image', '' );
+            }
+        });
+    }
 });

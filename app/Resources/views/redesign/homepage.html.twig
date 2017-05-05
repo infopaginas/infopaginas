@@ -9,7 +9,7 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
-            <div class="video-header__container" style="background-image: url('{{ absolute_url(asset('redesign/img/home-header.jpg')) }}')">
+            <div class="video-header__container" data-desktop-background="{% if landingPage.getBackground() %}{% path landingPage.getBackground(), 'normal' %}{% else %}{{ absolute_url(asset('redesign/img/home-header.jpg')) }}{% endif %}">
 
                 {% block homePageSearch %}
                     {% include ':redesign/blocks:homepage_search.html.twig' %}
