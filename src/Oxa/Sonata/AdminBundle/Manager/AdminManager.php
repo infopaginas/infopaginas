@@ -14,6 +14,7 @@ use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\LandingPageShortCut;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
@@ -131,6 +132,11 @@ class AdminManager extends DefaultManager
                 if ($entity instanceof Category and
                     $associationMapping['fieldName'] == Category::ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS
                 ) {
+                    continue;
+                }
+
+                //allow delete LandingPageShortCut
+                if ($entity instanceof LandingPageShortCut) {
                     continue;
                 }
 

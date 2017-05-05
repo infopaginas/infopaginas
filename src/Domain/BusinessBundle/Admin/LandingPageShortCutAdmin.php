@@ -18,6 +18,7 @@ class LandingPageShortCutAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('locality')
+            ->add('useAllLocation')
             ->add('isActive')
         ;
     }
@@ -29,7 +30,10 @@ class LandingPageShortCutAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('locality')
+            ->add('locality', null, [
+                'template' => 'DomainBusinessBundle:Admin:LandingPageShortCut/list_locality.html.twig'
+            ])
+            ->add('useAllLocation')
             ->add('isActive')
         ;
 
@@ -51,7 +55,10 @@ class LandingPageShortCutAdmin extends OxaAdmin
         $formMapper
             ->tab('Landing Page Short Cut')
                 ->with('Locality')
-                    ->add('locality')
+                    ->add('locality', null, [
+                        'required' => true,
+                    ])
+                    ->add('useAllLocation')
                     ->add('isActive')
                 ->end()
                 ->with('Searches')
@@ -82,5 +89,10 @@ class LandingPageShortCutAdmin extends OxaAdmin
             ->add('isActive')
             ->add('searchItems')
         ;
+    }
+
+    public function setTemplate($name, $template)
+    {
+        $this->templates['edit'] = 'DomainBusinessBundle:Admin:LandingPageShortCut/edit.html.twig';
     }
 }
