@@ -51,6 +51,11 @@ class MigrationCommand extends ContainerAwareCommand
      */
     protected $categoryEsMergeMapping;
 
+    /**
+     * @var array $deleteLocalityList
+     */
+    protected $deleteLocalityList;
+
     protected function configure()
     {
         $this->setName('data:migration');
@@ -78,6 +83,7 @@ class MigrationCommand extends ContainerAwareCommand
 
         $this->categoryEnMergeMapping = CategoryModel::getCategoryEnMergeMapping();
         $this->categoryEsMergeMapping = CategoryModel::getCategoryEsMergeMapping();
+        $this->deleteLocalityList = LocalityConvertCommand::getDeleteLocalities();
 
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
@@ -673,13 +679,19 @@ class MigrationCommand extends ContainerAwareCommand
         $className  = 'Locality';
         $repository = $this->em->getRepository('DomainBusinessBundle:' . $className);
 
-        $entity = $repository->getLocalityBySlug(SlugUtil::convertSlug(trim($item->locality)));
+        $localityName = trim($item->locality);
+
+        if (!empty($this->deleteLocalityList[$localityName])) {
+            $localityName = $this->deleteLocalityList[$localityName];
+        }
+
+        $entity = $repository->getLocalityBySlug(SlugUtil::convertSlug($localityName));
 
         if (!$entity) {
             $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
 
             $entity = new $classNameEntity();
-            $entity->setName($item->locality);
+            $entity->setName($localityName);
 
             $entity = $this->saveEntity($entity);
             // todo - add area?
