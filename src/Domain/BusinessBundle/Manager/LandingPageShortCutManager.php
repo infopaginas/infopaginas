@@ -57,7 +57,7 @@ class LandingPageShortCutManager
         $data = [];
 
         foreach ($shortCutItems as $item) {
-            if ($item->getLocality()) {
+            if (!$item->getUseAllLocation() and $item->getLocality()) {
                 $localityTitle  = $item->getLocality()->getName();
                 $localitySearch = $localityTitle;
             } else {

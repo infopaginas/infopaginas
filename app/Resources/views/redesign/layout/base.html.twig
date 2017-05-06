@@ -95,7 +95,7 @@
                 <script src="{{ absolute_url(asset_url) }}"></script>
             {% endjavascripts %}
 
-            <script src="{{ absolute_url(asset('js/fos_js_routes.js')) }}"></script>
+            <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
 
             <script type="text/javascript">
                 requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {

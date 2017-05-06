@@ -4852,9 +4852,17 @@ table {
   list-style: none;
   li.category a {
     color: #08418c;
-  } 
+  }
   li.business a {
     color: #8a8d90;
+  }
+  @media only screen and (max-width: 414px) {
+    li {
+      border-bottom: .1px solid #d3d7dd;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }
 
@@ -5473,14 +5481,28 @@ a.link-pointer {
 }
 
 .select-weekday-user {
+  margin-bottom: 10px;
+
   .select2-selection__arrow {
     display: block !important;
   }
 }
 
-@media only screen and (min-width: 414px){
-  .form__row .form__field.select-weekday-user {
-    width: 10em;
+@media only screen and (min-width: 1200px) {
+  .select-weekday-user {
+    width: 15%;
+  }
+}
+
+@media only screen and (min-width: 805px) and (max-width: 1199px) {
+  .select-weekday-user {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 804px) and (orientation: portrait) {
+  .select-weekday-user {
+    width: 20%;
   }
 }
 

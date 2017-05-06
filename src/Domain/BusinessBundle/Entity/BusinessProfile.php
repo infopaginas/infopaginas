@@ -730,6 +730,13 @@ class BusinessProfile implements
     protected $subscriptionPlanCode;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
+     */
+    protected $hasImages;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -2752,6 +2759,26 @@ class BusinessProfile implements
     public function getWorkingHoursJsonAsObject()
     {
         return json_decode($this->getWorkingHoursJson());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHasImages()
+    {
+        return $this->hasImages;
+    }
+
+    /**
+     * @param boolean $hasImages
+     *
+     * @return BusinessProfile
+     */
+    public function setHasImages($hasImages)
+    {
+        $this->hasImages = $hasImages;
+
+        return $this;
     }
 
     /**

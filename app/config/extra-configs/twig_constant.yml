@@ -95,3 +95,5 @@ twig:
         SHORT_CUT_ITEMS:
             LANDING: LANDING
             ERROR: ERROR
+
+        PR_ALL_LOCALITIES: Puerto Rico (All localities)

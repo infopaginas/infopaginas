@@ -51,12 +51,20 @@ class LandingPageShortCut implements DefaultEntityInterface
     protected $searchItems;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="use_all_location", type="boolean", options={"default" : 0})
+     */
+    protected $useAllLocation;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->searchItems = new ArrayCollection();
         $this->isActive = false;
+        $this->useAllLocation = false;
     }
 
     public function __toString()
@@ -123,5 +131,25 @@ class LandingPageShortCut implements DefaultEntityInterface
     public function removeSearchItem($searchItem)
     {
         $this->searchItems->removeElement($searchItem);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseAllLocation()
+    {
+        return $this->useAllLocation;
+    }
+
+    /**
+     * @param boolean $useAllLocation
+     *
+     * @return LandingPageShortCut
+     */
+    public function setUseAllLocation($useAllLocation)
+    {
+        $this->useAllLocation = $useAllLocation;
+
+        return $this;
     }
 }

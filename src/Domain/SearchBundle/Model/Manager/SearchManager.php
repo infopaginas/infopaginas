@@ -282,6 +282,10 @@ class SearchManager extends Manager
 
         if ($localitySlug) {
             $locality = $this->localityManager->getLocalityBySlug($localitySlug);
+
+            if (!$locality) {
+                $locality = $this->localityManager->getLocalityByLocalityPseudoSlug($localitySlug);
+            }
         }
 
         return $locality;

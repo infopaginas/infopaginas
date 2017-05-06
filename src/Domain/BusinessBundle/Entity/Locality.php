@@ -138,6 +138,18 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $isUpdated;
 
     /**
+     * @var LocalityPseudo[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\LocalityPseudo",
+     *     mappedBy="locality",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $pseudos;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -147,6 +159,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->translations     = new ArrayCollection();
         $this->neighborhoods    = new ArrayCollection();
         $this->catalogItems     = new ArrayCollection();
+        $this->pseudos          = new ArrayCollection();
 
         $this->isUpdated = true;
     }
@@ -388,5 +401,39 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function getIsUpdated()
     {
         return $this->isUpdated;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPseudos()
+    {
+        return $this->pseudos;
+    }
+
+    /**
+     * Add $pseudo
+     *
+     * @param LocalityPseudo $pseudo
+     *
+     * @return Locality
+     */
+    public function addPseudo($pseudo)
+    {
+        $this->pseudos[] = $pseudo;
+
+        $pseudo->setLocality($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove pseudo
+     *
+     * @param LocalityPseudo $pseudo
+     */
+    public function removePseudo($pseudo)
+    {
+        $this->pseudos->removeElement($pseudo);
     }
 }

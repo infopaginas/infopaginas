@@ -44,6 +44,11 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
      */
     protected $categoryEsMergeMapping;
 
+    /**
+     * @var array $deleteLocalityList
+     */
+    protected $deleteLocalityList;
+
     protected function configure()
     {
         $this->setName('data:migration:locality-fix');
@@ -67,6 +72,8 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
     {
         $this->em     = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->output = $output;
+
+        $this->deleteLocalityList = LocalityConvertCommand::getDeleteLocalities();
 
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
@@ -265,13 +272,19 @@ class MigrationLocalityFixCommand extends ContainerAwareCommand
      */
     private function getLocality($item)
     {
-        $slug = $this->getLocalitySlug($item);
+        $localityName = trim($item->locality);
+
+        if (!empty($this->deleteLocalityList[$localityName])) {
+            $localityName = $this->deleteLocalityList[$localityName];
+        }
+
+        $slug = SlugUtil::convertSlug($localityName);
 
         $locality = $this->em->getRepository(Locality::class)->getLocalityBySlug($slug);
 
         if (!$locality) {
             $locality = new Locality();
-            $locality->setName(trim($item->locality));
+            $locality->setName($localityName);
 
             $this->em->persist($locality);
             $this->em->flush();

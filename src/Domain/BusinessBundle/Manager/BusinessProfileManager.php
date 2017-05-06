@@ -141,14 +141,15 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @param string $query
-     * @param string $locale
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
      *
      * @return array
      */
-    public function searchCategoryAutosuggestByPhrase($query, $locale)
+    public function searchCategoryAutosuggestByPhrase($query, $locale, $limit = null)
     {
-        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale);
+        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale, $limit);
 
         return $categories;
     }
@@ -1525,9 +1526,16 @@ class BusinessProfileManager extends Manager
         return $search['data'];
     }
 
-    protected function searchCategoryAutoSuggestInElastic($query, $locale)
+    /**
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
+     *
+     * @return array
+     */
+    protected function searchCategoryAutoSuggestInElastic($query, $locale, $limit = null)
     {
-        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale);
+        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchCategoryElastic($searchQuery);
 
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
@@ -1880,13 +1888,14 @@ class BusinessProfileManager extends Manager
 
     protected function getElasticSearchQuery(SearchDTO $params, $locale)
     {
+        // see https://jira.oxagile.com/browse/INFT-1197
         $fields = [
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
-            'description_' . strtolower($locale) . '^1',
+//            'description_' . strtolower($locale) . '^1',
             'name_' . strtolower($locale) . '.folded^5',
             'categories_' . strtolower($locale) . '.folded^3',
-            'description_' . strtolower($locale) . '.folded^1',
+//            'description_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -2405,6 +2414,7 @@ class BusinessProfileManager extends Manager
                 }
 
                 $business->setIsUpdated(false);
+                $business->setHasImages($this->checkBusinessHasImages($business));
 
                 if (($iElastic % $batchElastic) === 0) {
                     $this->addBusinessesToElasticIndex($data);
@@ -2603,5 +2613,19 @@ class BusinessProfileManager extends Manager
         }
 
         return $currentUser;
+    }
+
+    /**
+     * @param BusinessProfile $business
+     *
+     * @return bool
+     */
+    protected function checkBusinessHasImages($business)
+    {
+        if ($business->getLogo() or $business->getBackground() or !$business->getImages()->isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }

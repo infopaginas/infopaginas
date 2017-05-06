@@ -2,23 +2,14 @@
 
 namespace Domain\BusinessBundle\Admin;
 
-use Domain\BusinessBundle\Entity\Area;
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class AreaAdmin extends OxaAdmin
+class LocalityPseudoAdmin extends OxaAdmin
 {
-    protected $datagridValues = array(
-        '_page'       => 1,
-        '_per_page'   => 25,
-        '_sort_by'    => 'name',
-    );
-
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -26,11 +17,7 @@ class AreaAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name', null, [
-                'show_filter' => true,
-            ])
-            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
-            ->add('updatedUser')
+            ->add('name')
         ;
     }
 
@@ -42,8 +29,6 @@ class AreaAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('name')
-            ->add('updatedAt')
-            ->add('updatedUser')
         ;
 
         $this->addGridActions($listMapper);
@@ -55,15 +40,13 @@ class AreaAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name')
-            ->add('updatedAt', 'sonata_type_datetime_picker', [
-                'required' => false,
-                'disabled' => true
+            ->add('name', null, [
+                'read_only' => true,
+                'required'  => false
             ])
-            ->add('updatedUser', 'sonata_type_model', [
-                'required' => false,
-                'btn_add' => false,
-                'disabled' => true,
+            ->add('slug', null, [
+                'read_only' => true,
+                'required'  => false
             ])
         ;
     }
@@ -76,9 +59,7 @@ class AreaAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
-            ->add('businessProfiles')
-            ->add('updatedAt')
-            ->add('updatedUser')
+            ->add('slug')
         ;
     }
 }

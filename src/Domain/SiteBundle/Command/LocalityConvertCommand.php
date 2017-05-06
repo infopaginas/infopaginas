@@ -106,7 +106,7 @@ class LocalityConvertCommand extends ContainerAwareCommand
         return $query->iterate();
     }
 
-    protected function getDeleteLocalities()
+    public static function getDeleteLocalities()
     {
         $localities = [
             'Fenton'            => 'San Juan',
@@ -153,6 +153,7 @@ class LocalityConvertCommand extends ContainerAwareCommand
             'Toa Baja PR'       => 'Toa Baja',
             'villalba'          => 'Villalba',
             'Coto Laurel'       => 'Ponce',
+            'Coto Laurel PR'    => 'Ponce',
             'Boquerón'          => 'Cabo Rojo',
             'Ramey'             => 'Aguadilla',
             'Rio Blanco'        => 'Naguabo',
@@ -163,6 +164,7 @@ class LocalityConvertCommand extends ContainerAwareCommand
             'Mayaguez PR'       => 'Mayaguez',
             'Guyanabo'          => 'Guaynabo',
             'PR'                => 'San Juan',
+            'VEGA BAJA 00693'   => 'Vega Baja',
         ];
 
         return $localities;

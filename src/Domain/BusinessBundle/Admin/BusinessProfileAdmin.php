@@ -111,7 +111,9 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
             ->add('city')
             ->add('state')
             ->add('country')
@@ -130,6 +132,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     'label' => $this->trans('filter.label_phone', [], $this->getTranslationDomain())
                 ]
             )
+            ->add('hasImages')
             ->add('subscriptions.subscriptionPlan', null, [
                 'label' => $this->trans('filter.label_subscription_plan', [], $this->getTranslationDomain())
             ])
@@ -155,6 +158,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'sort_parent_association_mappings' => [['fieldName' => 'catalogLocality']]
             ])
             ->add('phones')
+            ->add('hasImages')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
             ])

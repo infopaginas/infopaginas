@@ -20,7 +20,9 @@ class CountryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
             ->add('shortName')
         ;
     }

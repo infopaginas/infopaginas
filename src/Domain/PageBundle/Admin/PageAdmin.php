@@ -23,7 +23,9 @@ class PageAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('title')
+            ->add('title', null, [
+                'show_filter' => true,
+            ])
             ->add('updatedUser')
         ;
     }

@@ -26,7 +26,9 @@ class LocalityAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
             ->add('area')
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
@@ -63,6 +65,22 @@ class LocalityAdmin extends OxaAdmin
             ->add('area', null, [
                 'required' => true,
             ])
+            ->add('pseudos', 'sonata_type_collection',
+                [
+                    'by_reference'  => false,
+                    'required'      => false,
+                    'read_only'     => true,
+                    'btn_add'       => false,
+                    'type_options' => [
+                        'delete'    => false,
+                    ],
+                ],
+                [
+                    'edit'          => 'inline',
+                    'delete_empty'  => false,
+                    'inline'        => 'table',
+                ]
+            )
         ;
     }
 
@@ -79,6 +97,7 @@ class LocalityAdmin extends OxaAdmin
             ->add('area')
             ->add('updatedAt')
             ->add('updatedUser')
+            ->add('pseudos')
         ;
     }
 

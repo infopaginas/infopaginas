@@ -42,20 +42,20 @@ class LandingPageShortCutSearchAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->with('Locality', ['class' => 'col-md-6',])
-                ->add('titleEn', null, [
-                    'label' => 'Search For English',
-                ])
+            ->with('Search', ['class' => 'col-md-6',])
                 ->add('searchTextEn', null, [
-                    'label' => 'Title English',
-                ])
-            ->end()
-            ->with('Spanish', ['class' => 'col-md-6',])
-                ->add('titleEs', null, [
-                    'label' => 'Title Spanish',
+                    'label' => 'Search For English',
                 ])
                 ->add('searchTextEs', null, [
                     'label' => 'Search For Spanish',
+                ])
+            ->end()
+            ->with('Title', ['class' => 'col-md-6',])
+                ->add('titleEn', null, [
+                    'label' => 'Title English',
+                ])
+                ->add('titleEs', null, [
+                    'label' => 'Title Spanish',
                 ])
             ->end()
         ;
