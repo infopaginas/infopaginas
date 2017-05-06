@@ -124,3 +124,9 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\LandingPageShortCutSearch, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Landing Page Shortcut Searches}
+
+    domain_business.admin.locality_pseudo:
+        class: Domain\BusinessBundle\Admin\LocalityPseudoAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\LocalityPseudo, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Locality Pseudo}

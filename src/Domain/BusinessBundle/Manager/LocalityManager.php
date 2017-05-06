@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\LocalityPseudo;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -45,6 +46,18 @@ class LocalityManager extends Manager
         $customSlug = SlugUtil::convertSlug($localitySlug);
 
         $locality = $this->getRepository()->getLocalityBySlug($localitySlug, $customSlug);
+
+        return $locality;
+    }
+
+    /**
+     * @param string $localitySlug
+     *
+     * @return Locality|null
+     */
+    public function getLocalityByLocalityPseudoSlug($localitySlug)
+    {
+        $locality = $this->getRepository()->getLocalityByPseudoSlug($localitySlug);
 
         return $locality;
     }
