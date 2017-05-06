@@ -12,6 +12,7 @@ class CategoryManager extends Manager
 {
     const AUTO_COMPLETE_TYPE  = 'category';
     const AUTO_SUGGEST_MAX_CATEGORY_COUNT = 5;
+    const AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT = 10;
     const AUTO_SUGGEST_SEPARATOR = ' ';
 
     public function searchAutosuggestByName(string $name, string $locale)
@@ -126,7 +127,15 @@ class CategoryManager extends Manager
         return $params;
     }
 
-    public function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 0)
+    /**
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
+     * @param int      $offset
+     *
+     * @return array
+     */
+    public function getElasticAutoSuggestSearchQuery($query, $locale, $limit = null, $offset = 0)
     {
         if (!$limit) {
             $limit = self::AUTO_SUGGEST_MAX_CATEGORY_COUNT;
