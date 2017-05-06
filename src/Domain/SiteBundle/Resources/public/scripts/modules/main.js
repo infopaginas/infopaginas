@@ -772,7 +772,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     });
 
     function updateBackgroundElements() {
-        var mediaQueryMobile = window.matchMedia( "(min-width: 415px)" );
+        var mediaQueryMobile = window.matchMedia( "(min-width: 768px)" );
         var isDesktop = mediaQueryMobile.matches;
 
         var backgroundElements = $( '[data-desktop-background]' );
