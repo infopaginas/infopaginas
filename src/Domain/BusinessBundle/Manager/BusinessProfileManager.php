@@ -2406,6 +2406,7 @@ class BusinessProfileManager extends Manager
                 }
 
                 $business->setIsUpdated(false);
+                $business->setHasImages($this->checkBusinessHasImages($business));
 
                 if (($iElastic % $batchElastic) === 0) {
                     $this->addBusinessesToElasticIndex($data);
@@ -2604,5 +2605,19 @@ class BusinessProfileManager extends Manager
         }
 
         return $currentUser;
+    }
+
+    /**
+     * @param BusinessProfile $business
+     *
+     * @return bool
+     */
+    protected function checkBusinessHasImages($business)
+    {
+        if ($business->getLogo() or $business->getBackground() or !$business->getImages()->isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }
