@@ -53,17 +53,11 @@ class LocalityManager extends Manager
     /**
      * @param string $localitySlug
      *
-     * @return Locality
+     * @return Locality|null
      */
     public function getLocalityByLocalityPseudoSlug($localitySlug)
     {
-        $localityPseudo = $this->em->getRepository(LocalityPseudo::class)->getLocalityPseudoBySlug($localitySlug);
-
-        if ($localityPseudo) {
-            $locality = $localityPseudo->getLocality();
-        } else {
-            $locality = null;
-        }
+        $locality = $this->getRepository()->getLocalityByPseudoSlug($localitySlug);
 
         return $locality;
     }
