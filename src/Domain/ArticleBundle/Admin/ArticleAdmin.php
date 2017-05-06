@@ -22,7 +22,9 @@ class ArticleAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('title')
+            ->add('title', null, [
+                'show_filter' => true,
+            ])
             ->add('category')
             ->add('isPublished')
             ->add('isOnHomepage')

@@ -20,7 +20,9 @@ class CategoryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
         ;
     }
 
