@@ -140,14 +140,15 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @param string $query
-     * @param string $locale
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
      *
      * @return array
      */
-    public function searchCategoryAutosuggestByPhrase($query, $locale)
+    public function searchCategoryAutosuggestByPhrase($query, $locale, $limit = null)
     {
-        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale);
+        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale, $limit);
 
         return $categories;
     }
@@ -1524,9 +1525,16 @@ class BusinessProfileManager extends Manager
         return $search['data'];
     }
 
-    protected function searchCategoryAutoSuggestInElastic($query, $locale)
+    /**
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
+     *
+     * @return array
+     */
+    protected function searchCategoryAutoSuggestInElastic($query, $locale, $limit = null)
     {
-        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale);
+        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchCategoryElastic($searchQuery);
 
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
