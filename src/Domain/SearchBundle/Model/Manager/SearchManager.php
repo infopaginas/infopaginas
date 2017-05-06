@@ -145,7 +145,7 @@ class SearchManager extends Manager
         return $response;
     }
 
-    public function getLoicalitySearchDTO(Request $request)
+    public function getLocalitySearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
         $searchDTO  = SearchDataUtil::buildRequestDTO('', $location, 1, 1);

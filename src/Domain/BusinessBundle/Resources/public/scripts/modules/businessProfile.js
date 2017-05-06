@@ -6,7 +6,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         this.urls = {
             saveBusinessProfile: Routing.generate( 'domain_business_profile_save' ),
             categoryAutoComplete: Routing.generate( 'domain_business_category_autocomplite' ),
-            getLocalityByCoord: Routing.generate( 'domain_search_locality' ),
+            getLocalityByCoord: Routing.generate( 'domain_search_closest_locality_by_coord' ),
         };
 
         this.serviceAreasAreaChoiceValue = 'area';
@@ -174,9 +174,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             data: {'clt': latlng.lat(), 'clg': latlng.lng()},
             success: function(data){
                 that.updateLocality(data['localityId']);
-            },
-            error: function (data) {
-
             }
         });
 

@@ -119,7 +119,7 @@ class SearchController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function getLatlngLocalityAction(Request $request)
+    public function getClosestLocalityByCoordAction(Request $request)
     {
         $searchManager = $this->get('domain_search.manager.search');
         $searchDTO = $searchManager->getLoicalitySearchDTO($request);

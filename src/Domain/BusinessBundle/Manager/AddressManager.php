@@ -49,6 +49,17 @@ class AddressManager extends DefaultManager
         return $response->getResults();
     }
 
+    public function getClosestLocalityByCoord($lat, $lon){
+        $request = new Request();
+        $request->query->set('clt', $lat);
+        $request->query->set('clg', $lon);
+        $searchManager = $this->getContainer()->get('domain_search.manager.search');
+        $searchDTO = $searchManager->getLoicalitySearchDTO($request);
+        $closestLocality = $this->getContainer()->get('domain_business.manager.business_profile')->searchClosestLocalityInElastic($searchDTO);
+
+        return $closestLocality;
+    }
+
     /**
      * @param $googleAddress
      * @param BusinessProfile $businessProfile
@@ -65,13 +76,7 @@ class AddressManager extends DefaultManager
             $businessProfile->setLongitude($lon);
         }
 
-        $request = new Request();
-        $request->query->set('clt', $lat);
-        $request->query->set('clg', $lon);
-        $searchManager = $this->getContainer()->get('domain_search.manager.search');
-        $searchDTO = $searchManager->getLoicalitySearchDTO($request);
-        $closestLocality = $this->getContainer()->get('domain_business.manager.business_profile')->searchClosestLocalityInElastic($searchDTO);
-        $businessProfile->setCatalogLocality($closestLocality);
+        $businessProfile->setCatalogLocality($this->getClosestLocalityByCoord($lat, $lon));
 
         // set google address if it has'not been set automatically
         if (!$businessProfile->getGoogleAddress()) {
