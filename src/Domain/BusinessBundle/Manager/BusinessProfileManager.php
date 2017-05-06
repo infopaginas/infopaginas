@@ -1879,13 +1879,14 @@ class BusinessProfileManager extends Manager
 
     protected function getElasticSearchQuery(SearchDTO $params, $locale)
     {
+        // see https://jira.oxagile.com/browse/INFT-1197
         $fields = [
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
-            'description_' . strtolower($locale) . '^1',
+//            'description_' . strtolower($locale) . '^1',
             'name_' . strtolower($locale) . '.folded^5',
             'categories_' . strtolower($locale) . '.folded^3',
-            'description_' . strtolower($locale) . '.folded^1',
+//            'description_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
