@@ -11,6 +11,7 @@ namespace Domain\BusinessBundle\Manager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Ivory\GoogleMap\Exception\Exception;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AdminManager
@@ -54,11 +55,23 @@ class AddressManager extends DefaultManager
      */
     public function setGoogleAddress($googleAddress, BusinessProfile $businessProfile)
     {
+        $lat = $businessProfile->getLatitude();
+        $lon = $businessProfile->getLongitude();
         // set lat and lon if it has'not been set automatically
-        if (!$businessProfile->getLatitude() || !$businessProfile->getLongitude()) {
-            $businessProfile->setLatitude($googleAddress->getGeometry()->getLocation()->getLatitude());
-            $businessProfile->setLongitude($googleAddress->getGeometry()->getLocation()->getLongitude());
+        if (!$lat || !$lon) {
+            $lat = $googleAddress->getGeometry()->getLocation()->getLatitude();
+            $lon = $googleAddress->getGeometry()->getLocation()->getLongitude();
+            $businessProfile->setLatitude($lat);
+            $businessProfile->setLongitude($lon);
         }
+
+        $request = new Request();
+        $request->query->set('clt', $lat);
+        $request->query->set('clg', $lon);
+        $searchManager = $this->getContainer()->get('domain_search.manager.search');
+        $searchDTO = $searchManager->getLoicalitySearchDTO($request);
+        $closestLocality = $this->getContainer()->get('domain_business.manager.business_profile')->searchClosestLocalityInElastic($searchDTO);
+        $businessProfile->setCatalogLocality($closestLocality);
 
         // set google address if it has'not been set automatically
         if (!$businessProfile->getGoogleAddress()) {

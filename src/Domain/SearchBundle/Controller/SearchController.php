@@ -114,6 +114,20 @@ class SearchController extends Controller
         );
     }
 
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLatlngLocalityAction(Request $request)
+    {
+        $searchManager = $this->get('domain_search.manager.search');
+        $searchDTO = $searchManager->getLoicalitySearchDTO($request);
+        $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
+
+        return new JsonResponse(['localityId' => $closestLocality->getId()]);
+    }
+
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
