@@ -821,6 +821,8 @@ class BusinessProfile implements
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->localities = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->neighborhoods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
@@ -831,6 +833,7 @@ class BusinessProfile implements
 
         $this->isClosed  = false;
         $this->isUpdated = true;
+        $this->hasImages = false;
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
 
         $this->uid = uniqid('', true);
@@ -2013,7 +2016,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return Locality[]
+     * @return ArrayCollection
      */
     public function getLocalities()
     {
@@ -2030,7 +2033,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return Neighborhood[]
+     * @return ArrayCollection
      */
     public function getNeighborhoods()
     {

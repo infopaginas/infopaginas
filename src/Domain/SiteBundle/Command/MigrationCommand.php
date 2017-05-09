@@ -821,7 +821,9 @@ class MigrationCommand extends ContainerAwareCommand
     {
         $area = $locality->getArea();
 
-        $businessProfile->addLocality($locality);
+        if (!$businessProfile->getLocalities()->contains($locality)) {
+            $businessProfile->addLocality($locality);
+        }
 
         if ($area and !$businessProfile->getAreas()->contains($area)) {
             $businessProfile->addArea($area);
@@ -829,7 +831,9 @@ class MigrationCommand extends ContainerAwareCommand
 
         if ($locality->getNeighborhoods()) {
             foreach ($locality->getNeighborhoods() as $neighborhood) {
-                $businessProfile->addNeighborhood($neighborhood);
+                if (!$businessProfile->getNeighborhoods()->contains($neighborhood)) {
+                    $businessProfile->addNeighborhood($neighborhood);
+                }
             }
         }
 
