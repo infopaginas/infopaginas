@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\Locality;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
 /**
@@ -41,6 +42,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
             ->setParameter('name', strtolower($localityName))
             ->setParameter('locale', $locale)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
@@ -55,6 +57,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->leftJoin('l.translations', 't')
             ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
             ->setParameter('name', strtolower($localityName))
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -74,6 +77,8 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter('customSlug', $customSlug)
             ;
         }
+
+        $query->setMaxResults(1);
 
         return $query->getQuery()->getOneOrNullResult();
     }
@@ -212,5 +217,24 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $query->getResult();
+    }
+
+    /**
+     * @param string $pseudoSlug
+     *
+     * @return Locality|null
+     */
+    public function getLocalityByPseudoSlug($pseudoSlug)
+    {
+        $query = $this->createQueryBuilder('l')
+            ->select('l')
+            ->leftJoin('l.pseudos', 'lp')
+            ->where('lp.slug = :localitySlug')
+            ->setParameter('localitySlug', $pseudoSlug)
+        ;
+
+        $query->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 }

@@ -1,18 +1,26 @@
-<div class="featured-categories clearfix">
-    {% for item in menuItems %}
-        <div class="featured-categories__list">
-            <h3>
-                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': item.locality.slug})) }}" title="{{ item.locality.name }}">{{ item.locality.name }}</a>
-            </h3>
-            <ul>
-                {% for category in item.categories %}
-                    <li class="cat-list__item">
-                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': item.locality.slug, 'categorySlug1': category.slug})) }}" title="{{ category.name }}">
-                            <span>{{ category.name }}</span>
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div><!-- featured-categories__list -->
-    {% endfor %}
-</div><!-- fratured-categories -->
+{% if shortCutItems %}
+    <section class="{% if type == SHORT_CUT_ITEMS.LANDING %}page-section page-section--no-box{% else %}error-section error__categories{% endif %}">
+        <h2 class="section__title">
+            {{ title|trans }}
+        </h2>
+
+        <div class="featured-categories clearfix">
+            {% for item in shortCutItems %}
+                <div class="featured-categories__list">
+                    <h3>
+                        {{ item.title }}
+                    </h3>
+                    <ul>
+                        {% for searchItem in item.data %}
+                            <li class="cat-list__item">
+                                <a href="{{ absolute_url(path('domain_search_index', searchItem.data)) }}" title="{{ searchItem.title }}">
+                                    <span>{{ searchItem.title }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div><!-- featured-categories__list -->
+            {% endfor %}
+        </div><!-- fratured-categories -->
+    </section>
+{% endif %}

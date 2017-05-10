@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Form\Handler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
@@ -231,44 +232,17 @@ class BusinessProfileFormHandler extends BaseFormHandler
         return $this->businessProfileNew;
     }
 
-    /**
-     * @param array $data
-     * @return array
-     */
-    private function getCategoriesIds($data)
+    private function handleCategoriesUpdate()
     {
-        $ids = [];
+        if (!empty($this->requestParams['categoryIds'])) {
+            foreach ($this->requestParams['categoryIds'] as $categoryId) {
+                $category = $this->em->getRepository(Category::class)->find((int)$categoryId);
 
-        if (!empty($data['categories'])) {
-            $ids[] = $data['categories'];
-
-            if (!empty($data['categories2'])) {
-                $ids = array_merge($ids, $data['categories2']);
-
-                if (!empty($data['categories3'])) {
-                    $ids = array_merge($ids, $data['categories3']);
+                if ($category) {
+                    $this->businessProfileNew->addCategory($category);
                 }
             }
         }
-
-        return $ids;
-    }
-
-    private function handleCategoriesUpdate()
-    {
-        $newCategoryIds  = $this->getCategoriesIds($this->requestParams);
-
-        if (!$newCategoryIds) {
-            $this->form->get('categories')->addError(new FormError('business_profile.category.min_count'));
-        } else {
-            $categories = $this->businessProfileManager->getCategoriesByIds($newCategoryIds);
-
-            foreach ($categories as $category) {
-                $this->businessProfileNew->addCategory($category);
-            }
-        }
-
-        return $this->businessProfileNew;
     }
 
     private function handleBusinessOwner()

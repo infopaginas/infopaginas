@@ -3,6 +3,8 @@
 namespace Domain\SiteBundle\Controller;
 
 use AntiMattr\GoogleBundle\Analytics\CustomVariable;
+use Domain\BusinessBundle\Manager\LandingPageShortCutManager;
+use Domain\PageBundle\Model\PageInterface;
 use Domain\SiteBundle\Form\Type\RegistrationType;
 use Domain\SiteBundle\Form\Type\LoginType;
 use Domain\SiteBundle\Form\Type\ResetPasswordRequestType;
@@ -46,6 +48,8 @@ class HomeController extends Controller
         $this->get('google.analytics')->addCustomVariable(new CustomVariable('default', 'dimension1', $roleForGA));
         $schema = $articleManager->buildArticlesSchema($articles);
 
+        $landingPage = $this->get('domain_page.manager.page')->getPageByCode(PageInterface::CODE_LANDING);
+
         return $this->render(
             ':redesign:homepage.html.twig',
             [
@@ -55,22 +59,30 @@ class HomeController extends Controller
                 'locale'        => $locale,
                 'schemaJsonLD'  => $schema,
                 'hideHeaderSearch' => true,
+                'landingPage'   => $landingPage,
             ]
         );
     }
 
     /**
+     * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function popularMenuItemsAction()
+    public function popularMenuItemsAction(Request $request)
     {
-        $menuManager    = $this->get('domain_menu.manager.menu');
-        $menuItems      = $menuManager->getMenuItems();
+        $type  = $request->get('type', LandingPageShortCutManager::SHORT_CUT_ITEMS_LANDING);
+        $title = $request->get('title', '');
+
+        $shortCutManager = $this->get('domain_business.manager.landing_page_short_cut_manager');
+        $shortCutItems   = $shortCutManager->getLandingPageShortCutItems($request->getLocale());
 
         return $this->render(
             ':redesign/blocks:popular_menu_items.html.twig',
             [
-                'menuItems' => $menuItems,
+                'shortCutItems' => $shortCutItems,
+                'type'          => $type,
+                'title'         => $title,
             ]
         );
     }

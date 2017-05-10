@@ -73,7 +73,7 @@ class BusinessProfile implements
     const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
     const FLAG_IS_UPDATED = 'isUpdated';
 
-    const DEFAULT_MILES_FROM_MY_BUSINESS = 100;
+    const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
     const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     // translatable fields
@@ -715,6 +715,20 @@ class BusinessProfile implements
     protected $collectionWorkingHours;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="working_hours_json", type="text", nullable=true)
+     */
+    protected $workingHoursJson;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
+     */
+    protected $hasImages;
+
+    /**
      * @return mixed
      */
     public function getVideo()
@@ -807,6 +821,8 @@ class BusinessProfile implements
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->localities = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->neighborhoods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
@@ -817,6 +833,7 @@ class BusinessProfile implements
 
         $this->isClosed  = false;
         $this->isUpdated = true;
+        $this->hasImages = false;
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
 
         $this->uid = uniqid('', true);
@@ -1206,56 +1223,6 @@ class BusinessProfile implements
     public function getCategories()
     {
         return $this->categories;
-    }
-
-    /**
-     * Set category
-     *
-     * @param \Domain\BusinessBundle\Entity\Category $category
-     *
-     * @return BusinessProfile
-     */
-    public function setCategories(\Domain\BusinessBundle\Entity\Category $category)
-    {
-        $this->categories->clear();
-
-        $this->addCategory($category);
-
-        return $this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return Category
-     */
-    public function getCategory()
-    {
-        foreach ($this->categories as $category) {
-            if (!$category->getParent()) {
-                return $category;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get subcategories
-     *
-     * @return Category[]
-     */
-    public function getSubcategories($level)
-    {
-        $categories = [];
-
-        foreach ($this->categories as $category) {
-            if ($category->getParent() and $category->getLvl() == $level) {
-                $categories[] = $category;
-            }
-        }
-
-        return $categories;
     }
 
     /**
@@ -2049,7 +2016,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return Locality[]
+     * @return ArrayCollection
      */
     public function getLocalities()
     {
@@ -2066,7 +2033,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return Neighborhood[]
+     * @return ArrayCollection
      */
     public function getNeighborhoods()
     {
@@ -2577,29 +2544,17 @@ class BusinessProfile implements
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
     }
 
-    public function getExportCategoryLvl2()
-    {
-        return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_2);
-    }
-
-    public function getExportCategoryLvl3()
-    {
-        return $this->getExportCategoryByLvl(Category::CATEGORY_LEVEL_3);
-    }
-
-    public function getExportCategoryByLvl($lvl)
+    public function getExportCategories()
     {
         $data = [];
 
         $categories = $this->getCategories();
 
         foreach ($categories as $category) {
-            if ($category->getLvl() === $lvl) {
-                $data[] = [
-                    'id'   => $category->getId(),
-                    'name' => $category->getName(),
-                ];
-            }
+            $data[] = [
+                'id'   => $category->getId(),
+                'name' => $category->getName(),
+            ];
         }
 
         return json_encode($data);
@@ -2760,5 +2715,64 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_SEO_TITLE,
             self::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
         ];
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateWorkingHoursData()
+    {
+        $workingHours = DayOfWeekModel::getBusinessProfileWorkingHoursJson($this);
+
+        $this->workingHoursJson = $workingHours;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkingHoursJson()
+    {
+        return $this->workingHoursJson;
+    }
+
+    /**
+     * @param string $workingHoursJson
+     *
+     * @return BusinessProfile
+     */
+    public function setWorkingHoursJson($workingHoursJson)
+    {
+        $this->workingHoursJson = $workingHoursJson;
+
+        return $this;
+    }
+
+    /**
+     * @return \stdClass
+     */
+    public function getWorkingHoursJsonAsObject()
+    {
+        return json_decode($this->getWorkingHoursJson());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHasImages()
+    {
+        return $this->hasImages;
+    }
+
+    /**
+     * @param boolean $hasImages
+     *
+     * @return BusinessProfile
+     */
+    public function setHasImages($hasImages)
+    {
+        $this->hasImages = $hasImages;
+
+        return $this;
     }
 }

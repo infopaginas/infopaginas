@@ -10,7 +10,6 @@ imports:
     - { resource: extra-configs/sonata_translation.yml }
     - { resource: extra-configs/twig_constant.yml }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
-    - { resource: "@DomainMenuBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
@@ -21,7 +20,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '0.9.2'
+    app_version: '0.9.3'
     locale: en
     locales: [en, es]
     locale_data:
@@ -63,7 +62,7 @@ parameters:
     image_back_up_path: '/../web/imageBackUp/'
     video_back_up_path: '/../web/imageBackUp/video/'
     youtube_back_up_path: '/../web/imageBackUp/youtube/'
-    breadcrumb_max_length: 22
+    breadcrumb_max_length: 38
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
     google_youtube_privacy: '%google_youtube_video_privacy%'

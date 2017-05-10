@@ -12,6 +12,7 @@ class CategoryManager extends Manager
 {
     const AUTO_COMPLETE_TYPE  = 'category';
     const AUTO_SUGGEST_MAX_CATEGORY_COUNT = 5;
+    const AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT = 10;
     const AUTO_SUGGEST_SEPARATOR = ' ';
 
     public function searchAutosuggestByName(string $name, string $locale)
@@ -33,50 +34,16 @@ class CategoryManager extends Manager
 
     public function getCategoryBySlug($categorySlug)
     {
-        $customSlug = SlugUtil::convertCustomSlug($categorySlug);
+        $customSlug = SlugUtil::convertSlug($categorySlug);
 
         $category = $this->getRepository()->getCategoryBySlug($categorySlug, $customSlug);
 
         return $category;
     }
 
-    public function getAvailableParentCategories($locale = false)
+    public function getAvailableCategoriesWithContent($locality, $locale = false)
     {
-        return $this->getRepository()->getAvailableParentCategories($locale);
-    }
-
-    public function getAvailableParentCategoriesWithContent($locality, $locale = false)
-    {
-        return $this->getRepository()->getAvailableParentCategoriesWithContent($locality, $locale);
-    }
-
-    public function searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale)
-    {
-        $subcategoriesWithContent = $this->getRepository()
-            ->searchSubcategoriesWithContentByCategory($category, $locality, $level, $locale);
-
-        return $subcategoriesWithContent;
-    }
-
-    public function searchSubcategoryByCategory($category, $level, $locale)
-    {
-        return $this->getRepository()->searchSubcategoryByCategory($category, $level, $locale);
-    }
-
-    public function getCategoryParents($category)
-    {
-        $data = $this->getRepository()->getCategoryParents($category);
-        $slugs = [
-            'categorySlug1' => null,
-            'categorySlug2' => null,
-            'categorySlug3' => null,
-        ];
-
-        foreach ($data as $item) {
-            $slugs['categorySlug' . $item->getLvl()] = $item->getSlug();
-        }
-
-        return $slugs;
+        return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }
 
     public function buildCategoryElasticData(Category $category)
@@ -85,8 +52,11 @@ class CategoryManager extends Manager
             return false;
         }
 
-        $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_EN);
-        $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
+        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+
+        $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
+        $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);
 
         $data = [
             'id'              => $category->getId(),
@@ -157,7 +127,15 @@ class CategoryManager extends Manager
         return $params;
     }
 
-    public function getElasticAutoSuggestSearchQuery($query, $locale, $limit = false, $offset = 0)
+    /**
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
+     * @param int      $offset
+     *
+     * @return array
+     */
+    public function getElasticAutoSuggestSearchQuery($query, $locale, $limit = null, $offset = 0)
     {
         if (!$limit) {
             $limit = self::AUTO_SUGGEST_MAX_CATEGORY_COUNT;

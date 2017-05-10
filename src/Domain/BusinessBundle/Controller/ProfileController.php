@@ -235,32 +235,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param int     $categoryId
-     * @param int     $businessProfileId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function subcategoryListAction(Request $request, $categoryId, $businessProfileId = null)
-    {
-        $data = [
-            'locale'        => $request->request->get('currentLocale', null),
-            'level'         => $request->request->get('level', Category::SUBCATEGORY_DEFAULT_LEVEL),
-            'subcategories' => $request->request->get('categories', []),
-        ];
-
-        if ($data['level'] >  Category::SUBCATEGORY_DEFAULT_LEVEL and !$data['subcategories']) {
-            return new JsonResponse(['data' => []]);
-        }
-
-        $businessProfilesManager = $this->getBusinessProfilesManager();
-
-        $subcategories = $businessProfilesManager->getSubcategories($categoryId, $businessProfileId, $data);
-
-        return new JsonResponse(['data' => $subcategories]);
-    }
-
-    /**
      * @param Request  $request
      * @param int|null $businessProfileId
      *
@@ -302,6 +276,24 @@ class ProfileController extends Controller
         $neighborhoods = $businessProfilesManager->getLocalitiesNeighborhoods($businessProfileId, $localities, $locale);
 
         return new JsonResponse(['data' => $neighborhoods]);
+    }
+
+    /**
+     * @param Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function categoryAutocompleteAction(Request $request)
+    {
+        $query = $request->query->get('q', '');
+
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
+            $query,
+            $request->getLocale()
+        );
+
+        return new JsonResponse($results);
     }
 
     /**

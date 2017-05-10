@@ -4,7 +4,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     //init businessProfile object variables
     var businessProfile = function() {
         this.urls = {
-            saveBusinessProfile: Routing.generate('domain_business_profile_save')
+            saveBusinessProfile: Routing.generate( 'domain_business_profile_save' ),
+            categoryAutoComplete: Routing.generate( 'domain_business_category_autocomplite' )
         };
 
         this.serviceAreasAreaChoiceValue = 'area';
@@ -34,7 +35,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
                 serviceAreaRadioName: '[serviceAreasType]',
                 categoriesId: '#' + this.freeProfileFormName + '_categories',
-                subcategoriesId: '#' + this.freeProfileFormName + '_categories'
+                categoryOptions: '#category_options'
             },
             closeBusinessProfileLoadingSpinnerContainerId: 'close-business-profile-spinner-container',
             loadingSpinnerContainerClass: '.spinner-container',
@@ -406,102 +407,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         return prefix + '_' + field;
     };
 
-    businessProfile.prototype.handleBusinessProfileSubcategories = function () {
-        var self = this;
-
-        var categoryField = $( self.html.fields.categoriesId );
-
-        getSubcategories( defaultCategoryLevel );
-        addCategoriesEvents();
-
-        function addCategoriesEvents() {
-            for ( var i = defaultSubCategoryLevel; i <= maxCategoryLevel - 1; i++ ) {
-                (function ( i ) {
-                    var subcategoryFiled = $( self.html.fields.subcategoriesId + i );
-
-                    subcategoryFiled.on( 'change', function() {
-                        getSubcategories( i );
-                    });
-                }( i ));
-            }
-
-            categoryField.on( 'change', function() {
-                getSubcategories( defaultCategoryLevel );
-            });
-        }
-
-        function getSubcategories( level ) {
-            var categoryId = $( self.html.fields.categoriesId ).val();
-            var subcategories = $( self.html.fields.subcategoriesId + ( level + 1 ) );
-            var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
-            var parentCategories = $( self.html.fields.subcategoriesId + ( level ) ).val();
-            var data = {
-                'level':         level + 1,
-                'categories':    parentCategories
-            };
-
-            if (subcategories.length) {
-                var selectOptions = [];
-                var selectBlock = subcategories.selectize( self.selectizeOptions );
-                var selectize = selectBlock[0].selectize;
-
-                subcategories.html( '' );
-                selectize.disable();
-
-                if ( !parentCategories && level > defaultCategoryLevel ) {
-                    if ( level < maxCategoryLevel ) {
-                        getSubcategories( level + 1 )
-                    }
-
-                    return false;
-                }
-
-                $.post( Routing.generate('domain_business_get_subcategories', {categoryId: categoryId, businessProfileId: businessProfileId}), data, function( response ) {
-                    var html = '';
-                    var selected = [];
-
-                    if ( response.data ) {
-                        $.each( response.data, function ( key, value ) {
-                            html += '<option value="' + value.id + '">' + value.name + '</option>';
-
-                            selectOptions.push({
-                                text: value.name,
-                                value: value.id
-                            });
-
-                            if ( value.selected ) {
-                                selected.push( value.id );
-                            }
-                        });
-                    }
-
-                    subcategories.html( html );
-
-                    if ( html ) {
-                        subcategories.attr( 'disabled', false );
-                        selectize.enable();
-                    } else {
-                        subcategories.attr( 'disabled', 'disabled' );
-                        selectize.disable();
-                    }
-
-                    selectize.clear();
-                    selectize.clearOptions();
-                    selectize.renderCache = {};
-                    selectize.load( function ( callback ) {
-                        callback( selectOptions );
-                    });
-
-                    selectize.setValue( selected );
-
-                    if ( level < maxCategoryLevel ) {
-                        getSubcategories( level + 1 )
-                    }
-                });
-            }
-        }
-    };
-
     businessProfile.prototype.handleBusinessProfileAreas = function () {
         var self = this;
 
@@ -639,6 +544,47 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         });
     };
 
+    businessProfile.prototype.initAutoCompleteCategoriesField = function () {
+        var that = this;
+        var optionsData = $( this.html.fields.categoryOptions ).data( 'category-ids' );
+        var options = $.map( optionsData, function( value, index ) {
+            return [ value ];
+        });
+        var optionIds = $.map( optionsData, function( value, index ) {
+            return [ value.id ];
+        });
+
+        var categories = $( '#domain_business_bundle_business_profile_form_type_categoryIds' ).selectize({
+            plugins: ['remove_button'],
+            delimiter: ',',
+            persist: true,
+            create: false,
+            options: options,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                $.ajax({
+                    url: that.urls.categoryAutoComplete,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        q: query,
+                    },
+                    error: function() {
+                        callback();
+                    },
+                    success: function(res) {
+                        callback(res);
+                    }
+                });
+            }
+        });
+
+        categories[0].selectize.setValue( optionIds );
+    };
+
     //setup required "listeners"
     businessProfile.prototype.run = function() {
         this.handleGeocodeSearch();
@@ -646,8 +592,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         this.handleProfileSave();
         this.handleServiceAreaChange();
         this.handleFormChange();
-        this.handleBusinessProfileSubcategories();
         this.handleBusinessProfileAreas();
+        this.initAutoCompleteCategoriesField();
 
         var that = this;
 

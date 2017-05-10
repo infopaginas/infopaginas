@@ -1,6 +1,14 @@
 .sonata-ba-list-field-header-actions {
-    /*min-width: 183px;*/
+    width: 10%;
 }
+.sonata-ba-list-field-header-batch {
+    width: 5%;
+}
+
+.sonata-ba-list-field-header-integer:nth-child(2) {
+    width: 5%;
+}
+
 .btn-list-action{
     margin-left: 2px !important;
     margin-right: 2px !important;

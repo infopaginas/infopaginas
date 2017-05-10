@@ -1,19 +1,7 @@
 {% if currentLocality %}
-    {% if currentCategory1 %}
-        {% if currentCategory2 %}
-            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug1': currentCategory1.getSlug(), 'categorySlug2': currentCategory2.getSlug(), 'categorySlug3': item.getSlug() })) }}" title="{{ item.name }}">
-                {{ item.name }}
-            </a>
-        {% else %}
-            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug1': currentCategory1.getSlug(), 'categorySlug2': item.getSlug() })) }}" title="{{ item.name }}">
-                {{ item.name }}
-            </a>
-        {% endif %}
-    {% else %}
-        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.getSlug(), 'categorySlug1': item.getSlug() })) }}" title="{{ item.name }}">
-            {{ item.name }}
-        </a>
-    {% endif %}
+    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.slug, 'categorySlug': item.slug })) }}" title="{{ item.name }}">
+        {{ item.name }}
+    </a>
 {% else %}
     <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  item.getSlug() })) }}" title="{{ item.name }}">
         {{ item.name }}

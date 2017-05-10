@@ -10,10 +10,6 @@ domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
     prefix:   /articles
 
-domain_menu:
-    resource: "@DomainMenuBundle/Resources/config/routing.yml"
-    prefix:   /menu
-
 domain_page:
     resource: "@DomainPageBundle/Resources/config/routing.yml"
     prefix:   /

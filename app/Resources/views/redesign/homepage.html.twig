@@ -9,7 +9,7 @@
 {% block body %}
     <div class="main__container main__container--centered">
         <div class="main">
-            <div class="video-header__container" style="background-image: url('{{ absolute_url(asset('redesign/img/home-header.jpg')) }}')">
+            <div class="video-header__container" data-desktop-background="{% if landingPage.getBackground() %}{% path landingPage.getBackground(), 'normal' %}{% else %}{{ absolute_url(asset('redesign/img/home-header.jpg')) }}{% endif %}">
 
                 {% block homePageSearch %}
                     {% include ':redesign/blocks:homepage_search.html.twig' %}
@@ -21,10 +21,7 @@
             <div class="profile-body__container">
                 <div class="container columns-container clearfix">
                     <div class="main-column">
-                        <section class="page-section page-section--no-box">
-                            <h2 class="section__title">{% trans %}Categories{% endtrans %}</h2>
-                            {{ render(controller('DomainSiteBundle:Home:popularMenuItems')) }}
-                        </section>
+                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems', {'type': SHORT_CUT_ITEMS.LANDING, 'title': 'popular_searches.title'})) }}
 
                         {% embed ':redesign/blocks:homepage_article_list.html.twig' %}
                             {% block titleTag %}

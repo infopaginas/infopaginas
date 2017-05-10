@@ -116,21 +116,22 @@ class SearchManager extends Manager
         return $response;
     }
 
-    public function searchCatalog(SearchDTO $searchParams, $locale) : SearchResultsDTO
+    public function searchCatalog(SearchDTO $searchParams) : SearchResultsDTO
     {
-        $results = $this->businessProfileManager->searchCatalog($searchParams, $locale);
+        $search = $this->businessProfileManager->searchCatalog($searchParams);
+
+        $results = $search['data'];
+        $totalResults = $search['total'];
 
         if ($results) {
-            $categories    = [];
-            $totalResults  = $this->businessProfileManager->countCatalogSearchResults($searchParams, $locale);
-            $pagesCount    = ceil($totalResults/$searchParams->limit);
+            $pagesCount   = ceil($totalResults/$searchParams->limit);
         } else {
             $totalResults  = 0;
-            $categories    = [];
             $pagesCount    = 0;
         }
 
-        $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
+        $categories    = [];
+        $neighborhoods = [];
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
@@ -161,7 +162,7 @@ class SearchManager extends Manager
         $category = SearchDataUtil::getCategoryFromRequest($request);
 
         if ($category) {
-            $searchDTO->setCategory1($category);
+            $searchDTO->setCategory($category);
         }
 
         $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
@@ -183,7 +184,7 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
-    public function getSearchCatalogDTO($request, $locality, $category, $category2, $category3)
+    public function getSearchCatalogDTO($request, $locality, $category)
     {
         $location = $this->geolocationManager->buildCatalogLocationValue($locality);
 
@@ -198,15 +199,7 @@ class SearchManager extends Manager
         $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
 
         if ($category instanceof Category) {
-            $searchDTO->setCategory1($category);
-        }
-
-        if ($category2 instanceof Category) {
-            $searchDTO->setCategory2($category2);
-        }
-
-        if ($category3 instanceof Category) {
-            $searchDTO->setCategory3($category3);
+            $searchDTO->setCategory($category);
         }
 
         if ($locality) {
@@ -249,16 +242,8 @@ class SearchManager extends Manager
     {
         $categoriesSlugSet = [];
 
-        if ($searchDTO->getCategory1()) {
-            $categoriesSlugSet[] = $searchDTO->getCategory1()->getSlug();
-        }
-
-        if ($searchDTO->getCategory2()) {
-            $categoriesSlugSet[] = $searchDTO->getCategory2()->getSlug();
-        }
-
-        if ($searchDTO->getCategory3()) {
-            $categoriesSlugSet[] = $searchDTO->getCategory3()->getSlug();
+        if ($searchDTO->getCategory()) {
+            $categoriesSlugSet[] = $searchDTO->getCategory()->getSlug();
         }
 
         return new DCDataDTO(
@@ -272,8 +257,8 @@ class SearchManager extends Manager
     {
         $categorySlug = '';
 
-        if ($searchDTO->getCategory1()) {
-            $category = $this->categoriesManager->getRepository()->find((int)$searchDTO->getCategory1());
+        if ($searchDTO->getCategory()) {
+            $category = $this->categoriesManager->getRepository()->find((int)$searchDTO->getCategory());
 
             if ($category) {
                 $categorySlug = $category->getSlug();
@@ -289,6 +274,10 @@ class SearchManager extends Manager
 
         if ($localitySlug) {
             $locality = $this->localityManager->getLocalityBySlug($localitySlug);
+
+            if (!$locality) {
+                $locality = $this->localityManager->getLocalityByLocalityPseudoSlug($localitySlug);
+            }
         }
 
         return $locality;
@@ -310,29 +299,6 @@ class SearchManager extends Manager
         $category = $this->categoriesManager->searchSubcategoryByCategory($category, $level, $locale);
 
         return $category;
-    }
-
-    public function getCategoryParents($category)
-    {
-        $categories = $this->categoriesManager->getCategoryParents($category);
-
-        return $categories;
-    }
-
-    public function getCategoryParentsCatalogPath($category)
-    {
-        $data = [
-            'categorySlug1'   => null,
-            'categorySlug2'   => null,
-            'categorySlug3'   => null,
-        ];
-        $categories = $this->getCategoryParents($category);
-
-        foreach ($categories as $item) {
-            $data['categorySlug' . $item->getLvl()] = $item->getSlug();
-        }
-
-        return $data;
     }
 
     public function checkCatalogItemHasContent($entities)
@@ -359,20 +325,14 @@ class SearchManager extends Manager
 
     /**
      * @param Locality[] $localities
-     * @param Category[] $categories1
-     * @param Category[] $categories2
-     * @param Category[] $categories3
+     * @param Category[] $categories
      *
      * @return array();
      */
-    public function sortCatalogItems($localities, $categories1 = [], $categories2 = [], $categories3 = [])
+    public function sortCatalogItems($localities, $categories)
     {
-        if ($categories3) {
-            $data = $this->sortItems($categories3);
-        } elseif ($categories2) {
-            $data = $this->sortItems($categories2);
-        } elseif ($categories1) {
-            $data = $this->sortItems($categories1);
+        if ($categories) {
+            $data = $this->sortItems($categories);
         } else {
             $data = $this->sortItems($localities);
         }
@@ -396,35 +356,7 @@ class SearchManager extends Manager
     public function checkCatalogRedirect($slugs, $entities)
     {
         return $this->checkCatalogSlug($slugs['locality'], $entities['locality']) and
-            $this->checkCatalogSlug($slugs['category1'], $entities['category1']) and
-            $this->checkCatalogSlug($slugs['category2'], $entities['category2']) and
-            $this->checkCatalogSlug($slugs['category3'], $entities['category3']) and
-            $this->checkCatalogCategory($entities);
-    }
-
-    private function checkCatalogCategory($data)
-    {
-        $isValid = true;
-
-        if (!empty($data['category1'])) {
-            if ($data['category1']->getParent()) {
-                $isValid = false;
-            } else {
-                if (!empty($data['category2'])) {
-                    if ($data['category2']->getParent() != $data['category1']) {
-                        $isValid = false;
-                    } else {
-                        if (!empty($data['category3'])) {
-                            if ($data['category3']->getParent() != $data['category2']) {
-                                $isValid = false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $isValid;
+            $this->checkCatalogSlug($slugs['category'], $entities['category']);
     }
 
     private function checkCatalogSlug($requestSlug, $entity)

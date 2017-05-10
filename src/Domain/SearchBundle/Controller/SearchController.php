@@ -127,9 +127,10 @@ class SearchController extends Controller
         $searchData = $this->getSearchDataByRequest($request);
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
-        $results = $businessProfileManager->searchAutosuggestByPhraseAndLocation(
+        $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
             $searchData['q'],
-            $request->getLocale()
+            $request->getLocale(),
+            CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
         );
 
         return (new JsonResponse)->setData($results);
@@ -350,27 +351,17 @@ class SearchController extends Controller
         return $this->get('domain_business.manager.category');
     }
 
-    public function catalogAction(
-        Request $request,
-        $localitySlug = '',
-        $categorySlug1 = '',
-        $categorySlug2 = '',
-        $categorySlug3 = ''
-    ) {
+    public function catalogAction(Request $request, $localitySlug = '', $categorySlug = '') {
         $searchManager = $this->get('domain_search.manager.search');
 
-        $category1   = null;
-        $category2   = null;
-        $category3   = null;
-        $showResults = null;
+        $category   = null;
+        $showResults = false;
         $showCatalog = true;
 
         $seoLocationName  = null;
         $seoCategories = [];
 
-        $categories1 = [];
-        $categories2 = [];
-        $categories3 = [];
+        $categories = [];
 
         $localities = $this->getLocalityManager()->getCatalogLocalitiesWithContent();
 
@@ -380,83 +371,39 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories1 = $this->getCategoryManager()
-                ->getAvailableParentCategoriesWithContent($locality, $request->getLocale());
+            $categories = $this->getCategoryManager()
+                ->getAvailableCategoriesWithContent($locality, $request->getLocale());
 
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
             $request->attributes->set('q', $locality->getName());
 
-            $category1 = $searchManager->searchCatalogCategory($categorySlug1);
+            $category = $searchManager->searchCatalogCategory($categorySlug);
 
             $seoLocationName = $locality->getName();
 
-            if ($category1 and !$category1->getParent()) {
-                $request->attributes->set('category', $category1->getName());
-                $request->attributes->set('q', $category1->getName());
-
-                $categories2 = $this->getCategoryManager()->searchSubcategoriesWithContentByCategory(
-                    $category1,
-                    $locality,
-                    Category::CATEGORY_LEVEL_2,
-                    $request->getLocale()
-                );
-
-                $category2   = $searchManager->searchCatalogCategory($categorySlug2);
-
-                if (!$categories2) {
-                    $showCatalog = false;
-                }
+            if ($category) {
+                $request->attributes->set('category', $category->getName());
+                $request->attributes->set('q', $category->getName());
+                $showCatalog = false;
 
                 $showResults = true;
-                $seoCategories[] = $category1->getName();
-
-                if ($category2 and $category2->getParent()) {
-                    $request->attributes->set('subcategory', $category2->getName());
-                    $request->attributes->set('q', $category2->getName());
-
-                    $categories3 = $this->getCategoryManager()->searchSubcategoriesWithContentByCategory(
-                        $category2,
-                        $locality,
-                        Category::CATEGORY_LEVEL_3,
-                        $request->getLocale()
-                    );
-
-                    $category3   = $searchManager->searchCatalogCategory($categorySlug3);
-
-                    $seoCategories[] = $category2->getName();
-
-                    if ($category3 and $category3->getParent()) {
-                        $request->attributes->set('subcategory', $category3->getName());
-                        $request->attributes->set('q', $category3->getName());
-
-                        $showCatalog = false;
-                        $seoCategories[] = $category3->getName();
-                    }
-
-                    if (!$categories3) {
-                        $showCatalog = false;
-                    }
-                }
+                $seoCategories[] = $category->getName();
             }
         }
 
         $slugs = [
             'locality'  => $localitySlug,
-            'category1' => $categorySlug1,
-            'category2' => $categorySlug2,
-            'category3' => $categorySlug3,
+            'category' => $categorySlug,
         ];
 
         $entities = [
             'locality'  => $locality,
-            'category1' => $category1,
-            'category2' => $category2,
-            'category3' => $category3,
+            'category' => $category,
         ];
 
         if (!$searchManager->checkCatalogRedirect($slugs, $entities)) {
-            return $this->handlePermanentRedirect($locality, $category1, $category2, $category3);
+            return $this->handlePermanentRedirect($locality, $category);
         }
 
         $searchDTO        = null;
@@ -480,15 +427,15 @@ class SearchController extends Controller
 
         if (!$locality) {
             $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromLocalityData($localities);
-        } elseif (!$category1) {
+        } elseif (!$category) {
             $locationMarkers = $this->getBusinessProfileManager()->getLocationMarkersFromLocalityData([$locality]);
         } else {
-            $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category1, $category2, $category3);
+            $searchDTO = $searchManager->getSearchCatalogDTO($request, $locality, $category);
 
             //locality lat and lan required
             if ($searchDTO) {
                 $dcDataDTO = $searchManager->getDoubleClickCatalogData($searchDTO);
-                $searchResultsDTO = $searchManager->searchCatalog($searchDTO, $locale);
+                $searchResultsDTO = $searchManager->searchCatalog($searchDTO);
 
                 $this->getBusinessProfileManager()
                     ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
@@ -513,7 +460,7 @@ class SearchController extends Controller
             $locationMarkers = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
         }
 
-        $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories1, $categories2, $categories3);
+        $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories);
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData(
             $seoLocationName,
@@ -535,9 +482,7 @@ class SearchController extends Controller
                 'searchData'         => $searchData,
                 'pageRouter'         => $pageRouter,
                 'currentLocality'    => $locality,
-                'currentCategory1'   => $category1,
-                'currentCategory2'   => $category2,
-                'currentCategory3'   => $category3,
+                'currentCategory'    => $category,
                 'schemaJsonLD'       => $schema,
                 'markers'            => $locationMarkers,
                 'catalogLevelItems'  => $catalogLevelItems,
@@ -558,8 +503,6 @@ class SearchController extends Controller
             'geo',
             'order',
             'category',
-            'category2',
-            'category3',
             'neighborhood',
 
             // geo location
@@ -577,40 +520,16 @@ class SearchController extends Controller
         return $searchData;
     }
 
-    private function handlePermanentRedirect($locality = null, $category1 = null, $category2 = null, $category3 = null)
+    private function handlePermanentRedirect($locality = null, $category = null)
     {
         $data = [
             'localitySlug'    => null,
-            'categorySlug1'    => null,
-            'categorySlug2'   => null,
-            'categorySlug3'   => null,
+            'categorySlug'    => null,
         ];
 
         if ($locality) {
-            if ($category1) {
-                if (!$category1->getParent()) {
-                    $data['categorySlug1'] = $category1->getSlug();
-
-                    if ($category2) {
-                        if ($category2->getLvl() == Category::CATEGORY_LEVEL_2 and $category2->getParent() == $category1) {
-                            $data['categorySlug2'] = $category2->getSlug();
-
-                            if ($category3) {
-                                if ($category3 and $category3->getLvl() == Category::CATEGORY_LEVEL_3 and
-                                    $category3->getParent() == $category2
-                                ) {
-                                    $data['categorySlug3'] = $category3->getSlug();
-                                } else {
-                                    $data = $this->getCategoryManager()->getCategoryParents($category3);
-                                }
-                            }
-                        } else {
-                            $data = $this->getCategoryManager()->getCategoryParents($category2);
-                        }
-                    }
-                } else {
-                    $data = $this->getCategoryManager()->getCategoryParents($category1);
-                }
+            if ($category) {
+                $data['categorySlug'] = $category->getSlug();
             }
 
             $data['localitySlug'] = $locality->getSlug();

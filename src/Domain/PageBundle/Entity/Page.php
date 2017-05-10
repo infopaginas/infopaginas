@@ -107,6 +107,16 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $translations;
 
     /**
+     * @var Media - Media Background Image
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="backgroundPages",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="background_id", referencedColumnName="id", nullable=true)
+     */
+    protected $background;
+
+    /**
      * Get id
      *
      * @return int
@@ -305,5 +315,29 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * Set background
+     *
+     * @param Media $background
+     *
+     * @return Page
+     */
+    public function setBackground($background = null)
+    {
+        $this->background = $background;
+
+        return $this;
+    }
+
+    /**
+     * Get background
+     *
+     * @return Media
+     */
+    public function getBackground()
+    {
+        return $this->background;
     }
 }

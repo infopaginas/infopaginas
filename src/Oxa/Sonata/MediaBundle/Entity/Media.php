@@ -2,10 +2,12 @@
 
 namespace Oxa\Sonata\MediaBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\PageBundle\Entity\Page;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -68,6 +70,15 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      * )
      */
     protected $backgroundBusinessProfiles;
+
+    /**
+     * @var BusinessProfile[]
+     * @ORM\OneToMany(targetEntity="Domain\PageBundle\Entity\Page",
+     *     mappedBy="background",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $backgroundPages;
 
     /**
      * @var Coupon[]
@@ -147,6 +158,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
             self::CONTEXT_BUSINESS_PROFILE_BACKGROUND   => self::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
             self::CONTEXT_BANNER                        => self::CONTEXT_BANNER,
             self::CONTEXT_ARTICLE                       => self::CONTEXT_ARTICLE,
+            self::CONTEXT_PAGE_BACKGROUND               => self::CONTEXT_PAGE_BACKGROUND,
         ];
     }
 
@@ -168,7 +180,8 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      */
     public function __construct()
     {
-        $this->galleryHasMedias = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->galleryHasMedias = new ArrayCollection();
+        $this->backgroundPages  = new ArrayCollection();
     }
 
     /**
@@ -323,6 +336,40 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getBackgroundBusinessProfiles()
     {
         return $this->backgroundBusinessProfiles;
+    }
+
+    /**
+     * Add Page Background
+     *
+     * @param Page $page
+     *
+     * @return Media
+     */
+    public function addBackgroundPage(Page $page)
+    {
+        $this->backgroundPages[] = $page;
+
+        return $this;
+    }
+
+    /**
+     * Remove page background
+     *
+     * @param Page $page
+     */
+    public function removeBackgroundPage(Page $page)
+    {
+        $this->backgroundPages->removeElement($page);
+    }
+
+    /**
+     * Get page background
+     *
+     * @return ArrayCollection
+     */
+    public function getBackgroundPages()
+    {
+        return $this->backgroundPages;
     }
 
     /**

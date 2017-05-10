@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Model\CategoryModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
@@ -35,6 +36,26 @@ class MigrationCommand extends ContainerAwareCommand
     const TAG_SEPARATOR = ';';
     const TWITTER_URL_PREFIX = 'https://twitter.com/';
 
+    /**
+     * @var EntityManager $em
+     */
+    protected $em;
+
+    /**
+     * @var array $categoryEnMergeMapping
+     */
+    protected $categoryEnMergeMapping;
+
+    /**
+     * @var array $categoryEsMergeMapping
+     */
+    protected $categoryEsMergeMapping;
+
+    /**
+     * @var array $deleteLocalityList
+     */
+    protected $deleteLocalityList;
+
     protected function configure()
     {
         $this->setName('data:migration');
@@ -59,6 +80,10 @@ class MigrationCommand extends ContainerAwareCommand
         $this->localeSecond = 'es';
 
         $this->totalTimer = 0;
+
+        $this->categoryEnMergeMapping = CategoryModel::getCategoryEnMergeMapping();
+        $this->categoryEsMergeMapping = CategoryModel::getCategoryEsMergeMapping();
+        $this->deleteLocalityList = LocalityConvertCommand::getDeleteLocalities();
 
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
@@ -362,28 +387,26 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        if ($localities) {
-            $entity->setServiceAreasType('locality');
-
-            foreach ($localities as $item) {
-                $locality = $this->loadLocality($item);
-
-                $entity->addLocality($locality);
-
-                if ($locality->getNeighborhoods()) {
-                    foreach ($locality->getNeighborhoods() as $neighborhood) {
-                        $entity->addNeighborhood($neighborhood);
-                    }
-                }
-            }
-        } else {
-            $entity->setMilesOfMyBusiness($radius);
-            $entity->setServiceAreasType('area');
-        }
-
         if (!$entity->getCatalogLocality()) {
             $catalogLocality = $this->loadLocality($address);
             $entity->setCatalogLocality($catalogLocality);
+        }
+
+        if ($localities) {
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
+
+            foreach ($localities as $item) {
+                $locality = $this->loadLocality($item);
+                $entity = $this->handleLocalityServiceType($entity, $locality);
+            }
+        } elseif ($radius) {
+            $entity->setMilesOfMyBusiness($radius);
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE);
+        } else {
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
+
+            $locality = $entity->getCatalogLocality();
+            $entity = $this->handleLocalityServiceType($entity, $locality);
         }
 
         if ($address->postal_code and $this->checkZipCode($address->postal_code)) {
@@ -404,10 +427,7 @@ class MigrationCommand extends ContainerAwareCommand
             //add categories
             foreach ($profile->headings as $value) {
                 $category = $this->getCategory($value);
-
-                if ($category) {
-                    $entity = $this->addBusinessProfileCategory($entity, $category);
-                }
+                $entity = $this->addBusinessProfileCategory($entity, $category);
             }
         }
 
@@ -451,7 +471,11 @@ class MigrationCommand extends ContainerAwareCommand
 
         if ($profile->payment_methods) {
             foreach ($profile->payment_methods as $item) {
-                $entity->addPaymentMethod($this->loadPaymentMethod($item));
+                $paymentMethod = $this->getPaymentMethod($item);
+
+                if ($paymentMethod and !$entity->getPaymentMethods()->contains($paymentMethod)) {
+                    $entity->addPaymentMethod($paymentMethod);
+                }
             }
         }
 
@@ -575,16 +599,31 @@ class MigrationCommand extends ContainerAwareCommand
     {
         $slug = SlugUtil::convertSlug($name);
 
-        //search category by slugEn, slugEs
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryByCustomSlug($slug);
+        $entity = $this->em->getRepository(Category::class)->getCategoryByOldSlugs($slug);
+
+        if (!$entity) {
+            $newSlug = '';
+
+            if (!empty($this->categoryEnMergeMapping[$slug])) {
+                $newSlug = $this->categoryEnMergeMapping[$slug];
+            } elseif (!empty($this->categoryEsMergeMapping[$slug])) {
+                $newSlug = $this->categoryEsMergeMapping[$slug];
+            }
+
+            if ($newSlug) {
+                $entity = $this->em->getRepository(Category::class)->getCategoryByOldSlugs($newSlug);
+            }
+        }
 
         return $entity;
     }
 
     private function getDefaultCategory()
     {
-        $slug = SlugUtil::convertSlug(CategoryModel::UNDEFINED_CATEGORY);
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryBySlug($slug);
+        $slug = Category::CATEGORY_UNDEFINED_SLUG;
+        $entity = $this->em->getRepository(Category::class)->findOneBy([
+            'slug' => $slug,
+        ]);
 
         return $entity;
     }
@@ -605,32 +644,34 @@ class MigrationCommand extends ContainerAwareCommand
         return $entity;
     }
 
-    private function loadPaymentMethod($key)
+    private function getPaymentMethod($key)
     {
         $hardCodedList = [
-            'american_express' => 'American Express',
-            'ath_movil' => 'ATH Movil',
-            'cash' => 'Cash',
-            'check' => 'Check',
-            'debit_atm' => 'Debit/ATM',
-            'diners_club' => 'Diners Club',
-            'discover' => 'Discover',
-            'giros' => 'Giros',
-            'mastercard' => 'MasterCard',
-            'online_payment' => 'Online Payment',
-            'paypal' => 'Paypal',
-            'visa' => 'Visa',
+            'american_express'  => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'debit_atm'         => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'diners_club'       => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'discover'          => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'mastercard'        => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'visa'              => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'ath_movil'         => PaymentMethod::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            'cash'              => PaymentMethod::PAYMENT_METHOD_TYPE_CASH,
+            'check'             => PaymentMethod::PAYMENT_METHOD_TYPE_CHECK,
+            'online_payment'    => PaymentMethod::PAYMENT_METHOD_TYPE_ONLINE,
+            'paypal'            => PaymentMethod::PAYMENT_METHOD_TYPE_PAYPAL,
         ];
 
         if (isset($hardCodedList[$key])) {
             $valuePrimary = $hardCodedList[$key];
+
+            $paymentMethod = $this->em->getRepository(PaymentMethod::class)->findOneBy([
+                'type' => $valuePrimary,
+            ]);
         } else {
             $this->output->writeln('Unknown Payment Method key: ' . $key);
-
-            $valuePrimary = $key;
+            $paymentMethod = null;
         }
 
-        return $this->loadEntity('PaymentMethod', $valuePrimary, $valuePrimary);
+        return $paymentMethod;
     }
 
     private function loadLocality($item)
@@ -638,13 +679,19 @@ class MigrationCommand extends ContainerAwareCommand
         $className  = 'Locality';
         $repository = $this->em->getRepository('DomainBusinessBundle:' . $className);
 
-        $entity = $repository->getLocalityBySlug(SlugUtil::convertSlug(trim($item->locality)));
+        $localityName = trim($item->locality);
+
+        if (!empty($this->deleteLocalityList[$localityName])) {
+            $localityName = $this->deleteLocalityList[$localityName];
+        }
+
+        $entity = $repository->getLocalityBySlug(SlugUtil::convertSlug($localityName));
 
         if (!$entity) {
             $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
 
             $entity = new $classNameEntity();
-            $entity->setName($item->locality);
+            $entity->setName($localityName);
 
             $entity = $this->saveEntity($entity);
             // todo - add area?
@@ -710,38 +757,14 @@ class MigrationCommand extends ContainerAwareCommand
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param Category $category
+     * @param Category|null   $category
      *
      * @return BusinessProfile
      */
-    private function addBusinessProfileCategory(BusinessProfile $businessProfile, Category $category)
+    private function addBusinessProfileCategory($businessProfile, $category)
     {
-        //get all parent categories and current category
-        $categories = $this->em->getRepository('DomainBusinessBundle:Category')->getCategoryParents($category);
-
-        //sort categories
-        foreach ($categories as $item) {
-            $categoriesData[$item->getLvl()] = $item;
-        }
-
-        if (!empty($categoriesData[Category::CATEGORY_LEVEL_1])) {
-            $businessProfileCategory = $businessProfile->getCategory();
-
-            if ($businessProfileCategory) {
-                //avoid duplicate
-                if ($businessProfileCategory->getChildren()->contains($categoriesData[Category::CATEGORY_LEVEL_1])) {
-
-                    foreach ($categories as $item) {
-                        if (!$businessProfile->getCategories()->contains($item)) {
-                            $businessProfile->addCategory($item);
-                        }
-                    }
-                }
-            } else {
-                foreach ($categories as $item) {
-                    $businessProfile->addCategory($item);
-                }
-            }
+        if ($category and !$businessProfile->getCategories()->contains($category)) {
+            $businessProfile->addCategory($category);
         }
 
         return $businessProfile;
@@ -783,6 +806,35 @@ class MigrationCommand extends ContainerAwareCommand
         if (trim($profile->twitter_handle)) {
             $twitterUrl = $this->handleUrl(self::TWITTER_URL_PREFIX . trim($profile->twitter_handle));
             $businessProfile->setTwitterURL($twitterUrl);
+        }
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile   $businessProfile
+     * @param Locality          $locality
+     *
+     * @return BusinessProfile
+     */
+    private function handleLocalityServiceType($businessProfile, $locality)
+    {
+        $area = $locality->getArea();
+
+        if (!$businessProfile->getLocalities()->contains($locality)) {
+            $businessProfile->addLocality($locality);
+        }
+
+        if ($area and !$businessProfile->getAreas()->contains($area)) {
+            $businessProfile->addArea($area);
+        }
+
+        if ($locality->getNeighborhoods()) {
+            foreach ($locality->getNeighborhoods() as $neighborhood) {
+                if (!$businessProfile->getNeighborhoods()->contains($neighborhood)) {
+                    $businessProfile->addNeighborhood($neighborhood);
+                }
+            }
         }
 
         return $businessProfile;

@@ -361,13 +361,13 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             }
         });
 
-        $('#domain_business_bundle_business_profile_form_type_categories2, #domain_business_bundle_business_profile_form_type_categories3, #domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
+        $('#domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
             plugins: ['remove_button'],
             delimiter: ',',
             persist: true
         });
 
-        var singleSelects = $('#domain_business_bundle_business_profile_form_type_categories, #domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');
+        var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');
 
         singleSelects.select2();
 
@@ -529,7 +529,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( '.main' ).addClass( 'main-results-resize' );
         } else {
             $.Velocity.RunSequence( openMapSequence, { mobileHA: true } );
-            showMap.removeClass( 'floating-offset' );
             $( 'body' ).addClass( 'body--no-scroll' );
             $( '.sort__options' ).removeClass( 'sort--on' );
             $( '.sort__options' ).removeClass( 'filter--on' );
@@ -763,5 +762,29 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var checker = autoSearchMap.find( 'i' );
 
         return checker.hasClass( 'fa-check' );
+    }
+
+//    background
+    updateBackgroundElements();
+
+    $( window ).resize(function() {
+        updateBackgroundElements();
+    });
+
+    function updateBackgroundElements() {
+        var mediaQueryMobile = window.matchMedia( "(min-width: 768px)" );
+        var isDesktop = mediaQueryMobile.matches;
+
+        var backgroundElements = $( '[data-desktop-background]' );
+
+        backgroundElements.each( function() {
+            var background = $( this ).data( 'desktop-background' );
+
+            if ( isDesktop ) {
+                $( this ).css( 'background-image', 'url(' + background + ')' );
+            } else {
+                $( this ).css( 'background-image', '' );
+            }
+        });
     }
 });

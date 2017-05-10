@@ -139,6 +139,20 @@ class BusinessProfileManager extends Manager
         return $result;
     }
 
+    /**
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
+     *
+     * @return array
+     */
+    public function searchCategoryAutosuggestByPhrase($query, $locale, $limit = null)
+    {
+        $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale, $limit);
+
+        return $categories;
+    }
+
     public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
     {
         if (!$location) {
@@ -250,13 +264,9 @@ class BusinessProfileManager extends Manager
         return $searchResultsData;
     }
 
-    public function searchCatalog(SearchDTO $searchParams, string $locale)
+    public function searchCatalog(SearchDTO $searchParams)
     {
-        $searchResultsData = $this->getRepository()->searchCatalog($searchParams, $locale);
-
-        $searchResultsData = array_map(function ($item) {
-            return $item[0]->setDistance($item['distance']);
-        }, $searchResultsData);
+        $searchResultsData = $this->searchCatalogBusinessInElastic($searchParams);
 
         return $searchResultsData;
     }
@@ -885,40 +895,6 @@ class BusinessProfileManager extends Manager
         return $objects;
     }
 
-    public function getSubcategories($categoryId, $businessProfileId, $request)
-    {
-        $data = [];
-        $checkedSubcategoryIds = [];
-
-        if ($businessProfileId) {
-            /* @var BusinessProfile $businessProfile */
-            $businessProfile       = $this->getRepository()->find($businessProfileId);
-            $checkedSubcategoryIds = $this->getBusinessProfileSubcategoryIds($businessProfile, $request);
-        }
-
-        $subcategories = $this->getSubcategoriesForCategory($categoryId, $request);
-
-        foreach ($subcategories as $key => $subcategory) {
-            if ($request['locale']) {
-                $name = $subcategory->{'getSearchText' . ucfirst($request['locale'])}();
-            } else {
-                $name = $subcategory->getName();
-            }
-
-            $data[$key] = [
-                'id'       => $subcategory->getId(),
-                'name'     => $name,
-                'selected' => false,
-            ];
-
-            if (in_array($subcategory->getId(), $checkedSubcategoryIds)) {
-                $data[$key]['selected'] = true;
-            }
-        }
-
-        return $data;
-    }
-
     /**
      * @param int|null      $businessProfileId
      * @param array         $areas
@@ -1059,46 +1035,6 @@ class BusinessProfileManager extends Manager
             if (in_array($item->getId(), $checkedIds)) {
                 $data[$key]['selected'] = true;
             }
-        }
-
-        return $data;
-    }
-
-    public function getSubcategoriesForCategory($categoryId, $request)
-    {
-        if ($request['level'] == Category::CATEGORY_LEVEL_2) {
-            $categoryIds = [$categoryId];
-        } else {
-            $categoryIds = $request['subcategories'];
-        }
-
-        $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
-            ->getAvailableSubCategories($categoryIds, $request['level']);
-
-        return $subcategories;
-    }
-
-    public function getCategoriesByIds($ids)
-    {
-        $subcategories = $this->getEntityManager()->getRepository('DomainBusinessBundle:Category')
-            ->getAvailableCategoriesByIds($ids);
-
-        return $subcategories;
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param array           $request
-     *
-     * @return array
-     */
-    public function getBusinessProfileSubcategoryIds(BusinessProfile $businessProfile, $request)
-    {
-        $data = [];
-        $subcategories = $businessProfile->getSubcategories($request['level']);
-
-        foreach ($subcategories as $subcategory) {
-            $data[] = $subcategory->getId();
         }
 
         return $data;
@@ -1324,10 +1260,8 @@ class BusinessProfileManager extends Manager
      */
     private function getBusinessProfileWorkingHoursSchema($businessProfile, $schemaItem = [])
     {
-        $openingHoursCollection = $businessProfile->getCollectionWorkingHours();
-
-        if (!$openingHoursCollection->isEmpty()) {
-            $dailyHours = DayOfWeekModel::getBusinessProfileWorkingHoursList($businessProfile);
+        if ($businessProfile->getWorkingHoursJsonAsObject()) {
+            $dailyHours = DayOfWeekModel::getBusinessProfileWorkingHoursListView($businessProfile);
             $dayOfWeekSchemaOrgMapping = DayOfWeekModel::getDayOfWeekSchemaOrgMapping();
 
             foreach ($dailyHours as $key => $workingHourItems) {
@@ -1346,18 +1280,17 @@ class BusinessProfileManager extends Manager
 
                     if ($workingHourItems) {
                         foreach ($workingHourItems as $item) {
-                            if ($item->getOpenAllTime()) {
+                            if ($item->openAllTime) {
                                 // open all time
                                 $openTime  = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_OPEN_TIME;
                                 $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
                             } else {
-                                $openTime  = $item->getTimeStart()->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                                $openTime  = $item->timeStart->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
 
-                                if ($item->getTimeEnd() == DayOfWeekModel::getDefaultDateTime()) {
+                                if ($item->timeEnd == DayOfWeekModel::getDefaultDateTime()) {
                                     $closeTime = DayOfWeekModel::SCHEMA_ORG_OPEN_ALL_DAY_CLOSE_TIME;
                                 } else {
-                                    $closeTime = $item->getTimeEnd()
-                                        ->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
+                                    $closeTime = $item->timeEnd->format(DayOfWeekModel::SCHEMA_ORG_OPEN_TIME_FORMAT);
                                 }
                             }
 
@@ -1527,6 +1460,29 @@ class BusinessProfileManager extends Manager
         return $country;
     }
 
+    protected function searchCatalogBusinessInElastic(SearchDTO $searchParams)
+    {
+        $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams);
+
+        $response = $this->searchBusinessElastic($searchQuery);
+        $search = $this->getBusinessDataFromElasticResponse($response);
+
+        $coordinates = $searchParams->getCurrentCoordinates();
+
+        $search['data'] = array_map(function ($item) use ($searchParams, $coordinates) {
+            $distance = GeolocationUtils::getDistanceForPoint(
+                $coordinates['lat'],
+                $coordinates['lng'],
+                $item->getLatitude(),
+                $item->getLongitude()
+            );
+
+            return $item->setDistance($distance);
+        }, $search['data']);
+
+        return $search;
+    }
+
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         //randomize feature works only for relevance sorting ("Best match")
@@ -1569,9 +1525,16 @@ class BusinessProfileManager extends Manager
         return $search['data'];
     }
 
-    protected function searchCategoryAutoSuggestInElastic($query, $locale)
+    /**
+     * @param string   $query
+     * @param string   $locale
+     * @param int|null $limit
+     *
+     * @return array
+     */
+    protected function searchCategoryAutoSuggestInElastic($query, $locale, $limit = null)
     {
-        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale);
+        $searchQuery = $this->categoryManager->getElasticAutoSuggestSearchQuery($query, $locale, $limit);
         $response = $this->searchCategoryElastic($searchQuery);
 
         $search = $this->categoryManager->getCategoryFromElasticResponse($response);
@@ -1581,6 +1544,7 @@ class BusinessProfileManager extends Manager
                 'type' => CategoryManager::AUTO_COMPLETE_TYPE,
                 'name' => $item->getName(),
                 'data' => $item->getName(),
+                'id'   => $item->getId(),
             ];
         }, $search['data']);
 
@@ -1923,13 +1887,14 @@ class BusinessProfileManager extends Manager
 
     protected function getElasticSearchQuery(SearchDTO $params, $locale)
     {
+        // see https://jira.oxagile.com/browse/INFT-1197
         $fields = [
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
-            'description_' . strtolower($locale) . '^1',
+//            'description_' . strtolower($locale) . '^1',
             'name_' . strtolower($locale) . '.folded^5',
             'categories_' . strtolower($locale) . '.folded^3',
-            'description_' . strtolower($locale) . '.folded^1',
+//            'description_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -1966,7 +1931,7 @@ class BusinessProfileManager extends Manager
             ];
         }
 
-        $category = $params->getCategory1();
+        $category = $params->getCategory();
 
         if ($category) {
             $filters[] = [
@@ -2017,6 +1982,83 @@ class BusinessProfileManager extends Manager
                     ],
                 ],
             ],
+            'sort' => [
+                $sort
+            ],
+        ];
+
+        if ($locationQuery) {
+            $searchQuery['query']['bool']['must'][] = $locationQuery;
+        }
+
+        foreach ($filters as $filter) {
+            $searchQuery['query']['bool']['must'][] = $filter;
+        }
+
+        if ($locationFilter) {
+            $searchQuery['query']['bool']['filter'][] = $locationFilter;
+        }
+
+        return $searchQuery;
+    }
+
+    protected function getCatalogBusinessSearchQuery(SearchDTO $params)
+    {
+        $filters = [];
+
+        $sort['subscr_rank'] = [
+            'order' => 'desc'
+        ];
+
+        $coordinates = $params->getCurrentCoordinates();
+
+        if (SearchDataUtil::ORDER_BY_DISTANCE == $params->getOrderBy()) {
+            $sort['_geo_distance'] = [
+                'location' => [
+                    'lat' => $coordinates['lat'],
+                    'lon' => $coordinates['lng'],
+                ],
+                'unit' => 'mi',
+                'order' => 'asc'
+            ];
+            $sort['_score'] = [
+                'order' => 'desc'
+            ];
+        } else {
+            $sort['_score'] = [
+                'order' => 'desc'
+            ];
+            $sort['_geo_distance'] = [
+                'location' => [
+                    'lat' => $coordinates['lat'],
+                    'lon' => $coordinates['lng'],
+                ],
+                'unit' => 'mi',
+                'order' => 'asc'
+            ];
+        }
+
+        $category = $params->getCategory()->getId();
+
+        if ($category) {
+            $filters[] = [
+                'match' => [
+                    'categories_ids' => $category
+                ],
+            ];
+        }
+
+        $locationQuery  = [];
+        $locationFilter = $this->getElasticLocationFilter($params);
+
+        if (!$locationFilter) {
+            $locationQuery = $this->getElasticLocationQuery($params);
+        }
+
+        $searchQuery = [
+            'from' => ($params->page - 1) * $params->limit,
+            'size' => $params->limit,
+            'track_scores' => true,
             'sort' => [
                 $sort
             ],
@@ -2364,6 +2406,7 @@ class BusinessProfileManager extends Manager
                 }
 
                 $business->setIsUpdated(false);
+                $business->setHasImages($this->checkBusinessHasImages($business));
 
                 if (($iElastic % $batchElastic) === 0) {
                     $this->addBusinessesToElasticIndex($data);
@@ -2562,5 +2605,19 @@ class BusinessProfileManager extends Manager
         }
 
         return $currentUser;
+    }
+
+    /**
+     * @param BusinessProfile $business
+     *
+     * @return bool
+     */
+    protected function checkBusinessHasImages($business)
+    {
+        if ($business->getLogo() or $business->getBackground() or !$business->getImages()->isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }

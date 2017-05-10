@@ -23,7 +23,9 @@ class PageAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('title')
+            ->add('title', null, [
+                'show_filter' => true,
+            ])
             ->add('updatedUser')
         ;
     }
@@ -57,6 +59,16 @@ class PageAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('title')
+                ->add('background', 'sonata_type_model_list',
+                    [
+                        'required' => false,
+                    ],
+                    [
+                        'link_parameters' => [
+                            'context'  => OxaMediaInterface::CONTEXT_PAGE_BACKGROUND,
+                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                        ]
+                    ])
             ->end()
             ->with('Status')
                 ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
@@ -70,7 +82,7 @@ class PageAdmin extends OxaAdmin
                     'read_only' => true,
                     'required' => false,
                     'data' => sprintf(
-                        '%s\%s',
+                        '%s/%s',
                         $this->getRequest()->getHost(),
                         $this->getSubject()->getSlug()
                     )

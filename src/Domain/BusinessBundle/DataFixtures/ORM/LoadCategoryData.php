@@ -7,7 +7,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
 use Domain\BusinessBundle\Model\CategoryModel;
-use Domain\BusinessBundle\Util\SlugUtil;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,39 +23,23 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
     protected $manager;
 
     /**
-     * @var array
-     */
-    protected $mapping;
-
-    /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->mapping = CategoryModel::getCategoryMapping();
 
-        //create undefined category
-        $this->createCategory(CategoryModel::getUndefinedCategory());
+        //create system categories
+        $systemCategories = CategoryModel::getSystemCategories();
+
+        foreach ($systemCategories as $item) {
+            $this->createCategory($item);
+        }
 
         $data = CategoryModel::getCategories();
 
-        foreach ($data as $category1) {
-            $object1 = $this->createCategory($category1);
-
-            if (!empty($category1['children'])) {
-                foreach ($category1['children'] as $category2) {
-                    $object2 = $this->createCategory($category2);
-                    $object2->setParent($object1);
-
-                    if (!empty($category2['children'])) {
-                        foreach ($category2['children'] as $category3) {
-                            $object3 = $this->createCategory($category3);
-                            $object3->setParent($object2);
-                        }
-                    }
-                }
-            }
+        foreach ($data as $category) {
+            $this->createCategory($category);
 
             $this->manager->flush();
             $this->manager->clear();
@@ -76,9 +59,16 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
         $object->setLocale('es');
         $object->setName($category['es']);
 
-        if (!empty($category['code']) and !empty($this->mapping[$category['code']])) {
-            $object->setSlugEn($this->mapping[$category['code']]);
-            $object->setSlugEs($this->mapping[$category['code']]);
+        if (!empty($category['slugEn'])) {
+            $object->setSlugEn($category['slugEn']);
+        }
+
+        if (!empty($category['slugEs'])) {
+            $object->setSlugEs($category['slugEs']);
+        }
+
+        if (!empty($category['code'])) {
+            $object->setCode($category['code']);
         }
 
         $object->setSearchTextEn($categoryEn);

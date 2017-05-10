@@ -14,7 +14,10 @@ use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\LandingPageShortCut;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\PaymentMethod;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 
@@ -132,6 +135,11 @@ class AdminManager extends DefaultManager
                     continue;
                 }
 
+                //allow delete LandingPageShortCut
+                if ($entity instanceof LandingPageShortCut) {
+                    continue;
+                }
+
                 $methodGet = 'get' . ucfirst($associationMapping['fieldName']);
                 $childs = $entity->$methodGet();
                 if (count($childs)) {
@@ -146,6 +154,21 @@ class AdminManager extends DefaultManager
         // prevent deletion of external article
         if ($entity instanceof Article and $entity->getIsExternal()) {
             $existDependentField[] = 'External Article';
+        }
+
+        // prevent deletion of hardcoded categories
+        if ($entity instanceof Category and ($entity->getSlugEn() or $entity->getSlugEs())) {
+            $existDependentField[] = 'Protected Category';
+        }
+
+        // prevent deletion of hardcoded subscription plans
+        if ($entity instanceof SubscriptionPlan) {
+            $existDependentField[] = 'Protected Item';
+        }
+
+        // prevent deletion of hardcoded paymentMethods
+        if ($entity instanceof PaymentMethod and $entity->getType()) {
+            $existDependentField[] = 'Protected Item';
         }
 
         return $existDependentField;

@@ -145,6 +145,10 @@ class BusinessProfileExtension extends \Twig_Extension
                     ],
                 ]
             ),
+            'get_business_profile_categories_json' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileCategoriesJson'
+            ),
         ];
     }
 
@@ -471,10 +475,10 @@ class BusinessProfileExtension extends \Twig_Extension
 
         if ($workingHourData['status']) {
             if ($workingHourData['hours']) {
-                if ($workingHourData['hours']->getOpenAllTime()) {
+                if ($workingHourData['hours']->openAllTime) {
                     $text = $this->translator->trans('business.working.hours.open_all_time');
                 } else {
-                    $endTime = $workingHourData['hours']->getTimeEnd()
+                    $endTime = $workingHourData['hours']->timeEnd
                         ->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
 
                     $text = $this->translator->trans(
@@ -496,7 +500,7 @@ class BusinessProfileExtension extends \Twig_Extension
 
     public function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
     {
-        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursList($businessProfile);
+        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListView($businessProfile);
 
         return $workingHourData;
     }
@@ -546,6 +550,34 @@ class BusinessProfileExtension extends \Twig_Extension
         $advertisements = $this->getBusinessProfileManager()->getBusinessProfileAdvertisementImages($businessProfile);
 
         return $advertisements;
+    }
+
+    /**
+     * @param BusinessProfile|null  $businessProfile
+     * @param string                $locale
+     *
+     * @return string
+     */
+    public function getBusinessProfileCategoriesJson($businessProfile, $locale)
+    {
+        $categoriesData = [];
+
+        if ($locale == strtolower(BusinessProfile::TRANSLATION_LANG_EN)) {
+            $currentLocale = BusinessProfile::TRANSLATION_LANG_EN;
+        } else {
+            $currentLocale = BusinessProfile::TRANSLATION_LANG_ES;
+        }
+
+        if ($businessProfile) {
+            foreach ($businessProfile->getCategories() as $category) {
+                $categoriesData[$category->getId()] = [
+                    'id'    => $category->getId(),
+                    'name'  => $category->{'getSearchText' . $currentLocale}(),
+                ];
+            }
+        }
+
+        return json_encode($categoriesData);
     }
 
     /**

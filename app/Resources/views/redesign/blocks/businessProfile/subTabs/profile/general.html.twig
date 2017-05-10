@@ -106,18 +106,15 @@
             </div>
 
             <div class="form__row vertical__row category-first-level-user">
-                {{ custom_form_label.widget(businessProfileForm.categories) }}
-                {{ form_widget(businessProfileForm.categories) }}
-            </div>
+                {{ custom_form_label.widget(businessProfileForm.categoryIds) }}
+                {{ form_widget(businessProfileForm.categoryIds) }}
 
-            <div class="form__row vertical__row">
-                {{ custom_form_label.widget(businessProfileForm.categories2) }}
-                {{ form_widget(businessProfileForm.categories2) }}
-            </div>
-
-            <div class="form__row vertical__row">
-                {{ custom_form_label.widget(businessProfileForm.categories3) }}
-                {{ form_widget(businessProfileForm.categories3) }}
+                {% if businessProfile is defined %}
+                    {% set businessProfileItem = businessProfile %}
+                {% else %}
+                    {% set businessProfileItem = null %}
+                {% endif %}
+                <span id="category_options" class="hidden" data-category-ids="{{ get_business_profile_categories_json(businessProfileItem, app.request.locale) }}"></span>
             </div>
 
             <div class="form__row vertical__row">
