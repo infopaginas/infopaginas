@@ -423,9 +423,21 @@ class DayOfWeekModel
      */
     public static function convertWorkingHoursToArray($workingHours)
     {
+        if ($workingHours->getTimeStart()) {
+            $timeStart = $workingHours->getTimeStart();
+        } else {
+            $timeStart = DatesUtil::getToday();
+        }
+
+        if ($workingHours->getTimeEnd()) {
+            $timeEnd = $workingHours->getTimeEnd();
+        } else {
+            $timeEnd = DatesUtil::getToday();
+        }
+
         return [
-            'timeStart'   => $workingHours->getTimeStart()->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
-            'timeEnd'     => $workingHours->getTimeEnd()->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
+            'timeStart'   => $timeStart->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
+            'timeEnd'     => $timeEnd->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
             'openAllTime' => $workingHours->getOpenAllTime(),
         ];
     }
