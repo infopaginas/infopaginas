@@ -106,7 +106,7 @@ class ArticleManager extends Manager
             $schema[] = $this->buildBaseArticleSchema($article);
         }
 
-        return json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return json_encode($schema, JSON_UNESCAPED_SLASHES);
     }
 
     /**

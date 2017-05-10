@@ -54,8 +54,8 @@
     <script type="text/javascript">
         var map;
 
-        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
-            require(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/mapsearchpage.js")) }}'], function(mapSearchPage) {
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("assetic/require_map_search_page_js.js")) }}'], function(mapSearchPage) {
                 var mapSearchPage = new mapSearchPage();
             });
         });

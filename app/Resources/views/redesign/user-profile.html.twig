@@ -163,8 +163,8 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
-            requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/tools/userProfile.js")) }}'], function(userProfile) {
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("assetic/require_user_profile_js.js")) }}'], function(userProfile) {
                 var siteHomepage = new userProfile();
             })
         })
