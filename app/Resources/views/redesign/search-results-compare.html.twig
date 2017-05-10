@@ -92,8 +92,8 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
-            require(['{{ absolute_url(asset("bundles/domainsite/scripts/modules/comparesearchpage.js")) }}'], function(compareSearchPage) {
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            require(['{{ absolute_url(asset("assetic/require_compare_search_page_js.js")) }}'], function(compareSearchPage) {
                 var compareSearchPage = new compareSearchPage();
             });
         });

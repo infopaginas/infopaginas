@@ -1153,7 +1153,7 @@ class BusinessProfileManager extends Manager
             $schema[] = $schemaItem;
         }
 
-        return json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return json_encode($schema, JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -1173,7 +1173,7 @@ class BusinessProfileManager extends Manager
 
         $schemaItem['image'] = $this->getDefaultLocalBusinessImage($schemaItem, $businessProfile);
 
-        return json_encode([$schemaItem], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return json_encode([$schemaItem], JSON_UNESCAPED_SLASHES);
     }
 
     /**
