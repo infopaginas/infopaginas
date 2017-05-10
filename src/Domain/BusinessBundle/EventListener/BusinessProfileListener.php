@@ -19,8 +19,6 @@ class BusinessProfileListener implements EventSubscriber
         $this->businessProfileManager = $businessProfileManager;
     }
 
-
-
     public function getSubscribedEvents()
     {
         return [
@@ -28,17 +26,15 @@ class BusinessProfileListener implements EventSubscriber
         ];
     }
 
-
     public function preRemove(LifecycleEventArgs $args)
     {
         $em = $args->getEntityManager();
-
         $entity = $args->getEntity();
 
         if ($entity instanceof BusinessProfile) {
             $this->businessProfileManager->removeBusinessFromElastic($entity->getId());
-            if ($entity->getVideo()) {
 
+            if ($entity->getVideo()) {
                 $media = $entity->getVideo();
 
                 if ($media->getYoutubeSupport() and $media->getYoutubeId()) {
@@ -46,7 +42,6 @@ class BusinessProfileListener implements EventSubscriber
                 } else {
                     $em->remove($media);
                 }
-
             }
         }
     }
