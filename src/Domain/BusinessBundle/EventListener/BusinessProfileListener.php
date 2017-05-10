@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Domain\BusinessBundle\EventListener;
-
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -45,5 +43,4 @@ class BusinessProfileListener implements EventSubscriber
             }
         }
     }
-
 }
