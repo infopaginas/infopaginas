@@ -108,8 +108,8 @@
     </script>
 
     <script type="text/javascript">
-        requirejs(['{{ absolute_url(asset("bundles/domainsite/scripts/common.js")) }}'], function(common) {
-            requirejs(['{{ absolute_url(asset("bundles/domainbusiness/scripts/modules/reports.js")) }}'], function(Reports) {
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("assetic/require_reports_js.js")) }}'], function(Reports) {
                 var reports = new Reports();
             })
         })
