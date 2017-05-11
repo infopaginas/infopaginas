@@ -104,6 +104,7 @@ class LandingPageShortCutAdmin extends OxaAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection
+            ->remove('export')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }
