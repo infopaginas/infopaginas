@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\ChangeSet;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\BusinessBundle\Entity\Neighborhood;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\VideoBundle\Entity\VideoMedia;
@@ -350,11 +352,7 @@ class ChangeSetCalculator
                 }
 
                 if ($updated) {
-                    if ($valueNew) {
-                        $class = $em->getClassMetadata(get_class(current($valueNew)))->name;
-                    } else {
-                        $class = $em->getClassMetadata(get_class($valueOld->current()))->name;
-                    }
+                    $class = self::getClassByRelationConst($field);
                 }
             } else {
                 if ($valueNew and $valueOld and $valueNew->count() == $valueOld->count()) {
@@ -574,5 +572,22 @@ class ChangeSetCalculator
         }
 
         return $changeSetEntries;
+    }
+
+    public static function getClassByRelationConst($relation)
+    {
+        switch ($relation) {
+            case BusinessProfile::BUSINESS_PROFILE_RELATION_LOCALITIES:
+                $class = Locality::class;
+                break;
+            case BusinessProfile::BUSINESS_PROFILE_RELATION_NEIGHBORHOODS:
+                $class = Neighborhood::class;
+                break;
+            default:
+                $class = '';
+                break;
+        }
+
+        return $class;
     }
 }
