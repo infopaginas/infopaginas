@@ -1945,6 +1945,13 @@ $thumb-width-mb: 60px;
   }
 }
 
+.highlights__item {
+  .fa-envelope,
+  .fa-phone {
+    padding-right: 3px;
+  }
+}
+
 .hour__day {
   font-weight: 700;
 }
