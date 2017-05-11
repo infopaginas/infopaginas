@@ -33,6 +33,8 @@ Already have an account?: ¿Ya tiene una cuenta?
 Reset Password: Restablecer contraseña
 Update Password: Actualizar contraseña
 We can find everything!: ¡Podemos encontrar todo!
+Search whatever you need and find it instantly: Busca lo que necesites y lo encuentras al instante
+homepage.search_block.title: Encuentra lo que buscas al instante!
 What do you want to find?: ¿Qué está buscando?
 Search by: Buscar por
 business name: nombre de la empresa
@@ -330,7 +332,6 @@ Personal information: Informacion personal
 Save changes: Guardar cambios
 
 Go to read...: Ir a leer...
-Search whatever you need and find it instantly: Busca lo que necesites y lo encuentras al instante
 error.404.title: No pudimos encontrar el negocio que buscabas.
 error.404.message: Es posible que la página no esté disponible temporalmente, que se haya eliminado o que la URL sea incorrecta.
 error.404.search.text: Por favor, busque de nuevo
