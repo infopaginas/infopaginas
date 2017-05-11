@@ -58,6 +58,11 @@ class LandingPageShortCutSearchAdmin extends OxaAdmin
                     'label' => 'Title Spanish',
                 ])
             ->end()
+            ->add('position', 'hidden', [
+                'attr' => [
+                    'hidden' => true,
+                ]
+            ])
         ;
     }
 
