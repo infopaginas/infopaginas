@@ -977,8 +977,6 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function postPersist($entity)
     {
-        $this->createFreeSubscription($entity);
-
         // workaround for translation callback
         $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
         $entity = $this->handleEntityPostPersist($entity);
@@ -1005,19 +1003,6 @@ class BusinessProfileAdmin extends OxaAdmin
         $entity = $this->handleTranslationBlock($entity);
         $entity = $this->setVideoValue($entity);
         $entity = $this->handleSeoBlockUpdate($entity);
-    }
-
-    private function createFreeSubscription($entity)
-    {
-        $container = $this->getConfigurationPool()->getContainer();
-
-        $em = $container->get('doctrine.orm.entity_manager');
-
-        $subscriptionStatusManager = $container->get('domain_business.manager.subscription_status_manager');
-
-        $subscription = $subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $em);
-
-        $em->flush($subscription);
     }
 
     private function setVideoValue($entity)
