@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="landing_page_short_cut_search")
@@ -49,12 +50,18 @@ class LandingPageShortCutSearch
     protected $searchTextEs;
 
     /**
+     * @Gedmo\SortablePosition
+     * @ORM\Column(name="position", type="integer", nullable=true)
+     */
+    protected $position;
+
+    /**
      * @var LandingPageShortCut
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\LandingPageShortCut",
      *     cascade={"persist"},
      *     inversedBy="searchItems",
      * )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="short_cut_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $landingPageShortCut;
 
@@ -171,5 +178,29 @@ class LandingPageShortCutSearch
         $this->landingPageShortCut = $landingPageShortCut;
 
         return $this;
+    }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return LandingPageShortCutSearch
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 }

@@ -724,6 +724,10 @@ $side-padding-mb: 16px;
   display: flex;
   height: 37px;
   z-index: 99;
+
+  .fa {
+    margin-right: 0.3em;
+  }
 }
 
 .sort-bar {
@@ -1942,6 +1946,13 @@ $thumb-width-mb: 60px;
 
   &:nth-child(3n+3) {
     padding-right: 0;
+  }
+}
+
+.highlights__item {
+  .fa-envelope,
+  .fa-phone {
+    padding-right: 3px;
   }
 }
 

@@ -47,6 +47,7 @@ class LandingPageShortCut implements DefaultEntityInterface
      *     )
      * @Assert\Valid
      * @Assert\Count(max="10", min="1")
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $searchItems;
 
