@@ -574,6 +574,11 @@ class ChangeSetCalculator
         return $changeSetEntries;
     }
 
+    /**
+     * @param string $relation
+     *
+     * @return string
+     */
     public static function getClassByRelationConst($relation)
     {
         switch ($relation) {
