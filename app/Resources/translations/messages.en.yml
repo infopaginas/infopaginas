@@ -33,6 +33,8 @@ Already have an account?: Already have an account?
 Reset Password: Reset Password
 Update Password: Update Password
 We can find everything!: We can find everything!
+Search whatever you need and find it instantly: Search whatever you need and find it instantly
+homepage.search_block.title: Find what you are looking for instantly!
 What do you want to find?: What do you want to find?
 Search by: Search by
 business name: business name
@@ -330,7 +332,6 @@ Personal information: Personal information
 Save changes: Save changes
 
 Go to read...: Go to read...
-Search whatever you need and find it instantly: Search whatever you need and find it instantly
 error.404.title: We couldn´t find the business you were looking for.
 error.404.message: It´s possible that the page is temporarily unavailable, has been removed or the URL is incorrect.
 error.404.search.text: Please search again
