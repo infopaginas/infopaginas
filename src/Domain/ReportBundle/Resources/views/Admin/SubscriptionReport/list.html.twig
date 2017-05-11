@@ -2,6 +2,10 @@
 
 {% set results = admin.datagrid.results %}
 
+{% block sonata_breadcrumb %}
+    {% include "@DomainReport/Admin/report_breadcrumbs.html.twig" %}
+{% endblock %}
+
 {% block list_table %}
     {% if admin.subscriptionData|length > 0 %}
         {% if admin.subscriptionData.dates|length > 1 %}

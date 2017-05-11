@@ -1,5 +1,9 @@
 {% extends 'DomainReportBundle:Admin/Default:list.html.twig' %}
 
+{% block sonata_breadcrumb %}
+    {% include "@DomainReport/Admin/report_breadcrumbs.html.twig" %}
+{% endblock %}
+
 {% block list_table %}
     {% if admin.categoryData.results|length >= 1 %}
         <script src="{{ asset('bundles/domainreport/js/Chart.js') }}"></script>
