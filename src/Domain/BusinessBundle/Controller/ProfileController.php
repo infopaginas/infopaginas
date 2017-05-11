@@ -74,7 +74,11 @@ class ProfileController extends Controller
      */
     public function editAction(Request $request, int $id)
     {
-        $locale = $request->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
+        $locale = $request->getLocale();
+
+        if (!$locale) {
+            $locale = BusinessProfile::DEFAULT_LOCALE;
+        }
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
