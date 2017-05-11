@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 class LandingPageShortCutAdmin extends OxaAdmin
 {
@@ -71,6 +72,7 @@ class LandingPageShortCutAdmin extends OxaAdmin
                         'edit'          => 'inline',
                         'delete_empty'  => false,
                         'inline'        => 'table',
+                        'sortable'      => 'position',
                     ]
                 )
                 ->end()
@@ -94,5 +96,15 @@ class LandingPageShortCutAdmin extends OxaAdmin
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:LandingPageShortCut/edit.html.twig';
+    }
+
+    /**
+     * @param RouteCollection $collection
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->add('move', $this->getRouterIdParameter().'/move/{position}')
+        ;
     }
 }
