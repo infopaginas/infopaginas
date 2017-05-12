@@ -722,6 +722,14 @@ class BusinessProfile implements
     protected $workingHoursJson;
 
     /**
+     * @var int - Subscription code
+     *
+     * @Gedmo\Translatable(fallback=true)
+     * @ORM\Column(name="subscription_plan_code", type="integer", nullable=true,  options={"default" : 1})
+     */
+    protected $subscriptionPlanCode;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
@@ -2772,6 +2780,26 @@ class BusinessProfile implements
     public function setHasImages($hasImages)
     {
         $this->hasImages = $hasImages;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubscriptionPlanCode()
+    {
+        return $this->subscriptionPlanCode;
+    }
+
+    /**
+     * @param int $subscriptionPlanCode
+     *
+     * @return BusinessProfile
+     */
+    public function setSubscriptionPlanCode($subscriptionPlanCode)
+    {
+        $this->subscriptionPlanCode = $subscriptionPlanCode;
 
         return $this;
     }

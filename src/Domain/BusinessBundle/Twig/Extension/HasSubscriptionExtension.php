@@ -40,16 +40,14 @@ class HasSubscriptionExtension extends \Twig_Extension
 
     public function isSubscribed($env, BusinessProfile $profile, $subscriptionPlan)
     {
-        if (null === $profilePlan = $profile->getSubscriptionPlan()) {
-            return false;
-        }
+        $rank = $profile->getSubscriptionPlanCode();
 
         try {
             // Suddenly, but SubscriptionPlanInterface::$subscriptionPlan does not works о_О
             $plan = (new \ReflectionClass('Domain\BusinessBundle\Entity\SubscriptionPlan'))
                 ->getConstant($subscriptionPlan);
 
-            return $profilePlan->getRank() >= $plan;
+            return $rank >= $plan;
         } catch (Exception $e) {
             throw new Exception(
                 sprintf("Subscription plan '%s' does not exists", $subscriptionPlan),
@@ -60,13 +58,8 @@ class HasSubscriptionExtension extends \Twig_Extension
 
     public function getItemSubscriptionClass($env, BusinessProfile $profile)
     {
-        $plan = $profile->getSubscriptionPlan();
-
-        if ($plan and $plan->getCode()) {
-            $class = SubscriptionPlan::getCodeValues()[$plan->getCode()];
-        } else {
-            $class = SubscriptionPlan::getCodeValues()[SubscriptionPlanInterface::CODE_FREE];
-        }
+        $code = $profile->getSubscriptionPlanCode();
+        $class = SubscriptionPlan::getCodeValues()[$code];
 
         return $class;
     }

@@ -20,6 +20,12 @@ domain_search_map:
     options:
         expose: true
 
+domain_search_closest_locality_by_coord:
+    path:   /search/locality
+    defaults: { _controller: DomainSearchBundle:Search:getClosestLocalityByCoord }
+    options:
+        expose: true
+
 domain_search_compare:
     path:   /search/compare
     defaults: { _controller: DomainSearchBundle:Search:compare }

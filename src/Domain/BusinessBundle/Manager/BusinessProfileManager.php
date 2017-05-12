@@ -18,6 +18,7 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Neighborhood;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
@@ -664,7 +665,7 @@ class BusinessProfileManager extends Manager
      */
     public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile)
     {
-        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+        $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
 
         if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
             $advertisements = $this->getBusinessGalleryRepository()
@@ -682,7 +683,7 @@ class BusinessProfileManager extends Manager
      */
     public function getBusinessProfilePhotoImages(BusinessProfile $businessProfile)
     {
-        $subscriptionPlanCode = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+        $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
 
         if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
             $photos = $this->getBusinessGalleryRepository()->findBusinessProfilePhotoImages($businessProfile);
@@ -791,7 +792,7 @@ class BusinessProfileManager extends Manager
     {
         $isAllowed = false;
 
-        $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+        $code = $businessProfile->getSubscriptionPlanCode();
 
         if ($businessProfile->getDcOrderId() and $code >= SubscriptionPlanInterface::CODE_PRIORITY) {
             $isAllowed = true;
@@ -2196,7 +2197,6 @@ class BusinessProfileManager extends Manager
     public function buildBusinessProfileElasticData(BusinessProfile $businessProfile)
     {
         $businessSubscription     = $businessProfile->getSubscription();
-        $businessSubscriptionPlan = $businessProfile->getSubscriptionPlan();
 
         if (!$businessSubscription || $businessSubscription->getStatus() != StatusInterface::STATUS_ACTIVE ||
             !$businessProfile->getIsActive()
@@ -2261,7 +2261,7 @@ class BusinessProfileManager extends Manager
             ],
             'service_areas_type'   => $businessProfile->getServiceAreasType(),
             'locality_ids'         => $localityIds,
-            'subscr_rank'          => $businessSubscriptionPlan ? $businessSubscriptionPlan->getRank() : 0,
+            'subscr_rank'          => $businessProfile->getSubscriptionPlanCode(),
             'neighborhood_ids'     => $neighborhoodIds,
             'categories_ids'       => $categoryIds,
         ];
@@ -2396,7 +2396,15 @@ class BusinessProfileManager extends Manager
             foreach ($businesses as $businessRow) {
                 /* @var $business BusinessProfile */
                 $business = current($businessRow);
+                $subscriptionPlan = $business->getSubscriptionPlan();
 
+                if ($subscriptionPlan == null) {
+                    $code = SubscriptionPlan::CODE_FREE;
+                } else {
+                    $code = $subscriptionPlan->getCode();
+                }
+
+                $business->setSubscriptionPlanCode($code);
                 $item = $this->buildBusinessProfileElasticData($business);
 
                 if ($item) {
