@@ -36,7 +36,7 @@
         <ul class="language-nav">
             {% for language in languages %}
                 <li class="{% if language.active %}nav-current{% endif %}">
-                    <a href="{{ language.url }}">{{ language.title|raw }}</a>
+                    <a href="{{ language.url }}">{{ language.title|purify }}</a>
                 </li>
             {% endfor %}
         </ul>

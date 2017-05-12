@@ -54,8 +54,8 @@
         {% block schemaJsonLD %}
             {% if schemaJsonLD is defined and schemaJsonLD %}
                 <script type="application/ld+json">
-                {{ schemaJsonLD|raw }}
-            </script>
+                    {{ schemaJsonLD|purify }}
+                </script>
             {% endif %}
         {% endblock %}
     </head>

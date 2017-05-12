@@ -37,6 +37,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
                     'needs_environment' => true,
                     'is_safe' => [
                         'html',
+                        'js',
                     ],
                 ]
             )

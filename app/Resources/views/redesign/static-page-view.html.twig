@@ -16,7 +16,7 @@
                         <h1><strong>{{ page.title }}</strong></h1>
                     </section>
                     <section class="article-body">
-                        {{ page.body()|raw }}
+                        {{ page.body()|purify }}
                     </section>
                 </article>
 
