@@ -13,6 +13,7 @@ use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\LandingPageShortCut;
 use Domain\BusinessBundle\Entity\Locality;
@@ -116,6 +117,11 @@ class AdminManager extends DefaultManager
                             $this->getContainer()->get('sonata_translation.listener.translatable')
                         );
 
+                    continue;
+                }
+
+                //allow delete business profile
+                if ($entity instanceof BusinessProfile) {
                     continue;
                 }
 

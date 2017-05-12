@@ -31,7 +31,7 @@ class ChangeSet
      * @ORM\OneToMany(
      *      targetEntity="Domain\BusinessBundle\Entity\ChangeSetEntry",
      *      mappedBy="changeSet",
-     *      cascade={"persist"}
+     *      cascade={"persist", "remove"}
      * )
      */
     private $entries;

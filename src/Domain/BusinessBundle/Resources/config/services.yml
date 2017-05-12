@@ -212,6 +212,13 @@ services:
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
 
+    domain_business.listener.business_profile_listener:
+        class: Domain\BusinessBundle\EventListener\BusinessProfileListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default, priority: 10 }
+        calls:
+            - [ setBusinessProfileManager, ['@domain_business.manager.business_profile']]
+
     domain_business.listener.elsatic_search_subscriber:
         class: Domain\BusinessBundle\EventListener\ElasticSearchSubscriber
         tags:
