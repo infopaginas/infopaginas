@@ -129,3 +129,7 @@ a.select-all-button {
     float: right;
     cursor: pointer;
 }
+
+table .ui-sortable tr:hover {
+    cursor: move;
+}
