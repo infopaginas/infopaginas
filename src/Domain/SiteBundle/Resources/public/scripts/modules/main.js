@@ -629,17 +629,21 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         windowPopup( $( this ).data( 'href' ), 500, 300 );
     });
 
-    $( 'a.button.button-share--twitter' ).on( 'click', function(e) {
-        twttr.events.trigger("click", {});
-        e.preventDefault();
-
-        windowPopup( $( this ).data( 'href' ), 500, 300 );
-    });
-
     if ( typeof twttr !== 'undefined' && twttr ) {
-        twttr.events.bind('click', function(event) {
-            handleReportTracker( 'twitterShare' );
-        });
+        twttr.ready(
+            function ( twttr ) {
+                $( 'a.button.button-share--twitter' ).on( 'click', function(e) {
+                    twttr.events.trigger( 'click', {});
+                    e.preventDefault();
+
+                    windowPopup( $( this ).data( 'href' ), 500, 300 );
+                });
+
+                twttr.events.bind( 'click', function(event) {
+                    handleReportTracker( 'twitterShare' );
+                });
+            }
+        );
     }
 
     var jsSocialShares = document.querySelectorAll( '.a.button.social-share' );
