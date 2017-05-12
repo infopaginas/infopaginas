@@ -87,6 +87,8 @@ class AppKernel extends Kernel
             new Oxa\MongoDbBundle\MongoDbBundle(),
             //SiteMap bundle
             new Presta\SitemapBundle\PrestaSitemapBundle(),
+            // HTML Purifier
+            new Exercise\HTMLPurifierBundle\ExerciseHTMLPurifierBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

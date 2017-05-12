@@ -201,14 +201,14 @@
 
                         {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
                             <section class="page-section video">
-                                {{ render_video_embed(businessProfile.getVideo())|raw }}
+                                {{ render_video_embed(businessProfile.getVideo()) }}
                             </section>
                         {% endif %}
 
                         {% if businessProfile.getDescription() %}
                             <section class="page-section description-section">
                                 <div class="container">
-                                    <div class="business-view-description">{{ businessProfile.getDescription()|raw }}</div>
+                                    <div class="business-view-description">{{ businessProfile.getDescription()|purify }}</div>
                                 </div>
                             </section>
                         {% endif %}
@@ -232,7 +232,7 @@
                             <section class="page-section description-section">
                                 <div class="container">
                                     <h3>{% trans %}Discounts{% endtrans %}</h3>
-                                    {{ businessProfile.getDiscount()|raw }}
+                                    {{ businessProfile.getDiscount()|purify }}
                                 </div>
                             </section>
                         {% endif %}

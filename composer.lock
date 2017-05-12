@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "241ce10ccf951c0e9240ca65397a260d",
-    "content-hash": "3a44d72c794e317ba2f7a59f10ce6b37",
+    "content-hash": "717aba9d93e2a55b5e8f80a508f501ad",
     "packages": [
         {
             "name": "antimattr/common-product",
@@ -52,7 +51,7 @@
                 "antimattr",
                 "product"
             ],
-            "time": "2014-12-23 22:48:13"
+            "time": "2014-12-23T22:48:13+00:00"
         },
         {
             "name": "antimattr/google-bundle",
@@ -109,7 +108,7 @@
                 "product",
                 "symfony"
             ],
-            "time": "2015-04-01 17:57:44"
+            "time": "2015-04-01T17:57:44+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
@@ -189,7 +188,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-03-14 00:56:44"
+            "time": "2017-03-14T00:56:44+00:00"
         },
         {
             "name": "aws/aws-sdk-php-symfony",
@@ -242,7 +241,7 @@
                 "symfony",
                 "symfony3"
             ],
-            "time": "2016-06-22 20:29:26"
+            "time": "2016-06-22T20:29:26+00:00"
         },
         {
             "name": "behat/transliterator",
@@ -282,7 +281,7 @@
                 "slug",
                 "transliterator"
             ],
-            "time": "2015-09-28 16:26:35"
+            "time": "2015-09-28T16:26:35+00:00"
         },
         {
             "name": "cache/adapter-bundle",
@@ -339,7 +338,7 @@
             ],
             "description": "A bundle that registers cache implementations as Symfony services supporting PSR-6 and tagging",
             "homepage": "https://github.com/php-cache/adapter-bundle",
-            "time": "2016-11-14 23:45:09"
+            "time": "2016-11-14T23:45:09+00:00"
         },
         {
             "name": "cache/adapter-common",
@@ -394,7 +393,7 @@
                 "psr-6",
                 "tag"
             ],
-            "time": "2016-07-31 18:10:41"
+            "time": "2016-07-31T18:10:41+00:00"
         },
         {
             "name": "cache/filesystem-adapter",
@@ -457,7 +456,7 @@
                 "psr-6",
                 "tag"
             ],
-            "time": "2016-12-25 09:15:25"
+            "time": "2016-12-25T09:15:25+00:00"
         },
         {
             "name": "cache/hierarchical-cache",
@@ -514,7 +513,7 @@
                 "psr-6",
                 "tag"
             ],
-            "time": "2016-08-07 14:49:33"
+            "time": "2016-08-07T14:49:33+00:00"
         },
         {
             "name": "cache/namespaced-cache",
@@ -570,7 +569,7 @@
                 "namespace",
                 "psr-6"
             ],
-            "time": "2017-03-18 07:02:05"
+            "time": "2017-03-18T07:02:05+00:00"
         },
         {
             "name": "cache/taggable-cache",
@@ -628,7 +627,7 @@
                 "psr6",
                 "tag"
             ],
-            "time": "2016-08-08 17:20:09"
+            "time": "2016-08-08T17:20:09+00:00"
         },
         {
             "name": "cache/void-adapter",
@@ -691,7 +690,7 @@
                 "tag",
                 "void"
             ],
-            "time": "2016-08-07 15:04:55"
+            "time": "2016-08-07T15:04:55+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -740,7 +739,7 @@
                 "stream_filter_append",
                 "stream_filter_register"
             ],
-            "time": "2015-11-08 23:41:30"
+            "time": "2015-11-08T23:41:30+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -804,7 +803,7 @@
                 "slug",
                 "slugify"
             ],
-            "time": "2017-02-09 19:27:52"
+            "time": "2017-02-09T19:27:52+00:00"
         },
         {
             "name": "components/elfinder",
@@ -861,7 +860,7 @@
                 "elfinder",
                 "file manager"
             ],
-            "time": "2016-02-19 14:27:33"
+            "time": "2016-02-19T14:27:33+00:00"
         },
         {
             "name": "components/jquery",
@@ -903,7 +902,7 @@
             ],
             "description": "jQuery JavaScript Library",
             "homepage": "http://jquery.com",
-            "time": "2016-05-25 06:50:04"
+            "time": "2016-05-25T06:50:04+00:00"
         },
         {
             "name": "components/jqueryui",
@@ -988,7 +987,7 @@
                 }
             ],
             "description": "jQuery UI is a curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library. Whether you're building highly interactive web applications or you just need to add a date picker to a form control, jQuery UI is the perfect choice.",
-            "time": "2015-03-13 14:48:12"
+            "time": "2015-03-13T14:48:12+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1056,7 +1055,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2017-02-24 16:22:25"
+            "time": "2017-02-24T16:22:25+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -1126,7 +1125,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-10-29 11:16:17"
+            "time": "2016-10-29T11:16:17+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -1193,7 +1192,7 @@
                 "collections",
                 "iterator"
             ],
-            "time": "2017-01-03 10:49:41"
+            "time": "2017-01-03T10:49:41+00:00"
         },
         {
             "name": "doctrine/common",
@@ -1266,7 +1265,7 @@
                 "persistence",
                 "spl"
             ],
-            "time": "2017-01-13 14:02:13"
+            "time": "2017-01-13T14:02:13+00:00"
         },
         {
             "name": "doctrine/data-fixtures",
@@ -1325,7 +1324,7 @@
             "keywords": [
                 "database"
             ],
-            "time": "2016-09-20 10:07:57"
+            "time": "2016-09-20T10:07:57+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -1396,7 +1395,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2017-02-08 12:53:47"
+            "time": "2017-02-08T12:53:47+00:00"
         },
         {
             "name": "doctrine/doctrine-bundle",
@@ -1477,7 +1476,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2017-01-16 12:01:26"
+            "time": "2017-01-16T12:01:26+00:00"
         },
         {
             "name": "doctrine/doctrine-cache-bundle",
@@ -1565,7 +1564,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-01-26 17:28:51"
+            "time": "2016-01-26T17:28:51+00:00"
         },
         {
             "name": "doctrine/doctrine-fixtures-bundle",
@@ -1622,7 +1621,7 @@
                 "Fixture",
                 "persistence"
             ],
-            "time": "2015-11-04 21:23:23"
+            "time": "2015-11-04T21:23:23+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -1683,7 +1682,7 @@
                 "migrations",
                 "schema"
             ],
-            "time": "2016-12-05 18:36:37"
+            "time": "2016-12-05T18:36:37+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -1750,7 +1749,7 @@
                 "singularize",
                 "string"
             ],
-            "time": "2015-11-06 14:35:42"
+            "time": "2015-11-06T14:35:42+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -1804,7 +1803,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-06-14 21:17:01"
+            "time": "2015-06-14T21:17:01+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -1858,7 +1857,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2014-09-09 13:34:57"
+            "time": "2014-09-09T13:34:57+00:00"
         },
         {
             "name": "doctrine/migrations",
@@ -1932,7 +1931,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2016-12-25 22:54:00"
+            "time": "2016-12-25T22:54:00+00:00"
         },
         {
             "name": "doctrine/orm",
@@ -2008,7 +2007,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2016-12-18 15:42:34"
+            "time": "2016-12-18T15:42:34+00:00"
         },
         {
             "name": "egeloen/ckeditor-bundle",
@@ -2066,7 +2065,7 @@
             "keywords": [
                 "CKEditor"
             ],
-            "time": "2016-10-28 16:59:01"
+            "time": "2016-10-28T16:59:01+00:00"
         },
         {
             "name": "egeloen/google-map",
@@ -2121,7 +2120,7 @@
             "keywords": [
                 "google map"
             ],
-            "time": "2014-10-30 19:30:44"
+            "time": "2014-10-30T19:30:44+00:00"
         },
         {
             "name": "egeloen/google-map-bundle",
@@ -2176,7 +2175,7 @@
             "keywords": [
                 "google map"
             ],
-            "time": "2014-10-30 19:37:27"
+            "time": "2014-10-30T19:37:27+00:00"
         },
         {
             "name": "egeloen/json-builder",
@@ -2228,7 +2227,7 @@
                 "builder",
                 "json"
             ],
-            "time": "2014-11-08 10:51:34"
+            "time": "2014-11-08T10:51:34+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -2283,7 +2282,105 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2017-02-06 13:20:44"
+            "time": "2017-02-06T13:20:44+00:00"
+        },
+        {
+            "name": "exercise/htmlpurifier-bundle",
+            "version": "v0.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Exercise/HTMLPurifierBundle.git",
+                "reference": "07c1ab56741c0b9771f30a45fed63a63b1c87b5d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Exercise/HTMLPurifierBundle/zipball/07c1ab56741c0b9771f30a45fed63a63b1c87b5d",
+                "reference": "07c1ab56741c0b9771f30a45fed63a63b1c87b5d",
+                "shasum": ""
+            },
+            "require": {
+                "ezyang/htmlpurifier": "~4.0",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": "~2.0|~3.0"
+            },
+            "require-dev": {
+                "symfony/form": "~2.0",
+                "twig/twig": "~1.3"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Exercise\\HTMLPurifierBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "contributors",
+                    "homepage": "https://github.com/Exercise/HTMLPurifierBundle/contributors"
+                }
+            ],
+            "description": "HTMLPurifier integration for your Symfony2 project",
+            "homepage": "https://github.com/Exercise/HTMLPurifierBundle",
+            "keywords": [
+                "htmlpurifier"
+            ],
+            "time": "2016-08-25T13:24:39+00:00"
+        },
+        {
+            "name": "ezyang/htmlpurifier",
+            "version": "v4.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ezyang/htmlpurifier.git",
+                "reference": "6d50e5282afdfdfc3e0ff6d192aff56c5629b3d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/6d50e5282afdfdfc3e0ff6d192aff56c5629b3d4",
+                "reference": "6d50e5282afdfdfc3e0ff6d192aff56c5629b3d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "simpletest/simpletest": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "HTMLPurifier": "library/"
+                },
+                "files": [
+                    "library/HTMLPurifier.composer.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Edward Z. Yang",
+                    "email": "admin@htmlpurifier.org",
+                    "homepage": "http://ezyang.com"
+                }
+            ],
+            "description": "Standards compliant HTML filter written in PHP",
+            "homepage": "http://htmlpurifier.org/",
+            "keywords": [
+                "html"
+            ],
+            "time": "2017-03-13T06:30:53+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -2326,7 +2423,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2016-07-18 04:51:16"
+            "time": "2016-07-18T04:51:16+00:00"
         },
         {
             "name": "fresh/doctrine-enum-bundle",
@@ -2405,7 +2502,7 @@
                 "symfony",
                 "type"
             ],
-            "time": "2016-10-03 08:18:04"
+            "time": "2016-10-03T08:18:04+00:00"
         },
         {
             "name": "friendsofsymfony/jsrouting-bundle",
@@ -2463,7 +2560,7 @@
                 "javascript",
                 "routing"
             ],
-            "time": "2015-10-28 15:08:39"
+            "time": "2015-10-28T15:08:39+00:00"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -2530,7 +2627,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2016-08-12 09:53:32"
+            "time": "2016-08-12T09:53:32+00:00"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -2609,7 +2706,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2016-12-21 13:46:54"
+            "time": "2016-12-21T13:46:54+00:00"
         },
         {
             "name": "google/apiclient",
@@ -2652,7 +2749,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2016-02-02 18:50:42"
+            "time": "2016-02-02T18:50:42+00:00"
         },
         {
             "name": "google/auth",
@@ -2700,7 +2797,7 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2016-11-02 14:59:14"
+            "time": "2016-11-02T14:59:14+00:00"
         },
         {
             "name": "googleads/googleads-php-lib",
@@ -2751,7 +2848,7 @@
             ],
             "description": "Google Ads APIs Client Library for PHP (AdWords and DFP)",
             "homepage": "https://github.com/googleads/googleads-php-lib",
-            "time": "2017-03-03 16:58:18"
+            "time": "2017-03-03T16:58:18+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -2847,7 +2944,7 @@
                 "web service"
             ],
             "abandoned": "guzzlehttp/guzzle",
-            "time": "2015-03-18 18:23:50"
+            "time": "2015-03-18T18:23:50+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2909,7 +3006,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-02-28 22:50:30"
+            "time": "2017-02-28T22:50:30+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2960,7 +3057,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20 10:07:11"
+            "time": "2016-12-20T10:07:11+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -3025,7 +3122,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20 17:10:46"
+            "time": "2017-03-20T17:10:46+00:00"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -3076,7 +3173,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-05-20 03:37:09"
+            "time": "2015-05-20T03:37:09+00:00"
         },
         {
             "name": "guzzlehttp/streams",
@@ -3126,7 +3223,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-10-12 19:18:40"
+            "time": "2014-10-12T19:18:40+00:00"
         },
         {
             "name": "happyr/google-analytics-bundle",
@@ -3182,7 +3279,7 @@
                 "google",
                 "google analytics"
             ],
-            "time": "2016-08-03 11:27:12"
+            "time": "2016-08-03T11:27:12+00:00"
         },
         {
             "name": "happyr/google-site-authenticator-bundle",
@@ -3237,7 +3334,7 @@
                 "api",
                 "google"
             ],
-            "time": "2016-08-10 08:00:12"
+            "time": "2016-08-10T08:00:12+00:00"
         },
         {
             "name": "helios-ag/fm-elfinder-bundle",
@@ -3299,7 +3396,7 @@
                 "elfinder",
                 "file manager"
             ],
-            "time": "2015-11-15 18:24:14"
+            "time": "2015-11-15T18:24:14+00:00"
         },
         {
             "name": "helios-ag/fm-elfinder-php-connector",
@@ -3353,7 +3450,7 @@
                 "elfinder",
                 "filemanager"
             ],
-            "time": "2017-03-13 15:34:29"
+            "time": "2017-03-13T15:34:29+00:00"
         },
         {
             "name": "hwi/oauth-bundle",
@@ -3493,7 +3590,7 @@
                 "yandex",
                 "youtube"
             ],
-            "time": "2016-09-11 13:24:27"
+            "time": "2016-09-11T13:24:27+00:00"
         },
         {
             "name": "imagine/imagine",
@@ -3550,7 +3647,7 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2015-09-19 16:54:05"
+            "time": "2015-09-19T16:54:05+00:00"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -3601,7 +3698,7 @@
             "keywords": [
                 "parameters management"
             ],
-            "time": "2015-11-10 17:04:01"
+            "time": "2015-11-10T17:04:01+00:00"
         },
         {
             "name": "intervention/image",
@@ -3663,7 +3760,7 @@
                 "thumbnail",
                 "watermark"
             ],
-            "time": "2017-02-04 10:37:19"
+            "time": "2017-02-04T10:37:19+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -3705,7 +3802,7 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-11-20 16:49:30"
+            "time": "2014-11-20T16:49:30+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -3755,7 +3852,7 @@
                 "highlight",
                 "sql"
             ],
-            "time": "2014-01-12 16:20:24"
+            "time": "2014-01-12T16:20:24+00:00"
         },
         {
             "name": "jms/metadata",
@@ -3806,7 +3903,7 @@
                 "xml",
                 "yaml"
             ],
-            "time": "2016-12-05 10:18:33"
+            "time": "2016-12-05T10:18:33+00:00"
         },
         {
             "name": "jms/parser-lib",
@@ -3841,7 +3938,7 @@
                 "Apache2"
             ],
             "description": "A library for easily creating recursive-descent parsers.",
-            "time": "2012-11-18 18:08:43"
+            "time": "2012-11-18T18:08:43+00:00"
         },
         {
             "name": "jms/serializer",
@@ -3917,7 +4014,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2017-02-14 14:35:22"
+            "time": "2017-02-14T14:35:22+00:00"
         },
         {
             "name": "jms/serializer-bundle",
@@ -3989,7 +4086,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2017-03-13 17:02:39"
+            "time": "2017-03-13T17:02:39+00:00"
         },
         {
             "name": "knplabs/gaufrette",
@@ -4073,7 +4170,7 @@
                 "filesystem",
                 "media"
             ],
-            "time": "2016-03-03 09:36:22"
+            "time": "2016-03-03T09:36:22+00:00"
         },
         {
             "name": "knplabs/knp-gaufrette-bundle",
@@ -4131,7 +4228,7 @@
                 "filesystem",
                 "media"
             ],
-            "time": "2017-03-16 21:01:25"
+            "time": "2017-03-16T21:01:25+00:00"
         },
         {
             "name": "knplabs/knp-markdown-bundle",
@@ -4193,7 +4290,7 @@
                 "knplabs",
                 "markdown"
             ],
-            "time": "2016-05-04 16:08:55"
+            "time": "2016-05-04T16:08:55+00:00"
         },
         {
             "name": "knplabs/knp-menu",
@@ -4259,7 +4356,7 @@
                 "menu",
                 "tree"
             ],
-            "time": "2016-09-22 07:36:19"
+            "time": "2016-09-22T07:36:19+00:00"
         },
         {
             "name": "knplabs/knp-menu-bundle",
@@ -4316,7 +4413,7 @@
             "keywords": [
                 "menu"
             ],
-            "time": "2016-09-22 12:24:40"
+            "time": "2016-09-22T12:24:40+00:00"
         },
         {
             "name": "kriswallsmith/assetic",
@@ -4393,7 +4490,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2016-11-11 18:43:20"
+            "time": "2016-11-11T18:43:20+00:00"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -4441,7 +4538,7 @@
                 "curl",
                 "http client"
             ],
-            "time": "2015-06-25 17:26:56"
+            "time": "2015-06-25T17:26:56+00:00"
         },
         {
             "name": "leafo/scssphp",
@@ -4494,7 +4591,7 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2017-02-23 05:07:33"
+            "time": "2017-02-23T05:07:33+00:00"
         },
         {
             "name": "league/flysystem",
@@ -4577,7 +4674,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-03-18 16:02:30"
+            "time": "2017-03-18T16:02:30+00:00"
         },
         {
             "name": "liuggio/ExcelBundle",
@@ -4643,7 +4740,7 @@
                 "excel",
                 "xls"
             ],
-            "time": "2016-06-20 17:11:22"
+            "time": "2016-06-20T17:11:22+00:00"
         },
         {
             "name": "michelf/php-markdown",
@@ -4694,7 +4791,7 @@
             "keywords": [
                 "markdown"
             ],
-            "time": "2016-10-29 18:58:20"
+            "time": "2016-10-29T18:58:20+00:00"
         },
         {
             "name": "mongodb/mongodb",
@@ -4752,7 +4849,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2017-02-16 18:40:32"
+            "time": "2017-02-16T18:40:32+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4830,7 +4927,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2017-03-13 07:08:03"
+            "time": "2017-03-13T07:08:03+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -4885,7 +4982,7 @@
                 "json",
                 "jsonpath"
             ],
-            "time": "2016-12-03 22:08:25"
+            "time": "2016-12-03T22:08:25+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -4933,7 +5030,7 @@
                 }
             ],
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
-            "time": "2016-12-30 09:49:15"
+            "time": "2016-12-30T09:49:15+00:00"
         },
         {
             "name": "ocramius/proxy-manager",
@@ -4998,7 +5095,7 @@
                 "proxy pattern",
                 "service proxies"
             ],
-            "time": "2016-11-04 15:53:15"
+            "time": "2016-11-04T15:53:15+00:00"
         },
         {
             "name": "oneup/flysystem-bundle",
@@ -5081,7 +5178,7 @@
                 "abstraction",
                 "filesystem"
             ],
-            "time": "2017-03-03 13:41:53"
+            "time": "2017-03-03T13:41:53+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -5129,7 +5226,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2017-03-13 16:27:32"
+            "time": "2017-03-13T16:27:32+00:00"
         },
         {
             "name": "patchwork/jsqueeze",
@@ -5176,7 +5273,7 @@
                 "javascript",
                 "minification"
             ],
-            "time": "2016-04-19 09:28:22"
+            "time": "2016-04-19T09:28:22+00:00"
         },
         {
             "name": "php-http/cache-plugin",
@@ -5232,7 +5329,7 @@
                 "httplug",
                 "plugin"
             ],
-            "time": "2016-08-16 12:12:50"
+            "time": "2016-08-16T12:12:50+00:00"
         },
         {
             "name": "php-http/client-common",
@@ -5293,7 +5390,7 @@
                 "http",
                 "httplug"
             ],
-            "time": "2017-03-18 11:14:35"
+            "time": "2017-03-18T11:14:35+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -5355,7 +5452,7 @@
                 "message",
                 "psr7"
             ],
-            "time": "2017-03-02 06:56:00"
+            "time": "2017-03-02T06:56:00+00:00"
         },
         {
             "name": "php-http/guzzle6-adapter",
@@ -5415,7 +5512,7 @@
                 "Guzzle",
                 "http"
             ],
-            "time": "2016-05-10 06:13:32"
+            "time": "2016-05-10T06:13:32+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -5471,7 +5568,7 @@
                 "client",
                 "http"
             ],
-            "time": "2016-08-31 08:30:17"
+            "time": "2016-08-31T08:30:17+00:00"
         },
         {
             "name": "php-http/httplug-bundle",
@@ -5553,7 +5650,7 @@
                 "message",
                 "php-http"
             ],
-            "time": "2017-02-23 06:34:50"
+            "time": "2017-02-23T06:34:50+00:00"
         },
         {
             "name": "php-http/logger-plugin",
@@ -5608,7 +5705,7 @@
                 "logger",
                 "plugin"
             ],
-            "time": "2016-05-04 22:43:46"
+            "time": "2016-05-04T22:43:46+00:00"
         },
         {
             "name": "php-http/message",
@@ -5677,7 +5774,7 @@
                 "message",
                 "psr-7"
             ],
-            "time": "2017-02-14 08:58:37"
+            "time": "2017-02-14T08:58:37+00:00"
         },
         {
             "name": "php-http/message-factory",
@@ -5727,7 +5824,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2015-12-19 14:08:53"
+            "time": "2015-12-19T14:08:53+00:00"
         },
         {
             "name": "php-http/promise",
@@ -5777,7 +5874,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-01-26 13:27:02"
+            "time": "2016-01-26T13:27:02+00:00"
         },
         {
             "name": "php-http/stopwatch-plugin",
@@ -5831,7 +5928,7 @@
                 "plugin",
                 "stopwatch"
             ],
-            "time": "2016-05-19 06:10:14"
+            "time": "2016-05-19T06:10:14+00:00"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -5879,7 +5976,7 @@
                 "sequence",
                 "set"
             ],
-            "time": "2015-05-17 12:39:23"
+            "time": "2015-05-17T12:39:23+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -5933,7 +6030,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2015-12-27 11:43:31"
+            "time": "2015-12-27T11:43:31+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -5978,7 +6075,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2016-09-30 07:12:33"
+            "time": "2016-09-30T07:12:33+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -6025,7 +6122,7 @@
                     "email": "me@mikevanriel.com"
                 }
             ],
-            "time": "2016-11-25 06:54:22"
+            "time": "2016-11-25T06:54:22+00:00"
         },
         {
             "name": "phpoffice/phpexcel",
@@ -6082,7 +6179,7 @@
                 "xls",
                 "xlsx"
             ],
-            "time": "2015-05-01 07:00:55"
+            "time": "2015-05-01T07:00:55+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -6132,7 +6229,7 @@
                 "php",
                 "type"
             ],
-            "time": "2015-07-25 16:39:46"
+            "time": "2015-07-25T16:39:46+00:00"
         },
         {
             "name": "pixassociates/sortable-behavior-bundle",
@@ -6189,7 +6286,7 @@
                 "sonata",
                 "sortable"
             ],
-            "time": "2015-09-21 13:34:22"
+            "time": "2015-09-21T13:34:22+00:00"
         },
         {
             "name": "presta/sitemap-bundle",
@@ -6250,7 +6347,7 @@
                 "prestaconcept",
                 "xml"
             ],
-            "time": "2016-06-15 07:35:16"
+            "time": "2016-06-15T07:35:16+00:00"
         },
         {
             "name": "psr/cache",
@@ -6296,7 +6393,7 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2016-08-06 20:24:11"
+            "time": "2016-08-06T20:24:11+00:00"
         },
         {
             "name": "psr/http-message",
@@ -6346,7 +6443,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06 14:39:51"
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "psr/log",
@@ -6393,7 +6490,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10 12:19:37"
+            "time": "2016-10-10T12:19:37+00:00"
         },
         {
             "name": "react/promise",
@@ -6436,7 +6533,7 @@
                 "promise",
                 "promises"
             ],
-            "time": "2016-12-22 14:09:01"
+            "time": "2016-12-22T14:09:01+00:00"
         },
         {
             "name": "robloach/component-installer",
@@ -6484,7 +6581,7 @@
                 }
             ],
             "description": "Allows installation of Components via Composer.",
-            "time": "2015-08-10 12:35:38"
+            "time": "2015-08-10T12:35:38+00:00"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -6544,7 +6641,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2017-01-04 13:34:44"
+            "time": "2017-01-04T13:34:44+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -6614,7 +6711,7 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2017-03-02 20:17:28"
+            "time": "2017-03-02T20:17:28+00:00"
         },
         {
             "name": "sensiolabs/security-checker",
@@ -6658,7 +6755,7 @@
                 }
             ],
             "description": "A security checker for your composer.lock",
-            "time": "2017-03-09 17:41:10"
+            "time": "2017-03-09T17:41:10+00:00"
         },
         {
             "name": "sonata-project/admin-bundle",
@@ -6755,7 +6852,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2016-12-22 13:07:43"
+            "time": "2016-12-22T13:07:43+00:00"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -6827,7 +6924,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2017-02-28 13:40:00"
+            "time": "2017-02-28T13:40:00+00:00"
         },
         {
             "name": "sonata-project/cache",
@@ -6890,7 +6987,7 @@
                 "mongodb",
                 "redis"
             ],
-            "time": "2015-09-18 14:40:58"
+            "time": "2015-09-18T14:40:58+00:00"
         },
         {
             "name": "sonata-project/classification-bundle",
@@ -6969,7 +7066,7 @@
                 "tag",
                 "taxonomy"
             ],
-            "time": "2016-07-05 07:59:37"
+            "time": "2016-07-05T07:59:37+00:00"
         },
         {
             "name": "sonata-project/core-bundle",
@@ -7044,7 +7141,7 @@
             "keywords": [
                 "sonata"
             ],
-            "time": "2016-08-30 14:59:31"
+            "time": "2016-08-30T14:59:31+00:00"
         },
         {
             "name": "sonata-project/datagrid-bundle",
@@ -7105,7 +7202,7 @@
                 "datagrid",
                 "sonata"
             ],
-            "time": "2017-02-09 16:25:20"
+            "time": "2017-02-09T16:25:20+00:00"
         },
         {
             "name": "sonata-project/doctrine-extensions",
@@ -7154,7 +7251,7 @@
                 "doctrine2",
                 "json"
             ],
-            "time": "2014-02-14 12:45:49"
+            "time": "2014-02-14T12:45:49+00:00"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
@@ -7230,7 +7327,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2016-07-05 14:17:35"
+            "time": "2016-07-05T14:17:35+00:00"
         },
         {
             "name": "sonata-project/easy-extends-bundle",
@@ -7289,7 +7386,7 @@
                 "Easy Extends",
                 "sonata"
             ],
-            "time": "2015-12-02 22:24:42"
+            "time": "2015-12-02T22:24:42+00:00"
         },
         {
             "name": "sonata-project/exporter",
@@ -7358,7 +7455,7 @@
                 "export",
                 "xls"
             ],
-            "time": "2017-02-09 16:39:40"
+            "time": "2017-02-09T16:39:40+00:00"
         },
         {
             "name": "sonata-project/formatter-bundle",
@@ -7438,7 +7535,7 @@
                 "markitup",
                 "sonata"
             ],
-            "time": "2016-11-30 09:35:43"
+            "time": "2016-11-30T09:35:43+00:00"
         },
         {
             "name": "sonata-project/google-authenticator",
@@ -7488,7 +7585,7 @@
             "keywords": [
                 "google authenticator"
             ],
-            "time": "2014-03-31 09:18:53"
+            "time": "2014-03-31T09:18:53+00:00"
         },
         {
             "name": "sonata-project/intl-bundle",
@@ -7562,7 +7659,7 @@
                 "sonata",
                 "time"
             ],
-            "time": "2017-01-17 11:04:35"
+            "time": "2017-01-17T11:04:35+00:00"
         },
         {
             "name": "sonata-project/media-bundle",
@@ -7674,7 +7771,7 @@
                 "vimeo",
                 "youtube"
             ],
-            "time": "2016-08-18 13:04:58"
+            "time": "2016-08-18T13:04:58+00:00"
         },
         {
             "name": "sonata-project/notification-bundle",
@@ -7765,7 +7862,7 @@
                 "page",
                 "sonata"
             ],
-            "time": "2017-02-03 09:24:39"
+            "time": "2017-02-03T09:24:39+00:00"
         },
         {
             "name": "sonata-project/translation-bundle",
@@ -7837,7 +7934,7 @@
                 "i18n",
                 "translation"
             ],
-            "time": "2016-06-15 15:24:00"
+            "time": "2016-06-15T15:24:00+00:00"
         },
         {
             "name": "sonata-project/user-bundle",
@@ -7926,7 +8023,7 @@
                 "sonata",
                 "user"
             ],
-            "time": "2016-11-25 14:24:43"
+            "time": "2016-11-25T14:24:43+00:00"
         },
         {
             "name": "spine/postgres-search-bundle",
@@ -7972,7 +8069,7 @@
                 "search",
                 "symfony3"
             ],
-            "time": "2016-09-06 15:29:41"
+            "time": "2016-09-06T15:29:41+00:00"
         },
         {
             "name": "spine/spine-trigonometric-dql-bundle",
@@ -8021,7 +8118,7 @@
                 "dql",
                 "symfony3"
             ],
-            "time": "2016-08-16 11:34:59"
+            "time": "2016-08-16T11:34:59+00:00"
         },
         {
             "name": "spraed/pdf-generator-bundle",
@@ -8070,7 +8167,7 @@
                 "pdf",
                 "spraed"
             ],
-            "time": "2013-09-23 15:58:21"
+            "time": "2013-09-23T15:58:21+00:00"
         },
         {
             "name": "stof/doctrine-extensions-bundle",
@@ -8131,7 +8228,7 @@
                 "translatable",
                 "tree"
             ],
-            "time": "2016-01-26 23:58:32"
+            "time": "2016-01-26T23:58:32+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -8185,7 +8282,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2017-02-13 07:52:53"
+            "time": "2017-02-13T07:52:53+00:00"
         },
         {
             "name": "symfony/assetic-bundle",
@@ -8255,7 +8352,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2016-11-22 11:42:57"
+            "time": "2016-11-22T11:42:57+00:00"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -8315,7 +8412,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2017-01-02 19:04:26"
+            "time": "2017-01-02T19:04:26+00:00"
         },
         {
             "name": "symfony/polyfill-apcu",
@@ -8368,7 +8465,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-intl-icu",
@@ -8426,7 +8523,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -8485,7 +8582,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php54",
@@ -8543,7 +8640,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php55",
@@ -8599,7 +8696,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php56",
@@ -8655,7 +8752,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php70",
@@ -8714,7 +8811,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-util",
@@ -8766,7 +8863,7 @@
                 "polyfill",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/security-acl",
@@ -8827,7 +8924,7 @@
             ],
             "description": "Symfony Security Component - ACL (Access Control List)",
             "homepage": "https://symfony.com",
-            "time": "2015-12-28 09:39:46"
+            "time": "2015-12-28T09:39:46+00:00"
         },
         {
             "name": "symfony/swiftmailer-bundle",
@@ -8886,7 +8983,7 @@
             ],
             "description": "Symfony SwiftmailerBundle",
             "homepage": "http://symfony.com",
-            "time": "2017-03-02 16:47:57"
+            "time": "2017-03-02T16:47:57+00:00"
         },
         {
             "name": "symfony/symfony",
@@ -9020,7 +9117,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-07-30 08:48:52"
+            "time": "2016-07-30T08:48:52+00:00"
         },
         {
             "name": "twig/extensions",
@@ -9072,7 +9169,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2016-10-25 17:34:14"
+            "time": "2016-10-25T17:34:14+00:00"
         },
         {
             "name": "twig/twig",
@@ -9134,7 +9231,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-02-27 00:07:03"
+            "time": "2017-02-27T00:07:03+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -9184,7 +9281,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-11-23 20:04:58"
+            "time": "2016-11-23T20:04:58+00:00"
         },
         {
             "name": "willdurand/geocoder",
@@ -9248,7 +9345,7 @@
                 "geocoding",
                 "geoip"
             ],
-            "time": "2014-12-08 09:28:04"
+            "time": "2014-12-08T09:28:04+00:00"
         },
         {
             "name": "willdurand/jsonp-callback-validator",
@@ -9288,7 +9385,7 @@
                 }
             ],
             "description": "JSONP callback validator.",
-            "time": "2014-01-20 22:35:06"
+            "time": "2014-01-20T22:35:06+00:00"
         },
         {
             "name": "zendframework/zend-code",
@@ -9341,7 +9438,7 @@
                 "code",
                 "zf2"
             ],
-            "time": "2016-10-24 13:23:32"
+            "time": "2016-10-24T13:23:32+00:00"
         },
         {
             "name": "zendframework/zend-eventmanager",
@@ -9395,7 +9492,7 @@
                 "events",
                 "zf2"
             ],
-            "time": "2016-12-19 21:47:12"
+            "time": "2016-12-19T21:47:12+00:00"
         },
         {
             "name": "zendframework/zenddiagnostics",
@@ -9458,7 +9555,7 @@
                 "php",
                 "test"
             ],
-            "time": "2016-04-01 10:39:00"
+            "time": "2016-04-01T10:39:00+00:00"
         }
     ],
     "packages-dev": [
@@ -9514,7 +9611,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "time": "2017-03-15 01:02:10"
+            "time": "2017-03-15T01:02:10+00:00"
         }
     ],
     "aliases": [],
