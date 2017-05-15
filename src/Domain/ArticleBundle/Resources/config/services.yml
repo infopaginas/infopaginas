@@ -4,6 +4,13 @@ services:
         arguments: [~, Domain\ArticleBundle\Entity\Article, SonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Articles}
+    domain_article.admin.article_has_media:
+        class: Domain\ArticleBundle\Admin\Media\ArticleGalleryAdmin
+        arguments: [~, Domain\ArticleBundle\Entity\Media\ArticleGallery, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Article Gallery}
+        calls:
+             - [setPositionService, ['@pix_sortable_behavior.position']]
     domain_article.manager.article:
         class: Domain\ArticleBundle\Model\Manager\ArticleManager
         arguments: ['@service_container']

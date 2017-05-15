@@ -138,6 +138,37 @@ class ArticleAdmin extends OxaAdmin
                 ])
             ->end()
         ;
+
+        if ($isExternal) {
+            $property = [
+                'by_reference'  => false,
+                'required'      => false,
+                'read_only'     => true,
+                'btn_add'       => false,
+                'type_options' => [
+                    'delete'    => false,
+                ],
+            ];
+        } else {
+            $property = [
+                'by_reference' => false,
+                'required' => false,
+                'mapped' => true,
+            ];
+        }
+        $formMapper
+            ->with('Gallery')
+                ->add('images', 'sonata_type_collection', $property, [
+                    'edit' => 'inline',
+                    'inline' => 'table',
+                    'sortable' => 'position',
+                    'link_parameters' => [
+                        'context' => OxaMediaInterface::CONTEXT_ARTICLE_IMAGES,
+                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                    ]
+                ])
+            ->end()
+        ;
     }
 
     /**

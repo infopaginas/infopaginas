@@ -64,7 +64,14 @@ sonata_media:
                 homepage:     { width: 312, height: 260, quality: 70}
                 list:         { width: 500, height: 170, quality: 70}
                 normal:       { width: 500, height: 500, quality: 100}
-
+        article_images:
+            download:
+                mode: http
+            providers:
+                - sonata.media.provider.image
+            formats:
+                preview:      { width: 150, height: 150, quality: 100}
+                normal:       { width: 500, height: 500, quality: 100}
         page_background:
             download:
                 mode: http

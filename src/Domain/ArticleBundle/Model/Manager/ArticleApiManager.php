@@ -3,10 +3,14 @@
 namespace Domain\ArticleBundle\Model\Manager;
 
 use Domain\ArticleBundle\Entity\Article;
+use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\ArticleBundle\Entity\Translation\ArticleTranslation;
+use Domain\ArticleBundle\Entity\Translation\Media\ArticleGalleryTranslation;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\BusinessGalleryManager;
+use Oxa\Sonata\MediaBundle\Entity\Media;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Domain\SiteBundle\Mailer\Mailer;
@@ -14,8 +18,8 @@ use Domain\SiteBundle\Mailer\Mailer;
 class ArticleApiManager
 {
     const API_ARTICLE_LIST_URL = 'http://infopaginasmedia.com/rest/api/articles';
-    const ALLOWED_TYPE_URL     = 'infopaginas';
-    const DEFAULT_API_ERROR    = 'Unknown error';
+    const ALLOWED_TYPE_URL = 'infopaginas';
+    const DEFAULT_API_ERROR = 'Unknown error';
 
     const DEFAULT_NUMBER_OF_ITEM_TO_UPDATE = 10;
 
@@ -60,17 +64,17 @@ class ArticleApiManager
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container        = $container;
-        $this->em               = $container->get('doctrine.orm.entity_manager');
-        $this->galleryManager   = $container->get('domain_business.manager.business_gallery');
-        $this->accessToken      = $container->getParameter('infopaginas_media_access_token');
-        $this->mailer           = $container->get('domain_site.mailer');
+        $this->container = $container;
+        $this->em = $container->get('doctrine.orm.entity_manager');
+        $this->galleryManager = $container->get('domain_business.manager.business_gallery');
+        $this->accessToken = $container->getParameter('infopaginas_media_access_token');
+        $this->mailer = $container->get('domain_site.mailer');
 
         $seoSettings = $container->getParameter('seo_custom_settings');
 
-        $this->defaultAuthorName       = $seoSettings['default_article_author'];
-        $this->seoCompanyName          = $seoSettings['company_name'];
-        $this->seoTitleMaxLength       = $seoSettings['title_max_length'];
+        $this->defaultAuthorName = $seoSettings['default_article_author'];
+        $this->seoCompanyName = $seoSettings['company_name'];
+        $this->seoTitleMaxLength = $seoSettings['title_max_length'];
         $this->seoDescriptionMaxLength = $seoSettings['description_max_length'];
 
         $this->localeEng = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
@@ -78,8 +82,8 @@ class ArticleApiManager
     }
 
     /**
-     * @param int   $numberOfItemToUpdate
-     * @param bool  $updateAll
+     * @param int $numberOfItemToUpdate
+     * @param bool $updateAll
      *
      * @return int
      */
@@ -97,8 +101,8 @@ class ArticleApiManager
     }
 
     /**
-     * @param int   $pageNumber
-     * @param int   $itemCounter
+     * @param int $pageNumber
+     * @param int $itemCounter
      *
      * @return int
      */
@@ -119,138 +123,21 @@ class ArticleApiManager
     }
 
     /**
-     * @param array     $data
-     * @param int       $itemCounter
+     * @param int $pageNumber
      *
-     * @return int
+     * @return string
      */
-    protected function handleArticlesSync($data, $itemCounter = 0)
+    protected function getLatestArticleUrlByPage($pageNumber = 1)
     {
-        $defaultCategory = $this->em->getRepository(Category::class)->findOneBy(
-            [
-                'code' => Category::CATEGORY_ARTICLE_CODE,
-            ]
-        );
-
-        foreach ($data as $item) {
-            if ($this->validateArticleFromApi($item)) {
-                if ($itemCounter >= $this->numberOfItemToUpdate and !$this->updateAll) {
-                    break;
-                }
-
-                $itemCounter++;
-
-                $articles = $this->em->getRepository(Article::class)->findBy(
-                    [
-                        'externalId' => $item->id,
-                    ]
-                );
-
-                $article = current($articles);
-
-                if ($article) {
-                    $date = null;
-
-                    if (!empty($item->date) and strtotime($item->date)) {
-                        $date = new \DateTime($item->date);
-                    }
-
-                    if ($date and $date > $article->getCreatedAt()) {
-                        $article->setCreatedAt($date);
-                        $article->setActivationDate($date);
-                    } else {
-                        continue;
-                    }
-                } else {
-                    $article = $this->createArticle($item);
-                }
-
-                $mediaUrl = $this->prepareMediaUrl($item->header);
-
-                $media = $this->galleryManager->uploadArticleImageFromRemoteFile($mediaUrl);
-
-                if ($media) {
-                    $this->em->persist($article);
-
-                    $article->setCategory($defaultCategory);
-                    $article->setImage($media);
-
-                    $this->handleTranslatableFields($item, $article);
-
-                    $this->em->flush();
-                }
-            }
-        }
-
-        return $itemCounter;
+        return $this->getLatestArticleUrl() . '&page=' . $pageNumber;
     }
 
     /**
-     * @param Article $article
-     * @param string  $content
-     * @param string  $field
-     * @param string  $locale
-     *
-     * @return Article
+     * @return string
      */
-    protected function handleTranslation(Article $article, $content, $field, $locale)
+    protected function getLatestArticleUrl()
     {
-        $translation = $article->getTranslationItem($field, $locale);
-
-        if ($translation) {
-            $translation->setContent($content);
-        } else {
-            $translation = new ArticleTranslation();
-
-            $translation->setField($field);
-            $translation->setLocale($locale);
-            $translation->setContent($content);
-            $translation->setObject($article);
-
-            $this->em->persist($translation);
-        }
-    }
-
-    /**
-     * @param mixed $data
-     *
-     * @return Article
-     */
-    protected function createArticle($data)
-    {
-        $article = new Article();
-
-        $article->setIsExternal(true);
-        $article->setExternalId($data->id);
-        $article->setIsPublished(true);
-        $article->setIsOnHomepage(true);
-
-        if (!empty($data->date) and strtotime($data->date)) {
-            $date = new \DateTime($data->date);
-        } else {
-            $date = new \DateTime();
-        }
-
-        $article->setActivationDate($date);
-
-        return $article;
-    }
-
-    /**
-     * @param mixed $article
-     *
-     * @return bool
-     */
-    protected function validateArticleFromApi($article)
-    {
-        if ((!empty($article->title_esp) or !empty($article->title_eng)) and
-            (!empty($article->text_esp) or !empty($article->text_eng)) and
-            $article->header and $article->type_url == self::ALLOWED_TYPE_URL and !empty($article->id)
-        ) {
-            return true;
-        }
-
-        return false;
+        return self::API_ARTICLE_LIST_URL . '?access_token=' . $this->accessToken;
     }
 
     /**
@@ -288,21 +175,164 @@ class ArticleApiManager
     }
 
     /**
-     * @param int $pageNumber
-     *
-     * @return string
+     * @param string $error
      */
-    protected function getLatestArticleUrlByPage($pageNumber = 1)
+    protected function sendErrorNotification($error)
     {
-        return $this->getLatestArticleUrl() . '&page=' . $pageNumber;
+        $admins = $this->em->getRepository(User::class)->findByRole('ROLE_ADMINISTRATOR');
+
+        $this->mailer->sendArticlesApiErrorEmailMessage($error, $admins);
     }
 
     /**
-     * @return string
+     * @param array $data
+     * @param int $itemCounter
+     *
+     * @return int
      */
-    protected function getLatestArticleUrl()
+    protected function handleArticlesSync($data, $itemCounter = 0)
     {
-        return self::API_ARTICLE_LIST_URL . '?access_token=' . $this->accessToken;
+        $defaultCategory = $this->em->getRepository(Category::class)->findOneBy(
+            [
+                'code' => Category::CATEGORY_ARTICLE_CODE,
+            ]
+        );
+        foreach ($data as $item) {
+            if ($this->validateArticleFromApi($item)) {
+                if ($itemCounter >= $this->numberOfItemToUpdate and !$this->updateAll) {
+                    break;
+                }
+
+                $itemCounter++;
+
+                $articles = $this->em->getRepository(Article::class)->findBy(
+                    [
+                        'externalId' => $item->id,
+                    ]
+                );
+
+                $article = current($articles);
+
+                if ($article) {
+                    $date = null;
+
+                    if (!empty($item->date) and strtotime($item->date)) {
+                        $date = new \DateTime($item->date);
+                    }
+
+                    if ($date and $date > $article->getCreatedAt()) {
+                        $article->setCreatedAt($date);
+                        $article->setActivationDate($date);
+                    } else {
+                        continue;
+                    }
+
+                    foreach ($article->getImages() as $image) {
+                        $article->removeImage($image);
+                    }
+
+                } else {
+                    $article = $this->createArticle($item);
+                }
+
+                $mediaUrl = $this->prepareMediaUrl($item->header);
+                $gallery = json_decode($item->gallery);
+                $media = $this->galleryManager->uploadArticleImageFromRemoteFile($mediaUrl);
+
+                if ($media) {
+                    $this->em->persist($article);
+                    $article->setCategory($defaultCategory);
+                    $article->setImage($media);
+                    $this->handleTranslatableFields($item, $article);
+                    if ($gallery) {
+                        foreach ($gallery as $galleryItem) {
+
+                            if ($galleryItem->photoIMG && $item->header != $galleryItem->photoIMG) {
+                                $articleGalleryUrl = $this->prepareMediaUrl($galleryItem->photoIMG);
+                                $galleryImage = $this->galleryManager->uploadArticleImageFromRemoteFile(
+                                    $articleGalleryUrl,
+                                    OxaMediaInterface::CONTEXT_ARTICLE_IMAGES
+                                );
+                                if ($galleryImage) {
+                                    $article->addImage($this->createArticleGalleryImage($galleryImage, $galleryItem));
+                                }
+                            }
+                        }
+                    }
+
+
+                    $this->em->flush();
+                }
+            }
+        }
+
+        return $itemCounter;
+    }
+
+    /**
+     * @param Media $galleryImage
+     * @param $galleryItem
+     * @return ArticleGallery
+     */
+    protected function createArticleGalleryImage(Media $galleryImage, $galleryItem)
+    {
+        $articleGalleryImage = new ArticleGallery();
+        $translation = new ArticleGalleryTranslation();
+
+        $articleGalleryImage->setDescription($galleryItem->photoTextEng);
+        $articleGalleryImage->setMedia($galleryImage);
+
+        $translation->setContent($galleryItem->photoText);
+        $translation->setField(ArticleGallery::TRANSLATION_FIELD_DESCRIPTION);
+        $translation->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
+        $translation->setObject($articleGalleryImage);
+
+        $this->em->persist($translation);
+        $this->em->persist($articleGalleryImage);
+
+        return $articleGalleryImage;
+    }
+
+    /**
+     * @param mixed $article
+     *
+     * @return bool
+     */
+    protected function validateArticleFromApi($article)
+    {
+        if ((!empty($article->title_esp) or !empty($article->title_eng)) and
+            (!empty($article->text_esp) or !empty($article->text_eng)) and
+            $article->header and $article->type_url == self::ALLOWED_TYPE_URL and !empty($article->id)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @return Article
+     */
+    protected function createArticle($data)
+    {
+        $article = new Article();
+
+        $article->setIsExternal(true);
+        $article->setExternalId($data->id);
+        $article->setIsPublished(true);
+        $article->setIsOnHomepage(true);
+
+        if (!empty($data->date) and strtotime($data->date)) {
+            $date = new \DateTime($data->date);
+        } else {
+            $date = new \DateTime();
+        }
+
+        $article->setActivationDate($date);
+
+        return $article;
     }
 
     /**
@@ -323,49 +353,8 @@ class ArticleApiManager
     }
 
     /**
-     * @param string    $data
-     * @param int       $maxLength
-     *
-     * @return string
-     */
-    protected function prepareTextData($data, $maxLength)
-    {
-        $text = mb_substr($data, 0, $maxLength);
-
-        return $text;
-    }
-
-    /**
-     * @param string    $title
-     *
-     * @return string
-     */
-    protected function buildSeoTitle($title)
-    {
-        $seoTitle = $title . ' | ' . $this->seoCompanyName;
-
-        $seoTitle = mb_substr($seoTitle, 0, $this->seoTitleMaxLength);
-
-        return $seoTitle;
-    }
-
-    /**
-     * @param string    $text
-     *
-     * @return string
-     */
-    protected function buildSeoDescription($text)
-    {
-        $seoDescription = strip_tags($text);
-
-        $seoDescription = mb_substr($seoDescription, 0, $this->seoDescriptionMaxLength);
-
-        return $seoDescription;
-    }
-
-    /**
-     * @param mixed    $item
-     * @param Article  $article
+     * @param mixed $item
+     * @param Article $article
      *
      * @return Article
      */
@@ -470,12 +459,69 @@ class ArticleApiManager
     }
 
     /**
-     * @param string $error
+     * @param string $data
+     * @param int $maxLength
+     *
+     * @return string
      */
-    protected function sendErrorNotification($error)
+    protected function prepareTextData($data, $maxLength)
     {
-        $admins = $this->em->getRepository(User::class)->findByRole('ROLE_ADMINISTRATOR');
+        $text = mb_substr($data, 0, $maxLength);
 
-        $this->mailer->sendArticlesApiErrorEmailMessage($error, $admins);
+        return $text;
+    }
+
+    /**
+     * @param Article $article
+     * @param string $content
+     * @param string $field
+     * @param string $locale
+     *
+     * @return Article
+     */
+    protected function handleTranslation(Article $article, $content, $field, $locale)
+    {
+        $translation = $article->getTranslationItem($field, $locale);
+
+        if ($translation) {
+            $translation->setContent($content);
+        } else {
+            $translation = new ArticleTranslation();
+
+            $translation->setField($field);
+            $translation->setLocale($locale);
+            $translation->setContent($content);
+            $translation->setObject($article);
+
+            $this->em->persist($translation);
+        }
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return string
+     */
+    protected function buildSeoTitle($title)
+    {
+        $seoTitle = $title . ' | ' . $this->seoCompanyName;
+
+        $seoTitle = mb_substr($seoTitle, 0, $this->seoTitleMaxLength);
+
+        return $seoTitle;
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    protected function buildSeoDescription($text)
+    {
+        $seoDescription = strip_tags($text);
+
+        $seoDescription = mb_substr($seoDescription, 0, $this->seoDescriptionMaxLength);
+
+        return $seoDescription;
     }
 }
