@@ -60,9 +60,8 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
      *     inversedBy="articleGallery",
      *     cascade={"persist"}
      * )
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
      * @Assert\valid()
-     * @Assert\NotBlank()
      */
     protected $media;
 
