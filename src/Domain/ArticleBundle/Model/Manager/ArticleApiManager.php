@@ -240,8 +240,8 @@ class ArticleApiManager
                 $media = $this->galleryManager->uploadArticleImageFromRemoteFile($mediaUrl);
 
                 if ($media) {
-                    $this->em->persist($article);
                     $article->setCategory($defaultCategory);
+                    $this->em->persist($article);
                     $article->setImage($media);
                     $this->handleTranslatableFields($item, $article);
                     if ($gallery) {
