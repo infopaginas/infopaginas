@@ -240,8 +240,8 @@ class ArticleApiManager
                 $media = $this->galleryManager->uploadArticleImageFromRemoteFile($mediaUrl);
 
                 if ($media) {
-                    $this->em->persist($article);
                     $article->setCategory($defaultCategory);
+                    $this->em->persist($article);
                     $article->setImage($media);
                     $this->handleTranslatableFields($item, $article);
                     if ($gallery) {
@@ -253,6 +253,7 @@ class ArticleApiManager
                                     $articleGalleryUrl,
                                     OxaMediaInterface::CONTEXT_ARTICLE_IMAGES
                                 );
+
                                 if ($galleryImage) {
                                     $article->addImage($this->createArticleGalleryImage($galleryImage, $galleryItem));
                                 }
@@ -279,9 +280,11 @@ class ArticleApiManager
         $articleGalleryImage = new ArticleGallery();
         $translation = new ArticleGalleryTranslation();
 
-        $articleGalleryImage->setDescription($galleryItem->photoTextEng);
-        $articleGalleryImage->setMedia($galleryImage);
+        if ($galleryItem->photoTextEng) {
+            $articleGalleryImage->setDescription($galleryItem->photoTextEng);
+        }
 
+        $articleGalleryImage->setMedia($galleryImage);
         $translation->setContent($galleryItem->photoText);
         $translation->setField(ArticleGallery::TRANSLATION_FIELD_DESCRIPTION);
         $translation->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
