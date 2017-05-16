@@ -253,7 +253,6 @@ class ArticleApiManager
                                     $articleGalleryUrl,
                                     OxaMediaInterface::CONTEXT_ARTICLE_IMAGES
                                 );
-
                                 if ($galleryImage) {
                                     $article->addImage($this->createArticleGalleryImage($galleryImage, $galleryItem));
                                 }
@@ -280,8 +279,10 @@ class ArticleApiManager
         $articleGalleryImage = new ArticleGallery();
         $translation = new ArticleGalleryTranslation();
 
-        if ($galleryItem->photoTextEng) {
+        if (isset($galleryItem->photoTextEng)) {
             $articleGalleryImage->setDescription($galleryItem->photoTextEng);
+        } else {
+            $articleGalleryImage->setDescription($galleryItem->photoText);
         }
 
         $articleGalleryImage->setMedia($galleryImage);
