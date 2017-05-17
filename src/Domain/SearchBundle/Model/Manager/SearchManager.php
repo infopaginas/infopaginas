@@ -166,7 +166,6 @@ class SearchManager extends Manager
         }
 
         $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
-
         if ($neighborhood) {
             $searchDTO->setNeighborhood($neighborhood);
         }
