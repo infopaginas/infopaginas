@@ -14,7 +14,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             galleryContainerId:          'gallery',
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
-            remoteImageURLInputId:       '#remote-image-url',
+            remoteImageURLInputId:       '#error-image-message',
             imageTypeSelectClassname:    '.select-image-type',
             imageRowContainer:           'div.media__item.image-item',
             imageRowLogoContainer:       'div.media__item.image-item.image-form-logo',
