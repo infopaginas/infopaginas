@@ -45,21 +45,7 @@
                     <button type="button" class="button button--action" id="registrationButton">{% trans %}Create account{% endtrans %}</button>
                 </div>
             </form>
-        </div><!-- modal__section -->
-        <div class="modal__section">
-            <h2>or</h2>
-            <div class="social-login">
-                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'facebook' })) }}" title="{% trans %}Log In with Facebook{% endtrans %}" class="button button--login button--facebook">
-                    <span>{% trans %}Log In with{% endtrans %}</span>
-                    <i class="fa fa-facebook"></i>
-                </a>
-
-                <a href="{{ absolute_url(path('hwi_oauth_service_redirect', {'service': 'google' })) }}" title="{% trans %}Log In with Google{% endtrans %}" class="button button--login button--google">
-                    <span>{% trans %}Log In with{% endtrans %}</span>
-                    <i class="fa fa-google"></i>
-                </a>
-            </div><!-- social-login -->
-        </div><!-- modal__section -->
+        </div>
 
         <div class="modal__section login__footer">
             <p>{% trans %}Already have an account?{% endtrans %} <a href="#" data-change-modal-id="loginModal">{% trans %}Log in{% endtrans %} <i class="fa fa-angle-right"></i></a></p>
