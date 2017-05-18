@@ -27,7 +27,6 @@
                         <span id="error-image-message"
                               data-error-count-limit="{% trans %}business_profile.image_count_limit{% endtrans %}"
                               data-error-size-limit="{% trans %}business_profile.size_limit{% endtrans %}"
-                              data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}"
                               data-error-logo-limit="{% trans %}business_profile.logo.image_count_limit{% endtrans %}"
                               data-error-background-limit ="{% trans %}business_profile.background.image_count_limit{% endtrans %}"></span>
                         {{ form_widget(businessProfileForm.files) }}
@@ -46,6 +45,9 @@
                         <input type="text"
                                name="image-url"
                                id="remote-image-url">
+                        <span id="error-url-message"
+                              data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}"></span>
+                        {{ form_widget(businessProfileForm.files) }}
                     </div>
                     <div class="form__field">
                         <button type="button" class="button button--featured" id="start-remote-image-upload">
