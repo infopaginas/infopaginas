@@ -2539,21 +2539,18 @@ class BusinessProfileManager extends Manager
         foreach ($data as $item) {
             // convert to string to avoid cast of float array keys to integer
             $plan = (string)$item['plan'];
-            $rank = (string)number_format($item['rank'], ElasticSearchManager::ROTATION_RANK_PRECISION);
 
-            $raw[$plan][$rank][] = $item['id'];
+            $raw[$plan][] = $item['id'];
         }
 
         $result = [];
 
         foreach ($raw as $code => $items) {
-            foreach ($items as $rank => $businesses) {
-                if ($code != SubscriptionPlanInterface::CODE_FREE) {
-                    shuffle($businesses);
-                }
-
-                $result = array_merge($result, $businesses);
+            if ($code != SubscriptionPlanInterface::CODE_FREE) {
+                shuffle($items);
             }
+
+            $result = array_merge($result, $items);
         }
 
         return $result;
