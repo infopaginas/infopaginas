@@ -12,7 +12,7 @@ parameters:
     database_slave_port:     ~
     database_slave_name:     infopaginas
     database_slave_user:     infopaginas
-    database_password:       root
+    database_slave_password:       root
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
