@@ -150,6 +150,12 @@ doctrine:
                     dbname: minfopaginas
                     user: inforoot
                     password: bas3v!hl98GF
+                  slave2:
+                    host: "%database_host%"
+                    port: "%database_port%"
+                    dbname: "%database_name%"
+                    user: "%database_user%"
+                    password: "%database_password%"
 
         types:
             json: Sonata\Doctrine\Types\JsonType
