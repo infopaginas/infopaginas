@@ -143,13 +143,14 @@ doctrine:
                 charset:  UTF8
                 mapping_types:
                     enum: string
-        slaves:
-            slave1:
-              database_host_slave1: infopaginasstagereplica.cyvjdkt46u3w.us-east-1.rds.amazonaws.com
-              database_port_slave1: 5432
-              database_name_slave1: minfopaginas
-              database_user_slave1: inforoot
-              database_password_slave1: bas3v!hl98GF
+                slaves:
+                  slave1:
+                    driver:   "%database_driver%"
+                    host: infopaginasstagereplica.cyvjdkt46u3w.us-east-1.rds.amazonaws.com
+                    port: 5432
+                    dbname: minfopaginas
+                    user: inforoot
+                    password: bas3v!hl98GF
 
         types:
             json: Sonata\Doctrine\Types\JsonType
