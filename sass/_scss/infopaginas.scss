@@ -1682,6 +1682,11 @@ $thumb-width-mb: 60px;
   }
 }
 
+.button--auto-search-in-map i,
+.button--redo-search-in-map i {
+  padding-right: 3px;
+}
+
 .floating-offset {
   bottom: 75px;
 
