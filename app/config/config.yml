@@ -143,6 +143,20 @@ doctrine:
                 charset:  UTF8
                 mapping_types:
                     enum: string
+                slaves:
+                  slave1:
+                    host: "%database_slave_host%"
+                    port: "%database_slave_port%"
+                    dbname: "%database_slave_name%"
+                    user: "%database_slave_user%"
+                    password: "%database_slave_password%"
+                  slave2:
+                    host: "%database_host%"
+                    port: "%database_port%"
+                    dbname: "%database_name%"
+                    user: "%database_user%"
+                    password: "%database_password%"
+
         types:
             json: Sonata\Doctrine\Types\JsonType
             TaskType: Domain\BusinessBundle\DBAL\Types\TaskType
