@@ -2,11 +2,6 @@ imports:
     - { resource: config.yml }
 parameters:
     domain: 'infopaginas-stage.oxagile.com'
-    database_host_slave1: infopaginasstagereplica.cyvjdkt46u3w.us-east-1.rds.amazonaws.com
-    database_port_slave1: 5432
-    database_name_slave1: minfopaginas
-    database_user_slave1: inforoot
-    database_password_slave1: bas3v!hl98GF
 
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
