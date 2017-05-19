@@ -1,0 +1,7 @@
+.btn.btn-primary.btn-outline:hover,
+.btn.btn-success.btn-outline:hover,
+.btn.btn-info.btn-outline:hover,
+.btn.btn-warning.btn-outline:hover,
+.btn.btn-danger.btn-outline:hover {
+    color: #000;
+}
