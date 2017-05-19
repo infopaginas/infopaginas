@@ -145,11 +145,11 @@ doctrine:
                     enum: string
                 slaves:
                   slave1:
-                    host: infopaginasstagereplica.cyvjdkt46u3w.us-east-1.rds.amazonaws.com
-                    port: 5432
-                    dbname: minfopaginas
-                    user: inforoot
-                    password: bas3v!hl98GF
+                    host: "%database_slave_host%"
+                    port: "%database_slave_port%"
+                    dbname: "%database_slave_name%"
+                    user: "%database_slave_user%"
+                    password: "%database_slave_password%"
                   slave2:
                     host: "%database_host%"
                     port: "%database_port%"
