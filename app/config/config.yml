@@ -43,7 +43,7 @@ parameters:
             image: 'header-logo.png'
             width: '221'
             height: '42'
-    google_map_api_key: "AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw"
+    google_map_api_key: "AIzaSyCa69y_exLVd53HZO5yrMhDeVqMoC7Cuvc"
     google_map_default_center: '18.446344, -66.07558'
     google_map_default_center_name: 'San Juan'
     google_map_default_zoom: 8
