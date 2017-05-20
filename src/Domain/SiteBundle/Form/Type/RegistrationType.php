@@ -26,7 +26,6 @@ class RegistrationType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                     new ContainsEmailExpanded(),
-                    new ConstraintEmailUnique(),
                 ],
             ])
             ->add('firstname', TextType::class, [
