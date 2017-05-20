@@ -9,6 +9,7 @@ parameters:
     database_user:     infopaginas
     database_password: root
     database_slave_host:     192.168.32.134
+    database_slave2_host:     192.168.32.134
     database_slave_port:     ~
     database_slave_name:     infopaginas
     database_slave_user:     infopaginas
