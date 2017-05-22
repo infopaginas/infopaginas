@@ -10,7 +10,7 @@ class ElasticSearchManager
     const INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception';
 
     const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
-    const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 10;
+    const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 40;
 
     // max = 8 as elastic original precision
     const ROTATION_RANK_PRECISION = 1;

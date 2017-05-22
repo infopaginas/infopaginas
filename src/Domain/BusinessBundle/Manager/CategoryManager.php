@@ -151,7 +151,6 @@ class CategoryManager extends Manager
                     'query' => $query,
                     'fields' => [
                         'auto_suggest_' . strtolower($locale),
-                        'auto_suggest_' . strtolower($locale) . '.folded'
                     ],
                 ],
             ],
