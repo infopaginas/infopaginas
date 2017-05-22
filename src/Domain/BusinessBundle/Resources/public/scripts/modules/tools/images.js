@@ -14,7 +14,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             galleryContainerId:          'gallery',
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
-            remoteImageURLInputId:       '#error-url-message',
+            remoteImageURLInputId:       '#remote-image-url',
             uploadImageInputId:          '#error-image-message',
             imageTypeSelectClassname:    '.select-image-type',
             imageRowContainer:           'div.media__item.image-item',
@@ -257,7 +257,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
                     beforeSend: $.proxy( that.beforeRequestHandler, that ),
                     complete: $.proxy( that.completeHandler, that ),
                     success: $.proxy( that.onRequestSuccess, that ),
-                    error: $.proxy( that.errorHandler, that )
+                    error: $.proxy( that.URLErrorHandler, that )
                 } );
 
                 event.preventDefault();

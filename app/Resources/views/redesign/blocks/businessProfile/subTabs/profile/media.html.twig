@@ -44,9 +44,8 @@
                         <label for="image-url">{% trans %}url{% endtrans %}</label>
                         <input type="text"
                                name="image-url"
-                               id="remote-image-url">
-                        <span id="error-url-message"
-                              data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}"></span>
+                               id="remote-image-url"
+                               data-error-empty="{% trans %}business_profile.url.empty{% endtrans %}">
                         {{ form_widget(businessProfileForm.files) }}
                     </div>
                     <div class="form__field">
