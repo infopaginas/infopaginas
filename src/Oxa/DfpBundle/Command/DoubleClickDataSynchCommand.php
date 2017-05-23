@@ -46,8 +46,8 @@ class DoubleClickDataSynchCommand extends ContainerAwareCommand
         $output->writeln('Synchronize doubleClick orders..');
         $this->getDFPManager()->synchronizeOrderReport($period);
         $output->writeln('.. done!');
-        
         $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_END, 'execute:start, period: '.$period);
+
     }
 
     protected function getSynchronizationPeriod(InputInterface $input)
