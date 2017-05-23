@@ -1939,7 +1939,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://git.oxagile.com/infopaginas/infopaginas_doctrine2.git",
+                "url": "https://github.com/EvgeniySkoptsov/doctrine2.git",
                 "reference": "28c51ab00bededfb8909af25ae31cf0a9c799d9b"
             },
             "archive": {
