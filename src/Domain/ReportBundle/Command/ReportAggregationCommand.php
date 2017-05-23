@@ -50,20 +50,25 @@ class ReportAggregationCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_START, 'execute:start');
+
         $period = $this->getAggregationPeriod($input);
 
         $output->writeln('Start aggregation...');
 
         $output->writeln('Process overview report');
         $this->getBusinessOverviewReportManager()->aggregateBusinessInteractions($period);
-
+        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process overview report');
         $output->writeln('Process keyword report');
         $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
-
+        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
         $output->writeln('Process category report');
         $this->getCategoryReportManager()->aggregateBusinessCategories($period);
-
+        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
         $output->writeln('done');
+
+        $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_END, 'execute:stop');
     }
 
     /**
