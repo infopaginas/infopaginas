@@ -2,9 +2,6 @@
 
 namespace Domain\SiteBundle\Logger;
 
-
-
-use Monolog\Formatter\LineFormatter;
 use Symfony\Bridge\Monolog\Logger as Monolog;
 
 class CronLogger
@@ -31,11 +28,10 @@ class CronLogger
     public function __construct(Monolog $channel)
     {
         $this->logger = $channel;
-
     }
 
     public function addInfo(String $name, String $status, String $message, $level = 100)
     {
-       $this->logger->addRecord($level, ' PHP-' . getmypid() . ' ' . $name . ' ' . $status . ' ' . $message);
+        $this->logger->addRecord($level, ' PHP-' . getmypid() . ' ' . $name . ' ' . $status . ' ' . $message);
     }
 }

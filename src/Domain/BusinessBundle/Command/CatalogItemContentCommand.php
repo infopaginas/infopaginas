@@ -41,7 +41,6 @@ class CatalogItemContentCommand extends ContainerAwareCommand
         $this->updateCatalogItem();
 
         $logger->addInfo($logger::CATALOG_ITEM_UPDATE, $logger::STATUS_END, 'execute:stop');
-
     }
 
     protected function updateCatalogItem()
