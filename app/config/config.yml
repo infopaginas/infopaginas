@@ -302,3 +302,10 @@ elastic_search:
 mongo_db:
     host: '%mongodb.host%'
     db:   '%mongodb.db%'
+monolog:
+    channels: [cron]
+    handlers:
+        cron:
+          type: stream
+          path: "%kernel.logs_dir%/cron.log"
+          channels: [cron]

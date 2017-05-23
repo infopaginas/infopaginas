@@ -34,9 +34,14 @@ class SubscriptionsTrackerCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::SUBSCRIPTION_TRACK, $logger::STATUS_START, 'execute:start');
+
         $output->writeln('Start stats calculation...');
         $this->getSubscriptionReportManager()->saveSubscriptionStats();
         $output->writeln('..done!');
+
+        $logger->addInfo($logger::SUBSCRIPTION_TRACK, $logger::STATUS_END, 'execute:stop');
     }
 
     /**

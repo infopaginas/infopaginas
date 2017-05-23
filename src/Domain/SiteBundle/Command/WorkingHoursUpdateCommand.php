@@ -29,15 +29,21 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_START, 'execute:start');
+
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $this->updateWorkingHours();
 
         $this->em->flush();
+        $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_END, 'execute:stop');
     }
 
     protected function updateWorkingHours()
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+
         $businesses = $this->em->getRepository(BusinessProfile::class)->getActiveBusinessProfilesIterator();
 
         $batchSize = 20;
@@ -46,7 +52,7 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
         foreach ($businesses as $row) {
             /* @var BusinessProfile $business */
             $business = $row[0];
-
+            $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_IN_PROGRESS, 'updateWorkingHours:inprogress');
             $business->setWorkingHoursJson(DayOfWeekModel::getBusinessProfileWorkingHoursJson($business));
 
             if (($i % $batchSize) === 0) {

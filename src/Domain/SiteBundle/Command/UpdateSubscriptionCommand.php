@@ -46,11 +46,15 @@ class UpdateSubscriptionCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::SUBSC_UPDATE, $logger::STATUS_START, 'execute:start');
+
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->statusManager = $this->getContainer()->get('domain_business.manager.subscription_status_manager');
         $this->businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
         $this->update();
+        $logger->addInfo($logger::SUBSC_UPDATE, $logger::STATUS_END, 'execute:stop');
     }
 
     public function update()

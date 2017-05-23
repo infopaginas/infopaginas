@@ -34,6 +34,9 @@ class UpdateExternalArticlesCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::ARTICLE_UPDATE, $logger::STATUS_START, 'execute:start');
+
         $articleApiManager = $this->getContainer()->get('domain_article.manager.api');
 
         if ($input->getOption('numberOfItemToUpdate')) {
@@ -51,5 +54,6 @@ class UpdateExternalArticlesCommand extends ContainerAwareCommand
         $output->writeln('Processing...');
         $articleApiManager->updateExternalArticles($pageStart, $updateAll);
         $output->writeln('Done');
+        $logger->addInfo($logger::ARTICLE_UPDATE, $logger::STATUS_END, 'execute:stop');
     }
 }
