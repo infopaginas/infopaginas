@@ -46,6 +46,9 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::YOUTUBE_UPLOAD, $logger::STATUS_START, 'execute:start');
+
         $this->youtubeVideoManager = $this->getContainer()->get('oxa.manager.video.youtube');
         $this->mailer              = $this->getContainer()->get('domain_site.mailer');
         $this->em                  = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -82,6 +85,7 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
 
             $this->mailer->sendYoutubeTokenErrorEmailMessage($currentError, $admins);
         }
+        $logger->addInfo($logger::YOUTUBE_UPLOAD, $logger::STATUS_END, 'execute:stop');
     }
 
     protected function uploadVideo()

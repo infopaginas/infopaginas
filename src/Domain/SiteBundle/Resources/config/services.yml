@@ -151,3 +151,7 @@ services:
             - "@service_container"
         tags:
             - { name: "kernel.event_subscriber", priority: 100 }
+    domain_site.cron.logger:
+        class:  Domain\SiteBundle\Logger\CronLogger
+        arguments:
+            - "@monolog.logger.cron"

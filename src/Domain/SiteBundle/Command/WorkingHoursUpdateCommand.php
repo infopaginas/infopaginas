@@ -29,11 +29,15 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_START, 'execute:start');
+
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $this->updateWorkingHours();
 
         $this->em->flush();
+        $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_END, 'execute:stop');
     }
 
     protected function updateWorkingHours()
@@ -46,7 +50,6 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
         foreach ($businesses as $row) {
             /* @var BusinessProfile $business */
             $business = $row[0];
-
             $business->setWorkingHoursJson(DayOfWeekModel::getBusinessProfileWorkingHoursJson($business));
 
             if (($i % $batchSize) === 0) {

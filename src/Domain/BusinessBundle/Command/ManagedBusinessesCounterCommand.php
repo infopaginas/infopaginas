@@ -24,10 +24,15 @@ class ManagedBusinessesCounterCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::BUSINESS_COUNTER, $logger::STATUS_START, 'execute:start');
+
         $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
 
         $output->writeln('Processing...');
         $result = $businessProfileManager->updatedManagedBusinessesCounter();
         $output->writeln(sprintf('Done! Updated records count: %s', $result));
+
+        $logger->addInfo($logger::BUSINESS_COUNTER, $logger::STATUS_END, 'execute:stop');
     }
 }

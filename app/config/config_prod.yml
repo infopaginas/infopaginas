@@ -39,7 +39,7 @@ google:
             default:
                 name: MyJavaScriptCompatibleVariableNameWithNoSpaces
                 accountId: UA-10361727-2
-                domain: www.infopaginas.com
+                domain: infopaginas.com
                 setSiteSpeedSampleRate: 5
                 allowAnchor: true
                 allowHash: true

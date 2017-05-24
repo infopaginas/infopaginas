@@ -26,6 +26,8 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::WORKING_HOURS_CONVERT, $logger::STATUS_START, 'execute:start');
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $businessesWithTextWorkingHours = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
@@ -42,7 +44,6 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
 
             if ($data) {
                 $this->createWorkingHours($data, $business);
-
                 $this->em->flush();
                 $this->em->clear();
 
@@ -55,6 +56,7 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         $output->writeln('Success:' . $successItemCounter . '; Error: ' . $errorItemCounter);
 
         $this->em->flush();
+        $logger->addInfo($logger::WORKING_HOURS_CONVERT, $logger::STATUS_END, 'execute:stop');
     }
 
     protected function createWorkingHours($data, BusinessProfile $business)
