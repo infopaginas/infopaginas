@@ -17,3 +17,7 @@ domain_business_videos:
 domain_business_reports:
     resource: "@DomainBusinessBundle/Resources/config/routing/reports.yml"
     prefix: /reports
+
+domain_business_admin_reports:
+    resource: "@DomainBusinessBundle/Resources/config/routing/adminReports.yml"
+    prefix: /admin/reports

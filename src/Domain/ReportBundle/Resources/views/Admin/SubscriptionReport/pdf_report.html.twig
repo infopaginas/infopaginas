@@ -1,13 +1,36 @@
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/AdminLTE/css/AdminLTE.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css', null, true) }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonataadmin/vendor/admin-lte/dist/css/AdminLTE.min.css', null, true) }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/oxasonataadmin/css/admin.css', null, true) }}">
 </head>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2}
+
+    div.box.box-primary.box-pdf {
+        display: block;
+        clear: both;
+        page-break-after: always;
+    }
+</style>
 
 <div>
     {{ 'export.title.subscription_report'|trans({}, 'AdminReportBundle') }},
 
-    {{ "now"|date(constant('Oxa\\Sonata\\AdminBundle\\Util\\Helpers\\AdminHelper::DATETIME_FORMAT')) }}
+    {{ "now"|date(report_generated_datetime_format) }}
 </div>
 
 <br>
@@ -50,51 +73,24 @@
                     {{ 'list.label_date'|trans({}, 'AdminReportBundle') }}
                 </th>
 
-                {% for subscription in subscriptionData['subscription_total_quantities'] %}
+                {% for subscription in subscriptionData['mapping'] %}
                     <th class="sonata-ba-list-field-header sonata-ba-list-field-header-order">
-                        {{ subscription['name'] }}
+                        {{ subscription|trans }}
                     </th>
                 {% endfor %}
-
-                <th>
-                    {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}
-                </th>
             </tr>
         </thead>
 
         <tbody>
-        {% for object in results %}
-            <tr>
-                <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                    {{ object.date|date('d.m.Y') }}
-                </td>
-
-                {% for subscriptionReportSubscription in object.subscriptionReportSubscriptions %}
-                    <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                        {{ subscriptionReportSubscription.quantity }}
-                    </td>
-                {% endfor %}
-
-                <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                    {{ object.total }}
-                </td>
-            </tr>
-        {% endfor %}
-        <tr class="list-subscription-report-total">
-            <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ 'list.label_total'|trans({}, 'AdminReportBundle') }}
-            </td>
-
-            {% for subscription in subscriptionData['subscription_total_quantities'] %}
-                <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                    {{ subscription['quantity'] }}
-                </td>
+            {% for row in subscriptionData.results %}
+                <tr>
+                    {% for item in row %}
+                        <td class="sonata-ba-list-field sonata-ba-list-field-string">
+                            {{ item }}
+                        </td>
+                    {% endfor %}
+                </tr>
             {% endfor %}
-
-            <td class="sonata-ba-list-field sonata-ba-list-field-string">
-                {{ subscriptionData['total_quantity'] }}
-            </td>
-        </tr>
         </tbody>
     </table>
 </div>

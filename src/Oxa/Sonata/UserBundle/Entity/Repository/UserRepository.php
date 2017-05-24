@@ -9,37 +9,33 @@ use Doctrine\ORM\Query;
 class UserRepository extends EntityRepository
 {
     /**
-     * Delete record from database
+     * @param string $role
      *
-     * @param object $entity
+     * @return array
      */
-    public function deletePhysicalEntity($entity)
+    public function findByRole($role)
     {
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->delete(get_class($entity), 'e')
-            ->where('e.id=:id')
-            ->setParameter(':id', $entity->getId())
-            ->getQuery()
-            ->execute();
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('u')
+            ->from($this->_entityName, 'u')
+            ->leftJoin('u.groups', 'g')
+            ->where($qb->expr()->orX(
+                $qb->expr()->like('u.roles', ':roles'),
+                $qb->expr()->like('g.roles', ':roles')
+            ))
+            ->setParameter('roles', '%"' . $role . '"%');
+
+        return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Restore deleted
-     *
-     * @param $entityClass
-     * @param $id
-     */
-    public function restoreEntity(string $entityClass, int $id)
+    public function getManagedBusinessesData()
     {
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->update($entityClass, 'e')
-            ->set('e.deletedUser', 'NULL')
-            ->set('e.deletedAt', 'NULL')
-            ->where('e.id=:id')
-            ->setParameter(':id', $id)
-            ->getQuery()
-            ->execute();
+        $qb = $this->createQueryBuilder('u')
+            ->select('COUNT(bp.id) as cnt, u.id as userId')
+            ->leftJoin('u.businessProfiles', 'bp')
+            ->groupBy('u.id')
+        ;
+
+        return $qb->getQuery()->getArrayResult();
     }
 }

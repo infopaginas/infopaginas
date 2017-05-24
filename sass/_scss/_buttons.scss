@@ -1,0 +1,117 @@
+@import 'var';
+@import 'mixins';
+
+$button-line-height-mb: 1.5em;
+$button-padding-mb: 0 $padding-mb * 2;
+
+a.button {
+  color: $blue;
+}
+
+button {
+  border: 0;
+}
+
+.button {
+  align-items: center;
+  border: 0;
+  border-radius: $button-radius;
+  box-shadow: none;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  height: 38px;
+  letter-spacing: 1px;
+  line-height: 38px;
+  outline: 0;
+  padding: $button-padding-mb;
+  text-transform: uppercase;
+
+  i {
+    font-size: 18px;
+    position: relative;
+    top: .12em;
+  }
+
+  &:active,
+  &:focus {
+    border: 0;
+    box-shadow: none;
+    outline: 0;
+  }
+}
+
+.button--small {
+  font-size: .69em;
+  height: 2.6em;
+  line-height: 2.6em;
+
+  i {
+    font-size: 1.5em;
+  }
+}
+
+.button--text {
+  background: transparent;
+  color: $white;
+}
+
+.button--line {
+  background: transparent;
+  border: 1px solid $blue;
+  color: $blue;
+}
+
+.button--featured {
+  background: $green;
+  color: $white;
+}
+
+.button--action {
+  background: $blue;
+  color: $white;
+}
+
+.button-round,
+.button--square {
+  border-radius: 50%;
+  height: 3.5em;
+  line-height: 3.5em;
+  padding: 0;
+  width: 3.5em;
+}
+
+.button--square {
+  align-items: center;
+  background: transparent;
+  border-radius: 0;
+  color: $white;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+
+  i {
+    font-size: 2em;
+  }
+}
+
+@media only screen and (max-width: 804px) {
+  .button-round {
+    border-radius: 3px;
+    height: auto;
+    width: auto; 
+    line-height: 2.5em;
+    padding: 0;
+  }
+  .button--show-map, .button--hide-map, .button--redo-search-in-map {
+    i {
+      display: none;
+    }
+  }
+
+  .button--auto-search-in-map {
+    i {
+      margin-left: 0.5em;
+    }
+  }
+}

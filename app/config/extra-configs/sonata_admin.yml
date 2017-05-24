@@ -13,7 +13,8 @@ sonata_block:
             contexts: [admin]
 
 sonata_admin:
-    title: Ingopaginas
+    show_mosaic_button: false
+    title: Infopaginas
     title_logo: logo.png
     templates:
         layout: OxaSonataAdminBundle::layout.html.twig
@@ -21,7 +22,6 @@ sonata_admin:
         edit:   OxaSonataAdminBundle:CRUD:edit.html.twig
         show:   OxaSonataAdminBundle:CRUD:show.html.twig
         base_list_field:   OxaSonataAdminBundle:CRUD:base_list_field.html.twig
-        batch_confirmation:   OxaSonataAdminBundle:CRUD:batch_confirmation.html.twig
     security:
         handler: sonata.admin.security.handler.role
     dashboard:
@@ -41,33 +41,24 @@ sonata_admin:
                 icon: <i class="fa fa-briefcase"></i>
                 items:
                     - domain_business.admin.business_profile
-                    - domain_business.admin.business_profile_has_media
-                    - domain_business.admin.subscription
                     - domain_business.admin.subscription_plan
                     - domain_business.admin.category
                     - domain_business.admin.area
                     - domain_business.admin.locality
                     - domain_business.admin.neighborhood
-                    - domain_business.admin.tag
                     - domain_business.admin.payment_method
                     - domain_business.admin.address.country
-            domain.admin.group.menu:
-                label: Pages
-                icon: <i class="fa fa-list"></i>
-                items:
-                    - domain_menu.admin.menu
+                    - domain_business.admin.landing_page_short_cut
             domain.admin.group.page:
                 label: Pages
                 icon: <i class="fa fa-file"></i>
                 items:
                     - domain_article.admin.article
                     - domain_page.admin.page
-                    - domain_page.admin.template
             domain.admin.group.banner:
                 label: Banners
                 icon: <i class="fa fa-star"></i>
                 items:
-                    - domain_banner.admin.campaign
                     - domain_banner.admin.banner
                     - domain_banner.admin.type
                     - domain_banner.admin.template
@@ -88,3 +79,14 @@ sonata_admin:
                     - domain_report.admin.subscription_report
                     - domain_report.admin.category_report
                     - domain_report.admin.views_and_visitors_report
+        blocks:
+            -
+                position: left
+                type: sonata.admin.block.admin_list
+            -
+                position: right
+                type: sonata.block.service.text
+                settings:
+                    content: >
+                        <h2>Welcome to the Infopaginas Admin Panel</h2>
+                        <p>Current version: %app_version%</p>

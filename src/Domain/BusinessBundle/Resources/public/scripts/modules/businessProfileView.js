@@ -1,28 +1,35 @@
-define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/directions', 'tools/star-rating', 'alertify', 'tools/spin', 'tools/resetPassword',
-    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, directions, rating, alertify, Spin ) {
+define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/star-rating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
+    'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, rating, Spin, Redirect ) {
     'use strict';
 
     var businessProfileView = function() {
         this.html = {
             buttons: {
                 createReviewButtonId: '#createReviewButton',
+                claimBusinessButtonId: '#claimBusinessButton',
                 couponsClass: '.coupon'
             },
             forms: {
                 createReviewFormId: '#createReviewForm',
-                createReviewFormPrefix: 'domain_business_bundle_business_review_type'
+                claimBusinessFormId: '#claimBusinessForm',
+                createReviewFormPrefix: 'domain_business_bundle_business_review_type',
+                claimBusinessFormPrefix: '#domain_business_bundle_business_claim_request_type'
             },
             modals: {
-                createReviewModalId: '#writeReviewModal'
+                createReviewModalId: '#writeReviewModal',
+                claimBusinessModalId: '#claimBusinessModal'
             },
-            loadingSpinnerContainerId: 'create-review-spinner-container'
+            loadingSpinnerContainerId: 'create-review-spinner-container',
+            claimBusinessMessage: '#claimBusinessMessage'
         };
 
         this.urls = {
-            createReviewURL: Routing.generate( 'domain_business_review_save' )
+            createReviewURL: Routing.generate( 'domain_business_review_save' ),
+            claimBusinessURL: Routing.generate( 'domain_business_claim' )
         };
 
         this.spinner = new Spin();
+        this.redirect = new Redirect;
 
         this.run();
     };
@@ -30,12 +37,11 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
     //setup required "listeners"
     businessProfileView.prototype.run = function() {
         new select();
-        this.directions = new directions;
-        this.directions.bindEventsDirections();
 
         new interactionsTracker();
 
         this.handleReviewCreation();
+        this.handleBusinessClaim();
         this.handlePrintableCoupons();
     };
 
@@ -62,11 +68,11 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 //check for "repeated" fields or embed forms
                 if (Array.isArray( errors[field]) ) {
                     var $field = $( this.getFormFieldId( prefix, field ) );
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next( '.help-block' );
+                    $field.parent().addClass( 'field--not-valid' );
+
                     for (var key in errors[field]) {
-                        $errorSection.append( errors[field][key] );
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId( prefix, field ) );
@@ -78,10 +84,10 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
     //remove "error" highlighting
     businessProfileView.prototype.disableFieldsHighlight = function( formId ) {
         var $form = $( formId );
-        $form.find( 'input' ).removeClass( 'error' );
-        $form.find( '.form-group' ).removeClass( 'has-error' );
-        $form.find( '.help-block' ).html( '' );
-        $form.find( '.error' ).removeClass( 'error' );
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
+        $form.find( '.form-group' ).removeClass('has-error');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     businessProfileView.prototype.handleReviewCreation = function() {
@@ -107,15 +113,71 @@ define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', '
                 success: function( response ) {
                     if( response.success ) {
                         $( self.html.modals.createReviewModalId ).modal( 'hide' );
-                        alertify.success( response.message );
+                        $( self.html.modals.createReviewModalId ).modalFunc({close: true});
+
+                        $( self.html.forms.createReviewFormId ).find( '.star-rating .fa.fa-star-selected' ).each( function( idx, el ) {
+                            return $( this ).removeClass( 'fa-star fa-star-selected' ).addClass( 'fa-star-o' );
+                        });
+
                         $( self.html.forms.createReviewFormId )[0].reset();
+                        $( self.html.modals.createReviewModalId ).find( 'div.form__field' ).removeClass( 'field-active' ).removeClass( 'field-filled' );
+                        $( self.html.modals.createReviewModalId ).find( 'label.label-active' ).removeClass( 'label-active' );
+                        $( self.html.modals.createReviewModalId ).modalFunc({close: true});
                     } else {
-                        alertify.error( response.message );
-                        self.enableFieldsHighlight( self.html.forms.createReviewFormId, response.errors )
+                        if ( !$.isEmptyObject( response.errors ) ) {
+                            self.enableFieldsHighlight( self.html.forms.createReviewFormId, response.errors )
+                        } else {
+                            this.enableFieldsHighlight( { 'username': [errorThrown] } );
+                        }
                     }
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
-                    alertify.error( errorThrown );
+                    this.enableFieldsHighlight( { 'username': [errorThrown] } );
+                },
+                complete: function() {
+                    self.spinner.hide();
+                }
+            } );
+
+            event.preventDefault();
+        });
+    };
+
+    businessProfileView.prototype.handleBusinessClaim = function() {
+        var self = this;
+
+        $( document ).on( 'click', this.html.buttons.claimBusinessButtonId, function( event ) {
+
+            var data = $( self.html.forms.claimBusinessFormId ).serializeArray();
+            data.push({
+                'name': 'businessProfileId',
+                'value': $( this ).data( 'business-profile-id' )
+            });
+
+            $.ajax({
+                url: self.urls.claimBusinessURL,
+                method: 'POST',
+                data: data,
+                dataType: 'JSON',
+                beforeSend: function() {
+                    $( self.html.claimBusinessMessage ).text( '' );
+                    self.disableFieldsHighlight( self.html.forms.claimBusinessFormId );
+                    self.spinner.show( self.html.loadingSpinnerContainerId );
+                },
+                success: function( response ) {
+                    if( response.success ) {
+                        $( self.html.claimBusinessMessage ).text( response.message );
+                        $( self.html.buttons.claimBusinessButtonId ).remove();
+                    } else {
+                        if ( !$.isEmptyObject( response.errors ) ) {
+                            self.enableFieldsHighlight( self.html.forms.claimBusinessFormId, response.errors, self.html.forms.claimBusinessFormPrefix )
+                        } else {
+                            self.enableFieldsHighlight( { 'message': [errorThrown] } );
+                        }
+                    }
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    self.enableFieldsHighlight( { 'message': [errorThrown] } );
                 },
                 complete: function() {
                     self.spinner.hide();

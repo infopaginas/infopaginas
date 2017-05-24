@@ -16,7 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="page_template")
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\TemplateRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\TemplateTranslation")
  */
 class Template implements DefaultEntityInterface, TranslatableInterface

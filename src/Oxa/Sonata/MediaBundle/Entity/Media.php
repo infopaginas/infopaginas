@@ -1,20 +1,13 @@
 <?php
 
-/**
- * This file is part of the <name> project.
- *
- * (c) <yourname> <youremail>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Oxa\Sonata\MediaBundle\Entity;
 
-use Domain\BannerBundle\Entity\Banner;
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
+use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Domain\PageBundle\Entity\Page;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -26,7 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Table(name="media__media")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  */
 class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface
@@ -68,7 +60,25 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      *     cascade={"persist"}
      * )
      */
-    protected $businessProfiles;
+    protected $logoBusinessProfiles;
+
+    /**
+     * @var BusinessProfile[]
+     * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *     mappedBy="background",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $backgroundBusinessProfiles;
+
+    /**
+     * @var BusinessProfile[]
+     * @ORM\OneToMany(targetEntity="Domain\PageBundle\Entity\Page",
+     *     mappedBy="background",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $backgroundPages;
 
     /**
      * @var Coupon[]
@@ -80,16 +90,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     protected $coupons;
 
     /**
-     * @var Banner[]
-     * @ORM\OneToMany(targetEntity="Domain\BannerBundle\Entity\Banner",
-     *     mappedBy="image",
-     *     cascade={"persist"}
-     * )
-     */
-    protected $banners;
-
-    /**
-     * @var Banner[]
+     * @var Article[]
      * @ORM\OneToMany(targetEntity="Domain\ArticleBundle\Entity\Article",
      *     mappedBy="image",
      *     cascade={"persist"}
@@ -105,6 +106,16 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id
+     *
+     * @return int
+     */
+    public function setId($id)
+    {
+        return $this->id = $id;
     }
 
     /**
@@ -141,10 +152,13 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public static function getContexts() : array
     {
         return [
-            self::CONTEXT_DEFAULT                   => self::CONTEXT_DEFAULT,
-            self::CONTEXT_BUSINESS_PROFILE_IMAGES   => self::CONTEXT_BUSINESS_PROFILE_IMAGES,
-            self::CONTEXT_BUSINESS_PROFILE_LOGO     => self::CONTEXT_BUSINESS_PROFILE_LOGO,
-            self::CONTEXT_BANNER                    => self::CONTEXT_BANNER,
+            self::CONTEXT_DEFAULT                       => self::CONTEXT_DEFAULT,
+            self::CONTEXT_BUSINESS_PROFILE_IMAGES       => self::CONTEXT_BUSINESS_PROFILE_IMAGES,
+            self::CONTEXT_BUSINESS_PROFILE_LOGO         => self::CONTEXT_BUSINESS_PROFILE_LOGO,
+            self::CONTEXT_BUSINESS_PROFILE_BACKGROUND   => self::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+            self::CONTEXT_BANNER                        => self::CONTEXT_BANNER,
+            self::CONTEXT_ARTICLE                       => self::CONTEXT_ARTICLE,
+            self::CONTEXT_PAGE_BACKGROUND               => self::CONTEXT_PAGE_BACKGROUND,
         ];
     }
 
@@ -166,7 +180,8 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      */
     public function __construct()
     {
-        $this->galleryHasMedias = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->galleryHasMedias = new ArrayCollection();
+        $this->backgroundPages  = new ArrayCollection();
     }
 
     /**
@@ -256,37 +271,105 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     }
 
     /**
-     * Add businessProfile
+     * Add businessProfile Logo
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      *
      * @return Media
      */
-    public function addBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    public function addLogoBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
-        $this->businessProfiles[] = $businessProfile;
+        $this->logoBusinessProfiles[] = $businessProfile;
 
         return $this;
     }
 
     /**
-     * Remove businessProfile
+     * Remove businessProfile Logo
      *
      * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
      */
-    public function removeBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    public function removeLogoBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
     {
-        $this->businessProfiles->removeElement($businessProfile);
+        $this->logoBusinessProfiles->removeElement($businessProfile);
     }
 
     /**
-     * Get businessProfiles
+     * Get businessProfiles Logo
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getBusinessProfiles()
+    public function getLogoBusinessProfiles()
     {
-        return $this->businessProfiles;
+        return $this->logoBusinessProfiles;
+    }
+
+    /**
+     * Add businessProfile Background
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     *
+     * @return Media
+     */
+    public function addBackgroundBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->backgroundBusinessProfiles[] = $businessProfile;
+
+        return $this;
+    }
+
+    /**
+     * Remove businessProfile Background
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfile
+     */
+    public function removeBackgroundBusinessProfile(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfile)
+    {
+        $this->backgroundBusinessProfiles->removeElement($businessProfile);
+    }
+
+    /**
+     * Get businessProfiles Background
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBackgroundBusinessProfiles()
+    {
+        return $this->backgroundBusinessProfiles;
+    }
+
+    /**
+     * Add Page Background
+     *
+     * @param Page $page
+     *
+     * @return Media
+     */
+    public function addBackgroundPage(Page $page)
+    {
+        $this->backgroundPages[] = $page;
+
+        return $this;
+    }
+
+    /**
+     * Remove page background
+     *
+     * @param Page $page
+     */
+    public function removeBackgroundPage(Page $page)
+    {
+        $this->backgroundPages->removeElement($page);
+    }
+
+    /**
+     * Get page background
+     *
+     * @return ArrayCollection
+     */
+    public function getBackgroundPages()
+    {
+        return $this->backgroundPages;
     }
 
     /**
@@ -321,40 +404,6 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getCoupons()
     {
         return $this->coupons;
-    }
-
-    /**
-     * Add banner
-     *
-     * @param \Domain\BannerBundle\Entity\Banner $banner
-     *
-     * @return Media
-     */
-    public function addBanner(\Domain\BannerBundle\Entity\Banner $banner)
-    {
-        $this->banners[] = $banner;
-
-        return $this;
-    }
-
-    /**
-     * Remove banner
-     *
-     * @param \Domain\BannerBundle\Entity\Banner $banner
-     */
-    public function removeBanner(\Domain\BannerBundle\Entity\Banner $banner)
-    {
-        $this->banners->removeElement($banner);
-    }
-
-    /**
-     * Get banners
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBanners()
-    {
-        return $this->banners;
     }
 
     /**

@@ -18,7 +18,9 @@ class SubscriptionPlanAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
         ;
     }
 
@@ -57,5 +59,21 @@ class SubscriptionPlanAdmin extends OxaAdmin
             ->add('name')
             ->add('rank')
         ;
+    }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = $this->getAllowViewOnlyAction();
+
+        if (in_array($name, $deniedActions)) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
     }
 }

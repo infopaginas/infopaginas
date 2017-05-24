@@ -1,0 +1,15 @@
+<div class="stars rank__item">
+    {% if ratingValue|number_format(0) %}
+        {% for i in 1 .. ratingValue|number_format(0) %}
+            <i class="fa fa-star"></i>
+        {% endfor %}
+    {% endif %}
+
+    {% set emptyStars = 5 - ratingValue|number_format(0) %}
+
+    {% if emptyStars %}
+        {% for i in 1 .. emptyStars %}
+            <i class="fa fa-star-o"></i>
+        {% endfor %}
+    {% endif %}
+</div>

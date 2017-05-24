@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -20,13 +21,23 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="article")
  * @ORM\Entity(repositoryClass="Domain\ArticleBundle\Repository\ArticleRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\ArticleBundle\Entity\Translation\ArticleTranslation")
  */
 class Article implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+    use SeoTrait;
+
+    const ARTICLE_FIELD_TITLE = 'title';
+    const ARTICLE_FIELD_BODY  = 'body';
+
+    const ARTICLE_FIELD_SEO_TITLE        = 'seoTitle';
+    const ARTICLE_FIELD_SEO_DESCRIPTION  = 'seoDescription';
+
+    const ARTICLE_TITLE_MAX_LENGTH  = 100;
+    const ARTICLE_BODY_MAX_LENGTH   = 10000;
+    const ARTICLE_AUTHOR_MAX_LENGTH = 255;
 
     /**
      * @var int
@@ -43,6 +54,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
+     * @Assert\Length(max=100)
      */
     protected $title;
 
@@ -62,6 +74,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="body", type="text")
      * @Assert\NotBlank()
+     * @Assert\Length(max=10000)
      */
     protected $body;
 
@@ -116,9 +129,32 @@ class Article implements DefaultEntityInterface, TranslatableInterface
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="expiration_date", type="datetime")
+     * @ORM\Column(name="expiration_date", type="datetime", nullable=true)
      */
     protected $expirationDate;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="external_id", type="integer", nullable=true)
+     */
+    protected $externalId;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_external", type="boolean", options={"default" : 0})
+     */
+    protected $isExternal = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="author_name", type="string", length=255, nullable=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255)
+     */
+    protected $authorName;
 
     /**
      * Get id
@@ -377,5 +413,59 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     public function getExpirationDate()
     {
         return $this->expirationDate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExternalId()
+    {
+        return $this->externalId;
+    }
+
+    /**
+     * @param int $externalId
+     * @return Article
+     */
+    public function setExternalId($externalId)
+    {
+        $this->externalId = $externalId;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsExternal()
+    {
+        return $this->isExternal;
+    }
+
+    /**
+     * @param bool $isExternal
+     * @return Article
+     */
+    public function setIsExternal($isExternal)
+    {
+        $this->isExternal = $isExternal;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorName()
+    {
+        return $this->authorName;
+    }
+
+    /**
+     * @param string $authorName
+     * @return Article
+     */
+    public function setAuthorName($authorName)
+    {
+        $this->authorName = $authorName;
+        return $this;
     }
 }

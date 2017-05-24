@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -18,7 +20,9 @@ class CategoryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
         ;
     }
 
@@ -43,12 +47,6 @@ class CategoryAdmin extends OxaAdmin
         $formMapper
             ->add('name')
             ->add('slug', null, ['read_only' => true, 'required' => false])
-            ->add('articles', 'sonata_type_model', [
-                'btn_add' => false,
-                'multiple' => true,
-                'required' => false,
-                'by_reference' => false,
-            ])
         ;
     }
 
@@ -61,19 +59,6 @@ class CategoryAdmin extends OxaAdmin
             ->add('id')
             ->add('name')
             ->add('slug')
-            ->add('businessProfiles')
-        ;
-    }
-
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        parent::configureRoutes($collection);
-
-        $collection
-            ->remove('delete_physical')
-            ->add('delete_physical', null, [
-                '_controller' => 'DomainBusinessBundle:CategoryAdminCRUD:deletePhysical'
-            ])
         ;
     }
 
@@ -87,6 +72,9 @@ class CategoryAdmin extends OxaAdmin
         $this->preSave($entity);
     }
 
+    /**
+     * @param Category $entity
+     */
     private function preSave($entity)
     {
         $textEn = '';
@@ -113,5 +101,23 @@ class CategoryAdmin extends OxaAdmin
         if ($textEs) {
             $entity->setSearchTextEs($textEs);
         }
+    }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = $this->getDeleteDeniedAction();
+
+        if ($object and in_array($name, $deniedActions) and
+            (in_array($object->getCode(), Category::getDefaultCategories()) or
+            $object->getSlugEn() or $object->getSlugEs())) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
     }
 }

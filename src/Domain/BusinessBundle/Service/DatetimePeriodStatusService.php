@@ -1,21 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/5/16
- * Time: 2:53 PM
- */
 
 namespace Domain\BusinessBundle\Service;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Domain\BannerBundle\Entity\Campaign;
-use Domain\BusinessBundle\Entity\Discount;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DatetimePeriodStatusService
 {
@@ -24,9 +15,15 @@ class DatetimePeriodStatusService
      */
     protected $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var SubscriptionStatusManager $subscriptionStatusManager
+     */
+    private $subscriptionStatusManager;
+
+    public function __construct(EntityManager $em, SubscriptionStatusManager $subscriptionStatusManager)
     {
         $this->em = $em;
+        $this->subscriptionStatusManager = $subscriptionStatusManager;
     }
 
     /**
@@ -34,25 +31,100 @@ class DatetimePeriodStatusService
      */
     public function updateStatus()
     {
-        $entityClassArray = [
-            Subscription::class,
-            Campaign::class
-        ];
-
         $updatedRecordsCount = 0;
 
-        foreach ($entityClassArray as $entityClass) {
-            $entities = $this->em->getRepository($entityClass)->findBy([
-                DatetimePeriodStatusInterface::PROPERTY_NAME_STATUS => DatetimePeriodStatusInterface::STATUS_ACTIVE
-            ]);
+        $batchSize = 20;
+        $i = 0;
 
-            foreach ($entities as $entity) {
-                /** @var DatetimePeriodStatusInterface $entity */
-                if ($entity->isExpired()) {
-                    $entity->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
-                    $this->em->persist($entity);
-                    $updatedRecordsCount++;
+        $data = $this->em->getRepository(Subscription::class)->getActiveSubscriptionsStepIterator();
+
+        foreach ($data as $row) {
+            /* @var $entity Subscription */
+            $entity = $row[0];
+
+            if ($entity->isExpired()) {
+                $entity->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
+
+                $updatedRecordsCount++;
+
+                if (($i % $batchSize) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
                 }
+
+                $i ++;
+            }
+        }
+
+        if ($updatedRecordsCount) {
+            $this->em->flush();
+        }
+
+        return $updatedRecordsCount;
+    }
+
+    public function createActiveSubscriptions()
+    {
+        $createdRecordsCount = 0;
+
+        $batchSize = 20;
+        $i = 0;
+
+        $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+            ->getBusinessesWithoutActiveSubscriptionIterator();
+
+        foreach ($businessProfilesIterator as $row) {
+            /* @var $entity BusinessProfile */
+            $entity = $row[0];
+
+            // create default subscription if needed
+            $subscription = $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $this->em);
+
+            if ($subscription) {
+                $createdRecordsCount++;
+
+                if (($i % $batchSize) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $i ++;
+            }
+        }
+
+        if ($createdRecordsCount) {
+            $this->em->flush();
+        }
+
+        return $createdRecordsCount;
+    }
+
+    public function updateActiveSubscriptions()
+    {
+        $updatedRecordsCount = 0;
+
+        $batchSize = 20;
+        $i = 0;
+
+        $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+            ->getBusinessesWithMultipleActiveSubscriptionsIterator();
+
+        foreach ($businessProfilesIterator as $row) {
+            /* @var $entity BusinessProfile */
+            $entity = $row[0];
+
+            // make sure that each business has only 1 active subscription
+            $result = $this->subscriptionStatusManager->manageBusinessSubscriptionExcess($entity, $this->em);
+
+            if ($result) {
+                $updatedRecordsCount ++;
+
+                if (($i % $batchSize) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $i ++;
             }
         }
 

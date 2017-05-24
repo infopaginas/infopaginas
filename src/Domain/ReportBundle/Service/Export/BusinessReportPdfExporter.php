@@ -1,123 +1,125 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 18.09.16
- * Time: 16:36
- */
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\Exporter\PdfExporterModel;
 use Domain\ReportBundle\Util\DatesUtil;
-use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
 
-class BusinessReportPdfExporter
+class BusinessReportPdfExporter extends PdfExporterModel
 {
-    protected $entityManager;
+    /**
+     * @var BusinessOverviewReportManager $businessOverviewReportManager
+     */
     protected $businessOverviewReportManager;
+
+    /**
+     * @var KeywordsReportManager $keywordsReportManager
+     */
     protected $keywordsReportManager;
+
+    /**
+     * @var AdUsageReportManager $adUsageReportManager
+     */
     protected $adUsageReportManager;
-    protected $templateEngine;
-    protected $pdfGenerator;
 
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        BusinessOverviewReportManager $businessOverviewReportManager,
-        KeywordsReportManager $keywordsReportManager,
-        AdUsageReportManager $adUsageReportManager,
-        EngineInterface $templateEngine,
-        PDFGenerator $pdfGenerator
-    ) {
-        $this->entityManager = $entityManager;
-
-        $this->businessOverviewReportManager = $businessOverviewReportManager;
-
-        $this->keywordsReportManager = $keywordsReportManager;
-
-        $this->adUsageReportManager = $adUsageReportManager;
-
-        $this->templateEngine = $templateEngine;
-
-        $this->pdfGenerator = $pdfGenerator;
+    /**
+     * @param BusinessOverviewReportManager $service
+     */
+    public function setBusinessOverviewReportManager(BusinessOverviewReportManager $service)
+    {
+        $this->businessOverviewReportManager = $service;
     }
 
-    public function export(array $params)
+    /**
+     * @param KeywordsReportManager $service
+     */
+    public function setKeywordsReportManager(KeywordsReportManager $service)
     {
-        $businessProfile = $this->getBusinessProfilesRepo()->find($params['businessProfileId']);
+        $this->keywordsReportManager = $service;
+    }
 
-        $overviewData = $this->getBusinessOverviewReportManager()->getBusinessOverviewData($params);
-        $keywordsData = $this->getKeywordsReportManager()->getKeywordsData($params);
+    /**
+     * @param AdUsageReportManager $service
+     */
+    public function setAdUsageReportManager(AdUsageReportManager $service)
+    {
+        $this->adUsageReportManager = $service;
+    }
 
-        $thisMonthOverviewData = $this->getOverviewDataBySpecifiedDatePeriod(
-            $businessProfile->getId(), DatesUtil::RANGE_THIS_MONTH
-        );
+    /**
+     * @param array $params
+     * @return Response
+     */
+    public function getResponse($params = []) : Response
+    {
+        $currentYearParams  = $this->businessOverviewReportManager->getThisYearSearchParams($params);
+        $previousYearParams = $this->businessOverviewReportManager->getThisLastSearchParams($params);
 
-        $lastMonthOverviewData = $this->getOverviewDataBySpecifiedDatePeriod(
-            $businessProfile->getId(),
-            DatesUtil::RANGE_LAST_MONTH
-        );
+        $interactionCurrentData  = $this->businessOverviewReportManager->getBusinessOverviewReportData($params);
 
-        $thisYearOverviewData = $this->getOverviewDataBySpecifiedDatePeriod(
-            $businessProfile->getId(),
-            DatesUtil::RANGE_THIS_YEAR,
-            AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
-        );
+        $keywordsData = $this->keywordsReportManager->getKeywordsData($params);
 
-        $lastYearOverviewData = $this->getOverviewDataBySpecifiedDatePeriod(
-            $businessProfile->getId(),
-            DatesUtil::RANGE_LAST_YEAR,
-            AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
-        );
+        $interactionCurrentYearData  = $this->businessOverviewReportManager
+            ->getBusinessOverviewReportData($currentYearParams);
+        $interactionPreviousYearData = $this->businessOverviewReportManager
+            ->getBusinessOverviewReportData($previousYearParams);
 
-        $adUsageData = $this->getAdUsageReportManager()->getAdUsageData($params);
+        if ($params['businessProfile']->getDcOrderId()) {
+            $adUsageData = $this->adUsageReportManager->getAdUsageData($params);
+        } else {
+            $adUsageData = [];
+        }
 
-        $filename = str_replace(' ', '', $businessProfile->getName()) . '_' . (new \DateTime('now'))->format('dmY_H:i:s') . '.pdf';
+        $filename = $this->businessOverviewReportManager
+            ->getBusinessOverviewReportName($params['businessProfile']->getSlug(), self::FORMAT);
+
+        $paginatedInteractionData = $this->prepareInteractionDataTable($interactionCurrentData);
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:PDF:template.html.twig',
-            array(
-                'businessProfile' => $businessProfile,
-                'overviewData' => $overviewData,
-                'keywordsData' => $keywordsData,
-                'thisMonthOverviewData' => $thisMonthOverviewData,
-                'lastMonthOverviewData' => $lastMonthOverviewData,
-                'thisYearOverviewData' => $thisYearOverviewData,
-                'lastYearOverviewData' => $lastYearOverviewData,
-                'adUsageData' => $adUsageData,
-                'data' => []
-            )
+            [
+                'eventList'                   => BusinessOverviewModel::EVENT_TYPES,
+                'businessProfile'             => $params['businessProfile'],
+                'interactionCurrentData'      => $interactionCurrentData,
+                'paginatedInteractionData'    => $paginatedInteractionData,
+                'keywordsData'                => $keywordsData,
+                'interactionCurrentYearData'  => $interactionCurrentYearData,
+                'interactionPreviousYearData' => $interactionPreviousYearData,
+                'adUsageData'                 => $adUsageData,
+            ]
         );
 
-        $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
-
-        return [$filename, $content];
+        return $this->sendResponse($html, $filename, $params['print']);
     }
 
-    protected function getOverviewDataBySpecifiedDatePeriod($businessProfileId, $range, $period = '')
+    protected function prepareInteractionDataTable($interactionData)
     {
-        $range = DatesUtil::getDateRangeValueObjectFromRangeType($range);
-        $params = [
-            'businessProfileId' => $businessProfileId,
-            'date' => [
-                'start' => $range->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT),
-                'end' => $range->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT),
-            ],
-        ];
+        $eventsPerPage = 5;
+        $data = [];
 
-        if (!empty($period)) {
-            $params['periodOption'] = $period;
+        foreach ($interactionData['results'] as $row) {
+            $counter = -1;
+            $page    = 0;
+
+            foreach ($row as $key => $item) {
+                if ($counter >= $eventsPerPage) {
+                    $counter = 0;
+                    $page++;
+                    $data['results'][$page][$row['date']]['date'] = $row['date'];
+                }
+
+                $data['results'][$page][$row['date']][$key] = $item;
+
+                $counter ++;
+            }
         }
 
-        $overviewData = $this->getBusinessOverviewReportManager()->getBusinessOverviewData($params);
-        return array_values($overviewData['results']);
+        return $data;
     }
 
     protected function getAdUsageReportManager() : AdUsageReportManager
@@ -130,13 +132,8 @@ class BusinessReportPdfExporter
         return $this->keywordsReportManager;
     }
 
-    protected function getBusinessOverviewReportManager()
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->businessOverviewReportManager;
-    }
-
-    protected function getBusinessProfilesRepo()
-    {
-        return $this->entityManager->getRepository(BusinessProfile::class);
     }
 }

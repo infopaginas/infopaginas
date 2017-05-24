@@ -27,69 +27,88 @@
         </thead>
         <tbody>
         {% for row in data %}
-            {% if row.fieldName != 'latitude' and row.fieldName != 'longitude' %}
+            {% if row.action == CHANGE_SET_TYPE.COMMON_PROPERTY and row.fieldName not in BUSINESS_PROFILE_FIELD %}
                 <tr class="sonata-ba-view-container">
-                    <td>{{ normalize_task_fieldname_label(row.fieldName) }}</td>
-
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+                    <td>{{ row.oldValue }}</td>
+                    <td>{{ row.newValue }}</td>
+                </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.TRANSLATION %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
                     <td>{{ normalize_task_changeaction_label(row.action) }}</td>
 
-                    {% if row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_UPDATE') %}
-                        {% set newData = get_business_profile_image_changes(row.newValue) %}
-                        {% set changes = prepare_image_diff(newData) %}
+                    {% set oldData = get_business_profile_translation_changes_string(row.oldValue) %}
+                    {% set newData = get_business_profile_translation_changes_string(row.newValue) %}
+
+                    {% if row.fieldName == BUSINESS_PROFILE_FIELD.DESCRIPTION %}
                         <td>
-                            {% for change in changes['old'] %}
-                                {{ change }}
-                            {% endfor %}
+                            {% if oldData %}
+                                {{ oldData.locale }}
+                                <br/>
+                                {{ get_wysiwyg_preview_block(row.fieldName ~ loop.index ~ 'old', oldData.value) }}
+                                <br/>
+                                {{ oldData.value }}
+                            {% endif %}
                         </td>
                         <td>
-                            {% for change in changes['new'] %}
-                                {{ change }}
-                            {% endfor %}
+                            {% if newData %}
+                                {{ newData.locale }}
+                                <br/>
+                                {{ get_wysiwyg_preview_block(row.fieldName ~ loop.index ~ 'new', newData.value) }}
+                                <br/>
+                                {{ newData.value }}
+                            {% endif %}
                         </td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_ADD') %}
-                        {% set changes = get_business_profile_image_changes(row.newValue) %}
-                        <td></td>
-                        <td>{{ changes.name }}</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_REMOVE') %}
-                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
-                        <td>{{ changes.name }}</td>
-                        <td></td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::VIDEO_UPDATE') %}
-                        {% set oldData = get_business_profile_image_changes(row.oldValue) %}
-                        {% set newData = get_business_profile_image_changes(row.newValue) %}
-                        {% if oldData != '' %}
-                            <td>
-                                {{ oldData.name }}
-                            </td>
-                            <td>
-                                {{ newData.name }}
-                            </td>
-                        {% else %}
-                            {% set changes = prepare_image_diff(newData) %}
-                            <td>
-                                {% for change in changes['old'] %}
-                                    {{ change }}
-                                {% endfor %}
-                            </td>
-                            <td>
-                                {% for change in changes['new'] %}
-                                    {{ change }}
-                                {% endfor %}
-                            </td>
-                        {% endif %}
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_REMOVE') %}
-                        {% set changes = get_business_profile_image_changes(row.oldValue) %}
-                        <td> {{ changes.name }} </td>
-                        <td>-</td>
-                    {% elseif row.action == constant('Domain\\BusinessBundle\\Util\\ChangeSetCalculator::IMAGE_ADD') %}
-                        {% set changes = get_business_profile_image_changes(row.newValue) %}
-                        <td>-</td>
-                        <td> {{ changes.name }} </td>
                     {% else %}
-                        <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>
-                        <td>{{ get_business_profile_changes_string(row.newValue) }}</td>
+                        <td>{% if oldData %}{{ oldData.locale }} - {{ oldData.value }}{% endif %}</td>
+                        <td>{% if newData %}{{ newData.locale }} - {{ newData.value }}{% endif %}</td>
                     {% endif %}
-            </tr>
+                </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.RELATION_MANY_TO_ONE %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+                    <td>{{ get_business_profile_many_to_one_relations_changes_string(row.oldValue) }}</td>
+                    <td>{{ get_business_profile_many_to_one_relations_changes_string(row.newValue) }}</td>
+                </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.RELATION_ONE_TO_MANY %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+                    <td>{{ get_business_profile_related_entity_changes_html(row.oldValue) }}</td>
+                    <td>{{ get_business_profile_related_entity_changes_html(row.newValue) }}</td>
+                </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.RELATION_MANY_TO_MANY %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+                    <td>{{ get_business_profile_changes_string(row.oldValue) }}</td>
+                    <td>{{ get_business_profile_changes_string(row.newValue) }}</td>
+                </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.MEDIA_RELATION_MANY_TO_ONE %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+
+                    {% set oldData = get_business_profile_media_changes(row.oldValue, row) %}
+                    {% set newData = get_business_profile_media_changes(row.newValue, row) %}
+
+                    <td>{{ render_task_media_link(oldData) }}</td>
+                    <td>{{ render_task_media_link(newData) }}</td>
+                </tr>
+            {% elseif row.action == CHANGE_SET_TYPE.MEDIA_RELATION_ONE_TO_MANY %}
+                <tr class="sonata-ba-view-container">
+                    <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
+                    <td>{{ normalize_task_changeaction_label(row.action) }}</td>
+
+                    {% set oldData = get_business_profile_images_changes(row.oldValue, row) %}
+                    {% set newData = get_business_profile_images_changes(row.newValue, row) %}
+
+                    <td>{{ render_task_images_link(oldData) }}</td>
+                    <td>{{ render_task_images_link(newData) }}</td>
+                </tr>
             {% endif %}
         {% endfor %}
         </tbody>

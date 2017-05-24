@@ -30,6 +30,9 @@ services:
     domain_business.manager.subscription_status_manager:
         class: Domain\BusinessBundle\Manager\SubscriptionStatusManager
 
+    domain_business.manager.business_status_manager:
+        class: Domain\BusinessBundle\Manager\BusinessStatusManager
+
     domain_business.manager.category:
         class: Domain\BusinessBundle\Manager\CategoryManager
         arguments: ['@doctrine.orm.entity_manager']
@@ -94,6 +97,12 @@ services:
         calls:
             - [ setCurrentUser, [ '@session' ] ]
 
+    domain_business.form.type.business_profile_gallery:
+        class: Domain\BusinessBundle\Form\Type\BusinessGalleryType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_gallery_form_type }
+
     domain_business.form.type.entity_hidden:
        class: Domain\BusinessBundle\Form\Type\EntityHiddenType
        arguments: ["@doctrine.orm.entity_manager"]
@@ -112,6 +121,12 @@ services:
         tags:
             - { name: form.type, alias: domain_business_bundle_business_close_request_type }
 
+    domain_business.form.type.claim:
+        class: Domain\BusinessBundle\Form\Type\BusinessClaimRequestType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_business_bundle_business_claim_request_type }
+
     #forms section
     domain_business.form.business_profile:
         factory_method: createNamed
@@ -120,6 +135,14 @@ services:
         arguments:
             - 'domain_business_bundle_business_profile_form_type'
             - 'domain_business_bundle_business_profile_form_type'
+
+    domain_business.form.claim:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_business_bundle_business_claim_request_type'
+            - 'domain_business_bundle_business_claim_request_type'
 
     domain_business.form.review:
         factory_method: createNamed
@@ -144,11 +167,15 @@ services:
         arguments:
             - '@domain_business.form.business_profile'
             - '@request'
-            - '@domain_business.manager.business_profile'
-            - '@domain_business.manager.tasks'
-            - '@validator'
-            - '@security.token_storage'
-            - '@oxa.manager.users'
+            - '@service_container'
+
+    domain_business.form.handler.claim:
+        class: Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.claim'
+            - '@request'
+            - '@service_container'
 
     domain_business.form.handler.review:
         class: Domain\BusinessBundle\Form\Handler\ReviewFormHandler
@@ -174,21 +201,31 @@ services:
     domain_business.listener.datetime_period_status_subscriber:
         class: Domain\BusinessBundle\EventListener\DatetimePeriodStatusSubscriber
         tags:
-            - {name: doctrine.event_subscriber, connection: default, priority: 2}
+            - {name: doctrine.event_subscriber, connection: default, priority: 15}
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
-    domain_business.listener.subscription_listener:
+
+    domain_business.listener.subscription_subscriber:
         class: Domain\BusinessBundle\EventListener\SubscriptionListener
         tags:
-            - {name: doctrine.event_listener, event: postFlush, priority: 10}
+            - { name: doctrine.event_subscriber, connection: default, priority: 10 }
         calls:
             - [ setSubscriptionStatusManager, [ '@domain_business.manager.subscription_status_manager' ] ]
+
+    domain_business.listener.elsatic_search_subscriber:
+        class: Domain\BusinessBundle\EventListener\ElasticSearchSubscriber
+        tags:
+            - { name: doctrine.event_subscriber, connection: default, priority: 5 }
+        calls:
+            - [ setBusinessStatusManager, [ '@domain_business.manager.business_status_manager' ] ]
+            - [ setElasticSearchManager, [ '@oxa_elastic_search.manager.search' ] ]
 
     #services section
     domain_business.service.datetime_period_status_service:
         class: Domain\BusinessBundle\Service\DatetimePeriodStatusService
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@domain_business.manager.subscription_status_manager'
 
     domain_business.twig.has_subscription_extension:
         class: Domain\BusinessBundle\Twig\Extension\HasSubscriptionExtension
@@ -198,3 +235,8 @@ services:
     domain_business.video:
         class: Domain\BusinessBundle\Manager\VideoManager
         arguments: ['@doctrine.orm.entity_manager']
+
+    domain_business.manager.landing_page_short_cut_manager:
+        class: Domain\BusinessBundle\Manager\LandingPageShortCutManager
+        arguments:
+            - '@service_container'

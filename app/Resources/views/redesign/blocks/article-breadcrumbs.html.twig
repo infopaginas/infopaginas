@@ -1,0 +1,28 @@
+<div class="toolbar">
+    <div class="toolbar__nav">
+        <a href="{{ absolute_url(path('domain_article_homepage')) }}" title="{% trans %}Articles{% endtrans %}">
+            <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}Articles{% endtrans %}</span>
+            </button>
+        </a>
+
+        {% if articleCategory is defined %}
+            <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  articleCategory.getSlug() })) }}" title="{{ articleCategory.name }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                    <span>{{ articleCategory.name|truncate(breadcrumb_max_length) }}</span>
+                </button>
+            </a>
+
+            {% if article is defined %}
+                <div class="breadcrumb">
+                    <a href="{{ absolute_url(path('domain_article_view', {'slug':article.slug})) }}" title="{{ article.title }}" class="button categorie__item categorie__parent">
+                        <span>{{ article.title|truncate(breadcrumb_max_length) }}</span>
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- breadcrumb -->
+    </div><!-- toolbar__nav -->
+</div><!-- toolbar -->

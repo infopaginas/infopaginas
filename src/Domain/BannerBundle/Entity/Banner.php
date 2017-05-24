@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="banner")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\BannerRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\BannerTranslation")
  */
 class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableEntityInterface
@@ -45,20 +44,11 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $title;
 
     /**
-     * @var Media - Media Logo
-     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="banners",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="image_id", referencedColumnName="id", nullable=false)
-     */
-    protected $image;
-
-    /**
      * @var string - Banner description
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=100)
+     * @Assert\NotBlank()
      */
     protected $description;
 
@@ -93,15 +83,6 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $type;
 
     /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
-     *     mappedBy="banners",
-     *     cascade={"persist"}
-     *     )
-     */
-    protected $campaigns;
-
-    /**
      * @Gedmo\SortablePosition
      * @ORM\Column(name="position", type="integer", nullable=false)
      */
@@ -119,6 +100,13 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     protected $translations;
 
     /**
+     * @var string - Using this checkbox a Admin may define whether to show a banner block.
+     *
+     * @ORM\Column(name="is_published", type="boolean", options={"default" : 0})
+     */
+    protected $isPublished;
+
+    /**
      * Get id
      *
      * @return int
@@ -134,6 +122,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     public function __construct()
     {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->isPublished  = false;
     }
 
     public function getMarkCopyPropertyName()
@@ -309,60 +298,26 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     }
 
     /**
-     * Set image
+     * Set isPublished
      *
-     * @param \Oxa\Sonata\MediaBundle\Entity\Media $image
+     * @param boolean $isPublished
      *
      * @return Banner
      */
-    public function setImage(\Oxa\Sonata\MediaBundle\Entity\Media $image = null)
+    public function setIsPublished($isPublished)
     {
-        $this->image = $image;
+        $this->isPublished = $isPublished;
 
         return $this;
     }
 
     /**
-     * Get image
+     * Get isPublished
      *
-     * @return \Oxa\Sonata\MediaBundle\Entity\Media
+     * @return boolean
      */
-    public function getImage()
+    public function getIsPublished()
     {
-        return $this->image;
-    }
-
-    /**
-     * Add campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return Banner
-     */
-    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns[] = $campaign;
-
-        return $this;
-    }
-
-    /**
-     * Remove campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     */
-    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns->removeElement($campaign);
-    }
-
-    /**
-     * Get campaigns
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCampaigns()
-    {
-        return $this->campaigns;
+        return $this->isPublished;
     }
 }

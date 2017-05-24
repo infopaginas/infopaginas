@@ -8,15 +8,20 @@
         "classmap": [
             "app/AppKernel.php",
             "app/AppCache.php",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Lib",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201605",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Common"
+            "vendor/googleads/googleads-php-lib/src/Google/AdsApi/Dfp/Util/v201702",
+            "vendor/googleads/googleads-php-lib/src/Google/AdsApi/Common"
         ]
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/EvgeniySkoptsov/doctrine2.git"
+        }
+    ],
     "require": {
         "php": ">=7.0.0",
         "symfony/symfony": "2.8.9",
-        "doctrine/orm": "^2.4.8",
+        "doctrine/orm": "dev-master#28c51ab00bededfb8909af25ae31cf0a9c799d9b",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
@@ -24,19 +29,21 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "sonata-project/admin-bundle": "2.3.10",
-        "sonata-project/doctrine-orm-admin-bundle": "~2.3",
-        "sonata-project/user-bundle": "2.2.5",
-        "sonata-project/easy-extends-bundle": "^2.1",
+        "sonata-project/admin-bundle": "3.10.3",
+        "sonata-project/doctrine-orm-admin-bundle": "3.0.5",
+        "sonata-project/user-bundle": "3.2.0",
+        "sonata-project/easy-extends-bundle": "2.1.10",
         "stof/doctrine-extensions-bundle": "^1.2",
-        "sonata-project/formatter-bundle": "^2.3",
+        "sonata-project/formatter-bundle": "3.1.0",
         "helios-ag/fm-elfinder-bundle": "^5.3",
         "doctrine/doctrine-migrations-bundle": "^1.1",
         "doctrine/doctrine-fixtures-bundle": "~2.2",
-        "sonata-project/media-bundle": "2.3.3",
-        "sonata-project/translation-bundle": "1.0.4",
+        "sonata-project/media-bundle": "3.2.0",
+        "sonata-project/core-bundle": "3.1.1",
+        "sonata-project/classification-bundle": "3.1.0",
+        "sonata-project/translation-bundle": "2.0.2",
         "twig/extensions": "~1.0",
-        "fresh/doctrine-enum-bundle": "4.5",
+        "fresh/doctrine-enum-bundle": "4.6.5",
         "pixassociates/sortable-behavior-bundle": "1.0",
         "egeloen/google-map-bundle": "~2.1",
         "willdurand/geocoder": "2.8.1",
@@ -55,7 +62,18 @@
         "oneup/flysystem-bundle": "^1.4",
         "cache/adapter-bundle": "^0.4.0",
         "happyr/google-site-authenticator-bundle": "^0.3.2",
-        "googleads/googleads-php-lib": "^10.1"
+        "googleads/googleads-php-lib": "^25.3",
+        "presta/sitemap-bundle": "1.5.1",
+        "leafo/scssphp": "^0.6.6",
+        "patchwork/jsqueeze": "^2.0",
+        "knplabs/gaufrette": "0.2.1",
+        "knplabs/knp-gaufrette-bundle": "~0.3",
+        "aws/aws-sdk-php": "~3.20",
+        "aws/aws-sdk-php-symfony": "~1.2",
+        "guzzle/guzzle": "3.9.3",
+        "elasticsearch/elasticsearch": "^5.1",
+        "google/apiclient": "1.1.7",
+        "mongodb/mongodb": "1.1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"

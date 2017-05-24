@@ -1,0 +1,5 @@
+{% if workingHoursData is defined and workingHoursData.status %}
+    <span class="now {% if workingHoursData.open %}open{% else %}closed{% endif %}">
+        {{ workingHoursData.text }}
+    </span>
+{% endif %}

@@ -1,0 +1,39 @@
+<div class="media__item video-item">
+    <div class="media__item--left">
+        <div class="media__field media__thumbnail">
+            {{ render_video_embed(media, {width: 300, height: 200}) | raw }}
+        </div>
+    </div>
+    <div class="media__item--right">
+        <div class="media__field">
+            <div class="form__field">
+                {{ form_widget(form.id) }}
+            </div>
+        </div>
+        <div class="media__field">
+            <div class="form__field">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name) }}
+            </div>
+        </div>
+        <div class="media__field">
+            <div class="form__field">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title) }}
+            </div>
+        </div>
+        <div class="media__field">
+            <div class="form__field">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+            </div>
+        </div>
+        <div class="media__field remove">
+            <button type="button" class="button button--text" id="remove-video">
+                <i class="fa fa-remove"></i>
+                {% trans %}Remove{% endtrans %}
+            </button>
+        </div>
+    </div>
+    <!-- item--right -->
+</div>

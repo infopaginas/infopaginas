@@ -1,0 +1,191 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+{% macro phone_prototype(phoneField) %}
+    <div class="form__row vertical__row">
+        <div class="form__field field--website">
+            {{ form_label(phoneField.phone) }}
+            {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
+        </div>
+        <button class="button button--small remove-phone">
+            <i class="fa fa-minus-square"></i>
+            {% trans %}Remove phone{% endtrans %}
+        </button>
+    </div>
+{% endmacro %}
+
+{% macro working_hours_prototype(workingHoursField) %}
+    <div class="multi-field">
+        <div class="form__field field--multi-select select-weekday-user">
+            {{ form_widget(workingHoursField.day, {'attr': {'style': 'width: 100%'}}) }}
+        </div><!-- form-field -->
+        <div class="form__field field-hour-select hours-user">
+            {{ form_label(workingHoursField.timeStart) }}
+            {{ form_widget(workingHoursField.timeStart, {'attr': {'style': 'width: 6.5em'}}) }}
+        </div><!-- form-field -->
+        <div class="field-middle-text">to</div>
+        <div class="form__field field-hour-select hours-user">
+            {{ form_label(workingHoursField.timeEnd) }}
+            {{ form_widget(workingHoursField.timeEnd, {'attr': {'style': 'width: 6.5em'}}) }}
+        </div><!-- form-field -->
+
+        <div class="form__field field--website field-active-time">
+            {{ form_label(workingHoursField.openAllTime) }}
+            {{ form_widget(workingHoursField.openAllTime) }}
+        </div>        
+    </div><!-- multifield -->
+    <button class="button button--small remove-working-hours">
+        <i class="fa fa-minus-square"></i>
+        {% trans %}Remove{% endtrans %}
+    </button>
+{% endmacro %}
+
+<div class="form-column__container clearfix">
+    <div class="info-box">
+        <ul class="clearfix">
+            <li>
+                <span class="info__label">
+                    {% trans %}Date of registration{% endtrans %}
+                </span>
+                <span class="info__content">
+                    {% if businessProfile is defined %}
+                        {{ businessProfile.createdAt|date(business_date_format) }}
+                    {% else %}
+                        {{ "now"|date(business_date_format) }}
+                    {% endif %}
+                </span>
+            </li>
+            <li>
+                <span class="info__label">
+                    {% trans %}Subscription{% endtrans %}
+                </span>
+                <span class="info__content">
+                    {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
+                        {{ businessProfile.getSubscriptionPlan().getName() }}
+                    {% else %}
+                        {% trans %}Free{% endtrans %}
+                    {% endif %}
+                </span>
+            </li>
+            <li>
+                <span class="info__label">
+                    {% trans %}Subscription expire date{% endtrans %}
+                </span>
+                <span class="info__content">
+                    {% if businessProfile is defined and businessProfile.getSubscriptionPlan() is not null %}
+                        {{ businessProfile.getSubscriptions()|first.getEndDate()|date(subscription_date_format) }}
+                    {% else %}
+                        {% trans %}Unlimited{% endtrans %}
+                    {% endif %}
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'English', 'langPostfix': 'En'} %}
+    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'Spanish', 'langPostfix': 'Es'} %}
+</div>
+
+<h3 class="language-title">{% trans %}Common for english and spanish{% endtrans %}</h3>
+<div class="form__section">
+    <div class="form-column__container clearfix">
+        <div class="form__column">
+            {%  if not app.user %}
+                <div class="form__row vertical__row">
+                    <div class="form__field field--firstname">
+                        {{ custom_form_label.widget(businessProfileForm.firstname) }}
+                        {{ form_widget(businessProfileForm.firstname, {'attr': {'placeholder': ''}} ) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--email">
+                    {{ custom_form_label.widget(businessProfileForm.email) }}
+                    {{ form_widget(businessProfileForm.email, {'attr': {'placeholder': ''}} ) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row category-first-level-user">
+                {{ custom_form_label.widget(businessProfileForm.categoryIds) }}
+                {{ form_widget(businessProfileForm.categoryIds) }}
+
+                {% if businessProfile is defined %}
+                    {% set businessProfileItem = businessProfile %}
+                {% else %}
+                    {% set businessProfileItem = null %}
+                {% endif %}
+                <span id="category_options" class="hidden" data-category-ids="{{ get_business_profile_categories_json(businessProfileItem, app.request.locale) }}"></span>
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessProfileForm.paymentMethods) }}
+                {{ form_widget(businessProfileForm.paymentMethods) }}
+            </div>
+        </div>
+
+        <div class="form__column">
+            {%  if not app.user %}
+                <div class="form__row vertical__row">
+                    <div class="form__field field--lastname">
+                        {{ custom_form_label.widget(businessProfileForm.lastname) }}
+                        {{ form_widget(businessProfileForm.lastname, {'attr': {'placeholder': ''}} ) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--website">
+                    {{ custom_form_label.widget(businessProfileForm.website) }}
+                    {{ form_widget(businessProfileForm.website, {'attr': {'placeholder': ''}}) }}
+                </div>
+            </div>
+
+            <div id="phone-fields-list"
+                 data-length="{{ businessProfileForm.phones|length }}"
+                 data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
+                {% for phoneField in businessProfileForm.phones %}
+                    <div class="form__row vertical__row">
+                        <div class="form__field field--website">
+                            {{ form_label(phoneField.phone) }}
+                            {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
+                        </div>
+                        <button class="button button--small remove-phone">
+                            <i class="fa fa-minus-square"></i>
+                            {% trans %}Remove phone{% endtrans %}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="form__row vertical__row">
+                <button class="button button--small" id="add-another-phone">
+                    <i class="fa fa-plus-square"></i>
+                    {% trans %}Add phone{% endtrans %}
+                </button>
+            </div>
+
+            <div id="working-hours-fields-list" class="form__row vertical__row"
+                 data-length="{{ businessProfileForm.collectionWorkingHours|length }}"
+                 data-prototype="{{ _self.working_hours_prototype(businessProfileForm.collectionWorkingHours.vars.prototype)|e }}">
+
+                <label class="title-label">{% trans %}Working hours{% endtrans %}</label>
+                <small class="field__description">{% trans %}business.working.hours.edit_note{% endtrans %}</small>
+
+                <div class="form__row vertical__row">
+                    {{ form_widget(businessProfileForm.collectionWorkingHoursError) }}
+                </div>
+
+                {% for collectionWorkingHoursField in businessProfileForm.collectionWorkingHours %}
+                    {{ _self.working_hours_prototype(collectionWorkingHoursField) }}
+                {% endfor %}
+            </div>
+
+            <div class="form__row vertical__row">
+                <button class="button button--small" id="add-another-working-hours">
+                    <i class="fa fa-plus-square"></i>
+                    {% trans %}Add working hours{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:static-breadcrumbs.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+
+                <article class="article">
+                    <section class="article__header page-section">
+                        <h1><strong>{{ page.title }}</strong></h1>
+                    </section>
+                    <section class="article-body">
+                        {{ page.body()|raw }}
+                    </section>
+                </article>
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.STATIC_BOTTOM } %}
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' with { 'bannerType': BANNER_CODE.PORTAL_RIGHT } %}
+        </div>
+    </div>
+{% endblock %}

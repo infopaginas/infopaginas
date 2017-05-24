@@ -1,0 +1,3 @@
+oxa_youtube:
+    resource: "@OxaVideoBundle/Resources/config/routes/youtubeOAuthControllerRoutes.yml"
+    prefix:     /

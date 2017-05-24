@@ -74,12 +74,22 @@ class ConfigAdmin extends OxaAdmin
         ;
     }
 
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+
+        $query->andWhere(
+            $query->expr()->eq($query->getRootAliases()[0] . '.isActive', ':isActive')
+        );
+        $query->setParameter('isActive', true);
+
+        return $query;
+    }
+
     protected function configureRoutes(RouteCollection $collection)
     {
         parent::configureRoutes($collection);
 
-        $collection->remove('restore');
-        $collection->remove('delete_physical');
         $collection->remove('create');
         $collection->remove('delete');
         $collection->remove('export');

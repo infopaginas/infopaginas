@@ -15,7 +15,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Template
  *
  * @ORM\Table(name="banner_template")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\TemplateRepository")
  * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\TemplateTranslation")
  */
@@ -23,6 +22,9 @@ class Template implements DefaultEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+
+    const TAG_RESIZABLE_COMMON   = '.defineSizeMapping(googleResponsiveCommonSize)';
+    const TAG_RESIZABLE_IN_BLOCK = '.defineSizeMapping(googleResponsiveBlockSize)';
 
     /**
      * @var int
@@ -46,6 +48,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
      * @var string - Script template header code
      *
      * @ORM\Column(name="header", type="text")
+     * @Assert\NotBlank()
      */
     protected $templateHeader;
 
@@ -53,6 +56,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
      * @var string - Script template body
      *
      * @ORM\Column(name="body", type="text")
+     * @Assert\NotBlank()
      */
     protected $body;
 
@@ -238,5 +242,30 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    public function getResizableHeader()
+    {
+        return $this->getHeaderWithSizeTag(self::TAG_RESIZABLE_COMMON);
+    }
+
+    public function getResizableInBlockHeader()
+    {
+        return $this->getHeaderWithSizeTag(self::TAG_RESIZABLE_IN_BLOCK);
+    }
+
+    protected function getHeaderWithSizeTag($tag)
+    {
+        $header = $this->getTemplateHeader();
+
+        $position = strpos($header, '.addService');
+
+        if ($position !== false) {
+            $resizableHeader = substr_replace($header, $tag, $position, 0);
+        } else {
+            $resizableHeader = '';
+        }
+
+        return $resizableHeader;
     }
 }

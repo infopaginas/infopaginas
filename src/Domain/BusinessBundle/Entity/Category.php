@@ -12,7 +12,6 @@ use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Sonata\TranslationBundle\Model\Gedmo\AbstractPersonalTranslation;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,14 +20,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="category")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CategoryRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CategoryTranslation")
  */
 class Category implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+
+    const CATEGORY_FIELD_NAME = 'name';
+
+    const CATEGORY_UNDEFINED_CODE = '54016';
+    const CATEGORY_UNDEFINED_SLUG = 'unclassified';
+
+    const CATEGORY_ARTICLE_CODE = '99999';
+    const CATEGORY_ARTICLE_SLUG = 'infopaginas-media';
+
+    const ELASTIC_DOCUMENT_TYPE = 'Category';
+    const FLAG_IS_UPDATED = 'isUpdated';
+
+    const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS = 'catalogItems';
 
     /**
      * @var int
@@ -40,10 +50,11 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $id;
 
     /**
+     * Related to CATEGORY_FIELD_NAME
      * @var string - Category name
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="name", type="string", length=100)
+     * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
      */
     protected $name;
@@ -51,14 +62,14 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     /**
      * @var string
      *
-     * @ORM\Column(name="search_text_en", type="string", length=100, nullable=true)
+     * @ORM\Column(name="search_text_en", type="string", length=255, nullable=true)
      */
     protected $searchTextEn;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="search_text_es", type="string", length=100, nullable=true)
+     * @ORM\Column(name="search_text_es", type="string", length=255, nullable=true)
      */
     protected $searchTextEs;
 
@@ -71,11 +82,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * )
      */
     protected $businessProfiles;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Domain\MenuBundle\Entity\Menu", mappedBy="category", cascade={"persist"})
-     */
-    protected $menu;
 
     /**
      * @var Article[]
@@ -92,9 +98,23 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"}, updatable=false)
-     * @ORM\Column(name="slug", type="string", length=100)
+     * @ORM\Column(name="slug", type="string", length=255)
      */
     protected $slug;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_en", type="string", length=255, nullable=true)
+     */
+    protected $slugEn;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_es", type="string", length=255, nullable=true)
+     */
+    protected $slugEs;
 
     /**
      * @var CategoryTranslation[]
@@ -108,40 +128,37 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $translations;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_en", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "searchTextEn"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEn;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_es", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "searchTextEs"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEs;
-
-    /**
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
      * and it is not necessary because globally locale can be set in listener
      */
     protected $locale;
+
+    /**
+     * @var string - Category code
+     *
+     * @ORM\Column(name="code", type="string", length=255, nullable=true)
+     */
+    protected $code;
+
+    /**
+     * Related to FLAG_IS_UPDATED const
+     * @var bool
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
+     */
+    protected $isUpdated;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\CatalogItem",
+     *      mappedBy="category",
+     * )
+     */
+    protected $catalogItems;
 
     public function setLocale($locale)
     {
@@ -163,9 +180,13 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     public function __construct()
     {
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->articles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
+        $this->translations     = new ArrayCollection();
+        $this->articles         = new ArrayCollection();
+        $this->reports          = new ArrayCollection();
+        $this->catalogItems     = new ArrayCollection();
+
+        $this->isUpdated = true;
     }
 
     public function __toString()
@@ -297,30 +318,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     }
 
     /**
-     * Set menu
-     *
-     * @param \Domain\MenuBundle\Entity\Menu $menu
-     *
-     * @return Category
-     */
-    public function setMenu(\Domain\MenuBundle\Entity\Menu $menu = null)
-    {
-        $this->menu = $menu;
-
-        return $this;
-    }
-
-    /**
-     * Get menu
-     *
-     * @return \Domain\MenuBundle\Entity\Menu
-     */
-    public function getMenu()
-    {
-        return $this->menu;
-    }
-
-    /**
      * @param AbstractPersonalTranslation $translation
      *
      * @return $this
@@ -331,7 +328,6 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
 
         return $this;
     }
-
 
     /**
      * Add article
@@ -392,50 +388,153 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     }
 
     /**
-     * Set searchFtsEn
-     *
-     * @param tsvector $searchFtsEn
+     * @param string $slugEn
      *
      * @return Category
      */
-    public function setSearchFtsEn($searchFtsEn)
+    public function setSlugEn($slugEn)
     {
-        $this->searchFtsEn = $searchFtsEn;
+        $this->slugEn = $slugEn;
 
         return $this;
     }
 
     /**
-     * Get searchFtsEn
-     *
-     * @return tsvector
+     * @return string
      */
-    public function getSearchFtsEn()
+    public function getSlugEn()
     {
-        return $this->searchFtsEn;
+        return $this->slugEn;
     }
 
     /**
-     * Set searchFtsEs
-     *
-     * @param tsvector $searchFtsEs
+     * @param string $slugEs
      *
      * @return Category
      */
-    public function setSearchFtsEs($searchFtsEs)
+    public function setSlugEs($slugEs)
     {
-        $this->searchFtsEs = $searchFtsEs;
+        $this->slugEs = $slugEs;
 
         return $this;
     }
 
     /**
-     * Get searchFtsEs
-     *
-     * @return tsvector
+     * @return string
      */
-    public function getSearchFtsEs()
+    public function getSlugEs()
     {
-        return $this->searchFtsEs;
+        return $this->slugEs;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Category
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return BusinessProfile
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
+    }
+
+    /**
+     * Get category reports
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReports()
+    {
+        return $this->reports;
+    }
+
+    public static function getTranslatableFields()
+    {
+        return [
+            self::CATEGORY_FIELD_NAME
+        ];
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCatalogItems()
+    {
+        return $this->catalogItems;
+    }
+
+    /**
+     * Add catalogItem
+     *
+     * @param CatalogItem $catalogItem
+     *
+     * @return Category
+     */
+    public function addCatalogItem(CatalogItem $catalogItem)
+    {
+        $this->catalogItems[] = $catalogItem;
+
+        return $this;
+    }
+
+    /**
+     * @param CatalogItem $catalogItem
+     *
+     * @return Category
+     */
+    public function removeCatalogItems(CatalogItem $catalogItem)
+    {
+        $this->catalogItems->removeElement($catalogItem);
+
+        return $this;
+    }
+
+    public static function getDefaultCategories()
+    {
+        return [
+            self::CATEGORY_ARTICLE_CODE,
+            self::CATEGORY_UNDEFINED_CODE,
+        ];
+    }
+
+    public static function getSystemCategorySlugs()
+    {
+        return [
+            self::CATEGORY_ARTICLE_SLUG,
+            self::CATEGORY_UNDEFINED_SLUG,
+        ];
     }
 }

@@ -8,6 +8,12 @@ parameters:
     database_name:     infopaginas
     database_user:     infopaginas
     database_password: root
+    database_slave_host:     192.168.32.134
+    database_slave2_host:    192.168.32.134
+    database_slave_port:     ~
+    database_slave_name:     infopaginas
+    database_slave_user:     infopaginas
+    database_slave_password: root
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
@@ -19,5 +25,41 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
 
+    # for site map
+    router.request_context.host:   infopaginas.com
+    router.request_context.scheme: https
+
+    amazon_aws_key:         AKIAJNXO2HSEBOJIFU7A
+    amazon_aws_secret_key:  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
+    amazon_aws_bucket_name: infopaginas-dev
+    amazon_aws_region:      us-east-1
+    amazon_aws_base_url:    infopaginas-dev.s3-website-us-east-1.amazonaws.com
+
     # Sonata media files path storage
-    sonata_media.cdn.host: 'http://infopaginas-stage.oxagile.com/uploads/media'
+    sonata_media.cdn.host:   'https://s3.amazonaws.com/%amazon_aws_bucket_name%/uploads/media/%sonata_media.cdn.folder%'
+    sonata_media.cdn.folder: infopaginas
+
+    # elastic search settings
+    elastic_search.host: 'http://34.193.8.184:9200'
+    # unique document index preferably host
+    elastic_search.document_index: 'infopaginas.com'
+
+    # api token
+    api_token: 3IKmd2uI78Wl4CUjnYCljfFhfE2WRn1FEvi4fsi3J00P7VIZgLCFhybIJepNFpmvvTUDjO53ZezF1bIiqFRY
+
+    # youtube api
+    # Valid env is "private" and "public"
+    google_youtube_video_privacy: 'private'
+
+    # youtube users:
+    # prod - "Infopaginaspr" - 'UCWWRfV9jE0GoEgfGEc6QWVQ';
+    # dev - user "nadyaoxatest@gmail.com" - 'UCQBIBb2bn2XFMaZURIeV18A'
+    google_youtube_user_channel_id: 'UCQBIBb2bn2XFMaZURIeV18A'
+
+    # mongodb settings
+    mongodb.host: 'mongodb://54.197.13.71'
+    # unique name preferably host (without special chars)
+    mongodb.db: 'infopaginas'
+
+    # article api access token
+    infopaginas_media_access_token: '29a993b3f5d302f222ad1b208098b31ac0eb70ed'

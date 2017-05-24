@@ -1,0 +1,18 @@
+<th>Working Hours</th>
+
+{% if object.collectionWorkingHours|length > 0 %}
+    <td>
+        <ul class="sonata-ba-show-one-to-many">
+            {% for item in object.collectionWorkingHours %}
+                <li>
+                    {{ item.day }}:
+                    {% if item.openAllTime %}
+                        Open all time
+                    {% else %}
+                        {{ item.timeStart|date(working_hours_date_format) }} - {{ item.timeEnd|date(working_hours_date_format) }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </td>
+{% endif %}

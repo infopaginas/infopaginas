@@ -1,0 +1,29 @@
+<div class="toolbar">
+    <div class="toolbar__nav">
+        <a href="{{ absolute_url(path('domain_search_catalog')) }}" title="{% trans %}Catalog{% endtrans %}">
+            <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                <i class="fa fa-list"></i>
+                <span>{% trans %}Catalog{% endtrans %}</span>
+            </button>
+        </a>
+
+        {% if catalogLocality %}
+            <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug })) }}" title="{{ catalogLocality.name }}">
+                <button id="breadcrumb_location" type="button" class="button button--action button--location">
+                    <i class="fa fa-map-marker"></i>
+                    <span>{{ catalogLocality.name|truncate(breadcrumb_max_length) }}</span>
+                </button>
+            </a>
+
+            {% if category %}
+                <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  catalogLocality.slug, 'categorySlug': category.slug })) }}" title="{{ category.name }}">
+                    <button id="category-toggle" type="button" class="button button--action category__toggle">
+                        {{ category.name|truncate(breadcrumb_max_length) }}
+                    </button>
+                </a>
+            {% endif %}
+        {% endif %}
+
+        <!-- breadcrumb -->
+    </div><!-- toolbar__nav -->
+</div><!-- toolbar -->

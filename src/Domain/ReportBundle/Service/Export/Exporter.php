@@ -1,18 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/13/16
- * Time: 7:57 PM
- */
 
 namespace Domain\ReportBundle\Service\Export;
 
+use Domain\ReportBundle\Entity\CategoryReport;
+use Domain\ReportBundle\Entity\SubscriptionReport;
+use Domain\ReportBundle\Entity\Visitor;
+use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\ReportInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Sonata\CoreBundle\Exporter\Exporter as CoreExporter;
 
 /**
  * Class Exporter
@@ -26,53 +23,65 @@ class Exporter
     protected $container;
 
     /**
-     * @param $code
-     * @param $format
-     * @param AdminInterface $admin
+     * @param string $entityClass
+     * @param string $format
      * @param array $parameters
+     *
      * @return Response|\Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function getResponse($code, $format, AdminInterface $admin, $parameters = [])
+    public function getResponse($entityClass, $format, $parameters = [])
     {
-        $params = array_merge($admin->getFilterParameters(), $parameters);
+        $parameters = $this->prepareFilterParameters($parameters);
+        $response   = [];
 
-        switch ($code) {
-            case ReportInterface::CODE_PDF_SUBSCRIPTION_REPORT:
-                $response = $this->container->get('domain_report.exporter.subscription_pdf_exporter')
-                    ->getResponse($code, $format, $admin->getDatagrid()->getResults());
-                break;
-            case ReportInterface::CODE_EXCEL_SUBSCRIPTION_REPORT:
-                $response = $this->container->get('domain_report.exporter.subscription_excel_exporter')
-                    ->getResponse($code, $format, $admin->getDatagrid()->getResults());
-                break;
-            case ReportInterface::CODE_PDF_CATEGORY_REPORT:
-                $response = $this->container->get('domain_report.exporter.category_pdf_exporter')
-                    ->getResponse($code, $format, $params);
-                break;
-            case ReportInterface::CODE_EXCEL_CATEGORY_REPORT:
-                $response = $this->container->get('domain_report.exporter.category_excel_exporter')
-                    ->getResponse($code, $format, $params);
-                break;
-            case ReportInterface::CODE_PDF_BUSINESS_OVERVIEW_REPORT:
-                $response = $this->container->get('domain_report.exporter.business_overview_pdf_exporter')
-                    ->getResponse($code, $format, $params);
-                break;
-            case ReportInterface::CODE_EXCEL_BUSINESS_OVERVIEW_REPORT:
-                $response = $this->container->get('domain_report.exporter.business_overview_excel_exporter')
-                    ->getResponse($code, $format, $params);
-                break;
-            default:
-                $filename = $this->container->get('domain_report.manager.category_report_manager')->generateReportName(
-                    $format,
-                    strtolower(substr($admin->getClass(), strripos($admin->getClass(), '\\') + 1))
-                );
+        switch ($entityClass) {
+            case SubscriptionReport::class:
+                switch ($format) {
+                    case ReportInterface::FORMAT_PDF:
+                        $response = $this->getSubscriptionPDFExporter()->getResponse($parameters);
+                        break;
+                    case ReportInterface::FORMAT_EXCEL:
+                        $response = $this->getSubscriptionExcelExporter()->getResponse($parameters);
+                        break;
+                }
 
-                $exporter = new CoreExporter();
-                $response = $exporter->getResponse($format, $filename, $admin->getDataSourceIterator());
+                break;
+            case CategoryReport::class:
+                switch ($format) {
+                    case ReportInterface::FORMAT_PDF:
+                        $response = $this->getCategoryPDFExporter()->getResponse($parameters);
+                        break;
+                    case ReportInterface::FORMAT_EXCEL:
+                        $response = $this->getCategoryExcelExporter()->getResponse($parameters);
+                        break;
+                }
+
+                break;
+            case Visitor::class:
+                switch ($format) {
+                    case ReportInterface::FORMAT_PDF:
+                        $response = $this->getBusinessOverviewPDFExporter()->getResponse($parameters);
+                        break;
+                    case ReportInterface::FORMAT_EXCEL:
+                        $response = $this->getBusinessOverviewExcelExporter()->getResponse($parameters);
+                        break;
+                }
+
                 break;
         }
 
         return $response;
+    }
+
+    protected function prepareFilterParameters($params)
+    {
+        $filterParameters = $params['filter'];
+
+        unset($params['filter']);
+
+        $params = array_merge($filterParameters, $params);
+
+        return $params;
     }
 
     /**
@@ -81,5 +90,61 @@ class Exporter
     public function setContainer(ContainerInterface $service)
     {
         $this->container = $service;
+    }
+
+    /**
+     * @return SubscriptionPdfExporter
+     */
+    protected function getSubscriptionPDFExporter()
+    {
+        return $this->container->get('domain_report.exporter.subscription_pdf_exporter');
+    }
+
+    /**
+     * @return SubscriptionExcelExporter
+     */
+    protected function getSubscriptionExcelExporter()
+    {
+        return $this->container->get('domain_report.exporter.subscription_excel_exporter');
+    }
+
+    /**
+     * @return CategoryPdfExporter
+     */
+    protected function getCategoryPDFExporter()
+    {
+        return $this->container->get('domain_report.exporter.category_pdf_exporter');
+    }
+
+    /**
+     * @return CategoryExcelExporter
+     */
+    protected function getCategoryExcelExporter()
+    {
+        return $this->container->get('domain_report.exporter.category_excel_exporter');
+    }
+
+    /**
+     * @return BusinessOverviewPdfExporter
+     */
+    protected function getBusinessOverviewPDFExporter()
+    {
+        return $this->container->get('domain_report.exporter.business_overview_pdf_exporter');
+    }
+
+    /**
+     * @return BusinessOverviewExcelExporter
+     */
+    protected function getBusinessOverviewExcelExporter()
+    {
+        return $this->container->get('domain_report.exporter.business_overview_excel_exporter');
+    }
+
+    /**
+     * @return CategoryReportManager
+     */
+    protected function getCategoryReportManager()
+    {
+        return $this->container->get('domain_report.manager.category_report_manager');
     }
 }

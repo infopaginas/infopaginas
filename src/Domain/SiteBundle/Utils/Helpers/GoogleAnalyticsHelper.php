@@ -19,7 +19,7 @@ class GoogleAnalyticsHelper
     public static function getUserRoleForAnalytics(array $roles)
     {
         /** @var RoleInterface[] $userRoles */
-        $userRoles = array_map(function($roleInterface) {
+        $userRoles = array_map(function ($roleInterface) {
             return $roleInterface->getRole();
         }, $roles);
 

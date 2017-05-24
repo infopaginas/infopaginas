@@ -26,50 +26,46 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
         if (typeof errors !== 'undefined') {
             for (var field in errors) {
                 //check for "repeated" fields or embed forms
-                if (Array.isArray(errors[field]) || field == 'phones') {
+                if (Array.isArray(errors[field])) {
+                    var $field;
                     var fieldId = this.getFormFieldId( prefix, field );
 
-                    if (Array.isArray(errors[field][0])) {
-                        fieldId = fieldId + '_0';
-                        errors[field] = errors[field][0];
-                    }
+                    if (field == 'phones') {
 
-                    //dirty workaround for phones field
-                    if (fieldId == '#domain_business_bundle_business_profile_form_type_phones') {
-                        fieldId = '#domain_business_bundle_business_profile_form_type_phones_0_phone';
-                    }
+                        for (var phoneField in errors[field]) {
+                            var phoneFieldId = fieldId + '_' + phoneField;
 
-                    var $field = $( fieldId );
+                            for (var phoneFieldItem in errors[field][phoneField]) {
+                                phoneFieldId = phoneFieldId + '_' + phoneFieldItem;
 
-                    $formGroupElement = $field.closest( '.form-group' );
+                                $field = $( phoneFieldId );
 
-                    if (!$formGroupElement.hasClass('has-error')) {
-                        $formGroupElement.addClass('has-error');
-                    }
+                                $field.parent().addClass( 'field--not-valid' );
 
-                    if ($field.is(':visible')) {
-                        this.visibleErrorsExists = true;
-                    } else {
-                        this.invisibleErrosExists = true;
-                    }
+                                if ($field.is(':visible')) {
+                                    this.visibleErrorsExists = true;
+                                } else {
+                                    this.invisibleErrosExists = true;
+                                }
 
-                    if ($field.hasClass('select-control')) {
-                        var $container = $field.parents('.dropdown');
-                        $container.css('border-color', 'red');
-                        var $errorSection = $container.next('.help-block');
-                    } else {
-                        $field.addClass( 'error' );
-                        var $errorSection = $field.next('.help-block');
-                    }
-
-                    for( var key in errors[field] ) {
-                        if( errors[field][key]['phone'] !== undefined ) {
-                            for( var index in errors[field][key]['phone'] ) {
-                                var $errorSection = $('.phone-error-section-' + key);
-                                $errorSection.append(errors[field][key]['phone'][index]);
+                                for( var key in errors[field][phoneField] ) {
+                                    $field.after( "<span data-error-message class='error'>" + errors[field][phoneField][phoneFieldItem] + "</span>" );
+                                }
                             }
+                        }
+                    } else {
+                        $field = $( fieldId );
+
+                        $field.parent().addClass( 'field--not-valid' );
+
+                        if ($field.is(':visible')) {
+                            this.visibleErrorsExists = true;
                         } else {
-                            $errorSection.append(errors[field][key]);
+                            this.invisibleErrosExists = true;
+                        }
+
+                        for( var key in errors[field] ) {
+                            $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                         }
                     }
                 } else {
@@ -81,10 +77,10 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
 
     //remove form errors (after click on submit button)
     formErrorsHandler.prototype.disableFieldsHighlight = function() {
-        this.form.find( 'input' ).removeClass('error');
+        this.form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         this.form.find( '.form-group' ).removeClass('has-error');
-        this.form.find( '.help-block' ).html('');
-        this.form.find( '.dropdown' ).removeAttr('style');
+        this.form.find( 'span[data-error-message]' ).remove();
+
         this.resetErrorsCounter();
     };
 

@@ -1,0 +1,49 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}index{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block searchBlock %}{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="main">
+            <div class="video-header__container" data-desktop-background="{% if landingPage.getBackground() %}{% path landingPage.getBackground(), 'normal' %}{% else %}{{ absolute_url(asset('redesign/img/home-header.jpg')) }}{% endif %}">
+
+                {% block homePageSearch %}
+                    {% include ':redesign/blocks:homepage_search.html.twig' %}
+                {% endblock %}
+
+                {% include ':redesign/blocks/banners:homepage.html.twig' with { 'bannerType': BANNER_CODE.HOME_VERTICAL } %}
+            </div><!-- container -->
+
+            <div class="profile-body__container">
+                <div class="container columns-container clearfix">
+                    <div class="main-column">
+                        {{ render(controller('DomainSiteBundle:Home:popularMenuItems', {'type': SHORT_CUT_ITEMS.LANDING, 'title': 'popular_searches.title'})) }}
+
+                        {% embed ':redesign/blocks:homepage_article_list.html.twig' %}
+                            {% block titleTag %}
+                                <h2 class="section__title">{% trans %}Articles{% endtrans %}</h2>
+                            {% endblock %}
+                        {% endembed %}
+
+                        <section class="section__title">
+                            <a href="{{ absolute_url(path('domain_article_homepage')) }}">
+                                {% trans %}View more articles{% endtrans %}
+                            </a>
+                        </section>
+                    </div><!-- main-column -->
+
+                    {% include ':redesign/blocks:side-ads-block.html.twig' with { 'bannerType': BANNER_CODE.LANDING_PAGE_RIGHT } %}
+                </div><!-- container -->
+            </div><!-- body container -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    {% include "GoogleBundle:Analytics:async_universal.html.twig" %}
+{% endblock%}

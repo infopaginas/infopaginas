@@ -3,7 +3,6 @@
 namespace Domain\BusinessBundle\Admin\Media;
 
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -11,7 +10,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
 class BusinessGalleryAdmin extends OxaAdmin
@@ -24,9 +23,9 @@ class BusinessGalleryAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('media.name')
-            ->add('businessProfile')
-            ->add('isPrimary', null, [], null, $this->defaultDatagridBooleanTypeOptions)
-            ->add('isActive', null, [], null, $this->defaultDatagridBooleanTypeOptions)
+            ->add('businessProfile.name')
+            ->add('isPrimary')
+            ->add('isActive')
         ;
     }
 
@@ -71,19 +70,12 @@ class BusinessGalleryAdmin extends OxaAdmin
                 'allow_switch_context' => false
             ]])
             ->add('description', null, ['attr' => [
-                'rows' => 2,
-                'cols' => 100,
-                'style' => 'resize: none'
+                'rows'          => 2,
+                'cols'          => 100,
+                'style'         => 'resize: none',
+                'placeholder'   => 'Create an image description as ' .
+                    'if you were describing the image to someone who cannot see it',
             ]])
-            ->add('type', ChoiceType::class, [
-                'choices' => [
-                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES => 'Photo',
-                    OxaMediaInterface::CONTEXT_BANNER => 'Display Ad',
-                ],
-                'multiple' => false,
-                'expanded' => true,
-                'required' => true,
-            ])
             ->add('isPrimary')
             ->add('isActive')
             ->add('position', 'hidden', [

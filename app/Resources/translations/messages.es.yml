@@ -33,6 +33,8 @@ Already have an account?: ¿Ya tiene una cuenta?
 Reset Password: Restablecer contraseña
 Update Password: Actualizar contraseña
 We can find everything!: ¡Podemos encontrar todo!
+Search whatever you need and find it instantly: Busca lo que necesites y lo encuentras al instante
+homepage.search_block.title: Encuentra lo que buscas al instante!
 What do you want to find?: ¿Qué está buscando?
 Search by: Buscar por
 business name: nombre de la empresa
@@ -48,7 +50,7 @@ Sort by: Organizar por
 Relevance: Relevancia
 Distance: Distancia
 Get Direction: Obtener Dirección
-Call: Llamadas
+Call: Telefono
 Reviews: Comentarios
 list: Ok
 map: Mapa
@@ -218,7 +220,7 @@ Type: Type
 DESCRIPTION: DESCRIPCIÓN
 REMOVE: REMUEVA
 Photo: Foto
-Banner Ad: Anuncio de la bandera
+Banner Ad: Anuncio de Cintillo o Banner
 
 social networks: las redes sociales
 Advertisement: Publicidad
@@ -248,16 +250,16 @@ Content: Contenido
 business.profile.edit.note: Tenga en cuenta: los cambios se aplicarán después de la aprobación
 Please enter a search term: Por favor, introduzca un término de búsqueda
 Business Profile Views vs Impressions: Vistas empresariales Perfil vs Impresiones
-Count: Incluido
+Count: Conteo
 Keywords Statistics: Estadísticas Palabras clave
 Number of searches: Número de búsquedas
 Searches: Búsquedas
 Date period: Período la fecha
-Keywords Count: Palabras clave Count
+Keywords Count: Conteo de Palabras Clave
 Date Start: Fecha de inicio
 Date End: Fecha de finalización
 Keyword: Palabra clave
-Searches Count: Búsquedas Count
+Searches Count: Conteo de Búsquedas
 Clicks: Clics
 Image: Imagen
 Social Network: Red social
@@ -267,8 +269,8 @@ View more reviews: Ver más opiniones
 firstname: nombre
 Lastname: Apellido
 UPLOAD VIDEO: CARGAR VÍDEOS
-New Business Review: New Business Review
-Why you feel grumpy when the seasons change: ¿Por qué se siente mal humor cuando las estaciones cambian
+New Business Review: Comentarios de nuevos negocios
+Why you feel grumpy when the seasons change: ¿Por qué te sientes de mal humor cuando las estaciones cambian
 Psychologists: Psicólogos
 homepage.article.psychologists.text: Si usted vive en una parte de Australia, con inviernos fríos y tristes, vas a entender. Sus niveles de energía caen en picado, que desea ocultar bajo el edredón, y se siente bien, triste. Usted no está enfermo, en realidad estás deprimido.
 How to choose the right builder: ¿Cómo elegir el constructor adecuado
@@ -276,3 +278,271 @@ Building Contractors: Contratistas de construcción
 homepage.article.building_contractors.text: No hay nada como estar en casa para las vacaciones para empezar a notar todos los pequeños trozos y piezas molestas en la casa que realmente te gustaría cambiar. La cocina es siempre la parte superior de la lista cuando se trata de respiró ahí.
 prev: anterior
 next: siguiente
+
+Subcategories: Subcategorías
+Select category: Selecciona una categoría
+Select subcategories: Seleccionar subcategorías
+Catalog Locality: Localidad del catálogo
+Select catalog locality: Seleccionar localidad del catálogo
+Parent Category: Categoría de Padres
+
+#admin panel
+business.list.category_column: Name
+business.list.parent_category_column: Parent Category
+business.list.category_type: Type
+
+type_category_1: Category lvl 1
+type_category_2: Category lvl 2
+type_category_3: Category lvl 3
+
+#user
+user.business.type_category_1: Categoría lvl 1
+user.business.type_category_2: Categorías lvl 2
+user.business.type_category_3: Categorías lvl 3
+
+#redesign
+What?: ¿Qué?
+Where?: ¿Dónde?
+Common searches N/A link: Búsquedas comunes N / A link
+Catalog: Catálogo
+Infopáginas: Infopáginas
+Business hours: Horas de trabajo
+Payment methods: Métodos de pago
+Advertising: Publicidad
+Share on Facebook: Compartir en Facebook
+Share on Twitter: Compartir en Twitter
+Business categories: Categorías de negocios
+Forgot password?: Se te olvidó tu contraseña?
+New to Infopáginas: Nuevo en Infopáginas
+Create an account: Crea una cuenta
+First name: Nombre de Persona
+Last name: Apellido
+Confirm password: Confirmar contraseña
+Log in: Iniciar sesión
+
+Log In with Facebook: Iniciar sesión con Facebook
+Log In with Google: Iniciar sesión con Google
+Old password: Contraseña anterior
+New password: Nueva contraseña
+
+Directions: Como&nbsp;Llegar
+Displayed Name: Nombre mostrado
+Go to homepage: Ir a la página de inicio
+Personal information: Informacion personal
+Save changes: Guardar cambios
+
+Go to read...: Ir a leer...
+error.404.title: No pudimos encontrar el negocio que buscabas.
+error.404.message: Es posible que la página no esté disponible temporalmente, que se haya eliminado o que la URL sea incorrecta.
+error.404.search.text: Por favor, busque de nuevo
+error.404.search.catalog: O utiliza nuestras búsquedas populares
+
+error.403.title: Error 403 - Prohibido.
+error.403.message: No se me permite acceder a esta página.
+error.403.search.text: Busque algo más
+error.403.search.catalog: O utiliza nuestras búsquedas populares
+
+List view: Lista
+Add to compare: Añadir a comparar
+Go to information page: Ir a la página de información
+Next page: Siguiente página
+Previous page: Pagina anterior
+Basic info: Información básica
+Highlights: Reflejos
+Actions: Comportamiento
+Go to...: Ir ...
+Details: Detalles
+Web: Web
+compare.view: Vista&nbspde&nbspComparacion
+Best match: Importancia
+Map view: Mapa
+Close list: Cerrar lista
+Go to watch...: Ir a ver...
+Sort: Ordenar
+View: Ver
+
+business_profile.seoTitle: name en location | company
+business_profile.seoDescription.main: name en location
+business_profile.seoDescription.open: esta abierto hours.
+business_profile.seoDescription.link: Para más información visite link
+business_profile.seoDescription.phone_has_link: o llamar phone
+business_profile.seoDescription.phone: Llamar phone
+
+in: en
+for: la
+
+Close profile: Cerrar perfil
+Subscription expire date: Fecha de expiración de la suscripción
+English: Inglés
+Name: Nombre
+Maximum 255 characters: Máximo 255 caracteres
+Spanish: Español
+Common for english and spanish: Común para Inglés y Español
+Remove phone: Quite el teléfono
+Add phone: Añadir teléfono
+Images upload: Subida de imágenes
+Select and upload images to show on your business profile: Selecciona y sube imágenes para mostrarlas en tu perfil comercial
+Browse: Vistazo
+url: url
+Upload from url: Subir desde url
+You have no images: No tienes imágenes
+Your photos: Tus fotos
+Video upload: Subida de video
+Select and upload videos to show on your business profile: Selecciona y sube vídeos para mostrar en tu perfil de empresa
+You have no videos: No tienes videos
+Background: Fondo
+Reset: Reiniciar
+Reason: Razón
+Remove: Retirar
+
+business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
+business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =
+business_profile.size_limit: Lo siento. El tamaño máximo permitido es de 10Mb.
+business_profile.url.empty: Error: el campo URL no debe estar vacío.
+business_profile.video_count_limit: Error: demasiados videos agregados. Máximo conteo de archivos =
+business_profile.max_length: Por favor, use max {{ limit }} símbolos
+business_profile.logo.image_count_limit: Error: sólo se permite un solo logotipo
+business_profile.background.image_count_limit: Error: sólo se permite un fondo único
+Updated By: Actualizado por
+Back to Business Profile: Volver al perfil del negocio
+Create Profile: Crear perfil
+Unlimited: Ilimitado
+Edit Profile: Editar perfil
+View profile: Ver perfil
+View more articles: Ver más artículos
+To view this video please enable JavaScript, and consider upgrading to a web browser that: Para ver este video, habilita JavaScript y considera actualizar a un navegador web que
+supports HTML5 video: soporta video HTML5
+Video example: Ejemplo de video
+miles away: mi. away
+Where: Dónde
+Visit business profile on...: Visita el perfil de negocios en...
+Last review: Última revisión
+Show on Map: Ir al Mapa
+Successfully saved profile data: Datos de perfil guardados correctamente
+Successfully updated password: Contraseña actualizada correctamente
+Validation failure: Error de validación
+business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+user.reset_password_request.email.not_found: El usuario {-email-} no existe
+business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
+
+#admin
+action_copy: Copy
+action_restore: Restore
+action_delete_physical: Physical delete
+
+# interaction report
+interaction_report.event.view: Vista
+interaction_report.event.impression: Impresión
+interaction_report.button.direction: Direcciones
+interaction_report.button.show_map: Mostrar en el Mapa
+interaction_report.button.marker_map: Marcador en el Mapa
+interaction_report.button.web: Web
+interaction_report.button.call_mob: Llamar (mob)
+interaction_report.button.call_desk: Llamada (escritorio)
+interaction_report.button.add_compare: Añadir a Comparar
+interaction_report.button.remove_compare: Eliminar de Comparar
+interaction_report.share.facebook: Compartir Facebook
+interaction_report.share.twitter: Compartir Twitter
+interaction_report.visit.facebook: Visita Facebook
+interaction_report.visit.twitter: Visita Twitter
+interaction_report.visit.google: Visite Google
+interaction_report.visit.youtube: Visita Youtube
+interaction_report.visit.instagram: Visita Instagram
+interaction_report.visit.tripadvisor: Visita TripAdvisor
+interaction_report.video.watched: Video Visto
+interaction_report.review.click: Opiniones
+interaction_report.email.click: Correo
+interaction_report.sum.interaction: Interacciones
+
+date: Fecha
+interaction_report.total: Total
+interaction_report.overall: Interacciones totales
+
+keyword_report.total: Total
+subscription_report.total: Total
+
+category_report.label: Categoría
+category_report.counter: Visitantes
+
+ad_usage_report.device_category: Categoría del dispositivo
+ad_usage_report.clicks: Clics
+ad_usage_report.impressions: Impresiones
+ad_usage_report.ctr: CTR, %
+ad_usage_report.total: Total
+device_category_desktop: Desktop
+device_category_smart_phone: Smartphone
+device_category_tablet: Tablet
+ad_usage_report.chart.name: Estadísticas de uso de anuncios
+
+# working hours
+business.working.hours.open_all_time: Abierto 24 horas
+business.working.hours.open_until: Abierto hasta {-TIME-}
+business.working.hours.closed_now: Ahora cerrado
+business.working.hours.closed: Cerrado
+business.working.hours.edit_note: Primero seleccione un día (o grupo de días) y luego el horario de apertura y cierre de esos días
+
+MON: Lun
+TUE: Mar
+WED: Mié
+THU: Jue
+FRI: Vie
+SAT: Sáb
+SUN: Dom
+
+Weekday: Dias de Semana
+Weekend: Fin de Semana
+Monday: Lunes
+Tuesday: Martes
+Wednesday: Miércoles
+Thursday: Jueves
+Friday: Viernes
+Saturday: Sábado
+Sunday: Domingo
+
+Open All Time: Abierto 24 horas
+Remove working hours: Eliminar horas de trabajo
+Add working hours: Añadir horas de trabajo
+Now: Ahora
+
+form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
+form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
+form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
+business_profile.category.required: Este campo es obligatorio
+
+# reset password form
+user:
+  reset_password:
+    token:
+      invalid: Actualmente no tienes un enlace válido para actualizar tu contraseña.
+      empty: Error: Vaciar símbolo.
+  auth:
+    validation_failure: Error de validación
+    registration_success: Successfully registered. Please login with your credentials
+    reset_link_sent: Registrado exitosamente. Inicia sesión con tus credenciales
+    password_updated: Contraseña actualizada correctamente. Ahora puedes iniciar sesión con nuevas credenciales
+business_profile:
+  url:
+    invalid: Este valor no es una URL válida.
+
+#search
+search.miles_to.user: mi. away
+search.miles_to.location: mil. de
+
+search.control.auto: Auto Búsqueda en el Mapa
+search.control.redo: Buscar en el Mapa
+
+# claim business
+claim_business.button: Reclama este Negocio
+claim_business.modal.title: Reclamación
+claim_business.modal.message: Mensaje
+claim_business.response.success: Solicitud de reclamación de empresa enviar. Espere por favor la aprobación
+
+# business owner
+Time Start: Tiempo de Inicio
+Time End: Fin de tiempo
+Select all: Seleccionar todo
+Instagram: Instagram
+TripAdvisor: TripAdvisor
+
+popular_searches.title: Búsquedas populares

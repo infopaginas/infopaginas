@@ -1,0 +1,52 @@
+<div class="form-column__container clearfix">
+    <h3 class="language-title">{% trans %}Service Areas{% endtrans %}</h3>
+    <div class="form__section">
+        <div class="form-column__container clearfix">
+            <div class="form__column">
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.facebookURL) }}
+                        {{ form_widget(businessProfileForm.facebookURL, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.twitterURL) }}
+                        {{ form_widget(businessProfileForm.twitterURL, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.instagramURL) }}
+                        {{ form_widget(businessProfileForm.instagramURL, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form__column">
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.googleURL) }}
+                        {{ form_widget(businessProfileForm.googleURL, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.youtubeURL) }}
+                        {{ form_widget(businessProfileForm.youtubeURL, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+
+                <div class="form__row vertical__row">
+                    <div class="form__field field--website">
+                        {{ form_label(businessProfileForm.tripAdvisorURL) }}
+                        {{ form_widget(businessProfileForm.tripAdvisorURL, {'attr': {'placeholder': ''}}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

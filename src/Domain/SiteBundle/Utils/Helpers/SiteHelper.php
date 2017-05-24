@@ -46,12 +46,17 @@ class SiteHelper
 
         curl_exec($handle);
 
-        if(!curl_errno($handle)) {
+        if (!curl_errno($handle)) {
             $info = curl_getinfo($handle);
         }
 
         curl_close($handle);
 
         return $info;
+    }
+
+    public static function generateBusinessSubfolder($businessId)
+    {
+        return substr($businessId, -1) . DIRECTORY_SEPARATOR . $businessId;
     }
 }

@@ -2,6 +2,10 @@ imports:
     - { resource: config.yml }
 parameters:
     domain: 'infopaginas-stage.oxagile.com'
+
+    google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
+    google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
+
 #framework:
 #    validation:
 #        cache: validator.mapping.cache.doctrine.apc
@@ -34,8 +38,8 @@ google:
         trackers:
             default:
                 name: MyJavaScriptCompatibleVariableNameWithNoSpaces
-                accountId: UA-83876369-3
-                domain: infopaginas-prod.com
+                accountId: UA-10361727-2
+                domain: infopaginas.com
                 setSiteSpeedSampleRate: 5
                 allowAnchor: true
                 allowHash: true
@@ -57,9 +61,13 @@ happyr_google_site_authenticator:
 happyr_google_analytics:
     http_client: 'httplug.client'
     http_message_factory: 'httplug.message_factory'
-    tracking_id: UA-83876369-3
+    tracking_id: UA-10361727-2
     fetching:
         client_service: 'google.client.google_analytics'
-        view_id: 130700540
+        view_id: 20865077
         cache_service: 'cache.provider.my_file_system'
         cache_lifetime: 3600
+
+twig:
+    globals:
+        google_tag_manager_id:    'GTM-TWPMVZ'

@@ -1,0 +1,33 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:review-breadcrumbs.html.twig' with { 'page': {'title': 'Reviews'}} %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+
+                {% if reviewsResultDTO %}
+                    <section class="page-section page-section--no-box articles-section">
+                        <h2 class="section__title">{% trans %}Reviews{% endtrans %}</h2>
+                        <div class="articles__container clearfix">
+                            {% for review in reviewsResultDTO.resultSet %}
+                                {% include ':redesign/blocks:review-item.html.twig' %}
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : reviewsResultDTO.page, 'pageCount' : reviewsResultDTO.pageCount } %}
+                {% endif %}
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_BOTTOM } %}
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_RIGHT } %}
+        </div>
+    </div>
+{% endblock %}

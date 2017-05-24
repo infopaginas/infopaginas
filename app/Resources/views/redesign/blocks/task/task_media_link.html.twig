@@ -1,0 +1,20 @@
+{% trans_default_domain 'AdminDomainBusinessBundle' %}
+
+{% if data.name is defined %}
+    {% if data.url %}
+        <a href="{{ data.url }}" target="_blank">{{ data.name }}</a>
+    {% else %}
+        {{ data.name }} - <span class="alert-warning">deleted</span>
+    {% endif %}
+    <br/>
+{% endif %}
+
+{% if data.title is defined %}
+    {% trans %}task.media.change.title{% endtrans %}: {{ data.title }}
+    <br/>
+{% endif %}
+
+{% if data.description is defined %}
+    {% trans %}task.media.change.description{% endtrans %}: {{ data.description }}
+    <br/>
+{% endif %}

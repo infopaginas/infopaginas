@@ -1,6 +1,8 @@
 <?php
 
 namespace Domain\ArticleBundle\Repository;
+
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
@@ -19,7 +21,7 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.isPublished = true')
             ->andWhere('a.activationDate < CURRENT_TIMESTAMP()')
-            ->andWhere('a.expirationDate >= CURRENT_TIMESTAMP()');
+            ->andWhere('a.expirationDate >= CURRENT_TIMESTAMP() OR a.expirationDate IS NULL');
     }
 
     /**
@@ -29,7 +31,7 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getArticlesQueryBuilder()
             ->andWhere('a.isOnHomepage = true')
-            ->addOrderBy('a.createdAt', "DESC");
+            ->orderBy('a.activationDate', 'DESC');
     }
 
     /**
@@ -83,8 +85,24 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
         $queryBuilder = $this->getPublishedArticlesQueryBuilder($categorySlug);
         $queryBuilder = $queryBuilder
             ->setMaxResults($limit)
-            ->setFirstResult($offset);
+            ->setFirstResult($offset)
+            ->orderBy('a.activationDate', 'DESC')
+        ;
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getActiveArticlesIterator()
+    {
+        $qb = $this->getArticlesQueryBuilder();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
     }
 }

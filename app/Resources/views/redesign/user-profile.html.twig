@@ -1,0 +1,173 @@
+{% extends "redesign/layout/base.html.twig" %}
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+{% block bodyClass %}generic-page user-profile{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="main">
+            {% set flashMessages = app.session.flashBag.get(MESSAGE_BUSINESS_PROFILE_FLASH_GROUP) %}
+
+            <div class="container clearfix" id="success-block" {% if flashMessages is empty %}style="display: none;"{% endif %}>
+                <section class="page-section">
+                    <div class="form__section">
+                        <strong>
+                            {% for flashMessage in flashMessages %}
+                                {{ flashMessage }}
+                            {% endfor %}
+                        </strong>
+                    </div>
+                </section>
+            </div>
+            <div class="container clearfix">
+                <section class="page-section" id="profile-user">
+                    <form class="form user-profile-form" name="{{ profileForm.vars.name }}" id="userProfileForm">
+                        <div class="form__section">
+                            <h2>{% trans %}Personal information{% endtrans %}</h2>
+                            <div class="form-column__container clearfix">
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        <div class="form__field field--user">
+                                            {{ custom_form_label.widget(profileForm.firstname) }}
+                                            {{ form_widget(profileForm.firstname, {'attr': {'placeholder':''}}) }}
+                                        </div><!-- form-field -->
+                                        <div class="form__field field--user">
+                                            {{ custom_form_label.widget(profileForm.lastname) }}
+                                            {{ form_widget(profileForm.lastname, {'attr': {'placeholder':''}}) }}
+                                        </div><!-- form-field -->
+                                    </div><!-- form__row -->
+
+                                    <div class="form__row">
+                                        <div class="form__field field--user">
+                                            {{ form_label(profileForm.advertiserId) }}
+                                            {{ form_widget(profileForm.advertiserId, {'attr': {'placeholder':''}}) }}
+                                        </div><!-- form-field -->
+                                    </div><!-- form__row -->
+
+                                    <div class="form__row">
+                                        <div class="form__field field--password button--field field-active field-didabled">
+                                            <label for="password">{% trans %}Password{% endtrans %}</label>
+                                            <input type="password" name="password" value="*******" disabled="">
+                                            <button type="button" class="button" data-show-modal-id="updatePasswordModal">{% trans %}Change Password{% endtrans %}</button>
+                                        </div><!-- form-field -->
+                                    </div><!-- form__row -->
+
+                                </div><!-- form__column -->
+
+                                <div class="form__column">
+                                    <div class="form__row">
+                                        <div class="form__field field--user field-active">
+                                            {{ form_label(profileForm.location) }}
+                                            {{ form_widget(profileForm.location, {'attr': {'placeholder':''}}) }}
+                                        </div><!-- form-field -->
+                                    </div><!-- form__row -->
+                                    <div class="form__row">
+                                        <div class="form__field field--phone">
+                                            {{ form_label(profileForm.phone) }}
+                                            {{ form_widget(profileForm.phone, {'attr': {'placeholder':''}}) }}
+                                        </div><!-- form-field -->
+                                    </div><!-- form__row -->
+                                </div><!-- form__column -->
+                            </div><!-- form-column__container -->
+                        </div><!-- form section -->
+
+                        <div class="form__section">
+                            <h2>{% trans %}Reviews{% endtrans %}</h2>
+
+                            {% if userReviews|length > 0 %}
+                                {% set reviewsPerColumn = ((userReviews|length) / 2)|round %}
+
+                                {% for row in userReviews|batch(reviewsPerColumn) %}
+                                    <div class="col-xs-6 form-col">
+                                        {% for review in row %}
+                                            <div class="col-xs-12">
+                                                <span>
+                                                    <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: review.business.id })) }}">
+                                                        {{ review.business.name }}
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="form__row">
+                                    <div class="empty-message">
+                                        <p>{% trans %}No reviews found.{% endtrans %}</p>
+                                    </div><!-- empty-message -->
+                                </div><!-- form__row -->
+                            {% endif %}
+                        </div><!-- form section -->
+
+                        <div class="form__section">
+                            <h2>{% trans %}My Business Profiles{% endtrans %}</h2>
+
+                            {% if userBusinessProfiles|length > 0 %}
+                                {% set businessesPerColumn = ((userBusinessProfiles|length) / 2)|round %}
+
+                                {% for row in userBusinessProfiles|batch(businessesPerColumn) %}
+                                    <div class="col-xs-6 form-col">
+                                        {% for business in row %}
+                                            <div class="col-xs-12">
+                                                <span>
+                                                    {% if business.getIsActive() %}
+                                                        <a href="{{ absolute_url(path('domain_business_profile_edit', {id: business.getId()})) }}">
+                                                                {{ business.getName() }}
+                                                        </a>
+                                                    {% else %}
+                                                        {% if not business.getIsClosed() %}
+                                                            <a href="#">
+                                                                {{ business.getName() }} ({% trans %}Pending{% endtrans %})
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="form__row">
+                                    <div class="empty-message">
+                                        <p>{% trans %}No business profiles found.{% endtrans %}</p>
+                                    </div><!-- empty-message -->
+                                </div><!-- form__row -->
+                            {% endif %}
+                            <div class="form__row">
+                                <div class="empty-message">
+                                    <a class="btn green-btn request" href="{{ absolute_url(path('domain_business_profile_create')) }}">
+                                        {% trans %}Request Business Profile{% endtrans %}
+                                    </a>
+                                </div><!-- empty-message -->
+                            </div><!-- form__row -->
+                        </div><!-- form section -->
+
+                        <div class="form__actions">
+                            <button type="button" class="button button--action" id="saveProfile">{% trans %}Save changes{% endtrans %}</button>
+                        </div><!-- form-actions -->
+                        {{ form_rest(profileForm) }}
+                    </form>
+                </section>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modals %}
+    {{ parent() }}
+    {% include ':redesign/blocks/modals:password_update.html.twig' with { 'passwordUpdateForm' : passwordUpdateForm} %}
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+            requirejs(['{{ absolute_url(asset("assetic/require_user_profile_js.js")) }}'], function(userProfile) {
+                var siteHomepage = new userProfile();
+            })
+        })
+    </script>
+{% endblock%}
+

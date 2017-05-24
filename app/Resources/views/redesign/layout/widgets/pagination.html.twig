@@ -1,0 +1,60 @@
+<!-- Pagination -->
+{% if pageCount > 1 %}
+    <div class="pagination">
+        {% set routeParams = app.request.attributes %}
+
+        {% if page > 1 %}
+            {% if routeParams is defined %}
+                {% set routeParams = routeParams|merge({'page': (page - 1) }) %}
+            {% endif %}
+
+            <li>
+                <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Previous page{% endtrans %}">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            </li>
+        {% endif %}
+
+        {% set showGap = true %}
+
+        {% for pageItem in 1..pageCount %}
+            {% if ((pageItem < page - PAGINATION_RADIUS) or (pageItem > page + PAGINATION_RADIUS)) and
+                showGap and pageItem != 1 and pageItem != pageCount %}
+                <li class="ellipsis"><span><i class="fa fa-ellipsis-h"></i></span></li>
+
+                {% set showGap = false %}
+            {% endif %}
+
+            {% if (pageItem >= page - PAGINATION_RADIUS) and (pageItem <= page + PAGINATION_RADIUS) or
+                pageItem == 1 or pageItem == pageCount %}
+                {% set showGap = true %}
+
+                {% if routeParams is defined %}
+                    {% set routeParams = routeParams|merge({'page': (pageItem) }) %}
+                {% endif %}
+
+                {% if page == pageItem %}
+                    <li class="current">
+                        <span>{{ pageItem }}</span>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}">{{ pageItem }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page < pageCount %}
+            {% if routeParams is defined %}
+                {% set routeParams = routeParams|merge({'page': (page + 1) }) %}
+
+                <li>
+                    <a href="{{ absolute_url(path(app.request.get('_route'), app.request.query.all|merge(routeParams))) }}" title="{% trans %}Next page{% endtrans %}">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endif %}

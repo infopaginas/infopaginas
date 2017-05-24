@@ -3,6 +3,7 @@
 /app/bootstrap.php.cache
 /app/cache/*
 /app/config/parameters.yml
+/app/config/extra-configs/db_slaves.yml
 /app/logs/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
@@ -14,8 +15,11 @@
 /.idea
 /web/js/
 /web/css/
+/web/assetic/
 *.php~
 /components
+/web/sitemap.*
+/composer.lock
 
 # OS generated files #
 ######################

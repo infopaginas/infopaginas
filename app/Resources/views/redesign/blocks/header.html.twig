@@ -1,0 +1,99 @@
+<header class="header">
+    <div class="logo">
+        <a href="{{ absolute_url(path('domain_site_home_index')) }}">
+            <img class="logo__icon" src="{{ absolute_url(asset('redesign/img/infopaginas.svg')) }}" width="52">
+            <img class="logo__iso" src="{{ absolute_url(asset('redesign/img/infopaginas-iso.png')) }}">
+        </a>
+    </div>
+
+    {% if hideHeaderSearch is not defined or not hideHeaderSearch %}
+        {% block searchBlock %}
+            {% include ':redesign/blocks:search.html.twig' %}
+        {% endblock %}
+    {% endif %}
+
+    <button id="nav-toggle" type="button" class="nav__toggle button button--text">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <nav id="nav" class="main-nav">
+        {% if (app.user) %}
+
+            <div class="user-logged">
+                <div class="user__tools">
+                    <a href="{{ absolute_url(path('sonata_user_security_logout')) }}">
+                        <button type="button" class="logout "><i class="fa fa-sign-out"></i> {% trans %}Logout{% endtrans %}</button>
+                    </a>
+                </div>
+                <div class="user">
+                    <a href="{{ absolute_url(path('domain_site_user_profile')) }}">
+                        <span>{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <ul class="language-nav">
+            {% for language in languages %}
+                <li class="{% if language.active %}nav-current{% endif %}">
+                    <a href="{{ language.url }}">{{ language.title|raw }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if not app.user %}
+            <ul class="nav-user">
+                <li>
+                    <button type="button" data-show-modal-id="regModal"><i class="fa fa-user-plus"></i> {% trans %}Create account{% endtrans %}</button>
+                </li>
+                <li class="login-link desc-menu home">
+                    <button type="button" data-show-modal-id="loginModal">
+                        <i class="fa fa-sign-in"></i>{% trans %}Login{% endtrans %}
+                    </button>
+                </li>
+            </ul>
+        {% endif %}
+
+        <ul class="nav-pages">
+            <li>
+                <a href="{{ absolute_url(path('domain_site_home_index')) }}"><i class="fa fa-home"></i>Home</a>
+            </li>
+            <li>
+                <a href="{{ absolute_url(path('domain_article_homepage')) }}"><i class="fa fa-file-text-o"></i>{% trans %}Articles{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ absolute_url(path('domain_business_video_list')) }}"><i class="fa fa-play"></i>{% trans %}Videos{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ absolute_url(path('domain_search_catalog')) }}"><i class="fa fa-sitemap"></i>{% trans %}Catalog{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="https://www.infopaginasmedia.com/" target="_blank">{% trans %}About Us{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ absolute_url(path('domain_page_view_contact')) }}" target="_blank">{% trans %}Contact Us{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ absolute_url(path('domain_page_view_privacy')) }}" target="_blank">{% trans %}Privacy Statement{% endtrans %}</a>
+            </li>
+            <li>
+                <a href="{{ absolute_url(path('domain_page_view_terms')) }}" target="_blank">{% trans %}Terms of Use{% endtrans %}</a>
+            </li>
+        </ul>
+        <div class="about-infopaginas">
+            <div class="about__item copyright">
+                <span>
+                  © 2017 <a href="{{ absolute_url(path('domain_site_home_index')) }}" target="_blank" title="Go to Infopaginas site">{% trans %}Infopáginas{% endtrans %}</a>
+                </span>
+            </div>
+            <div class="about__item address">
+                <span>
+                    {% trans %}90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo{% endtrans %}, {% trans %}PR{% endtrans %}
+                </span>
+            </div>
+        </div>
+        <button id="nav-close" type="button" class="button--square nav-close">
+            <i class="fa fa-remove"></i>
+        </button>
+    </nav>
+</header>

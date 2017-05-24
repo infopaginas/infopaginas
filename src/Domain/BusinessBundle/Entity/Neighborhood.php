@@ -19,7 +19,6 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  *
  * @ORM\Table(name="neighborhood")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\NeighborhoodRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\NeighborhoodTranslation")
  */
@@ -171,7 +170,7 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     /**
      *  Get owning Locality for this Neighborhood
      *
-     * @return Neighborhood
+     * @return Locality
      */
     public function getLocality()
     {
@@ -181,10 +180,10 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     /**
      *  Set owning Locality for this Neighborhood
      *
-     * @param Locality $locality
+     * @param Locality|null $locality
      * @return $this
      */
-    public function setLocality(Locality $locality)
+    public function setLocality($locality)
     {
         $this->locality = $locality;
 

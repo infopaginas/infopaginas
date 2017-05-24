@@ -31,6 +31,11 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             $config->setFormat($item['format']);
             $config->setDescription($item['description']);
             $config->setPosition($key);
+
+            if (!empty($item['hidden'])) {
+                $config->setIsActive(false);
+            }
+
             $manager->persist($config);
         }
 
@@ -61,7 +66,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::FOOTER_CONTENT,
                 'title' => 'Footer content',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:footer_content.html.twig'
                 ),
                 'format' => 'html',
@@ -75,7 +80,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ],[
                 'key' => ConfigInterface::MAIL_REGISTRATION_TEMPLATE,
                 'title' => 'Registration mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_registration_template.html.twig'
                 ),
                 'format' => 'html',
@@ -83,7 +88,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ],[
                 'key' => ConfigInterface::MAIL_NEW_MERCHANT_TEMPLATE,
                 'title' => 'New merchant mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_new_merchant_template.html.twig'
                 ),
                 'format' => 'html',
@@ -91,7 +96,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ],[
                 'key' => ConfigInterface::MAIL_RESET_PASSWORD_TEMPLATE,
                 'title' => 'Reset password mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_reset_password_template.html.twig'
                 ),
                 'format' => 'html',
@@ -99,7 +104,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::MAIL_TEMPLATE_TO_USER,
                 'title' => 'User mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_template_to_user.html.twig'
                 ),
                 'format' => 'html',
@@ -107,7 +112,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             ], [
                 'key' => ConfigInterface::MAIL_CHANGE_WAS_REJECTED,
                 'title' => 'User mail template',
-                'value' => $this->container->get('templating')->render(
+                'value' => $this->container->get('twig')->render(
                     'OxaConfigBundle:Fixtures:mail_change_was_rejected.html.twig'
                 ),
                 'format' => 'html',
@@ -172,6 +177,29 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 'value' => 'San Juan',
                 'format' => 'text',
                 'description' => 'Defines how many results will be shown on (any) results page',
+            ], [
+                'key' => ConfigInterface::YOUTUBE_ACCESS_TOKEN,
+                'title' => 'Youtube access token',
+                'value' => json_encode([]),
+                'format' => 'json',
+                'description' => 'Token to access youtube account',
+                'hidden' => true,
+            ], [
+                'key' => ConfigInterface::YOUTUBE_ERROR_EMAIL_TEMPLATE,
+                'title' => 'Youtube token error template',
+                'value' => $this->container->get('twig')->render(
+                    'OxaConfigBundle:Fixtures:mail_youtube_token_invalid.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Notify if youtube token is invalid',
+            ], [
+                'key' => ConfigInterface::ARTICLE_API_ERROR_EMAIL_TEMPLATE,
+                'title' => 'Article API error template',
+                'value' => $this->container->get('twig')->render(
+                    'OxaConfigBundle:Fixtures:mail_article_api_response_invalid.html.twig'
+                ),
+                'format' => 'html',
+                'description' => 'Notify if article API response returns error',
             ],
         ];
     }

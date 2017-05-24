@@ -28,6 +28,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
                 evt.preventDefault();
                 $( options.searchSelector ).val('');
                 $( options.searchSelector ).css( {"border-color": "#FF3300"}) ;
+                $( options.searchSelector ).addClass('search-input_red-placeholder');
                 $( options.searchSelector ).parent().addClass( "validation-error" );
                 $( options.searchSelector ).attr( "placeholder", $( options.searchSelector).data( "error-placeholder" ) );
             }
@@ -37,6 +38,7 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             if( $( options.searchSelector ).val() !== '' ){
                 $( options.searchSelector ).css( {"border-color": "#cadb53"} );
                 $( options.searchSelector ).parent().removeClass( "validation-error" );
+                $( options.searchSelector ).removeClass('search-input_red-placeholder');
                 $( options.searchSelector ).attr( "placeholder", $( options.searchSelector).data( "placeholder" ) );
             }
         });
@@ -47,6 +49,10 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
 
         $( this.options.mediaCloseSection ).click( function(){
             $( this.options.mediaSearchSection ).css( {"display" : ""} )
+        }.bind( this ));
+
+        $(window).resize(function() {
+          $( '.ui-autocomplete' ).css( {"display" : "none"} );
         }.bind( this ));
 
         return this;
@@ -85,10 +91,19 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
             minLength: this.options.autoCompleteMinLen,
             create: function() {
                 $( this ).data( 'ui-autocomplete' )._renderItem = self.returnAutocompleteDataElement;
+                $(this).prev('.ui-helper-hidden-accessible').remove();
             },
             select: this.onAutoCompleteSelect.bind( self ),
             change: function( event, ui ){},
-            close: function( event, ui ){}
+            close: function( event, ui ){},
+            open: function() {
+                $('.ui-autocomplete').css('width', '500px');
+                $('.ui-autocomplete').css('background-color', 'rgba(122, 122, 122, 0.95)');
+
+                if (window.navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+                    $('.ui-autocomplete').off('mouseenter');
+                }
+            }
         });
     };
 
@@ -113,12 +128,21 @@ define(['jquery', 'abstract/view', 'tools/geolocation', 'jquery-ui'], function( 
     };
 
     search.prototype.returnAutocompleteDataElement = function ( ul, item ) {
-        return $( "<li>" )
+        var itemClass;
+
+        if ( item.type == 'business' || item.hasOwnProperty(0) ) {
+            itemClass = 'business';
+        } else {
+            itemClass = 'category';
+        }
+
+        return $( "<li class='" + itemClass + "'>" )
             .append( $( "<a></a>" )["html"]( item.data ) )
             .attr( "data-value",  decodeURIComponent( item.data ) )
             .attr( "data-name",  item.name )
             .appendTo( ul );
     };
+
 
     return search;
 });

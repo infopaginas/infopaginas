@@ -1,0 +1,81 @@
+services:
+    #services section
+    oxa.service.http_client:
+        class: GuzzleHttp\Client
+
+    #managers section
+    oxa.manager.video:
+        class: Oxa\VideoBundle\Manager\VideoManager
+        arguments:
+            - '@video_storage_filesystem'
+            - '@oxa.manager.video_media'
+            - '@service_container'
+
+    oxa.manager.video_media:
+        class: Oxa\VideoBundle\Manager\VideoMediaManager
+        arguments: ['@doctrine.orm.entity_manager']
+
+    oxa.manager.video.youtube:
+        class: Oxa\VideoBundle\Manager\YoutubeManager
+        arguments:
+            - '@service_container'
+            - '%google_youtube_privacy%'
+            - '%google_youtube_channel_id%'
+        calls:
+            - [ setGoogleClient, [ '%google_youtube_api_client_key%', '%google_youtube_secret_key%' ] ]
+
+    #twig extensions section
+    oxa.twig_extension.video_media_embed:
+        class: Oxa\VideoBundle\Twig\Extension\VideoMediaEmbedExtension
+        arguments:
+            - '@video_storage_filesystem'
+        public: false
+        tags:
+            -  { name: twig.extension }
+
+    #form types section
+    oxa_video.form.type.local_file_upload:
+        class: Oxa\VideoBundle\Form\Type\FileUploadType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: oxa_video_bundle_file_upload_form_type }
+
+    oxa_video.form.type.url_file_upload:
+        class: Oxa\VideoBundle\Form\Type\UrlUploadType
+        arguments: [null]
+        tags:
+        - { name: form.type, alias: oxa_video_bundle_url_upload_form_type }
+
+    #forms section
+    domain_business.form.local_file_upload:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'oxa_video_bundle_file_upload_form_type'
+            - 'oxa_video_bundle_file_upload_form_type'
+
+    domain_business.form.url_file_upload:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'oxa_video_bundle_url_upload_form_type'
+            - 'oxa_video_bundle_url_upload_form_type'
+
+    #form handlers section
+    domain_business.form.handler.local_file_upload:
+        class: Oxa\VideoBundle\Form\Handler\FileUploadFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.local_file_upload'
+            - '@request'
+            - '@oxa.manager.video'
+
+    domain_business.form.handler.url_file_upload:
+        class: Oxa\VideoBundle\Form\Handler\RemoteFileUploadFormHandler
+        scope: request
+        arguments:
+            - '@domain_business.form.url_file_upload'
+            - '@request'
+            - '@oxa.manager.video'

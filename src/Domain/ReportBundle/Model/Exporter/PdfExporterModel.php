@@ -1,18 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/13/16
- * Time: 7:57 PM
- */
 
 namespace Domain\ReportBundle\Model\Exporter;
 
-use Domain\ReportBundle\Manager\SubscriptionReportManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class PdfExporterModel
@@ -20,6 +14,8 @@ use Symfony\Component\Templating\EngineInterface;
  */
 abstract class PdfExporterModel implements ExporterInterface
 {
+    const FORMAT = 'pdf';
+
     /**
      * @var PDFGenerator $pdfGenerator
      */
@@ -41,5 +37,25 @@ abstract class PdfExporterModel implements ExporterInterface
     public function setPdfGenerator($service)
     {
         $this->pdfGenerator = $service;
+    }
+
+    protected function sendResponse($html, $filename, $print = false)
+    {
+        $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');
+
+        if ($print) {
+            $dispositionType = ResponseHeaderBag::DISPOSITION_INLINE;
+        } else {
+            $dispositionType = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+        }
+
+        return new Response(
+            $content,
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('%s; filename=%s', $dispositionType, $filename),
+            ]
+        );
     }
 }

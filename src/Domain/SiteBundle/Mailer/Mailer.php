@@ -10,10 +10,13 @@ namespace Domain\SiteBundle\Mailer;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
+use Domain\BusinessBundle\Entity\Task;
 use FOS\UserBundle\Model\UserInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
+use Oxa\Sonata\UserBundle\Entity\User;
 use \Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class Mailer
@@ -163,7 +166,8 @@ class Mailer
      * @param BusinessReview $review
      * @param string $reason
      */
-    public function sendBusinessProfileReviewRejectEmailMessage(BusinessReview $review, string $reason) {
+    public function sendBusinessProfileReviewRejectEmailMessage(BusinessReview $review, string $reason)
+    {
         $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
         $message = str_replace('{REASON}', $reason, $message);
 
@@ -175,12 +179,92 @@ class Mailer
     }
 
     /**
-     * @param string $toEmail
+     * @param Task   $task
+     * @param string $reason
+     */
+    public function sendBusinessProfileClaimRejectEmailMessage($task, $reason)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_CHANGE_WAS_REJECTED);
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'BUSINESS PROFILE CLAIM [' . $task->getBusinessProfile()->getName() . '] - Rejected';
+
+        $this->send($task->getCreatedUser()->getEmail(), $subject, $message, $contentType);
+    }
+
+    /**
+     * @param string $reason
+     * @param User[] $users
+     */
+    public function sendYoutubeTokenErrorEmailMessage($reason, $users)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::YOUTUBE_ERROR_EMAIL_TEMPLATE);
+        $link    = $this->getRouter()->generate(
+            'oxa_youtube_oauth_notify',
+            [],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $message = str_replace('{REASON}', $reason, $message);
+        $message = str_replace('{LINK}', $link, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'Youtube token error';
+
+        $emails = [];
+
+        foreach ($users as $user) {
+            $email = $user->getEmail();
+
+            if ($email and filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emails[] = $email;
+            }
+        }
+
+        if ($emails) {
+            $this->send($emails, $subject, $message, $contentType);
+        }
+    }
+
+    /**
+     * @param string $reason
+     * @param User[] $users
+     */
+    public function sendArticlesApiErrorEmailMessage($reason, $users)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::ARTICLE_API_ERROR_EMAIL_TEMPLATE);
+
+        $message = str_replace('{REASON}', $reason, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'Articles API error';
+
+        $emails = [];
+
+        foreach ($users as $user) {
+            $email = $user->getEmail();
+
+            if ($email and filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emails[] = $email;
+            }
+        }
+
+        if ($emails) {
+            $this->send($emails, $subject, $message, $contentType);
+        }
+    }
+
+    /**
+     * @param mixed $toEmail
      * @param string $subject
      * @param string $body
      * @param string $contentType
      */
-    protected function send(string $toEmail, string $subject, string $body, string $contentType = 'text/plain')
+    protected function send($toEmail, string $subject, string $body, string $contentType = 'text/plain')
     {
         $fromEmail = $this->getConfigService()->getValue(ConfigInterface::DEFAULT_EMAIL_ADDRESS);
 

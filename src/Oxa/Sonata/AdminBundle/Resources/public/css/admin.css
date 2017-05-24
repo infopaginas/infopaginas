@@ -1,6 +1,14 @@
 .sonata-ba-list-field-header-actions {
-    /*min-width: 183px;*/
+    width: 10%;
 }
+.sonata-ba-list-field-header-batch {
+    width: 5%;
+}
+
+.sonata-ba-list-field-header-integer:nth-child(2) {
+    width: 5%;
+}
+
 .btn-list-action{
     margin-left: 2px !important;
     margin-right: 2px !important;
@@ -100,4 +108,28 @@ h4.filter_legend img {
     margin-top: 10px;
     height: 32px;
     width: 75%;
+}
+
+div.scrollable-table {
+    overflow-x: scroll;
+}
+
+div.scrollable-table table.ad-usage-table tbody tr:nth-child(3n) {
+    border-bottom: 2px solid black;
+}
+
+div.chart-container {
+    min-width: 310px;
+    height: 400px;
+    margin: 0 auto
+}
+
+a.select-all-button {
+    position: relative;
+    float: right;
+    cursor: pointer;
+}
+
+table .ui-sortable tr:hover {
+    cursor: move;
 }

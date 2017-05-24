@@ -21,14 +21,14 @@ class MediaRemoveListener extends MediaEventSubscriber
      */
     public function getSubscribedEvents()
     {
-        // remove preRemove event to prevent thumbnail pictures deletion
-        // thumbnail pictures has to exist when we restore media object
         return array(
             Events::prePersist,
             Events::preUpdate,
+            Events::preRemove,
             Events::postRemove,
             Events::postPersist,
             Events::postUpdate,
+            Events::onClear,
         );
     }
 

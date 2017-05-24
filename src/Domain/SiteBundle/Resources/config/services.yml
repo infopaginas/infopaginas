@@ -1,21 +1,8 @@
-parameters:
-    google_places_url: "https://maps.googleapis.com/maps/api/place/autocomplete/json?&types=(cities)&components=country:pr&language=locale&region=pr&key=google_api_key&input="
-    google_api_key: "AIzaSyBBl4CQTYhUmdK4zs9EVcPmPjLBiIWez3w"
-
 services:
     #services section:
     domain_site.mailer:
         class: Domain\SiteBundle\Mailer\Mailer
         arguments: ['@mailer', '@oxa_config', '@router']
-
-    #managers section
-    domain_site.manager.search:
-        class: Domain\SiteBundle\Manager\SearchManager
-        arguments: ['@doctrine.orm.entity_manager']
-
-    domain_site.manager.geolocation:
-        class: Domain\SiteBundle\Manager\GeolocationManager
-        arguments: ['@doctrine.orm.entity_manager', '%google_places_url%', '%google_api_key%']
 
     #form types section
     domain_site.registration.form.type:
@@ -99,6 +86,7 @@ services:
             - '@fos_user.user_manager'
             - '@fos_user.util.token_generator'
             - '@domain_site.mailer'
+            - '@translator.default'
 
     domain_site.reset_password.form.handler:
         class: Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler
@@ -156,3 +144,14 @@ services:
         arguments: [ @service_container, @router, @twig ]
         tags:
             - { name: kernel.event_subscriber }
+
+    sitemap.dynamic_urls_subscriber:
+        class: Domain\SiteBundle\EventListener\SitemapSubscriber
+        arguments:
+            - "@service_container"
+        tags:
+            - { name: "kernel.event_subscriber", priority: 100 }
+    domain_site.cron.logger:
+        class:  Domain\SiteBundle\Logger\CronLogger
+        arguments:
+            - "@monolog.logger.cron"

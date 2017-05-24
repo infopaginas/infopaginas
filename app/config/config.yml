@@ -8,16 +8,21 @@ imports:
     - { resource: extra-configs/extensions.yml }
     - { resource: extra-configs/sonata_media.yml }
     - { resource: extra-configs/sonata_translation.yml }
+    - { resource: extra-configs/twig_constant.yml }
+    - { resource: extra-configs/assetic.yml }
+    - { resource: extra-configs/db_slaves.yml, ignore_errors: true }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
-    - { resource: "@DomainMenuBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
     - { resource: "@OxaGeolocationBundle/Resources/config/services.yml" }
     - { resource: "@OxaDfpBundle/Resources/config/services.yml" }
+    - { resource: "@ElasticSearchBundle/Resources/config/services.yml" }
+    - { resource: "@MongoDbBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    app_version: '0.9.4.4'
     locale: en
     locales: [en, es]
     locale_data:
@@ -32,6 +37,38 @@ parameters:
         url_part: 'admin'
         locale: 'en'
     videos_upload_path: %assetic.write_to%/uploads/videos
+    default_image:
+        path: '/assets/images/'
+        business_image: 'header-logo.png'
+        article:
+            image: 'header-logo.png'
+            width: '221'
+            height: '42'
+    google_map_api_key: "AIzaSyCa69y_exLVd53HZO5yrMhDeVqMoC7Cuvc"
+    google_map_default_center: '18.446344, -66.07558'
+    google_map_default_center_name: 'San Juan'
+    google_map_default_zoom: 8
+    google_map_min_single_zoom: 15  #min zoom for single map marker
+    seo_custom_settings:
+        company_name: 'Infopáginas'
+        title_max_length: 60
+        title_category_max_length: 20
+        business_name_length: 26    # + 4 sign
+        locality_length: 15         # + 3 sign
+        brand_length: 12
+        description_max_length: 160
+        description_category_max_length: 120    # for all categories
+        description_category_separator: ', '
+        description_category_cut: '...'
+        default_article_author: 'Infopáginas Media'
+    image_back_up_path: '/../web/imageBackUp/'
+    video_back_up_path: '/../web/imageBackUp/video/'
+    youtube_back_up_path: '/../web/imageBackUp/youtube/'
+    breadcrumb_max_length: 38
+    google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
+    google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
+    google_youtube_privacy: '%google_youtube_video_privacy%'
+    google_youtube_channel_id: '%google_youtube_user_channel_id%'
 
 framework:
     #esi:             ~
@@ -70,6 +107,28 @@ twig:
             - 'SonataCoreBundle:Form:datepicker.html.twig'
     form_themes:
         - 'DomainBusinessBundle:Form:fields.html.twig'
+    globals:
+        app_version: '%app_version%'
+        google_map_api_key: '%google_map_api_key%'
+        google_map_default_center: '%google_map_default_center%'
+        google_map_default_zoom: '%google_map_default_zoom%'
+        google_map_min_zoom: '%google_map_min_single_zoom%'
+        breadcrumb_max_length: '%breadcrumb_max_length%'
+        keyword_max_length: 50
+
+#       todo confirm date formats
+        review_date_format:        'd M Y H:i'
+        article_date_format:       'M d, Y'
+        business_date_format:      'Y-m-d'
+        subscription_date_format:  'Y-m-d'
+        category_report_date_format: 'm/d/Y'
+        report_generated_datetime_format: 'm/d/Y H:i:s'
+        monthly_report_date_format: 'F, Y'
+        ads_stat_date_format:      'd.m.Y'
+        task_date_format:          'd M, Y, H:i:s A'
+        working_hours_date_format: 'g:i A'
+        google_tag_manager_id:     'GTM-WDMMDNV'
+        default_country:           'pr'
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -99,10 +158,13 @@ doctrine:
             FOSUserBundle: ~
             OxaSonataMediaBundle: ~
             SonataMediaBundle: ~
-        filters:
-            softdeleteable:
-                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
-                enabled: true
+            SonataClassificationBundle: ~
+            ApplicationSonataClassificationBundle: ~
+
+#sonataClassificationBundle
+sonata_classification:
+    class:
+        media: Oxa\Sonata\MediaBundle\Entity\Media
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -111,19 +173,6 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
-
-# Assetic Configuration
-assetic:
-    debug:          "%kernel.debug%"
-    use_controller: false
-    bundles:        [ ]
-    #java: /usr/bin/java
-    filters:
-        cssrewrite: ~
-        closure:
-            jar: "%kernel.root_dir%/Resources/java/compiler.jar"
-        yui_css:
-            jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
 
 doctrine_migrations:
     dir_name: "%kernel.root_dir%/DoctrineMigrations"
@@ -151,16 +200,16 @@ hwi_oauth:
     resource_owners:
         facebook:
             type:                facebook
-            client_id:           1092749047449814
-            client_secret:       dd4c134dfa083b580ee1d0fe2f2e0a97
+            client_id:           395706097433162
+            client_secret:       a3b0120497f463012ea5b431e815a717
             scope:         "email"
             infos_url:     "https://graph.facebook.com/me?fields=id,name,email,first_name,last_name"
             paths:
                 email:          email
         google:
             type:                google
-            client_id:           762185179500-76hu2nbchsk35h0vb8amh7d8m7t665uc.apps.googleusercontent.com
-            client_secret:       b44x5xaqKgt6iaPPmaAcqLrz
+            client_id:           584296512785-clg06us2ajt6b0s38u41r0nlr9h4mbs6.apps.googleusercontent.com
+            client_secret:       5J_TAMDieaCliwy4HVvI9Wfk
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
 
 fos_js_routing:
@@ -218,3 +267,46 @@ happyr_google_analytics:
         view_id: 129461101
         cache_service: 'cache.provider.my_file_system'
         cache_lifetime: 3600
+
+presta_sitemap:
+    timetolive: 86400
+    items_by_set: 50000
+
+knp_gaufrette:
+    adapters:
+        video_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
+                options:
+                    create:     true
+                    directory:  'video/%sonata_media.cdn.folder%'
+    filesystems:
+        ipgn:
+            adapter:    video_storage
+            alias:      video_storage_filesystem
+
+aws:
+    version:    '2006-03-01'
+    region:     '%amazon_aws_region%'
+    credentials:
+        key:    '%amazon_aws_key%'
+        secret: '%amazon_aws_secret_key%'
+    S3:
+        version:    '2006-03-01'
+
+elastic_search:
+    host: '%elastic_search.host%'
+    document_index: '%elastic_search.document_index%'
+    indexing_page: 100
+
+mongo_db:
+    host: '%mongodb.host%'
+    db:   '%mongodb.db%'
+monolog:
+    channels: [cron]
+    handlers:
+        cron:
+          type: stream
+          path: "%kernel.logs_dir%/cron.log"
+          channels: [cron]

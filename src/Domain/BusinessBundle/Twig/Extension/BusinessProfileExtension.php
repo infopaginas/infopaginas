@@ -9,7 +9,9 @@
 namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
@@ -35,7 +37,8 @@ class BusinessProfileExtension extends \Twig_Extension
     /**
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager) {
+    public function setBusinessProfileManager(BusinessProfileManager $businessProfileManager)
+    {
         $this->businessProfileManager = $businessProfileManager;
     }
 
@@ -73,11 +76,79 @@ class BusinessProfileExtension extends \Twig_Extension
                 'getBusinessProfileActualReviewsAvgRating'
             ),
             'get_business_profile_changes_string' => new \Twig_Function_Method($this, 'unpackTaskChangeSetRow'),
-            'get_business_profile_image_changes' => new \Twig_Function_Method($this, 'getImageChangeSet'),
+            'get_business_profile_translation_changes' => new \Twig_Function_Method(
+                $this,
+                'getTaskTranslationChangeSetRow'
+            ),
+            'get_business_profile_image_property_changes' => new \Twig_Function_Method(
+                $this,
+                'getTaskImagePropertyChangeSetRow'
+            ),
+            'get_business_profile_media_changes' => new \Twig_Function_Method($this, 'getMediaChangeSet'),
+            'get_business_profile_images_changes' => new \Twig_Function_Method($this, 'getImagesChangeSet'),
             'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
             'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
+            'get_business_profile_images' => new \Twig_Function_Method($this, 'getBusinessProfileImages'),
+            'get_business_profile_ads' => new \Twig_Function_Method($this, 'getBusinessProfileAds'),
+            'render_task_media_link' => new \Twig_Function_Method(
+                $this,
+                'renderTaskMediaLink',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'render_task_images_link' => new \Twig_Function_Method(
+                $this,
+                'renderTaskImagesLink',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'get_business_profile_related_entity_changes_html' => new \Twig_Function_Method(
+                $this,
+                'renderBusinessProfileRelatedEntityChanges',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'get_business_profile_open_status' => new \Twig_Function_Method($this, 'getBusinessProfileOpenStatus'),
+            'get_business_profile_working_hours_list' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileWorkingHoursList'
+            ),
+            'get_business_profile_many_to_one_relations_changes_string' => new \Twig_Function_Method(
+                $this,
+                'unpackManyToOneRelationsChangeSetRow'
+            ),
+            'get_business_profile_translation_changes_string' => new \Twig_Function_Method(
+                $this,
+                'unpackTranslationChangeSetRow'
+            ),
+            'get_wysiwyg_preview_block' => new \Twig_Function_Method(
+                $this,
+                'renderWysiwygPreviewForm',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                    ],
+                ]
+            ),
+            'get_business_profile_categories_json' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileCategoriesJson'
+            ),
         ];
     }
 
@@ -122,10 +193,12 @@ class BusinessProfileExtension extends \Twig_Extension
         $subscription = $businessProfile->getSubscriptionPlan();
 
         if ($subscription) {
+            $isPlusPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLUS;
             $isGoldPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_GOLD;
             $isPlatinumPlan = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM;
+            $isSuperVm      = $subscription->getCode() === SubscriptionPlanInterface::CODE_SUPER_VM;
 
-            if ($isGoldPlan || $isPlatinumPlan) {
+            if ($isPlusPlan || $isGoldPlan || $isPlatinumPlan || $isSuperVm) {
                 return true;
             }
         }
@@ -149,7 +222,7 @@ class BusinessProfileExtension extends \Twig_Extension
             return $value;
         }
 
-        return implode(', ', array_map(function($element) {
+        return implode(', ', array_map(function ($element) {
             if (isset($element->value)) {
                 return $element->value;
             } elseif (isset($element->url)) {
@@ -160,9 +233,276 @@ class BusinessProfileExtension extends \Twig_Extension
         }, json_decode($value)));
     }
 
-    public function getImageChangeSet(string $value)
+    public function unpackManyToOneRelationsChangeSetRow($value)
     {
-        return ImagesChangeSetUtil::deserializeChangeSet($value);
+        if ($this->isJson($value)) {
+            $item = json_decode($value);
+
+            if ($item->value) {
+                return $item->value;
+            }
+        }
+
+        return $value;
+    }
+
+    public function unpackTranslationChangeSetRow($value)
+    {
+        if ($this->isJson($value)) {
+            $item = json_decode($value);
+
+            if ($item->value and $item->locale) {
+                return $item;
+            }
+        }
+
+        return [];
+    }
+
+    public function getTaskTranslationChangeSetRow($oldValue, $newValue)
+    {
+        if (!$this->isJson($oldValue) or !$this->isJson($newValue)) {
+            return [];
+        }
+
+        $oldData = $this->sortTranslationSet($oldValue);
+        $newData = $this->sortTranslationSet($newValue);
+        $data    = [];
+
+        foreach ($oldData as $key => $item) {
+            if (empty($newData[$key])) {
+                $data[$key]['old'] = $item;
+                $data[$key]['new'] = '';
+            } else {
+                if ($newData[$key] !== $item) {
+                    $data[$key]['old'] = $item;
+                    $data[$key]['new'] = $newData[$key];
+                }
+            }
+        }
+
+        foreach ($newData as $key => $item) {
+            if (empty($oldData[$key])) {
+                $data[$key]['old'] = '';
+                $data[$key]['new'] = $newData[$key];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Prepare BusinessGallery updated properties for view
+     *
+     * @param string $oldValue
+     * @param string $newValue
+     * @return array
+     */
+    public function getTaskImagePropertyChangeSetRow($oldValue, $newValue)
+    {
+        if (!$this->isJson($oldValue) or !$this->isJson($newValue)) {
+            return [];
+        }
+
+        $oldData = $this->sortImagePropertySet($oldValue);
+        $newData = $this->sortImagePropertySet($newValue);
+        $data    = [];
+
+        foreach ($oldData as $key => $item) {
+            if ($newData[$key] !== $item) {
+                $data[$key]['old'] = $item;
+                $data[$key]['new'] = $newData[$key];
+            }
+        }
+
+        return $data;
+    }
+
+    public function sortTranslationSet($value)
+    {
+        $translations = json_decode($value);
+        $data = [];
+
+        foreach ($translations as $translation) {
+            $item = json_decode($translation->value);
+
+            if ($item->field !== BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE and
+                $item->field !== BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION) {
+                $data[$item->field . $item->locale] = $item->field . ' [' . $item->locale . ']: ' . $item->value;
+            }
+        }
+
+        ksort($data);
+
+        return $data;
+    }
+
+    /**
+     * Sort BusinessGallery updated properties
+     *
+     * @param string $value
+     * @return array
+     */
+    public function sortImagePropertySet($value)
+    {
+        $properties = json_decode($value);
+        $data = [];
+
+        foreach ($properties as $raw) {
+            $item = json_decode($raw->value);
+
+            foreach ($item as $key => $field) {
+                $data[$key] = ucfirst($key) . ' ' . $field;
+            }
+        }
+
+        ksort($data);
+
+        return $data;
+    }
+
+    public function getMediaChangeSet($value, $change)
+    {
+        $data = [];
+
+        if ($value) {
+            $data = ImagesChangeSetUtil::deserializeChangeSet($value);
+            $data->url = $this->businessProfileManager->getTaskMediaLink($change, $value);
+        }
+
+        return $data;
+    }
+
+    public function getImagesChangeSet($value, $change)
+    {
+        $images = json_decode($value);
+        $data = [];
+
+        if ($images) {
+            foreach ($images as $key => $item) {
+                $data[$key] = $item;
+                $data[$key]->url = $this->businessProfileManager->getTaskMediaLink($change, $item);
+            }
+        }
+
+        return $data;
+    }
+
+    public function renderTaskMediaLink(\Twig_Environment $environment, $data)
+    {
+        $html = $environment->render(
+            ':redesign/blocks/task:task_media_link.html.twig',
+            [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    public function renderTaskImagesLink(\Twig_Environment $environment, $data)
+    {
+        $html = $environment->render(
+            ':redesign/blocks/task:task_images_link.html.twig',
+            [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    public function renderBusinessProfileRelatedEntityChanges(\Twig_Environment $environment, $json)
+    {
+        $data = [];
+        $raw = json_decode($json);
+
+        if ($raw) {
+            foreach ($raw as $key => $item) {
+                if ($this->isJson($item->value)) {
+                    $property = json_decode($item->value);
+
+                    foreach ($property as $name => $value) {
+                        if (!empty($value->date)) {
+                            $date = new \DateTime($value->date);
+
+                            $data[$key][$name] = $date->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+                        } else {
+                            $data[$key][$name] = $value;
+                        }
+                    }
+                } else {
+                    $data[$key]['value'] = $item->value;
+                }
+            }
+        }
+
+        $html = $environment->render(
+            ':redesign/blocks/task:related_entity_changes.html.twig',
+            [
+                'data' => $data,
+            ]
+        );
+
+        return $html;
+    }
+
+    /**
+     * @param \Twig_Environment $environment
+     * @param string $name
+     * @param string $raw
+     * @return string
+     */
+    public function renderWysiwygPreviewForm(\Twig_Environment $environment, $name, $raw)
+    {
+        $form = $this->businessProfileManager->getWysiwygPreviewForm($name, $raw);
+
+        $html = $environment->render(
+            'DomainBusinessBundle:TaskAdmin/fields:wysiwig_field.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+
+        return $html;
+    }
+
+    public function getBusinessProfileOpenStatus(BusinessProfile $businessProfile)
+    {
+        $workingHourData = DayOfWeekModel::getBusinessProfileOpenNowData($businessProfile);
+
+        $text = '';
+
+        if ($workingHourData['status']) {
+            if ($workingHourData['hours']) {
+                if ($workingHourData['hours']->openAllTime) {
+                    $text = $this->translator->trans('business.working.hours.open_all_time');
+                } else {
+                    $endTime = $workingHourData['hours']->timeEnd
+                        ->format(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+
+                    $text = $this->translator->trans(
+                        'business.working.hours.open_until',
+                        [
+                            '{-TIME-}' => $endTime,
+                        ]
+                    );
+                }
+            } else {
+                $text = $this->translator->trans('business.working.hours.closed_now');
+            }
+        }
+
+        $workingHourData['text'] = $text;
+
+        return $workingHourData;
+    }
+
+    public function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
+    {
+        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListView($businessProfile);
+
+        return $workingHourData;
     }
 
     public function prepareImageDiff($diff)
@@ -190,12 +530,54 @@ class BusinessProfileExtension extends \Twig_Extension
 
         if ($subscription) {
 
-            if ($subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            if ($subscription->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function getBusinessProfileImages(BusinessProfile $businessProfile)
+    {
+        $photos = $this->getBusinessProfileManager()->getBusinessProfilePhotoImages($businessProfile);
+
+        return $photos;
+    }
+
+    public function getBusinessProfileAds(BusinessProfile $businessProfile)
+    {
+        $advertisements = $this->getBusinessProfileManager()->getBusinessProfileAdvertisementImages($businessProfile);
+
+        return $advertisements;
+    }
+
+    /**
+     * @param BusinessProfile|null  $businessProfile
+     * @param string                $locale
+     *
+     * @return string
+     */
+    public function getBusinessProfileCategoriesJson($businessProfile, $locale)
+    {
+        $categoriesData = [];
+
+        if ($locale == strtolower(BusinessProfile::TRANSLATION_LANG_EN)) {
+            $currentLocale = BusinessProfile::TRANSLATION_LANG_EN;
+        } else {
+            $currentLocale = BusinessProfile::TRANSLATION_LANG_ES;
+        }
+
+        if ($businessProfile) {
+            foreach ($businessProfile->getCategories() as $category) {
+                $categoriesData[$category->getId()] = [
+                    'id'    => $category->getId(),
+                    'name'  => $category->{'getSearchText' . $currentLocale}(),
+                ];
+            }
+        }
+
+        return json_encode($categoriesData);
     }
 
     /**
@@ -220,7 +602,7 @@ class BusinessProfileExtension extends \Twig_Extension
      */
     private function isJson($json)
     {
-        $result = json_decode($json);
+        $result = json_decode($json, true);
 
         if (!is_array($result)) {
             return false;

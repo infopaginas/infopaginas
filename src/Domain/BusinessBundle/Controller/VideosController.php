@@ -3,18 +3,22 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\ORM\NoResultException;
+use Domain\BannerBundle\Model\TypeInterface;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\VideoManager;
+use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
-use Oxa\WistiaBundle\Form\Handler\FileUploadFormHandler;
-use Oxa\WistiaBundle\Form\Handler\RemoteFileUploadFormHandler;
-use Oxa\WistiaBundle\Form\Type\WistiaMediaType;
-use Oxa\WistiaBundle\Manager\WistiaManager;
-use Oxa\WistiaBundle\Manager\WistiaMediaManager;
+use Domain\SearchBundle\Util\SearchDataUtil;
+use Oxa\ConfigBundle\Model\ConfigInterface;
+use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Form\Handler\FileUploadFormHandler;
+use Oxa\VideoBundle\Form\Handler\RemoteFileUploadFormHandler;
+use Oxa\VideoBundle\Form\Type\VideoMediaType;
+use Oxa\VideoBundle\Manager\VideoManager as OxaVideoManager;
+use Oxa\VideoBundle\Manager\VideoMediaManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Form\FormInterface;
@@ -55,16 +59,14 @@ class VideosController extends Controller
                 $this->throwVideoFileIsNotProvidedException();
             }
 
-            list($videoPathOnLocalServer, $filename) = $this->uploadVideoToLocalServer($files);
-
-            $media = $this->getWistiaAPIManager()->uploadLocalFile($videoPathOnLocalServer, ['name' => $filename]);
+            $media = $this->getOxaVideoManager()->uploadLocalFile(current($files));
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
 
         $editVideoForm = $this->getEditVideoForm($business, $media);
 
-        $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+        $response = $this->renderView(':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig', [
             'media' => $media,
             'form' => $editVideoForm->createView(),
         ]);
@@ -82,7 +84,7 @@ class VideosController extends Controller
 
         try {
             $url = $request->get('url');
-            $media = $this->getWistiaAPIManager()->uploadRemoteFile($url);
+            $media = $this->getOxaVideoManager()->uploadRemoteFile($url);
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], 500);
         }
@@ -90,7 +92,7 @@ class VideosController extends Controller
         if ($media) {
             $editVideoForm = $this->getEditVideoForm($business, $media);
 
-            $response = $this->renderView('DomainBusinessBundle:Videos/blocks:video.html.twig', [
+            $response = $this->renderView(':redesign/blocks/businessProfile/subTabs/profile/gallery:videos.html.twig', [
                 'media' => $media,
                 'form' => $editVideoForm->createView(),
             ]);
@@ -104,13 +106,45 @@ class VideosController extends Controller
         }
     }
 
-    public function indexAction()
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction(Request $request)
     {
+        $paramsDTO = $this->geVideoListQueryParamsDTO($request);
+
+        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
+
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_VIDEO_PAGE_RIGHT,
+                TypeInterface::CODE_VIDEO_PAGE_BOTTOM,
+            ]
+        );
+
+        $seoData = $this->getVideoManager()->getVideosSeoData($this->container);
+
         $params = [
-            'videos' => $this->getVideoManager()->getActiveVideos(),
+            'results'       => $videoResultDTO,
+            'seoData'       => $seoData,
+            'bannerFactory' => $bannerFactory,
         ];
 
-        return $this->render('DomainBusinessBundle:Videos:list.html.twig', $params);
+        return $this->render(':redesign:video-list.html.twig', $params);
+    }
+
+    /**
+     * @param Request $request
+     * @return ReviewsListQueryParamsDTO
+     */
+    private function geVideoListQueryParamsDTO(Request $request) : ReviewsListQueryParamsDTO
+    {
+        $limit = (int)$this->get('oxa_config')->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+        $page = SearchDataUtil::getPageFromRequest($request);
+
+        return new ReviewsListQueryParamsDTO($limit, $page);
     }
 
     /**
@@ -160,21 +194,22 @@ class VideosController extends Controller
     }
 
     /**
-     * @return WistiaManager
+     * @return OxaVideoManager
      */
-    private function getWistiaAPIManager() : WistiaManager
+    private function getOxaVideoManager() : OxaVideoManager
     {
-        return $this->get('oxa.manager.wistia');
+        return $this->get('oxa.manager.video');
     }
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param WistiaMedia $media
+     * @param VideoMedia $media
      * @return FormInterface
      */
-    private function getEditVideoForm(BusinessProfile $businessProfile, WistiaMedia $media) : FormInterface
+    private function getEditVideoForm(BusinessProfile $businessProfile, VideoMedia $media) : FormInterface
     {
         $form = $this->createForm(new BusinessProfileFormType(), $businessProfile);
+
         $videoForm = $form->get('video')->setData($media);
 
         return $videoForm;

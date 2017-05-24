@@ -10,7 +10,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 
 class BannerAdmin extends OxaAdmin
 {
@@ -33,7 +33,7 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('template')
-            ->add('allowedForBusinesses', null, [], null, $choiceOptions)
+            ->add('isPublished')
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
         ;
@@ -46,13 +46,12 @@ class BannerAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('image', null, ['template' => 'DomainBannerBundle:Admin:list_image.html.twig'])
-            ->add('title')
+            ->addIdentifier('title')
             ->add('description')
             ->add('type')
             ->add('size')
             ->add('template')
-            ->add('allowedForBusinesses')
+            ->add('isPublished')
             ->add('updatedAt')
             ->add('updatedUser')
         ;
@@ -77,14 +76,13 @@ class BannerAdmin extends OxaAdmin
             ->with('General')
                 ->add('title')
                 ->add('description')
-                ->add('allowedForBusinesses')
+                ->add('isPublished')
             ->end()
             ->with('Type')
-                ->add('type', 'sonata_type_model_list', [], [])
-                ->add('image', 'sonata_type_model_list', [], ['link_parameters' => [
-                    'context' => OxaMediaInterface::CONTEXT_BANNER,
-                    'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                ]])
+                ->add('type', 'sonata_type_model_list', [
+                    'required' => false,
+                    'btn_add' => false,
+                ])
             ->end()
             ->with('Template')
                 ->add('template', 'sonata_type_model_list', [
@@ -106,10 +104,7 @@ class BannerAdmin extends OxaAdmin
             ->add('description')
             ->add('type')
             ->add('size')
-            ->add('allowedForBusinesses')
-            ->add('image', null, [
-                'template' => 'DomainBannerBundle:Admin:show_image.html.twig'
-            ])
+            ->add('isPublished')
             ->add('updatedAt')
             ->add('updatedUser')
         ;
@@ -123,10 +118,6 @@ class BannerAdmin extends OxaAdmin
     {
         $errorElement
             ->with('type')
-                ->assertNotBlank()
-                ->assertNotNull()
-            ->end()
-            ->with('image')
                 ->assertNotBlank()
                 ->assertNotNull()
             ->end()

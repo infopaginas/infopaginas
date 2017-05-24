@@ -1,4 +1,4 @@
-define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify, Spin ) {
+define(['jquery', 'tools/spin', 'jquery-ui', 'main-redesign'], function( $, Spin ) {
     'use strict';
 
     //init resetPassword object variables
@@ -20,7 +20,9 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
                 resetPasswordFormId: '#resetPasswordForm'
             },
             fields: {
-                emailInputId: '#domain_site_reset_password_request_email'
+                emailInputId: '#domain_site_reset_password_request_email',
+                resetPasswordRequestMessage: '#resetPasswordRequestMessage',
+                resetPasswordMessage: '#resetPasswordMessage'
             },
             buttons: {
                 resetPasswordRequestButtonId: '#resetPasswordRequestButton',
@@ -61,12 +63,11 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
                 //check for "repeated" fields or embed forms
                 if (Array.isArray(errors[field])) {
                     var $field = $(this.getFormFieldId( prefix, field ));
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next('.help-block');
+                    $field.parent().addClass( 'field--not-valid' );
 
                     for (var key in errors[field]) {
-                        $errorSection.append(errors[field][key]);
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId(prefix, field) );
@@ -79,9 +80,10 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
     resetPassword.prototype.disableFieldsHighlight = function() {
         var $modal = this.getActiveModal();
         var $form = $modal.find( 'form' );
-        $form.find( 'input' ).removeClass('error');
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     //serialize form data
@@ -91,12 +93,39 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
 
     //return object of current active modal window
     resetPassword.prototype.getActiveModal = function() {
-        return $( '#' + $('.modal.in').attr('id') );
+        return $( '#' + $( '.modal--opened' ).attr('id') );
+    };
+
+    resetPassword.prototype.handleForm = function() {
+        var $resetRequestButton = $( this.html.buttons.resetPasswordRequestButtonId );
+        var $resetButton        = $( this.html.buttons.resetPasswordButtonId );
+
+        $( this.html.forms.resetPasswordRequestFormId ).keypress( function ( event ) {
+            if ( (event.which && event.which == 13) || (event.keyCode && event.keyCode == 13) ) {
+                $resetRequestButton.click();
+
+                return false;
+            }
+
+            return true;
+        });
+
+        $( this.html.forms.resetPasswordFormId ).keypress( function ( event ) {
+            if ( (event.which && event.which == 13) || (event.keyCode && event.keyCode == 13) ) {
+                $resetButton.click();
+
+                return false;
+            }
+
+            return true;
+        });
     };
 
     //action before ajax send
     resetPassword.prototype.beforeRequestHandler = function () {
         this.disableFieldsHighlight();
+
+        $( this.html.fields.resetPasswordRequestMessage).text( '' );
 
         var spinnerId = this.getActiveModal().find( this.html.loadingSpinnerContainerClass).attr('id');
 
@@ -110,29 +139,31 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
 
     //actions on ajax success
     resetPassword.prototype.successHandler = function( response ) {
+        //if current form == reset password form
+        var activeModal = '#' + this.getActiveModal().find('form').attr('id');
+
         if( response.success ) {
-            alertify.success( response.message );
-
-            //if current form == reset password form
-            var activeModal = '#' + this.getActiveModal().find('form').attr('id');
-
             if ( activeModal == this.html.forms.resetPasswordFormId ) {
-                $( this.modals.resetModalId ).modal( 'hide' );
-                $( this.modals.loginModalId ).modal( 'show' );
+                $( this.html.fields.resetPasswordMessage ).text( response.message );
             } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
-                $( this.modals.resetRequesModalId ).modal( 'hide' );
-                $( this.modals.loginModalId ).modal( 'show' );
+                $( this.html.fields.resetPasswordRequestMessage ).text( response.message );
             }
         } else {
-            this.enableFieldsHighlight( response.errors );
-            alertify.error( response.message );
+            if ( !$.isEmptyObject( response.errors ) ) {
+                this.enableFieldsHighlight( response.errors );
+            } else {
+                if ( activeModal == this.html.forms.resetPasswordFormId ) {
+                    this.enableFieldsHighlight( { 'plainPassword_first': [response.message] } );
+                } else if ( activeModal == this.html.forms.resetPasswordRequestFormId ) {
+                    this.enableFieldsHighlight( { 'email': [response.message] } );
+                }
+            }
         }
     };
 
     //actions on ajax failure
     resetPassword.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        this.enableFieldsHighlight();
-        alertify.error( errorThrown );
+        this.enableFieldsHighlight( { 'plainPassword': [errorThrown] } );
     };
 
     //ajax request
@@ -192,7 +223,8 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
     //check token existance in URL. If exists - show 'reset password' modal
     resetPassword.prototype.checkPasswordResetToken = function() {
         if( window.location.pathname.indexOf('password_reset') !== -1 ) {
-            $( this.modals.resetModalId ).modal( 'show' );
+            $( this.modals.resetModalId ).addClass('modal--opened');
+            $( 'body' ).addClass( 'body--no-scroll' );
         }
     };
 
@@ -201,6 +233,7 @@ define(['jquery', 'alertify', 'tools/spin', 'jquery-ui'], function( $, alertify,
         this.handlePasswordRequestForm();
         this.handleResetPasswordForm();
         this.checkPasswordResetToken();
+        this.handleForm();
     };
 
     return resetPassword;

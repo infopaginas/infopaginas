@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/14/16
- * Time: 3:48 PM
- */
 
 namespace Domain\ReportBundle\Model;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Interface ExporterInterface
@@ -17,5 +10,5 @@ use Symfony\Component\Templating\EngineInterface;
  */
 interface ExporterInterface
 {
-    public function getResponse(string $code, string $format, array $objects) : Response;
+    public function getResponse($parameters = []) : Response;
 }

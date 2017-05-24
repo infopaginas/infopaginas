@@ -3,6 +3,8 @@
 namespace Oxa\Sonata\AdminBundle\Controller;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Model\StatusInterface;
 use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -25,53 +27,88 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class CRUDController extends SortableAdminController
 {
     /**
-     * Delete record completely
+     * Delete action.
      *
-     * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
+     * @param int|string|null $id
+     *
+     * @return Response|RedirectResponse
+     *
+     * @throws NotFoundHttpException If the object does not exist
+     * @throws AccessDeniedException If access is not granted
      */
-    public function deletePhysicalAction(Request $request)
+    public function deleteAction($id)
     {
-        $objectId = ($request->get('id') != null) ? intval($request->get('id')) : $request->get('id');
+        $request = $this->getRequest();
+        $id = $request->get($this->admin->getIdParameter());
+        $object = $this->admin->getObject($id);
 
-        $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $object = $adminManager->getObjectByClassName($this->admin->getClass(), $objectId, true);
-
-        if ($this->getRestMethod() == Request::METHOD_DELETE) {
-            $adminManager->deletePhysicalEntity($object);
-            $this->addFlash(
-                'sonata_flash_success',
-                $this->get('translator')
-                    ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
-            );
-
-            return $this->saveFilterResponse();
+        if (!$object) {
+            throw $this->createNotFoundException(sprintf('unable to find the object with id : %s', $id));
         }
 
-        return $this->render('OxaSonataAdminBundle:CRUD:physical_delete.html.twig', [
-            'action' => 'physical_delete',
-            'object' => $object
-        ]);
-    }
-
-    /**
-     * Restore softdeleted record
-     *
-     * @Security("is_granted('ROLE_RESTORE_ABLE')")
-     */
-    public function restoreAction(Request $request)
-    {
-        $objectId = ($request->get('id') != null) ? intval($request->get('id')) : $request->get('id');
-
+        $this->admin->checkAccess('delete', $object);
         $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $adminManager->restoreEntityByClassName($this->admin->getClass(), $objectId, true);
 
-        $this->addFlash(
-            'sonata_flash_success',
-            $this->get('translator')
-                ->trans('flash_restore_action_success', [], 'SonataAdminBundle')
+        $preResponse = $this->preDelete($request, $object);
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
+        if ($this->getRestMethod() == Request::METHOD_DELETE) {
+            // check the csrf token
+            $this->validateCsrfToken('sonata.delete');
+
+            $objectName = $this->admin->toString($object);
+
+            try {
+                $adminManager->deletePhysicalEntity($object);
+
+                if ($this->isXmlHttpRequest()) {
+                    return $this->renderJson(
+                        [
+                            'result' => 'ok',
+                        ],
+                        200,
+                        []
+                    );
+                }
+
+                $this->addFlash(
+                    'sonata_flash_success',
+                    $this->trans(
+                        'flash_delete_success',
+                        [
+                            '%name%' => $this->escapeHtml($objectName),
+                        ],
+                        'SonataAdminBundle'
+                    )
+                );
+            } catch (\Exception $e) {
+                if ($this->isXmlHttpRequest()) {
+                    return $this->renderJson(
+                        [
+                            'result' => 'error',
+                        ],
+                        200,
+                        []
+                    );
+                }
+
+                $this->addFlash('sonata_flash_error', $e->getMessage());
+            }
+
+            return $this->redirectTo($object);
+        }
+
+        return $this->render(
+            $this->admin->getTemplate('delete'),
+            [
+                'object' => $object,
+                'action' => 'delete',
+                'csrf_token' => $this->getCsrfToken('sonata.delete'),
+            ],
+            null
         );
-
-        return $this->saveFilterResponse();
     }
 
     /**
@@ -96,48 +133,6 @@ class CRUDController extends SortableAdminController
                 $e->getMessage()
             );
         }
-
-        return $this->saveFilterResponse();
-    }
-
-    /**
-     * Delete records completely
-     *
-     * @Security("is_granted('ROLE_PHYSICAL_DELETE_ABLE')")
-     */
-    public function batchActionDeletePhysical(ProxyQuery $query)
-    {
-        $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-
-        try {
-            $adminManager->physicalDeleteEntities($query->execute(), true);
-            $this->addFlash(
-                'sonata_flash_success',
-                $this->get('translator')
-                    ->trans('flash_delete_physical_action_success', [], 'SonataAdminBundle')
-            );
-        } catch (\Exception $e) {
-            $this->addFlash('sonata_flash_error', $e->getMessage());
-        }
-
-        return $this->saveFilterResponse();
-    }
-
-    /**
-     * Restore softdeleted records
-     *
-     * @Security("is_granted('ROLE_RESTORE_ABLE')")
-     */
-    public function batchActionRestore(ProxyQuery $query)
-    {
-        $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-        $adminManager->restoreEntities($query->execute(), true);
-
-        $this->addFlash(
-            'sonata_flash_success',
-            $this->get('translator')
-                ->trans('flash_restore_action_success', [], 'SonataAdminBundle')
-        );
 
         return $this->saveFilterResponse();
     }
@@ -199,102 +194,6 @@ class CRUDController extends SortableAdminController
         }
 
         return $this->redirect('list');
-    }
-
-    /**
-     * Delete action.
-     * Action is large to keep extended methos structure
-     *
-     * @param int|string|null $id
-     *
-     * @return Response|RedirectResponse
-     *
-     * @throws NotFoundHttpException If the object does not exist
-     * @throws AccessDeniedException If access is not granted
-     */
-    public function deleteAction($id)
-    {
-        $id = $this->get('request')->get($this->admin->getIdParameter());
-        $object = $this->admin->getObject($id);
-        $existDependentFields = null;
-
-        if (!$object) {
-            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
-        }
-
-        if (false === $this->admin->isGranted('DELETE', $object)) {
-            throw new AccessDeniedHttpException();
-        }
-
-
-        if ($this->getRestMethod() == Request::METHOD_DELETE) {
-            // check the csrf token
-            $this->validateCsrfToken('sonata.delete');
-            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-
-            if ($object instanceOf BusinessProfile) {
-                $existDependentFields = [];
-            } else {
-                $existDependentFields = $adminManager->checkExistDependentEntity($object);
-            }
-
-            if (!count($existDependentFields)) {
-                try {
-                    $this->admin->delete($object);
-                    if ($this->isXmlHttpRequest()) {
-                        $xmlHttpResult = 'ok';
-                    } else {
-                        $this->addFlash(
-                            'sonata_flash_success',
-                            $this->get('translator')->trans(
-                                'flash_delete_success',
-                                array('%name%' => $this->escapeHtml($this->admin->toString($object))),
-                                'SonataAdminBundle'
-                            )
-                        );
-                    }
-                } catch (ModelManagerException $e) {
-                    $this->logModelManagerException($e);
-
-                    if ($this->isXmlHttpRequest()) {
-                        $xmlHttpResult = 'error';
-                    } else {
-                        $this->addFlash(
-                            'sonata_flash_error',
-                            $this->admin->trans(
-                                'flash_delete_error',
-                                array('%name%' => $this->escapeHtml($this->admin->toString($object))),
-                                'SonataAdminBundle'
-                            )
-                        );
-                    }
-                }
-
-                if (isset($xmlHttpResult)) {
-                    $returnResult = $this->renderJson(array('result' => $xmlHttpResult));
-                } else {
-                    $returnResult = $this->redirectTo($object);
-                }
-
-                return $returnResult;
-            } else {
-                $this->addFlash(
-                    'sonata_flash_error',
-                    $this->get('translator')->trans(
-                        'flash_delete_error_rel',
-                        array('%fields%' => implode(', ', $existDependentFields)),
-                        'SonataAdminBundle'
-                    )
-                );
-            }
-        }
-
-        return $this->render($this->admin->getTemplate('delete'), [
-            'object' => $object,
-            'action' => 'delete',
-            'csrf_token' => $this->getCsrfToken('sonata.delete'),
-            'existDependentFields' => $existDependentFields
-        ]);
     }
 
     /**

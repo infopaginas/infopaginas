@@ -5,7 +5,8 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Domain\BusinessBundle\Entity\Category;
-use Domain\MenuBundle\Model\MenuModel;
+use Domain\BusinessBundle\Entity\Translation\CategoryTranslation;
+use Domain\BusinessBundle\Model\CategoryModel;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -22,29 +23,69 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
     protected $manager;
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
 
-        $data = MenuModel::getMenuCategoriesNames();
+        //create system categories
+        $systemCategories = CategoryModel::getSystemCategories();
 
-        foreach ($data as $menuCode => $value) {
-            $object = new Category();
-            $object->setName($value);
-
-            // set to both locales
-            $object->setSearchTextEn($value);
-            $object->setSearchTextEs($value);
-
-            $this->manager->persist($object);
-
-            // set reference to find this
-            $this->addReference('category.'.$menuCode, $object);
+        foreach ($systemCategories as $item) {
+            $this->createCategory($item);
         }
 
-        $manager->flush();
+        $data = CategoryModel::getCategories();
+
+        foreach ($data as $category) {
+            $this->createCategory($category);
+
+            $this->manager->flush();
+            $this->manager->clear();
+        }
+    }
+
+    private function createCategory($category)
+    {
+        $object = new Category();
+
+        if (!empty($category['en'])) {
+            $categoryEn = $category['en'];
+        } else {
+            $categoryEn = $category['es'];
+        }
+
+        $object->setLocale('es');
+        $object->setName($category['es']);
+
+        if (!empty($category['slugEn'])) {
+            $object->setSlugEn($category['slugEn']);
+        }
+
+        if (!empty($category['slugEs'])) {
+            $object->setSlugEs($category['slugEs']);
+        }
+
+        if (!empty($category['code'])) {
+            $object->setCode($category['code']);
+        }
+
+        $object->setSearchTextEn($categoryEn);
+        $object->setSearchTextEs($category['es']);
+
+        $this->manager->persist($object);
+
+        $translation = new CategoryTranslation();
+
+        $translation->setField('name');
+        $translation->setContent($categoryEn);
+        $translation->setLocale('en');
+        $translation->setObject($object);
+
+        $this->manager->persist($translation);
+
+        return $object;
     }
 
     /**

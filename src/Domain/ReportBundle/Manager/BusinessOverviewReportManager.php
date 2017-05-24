@@ -1,319 +1,339 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/12/16
- * Time: 2:28 PM
- */
 
 namespace Domain\ReportBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\ReportBundle\Entity\BusinessOverviewReport;
-use Domain\ReportBundle\Entity\BusinessOverviewReportBusinessProfile;
-use Domain\ReportBundle\Entity\CategoryReport;
-use Domain\ReportBundle\Entity\CategoryReportCategory;
-use Domain\ReportBundle\Entity\SubscriptionReport;
-use Domain\ReportBundle\Entity\SubscriptionReportSubscription;
-use Domain\ReportBundle\Google\Analytics\DataFetcher;
-use Domain\ReportBundle\Model\BusinessOverviewReportTypeInterface;
-use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Util\DatesUtil;
-use Ivory\CKEditorBundle\Exception\Exception;
+use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
-use Domain\ReportBundle\Manager\BaseReportManager;
-use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Routing\Router;
 
 class BusinessOverviewReportManager extends BaseReportManager
 {
+    const MONGO_DB_COLLECTION_NAME_RAW       = 'overview_raw';
+    const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'overview_aggregate';
+
+    const MONGO_DB_FIELD_ACTION      = 'action';
+    const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
+    const MONGO_DB_FIELD_COUNT       = 'count';
+    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+
+    protected $reportName = 'business_overview_report';
+
     /** @var  BusinessProfileManager $businessProfileManager */
     protected $businessProfileManager;
 
-    /** @var DataFetcher $gaDataSource */
-    protected $gaDataSource;
-
-    /** @var Kernel $kernel */
-    protected $kernel;
-
-    /** @var Router $router */
-    protected $router;
+    /** @var MongoDbManager $mongoDbManager */
+    protected $mongoDbManager;
 
     /**
      * BusinessOverviewReportManager constructor.
      * @param BusinessProfileManager $businessProfileManager
      */
-    public function __construct(BusinessProfileManager $businessProfileManager, DataFetcher $gaDataSource, Router $router, Kernel $kernel)
+    public function __construct(BusinessProfileManager $businessProfileManager, MongoDbManager $mongoDbManager)
     {
         $this->businessProfileManager = $businessProfileManager;
-        $this->gaDataSource = $gaDataSource;
-
-        $this->kernel = $kernel;
-        $this->router = $router;
+        $this->mongoDbManager         = $mongoDbManager;
     }
 
-    /**
-     * @param array $filterParams
-     * @return array
-     */
-    public function getBusinessOverviewDataByFilterParams(array $filterParams = [])
-    {
-        $params = [];
-
-        if (isset($filterParams['_page'])) {
-            $params['page'] = $filterParams['_page'];
-        }
-
-        if (isset($filterParams['_per_page'])) {
-            $params['perPage'] = $filterParams['_per_page'];
-        }
-
-        if (isset($filterParams['date'])) {
-            $params['date'] = $filterParams['date']['value'];
-        }
-
-        if (isset($filterParams['periodOption'])) {
-            $params['periodOption'] = $filterParams['periodOption']['value'];
-        }
-
-        $businessKey = 'businessOverviewReportBusinessProfiles__businessProfile';
-
-        if (isset($filterParams[$businessKey]) &&
-            $filterParams[$businessKey]['value'] != ''
-        ) {
-            $params['businessProfileId'] = $filterParams[$businessKey]['value'];
-        } else {
-            $params['businessProfileId'] = $this->businessProfileManager->findOneBusinessProfile()->getId();
-        }
-
-        return $this->getBusinessOverviewData($params);
-    }
-
-    /**
-     * @param array $params
-     * @return array
-     */
-    public function getBusinessOverviewData(array $params = [])
+    public function getBusinessOverviewReportData(array $params = [])
     {
         $businessProfile = $this->getBusinessProfileManager()->find((int)$params['businessProfileId']);
 
         $businessProfileName = $businessProfile->getTranslation(
-            'name',
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
             $this->getContainer()->getParameter('locale')
         );
 
         $result = [
             'dates' => [],
-            'impressions' => [],
-            'views' => [],
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION => [],
+            BusinessOverviewModel::TYPE_CODE_VIEW => [],
             'results' => [],
             'datePeriod' => [
                 'start' => $params['date']['start'],
                 'end' => $params['date']['end'],
             ],
+            'total' => [],
             'businessProfile' => $businessProfileName
         ];
 
-        $dates = $this->getDateRangeVOFromDateString(
-            $params['date']['start'],
-            $params['date']['end']
-        );
+        $dates = DatesUtil::getDateRangeVOFromDateString($params['date']['start'], $params['date']['end']);
 
-        if (isset($params['periodOption']) &&
-            $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH
-        ) {
-            $dimension = 'yearMonth';
-            $step = DatesUtil::STEP_MONTH;
+        if (isset($params['periodOption']) && $params['periodOption'] == AdminHelper::PERIOD_OPTION_CODE_PER_MONTH) {
+            $dateFormat = AdminHelper::DATE_MONTH_FORMAT;
+            $step       = DatesUtil::STEP_MONTH;
         } else {
-            $dimension = 'date';
-            $step = DatesUtil::STEP_DAY;
+            $dateFormat = AdminHelper::DATE_FORMAT;
+            $step       = DatesUtil::STEP_DAY;
         }
 
-        $result['dates'] = DatesUtil::dateRange($dates, $step);
-        $result['views']       = $this->getBusinessProfileGaViews($businessProfile, $dates, $dimension);
-        $result['impressions'] = $this->getBusinessProfileGaImpressions($businessProfile, $dates, $dimension);
+        $result['dates'] = DatesUtil::dateRange($dates, $step, $dateFormat);
 
-        $result['results']     = $this->prepareBusinessProfileOverviewReportStats(
+        $params['dateObject'] = $dates;
+
+        $overviewResult = $this->getBusinessInteractionData($params);
+
+        $businessProfileResult = $this->prepareBusinessOverviewReportStats(
             $result['dates'],
-            $result['views'],
-            $result['impressions']
+            $overviewResult,
+            $dateFormat
         );
+
+        $result['results']     = $businessProfileResult['results'];
+        $result['total']        = $businessProfileResult['total'];
+        $result['overall']      = $businessProfileResult['overall'];
+
+        $viewKey       = BusinessOverviewModel::TYPE_CODE_VIEW;
+        $impressionKey = BusinessOverviewModel::TYPE_CODE_IMPRESSION;
+
+        $result[$viewKey]       = $businessProfileResult[$viewKey];
+        $result[$impressionKey] = $businessProfileResult[$impressionKey];
 
         return $result;
     }
 
-    protected function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
-    {
-        $startDate = \DateTime::createFromFormat('d-m-Y', $start);
-        $endDate = \DateTime::createFromFormat('d-m-Y', $end);
-
-        return new ReportDatesRangeVO($startDate, $endDate);
-    }
-
-    protected function prepareBusinessProfileOverviewReportStats($dates, $clicks, $impressions) : array
+    protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat) : array
     {
         $stats = [];
+        $dates = array_flip($dates);
 
-        foreach ($dates as $key => $date) {
-            if (!isset($clicks[$key]) || !isset($impressions[$key])) {
-                continue;
+        foreach ($dates as $date => $key) {
+            $stats['results'][$date]['date'] = $date;
+
+            // for table and api
+            foreach (BusinessOverviewModel::getTypes() as $type) {
+                $stats['results'][$date][$type] = 0;
             }
 
-            $stats[$date] = [
-                'date' => $date,
-                'views' => $clicks[$key],
-                'impressions' => $impressions[$key],
-            ];
+            // for chart only
+            $stats[BusinessOverviewModel::TYPE_CODE_VIEW][$key]       = 0;
+            $stats[BusinessOverviewModel::TYPE_CODE_IMPRESSION][$key] = 0;
+        }
+
+        foreach (BusinessOverviewModel::getTypes() as $type) {
+            $stats['total'][$type] = 0;
+        }
+
+        $stats['overall'] = 0;
+
+        foreach ($rawResult as $item) {
+            $action = $item[self::MONGO_DB_FIELD_ACTION];
+
+            if (in_array($action, BusinessOverviewModel::getTypes())) {
+                $count  = $item[self::MONGO_DB_FIELD_COUNT];
+                $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+
+                $viewDate = $datetime->format($dateFormat);
+
+                // for table and api
+                $stats['results'][$viewDate][$action] += $count;
+
+                // for chart only
+                if ($action == BusinessOverviewModel::TYPE_CODE_VIEW or
+                    $action == BusinessOverviewModel::TYPE_CODE_IMPRESSION
+                ) {
+                    $stats[$action][$dates[$viewDate]] += $count;
+                }
+
+                $stats['total'][$action] += $count;
+                $stats['overall'] += $count;
+            }
         }
 
         return $stats;
     }
 
-    protected function getBusinessProfileGaViews(
-        BusinessProfile $businessProfile,
-        ReportDatesRangeVO $dates,
-        string $dimension
-    ) : array
+    public function registerBusinessView(array $businessProfiles)
     {
-        $path = $this->getRouter()->generate('domain_business_profile_view', [
-            'slug'     => $businessProfile->getSlug(),
-            'citySlug' => $businessProfile->getCitySlug(),
-        ]);
+        $this->registerBusinessEvent(
+            BusinessOverviewModel::TYPE_CODE_VIEW,
+            $businessProfiles
+        );
+    }
 
-        //only for dev env - remove app_dev.php from URL (GA doesn't track it)
-        if ($this->getKernel()->getEnvironment() == 'dev') {
-            $path = str_replace('/app_dev.php', '', $path);
+    public function registerBusinessImpression(array $businessProfiles)
+    {
+        $this->registerBusinessEvent(
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+            $businessProfiles
+        );
+    }
+
+    public function registerBusinessInteraction($businessProfileId, $type)
+    {
+        if ($businessProfileId and $type) {
+            $businessProfile = $this->getBusinessProfileManager()->getRepository()->find($businessProfileId);
+
+            if ($businessProfile) {
+                $result = $this->registerBusinessEvent(
+                    $type,
+                    [$businessProfile]
+                );
+
+                return $result;
+            }
         }
 
-        $views = $this->getGaDataSource()->getViews($path, $dates, $dimension);
-
-        return array_map(function($value) {
-            return (int)$value[1];
-        }, $views);
-    }
-
-    protected function getBusinessProfileGaImpressions(
-        BusinessProfile $businessProfile,
-        ReportDatesRangeVO $dates,
-        string $dimension
-    ) : array
-    {
-        $impressions = $this->getGaDataSource()->getImpressions($businessProfile->getSlug(), $dates, $dimension);
-
-        return array_map(function($value) {
-            return (int)$value[1];
-        }, $impressions);
-    }
-
-    /**
-     * @param int $businessProfileId
-     * @param \DateTime|null $datetime
-     */
-    public function registerBusinessView(int $businessProfileId, \DateTime $datetime = null)
-    {
-        $this->registerBusinessOverview(
-            BusinessOverviewReportTypeInterface::TYPE_CODE_VIEW,
-            $businessProfileId,
-            $datetime
-        );
-    }
-
-    /**
-     * @param int $businessProfileId
-     * @param \DateTime|null $datetime
-     */
-    public function registerBusinessImpression(int $businessProfileId, \DateTime $datetime = null)
-    {
-        $this->registerBusinessOverview(
-            BusinessOverviewReportTypeInterface::TYPE_CODE_IMPRESSION,
-            $businessProfileId,
-            $datetime
-        );
+        return false;
     }
 
     /**
      * @param $type
-     * @param int $businessProfileId
-     * @param \DateTime|null $datetime
+     * @param array $businessProfiles
+     *
+     * @return bool
      */
-    private function registerBusinessOverview($type, int $businessProfileId, \DateTime $datetime = null)
+    private function registerBusinessEvent($type, array $businessProfiles)
     {
-        if (!array_key_exists($type, BusinessOverviewReportBusinessProfile::getTypes())) {
-            throw new \InvalidArgumentException(sprintf('Invalid Business overview report type (%s)'), $type);
+        if (!in_array($type, BusinessOverviewModel::getTypes()) or !$businessProfiles) {
+            return false;
         }
 
-        $em = $this->getEntityManager();
+        $businessProfileIds = BusinessProfileUtil::extractBusinessProfiles($businessProfiles);
 
-        $businessProfile = $em->getRepository('DomainBusinessBundle:BusinessProfile')->findOneBy([
-            'id' => $businessProfileId
-        ]);
+        $data = $this->buildBusinessInteractions($businessProfileIds, $type);
 
-        if (!$businessProfile) {
-            throw new \InvalidArgumentException(sprintf('Invalid Business profile Id (%s)'), $businessProfileId);
-        }
+        $this->insertBusinessInteractions($data);
 
-        $datetime = ($datetime) ? $datetime : new \DateTime();
-
-        $businessOverviewReport = $em->getRepository('DomainReportBundle:BusinessOverviewReport')->findOneBy([
-            'date' => $datetime
-        ]);
-
-        if (!$businessOverviewReport) {
-            $businessOverviewReport = new BusinessOverviewReport();
-            $businessOverviewReport->setDate($datetime);
-        }
-
-        $businessOverviewReportBusinessProfile = new BusinessOverviewReportBusinessProfile();
-        $businessOverviewReportBusinessProfile->setBusinessOverviewReport($businessOverviewReport);
-        $businessOverviewReportBusinessProfile->setBusinessProfile($businessProfile);
-        $businessOverviewReportBusinessProfile->setDatetime($datetime);
-        $businessOverviewReportBusinessProfile->setType($type);
-
-        $em->persist($businessOverviewReport);
-        $em->persist($businessOverviewReportBusinessProfile);
-
-        $em->flush();
+        return true;
     }
 
     /**
-     * @param array $filterParams
+     * @param string $businessSlug
      * @param string $format
-     * @return mixed
+     * @return string
      */
-    public function getBusinessOverviewReportDataAndName(array $filterParams, string $format) : array
+    public function getBusinessOverviewReportName($businessSlug, $format)
     {
-        $businessOverviewData = $this->getBusinessOverviewDataByFilterParams($filterParams);
+        $this->reportName = $businessSlug;
 
-        if ($businessOverviewData['businessProfile']) {
-            $reportName = str_replace(' ', '_', $businessOverviewData['businessProfile']);
-        } else {
-            $reportName = 'business_overview_report';
+        $filename = $this->generateReportName($format);
+
+        return $filename;
+    }
+
+    protected function buildSingleBusinessInteraction($businessId, $action, $date)
+    {
+        $data = [
+            self::MONGO_DB_FIELD_BUSINESS_ID => $businessId,
+            self::MONGO_DB_FIELD_ACTION      => $action,
+            self::MONGO_DB_FIELD_DATE_TIME   => $date,
+        ];
+
+        return $data;
+    }
+
+    protected function buildBusinessInteractions($businessProfileIds, $action)
+    {
+        $data = [];
+        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
+
+        foreach ($businessProfileIds as $businessProfileId) {
+            $data[] = $this->buildSingleBusinessInteraction($businessProfileId, $action, $date);
         }
 
-        $filename = $this->generateReportName($format, $reportName);
+        $data[] = $this->buildSingleBusinessInteraction(0, $action, $date);
 
-        return [$businessOverviewData, $filename];
+        return $data;
     }
 
-    protected function getKernel()
+    protected function insertBusinessInteractions($data)
     {
-        return $this->kernel;
+        $this->mongoDbManager->insertMany(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            $data
+        );
     }
 
-    protected function getRouter()
+    public function getBusinessInteractionData($params)
     {
-        return $this->router;
+        $cursor = $this->mongoDbManager->find(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            [
+                self::MONGO_DB_FIELD_BUSINESS_ID => (int)$params['businessProfileId'],
+                self::MONGO_DB_FIELD_DATE_TIME => [
+                    '$gte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getStartDate()),
+                    '$lte' => $this->mongoDbManager->typeUTCDateTime($params['dateObject']->getEndDate()),
+                ],
+            ]
+        );
+
+        return $cursor;
+    }
+
+    public function aggregateBusinessInteractions($period)
+    {
+        $aggregateStartDate = $this->mongoDbManager->typeUTCDateTime($period->getStartDate());
+        $aggregateEndDate   = $this->mongoDbManager->typeUTCDateTime($period->getEndDate());
+
+        $cursor = $this->mongoDbManager->aggregateData(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            [
+                [
+                    '$match' => [
+                        self::MONGO_DB_FIELD_DATE_TIME => [
+                            '$gte' => $aggregateStartDate,
+                            '$lte' => $aggregateEndDate,
+                        ],
+                    ],
+                ],
+                [
+                    '$project' => [
+                        'query' => [
+                            'action' => '$' . self::MONGO_DB_FIELD_ACTION,
+                            'bid'    => '$' . self::MONGO_DB_FIELD_BUSINESS_ID,
+                        ],
+                    ]
+                ],
+                [
+                    '$group' => [
+                        '_id' => '$query',
+                        self::MONGO_DB_FIELD_COUNT => [
+                            '$sum' => 1,
+                        ],
+                    ],
+                ]
+            ]
+        );
+
+        foreach ($cursor as $document) {
+            $document[self::MONGO_DB_FIELD_ACTION]      = $document['_id']['action'];
+            $document[self::MONGO_DB_FIELD_BUSINESS_ID] = $document['_id']['bid'];
+            $document[self::MONGO_DB_FIELD_DATE_TIME]   = $aggregateStartDate;
+
+            $document['_id'] = $this->mongoDbManager->generateId();
+
+            $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
+        }
+    }
+
+    public function getThisYearSearchParams($params)
+    {
+        return $this->getYearSearchParam($params, DatesUtil::RANGE_THIS_YEAR);
+    }
+
+    public function getThisLastSearchParams($params)
+    {
+        return $this->getYearSearchParam($params, DatesUtil::RANGE_LAST_YEAR);
+    }
+
+    protected function getYearSearchParam($params, $range)
+    {
+        $dates = DatesUtil::getDateRangeValueObjectFromRangeType($range);
+
+        $params['date']['start'] = $dates->getStartDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
+        $params['date']['end']   = $dates->getEndDate()->format(DatesUtil::START_END_DATE_ARRAY_FORMAT);
+
+        $params['periodOption'] = AdminHelper::PERIOD_OPTION_CODE_PER_MONTH;
+
+        return $params;
     }
 
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
-    }
-
-    protected function getGaDataSource() : DataFetcher
-    {
-        return $this->gaDataSource;
     }
 }

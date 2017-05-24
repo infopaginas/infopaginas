@@ -42,7 +42,7 @@ class DoctrineUtil
             return null;
         }
 
-        if ( ! $class->isInheritanceTypeNone()) {
+        if (!$class->isInheritanceTypeNone()) {
             $class = $em->getClassMetadata(get_class($entity));
         }
 
@@ -61,18 +61,16 @@ class DoctrineUtil
                 }
 
                 // If $value is not a Collection then use an ArrayCollection.
-                if ( ! $value instanceof Collection) {
+                if (!$value instanceof Collection) {
                     $value = new ArrayCollection($value);
                 }
 
                 $assoc = $class->associationMappings[$name];
 
                 // Inject PersistentCollection
-                $value = new PersistentCollection(
-                    $em, $em->getClassMetadata($assoc['targetEntity']), $value
-                );
+                $value = new PersistentCollection($em, $em->getClassMetadata($assoc['targetEntity']), $value);
                 $value->setOwner($entity, $assoc);
-                $value->setDirty( ! $value->isEmpty());
+                $value->setDirty(!$value->isEmpty());
 
                 $class->reflFields[$name]->setValue($entity, $value);
 
@@ -81,7 +79,9 @@ class DoctrineUtil
                 continue;
             }
 
-            if (( ! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity()) && ($name !== $class->versionField)) {
+            if ((!$class->isIdentifier($name) or !$class->isIdGeneratorIdentity()) and
+                ($name !== $class->versionField)
+            ) {
                 $actualData[$name] = $value;
             }
         }
@@ -94,7 +94,7 @@ class DoctrineUtil
             $changeSet = array();
 
             foreach ($actualData as $propName => $actualValue) {
-                if ( ! isset($class->associationMappings[$propName])) {
+                if (!isset($class->associationMappings[$propName])) {
                     $changeSet[$propName] = array(null, $actualValue);
 
                     continue;
@@ -117,7 +117,7 @@ class DoctrineUtil
 
             foreach ($actualData as $propName => $actualValue) {
                 // skip field, its a partially omitted one!
-                if ( ! (isset($originalData[$propName]) || array_key_exists($propName, $originalData))) {
+                if (!(isset($originalData[$propName]) || array_key_exists($propName, $originalData))) {
                     continue;
                 }
 
@@ -129,7 +129,7 @@ class DoctrineUtil
                 }
 
                 // if regular field
-                if ( ! isset($class->associationMappings[$propName])) {
+                if (!isset($class->associationMappings[$propName])) {
                     if ($isChangeTrackingNotify) {
                         continue;
                     }
@@ -148,7 +148,7 @@ class DoctrineUtil
                     $owner = $actualValue->getOwner();
                     if ($owner === null) { // cloned
                         $actualValue->setOwner($entity, $assoc);
-                    } else if ($owner !== $entity) { // no clone, we have to fix
+                    } elseif ($owner !== $entity) { // no clone, we have to fix
                         // @todo - what does this do... can it be removed?
                         if (!$actualValue->isInitialized()) {
                             $actualValue->initialize(); // we have to do this otherwise the cols share state
@@ -172,9 +172,7 @@ class DoctrineUtil
                 }
             }
 
-            if ($changeSet) {
-                $entityChangeSets[$oid]     = $changeSet;
-            }
+            $entityChangeSets[$oid]     = $changeSet;
         }
 
         return $entityChangeSets[$oid];

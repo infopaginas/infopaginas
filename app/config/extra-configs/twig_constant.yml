@@ -1,0 +1,99 @@
+# Twig Constant Configuration
+twig:
+    globals:
+#       const of Category class
+        CATEGORY_LEVEL_1: 1
+        CATEGORY_LEVEL_2: 2
+        CATEGORY_LEVEL_3: 3
+
+        CATEGORY_DEFAULT_LEVEL:    1
+        SUBCATEGORY_DEFAULT_LEVEL: 2
+        CATEGORY_MAX_LEVEL:        3
+
+        PAGINATION_RADIUS: 2
+
+#        const of BusinessProfileFormHandler class
+        MESSAGE_BUSINESS_PROFILE_FLASH_GROUP: 'success'
+
+#        const of BusinessProfile class
+        BUSINESS_PROFILE_FIELD:
+            SEO_TITLE:       'seoTitle'
+            SEO_DESCRIPTION: 'seoDescription'
+            NAME:            'name'
+            NAME_ES:         'nameEs'
+            NAME_EN:         'nameEn'
+            DESCRIPTION:     'description'
+            DESCRIPTION_ES:  'descriptionEs'
+            DESCRIPTION_EN:  'descriptionEn'
+            PRODUCT:         'product'
+            BRANDS:          'brands'
+            WORKING_HOURS:   'workingHours'
+            SLOGAN:          'slogan'
+
+        WORKING_HOURS_ASSOCIATED_FIELD: 'collectionWorkingHours'
+
+#        const of PaymentMethod class
+        PAYMENT_METHOD_TYPE:
+            CASH:       'cash'
+            CHECK:      'check'
+            PAYPAL:     'paypal'
+            ATH_MOVIL:  'ath_movil'
+            ONLINE:     'online'
+            DEBIT:      'debit'
+
+#       const types of ChangeSetCalculator class
+        CHANGE_SET_TYPE:
+            PROPERTY_IMAGE_PROPERTY_UPDATE: 'PROPERTY_IMAGE_PROPERTY_UPDATE'
+            PROPERTY_CHANGE:                'PROPERTY_CHANGE'
+            PROPERTY_ADD:                   'PROPERTY_ADD'
+            PROPERTY_REMOVE:                'PROPERTY_REMOVE'
+            IMAGE_ADD:                      'IMAGE_ADD'
+            IMAGE_REMOVE:                   'IMAGE_REMOVE'
+            VIDEO_ADD:                      'VIDEO_ADD'
+            VIDEO_REMOVE:                   'VIDEO_REMOVE'
+            VIDEO_UPDATE:                   'VIDEO_UPDATE'
+            VIDEO_PROPERTY_UPDATE:          'VIDEO_PROPERTY_UPDATE'
+            LOGO_ADD:                       'LOGO_ADD'
+            LOGO_REMOVE:                    'LOGO_REMOVE'
+            LOGO_UPDATE:                    'LOGO_UPDATE'
+            BACKGROUND_ADD:                 'BACKGROUND_ADD'
+            BACKGROUND_REMOVE:              'BACKGROUND_REMOVE'
+            BACKGROUND_UPDATE:              'BACKGROUND_UPDATE'
+
+            COMMON_PROPERTY:                'CHANGE_COMMON_PROPERTY'
+            TRANSLATION:                    'CHANGE_TRANSLATION'
+            RELATION_MANY_TO_ONE:           'CHANGE_RELATION_MANY_TO_ONE'
+            RELATION_ONE_TO_MANY:           'CHANGE_RELATION_ONE_TO_MANY'
+            RELATION_MANY_TO_MANY:          'CHANGE_RELATION_MANY_TO_MANY'
+            MEDIA_RELATION_MANY_TO_ONE:     'CHANGE_MEDIA_RELATION_MANY_TO_ONE'
+            MEDIA_RELATION_ONE_TO_MANY:     'CHANGE_MEDIA_RELATION_ONE_TO_MANY'
+
+#       banners - const of TypeInterface
+        BANNER_CODE:
+            HOME_VERTICAL:           1
+            PORTAL_RIGHT:            2
+            SEARCH_PAGE_BOTTOM:      3
+            SEARCH_PAGE_TOP:         4
+            STATIC_BOTTOM:           5
+            LANDING_PAGE_RIGHT:      6
+            BUSINESS_PAGE_RIGHT:     7
+            ARTICLE_PAGE_RIGHT:      8
+            VIDEO_PAGE_RIGHT:        9
+            COMPARE_PAGE_TOP:       10
+            COMPARE_PAGE_BOTTOM:    11
+            BUSINESS_PAGE_BOTTOM:   12
+            ARTICLE_PAGE_BOTTOM:    13
+            VIDEO_PAGE_BOTTOM:      14
+            SEARCH_FLOAT_BOTTOM:    15
+
+        SECURITY_ROLE:
+            ADMINISTRATOR: ROLE_ADMINISTRATOR
+
+        TASK:
+            PROFILE_CLAIM: PROFILE_CLAIM
+
+        SHORT_CUT_ITEMS:
+            LANDING: LANDING
+            ERROR: ERROR
+
+        PR_ALL_LOCALITIES: Puerto Rico (All localities)

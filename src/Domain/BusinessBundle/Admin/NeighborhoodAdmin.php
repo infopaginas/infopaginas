@@ -26,7 +26,9 @@ class NeighborhoodAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
             ->add('locality')
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
@@ -57,7 +59,9 @@ class NeighborhoodAdmin extends OxaAdmin
     {
         $formMapper
             ->add('name')
-            ->add('locality')
+            ->add('locality', null, [
+                'required' => true,
+            ])
             ->add(
                 'zips',
                 'sonata_type_collection',

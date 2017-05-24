@@ -1,68 +1,81 @@
 <?php
 
 namespace Oxa\DfpBundle\Command;
-use Domain\BusinessBundle\Entity\BusinessProfile;
-use Oxa\DfpBundle\Manager\DoubleClickCompaniesManager;
-use Oxa\DfpBundle\Manager\DoubleClickLineItemsManager;
-use Oxa\DfpBundle\Manager\DoubleClickOrdersManager;
+
+use Oxa\DfpBundle\Manager\DfpManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
+use Google\AdsApi\Dfp\v201702\DateRangeType;
 
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 11.09.16
- * Time: 15:05
- */
 class DoubleClickDataSynchCommand extends ContainerAwareCommand
 {
+    const REPORT_SYNCHRONIZATION_PERIOD_TODAY      = 'today';
+    const REPORT_SYNCHRONIZATION_PERIOD_YESTERDAY  = 'yesterday';
+
     protected function configure()
     {
         $this
-            // the name of the command (the part after "app/console")
             ->setName('ipgn:dfp:synch')
-            // the short description shown while running "php app/console list"
-            ->setDescription('Synchronize dfp data (better performance).')
-            // the full command description shown when running the command with
-            // the "--help" option
-            ->setHelp("This command allows you to fetch doubleclick data & save to local db. Run each 2h");
+            ->setDescription('Synchronize dfp data')
+            ->setDefinition(
+                new InputDefinition(
+                    [
+                        new InputOption(
+                            'period',
+                            'p',
+                            InputOption::VALUE_OPTIONAL,
+                            'Synchronization period, available options:
+                            ' . self::REPORT_SYNCHRONIZATION_PERIOD_TODAY . ' - default,
+                            ' . self::REPORT_SYNCHRONIZATION_PERIOD_YESTERDAY
+                        ),
+                    ]
+                )
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('Synch doubleclick companies..');
-        $this->getDoubleClickCompaniesManager()->synchronizeBusinessProfilesDoubleClickCompanies();
+        $period = $this->getSynchronizationPeriod($input);
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_START, 'execute:start, period: '.$period);
+        $output->writeln('Synchronize doubleClick orders..');
+        $this->getDFPManager()->synchronizeOrderReport($period);
         $output->writeln('.. done!');
+        $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_END, 'execute:start, period: '.$period);
 
-        $output->writeln('Synch doubleclick orders..');
-        $this->getDoubleClickOrdersManager()->synchronizeDoubleClickOrders();
-        $output->writeln('.. done!');
-
-        $output->writeln('Synch doubleclick line items..');
-        $this->getDoubleClickLineItemsManager()->synchronizeDoubleClickLineItems();
-        $output->writeln('.. done!');
     }
 
-    protected function getDoubleClickLineItemsManager() : DoubleClickLineItemsManager
+    protected function getSynchronizationPeriod(InputInterface $input)
     {
-        return $this->getContainer()->get('oxa_dfp.manager.doubleclick_line_items');
+        if ($input->getOption('period')) {
+            switch ($input->getOption('period')) {
+                case self::REPORT_SYNCHRONIZATION_PERIOD_TODAY:
+                    $period = DateRangeType::TODAY;
+                    break;
+                case self::REPORT_SYNCHRONIZATION_PERIOD_YESTERDAY:
+                    $period = DateRangeType::YESTERDAY;
+                    break;
+                default:
+                    $period = DateRangeType::TODAY;
+                    break;
+            }
+        } else {
+            $period = DateRangeType::TODAY;
+        }
+
+        return $period;
     }
 
     /**
-     * @return DoubleClickOrdersManager
+     * @return DfpManager
      */
-    protected function getDoubleClickOrdersManager() : DoubleClickOrdersManager
+    protected function getDFPManager() : DfpManager
     {
-        return $this->getContainer()->get('oxa_dfp.manager.doubleclick_orders');
-    }
-
-    /**
-     * @return DoubleClickCompaniesManager
-     */
-    protected function getDoubleClickCompaniesManager() : DoubleClickCompaniesManager
-    {
-        return $this->getContainer()->get('oxa_dfp.manager.doubleclick_companies');
+        return $this->getContainer()->get('oxa_dfp.manager');
     }
 }

@@ -82,6 +82,7 @@ class TasksManager
      *
      * @access public
      * @param BusinessProfile $businessProfile
+     * @param Collection      $oldCategories
      * @return array
      */
     public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile) : array
@@ -90,18 +91,27 @@ class TasksManager
         return $this->save($task);
     }
 
-    /**
-     * Create new 'Update Business Profile' task
-     *
-     * @access public
-     * @param BusinessProfile $businessProfile
-     * @return array
-     */
-    public function createUpdateProfileConfirmationRequest(BusinessProfile $businessProfile) : array
+    public function createUpdateProfileConfirmationRequest($entityNew, $entityOld) : array
     {
-        $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
-        $task->setChangeSet(ChangeSetCalculator::getChangeSet($this->em, $businessProfile));
-        return $this->save($task, false);
+        $changeSetCalculator = $this->getChangeSetCalculator($entityNew);
+
+        if ($changeSetCalculator) {
+            $changeSet = $changeSetCalculator::getChangeSet($this->em, $entityNew, $entityOld);
+        } else {
+            $changeSet = null;
+        }
+
+        if ($changeSet and $changeSet->getEntries()->isEmpty()) {
+            return [];
+        }
+
+        $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $entityOld);
+
+        $task->setChangeSet($changeSet);
+
+        $result = $this->save($task, false);
+
+        return $result;
     }
 
     /**
@@ -116,6 +126,20 @@ class TasksManager
     {
         $task = TasksFactory::create(TaskType::TASK_PROFILE_CLOSE, $businessProfile);
         $task->setClosureReason($closeReason);
+        return $this->save($task);
+    }
+
+    /**
+     * @param BusinessProfile   $businessProfile
+     * @param string            $message
+     *
+     * @return array
+     */
+    public function createClaimProfileConfirmationRequest($businessProfile, $message)
+    {
+        $task = TasksFactory::create(TaskType::TASK_PROFILE_CLAIM, $businessProfile);
+        $task->setClosureReason($message);
+
         return $this->save($task);
     }
 
@@ -220,14 +244,32 @@ class TasksManager
                 );
             }
         } elseif ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
-            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet(), $this->getTaskLocale($task));
+            $this->getBusinessProfileManager()->publish($task->getBusinessProfile(), $task->getChangeSet());
         } elseif ($task->getType() == TaskType::TASK_REVIEW_APPROVE) {
             $this->getBusinessReviewsManager()->publish($task->getReview());
         } elseif ($task->getType() == TaskType::TASK_PROFILE_CLOSE) {
             $this->getBusinessProfileManager()->deactivate($task->getBusinessProfile());
+        } elseif ($task->getType() == TaskType::TASK_PROFILE_CLAIM) {
+            $this->getBusinessProfileManager()->claim($task->getBusinessProfile(), $task->getCreatedUser());
+            $this->rejectOtherClaimRequests($task->getBusinessProfile()->getId(), $task->getId());
         }
 
         return $this->save($task);
+    }
+
+    /**
+     * @param int $businessProfileId
+     * @param int $currentTaskId
+     */
+    public function rejectOtherClaimRequests($businessProfileId, $currentTaskId)
+    {
+        $tasks = $this->em->getRepository(Task::class)
+            ->getOtherClaimRequestsForBusiness($businessProfileId, $currentTaskId);
+
+        foreach ($tasks as $task) {
+            $task->setRejectReason(Task::REJECT_REASON_BUSINESS_ALREADY_CLAIMED);
+            $this->reject($task);
+        }
     }
 
     /**
@@ -285,6 +327,9 @@ class TasksManager
                 $review = $task->getReview();
                 $this->getMailer()->sendBusinessProfileReviewRejectEmailMessage($review, $rejectReason);
                 break;
+            case TaskType::TASK_PROFILE_CLAIM:
+                $this->getMailer()->sendBusinessProfileClaimRejectEmailMessage($task, $rejectReason);
+                break;
         }
     }
 
@@ -339,5 +384,16 @@ class TasksManager
         ];
 
         return $response;
+    }
+
+    private function getChangeSetCalculator($entity)
+    {
+        if ($entity instanceof BusinessProfile) {
+            $changeSetCalculator = new ChangeSetCalculator();
+        } else {
+            $changeSetCalculator = null;
+        }
+
+        return $changeSetCalculator;
     }
 }

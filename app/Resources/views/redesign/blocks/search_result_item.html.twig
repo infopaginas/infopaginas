@@ -1,0 +1,95 @@
+{% set hasVideo = video_section_allowed_for_business(item) and item.getVideo() is not null %}
+{% set hasImages = item.logo or item.background or item.images|length > 0 and hasSubscription(item, "CODE_PREMIUM_PLUS") %}
+{% set itemSubscriptionClass = getItemSubscriptionClass(item) %}
+
+<div class="results__item results__item--{{ itemSubscriptionClass }}" id="{{ item.id }}">
+    <div class="item__content clearfix" data-item-content>
+        <div class="item__img">
+            {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
+                <img width="80" src="{% path item.getLogo(), 'preview' %}">
+                <div class="att-icons">
+                    {% if hasImages and hasSubscription(item, "CODE_PREMIUM_GOLD") %}
+                        <i class="fa fa-camera"></i>
+                    {% endif %}
+                    {% if hasVideo and hasSubscription(item, "CODE_PREMIUM_PLATINUM") %}
+                        <i class="fa fa-play-circle"></i>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="item__summary {% if hasSubscription(item, 'CODE_PREMIUM_PLUS') == false or item.getLogo() == null %}item__summary-no-logo{% endif %}">
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
+                <div class="item__header header-align-stars">
+                    {% set workingHoursData = get_business_profile_open_status(item) %}
+                    {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
+                    <div class="rank">
+                        <div class="rank-ta rank-ta--5"></div>
+                        <div class="stars rank__item">
+                            {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(item) %}
+                            {% if reviewsAvgRating|number_format(0) %}
+                                {% for i in 1 .. reviewsAvgRating|number_format(0) %}
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="item__info">
+                    <h2>{% if hasSubscription(item, "CODE_SUPER_VM") %} <i class="fa fa-star"></i> {% endif %}{{ item.name }}</h2>
+                    {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
+                        <p>{{ item.slogan }}</p>
+                    {% endif %}
+                    {% if not item.getHideAddress() %}
+                        <address>
+                            {% if item.getCustomAddress() %}
+                                {{ item.getCustomAddress() }}
+                            {% else %}
+                                {{ item.getCity() }}, {{ item.getStreetAddress() }}
+                            {% endif %}
+                            <span class="how-far">
+                                {{ item.getDistanceUX() }}
+                                {% if search.locationValue.userGeo %}
+                                    {% trans %}search.miles_to.user{% endtrans %}
+                                {% else %}
+                                    {% trans %}search.miles_to.location{% endtrans %} {{ search.locationValue.locality.name }}
+                                {% endif %}
+                            </span>
+                        </address>
+                    {% endif %}
+                </div>
+            </a>
+        </div><!-- item__summary -->
+    </div><!-- item__content -->
+    <div class="item__actions">
+        <div class="item__primary-actions">
+            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+                <i class="fa fa-location-arrow"></i>
+                {% trans %}Directions{% endtrans %}
+            </a>
+            <a class="button button--small button--featured hide-mobile link-pointer" id="show-on-map-{{ item.id }}">
+                <i class="fa fa-location-arrow"></i>
+                {% trans %}Show on Map{% endtrans %}
+            </a>
+            {% if item.getPhones() | length > 0 %}
+                <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
+                    <i class="fa fa-phone"></i>
+                    {% trans %}Call{% endtrans %}
+                </a>
+                <div class="dropdown dropdown-call hide-mobile">
+                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="fa fa-phone"></i>
+                    {% trans %}Call{% endtrans %}
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
+                  {% for phone in item.getPhones() %}
+                    <li>{{ phone.phone }}</li>
+                    <li role="separator" class="divider"></li>
+                  {% endfor %}
+                  </ul>   
+                </div>
+            {% endif %}
+        </div><!-- item__primary-actions -->
+    </div>
+</div><!-- results__item -->

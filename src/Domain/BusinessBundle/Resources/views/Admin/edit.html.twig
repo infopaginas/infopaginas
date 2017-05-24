@@ -4,6 +4,13 @@
     {{ parent() }}
     <script>
         var formId = '{{ form.vars.id }}';
+        var parentId = '{{ app.request.get('id', null) }}';
+        var businessProfileId = '{{ form.vars.value.id }}';
+        var currentLocale = '{{ form.vars.value.locale }}';
     </script>
-    <script type="text/javascript" src="{{ asset('/bundles/domainbusiness/scripts/modules/businessProfileAdmin.js')}}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/businessProfileAdmin.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/reportsAdmin.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/highcharts.js')}}"></script>
 {% endblock %}

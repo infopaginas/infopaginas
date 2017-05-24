@@ -2,21 +2,13 @@
 
 namespace Domain\BusinessBundle\EventListener;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\UnitOfWork;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
-use Domain\BusinessBundle\Entity\Translation\SubscriptionPlanTranslation;
 use Domain\BusinessBundle\Manager\SubscriptionStatusManager;
-use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Model\StatusInterface;
-use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
-use Oxa\Sonata\AdminBundle\Model\DeleteableEntityInterface;
-use Doctrine\ORM\Event\OnFlushEventArgs;
 
 /**
  * To set free plan subscription for businesses without subscription
@@ -24,12 +16,19 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
  * Class SubscriptionListener
  * @package Oxa\Sonata\AdminBundle\EventListener
  */
-class SubscriptionListener
+class SubscriptionListener implements EventSubscriber
 {
     /**
      * @var SubscriptionStatusManager $subscriptionStatusManager
      */
     private $subscriptionStatusManager;
+
+    public function getSubscribedEvents()
+    {
+        return [
+            Events::onFlush,
+        ];
+    }
 
     /**
      * @param SubscriptionStatusManager $manager
@@ -39,17 +38,18 @@ class SubscriptionListener
         $this->subscriptionStatusManager = $manager;
     }
 
-    /**
-     * @param PostFlushEventArgs $args
-     */
-    public function postFlush(PostFlushEventArgs $args)
+    public function onFlush(OnFlushEventArgs $args)
     {
         $em = $args->getEntityManager();
-        $businessProfiles = $this->subscriptionStatusManager->setFreeSubscription($em);
 
-        if ($businessProfiles) {
-            $em->getEventManager()->removeEventListener(Events::postFlush, $this);
-            $em->flush();
+        $uow = $em->getUnitOfWork();
+
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof BusinessProfile) {
+                $this->subscriptionStatusManager->manageBusinessSubscriptionCreate($entity, $em);
+            }
         }
+
+        $uow->computeChangeSets();
     }
 }

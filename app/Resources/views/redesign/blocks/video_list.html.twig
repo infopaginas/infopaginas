@@ -1,0 +1,18 @@
+<section class="page-section page-section--no-box articles-section">
+    <h1 class="section__title">{% trans %}Videos{% endtrans %}</h1>
+    <div class="articles__container clearfix">
+        {% for item in businessProfiles %}
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to watch...{% endtrans %}" class="news__item clearfix">
+                {% if item.getLogo() %}
+                    <div class="avatar">
+                        <img class="news__img" src="{% path item.getLogo(), 'normal' %}">
+                    </div>
+                {% endif %}
+                <h3 class="news__title">{{ item.getName() }}</h3>
+                {% if item.getDescription() %}
+                    <p>{{ cut_body_extension(item.getDescription()) }}</p>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+</section>

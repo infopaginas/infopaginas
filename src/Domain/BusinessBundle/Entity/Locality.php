@@ -20,7 +20,6 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
  *
  * @ORM\Table(name="locality")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\LocalityRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\LocalityTranslation")
  */
@@ -29,6 +28,17 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     use DefaultEntityTrait;
     use LocationTrait;
     use PersonalTranslatable;
+
+    const ALL_LOCALITY = 'PR';
+    const ALL_LOCALITY_NAME = 'Puerto Rico';
+    const DEFAULT_CATALOG_LOCALITY_SLUG = 'san-juan';
+    const ALLOW_DELETE_ASSOCIATED_FIELD_BUSINESS_PROFILES = 'businessProfiles';
+    const ALLOW_DELETE_ASSOCIATED_FIELD_CATALOG_ITEMS     = 'catalogItems';
+
+    const ELASTIC_DOCUMENT_TYPE = 'Locality';
+
+    const FLAG_IS_UPDATED       = 'isUpdated';
+    const LOCALITY_FIELD_NAME   = 'name';
 
     /**
      * @var int
@@ -91,18 +101,53 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     protected $translations;
 
     /**
-     * @var string
+     * @var string - Used to create human like url
      *
-     * @ORM\Column(name="search_fts", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "name"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
+     * @ORM\Column(name="slug", type="string", length=100)
      */
-    protected $searchFts;
+    protected $slug;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
+     *      mappedBy="catalogLocality",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $businessProfiles;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\BusinessBundle\Entity\CatalogItem",
+     *      mappedBy="locality",
+     * )
+     */
+    protected $catalogItems;
+
+    /**
+     * Related to FLAG_IS_UPDATED const
+     * @var bool
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
+     */
+    protected $isUpdated;
+
+    /**
+     * @var LocalityPseudo[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\LocalityPseudo",
+     *     mappedBy="locality",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $pseudos;
 
     /**
      * Constructor
@@ -110,8 +155,13 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     public function __construct()
     {
         $this->businessProfile  = new ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
         $this->translations     = new ArrayCollection();
         $this->neighborhoods    = new ArrayCollection();
+        $this->catalogItems     = new ArrayCollection();
+        $this->pseudos          = new ArrayCollection();
+
+        $this->isUpdated = true;
     }
 
     /**
@@ -184,6 +234,47 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     }
 
     /**
+     * @return mixed
+     */
+    public function getBusinessProfiles()
+    {
+        return $this->businessProfiles;
+    }
+
+    /**
+     * @param mixed $businessProfiles
+     * @return Locality
+     */
+    public function setBusinessProfiles($businessProfiles)
+    {
+        $this->businessProfiles = $businessProfiles;
+        return $this;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\BusinessBundle\Entity\BusinessProfile $businessProfiles
+     *
+     * @return Locality
+     */
+    public function addBusinessProfiles(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfiles)
+    {
+        $this->businessProfiles[] = $businessProfiles;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfiles
+     * @return $this
+     */
+    public function removeBusinessProfiles(\Domain\BusinessBundle\Entity\BusinessProfile $businessProfiles)
+    {
+        $this->businessProfiles->removeElement($businessProfiles);
+
+        return $this;
+    }
+
+    /**
      *  Get owning area for this locality
      *
      * @return Area
@@ -227,34 +318,122 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     }
 
     /**
-     * Set searchFts
-     *
-     * @param tsvector $searchFts
-     *
-     * @return Locality
-     */
-    public function setSearchFts($searchFts)
-    {
-        $this->searchFts = $searchFts;
-
-        return $this;
-    }
-
-    /**
-     * Get searchFts
-     *
-     * @return tsvector
-     */
-    public function getSearchFts()
-    {
-        return $this->searchFts;
-    }
-
-    /**
      * @return string
      */
     public function __toString()
     {
         return $this->getName() ?: '';
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Category
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCatalogItems()
+    {
+        return $this->catalogItems;
+    }
+
+    /**
+     * Add catalogItem
+     *
+     * @param CatalogItem $catalogItem
+     *
+     * @return Locality
+     */
+    public function addCatalogItem(CatalogItem $catalogItem)
+    {
+        $this->catalogItems[] = $catalogItem;
+
+        return $this;
+    }
+
+    /**
+     * @param CatalogItem $catalogItem
+     *
+     * @return Locality
+     */
+    public function removeCatalogItems(CatalogItem $catalogItem)
+    {
+        $this->catalogItems->removeElement($catalogItem);
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return Locality
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPseudos()
+    {
+        return $this->pseudos;
+    }
+
+    /**
+     * Add $pseudo
+     *
+     * @param LocalityPseudo $pseudo
+     *
+     * @return Locality
+     */
+    public function addPseudo($pseudo)
+    {
+        $this->pseudos[] = $pseudo;
+
+        $pseudo->setLocality($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove pseudo
+     *
+     * @param LocalityPseudo $pseudo
+     */
+    public function removePseudo($pseudo)
+    {
+        $this->pseudos->removeElement($pseudo);
     }
 }

@@ -2,6 +2,11 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Doctrine\ORM\EntityManager;
+use Domain\BusinessBundle\Model\CategoryModel;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\BusinessBundle\Util\SlugUtil;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -22,9 +27,35 @@ use Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation;
 use Domain\BusinessBundle\Entity\Translation\TagTranslation;
 use \Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 
 class MigrationCommand extends ContainerAwareCommand
 {
+    const SYSTEM_CATEGORY_SEPARATOR = ' / ';
+    const CATEGORY_NAME_MAX_LENGTH = 250;
+    const TAG_SEPARATOR = ';';
+    const TWITTER_URL_PREFIX = 'https://twitter.com/';
+
+    /**
+     * @var EntityManager $em
+     */
+    protected $em;
+
+    /**
+     * @var array $categoryEnMergeMapping
+     */
+    protected $categoryEnMergeMapping;
+
+    /**
+     * @var array $categoryEsMergeMapping
+     */
+    protected $categoryEsMergeMapping;
+
+    /**
+     * @var array $deleteLocalityList
+     */
+    protected $deleteLocalityList;
+
     protected function configure()
     {
         $this->setName('data:migration');
@@ -35,6 +66,7 @@ class MigrationCommand extends ContainerAwareCommand
                 new InputOption('skipImages', 'i'),
                 new InputOption('pageCountLimit', 'pl', InputOption::VALUE_OPTIONAL),
                 new InputOption('pageStart', 'ps', InputOption::VALUE_OPTIONAL),
+                new InputOption('twitterOnly', 't'),
             ))
         );
     }
@@ -47,25 +79,11 @@ class MigrationCommand extends ContainerAwareCommand
         $this->localePrimary = 'en';
         $this->localeSecond = 'es';
 
-        $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(['shortName' => 'PR']);
+        $this->totalTimer = 0;
 
-        // get subscription plans
-
-        $planMapping = [
-            SubscriptionPlanInterface::CODE_FREE => 'Free',
-            SubscriptionPlanInterface::CODE_PRIORITY => 'Priority',
-            SubscriptionPlanInterface::CODE_PREMIUM_PLUS => 'Premium Plus',
-            SubscriptionPlanInterface::CODE_PREMIUM_GOLD => 'Premium Gold',
-            SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM => 'Premium Platinum',
-        ];
-
-        $plans = $this->em->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();
-
-        $this->subscriptionPlans = [];
-
-        foreach ($plans as $item) {
-            $this->subscriptionPlans[$planMapping[$item->getCode()]] = $item;
-        }
+        $this->categoryEnMergeMapping = CategoryModel::getCategoryEnMergeMapping();
+        $this->categoryEsMergeMapping = CategoryModel::getCategoryEsMergeMapping();
+        $this->deleteLocalityList = LocalityConvertCommand::getDeleteLocalities();
 
         if ($input->getOption('pageStart')) {
             $pageStart = $input->getOption('pageStart');
@@ -91,11 +109,52 @@ class MigrationCommand extends ContainerAwareCommand
             $this->skipImages = false;
         }
 
+        if ($input->getOption('twitterOnly')) {
+            $this->twitterOnly = true;
+        } else {
+            $this->twitterOnly = false;
+        }
+
         $baseUrl = 'http://infopaginas.drxlive.com/api/businesses';
 
+        if ($this->withDebug) {
+            $pageCurlTime = 0;
+            $pageDbTime = 0;
+            $itemCounter = 1;
+            $this->totalTimer = microtime(true);
+        }
+
         for ($page = $pageStart; $page <= ($pageStart + $pageCountLimit); $page++) {
+
+            // see http://www.doctrine-project.org/2009/08/07/doctrine2-batch-processing.html
+            $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')
+                ->findOneBy(['shortName' => 'PR']);
+
+            // get subscription plans
+
+            $planMapping = [
+                SubscriptionPlanInterface::CODE_FREE => 'Free',
+                SubscriptionPlanInterface::CODE_PRIORITY => 'Priority',
+                SubscriptionPlanInterface::CODE_PREMIUM_PLUS => 'Premium Plus',
+                SubscriptionPlanInterface::CODE_PREMIUM_GOLD => 'Premium Gold',
+                SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM => 'Premium Platinum',
+                SubscriptionPlanInterface::CODE_SUPER_VM => 'SuperVM',
+            ];
+
+            $plans = $this->em->getRepository('DomainBusinessBundle:SubscriptionPlan')->findAll();
+
+            $this->subscriptionPlans = [];
+
+            foreach ($plans as $item) {
+                $this->subscriptionPlans[$planMapping[$item->getCode()]] = $item;
+            }
+
             if ($this->withDebug) {
-                $output->writeln('Start request page number ' . $page);
+                $output->writeln(
+                    'Start request page number ' . $page .
+                    '; Curl Timer: ' . ($pageCurlTime/$itemCounter) .
+                    '; DB Timer: ' . ($pageDbTime/$itemCounter)
+                );
             }
 
             $data = $this->getCurlData($baseUrl . '?page=' . $page, $this->localePrimary);
@@ -106,14 +165,26 @@ class MigrationCommand extends ContainerAwareCommand
 
                     $itemId = $item->_id;
 
-                    if (1) {
+                    $businessProfile = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+                        ->findOneBy(['uid' => $itemId]);
+
+                    if (!$businessProfile or ($businessProfile and $this->twitterOnly)) {
                         if ($this->withDebug) {
+                            $itemCounter ++;
                             $output->writeln('Starts request item with id ' . $itemId);
+                            $curlTimer = microtime(true);
                         }
 
                         $itemPrimary = $this->getCurlData($baseUrl . '/' . $itemId, $this->localePrimary);
                         $itemSecond = $this->getCurlData($baseUrl . '/' . $itemId, $this->localeSecond);
-                        $subscriptions = $this->getCurlData($baseUrl . '/' . $itemId . '/subscriptions', $this->localePrimary);
+                        $subscriptions = $this->getCurlData(
+                            $baseUrl . '/' . $itemId . '/subscriptions',
+                            $this->localePrimary
+                        );
+
+                        if ($this->withDebug) {
+                            $dbTimer = microtime(true);
+                        }
 
                         $localities = [];
 
@@ -124,18 +195,33 @@ class MigrationCommand extends ContainerAwareCommand
                             }
                         }
 
-                        $radius = $item->radius_served;
+                        if (empty($item->radius_served)) {
+                            $radius = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
+                        } else {
+                            $radius = $item->radius_served;
+                        }
 
-                        $this->addBusinessProfileByApiData(
-                            $itemPrimary,
-                            $itemSecond,
-                            $subscriptions,
-                            $localities,
-                            $radius,
-                            $country
-                        );
+                        if ($this->twitterOnly) {
+                            $this->updateTwitter($businessProfile, $itemPrimary->business->profile);
+                        } else {
+                            $this->addBusinessProfileByApiData(
+                                $itemPrimary,
+                                $itemSecond,
+                                $subscriptions,
+                                $localities,
+                                $radius,
+                                $country
+                            );
+                        }
 
                         if ($this->withDebug) {
+                            $curlInterval = $dbTimer - $curlTimer;
+                            $dbInterval = microtime(true) - $dbTimer;
+
+                            $pageCurlTime += $curlInterval;
+                            $pageDbTime += $dbInterval;
+
+                            $output->writeln('Curl Timer: ' . $curlInterval . '; DB Timer: ' . $dbInterval);
                             $output->writeln('Finish request item with id ' . $itemId);
                         }
                     } else {
@@ -145,9 +231,13 @@ class MigrationCommand extends ContainerAwareCommand
                     }
                 }
             }
+
+            $this->em->flush();
+            $this->em->clear();
         }
 
         if ($this->withDebug) {
+            $output->writeln('Total time: '.(microtime(true) - $this->totalTimer));
             $output->writeln('Finish requests');
         }
     }
@@ -188,8 +278,14 @@ class MigrationCommand extends ContainerAwareCommand
         }
     }
 
-    private function addBusinessProfileByApiData($itemPrimary, $itemSecond, $subscriptions, $localities, $radius, $country)
-    {
+    private function addBusinessProfileByApiData(
+        $itemPrimary,
+        $itemSecond,
+        $subscriptions,
+        $localities,
+        $radius,
+        $country
+    ) {
         $manager = $this->getContainer()->get('domain_business.manager.business_profile');
 
         $business = $itemPrimary->business;
@@ -201,10 +297,11 @@ class MigrationCommand extends ContainerAwareCommand
         // populate profile
 
         $entity->setUid($business->id);
-        $entity->setName($name);
+        $entity->setName(trim($name));
 
-        //todo - set real slug !!!
         $entity->setSlug($business->slug);
+        $entity->setSlugEn($business->slug);
+        $entity->setSlugEs($itemSecond->business->slug);
 
         $entity->setRegistrationDate(new \DateTime($business->created_at));
 
@@ -218,23 +315,28 @@ class MigrationCommand extends ContainerAwareCommand
         $profile = $business->profile;
         $profileSecond = $itemSecond->business->profile;
 
-        $entity->setEmail($profile->email);
-        $entity->setSlogan($profile->slogan);
-        $entity->setDescription($profile->description);
-        $entity->setProduct($profile->products);
-        $entity->setWorkingHours($profile->hours_opr);
+        $entity->setEmail(trim($profile->email));
+        $entity->setSlogan(trim($profile->slogan));
+        $entity->setDescription(trim($profile->description));
+        $entity->setProduct(trim($profile->products));
+
+        $workingHours = mb_substr(
+            trim($profile->hours_opr),
+            0,
+            BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
+        );
+        $entity->setWorkingHours($workingHours);
 
 #        $entity->setPosition(?);
 
         $address = $business->address;
 
-        $entity->setCity($address->locality);
-        $entity->setStreetAddress($address->street_address);
-        $entity->setZipCode($address->postal_code);
-        $entity->setExtendedAddress($address->extended_address);
-        $entity->setCrossStreet($address->cross_street);
-        $entity->setLongitude($address->coordinates[0]);
-        $entity->setLatitude($address->coordinates[1]);
+        $entity->setCity(trim($address->locality));
+        $entity->setStreetAddress(trim($address->street_address));
+        $entity->setExtendedAddress(trim($address->extended_address));
+        $entity->setCrossStreet(trim($address->cross_street));
+        $entity->setLongitude(trim($address->coordinates[0]));
+        $entity->setLatitude(trim($address->coordinates[1]));
 
         $entity->setCountry($country);
 
@@ -244,71 +346,95 @@ class MigrationCommand extends ContainerAwareCommand
 
 #        $entity->setGoogleAddress(?);
 
-        $entity->setFacebookURL($profile->facebook_page_url);
-        $entity->setWebsite($profile->website);
+        $entity->setFacebookURL($this->handleUrl($profile->facebook_page_url));
+        $entity->setWebsite($this->handleUrl($profile->website));
 
-        $entity->setGoogleURL($profile->google_plus_url);
-        $entity->setYoutubeURL($profile->yt_url);
+        $entity->setGoogleURL($this->handleUrl($profile->google_plus_url));
+        $entity->setYoutubeURL($this->handleUrl($profile->yt_url));
 
-#        $entity->setActualBusinessProfile(?);
+        $entity = $this->updateTwitter($entity, $profile);
 
         // process assigned items
 
         if (!$this->skipImages and $profile->images) {
             $managerGallery = $this->getContainer()->get('domain_business.manager.business_gallery');
+            $container = $this->getContainer();
+
+            $pathWeb = $container->get('kernel')->getRootDir() .
+                $container->getParameter('image_back_up_path') .
+                SiteHelper::generateBusinessSubfolder($business->id);
 
             foreach ($profile->images as $image) {
-                $path = 'http://assets3.drxlive.com' . $image->image->url;
+                $context = ($image->label == 'logo') ?
+                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO :
+                    OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES;
 
-                if ($image->label == 'logo') {
-                    $isLogo = true;
+                $path = $pathWeb . substr($image->image->url, strrpos($image->image->url, '/'));
+
+                /*
+                 * Migration page 2834
+                 * [Imagine\Exception\RuntimeException]
+                 * An image could not be created from the given input
+                 */
+
+                if (file_exists($path)) {
+                    $managerGallery->createNewEntryFromLocalFile($entity, $context, $path);
                 } else {
-                    $isLogo = false;
-                }
+                    $path = 'http://assets3.drxlive.com' . $image->image->url;
 
-                $managerGallery->createNewEntryFromRemoteFile($entity, $path, $isLogo);
+                    $managerGallery->createNewEntryFromRemoteFile($entity, $context, $path);
+                }
             }
+        }
+
+        if (!$entity->getCatalogLocality()) {
+            $catalogLocality = $this->loadLocality($address);
+            $entity->setCatalogLocality($catalogLocality);
         }
 
         if ($localities) {
-            $entity->setServiceAreasType('locality');
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
 
             foreach ($localities as $item) {
                 $locality = $this->loadLocality($item);
+                $entity = $this->handleLocalityServiceType($entity, $locality);
+            }
+        } elseif ($radius) {
+            $entity->setMilesOfMyBusiness($radius);
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE);
+        } else {
+            $entity->setServiceAreasType(BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE);
 
-                $entity->addLocality($locality);
+            $locality = $entity->getCatalogLocality();
+            $entity = $this->handleLocalityServiceType($entity, $locality);
+        }
 
-                if ($locality->getNeighborhoods()) {
-                    foreach ($locality->getNeighborhoods() as $neighborhood) {
-                        $entity->addNeighborhood($neighborhood);
-                    }
+        if ($address->postal_code and $this->checkZipCode($address->postal_code)) {
+            $entity->setZipCode(trim($address->postal_code));
+        } elseif ($entity->getCatalogLocality()) {
+            $neighborhoods = $entity->getCatalogLocality()->getNeighborhoods();
+
+            if (!$neighborhoods->isEmpty()) {
+                $zipCodes = $neighborhoods->first()->getZips();
+
+                if (!$zipCodes->isEmpty()) {
+                    $entity->setZipCode($zipCodes->first()->getZipCode());
                 }
             }
-        } else {
-            $entity->setMilesOfMyBusiness($radius);
-            $entity->setServiceAreasType('area');
         }
 
         if ($profile->headings) {
-            // categories
-
-            $pairs = [];
-            $pair = [];
-
-            foreach ($profile->headings as $key => $value) {
-                // process - en/es pair
-                $pair[] = $value;
-
-                if ($key %2 != 0) {
-                    $pairs[] = $pair;
-
-                    $pair = [];
-                }
+            //add categories
+            foreach ($profile->headings as $value) {
+                $category = $this->getCategory($value);
+                $entity = $this->addBusinessProfileCategory($entity, $category);
             }
+        }
 
-            foreach ($pairs as $pair) {
-                $entity->addCategory($this->loadCategory($pair));
-            }
+        if ($entity->getCategories()->isEmpty()) {
+            //add undefined categories
+            $category = $this->getDefaultCategory();
+            $entity = $this->addBusinessProfileCategory($entity, $category);
         }
 
         if ($business->phones) {
@@ -320,22 +446,36 @@ class MigrationCommand extends ContainerAwareCommand
             }
 
             foreach ($phones as $item) {
-                $phone = new BusinessProfilePhone();
-                $phone->setPhone($item);
+                if (mb_strlen($item) <= BusinessProfilePhone::MAX_PHONE_LENGTH) {
+                    $phone = new BusinessProfilePhone();
+                    $phone->setPhone($item);
 
-                $entity->addPhone($phone);
+                    $entity->addPhone($phone);
+                }
             }
         }
 
         if ($profile->tags) {
             foreach ($profile->tags as $item) {
-                $entity->addTag($this->loadTag($item));
+                foreach ($this->splitTags($item) as $tag) {
+                    $tag = mb_substr(trim($tag), 0, Tag::TAG_NAME_MAX_LENGTH);
+
+                    $newTag = $this->loadTag($tag);
+
+                    if (!$entity->getTags()->contains($newTag)) {
+                        $entity->addTag($newTag);
+                    }
+                }
             }
         }
 
         if ($profile->payment_methods) {
             foreach ($profile->payment_methods as $item) {
-                $entity->addPaymentMethod($this->loadPaymentMethod($item));
+                $paymentMethod = $this->getPaymentMethod($item);
+
+                if ($paymentMethod and !$entity->getPaymentMethods()->contains($paymentMethod)) {
+                    $entity->addPaymentMethod($paymentMethod);
+                }
             }
         }
 
@@ -344,11 +484,19 @@ class MigrationCommand extends ContainerAwareCommand
 
         if ($profile->brands or $profileSecond->brands) {
             if ($profile->brands) {
-                $brandPrimary = implode(PHP_EOL, $profile->brands);
+                $brandPrimary = mb_substr(
+                    implode(PHP_EOL, $profile->brands),
+                    0,
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
+                );
             }
 
             if ($profileSecond->brands) {
-                $brandSecond = implode(PHP_EOL, $profileSecond->brands);
+                $brandSecond = mb_substr(
+                    implode(PHP_EOL, $profileSecond->brands),
+                    0,
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
+                );
             }
 
             $entity->setBrands($brandPrimary);
@@ -372,9 +520,9 @@ class MigrationCommand extends ContainerAwareCommand
 
                     if ($endDate >= $now) {
                         $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_ACTIVE);
+                    } else {
+                        $subscription->setStatus(DatetimePeriodStatusInterface::STATUS_EXPIRED);
                     }
-
-                    $subscription = $this->saveEntity($subscription);
 
                     $entity->addSubscription($subscription);
                 } else {
@@ -385,16 +533,17 @@ class MigrationCommand extends ContainerAwareCommand
             }
         }
 
-        // process seo data
+        $subscriptionManager = $this->getContainer()->get('domain_business.manager.subscription_status_manager');
+        $entity = $subscriptionManager->updateBusinessProfileFreeSubscription($entity, $this->em);
 
-        $seoTitle = $name . ' - ' . $entity->getCity();
+        $seoTitle       = BusinessProfileUtil::seoTitleBuilder($entity, $this->getContainer());
+        $seoDescription = BusinessProfileUtil::seoDescriptionBuilder($entity, $this->getContainer());
 
-        if ($entity->getZipCode()) {
-            $seoTitle .= ', ' . $entity->getZipCode();
-        }
+        $seoTitle       = mb_convert_encoding($seoTitle, 'UTF-8');
+        $seoDescription = mb_convert_encoding($seoDescription, 'UTF-8');
 
         $entity->setSeoTitle($seoTitle);
-        $entity->setSeoDescription($name);
+        $entity->setSeoDescription($seoDescription);
 
         // set translation vectors
 
@@ -412,13 +561,13 @@ class MigrationCommand extends ContainerAwareCommand
             $descriptionEn = $profileSecond->description;
         }
 
-        $entity->setNameEn($nameEn);
-        $entity->setNameEs($nameEs);
+        $entity->setNameEn(trim($nameEn));
+        $entity->setNameEs(trim($nameEs));
 
-        $entity->setDescriptionEn($descriptionEn);
-        $entity->setDescriptionEs($descriptionEs);
+        $entity->setDescriptionEn(trim($descriptionEn));
+        $entity->setDescriptionEs(trim($descriptionEs));
 
-        $entity = $this->saveEntity($entity);
+        $this->em->persist($entity);
 
         // add translations to profile
 
@@ -444,47 +593,37 @@ class MigrationCommand extends ContainerAwareCommand
                 $this->addTranslation($translation, $brandSecond, $entity, 'brands');
             }
         }
-
-        $this->em->flush();
     }
 
-    private function loadCategory($pair)
+    private function getCategory($name)
     {
-        // first seems to be english
+        $slug = SlugUtil::convertSlug($name);
 
-        if ($this->localePrimary == 'en') {
-            $valuePrimary = $pair[0];
-            $valueSecondary = $pair[1];
-
-            $valueEn = $valuePrimary;
-            $valueEs = $valueSecondary;
-        } else {
-            $valuePrimary = $pair[1];
-            $valueSecondary = $pair[0];
-
-            $valueEs = $valuePrimary;
-            $valueEn = $valueSecondary;
-        }
-
-        $entity = $this->em->getRepository('DomainBusinessBundle:Category')->findOneBy(['name' => $valuePrimary]);
+        $entity = $this->em->getRepository(Category::class)->getCategoryByOldSlugs($slug);
 
         if (!$entity) {
-            $entity = new Category();
-            $entity->setName($valuePrimary);
+            $newSlug = '';
 
-            $entity->setSearchTextEn($valueEn);
-            $entity->setSearchTextEs($valueEs);
+            if (!empty($this->categoryEnMergeMapping[$slug])) {
+                $newSlug = $this->categoryEnMergeMapping[$slug];
+            } elseif (!empty($this->categoryEsMergeMapping[$slug])) {
+                $newSlug = $this->categoryEsMergeMapping[$slug];
+            }
 
-            $entity = $this->saveEntity($entity);
-
-            $className = 'Category';
-
-            $translationClassName = 'Domain\BusinessBundle\Entity\Translation\\' . $className . 'Translation';
-
-            $translation = new $translationClassName();
-
-            $this->addTranslation($translation, $valueSecondary, $entity);
+            if ($newSlug) {
+                $entity = $this->em->getRepository(Category::class)->getCategoryByOldSlugs($newSlug);
+            }
         }
+
+        return $entity;
+    }
+
+    private function getDefaultCategory()
+    {
+        $slug = Category::CATEGORY_UNDEFINED_SLUG;
+        $entity = $this->em->getRepository(Category::class)->findOneBy([
+            'slug' => $slug,
+        ]);
 
         return $entity;
     }
@@ -505,60 +644,62 @@ class MigrationCommand extends ContainerAwareCommand
         return $entity;
     }
 
-    private function loadPaymentMethod($key)
+    private function getPaymentMethod($key)
     {
         $hardCodedList = [
-            'american_express' => 'American Express',
-            'ath_movil' => 'ATH Movil',
-            'cash' => 'Cash',
-            'check' => 'Check',
-            'debit_atm' => 'Debit/ATM',
-            'diners_club' => 'Diners Club',
-            'discover' => 'Discover',
-            'giros' => 'Giros',
-            'mastercard' => 'MasterCard',
-            'online_payment' => 'Online Payment',
-            'paypal' => 'Paypal',
-            'visa' => 'Visa',
+            'american_express'  => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'debit_atm'         => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'diners_club'       => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'discover'          => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'mastercard'        => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'visa'              => PaymentMethod::PAYMENT_METHOD_TYPE_DEBIT,
+            'ath_movil'         => PaymentMethod::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            'cash'              => PaymentMethod::PAYMENT_METHOD_TYPE_CASH,
+            'check'             => PaymentMethod::PAYMENT_METHOD_TYPE_CHECK,
+            'online_payment'    => PaymentMethod::PAYMENT_METHOD_TYPE_ONLINE,
+            'paypal'            => PaymentMethod::PAYMENT_METHOD_TYPE_PAYPAL,
         ];
 
         if (isset($hardCodedList[$key])) {
             $valuePrimary = $hardCodedList[$key];
+
+            $paymentMethod = $this->em->getRepository(PaymentMethod::class)->findOneBy([
+                'type' => $valuePrimary,
+            ]);
         } else {
             $this->output->writeln('Unknown Payment Method key: ' . $key);
-
-            $valuePrimary = $key;
+            $paymentMethod = null;
         }
 
-        return $this->loadEntity('PaymentMethod', $valuePrimary, $valuePrimary);
+        return $paymentMethod;
     }
 
     private function loadLocality($item)
     {
-        $className = 'Locality';
+        $className  = 'Locality';
+        $repository = $this->em->getRepository('DomainBusinessBundle:' . $className);
 
-        // todo - change to both languages search
-        $entity = $this->em->getRepository('DomainBusinessBundle:' . $className)->findOneBy(['name' => $item->locality]);
+        $localityName = trim($item->locality);
+
+        if (!empty($this->deleteLocalityList[$localityName])) {
+            $localityName = $this->deleteLocalityList[$localityName];
+        }
+
+        $entity = $repository->getLocalityBySlug(SlugUtil::convertSlug($localityName));
 
         if (!$entity) {
             $classNameEntity = '\Domain\BusinessBundle\Entity\\' . $className;
 
             $entity = new $classNameEntity();
-            $entity->setName($item->locality);
-            $entity->setLongitude($item->coordinates[0]);
-            $entity->setLatitude($item->coordinates[1]);
+            $entity->setName($localityName);
 
             $entity = $this->saveEntity($entity);
-            $this->em->persist($entity);
-
             // todo - add area?
-        } else {
-            if (!$entity->getLongitude()) {
-                $entity->setLongitude($item->coordinates[0]);
-                $entity->setLatitude($item->coordinates[1]);
+        }
 
-                $this->em->persist($entity);
-            }
+        if (!$entity->getLongitude()) {
+            $entity->setLongitude($item->coordinates[0]);
+            $entity->setLatitude($item->coordinates[1]);
         }
 
         return $entity;
@@ -612,5 +753,90 @@ class MigrationCommand extends ContainerAwareCommand
         $this->em->flush();
 
         return $entity;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param Category|null   $category
+     *
+     * @return BusinessProfile
+     */
+    private function addBusinessProfileCategory($businessProfile, $category)
+    {
+        if ($category and !$businessProfile->getCategories()->contains($category)) {
+            $businessProfile->addCategory($category);
+        }
+
+        return $businessProfile;
+    }
+
+    private function checkZipCode($zipCode)
+    {
+        if (mb_strlen(trim($zipCode)) > BusinessProfile::BUSINESS_PROFILE_ZIP_MAX_LENGTH) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function splitTags($value)
+    {
+        return explode(self::TAG_SEPARATOR, $value);
+    }
+
+    private function handleUrl($url)
+    {
+        $url = trim($url);
+
+        if (mb_strlen($url) > BusinessProfile::BUSINESS_PROFILE_URL_MAX_LENGTH) {
+            return null;
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param mixed           $profile
+     *
+     * @return BusinessProfile
+     */
+    private function updateTwitter($businessProfile, $profile)
+    {
+        if (trim($profile->twitter_handle)) {
+            $twitterUrl = $this->handleUrl(self::TWITTER_URL_PREFIX . trim($profile->twitter_handle));
+            $businessProfile->setTwitterURL($twitterUrl);
+        }
+
+        return $businessProfile;
+    }
+
+    /**
+     * @param BusinessProfile   $businessProfile
+     * @param Locality          $locality
+     *
+     * @return BusinessProfile
+     */
+    private function handleLocalityServiceType($businessProfile, $locality)
+    {
+        $area = $locality->getArea();
+
+        if (!$businessProfile->getLocalities()->contains($locality)) {
+            $businessProfile->addLocality($locality);
+        }
+
+        if ($area and !$businessProfile->getAreas()->contains($area)) {
+            $businessProfile->addArea($area);
+        }
+
+        if ($locality->getNeighborhoods()) {
+            foreach ($locality->getNeighborhoods() as $neighborhood) {
+                if (!$businessProfile->getNeighborhoods()->contains($neighborhood)) {
+                    $businessProfile->addNeighborhood($neighborhood);
+                }
+            }
+        }
+
+        return $businessProfile;
     }
 }

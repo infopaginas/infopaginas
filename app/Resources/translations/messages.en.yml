@@ -33,6 +33,8 @@ Already have an account?: Already have an account?
 Reset Password: Reset Password
 Update Password: Update Password
 We can find everything!: We can find everything!
+Search whatever you need and find it instantly: Search whatever you need and find it instantly
+homepage.search_block.title: Find what you are looking for instantly!
 What do you want to find?: What do you want to find?
 Search by: Search by
 business name: business name
@@ -276,3 +278,271 @@ Building Contractors: Building Contractors
 homepage.article.building_contractors.text: There’s nothing like being home for the holidays to start noticing all the little annoying bits and pieces around the house that you’d really like to change. The kitchen is always top of the list when it comes to sprucing up.
 prev: prev
 next: next
+
+Subcategories: Subcategories
+Select category: Select category
+Select subcategories: Select subcategories
+Catalog Locality: Catalog Locality
+Select catalog locality: Select catalog locality
+Parent Category: Parent Category
+
+#admin panel
+business.list.category_column: Name
+business.list.parent_category_column: Parent Category
+business.list.category_type: Type
+
+type_category_1: Category lvl 1
+type_category_2: Category lvl 2
+type_category_3: Category lvl 3
+
+#user
+user.business.type_category_1: Category lvl 1
+user.business.type_category_2: Categories lvl 2
+user.business.type_category_3: Categories lvl 3
+
+#redesign
+What?: What?
+Where?: Where?
+Common searches N/A link: Common searches N/A link
+Catalog: Catalog
+Infopáginas: Infopáginas
+Business hours: Business hours
+Payment methods: Payment methods
+Advertising: Advertising
+Share on Facebook: Share on Facebook
+Share on Twitter: Share on Twitter
+Business categories: Business categories
+Forgot password?: Forgot password?
+New to Infopáginas: New to Infopáginas
+Create an account: Create an account
+First name: First name
+Last name: Last name
+Confirm password: Confirm password
+Log in: Log in
+
+Log In with Facebook: Log In with Facebook
+Log In with Google: Log In with Google
+Old password: Old password
+New password: New password
+
+Directions: Get&nbsp;Directions
+Displayed Name: Displayed Name
+Go to homepage: Go to homepage
+Personal information: Personal information
+Save changes: Save changes
+
+Go to read...: Go to read...
+error.404.title: We couldn´t find the business you were looking for.
+error.404.message: It´s possible that the page is temporarily unavailable, has been removed or the URL is incorrect.
+error.404.search.text: Please search again
+error.404.search.catalog: Or use our popular searches
+
+error.403.title: Error 403 - Forbidden.
+error.403.message: I are not allowed to access this page.
+error.403.search.text: Please search something else
+error.403.search.catalog: Or use our popular searches
+
+List view: List view
+Add to compare: Add to compare
+Go to information page: Go to information page
+Next page: Next page
+Previous page: Previous page
+Basic info: Basic info
+Highlights: Highlights
+Actions: Actions
+Go to...: Go to...
+Details: Details
+Web: Web
+compare.view: Compare&nbspview
+Best match: Best match
+Map view: Map view
+Close list: Close list
+Go to watch...: Go to watch...
+Sort: Sort
+View: View
+
+business_profile.seoTitle: name in location | company
+business_profile.seoDescription.main: name in location
+business_profile.seoDescription.open: is open hours.
+business_profile.seoDescription.link: For more information, visit link
+business_profile.seoDescription.phone_has_link: or call phone
+business_profile.seoDescription.phone: Call phone
+
+in: in
+for: for
+
+Close profile: Close profile
+Subscription expire date: Subscription expire date
+English: English
+Name: Name
+Maximum 255 characters: Maximum 255 characters
+Spanish: Spanish
+Common for english and spanish: Common for english and spanish
+Remove phone: Remove phone
+Add phone: Add phone
+Images upload: Images upload
+Select and upload images to show on your business profile: Select and upload images to show on your business profile
+Browse: Browse
+url: url
+Upload from url: Upload from url
+You have no images: You have no images
+Your photos: Your photos
+Video upload: Video upload
+Select and upload videos to show on your business profile: Select and upload videos to show on your business profile
+You have no videos: You have no videos
+Background: Background
+Reset: Reset
+Reason: Reason
+Remove: Remove
+
+business_profile.names_blank: Name field should be filled for at least one language
+business_profile.image_count_limit: Error: too much images added. Max files count =
+business_profile.size_limit: Sorry. Maximum allowed filesize is 10Mb.
+business_profile.url.empty: Error: URL field should not be empty.
+business_profile.video_count_limit: Error: too much videos added. Max files count =
+business_profile.max_length: Please use max {{ limit }} symbols
+business_profile.logo.image_count_limit: Error: only single logo is allowed
+business_profile.background.image_count_limit: Error: only single background is allowed
+Updated By: Updated By
+Back to Business Profile: Back to Business Profile
+Create Profile: Create Profile
+Edit Profile: Edit profile
+View profile: View profile
+Unlimited: Unlimited
+View more articles: View more articles
+To view this video please enable JavaScript, and consider upgrading to a web browser that: To view this video please enable JavaScript, and consider upgrading to a web browser that
+supports HTML5 video: supports HTML5 video
+Video example: Video example
+miles away: mi. away
+Where: Where
+Visit business profile on...: Visit business profile on...
+Last review: Last review
+Show on Map: Show on Map
+Successfully saved profile data: Successfully saved profile data
+Successfully updated password: Successfully updated password
+Validation failure: Validation failure
+business_profile.message.created: Business profile was successfully created (changes will be applied after admin confirmation)
+business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
+user.reset_password_request.email.not_found: User {-email-} doesn't exists
+business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
+
+#admin
+action_copy: Copy
+action_restore: Restore
+action_delete_physical: Physical delete
+
+# interaction report
+interaction_report.event.view: Views
+interaction_report.event.impression: Impressions
+interaction_report.button.direction: Directions
+interaction_report.button.show_map: Show on Map
+interaction_report.button.marker_map: Marker on Map
+interaction_report.button.web: Web
+interaction_report.button.call_mob: Call (mob)
+interaction_report.button.call_desk: Call (desktop)
+interaction_report.button.add_compare: Add to Compare
+interaction_report.button.remove_compare: Remove from Compare
+interaction_report.share.facebook: Share Facebook
+interaction_report.share.twitter: Share Twitter
+interaction_report.visit.facebook: Visit Facebook
+interaction_report.visit.twitter: Visit Twitter
+interaction_report.visit.google: Visit Google
+interaction_report.visit.youtube: Visit Youtube
+interaction_report.visit.instagram: Visit Instagram
+interaction_report.visit.tripadvisor: Visit TripAdvisor
+interaction_report.video.watched: Video Watched
+interaction_report.review.click: Reviews
+interaction_report.email.click: Emails
+interaction_report.sum.interaction: Interactions
+
+date: Date
+interaction_report.total: Total
+interaction_report.overall: Total Interactions
+
+keyword_report.total: Total
+subscription_report.total: Total
+
+category_report.label: Category
+category_report.counter: Visitors
+
+ad_usage_report.device_category: Device Category
+ad_usage_report.clicks: Clicks
+ad_usage_report.impressions: Impressions
+ad_usage_report.ctr: CTR, %
+ad_usage_report.total: Total
+device_category_desktop: Desktop
+device_category_smart_phone: Smartphone
+device_category_tablet: Tablet
+ad_usage_report.chart.name: Ad Usage Statistics
+
+# working hours
+business.working.hours.open_all_time: Open 24 hours
+business.working.hours.open_until: Open until {-TIME-}
+business.working.hours.closed_now: Now closed
+business.working.hours.closed: Closed
+business.working.hours.edit_note: First select a day (or group of days) and then opening and closing time for those days
+
+MON: Mon
+TUE: Tue
+WED: Wed
+THU: Thu
+FRI: Fri
+SAT: Sat
+SUN: Sun
+
+Weekday: Weekday
+Weekend: Weekend
+Monday: Monday
+Tuesday: Tuesday
+Wednesday: Wednesday
+Thursday: Thursday
+Friday: Friday
+Saturday: Saturday
+Sunday: Sunday
+
+Open All Time: Open 24 hours
+Remove working hours: Remove working hours
+Add working hours: Add working hours
+Now: Now
+
+form.collectionWorkingHours.overlap: Working Hours should not overlap
+form.collectionWorkingHours.duration: Time start should be more then time end
+form.collectionWorkingHours.blank: Time should not be blank
+business_profile.category.required: This field is required
+
+# reset password form
+user:
+  reset_password:
+    token:
+      invalid: You currently do not have valid link for update your password
+      empty: Error: Empty token.
+  auth:
+    validation_failure: Validation failure
+    registration_success: Successfully registered. Please login with your credentials
+    reset_link_sent: Reset password link sent to your email. Please check it
+    password_updated: Successfully updated password. You can login with new credentials now
+business_profile:
+  url:
+    invalid: This value is not a valid URL.
+
+#search
+search.miles_to.user: mi. away
+search.miles_to.location: mi. from
+
+search.control.auto: Auto Search in Map
+search.control.redo: Search in Map
+
+# claim business
+claim_business.button: Claim this business
+claim_business.modal.title: Claim
+claim_business.modal.message: Message
+claim_business.response.success: Business Claim Request send. Please wait for approval
+
+# business owner
+Time Start: Time Start
+Time End: Time End
+Select all: Select all
+Instagram: Instagram
+TripAdvisor: TripAdvisor
+
+popular_searches.title: Popular Searches

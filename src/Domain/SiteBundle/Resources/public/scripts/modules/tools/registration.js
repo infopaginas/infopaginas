@@ -1,4 +1,4 @@
-define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertify, Spin, Login ) {
+define(['jquery', 'tools/spin', 'tools/login'], function( $, Spin, Login ) {
     'use strict';
 
     //init registration object variables
@@ -57,12 +57,11 @@ define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertif
                 //check for "repeated" fields or embed forms
                 if (Array.isArray(errors[field])) {
                     var $field = $(this.getFormFieldId( prefix, field ));
-                    $field.addClass( 'error' );
 
-                    var $errorSection = $field.next('.help-block');
+                    $field.parent().addClass( 'field--not-valid' );
 
                     for (var key in errors[field]) {
-                        $errorSection.append(errors[field][key]);
+                        $field.after( "<span data-error-message class='error'>" + errors[field][key] + "</span>" );
                     }
                 } else {
                     this.enableFieldsHighlight( errors[field], this.getFormFieldId(prefix, field) );
@@ -74,9 +73,10 @@ define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertif
     //remove "error" highlighting
     registration.prototype.disableFieldsHighlight = function() {
         var $form = $( this.html.forms.registrationFormId );
-        $form.find( 'input' ).removeClass('error');
+        $form.find( 'input' ).parent().removeClass( 'field--not-valid' );
         $form.find( '.form-group' ).removeClass('has-error');
-        $form.find( '.help-block' ).html('');
+
+        $form.find( 'span[data-error-message]' ).remove();
     };
 
     //actions before ajax send
@@ -93,7 +93,6 @@ define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertif
     //actions on ajax success
     registration.prototype.successHandler = function( response ) {
         if ( response.success ) {
-            alertify.success( response.message );
             $( this.modals.registrationModalId ).modal( 'hide' );
 
             var email = this.getUriItem(this.registerData, 'email');
@@ -106,14 +105,17 @@ define(['jquery', 'alertify', 'tools/spin', 'tools/login'], function( $, alertif
 
             $( this.html.forms.registrationFormId )[0].reset();
         } else {
-            this.enableFieldsHighlight( response.errors );
-            alertify.error( response.message );
+            if ( !$.isEmptyObject( response.errors ) ) {
+                this.enableFieldsHighlight( response.errors );
+            } else {
+                this.enableFieldsHighlight( { 'firstname': [response.message] } );
+            }
         }
     };
 
     //actions on ajax failure
     registration.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        alertify.error( errorThrown );
+        this.enableFieldsHighlight( { 'firstname': [errorThrown] } );
     };
 
     registration.prototype.getUriComponents = function ( data ) {

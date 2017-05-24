@@ -1,0 +1,9 @@
+{% if currentLocality %}
+    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  currentLocality.slug, 'categorySlug': item.slug })) }}" title="{{ item.name }}">
+        {{ item.name }}
+    </a>
+{% else %}
+    <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug':  item.getSlug() })) }}" title="{{ item.name }}">
+        {{ item.name }}
+    </a>
+{% endif %}

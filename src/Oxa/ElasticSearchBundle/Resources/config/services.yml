@@ -1,0 +1,5 @@
+services:
+    oxa_elastic_search.manager.search:
+        class: Oxa\ElasticSearchBundle\Manager\ElasticSearchManager
+        calls:
+            - [ setConfigData, [ '%elastic_search.document_index%', '%elastic_search.indexing_page%', '%elastic_search.host%' ] ]

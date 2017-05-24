@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="tag")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\TagRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\TagTranslation")
  */
@@ -26,6 +25,8 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+
+    const TAG_NAME_MAX_LENGTH = 100;
 
     /**
      * @var int
@@ -37,6 +38,7 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
     protected $id;
 
     /**
+     * Related to TAG_NAME_MAX_LENGTH
      * @var string - Tag name
      *
      * @Gedmo\Translatable(fallback=true)

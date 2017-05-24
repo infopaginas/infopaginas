@@ -1,0 +1,50 @@
+<div class="profile-nav">
+    <nav>
+        <ul class="clearfix">
+            <li {% if activeTab is defined and activeTab == 'profile' %}class="active"{% endif %}>
+                <a {% if activeTab is defined and activeTab == 'profile' %} href="#" {% else %}href="{{ absolute_url(path('domain_business_profile_edit', {'id': businessProfile.getId()})) }}"{% endif %}>
+                    <i class="fa fa-edit"></i>
+                    {% if businessProfile is defined %}
+                        {% trans %}Edit Profile{% endtrans %}
+                    {% else %}
+                        {% trans %}Create Profile{% endtrans %}
+                    {% endif %}
+                </a>
+                {% block profileSubTab %}{% endblock %}
+            </li>
+            {% if businessProfile is defined %}
+                <li class="hidden">
+                    <a href="https://www.google.com/dfp/" target="_blank">
+                        <i class="fa fa-newspaper-o"></i>
+                        {% trans %}Manage Ads{% endtrans %}
+                    </a>
+                </li>
+                <li {% if activeTab is defined and activeTab == 'report' %}class="active"{% endif %}>
+                    <a {% if activeTab is defined and activeTab == 'report' %}href="#"{% else %}href="{{ absolute_url(path('domain_business_reports_index', { businessProfileId: businessProfile.getId() })) }}"{% endif %}>
+                        <i class="fa fa-pie-chart"></i>
+                        {% trans %}Reports{% endtrans %}
+                    </a>
+                    {% block reportSubTab %}{% endblock %}
+                </li>
+                <li>
+                    <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() })) }}" target="_blank">
+                        <i class="fa fa-star"></i>
+                        {% trans %}Reviews{% endtrans %}
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-change-modal-id="closeBusinessProfileModal">
+                        <i class="fa fa-remove"></i>
+                        {% trans %}Close profile{% endtrans %}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.catalogLocality.slug, 'slug': businessProfile.slug})) }}" target="_blank">
+                        <i class="fa fa-eye"></i>
+                        {% trans %}View profile{% endtrans %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div><!-- profile-nav -->

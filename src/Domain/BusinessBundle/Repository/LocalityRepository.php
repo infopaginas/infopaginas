@@ -2,7 +2,9 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\Locality;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
 /**
@@ -21,6 +23,16 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    public function getAvailableLocalities()
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $qb;
+    }
+
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -30,9 +42,199 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
             ->setParameter('name', strtolower($localityName))
             ->setParameter('locale', $locale)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
         return $query;
+    }
+
+    public function getLocalityByName($localityName)
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('l')
+            ->from('DomainBusinessBundle:Locality', 'l')
+            ->leftJoin('l.translations', 't')
+            ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
+            ->setParameter('name', strtolower($localityName))
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        return $query;
+    }
+
+    public function getLocalityBySlug($localitySlug, $customSlug = false)
+    {
+        $query = $this->getAvailableLocalitiesQb()
+            ->where('l.slug = :localitySlug')
+            ->setParameter('localitySlug', $localitySlug)
+        ;
+
+        if ($customSlug) {
+            $query->orWhere('l.slug = :customSlug')
+                ->setParameter('customSlug', $customSlug)
+            ;
+        }
+
+        $query->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAvailableLocalitiesIterator()
+    {
+        $qb = $this->getAvailableLocalitiesQb();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    public function getLocalitiesByNameAndLocality($name, $locale)
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->leftJoin('l.translations', 'lt')
+            ->setParameter('name', '%' . strtolower($name) . '%')
+            ->setParameter('locale', $locale)
+        ;
+
+        $qb->andWhere($qb->expr()->orX(
+            $qb->expr()->like('lower(l.name)', ':name'),
+            $qb->expr()->andX(
+                $qb->expr()->like('lower(lt.content)', ':name'),
+                $qb->expr()->eq('lt.locale', ':locale')
+            )
+        ));
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getAllLocalitiesIterator()
+    {
+        $qb = $this->createQueryBuilder('l');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateLocalities = $query->iterate();
+
+        return $iterateLocalities;
+    }
+
+    public function getCatalogLocalitiesWithContent()
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->leftJoin('l.catalogItems', 'ci', 'WITH', 'ci.category IS NULL')
+            ->andWhere('ci.hasContent = TRUE')
+            ->orderBy('l.name')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getAvailableLocalitiesByIds($ids)
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->andWhere('l.id IN (:ids)')
+            ->setParameter('ids', $ids)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getUpdatedLocalitiesIterator()
+    {
+        $qb = $this->getAvailableLocalitiesQb();
+        $qb->andWhere('l.isUpdated = TRUE');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function setUpdatedAllLocalities()
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:Locality', 'l')
+            ->where('l.isActive = true')
+            ->set('l.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
+
+    /**
+     * @param array  $areas
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
+    public function getAvailableLocalitiesByAres($areas, $locale)
+    {
+        $qb = $this->getAvailableLocalitiesQb()
+            ->andWhere('l.area IN (:areas)')
+            ->setParameter('areas', $areas)
+        ;
+
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            $query->setHint(
+                \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+                'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+            );
+
+            // Force the locale
+            $query->setHint(
+                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+                $locale
+            );
+        }
+
+        return $query->getResult();
+    }
+
+    /**
+     * @param string $pseudoSlug
+     *
+     * @return Locality|null
+     */
+    public function getLocalityByPseudoSlug($pseudoSlug)
+    {
+        $query = $this->createQueryBuilder('l')
+            ->select('l')
+            ->leftJoin('l.pseudos', 'lp')
+            ->where('lp.slug = :localitySlug')
+            ->setParameter('localitySlug', $pseudoSlug)
+        ;
+
+        $query->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 }

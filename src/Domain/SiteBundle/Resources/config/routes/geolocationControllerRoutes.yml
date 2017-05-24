@@ -1,4 +1,0 @@
-domain_site_geolocation_autocomplete:
-    path:   /autocomplete
-    defaults: { _controller: DomainSiteBundle:Geolocation:autocomplete }
-

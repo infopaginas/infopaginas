@@ -3,20 +3,12 @@ jmaitan_media:
     prefix:   /jmaitan_media
 
 oxa_wistia:
-    resource: "@OxaWistiaBundle/Resources/config/routing.yml"
-    prefix:   /
-
-oxa_dfp:
-    resource: "@OxaDfpBundle/Resources/config/routing.yml"
+    resource: "@OxaVideoBundle/Resources/config/routing.yml"
     prefix:   /
 
 domain_article:
     resource: "@DomainArticleBundle/Resources/config/routing.yml"
     prefix:   /articles
-
-domain_menu:
-    resource: "@DomainMenuBundle/Resources/config/routing.yml"
-    prefix:   /menu
 
 domain_page:
     resource: "@DomainPageBundle/Resources/config/routing.yml"
@@ -114,3 +106,7 @@ fos_user_resetting_reset:
 happyr_google_site_authenticator:
     resource: "@HappyrGoogleSiteAuthenticatorBundle/Resources/config/routing.yml"
     prefix:   /admin
+
+oxa_youtube:
+    resource: "@OxaVideoBundle/Resources/config/routing.yml"
+    prefix:   /youtube/oauth/

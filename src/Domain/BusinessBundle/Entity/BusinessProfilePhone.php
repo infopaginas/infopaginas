@@ -15,6 +15,7 @@ use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumbe
 class BusinessProfilePhone
 {
     const REGEX_PHONE_PATTERN = '/^\d([-]*\d){0,10}$/';
+    const MAX_PHONE_LENGTH = 15;
 
     /**
      * @var int
@@ -26,6 +27,7 @@ class BusinessProfilePhone
     private $id;
 
     /**
+     * Related const MAX_PHONE_LENGTH
      * @var string - Contact phone number
      *
      * @ORM\Column(name="phone", type="string", length=15)

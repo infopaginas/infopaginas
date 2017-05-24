@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="payment_method")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\PaymentMethodRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("name")
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation")
  */
@@ -26,6 +25,16 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
+
+    /* const value related to icon name */
+    const PAYMENT_METHOD_TYPE_CASH      = 'cash';
+    const PAYMENT_METHOD_TYPE_CHECK     = 'check';
+    const PAYMENT_METHOD_TYPE_PAYPAL    = 'paypal';
+    const PAYMENT_METHOD_TYPE_ATH_MOVIL = 'ath_movil';
+    const PAYMENT_METHOD_TYPE_ONLINE    = 'online';
+    const PAYMENT_METHOD_TYPE_DEBIT     = 'debit';
+
+    const PAYMENT_METHOD_FIELD_NAME = 'name';
 
     /**
      * @var int
@@ -37,6 +46,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     protected $id;
 
     /**
+     * Related to PAYMENT_METHOD_NAME const
      * @var string - Payment method name
      *
      * @Gedmo\Translatable(fallback=true)
@@ -64,6 +74,13 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
      * )
      */
     protected $translations;
+
+    /**
+     * @var string - Payment method name
+     *
+     * @ORM\Column(name="type", type="string", length=100, nullable=true)
+     */
+    protected $type;
 
     /**
      * Get id
@@ -161,5 +178,87 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     public function removeTranslation(\Domain\BusinessBundle\Entity\Translation\PaymentMethodTranslation $translation)
     {
         $this->translations->removeElement($translation);
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return PaymentMethod
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public static function getTranslatableFields()
+    {
+        return [
+            self::PAYMENT_METHOD_FIELD_NAME
+        ];
+    }
+
+    public static function getRequiredPaymentMethods()
+    {
+        return [
+            self::PAYMENT_METHOD_TYPE_CASH,
+            self::PAYMENT_METHOD_TYPE_CHECK,
+            self::PAYMENT_METHOD_TYPE_PAYPAL,
+            self::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            self::PAYMENT_METHOD_TYPE_ONLINE,
+            self::PAYMENT_METHOD_TYPE_DEBIT,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPaymentMethodData()
+    {
+        return [
+            self::PAYMENT_METHOD_TYPE_CASH => [
+                'nameEn' => 'Cash',
+                'nameEs' => 'Efectivo',
+                'type' => self::PAYMENT_METHOD_TYPE_CASH,
+            ],
+            self::PAYMENT_METHOD_TYPE_CHECK => [
+                'nameEn' => 'Check',
+                'nameEs' => 'Cheque',
+                'type' => self::PAYMENT_METHOD_TYPE_CHECK,
+            ],
+            self::PAYMENT_METHOD_TYPE_PAYPAL => [
+                'nameEn' => 'PayPal',
+                'nameEs' => 'PayPal',
+                'type' => self::PAYMENT_METHOD_TYPE_PAYPAL,
+            ],
+            self::PAYMENT_METHOD_TYPE_ATH_MOVIL => [
+                'nameEn' => 'ATHMovil',
+                'nameEs' => 'ATHMovil',
+                'type' => self::PAYMENT_METHOD_TYPE_ATH_MOVIL,
+            ],
+            self::PAYMENT_METHOD_TYPE_ONLINE => [
+                'nameEn' => 'Online Payment',
+                'nameEs' => 'Online Payment',
+                'type' => self::PAYMENT_METHOD_TYPE_ONLINE,
+            ],
+            self::PAYMENT_METHOD_TYPE_DEBIT => [
+                'nameEn' => 'Debit Card',
+                'nameEs' => 'Debito',
+                'type' => self::PAYMENT_METHOD_TYPE_DEBIT,
+            ],
+        ];
     }
 }

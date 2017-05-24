@@ -67,7 +67,7 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
 
         if ($token === null) {
             throw new \Exception(
-                $this->translator->trans('user.reset_password.token.empty', [], $this->translationDomain)
+                $this->translator->trans('user.reset_password.token.empty')
             );
         }
 
@@ -77,7 +77,7 @@ class ResetPasswordFormHandler extends BaseFormHandler implements FormHandlerInt
 
         if ($user === null) {
             throw new NotFoundHttpException(
-                $this->translator->trans('user.reset_password.token.invalid', [], $this->translationDomain)
+                $this->translator->trans('user.reset_password.token.invalid')
             );
         }
 

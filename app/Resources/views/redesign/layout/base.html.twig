@@ -1,0 +1,100 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}</title>
+
+        <meta name="description" content="{% if seoData is defined and seoData.seoDescription %}{{ seoData.seoDescription }}{% endif %}"/>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <meta http-equiv="cleartype" content="on">
+
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-144x144-precomposed.png')) }}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-114x114-precomposed.png')) }}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-72x72-precomposed.png')) }}">
+        <link rel="apple-touch-icon-precomposed" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-57x57-precomposed.png')) }}">
+        <link rel="shortcut icon" sizes="196x196" href="{{ absolute_url(asset('redesign/img/touch/touch-icon-196x196.png')) }}">
+        <link rel="shortcut icon" href="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon.png')) }}">
+
+        <!-- Tile icon for Win8 (144x144 + tile color) -->
+        <meta name="msapplication-TileImage" content="{{ absolute_url(asset('redesign/img/touch/apple-touch-icon-144x144-precomposed.png')) }}">
+        <meta name="msapplication-TileColor" content="#222222">
+
+        {% include ':redesign/blocks:seo_links.html.twig' %}
+
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <!-- For iOS web apps. Delete if not needed. https://github.com/h5bp/mobile-boilerplate/issues/94 -->
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}">
+
+        <!-- This script prevents links from opening in Mobile Safari. https://gist.github.com/1042026 -->
+
+        <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
+
+        {% block videoJs %}{% endblock %}
+
+        {% block styles %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_common_css.css')) }}" />
+        {% endblock %}
+
+        {% block googleTagManagerScript %}
+            {% include ':widgets:google_tag_manager_script.html.twig' %}
+        {% endblock %}
+
+        {% block doubleClickHeader %}
+            {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_header.html.twig' %}
+        {% endblock %}
+
+        {% block schemaJsonLD %}
+            {% if schemaJsonLD is defined and schemaJsonLD %}
+                <script type="application/ld+json">
+                {{ schemaJsonLD|raw }}
+            </script>
+            {% endif %}
+        {% endblock %}
+    </head>
+    <body class="{% block bodyClass %}{% endblock %}">
+        {% block googleTagManagerNoScript %}
+            {% include ':widgets:google_tag_manager_no_script.html.twig' %}
+        {% endblock %}
+
+        {% block searchHeader %}
+            {% include ':redesign/blocks:header.html.twig' %}
+        {% endblock %}
+
+        {% block breadcrumbs %}{% endblock %}
+
+        {% block body %}{% endblock %}
+
+        {% block modals %}
+            {{ render(controller('DomainSiteBundle:Home:authModalRedesign')) }}
+        {% endblock %}
+
+        <!-- Scripts -->
+        {% block scripts %}
+            <script src="{{ absolute_url(asset('assetic/app_common_js.js')) }}"></script>
+
+            {% if app.debug %}
+                <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
+            {% else %}
+                <script src="{{ absolute_url(asset('js/fos_js_routes.js')) }}"></script>
+            {% endif %}
+
+            <script type="text/javascript">
+                requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
+                    requirejs(['{{ absolute_url(asset("assetic/require_homepage_js.js")) }}'], function(Homepage) {
+                        var siteHomepage = new Homepage();
+                    })
+                })
+            </script>
+        {% endblock %}
+
+    </body>
+</html>
+{% endspaceless %}

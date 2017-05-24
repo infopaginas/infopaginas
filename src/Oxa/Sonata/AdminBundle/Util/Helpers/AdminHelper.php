@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/5/16
- * Time: 11:44 AM
- */
 
 namespace Oxa\Sonata\AdminBundle\Util\Helpers;
 
@@ -23,9 +17,10 @@ class AdminHelper
 
     const PER_PAGE_ALL = 'all';
 
-    const DATE_FORMAT = 'd.m.Y';
-    const DATE_MONTH_FORMAT = 'm.Y';
-    const DATETIME_FORMAT = 'd.m.Y H:i:s';
+    const DATE_FORMAT            = 'm/d/Y';
+    const DATE_MONTH_FORMAT      = 'm/Y';
+    const DATETIME_FORMAT        = 'm/d/Y H:i:s';
+    const DATE_FULL_MONTH_FORMAT = 'F, Y';
 
     const DATE_RANGE_CODE_CUSTOM     = 'custom';
     const DATE_RANGE_CODE_TODAY      = 'today';
@@ -122,6 +117,8 @@ class AdminHelper
      */
     public static function getDatagridDatePeriodOptions()
     {
+        // todo: all datePeriod filter logic should be refactored or removed
+        // as it has been cut during sonata update as a result of logic conflict
         return [
             'field_type' => 'choice',
             'field_options' => [
@@ -144,6 +141,7 @@ class AdminHelper
     public static function getDatagridPeriodOptionOptions()
     {
         return [
+            'show_filter' => true,
             'field_type' => 'choice',
             'field_options' => [
                 'mapped' => false,
@@ -166,10 +164,31 @@ class AdminHelper
         return [
             'field_type' => 'sonata_type_datetime_range_picker',
             'field_options' => [
-                'format' => self::FILTER_DATE_RANGE_FORMAT,
+                'field_options' => [
+                    'format' => self::FILTER_DATE_RANGE_FORMAT
+                ],
                 'attr' => [
                     'class' => self::FILTER_DATE_RANGE_CLASS
                 ]
+            ]
+        ];
+    }
+
+    public static function getReportDateTypeOptions()
+    {
+        return [
+            'show_filter' => true,
+            'field_type'  => 'sonata_type_datetime_range_picker',
+            'field_options' => [
+                'field_options' => [
+                    'format'        => self::FILTER_DATE_RANGE_FORMAT,
+                    'empty_value'   => false,
+                ],
+                'attr' => [
+                    'class' => self::FILTER_DATE_RANGE_CLASS,
+                ],
+                'mapped'    => false,
+                'required'  => true,
             ]
         ];
     }

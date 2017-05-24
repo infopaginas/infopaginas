@@ -18,6 +18,8 @@ use Symfony\Component\Validator\Constraints\Url;
  */
 class MediaAdmin extends BaseMediaAdmin
 {
+    public $showFilters = false;
+
     /**
      * @param FormMapper $formMapper
      */
@@ -46,24 +48,33 @@ class MediaAdmin extends BaseMediaAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper
-            ->add('name')
-            ->add('providerReference')
-        ;
-
         $context = $this->getPersistentParameter('context');
-        $datagridMapper->add('context', 'doctrine_orm_choice', ['field_options' => ['choices' => [
-            $context => $this->trans($context, [], 'SonataMediaBundle')
-        ]],
-            'field_type' => 'choice',
-        ]);
+        $datagridMapper->add(
+            'context',
+            'doctrine_orm_choice',
+            [
+                'field_options' => [
+                    'choices' => [
+                        $context => $this->trans($context, [], 'SonataMediaBundle'),
+                    ],
+                ],
+                'field_type' => 'choice',
+            ]
+        );
 
         $provider = $this->getPersistentParameter('provider');
-        $datagridMapper->add('providerName', 'doctrine_orm_choice', ['field_options' => ['choices' => [
-            $provider => $this->trans($provider, [], 'SonataMediaBundle')
-        ]],
-            'field_type' => 'choice',
-        ]);
+        $datagridMapper->add(
+            'providerName',
+            'doctrine_orm_choice',
+            [
+                'field_options' => [
+                    'choices' => [
+                        $provider => $this->trans($provider, [], 'SonataMediaBundle'),
+                    ],
+                ],
+                'field_type' => 'choice',
+            ]
+        );
     }
 
     /**

@@ -20,18 +20,6 @@ domain_site_profile:
         _locale : '%route_locales%'
         domain:  "localhost"
 
-domain_site_geolocation:
-    resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
-    host: "{_locale}.{domain}"
-    prefix:   /geolocation
-    requirements:
-        _locale : '%route_locales%'
-        domain:  "localhost"
-
-domain_site_geolocation_nolocale:
-    resource: "@DomainSiteBundle/Resources/config/routes/geolocationControllerRoutes.yml"
-    prefix:   /geolocation
-
 domain_site_auth:
     resource: "@DomainSiteBundle/Resources/config/routes/auth.yml"
     prefix:   /auth

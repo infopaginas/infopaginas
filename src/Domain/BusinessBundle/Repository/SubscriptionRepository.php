@@ -2,6 +2,12 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
+
 /**
  * SubscriptionRepository
  *
@@ -10,4 +16,70 @@ namespace Domain\BusinessBundle\Repository;
  */
 class SubscriptionRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return Subscription[]
+     */
+    public function getActualSubscriptionsForBusiness(BusinessProfile $businessProfile)
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        $queryBuilder->select('s')
+            ->andWhere('s.businessProfile = :businessProfile')
+            ->andWhere('s.status IN (:actualSubscriptions)')
+            ->setParameter('businessProfile', $businessProfile)
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getActiveSubscriptionsStepIterator()
+    {
+        $now = new \DateTime();
+
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        $queryBuilder
+            ->select('s')
+            ->andWhere('s.status IN (:actualSubscriptions)')
+            ->andWhere('s.endDate <= :now')
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter(':now', $now)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($queryBuilder->getDQL());
+        $query
+            ->setParameter('actualSubscriptions', StatusTrait::getActualStatuses())
+            ->setParameter(':now', $now)
+        ;
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubscriptionStatistics()
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        $qb
+            ->select('count(s.id) as cnt')
+            ->addSelect('sp.code as code')
+            ->leftJoin('s.subscriptionPlan', 'sp', 'WITH', 'sp.isActive = true')
+            ->andWhere('s.isActive = true')
+            ->andWhere('s.status = :activeStatus')
+            ->groupBy('sp.code')
+            ->setParameter('activeStatus', StatusInterface::STATUS_ACTIVE)
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }

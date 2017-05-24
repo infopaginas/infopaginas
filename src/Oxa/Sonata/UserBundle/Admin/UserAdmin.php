@@ -14,12 +14,14 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class UserAdmin extends OxaAdmin
 {
+    public $advancedFilterMode = true;
+
     /**
      * Default values to the datagrid.
      *
@@ -63,7 +65,15 @@ class UserAdmin extends OxaAdmin
             ->add('email')
             ->add('role.name')
             ->add('enabled', null, array('editable' => false))
-            ->add('createdAt');
+            ->add('createdAt')
+            ->add(
+                'businessesCount',
+                null,
+                [
+                    'label' => 'Number of Businesses',
+                ]
+            )
+        ;
 
         $this->addGridActions($listMapper);
     }
@@ -79,19 +89,15 @@ class UserAdmin extends OxaAdmin
             ->add('lastname')
             ->add('email')
             ->add('role')
-            ->add('enabled', null, ['label' => 'filter.label_enabled'], null, [
-                'choices' => [
-                    1 => 'label_yes',
-                    2 => 'label_no',
-                ],
-                'translation_domain' => 'SonataUserBundle'
-            ])
-            ->add('createdAt', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => 'dd-MM-y hh:mm:ss'
+            ->add('enabled')
+            ->add('createdAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
+            ->add(
+                'businessesCount',
+                null,
+                [
+                    'label' => 'Number of Businesses',
                 ]
-            ])
+            )
         ;
     }
 
@@ -113,11 +119,14 @@ class UserAdmin extends OxaAdmin
                 ->add('lastname')
                 ->add('locale')
             ->end()
-            ->with('Social')
-                ->add('facebookURL')
-                ->add('twitterURL')
-                ->add('googleURL')
-                ->add('youtubeURL')
+            ->with('Managed Businesses')
+                ->add(
+                    'businessProfiles',
+                    null,
+                    [
+                        'label' => 'Managed Businesses',
+                    ]
+                )
             ->end()
         ;
     }
@@ -129,9 +138,13 @@ class UserAdmin extends OxaAdmin
     {
         // define group zoning
         $formMapper
-            ->with('Profile', array('class' => 'col-md-6'))->end()
-            ->with('General', array('class' => 'col-md-6'))->end()
-            ->with('Social', array('class' => 'col-md-6'))->end()
+            ->tab('Profile')
+                ->with('Profile', array('class' => 'col-md-6'))->end()
+                ->with('General', array('class' => 'col-md-6'))->end()
+            ->end()
+            ->tab('Reviews', array('class' => 'col-md-6'))
+                ->with('User Reviews')->end()
+            ->end()
         ;
 
         /* @var User $loggedUser */
@@ -175,44 +188,94 @@ class UserAdmin extends OxaAdmin
 
             // add to group zoning
             $formMapper
-                ->with('Security', array('class' => 'col-md-6'))->end()
+                ->tab('Profile')
+                    ->with('Security', array('class' => 'col-md-6'))
+                    ->end()
+                ->end()
             ;
 
             $formMapper
-                ->with('Security')
-                ->add('role', 'entity', [
-                    'class' => Group::class,
-                    'choices' => $roles
-                ])
-                ->add('enabled')
+                ->tab('Profile')
+                    ->with('Security')
+                        ->add('role', 'entity', [
+                            'class'   => Group::class,
+                            'choices' => $roles
+                        ])
+                        ->add('enabled')
+                    ->end()
                 ->end()
             ;
         }
 
         $formMapper
-            ->with('General')
-                ->add('email', 'email', [
-                    'required' => true,
-                    'pattern' => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
-                ])
-                ->add('plainPassword', 'text', [
-                    'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                ])
-                ->add('phone')
+            ->tab('Profile')
+                ->with('General')
+                    ->add(
+                        'email',
+                        'email',
+                        [
+                            'required' => true,
+                            'pattern'  => ContainsEmailExpandedValidator::EMAIL_REGEX_PATTERN,
+                        ]
+                    )
+                    ->add(
+                        'plainPassword',
+                        'text',
+                        [
+                            'required' => (!$this->getSubject() || is_null($this->getSubject()->getId())),
+                        ]
+                    )
+                    ->add('phone')
+                    ->add(
+                        'location',
+                        'text',
+                        [
+                            'label'    => 'Location',
+                            'required' => false,
+                        ]
+                    )
+                ->end()
+                ->with('Profile')
+                    ->add(
+                        'firstname',
+                        null,
+                        [
+                            'label'     => 'First Name',
+                            'required'  => true,
+                        ]
+                    )
+                    ->add(
+                        'lastname',
+                        null,
+                        [
+                            'label'     => 'Last Name',
+                            'required'  => true,
+                        ]
+                    )
+                ->end()
             ->end()
-            ->with('Profile')
-                ->add('firstname', null, [
-                    'required' => true,
-                ])
-                ->add('lastname', null, [
-                    'required' => true
-                ])
-            ->end()
-            ->with('Social')
-                ->add('facebookURL')
-                ->add('twitterURL')
-                ->add('googleURL')
-                ->add('youtubeURL')
+            ->tab('Reviews')
+                ->with('User Reviews')
+                    ->add(
+                        'businessReviews',
+                        'sonata_type_collection',
+                        [
+                            'label'        => 'Businesses Reviews',
+                            'by_reference' => true,
+                            'mapped'       => true,
+                            'btn_add'      => false,
+                            'disabled'     => true,
+                            'type_options' => [
+                                'delete' => false,
+                            ]
+                        ],
+                        [
+                            'edit'         => 'inline',
+                            'inline'       => 'table',
+                            'allow_delete' => false,
+                        ]
+                    )
+                ->end()
             ->end()
         ;
     }
@@ -220,18 +283,6 @@ class UserAdmin extends OxaAdmin
     public function validate(ErrorElement $errorElement, $object)
     {
         $errorElement
-            ->with('twitterURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
-            ->with('facebookURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
-            ->with('googleURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
-            ->with('youtubeURL')
-                ->addConstraint(new ConstraintUrlExpanded())
-            ->end()
             ->with('phone')
                 ->addConstraint(new Regex(BusinessProfilePhone::REGEX_PHONE_PATTERN))
             ->end()

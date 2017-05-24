@@ -3,7 +3,12 @@
 namespace Domain\BusinessBundle\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
+use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\ReportBundle\Manager\CategoryReportManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Handler\BusinessProfileFormHandler;
@@ -19,6 +24,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Domain\BannerBundle\Model\TypeInterface;
+use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
 
 /**
@@ -31,10 +37,22 @@ class ProfileController extends Controller
 
     const SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE = 'Business Profile Request send. Please wait for approval';
     const SUCCESS_PROFILE_CLOSE_REQUEST_CREATED_MESSAGE = 'Close Profile Request send. Please wait for approval';
+    const SUCCESS_PROFILE_CLAIM_REQUEST_CREATED_MESSAGE = 'claim_business.response.success';
 
     const ERROR_VALIDATION_FAILURE = 'Validation Failure.';
     const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
     const ERROR_ACCESS_NOT_ALLOWED = 'You haven\'t access to this page!';
+
+    protected function getMediaContextTypes()
+    {
+        $types = [
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO        => 'Logo',
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND  => 'Background',
+            OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES      => 'Photo',
+        ];
+
+        return $types;
+    }
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
@@ -43,8 +61,9 @@ class ProfileController extends Controller
     {
         $businessProfileForm = $this->getBusinessProfileForm();
 
-        return $this->render('DomainBusinessBundle:Profile:edit.html.twig', [
+        return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm' => $businessProfileForm->createView(),
+            'mediaContextTypes'   => $this->getMediaContextTypes(),
         ]);
     }
 
@@ -55,28 +74,32 @@ class ProfileController extends Controller
      */
     public function editAction(Request $request, int $id)
     {
-        $locale = $request->request->get('locale', BusinessProfile::DEFAULT_LOCALE);
+        $locale = $request->getLocale();
+
+        if (!$locale) {
+            $locale = BusinessProfile::DEFAULT_LOCALE;
+        }
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
 
-        $this->checkBusinessProfileAccess($businessProfile);
-
-        $businessProfileForm = $this->getBusinessProfileForm($businessProfile);
-
-        //return form-only for AJAX requests
-        if (!$request->isXmlHttpRequest()) {
-            $template = 'DomainBusinessBundle:Profile:edit.html.twig';
-        } else {
-            $template = 'DomainBusinessBundle:Profile/blocks:edit_form.html.twig';
+        if (!$businessProfile or !$businessProfile->getIsActive()) {
+            throw $this->createNotFoundException();
         }
 
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        $businessProfileForm      = $this->getBusinessProfileForm($businessProfile);
         $closeBusinessProfileForm = $this->createForm(new BusinessCloseRequestType());
 
-        return $this->render($template, [
-            'businessProfileForm' => $businessProfileForm->createView(),
-            'businessProfile'     => $businessProfile,
+        return $this->render(':redesign:business-profile-edit.html.twig', [
+            'businessProfileForm'      => $businessProfileForm->createView(),
+            'businessProfile'          => $businessProfile,
             'closeBusinessProfileForm' => $closeBusinessProfileForm->createView(),
+            'logoTypeConstant'         => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+            'photoTypeConstant'        => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
+            'backgroundTypeConstant'   => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+            'mediaContextTypes'        => $this->getMediaContextTypes(),
         ]);
     }
 
@@ -91,8 +114,12 @@ class ProfileController extends Controller
             if ($formHandler->process()) {
                 return $this->getSuccessResponse(self::SUCCESS_PROFILE_REQUEST_CREATED_MESSAGE);
             }
-        } catch(UniqueConstraintViolationException $e) {
-            return $this->getFailureResponse(self::ERROR_EMAIL_ALREADY_USED, $formHandler->getErrors(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (UniqueConstraintViolationException $e) {
+            return $this->getFailureResponse(
+                self::ERROR_EMAIL_ALREADY_USED,
+                $formHandler->getErrors(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -102,17 +129,33 @@ class ProfileController extends Controller
 
     /**
      * @param Request $request
+     * @param string $citySlug
      * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction(Request $request, string $slug)
+    public function viewAction(Request $request, $citySlug, string $slug)
     {
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
-        if (!$businessProfile) {
-            throw $this->createNotFoundException('');
+        if (!$businessProfile or !$businessProfile->getIsActive()) {
+            throw $this->createNotFoundException();
         }
+
+        $catalogLocalitySlug = $businessProfile->getCatalogLocality()->getSlug();
+
+        if ($catalogLocalitySlug != $citySlug or $slug != $businessProfile->getSlug()) {
+            return $this->redirectToRoute(
+                'domain_business_profile_view',
+                [
+                    'citySlug' => $catalogLocalitySlug,
+                    'slug'     => $businessProfile->getSlug(),
+                ],
+                301
+            );
+        }
+
+        $this->getBusinessOverviewReportManager()->registerBusinessView([$businessProfile]);
 
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
@@ -122,24 +165,62 @@ class ProfileController extends Controller
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
 
+        $locationMarkers  = $this->getBusinessProfilesManager()->getLocationMarkersFromProfileData([$businessProfile]);
+
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
-        $bannerFactory->prepearBanners(array(
-            TypeInterface::CODE_SERP_BOXED,
-        ));
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
+                TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
+            ]
+        );
+
+        $schema = $this->getBusinessProfilesManager()->buildBusinessProfilesSchema([$businessProfile], true);
 
         $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
 
-        return $this->render('DomainBusinessBundle:Profile:show.html.twig', [
-            'businessProfile'  => $businessProfile,
-            'seoData'          => $businessProfile,
-            'photos'           => $photos,
-            'advertisements'   => $advertisements,
-            'lastReview'       => $lastReview,
-            'reviewForm'       => $reviewForm->createView(),
-            'bannerFactory'    => $bannerFactory,
-            'dcDataDTO'        => $dcDataDTO,
+        $showClaimBlock =  $this->getBusinessProfilesManager()->getClaimButtonPermitted($businessProfile);
+
+        if ($showClaimBlock) {
+            $claimBusinessForm = $this->createForm(new BusinessClaimRequestType())->createView();
+        } else {
+            $claimBusinessForm = null;
+        }
+
+        return $this->render(':redesign:business-profile.html.twig', [
+            'businessProfile' => $businessProfile,
+            'seoData'         => $businessProfile,
+            'photos'          => $photos,
+            'advertisements'  => $advertisements,
+            'lastReview'      => $lastReview,
+            'reviewForm'      => $reviewForm->createView(),
+            'bannerFactory'   => $bannerFactory,
+            'dcDataDTO'       => $dcDataDTO,
+            'schemaJsonLD'    => $schema,
+            'markers'         => $locationMarkers,
+            'showClaimButton' => $showClaimBlock,
+            'claimBusinessForm' => $claimBusinessForm,
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function claimAction(Request $request) : JsonResponse
+    {
+        $formHandler = $this->getBusinessClaimFormHandler();
+
+        try {
+            if ($formHandler->process()) {
+                return $this->getSuccessResponse(self::SUCCESS_PROFILE_CLAIM_REQUEST_CREATED_MESSAGE);
+            }
+        } catch (\Exception $e) {
+            return $this->getFailureResponse($e->getMessage(), [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
     public function closeAction(Request $request)
@@ -157,21 +238,66 @@ class ProfileController extends Controller
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
-    public function registerViewAction(Request $request)
+    /**
+     * @param Request  $request
+     * @param int|null $businessProfileId
+     *
+     * @return JsonResponse
+     */
+    public function localityListAction(Request $request, $businessProfileId = null)
     {
-        $businessProfileId = $request->get('id', null);
+        $areas  = $request->request->get('areas', []);
+        $locale = $request->request->get('currentLocale', $request->getLocale());
 
-        if ($businessProfileId) {
-            try {
-                $this->getBusinessOverviewReviewManager()->registerBusinessView($businessProfileId);
-            } catch (\Exception $e) {
-                return $this->getFailureResponse($e->getMessage(), $e->getErrors());
-            }
-
-            return $this->getSuccessResponse(true);
+        if (!$areas) {
+            return new JsonResponse(['data' => []]);
         }
 
-        return $this->getFailureResponse(false);
+        $businessProfilesManager = $this->getBusinessProfilesManager();
+
+        $localities = $businessProfilesManager->getAreaLocalities($businessProfileId, $areas, $locale);
+
+        return new JsonResponse(['data' => $localities]);
+    }
+
+    /**
+     * @param Request  $request
+     * @param int|null $businessProfileId
+     *
+     * @return JsonResponse
+     */
+    public function neighborhoodListAction(Request $request, $businessProfileId = null)
+    {
+        $localities = $request->request->get('localities', []);
+        $locale     = $request->request->get('currentLocale', $request->getLocale());
+
+        if (!$localities) {
+            return new JsonResponse(['data' => []]);
+        }
+
+        $businessProfilesManager = $this->getBusinessProfilesManager();
+
+        $neighborhoods = $businessProfilesManager->getLocalitiesNeighborhoods($businessProfileId, $localities, $locale);
+
+        return new JsonResponse(['data' => $neighborhoods]);
+    }
+
+    /**
+     * @param Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function categoryAutocompleteAction(Request $request)
+    {
+        $query = $request->query->get('q', '');
+
+        $businessProfileManager = $this->get('domain_business.manager.business_profile');
+        $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
+            $query,
+            $request->getLocale()
+        );
+
+        return new JsonResponse($results);
     }
 
     /**
@@ -211,7 +337,7 @@ class ProfileController extends Controller
         return $this->get('domain_business.form.handler.business_profile');
     }
 
-    protected function getBusinessOverviewReviewManager() : BusinessOverviewReportManager
+    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
     }
@@ -245,5 +371,13 @@ class ProfileController extends Controller
         }
 
         return $this->get('domain_business.form.business_profile')->setData($businessProfile);
+    }
+
+    /**
+     * @return BusinessClaimFormHandler
+     */
+    private function getBusinessClaimFormHandler()
+    {
+        return $this->get('domain_business.form.handler.claim');
     }
 }

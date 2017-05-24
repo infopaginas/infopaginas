@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_gallery")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessGalleryRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation")
  */
 class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
@@ -40,7 +39,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     use DefaultEntityTrait;
     use PersonalTranslatable;
 
-    const MAX_IMAGES_PER_BUSINESS = 10;
+    const MAX_IMAGES_PER_BUSINESS = 25;
 
     /**
      * @var integer

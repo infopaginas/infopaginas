@@ -2,6 +2,7 @@
 
 namespace Domain\ArticleBundle\Admin;
 
+use Domain\ArticleBundle\Entity\Article;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Admin\Admin;
@@ -9,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ArticleAdmin extends OxaAdmin
@@ -18,24 +20,20 @@ class ArticleAdmin extends OxaAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $choiceOptions = [
-            'choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
-            ],
-            'translation_domain' => $this->getTranslationDomain()
-        ];
-
         $datagridMapper
             ->add('id')
-            ->add('title')
+            ->add('title', null, [
+                'show_filter' => true,
+            ])
             ->add('category')
-            ->add('isPublished', null, [], null, $choiceOptions)
-            ->add('isOnHomepage', null, [], null, $choiceOptions)
+            ->add('isPublished')
+            ->add('isOnHomepage')
             ->add('activationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('expirationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
+            ->add('authorName')
+            ->add('isExternal')
         ;
     }
 
@@ -54,6 +52,8 @@ class ArticleAdmin extends OxaAdmin
             ->add('expirationDate')
             ->add('updatedAt')
             ->add('updatedUser')
+            ->add('authorName')
+            ->add('isExternal')
         ;
 
         $this->addGridActions($listMapper);
@@ -64,27 +64,59 @@ class ArticleAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var Article $article */
+        $article = $this->getSubject();
+
+        $isExternal = (bool)$article->getIsExternal();
+
         // define group zoning
         $formMapper
             ->with('General', array('class' => 'col-md-4'))->end()
             ->with('Content', array('class' => 'col-md-8'))->end()
         ;
 
+        $imageProperties = [
+            'constraints' => [
+                new NotBlank(),
+            ],
+            'disabled' => $isExternal,
+        ];
+
+        if ($isExternal) {
+            $imageProperties['btn_add'] = false;
+            $imageProperties['btn_delete'] = false;
+            $imageProperties['btn_list'] = false;
+        }
+
         $formMapper
             ->with('General')
-                ->add('title')
+                ->add('isExternal', null, [
+                    'required' => false,
+                    'disabled' => true,
+                ])
+                ->add('title', null, [
+                    'disabled' => $isExternal,
+                ])
                 ->add('category')
-                ->add('image', 'sonata_type_model_list', [
-                    'constraints' => [new NotBlank()]
-                ], ['link_parameters' => [
-                    'context' => OxaMediaInterface::CONTEXT_ARTICLE,
-                    'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                ]])
+                ->add(
+                    'image',
+                    'sonata_type_model_list',
+                    $imageProperties,
+                    [
+                        'link_parameters' => [
+                            'context' => OxaMediaInterface::CONTEXT_ARTICLE,
+                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                        ]
+                    ]
+                )
                 ->add('isPublished')
                 ->add('isOnHomepage')
                 ->add('slug', null, ['read_only' => true])
                 ->add('activationDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
-                ->add('expirationDate', 'sonata_type_datetime_picker', ['format' => self::FORM_DATETIME_FORMAT])
+                ->add('expirationDate', 'sonata_type_datetime_picker', [
+                    'format'   => self::FORM_DATETIME_FORMAT,
+                    'required' => false,
+                ])
                 ->add('updatedAt', 'sonata_type_datetime_picker', [
                     'required' => false,
                     'disabled' => true
@@ -94,10 +126,15 @@ class ArticleAdmin extends OxaAdmin
                     'btn_add' => false,
                     'disabled' => true,
                 ])
+                ->add('authorName', null, [
+                    'required' => false,
+                    'disabled' => true,
+                ])
             ->end()
             ->with('Content')
                 ->add('body', 'ckeditor', [
-                    'required' => true
+                    'required' => true,
+                    'disabled' => $isExternal,
                 ])
             ->end()
         ;
@@ -125,6 +162,90 @@ class ArticleAdmin extends OxaAdmin
             ->add('slug')
             ->add('updatedAt')
             ->add('updatedUser')
+            ->add('authorName')
         ;
+    }
+
+
+    public function prePersist($entity)
+    {
+        $entity = $this->preSave($entity);
+        $entity = $this->setAuthorName($entity);
+    }
+
+    public function preUpdate($entity)
+    {
+        $this->preSave($entity);
+    }
+
+    private function preSave($entity)
+    {
+        $entity = $this->setSeoDate($entity);
+
+        return $entity;
+    }
+
+    /**
+     * @param Article $entity
+     *
+     * @return Article
+     */
+    private function setSeoDate($entity)
+    {
+
+        /** @var ContainerInterface $container */
+        $container = $this->getConfigurationPool()->getContainer();
+
+        $seoSettings = $container->getParameter('seo_custom_settings');
+
+        $companyName          = $seoSettings['company_name'];
+        $titleMaxLength       = $seoSettings['title_max_length'];
+        $descriptionMaxLength = $seoSettings['description_max_length'];
+
+        $seoTitle = $entity->getTitle() . ' | ' . $companyName;
+        $seoDescription = strip_tags($entity->getBody());
+
+        $seoTitle       = mb_substr($seoTitle, 0, $titleMaxLength);
+        $seoDescription = mb_substr($seoDescription, 0, $descriptionMaxLength);
+
+        $entity->setSeoTitle($seoTitle);
+        $entity->setSeoDescription($seoDescription);
+
+        return $entity;
+    }
+
+    /**
+     * @param Article $entity
+     *
+     * @return Article
+     */
+    private function setAuthorName($entity)
+    {
+        /** @var ContainerInterface $container */
+        $container = $this->getConfigurationPool()->getContainer();
+        $user = $container->get('security.token_storage')->getToken()->getUser();
+
+        $authorName = $user->getFullName();
+
+        $entity->setAuthorName($authorName);
+
+        return $entity;
+    }
+
+    /**
+     * @param string $name
+     * @param null $object
+     *
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = $this->getDeleteDeniedAction();
+
+        if ($object and in_array($name, $deniedActions) and $object->getIsExternal()) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
     }
 }

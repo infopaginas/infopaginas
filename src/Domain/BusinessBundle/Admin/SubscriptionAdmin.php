@@ -11,7 +11,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Validator\ConstraintViolation;
 
 class SubscriptionAdmin extends OxaAdmin
@@ -23,7 +23,7 @@ class SubscriptionAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('businessProfile')
+            ->add('businessProfile.name')
             ->add('subscriptionPlan')
             ->add('status', 'doctrine_orm_choice', AdminHelper::getDatagridStatusOptions())
             ->add('startDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)

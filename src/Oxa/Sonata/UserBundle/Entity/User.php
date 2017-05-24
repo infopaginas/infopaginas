@@ -6,7 +6,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\AvailableUserEntityTrait;
-use Oxa\Sonata\AdminBundle\Util\Traits\DeleteableUserEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\UserCUableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Oxa\Sonata\UserBundle\Model\UserRoleInterface;
@@ -20,12 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="fos_user_user")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("email")
  * */
 class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 {
-    use AvailableUserEntityTrait, DeleteableUserEntityTrait, UserCUableEntityTrait;
+    use AvailableUserEntityTrait, UserCUableEntityTrait;
 
     /**
      * @ORM\Id
@@ -36,13 +34,11 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
      */
     protected $firstname;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
      */
     protected $lastname;
 
@@ -55,26 +51,6 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      * @ORM\Column(name="advertiser_id", type="string", nullable=true, length=255)
      */
     protected $advertiserId;
-
-    /**
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
-     */
-    protected $twitterURL;
-
-    /**
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
-     */
-    protected $facebookURL;
-
-    /**
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
-     */
-    protected $googleURL;
-
-    /**
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
-     */
-    protected $youtubeURL;
 
     /**
      * @var Group
@@ -103,7 +79,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     protected $tasks;
 
     /**
-     * @var BusinessProfile[]
+     * @var BusinessReview[]
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Review\BusinessReview",
@@ -134,6 +110,13 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     private $googleAccessToken;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="businesses_count", type="integer", options={"default" : 0})
+     */
+    protected $businessesCount;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -143,6 +126,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
         $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessesCount = 0;
     }
 
     public function __toString()
@@ -260,78 +244,6 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setAdvertiserId($advertiserId)
     {
         $this->advertiserId = $advertiserId;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTwitterURL()
-    {
-        return $this->twitterURL;
-    }
-
-    /**
-     * @param mixed $twitterURL
-     * @return User
-     */
-    public function setTwitterURL($twitterURL)
-    {
-        $this->twitterURL = $twitterURL;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFacebookURL()
-    {
-        return $this->facebookURL;
-    }
-
-    /**
-     * @param mixed $facebookURL
-     * @return User
-     */
-    public function setFacebookURL($facebookURL)
-    {
-        $this->facebookURL = $facebookURL;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getGoogleURL()
-    {
-        return $this->googleURL;
-    }
-
-    /**
-     * @param mixed $googleURL
-     * @return User
-     */
-    public function setGoogleURL($googleURL)
-    {
-        $this->googleURL = $googleURL;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getYoutubeURL()
-    {
-        return $this->youtubeURL;
-    }
-
-    /**
-     * @param mixed $youtubeURL
-     * @return User
-     */
-    public function setYoutubeURL($youtubeURL)
-    {
-        $this->youtubeURL = $youtubeURL;
         return $this;
     }
 
@@ -572,6 +484,24 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function setGoogleAccessToken($googleAccessToken)
     {
         $this->googleAccessToken = $googleAccessToken;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBusinessesCount()
+    {
+        return $this->businessesCount;
+    }
+
+    /**
+     * @param int $businessesCount
+     * @return User
+     */
+    public function setBusinessesCount($businessesCount)
+    {
+        $this->businessesCount = $businessesCount;
         return $this;
     }
 }

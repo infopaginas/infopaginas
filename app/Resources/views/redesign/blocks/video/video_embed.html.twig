@@ -1,0 +1,17 @@
+<video id="video-{{ media.id }}" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="650" height="264" data-setup='{"fluid": true}'>
+    <source src="{{ url }}" type='{{ media.type }}'>
+    <p class="vjs-no-js">
+      {% trans %}To view this video please enable JavaScript, and consider upgrading to a web browser that{% endtrans %}
+      <a href="http://videojs.com/html5-video-support/" target="_blank">{% trans %}supports HTML5 video{% endtrans %}</a>
+    </p>
+</video>
+
+<script>
+    'use strict';
+
+    var video = videojs('video-{{ media.id }}');
+    video.socialShare({
+        facebook: {},
+        twitter: {}
+    });
+</script>

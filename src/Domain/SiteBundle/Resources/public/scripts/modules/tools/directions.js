@@ -1,8 +1,9 @@
-define(['jquery', 'abstract/view', 'js-cookie'],
-    function ($, view, cookie) {
+define(['jquery', 'abstract/view', 'js-cookie', 'tools/reportTracker'],
+    function ($, view, cookie, ReportTracker) {
     'use strict';
 
     var directions = function( options ) {
+        this.reportTracker = new ReportTracker;
         this.init( options );
     };
 
@@ -16,16 +17,12 @@ define(['jquery', 'abstract/view', 'js-cookie'],
     }
 
     directions.prototype.bindEventsDirections = function () {
-        this.events = {
-            ".get-dir click" : "openDirection"
-        };
+        var self = this;
 
-        this.bindEvents( );
-    }
-
-    directions.prototype.openDirection = function ( e, latlngEvent ) {
-        var directionLink = this.getDirection( e, latlngEvent );
-        window.open( directionLink );
+        $( document ).on( 'click', '.get-dir', function( e, latlngEvent ) {
+            var directionLink = self.getDirection( e, latlngEvent );
+            window.open( directionLink );
+        });
     }
 
     directions.prototype.getDirection = function ( e, latlngEvent ) {
@@ -33,6 +30,8 @@ define(['jquery', 'abstract/view', 'js-cookie'],
 
         if ( e ) {
             latlng = $( e.currentTarget ).data( 'latlng' );
+            var id = $( e.currentTarget).data( 'id' );
+            this.reportTracker.trackEvent( 'directionButton', id );
         } else if ( latlngEvent ) {
             latlng = latlngEvent;
         }

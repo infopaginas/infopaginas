@@ -1,16 +1,26 @@
+{% set total = 0 %}
+
 <table class="table table-bordered">
     <thead>
-    <tr>
-        <th>{% trans %}Keyword{% endtrans %}</th>
-        <th>{% trans %}Searches Count{% endtrans %}</th>
-    </tr>
+        <tr>
+            <th>{% trans %}Keyword{% endtrans %}</th>
+            <th>{% trans %}Searches Count{% endtrans %}</th>
+        </tr>
     </thead>
     <tbody>
-    {% for keyword, count in keywordsData['results'] %}
-        <tr>
-            <td>{{ keyword }}</td>
-            <td>{{ count }}</td>
-        </tr>
-    {% endfor %}
+        {% for keyword, count in keywordsData['results'] %}
+            <tr>
+                <td>{{ keyword|truncate(keyword_max_length) }}</td>
+                <td>{{ count }}</td>
+            </tr>
+
+            {% set total = total + count %}
+        {% endfor %}
     </tbody>
+    <tfoot>
+        <tr>
+            <th>{% trans %}keyword_report.total{% endtrans %}</th>
+            <th>{{ total }}</th>
+        </tr>
+    </tfoot>
 </table>

@@ -31,29 +31,33 @@ class BusinessReportFilterType extends AbstractType
         $builder
             ->add('dateRange', ChoiceType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
+                    'class' => 'select--medium',
                 ],
                 'choices' => DatesUtil::getReportDataRanges(),
-                'data' => DatesUtil::RANGE_DEFAULT,
+                'data'    => DatesUtil::RANGE_DEFAULT,
             ])
-            ->add('start',  DateType::class, array(
+            ->add('start', DateType::class, [
                 'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'js-datepicker form-control'],
-                'data' => new \DateTime("monday this week")
-            ))
-            ->add('end',  DateType::class, array(
+                'html5'  => false,
+                'attr'   => [
+                    'class' => 'js-datepicker form-control',
+                ],
+                'data' => new \DateTime('monday this week'),
+            ])
+            ->add('end', DateType::class, [
                 'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'js-datepicker form-control'],
-                'data' => new \DateTime("sunday this week")
-            ))
+                'html5'  => false,
+                'attr'   => [
+                    'class' => 'js-datepicker form-control'
+                ],
+                'data' => new \DateTime('sunday this week'),
+            ])
             ->add('limit', ChoiceType::class, [
                 'attr' => [
-                    'class' => 'form-control select-control',
+                    'class' => 'select--medium',
                 ],
                 'choices' => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
-                'data' => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+                'data'    => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
             ])
         ;
     }

@@ -11,7 +11,7 @@ use Sonata\AdminBundle\Admin\Admin as BaseAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 
 class OxaAdmin extends BaseAdmin
 {
@@ -69,7 +69,9 @@ class OxaAdmin extends BaseAdmin
     protected $defaultDatagridDatetimeTypeOptions = [
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
-            'format' => self::FILTER_DATETIME_FORMAT
+            'field_options' => [
+                'format' => self::FILTER_DATETIME_FORMAT
+            ],
         ]
     ];
 
@@ -81,7 +83,9 @@ class OxaAdmin extends BaseAdmin
     protected $defaultDatagridDateTypeOptions = [
         'field_type' => 'sonata_type_datetime_range_picker',
         'field_options' => [
-            'format' => self::FILTER_DATE_FORMAT
+            'field_options' => [
+                'format' => self::FILTER_DATE_FORMAT
+            ],
         ]
     ];
 
@@ -113,6 +117,13 @@ class OxaAdmin extends BaseAdmin
      */
     public $advancedFilterMode = false;
 
+    /**
+     * show list filters dropdown
+     *
+     * @var bool
+     */
+    public $showFilters = true;
+
     public function setPositionService(PositionHandler $positionHandler)
     {
         $this->positionService = $positionHandler;
@@ -131,56 +142,6 @@ class OxaAdmin extends BaseAdmin
     }
 
     /**
-     * Add additional actions
-     *
-     * @return array
-     */
-    public function getBatchActions()
-    {
-        $actions = parent::getBatchActions();
-
-        // delete from database action
-        if ($this->isGranted('ROLE_PHYSICAL_DELETE_ABLE') && $this->hasRoute('delete_physical')) {
-            $actions['delete_physical'] = [
-                'label' => $this->trans('action_delete_physical'),
-                'ask_confirmation' => true
-            ];
-        }
-
-        // restore deleted record
-        if ($this->isGranted('ROLE_RESTORE_ABLE') && $this->hasRoute('restore')) {
-            $actions['restore'] = [
-                'label' => $this->trans('action_restore'),
-                'ask_confirmation' => false
-            ];
-        }
-
-        return $actions;
-    }
-
-    /**
-     * Configure record list
-     *
-     * @return \Sonata\AdminBundle\Datagrid\DatagridInterface
-     */
-    public function getDatagrid()
-    {
-        // Display deleted records as well in the list
-        if ($this->isGranted('ROLE_PHYSICAL_DELETE_ABLE')) {
-            /* @var \Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter $softDeleteableFilter */
-            $softDeleteableFilter = $this->getConfigurationPool()
-                ->getContainer()
-                ->get('doctrine.orm.default_entity_manager')
-                ->getFilters()
-                ->getFilter('softdeleteable');
-
-            $softDeleteableFilter->disableForEntity($this->getClass());
-        }
-
-        return parent::getDatagrid();
-    }
-
-    /**
      * Add additional routes
      *
      * @param RouteCollection $collection
@@ -190,10 +151,6 @@ class OxaAdmin extends BaseAdmin
         $collection
             ->remove('export')
             ->add('show')
-            ->add('delete_physical', null, [
-                '_controller' => 'OxaSonataAdminBundle:CRUD:deletePhysical'
-            ])
-            ->add('restore')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }
@@ -254,5 +211,29 @@ class OxaAdmin extends BaseAdmin
         );
 
         return $parameters;
+    }
+
+    protected function getDeleteDeniedAction()
+    {
+        return [
+            'DELETE',
+        ];
+    }
+
+    protected function getAllowViewOnlyAction()
+    {
+        return [
+            'CREATE',
+            'EDIT',
+            'DELETE',
+        ];
+    }
+
+    protected function getDeniedAllButViewAndEditActions()
+    {
+        return [
+            'CREATE',
+            'DELETE',
+        ];
     }
 }

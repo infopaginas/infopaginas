@@ -6,7 +6,11 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Articles}
     domain_article.manager.article:
         class: Domain\ArticleBundle\Model\Manager\ArticleManager
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@service_container']
+
+    domain_article.manager.api:
+        class: Domain\ArticleBundle\Model\Manager\ArticleApiManager
+        arguments: ['@service_container']
 
     domain_article.twig_extension.cut_body:
         class: Domain\ArticleBundle\Twig\Extension\CutBodyExtension

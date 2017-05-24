@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], function( $, bootstrap, highcharts, Spin, select ) {
+define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'jquery-ui'], function( $, bootstrap, highcharts, Spin, select, businessProfileClose ) {
     'use strict';
 
     //init reports object variables
@@ -6,9 +6,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
         this.urls = {
             businessOverviewDataAction: Routing.generate('domain_business_reports_business_overview_data'),
             adUsageDataAction: Routing.generate('domain_business_reports_ad_usage_data'),
-            keywordsDataAction: Routing.generate('domain_business_reports_keywords_data'),
-            interactionsDataAction: Routing.generate('domain_business_reports_interactions_data'),
-            printAction: Routing.generate('domain_business_reports_print')
+            keywordsDataAction: Routing.generate('domain_business_reports_keywords_data')
         };
 
         this.html = {
@@ -16,15 +14,15 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 businessOverviewChartContainerId: '#businessOverviewChartContainer',
                 businessOverviewStatsContainerId: '#businessOverviewStatisticsContainer',
                 adUsageStatsContainerId: '#adUsageStatisticsContainer',
+                adUsageChartContainerId: '#adUsageChartContainer',
                 keywordChartContainerId: '#keywordChartContainer',
                 keywordStatsContainerId: '#keywordStatisticsContainer',
-                interactionsStatsContainerId: '#interactionsStatisticsContainer',
-
                 keywordsLimitContainerId: '#keywordsLimitContainer'
             }
         };
 
         this.spinner = new Spin();
+        this.businessProfileClose = new businessProfileClose;
 
         this.run();
     };
@@ -73,11 +71,13 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
             dataType: 'JSON',
             type: 'POST',
             beforeSend: function() {
-                $(self.html.containers.adUsageStatsContainerId).html('');
-                self.showLoader(self.html.containers.adUsageStatsContainerId);
+                $( self.html.containers.adUsageChartContainerId ).html( '' );
+                $( self.html.containers.adUsageStatsContainerId ).html( '' );
+                self.showLoader( self.html.containers.adUsageStatsContainerId );
             },
             success: function(response) {
-                $(self.html.containers.adUsageStatsContainerId).html(response.stats);
+                $( self.html.containers.adUsageStatsContainerId ).html( response.stats );
+                self.loadAdUsageChart( response.dates, response.clicks, response.impressions );
             }
         });
     };
@@ -99,25 +99,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
             success: function(response) {
                 $(self.html.containers.keywordStatsContainerId).html(response.stats);
                 self.loadKeywordsChart(response.keywords, response.searches);
-            }
-        });
-    };
-
-    reports.prototype.loadInteractionsReport = function()
-    {
-        var self = this;
-
-        $.ajax({
-            url: self.urls.interactionsDataAction,
-            data: self.getFilterValues(),
-            dataType: 'JSON',
-            type: 'POST',
-            beforeSend: function() {
-                $(self.html.containers.interactionsStatsContainerId).html('');
-                self.showLoader(self.html.containers.interactionsStatsContainerId);
-            },
-            success: function(response) {
-                $(self.html.containers.interactionsStatsContainerId).html(response.stats);
             }
         });
     };
@@ -161,6 +142,45 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
         });
     };
 
+    reports.prototype.loadAdUsageChart = function( dates, clicks, impressions )
+    {
+        $( this.html.containers.adUsageChartContainerId ).highcharts({
+            title: {
+                text: $( this.html.containers.adUsageChartContainerId ).data( "title" ),
+                x: -20 //center
+            },
+            xAxis: {
+                categories: dates
+            },
+            yAxis: {
+                title: {
+                    text: $( this.html.containers.adUsageChartContainerId ).data( "y-axis" )
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [
+                {
+                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-clicks" ),
+                    data: clicks
+                },
+                {
+                    name: $( this.html.containers.adUsageChartContainerId ).data( "series-name-imp" ),
+                    data: impressions
+                }
+            ]
+        });
+    };
+
     reports.prototype.loadKeywordsChart = function(keywords, searches)
     {
         $(this.html.containers.keywordChartContainerId).highcharts({
@@ -168,7 +188,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 type: 'column'
             },
             title: {
-                text: $(this.html.containers.keywordChartContainerId.data( "title" ) )
+                text: $( this.html.containers.keywordChartContainerId ).data( "title" )
             },
             xAxis: {
                 categories: keywords
@@ -177,7 +197,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: $(this.html.containers.keywordChartContainerId.data( "y-axis" ) )
+                    text: $( this.html.containers.keywordChartContainerId ).data( "y-axis" )
                 }
             },
             tooltip: {
@@ -254,9 +274,6 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
                 $('#keywordsLimitContainer').show();
                 this.loadKeywordsReport();
                 break;
-            case 'interactions':
-                this.loadInteractionsReport();
-                break;
         }
     };
 
@@ -265,7 +282,7 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
         var self = this;
 
         $( '.js-datepicker' ).datepicker({
-            dateFormat: 'yy-mm-d',
+            dateFormat: 'yy-mm-dd',
             onSelect: function(dateText, inst) {
                 $(this).val(dateText);
                 self.refreshActiveReport();
@@ -293,35 +310,12 @@ define(['jquery', 'bootstrap', 'highcharts', 'tools/spin', 'tools/select'], func
         });
 
         $(document).on('click', '#print', function (e) {
-            $.ajax({
-                url: self.urls.printAction,
-                data: self.getFilterValues(),
-                dataType: 'JSON',
-                type: 'POST',
-                beforeSend: function() {
-                    $('#export-spinner').html('');
-                    self.showLoader('#export-spinner');
-                },
-                success: function(response) {
-                    var popup = window.open( response.pdf );
+            var filterParams = self.getFilterValues();
+            filterParams.print = true;
 
-                    var closePrint = function() {
-                        if ( popup ) {
-                            popup.close();
-                        }
-                    };
+            var filtersData = $.param( filterParams );
 
-                    popup.onbeforeunload = closePrint;
-                    popup.onafterprint = closePrint;
-                    popup.focus(); // Required for IE
-                    popup.print();
-                },
-                complete: function() {
-                    $('#export-spinner').html('');
-                }
-            });
-
-            e.preventDefault();
+            location.href = $( this ).attr( 'href' ) + '?' + filtersData;
         });
     };
 

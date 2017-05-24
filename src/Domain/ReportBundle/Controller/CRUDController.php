@@ -24,8 +24,9 @@ class CRUDController extends Controller
             throw new AccessDeniedException();
         }
 
-        $format = $request->get('format');
-        $code = $request->get('code');
+        $format      = $request->get('format');
+        $entityClass = $this->admin->getClass();
+        $params      = $request->query->all();
 
         $allowedExportFormats = $this->admin->getExportFormats();
 
@@ -40,31 +41,10 @@ class CRUDController extends Controller
             );
         }
 
-        if (!key_exists($code, $allowedExportFormats)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Export code `%s` is not allowed for class: `%s`. Allowed formats are: `%s`',
-                    $code,
-                    $this->admin->getClass(),
-                    implode(', ', array_keys($allowedExportFormats))
-                )
-            );
-        }
-
-        // get pager params from request to have them in export services
-        $parameters = array_merge(
-            $this->admin->getFilterParameters(),
-            [
-                '_page' => $this->getRequest()->get('_page'),
-                '_per_page' => $this->getRequest()->get('_per_page')
-            ]
-        );
-
         return $this->get('domain_report.exporter')->getResponse(
-            $code,
+            $entityClass,
             $format,
-            $this->admin,
-            $parameters
+            $params
         );
     }
 }

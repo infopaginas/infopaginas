@@ -77,7 +77,7 @@ class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager
 
         $totalResults = $this->getRepository()->findBusinessProfileReviewsTotalCount($businessProfile);
 
-        $pagesCount = ceil($totalResults/$paramsDTO->limit);
+        $pagesCount = ceil($totalResults / $paramsDTO->limit);
 
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }

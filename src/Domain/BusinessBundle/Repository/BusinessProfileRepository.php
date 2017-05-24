@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -16,7 +17,7 @@ use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Domain\SearchBundle\Util\SearchDataUtil;
-use Oxa\WistiaBundle\Entity\WistiaMedia;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Doctrine\Common\Collections\Criteria;
 
@@ -68,6 +69,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     {
         $businessProfiles = $this->findBy([
             'user' => $user,
+            'isActive' => true,
         ]);
 
         return $businessProfiles;
@@ -103,114 +105,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    /**
-     * Main search functionality
-     *
-     * @param SearchDTO $searchParams
-     * @param string    $locale
-     * @return array
-     */
-    public function search(SearchDTO $searchParams, string $locale)
-    {
-        if (!$searchParams->locationValue) {
-            return null;
-        }
-
-        $searchQuery = $this->splitPhraseToPlain($searchParams->query);
-
-        $limit  = $searchParams->limit;
-        $offset = ($searchParams->page - 1) * $limit;
-        $queryBuilder = $this->getQueryBuilder();
-
-        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
-        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery, $locale);
-
-        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
-
-        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
-
-        if (SearchDataUtil::ORDER_BY_DISTANCE == $searchParams->getOrderBy()) {
-            $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
-            $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
-            $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
-        } else {
-            $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
-            $this->addOrderByCategoryRankQueryBuilder($queryBuilder, Criteria::DESC);
-            $this->addOrderByDistanceQueryBuilder($queryBuilder, Criteria::ASC);
-        }
-
-        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder, Criteria::DESC);
-
-        $category = $searchParams->getCategory();
-
-        if ($category) {
-            $this->addCategoryFilterToQueryBuilder($queryBuilder, $category);
-        }
-
-        $results = $queryBuilder->getQuery()->getResult();
-
-        return $results;
-    }
-
-    /**
-     * Counting search results
-     *
-     * @param SearchDTO $searchParams
-     * @param string $locale
-     * @return int
-     */
-    public function countSearchResults(SearchDTO $searchParams, string $locale)
-    {
-        $searchQuery = $this->splitPhraseToPlain($searchParams->query);
-
-        $queryBuilder = $this->getQueryBuilder();
-
-        $this->addCountToSearchByCategoryAndNameWithingAreaQueryBuilder($queryBuilder, $searchQuery, $locale);
-
-        $this->addSearchByLocationQueryBuilder($queryBuilder, $searchParams);
-
-        $category = $searchParams->getCategory();
-
-        if ($category) {
-            $this->addCategoryFilterToQueryBuilder($queryBuilder, $category);
-        }
-
-        $results = $queryBuilder->getQuery()->getResult();
-
-        return count($results);
-    }
-
-    public function searchAutosuggestWithBuilder($query, $locale, $limit = 5, $offset = 0)
-    {
-        $searchQuery = $this->splitPhraseToPlain($query);
-
-        $queryBuilder = $this->getQueryBuilder()->addSelect('bp.name' . $locale . ' as name');
-
-        $this->addSearchbByCategoryAndNameQueryBuilder($queryBuilder, $searchQuery, $locale);
-        $this->addHeadlineToNameQueryBuilder($queryBuilder, $locale);
-        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
-        $this->addOrderByRankQueryBuilder($queryBuilder, Criteria::DESC);
-
-        $result = $queryBuilder->getQuery()->getResult();
-
-        return $result;
-    }
-
-    protected function splitPhraseToPlain(string $phrase)
-    {
-        $words = explode(' ', $phrase);
-        $words = array_filter($words);
-        $wordParts = array_map(
-            function ($item) {
-                return $item . ":*";
-            },
-            $words
-        );
-        $plain = implode(' | ', $wordParts);
-
-        return $plain;
-    }
-
     protected function getEmptyQueryBuilder()
     {
         return $this->getEntityManager()->createQueryBuilder();
@@ -229,151 +123,11 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    protected function addSearchbByCategoryAndNameQueryBuilder(
-        QueryBuilder $queryBuilder,
-        string $searchQuery,
-        string $locale
-    ) {
-        return $queryBuilder
-            ->addSelect('TSRANK(bp.searchFts' . $locale . ', :searchQuery) as rank')
-            ->join('bp.categories', 'c')
-            ->addSelect('MAX(TSRANK(c.searchFts' . $locale . ', :searchQuery)) as rank_c')
-            ->andWhere('(
-                TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true
-                OR
-                TSQUERY( bp.searchFts' . $locale . ', :searchQuery) = true
-            )')
-            ->setParameter('searchQuery', $searchQuery)
-        ;
-    }
-
-    protected function addCountToSearchByCategoryAndNameWithingAreaQueryBuilder(
-        QueryBuilder &$queryBuilder,
-        string $searchQuery,
-        string $locale
-    ) {
-        return $queryBuilder
-            ->select('count(bp.id) as rows')
-            ->join('bp.categories', 'c')
-            ->andWhere('(
-                TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true
-                OR
-                TSQUERY( bp.searchFts' . $locale . ', :searchQuery) = true
-            )')
-            ->setParameter('searchQuery', $searchQuery)
-        ;
-    }
-
-    protected function addSearchByLocationQueryBuilder(QueryBuilder $queryBuilder, $searchParams)
-    {
-        $searchString = '(
-                (bp.serviceAreasType = :serviceAreasTypeArea
-                    AND ' . $this->getDistanceBetweenPointsSql() . ' <= bp.milesOfMyBusiness)
-                OR
-                (bp.serviceAreasType = :serviceAreasTypeLoc
-                    AND loc.id = :localityId)
-            )';
-
-        if ($searchParams->getNeighborhood()) {
-            $queryBuilder->join('bp.neighborhoods', 'nei')
-                ->andWhere('nei.id = :neighborhoodId')
-                ->setParameter('neighborhoodId', $searchParams->getNeighborhood())
-            ;
-        }
-
-        $location = $searchParams->locationValue;
-
-        if ($location->locality) {
-            $localityId = $location->locality->getId();
-        } else {
-            $localityId = 0;
-        }
-
-        $queryBuilder->leftJoin('bp.localities', 'loc')
-            ->andWhere($searchString)
-            ->setParameter('userLatitude', $location->lat)
-            ->setParameter('userLongitude', $location->lng)
-            ->setParameter('serviceAreasTypeArea', BusinessProfile::SERVICE_AREAS_AREA_CHOICE_VALUE)
-            ->setParameter('serviceAreasTypeLoc', BusinessProfile::SERVICE_AREAS_LOCALITY_CHOICE_VALUE)
-            ->setParameter('localityId', $localityId)
-        ;
-
-        return $queryBuilder;
-    }
-
-    protected function addCityRankQueryBuilder(QueryBuilder $queryBuilder)
-    {
-        return $queryBuilder
-            ->addSelect('TSRANK(bp.searchCityFts, :searchLocation) as rank_city')
-            ->orWhere('TSQUERY( bp.searchCityFts, :searchLocation) = true')
-        ;
-    }
-
-    protected function addCategoryRankQueryBuilder(QueryBuilder $queryBuilder, string $locale)
-    {
-        return $queryBuilder
-            ->join('bp.categories', 'c')
-            ->addSelect('MAX(TSRANK(c.searchFts' . $locale . ', :searchQuery)) as rank_c')
-            ->orWhere('TSQUERY( c.searchFts' . $locale . ', :searchQuery) = true')
-            ->andWhere('TSQUERY( loc.searchFts, :searchLocation) = true')
-        ;
-    }
-
-    protected function addHeadlineToNameQueryBuilder(QueryBuilder $queryBuilder, $locale)
-    {
-        return $queryBuilder
-            ->addSelect('TSHEADLINE(bp.name' . $locale . ', :searchQuery ) as data')
-        ;
-    }
-
     protected function addLimitOffsetQueryBuilder(QueryBuilder $queryBuilder, $limit, $offset)
     {
         return $queryBuilder
             ->setMaxResults($limit)
             ->setFirstResult($offset)
-        ;
-    }
-
-    protected function addOrderByRankQueryBuilder(QueryBuilder $queryBuilder, $order)
-    {
-        return $queryBuilder
-            ->addOrderBy('rank', $order)
-        ;
-    }
-
-    protected function addOrderByCategoryRankQueryBuilder(QueryBuilder $queryBuilder, $order)
-    {
-        return $queryBuilder
-            ->addOrderBy('rank_c', $order)
-        ;
-    }
-
-    protected function addOrderByCityRankQueryBuilder(QueryBuilder $queryBuilder, $order)
-    {
-        return $queryBuilder
-            ->addOrderBy('rank_city', $order)
-        ;
-    }
-
-    protected function addOrderByAreaRankQueryBuilder(QueryBuilder $queryBuilder, $order)
-    {
-        return $queryBuilder
-            ->addOrderBy('rank_a', $order)
-        ;
-    }
-
-    protected function addOrderByDistanceQueryBuilder(QueryBuilder $queryBuilder, $order)
-    {
-        return $queryBuilder
-            ->addOrderBy('distance', $order)
-        ;
-    }
-
-    protected function addCategoryFilterToQueryBuilder(QueryBuilder $queryBuilder, $category)
-    {
-        return $queryBuilder
-            ->andWhere('c.id = :categoryId')
-            ->setParameter('categoryId', $category)
         ;
     }
 
@@ -549,13 +303,344 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
             ->from(BusinessProfile::class, 'bp')
             ->innerJoin('bp.subscriptions', 'bp_s')
             ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
-            ->innerJoin(WistiaMedia::class, 'v', Join::WITH, 'bp.video = v')
+            ->innerJoin(VideoMedia::class, 'v', Join::WITH, 'bp.video = v')
             ->where('bp.isActive = TRUE')
-            ->andWhere('bps_p.code = :platinumPlanCode')
+            ->andWhere('bps_p.code >= :platinumPlanCode')
             ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
             ->orderBy('v.createdAt', 'DESC')
         ;
 
         return $qb;
+    }
+
+    public function getBusinessProfilesByVideosUpdateQb()
+    {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('bp')
+            ->from(BusinessProfile::class, 'bp')
+            ->innerJoin('bp.subscriptions', 'bp_s')
+            ->innerJoin('bp_s.subscriptionPlan', 'bps_p')
+            ->innerJoin(VideoMedia::class, 'v', Join::WITH, 'bp.video = v')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bps_p.code >= :platinumPlanCode')
+            ->setParameter('platinumPlanCode', SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM)
+        ;
+
+        return $queryBuilder;
+    }
+
+    public function getBusinessProfilesByVideosUpdate($searchParams)
+    {
+        $limit  = $searchParams->limit;
+        $offset = ($searchParams->page - 1) * $limit;
+
+        $queryBuilder = $this->getBusinessProfilesByVideosUpdateQb();
+        $queryBuilder->orderBy('v.updatedAt', 'DESC');
+
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function countBusinessProfilesByVideosUpdate()
+    {
+        $queryBuilder = $this->getBusinessProfilesByVideosUpdateQb();
+
+        $queryBuilder->select('count(bp.id) as rows');
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return count($results);
+    }
+
+    /**
+     * Main search functionality
+     *
+     * @param SearchDTO $searchParams
+     * @param string    $locale
+     * @return array
+     */
+    public function searchCatalog(SearchDTO $searchParams, $locale)
+    {
+        if (!$searchParams->locationValue) {
+            return null;
+        }
+
+        $limit  = $searchParams->limit;
+        $offset = ($searchParams->page - 1) * $limit;
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
+        $this->addCatalogSearchQueryBuilder($queryBuilder, $searchParams);
+        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
+        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder);
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return $results;
+    }
+
+    protected function addSearchByCatalogCategoryQueryBuilder(QueryBuilder $queryBuilder, $category)
+    {
+        return $queryBuilder
+            ->join('bp.categories', 'c')
+            ->andWhere('c.id = :category')
+            ->setParameter('category', $category);
+    }
+
+    protected function addSearchByCatalogLocalityQueryBuilder(QueryBuilder $queryBuilder, $locality)
+    {
+        return $queryBuilder
+            ->andWhere('bp.catalogLocality = :locality')
+            ->setParameter('locality', $locality);
+    }
+
+    /**
+     * Counting search results
+     *
+     * @param SearchDTO $searchParams
+     *
+     * @return int
+     */
+    public function countCatalogSearchResults(SearchDTO $searchParams)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $this->addCatalogSearchQueryBuilder($queryBuilder, $searchParams);
+
+        $queryBuilder->select('count(bp.id) as rows');
+
+        $results = $queryBuilder->getQuery()->getResult();
+
+        return count($results);
+    }
+
+    /**
+     * add catalog search query
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param SearchDTO    $searchParams
+     */
+    protected function addCatalogSearchQueryBuilder($queryBuilder, SearchDTO $searchParams)
+    {
+        $category = $searchParams->getCategory();
+        $catalogLocality = $searchParams->getCatalogLocality();
+
+        if ($catalogLocality) {
+            $this->addSearchByCatalogLocalityQueryBuilder($queryBuilder, $catalogLocality);
+
+            if ($category) {
+                $this->addSearchByCatalogCategoryQueryBuilder($queryBuilder, $category);
+            }
+        }
+    }
+
+    public function findBySlug($businessProfileSlug, $customSlug = false)
+    {
+        $query = $this->getQueryBuilder()
+            ->where('bp.slug = :businessProfileSlug')
+            ->setParameter('businessProfileSlug', $businessProfileSlug)
+        ;
+
+        if ($customSlug) {
+            $query->orWhere('bp.slug = :customSlug')
+                ->orWhere('bp.slugEn = :customSlug')
+                ->orWhere('bp.slugEs = :customSlug')
+                ->setParameter('customSlug', $customSlug)
+            ;
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getActiveBusinessProfilesIterator()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * @param int $idStart
+     * @return IterableResult
+     */
+    public function getActiveBusinessProfilesIteratorElastic($idStart)
+    {
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->andWhere('bp.id >= :idStart')
+            ->setParameter('idStart', $idStart)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('idStart', $idStart);
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getUpdatedBusinessProfilesIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->andWhere('bp.isUpdated = TRUE')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        $iterateResult = $query->iterate();
+
+        return $iterateResult;
+    }
+
+    /**
+     * Set isUpdated flag for all categories for elastic search synchronization
+     *
+     * @return mixed
+     */
+    public function setUpdatedAllBusinessProfiles()
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->where('bp.isActive = true')
+            ->set('bp.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
+
+    /**
+     * workaround for unstable EntityManagerInterface#flush() inside of event lintener
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function setUpdatedBusinessProfile($id)
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainBusinessBundle:BusinessProfile', 'bp')
+            ->where('bp.isActive = TRUE')
+            ->andWhere('bp.id = :id')
+            ->set('bp.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithoutActiveSubscriptionIterator()
+    {
+        $qb = $this->getBusinessesAndActiveSubscriptionQb();
+
+        $qb->andWhere('s.id IS NULL');
+
+        $businessProfileIds = $qb->getQuery()->getArrayResult();
+
+        $businessesIterator = $this->getBusinessesIteratorByIds($businessProfileIds);
+
+        return $businessesIterator;
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessProfilesWithoutCategoriesIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->andWhere('bp.categories IS EMPTY')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithMultipleActiveSubscriptionsIterator()
+    {
+        $qb = $this->getBusinessesAndActiveSubscriptionQb();
+
+        $qb
+            ->groupBy('bp.id')
+            ->having('COUNT(s.id) > 1')
+        ;
+
+        $businessProfileIds = $qb->getQuery()->getArrayResult();
+
+        $businessesIterator = $this->getBusinessesIteratorByIds($businessProfileIds);
+
+        return $businessesIterator;
+    }
+
+    protected function getBusinessesAndActiveSubscriptionQb()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp.id')
+            ->distinct()
+            ->leftJoin('bp.subscriptions', 's', 'WITH', 's.status = ' . StatusInterface::STATUS_ACTIVE)
+            ->andWhere('bp.isActive = TRUE')
+        ;
+
+        return $qb;
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return IterableResult
+     */
+    protected function getBusinessesIteratorByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->andWhere('bp.id IN (:businessProfileIds)')
+            ->setParameter('businessProfileIds', $ids)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('businessProfileIds', $ids);
+
+        return $query->iterate();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getBusinessesWithTextWorkingHoursIterator()
+    {
+        $qb = $this->createQueryBuilder('bp')
+            ->select('bp')
+            ->where('bp.workingHours IS NOT NULL')
+            ->andWhere('bp.workingHours != \'\'')
+            ->orderBy('bp.id')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
     }
 }

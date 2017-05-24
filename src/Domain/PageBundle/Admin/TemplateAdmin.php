@@ -19,11 +19,7 @@ class TemplateAdmin extends OxaAdmin
         $datagridMapper
             ->add('id')
             ->add('name')
-            ->add('updatedAt', 'doctrine_orm_datetime_range', [
-                'field_type' => 'sonata_type_datetime_range_picker',
-                'field_options' => [
-                    'format' => 'dd-MM-y hh:mm:ss'
-                ]])
+            ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('updatedUser')
         ;
     }

@@ -1,0 +1,26 @@
+{% set currentUrl = absolute_url(path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))) %}
+
+{% set currentTitle = '' %}
+{% if seoData is defined and seoData.seoTitle %}
+    {% set currentTitle = seoData.seoTitle %}
+{% endif %}
+
+<div class="sidebar__section section--social">
+    <ul>
+        <li>
+            <a class="button button-share--facebook social-share" target="_blank" data-href="https://www.facebook.com/sharer/sharer.php?u={{ currentUrl|url_encode }}&t={{ currentTitle|url_encode }}">
+                <i class="fa fa-facebook"></i>
+                <span>{% trans %}Share on Facebook{% endtrans %}</span>
+            </a>
+        </li>
+        <li>
+            <a class="button button-share--twitter" data-href="https://twitter.com/intent/tweet/?text={{ currentTitle|url_encode }}&url={{ currentUrl|url_encode }}" >
+                <i class="fa fa-twitter"></i>
+                <span>{% trans %}Share on Twitter{% endtrans %}</span>
+            </a>
+        </li>
+    </ul>
+
+    {% include ':widgets:social_share_script.html.twig' %}
+
+</div><!-- sidebar__section -->

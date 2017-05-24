@@ -1,0 +1,28 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:article-breadcrumbs.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                {% if results %}
+                    {% embed ':redesign/blocks:homepage_article_list.html.twig' with {'articles': results.resultSet} %}
+                        {% block titleTag %}
+                            <h1 class="section__title">{% trans %}Articles{% endtrans %}</h1>
+                        {% endblock %}
+                    {% endembed %}
+                    {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
+                {% endif %}
+
+                {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.ARTICLE_PAGE_BOTTOM } %}
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' with { 'bannerType': BANNER_CODE.ARTICLE_PAGE_RIGHT } %}
+        </div>
+    </div>
+{% endblock %}

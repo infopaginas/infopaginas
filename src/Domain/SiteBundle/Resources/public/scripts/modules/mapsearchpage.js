@@ -1,79 +1,106 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating', 'async!https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key=AIzaSyACRiuSCjh3c3jgxC53StYJCvag6Ig8ZIw'],
-    function ( $, view, _, directions, select ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapspin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/star-rating'],
+    function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
 
-    var mapSearchPage = function ( options ) {
-        options.selector = options.selector || 'body';
-        this.$ = function( selector ) {
-            return $( options.selector ).find( selector );
-        };
-
+    var mapSearchPage = function () {
         this.events = {
-            '.map-address click'        : 'showMarker',
-            ".order-by-select change"   : "changeSearchData",
+            '.map-address click' : 'showMarker' //todo
         };
 
-        this.mapSize = {
-            mapWrapper: '#search-results-map',
-            mapImage: '#map-canvas',
-            mapLeftMargin: 515,
-            mapMediaWidth: 992,
-            marginTop: 120
+        this.urls = {
+            search: Routing.generate( 'domain_search_map' )
         };
 
-        this.init( options );
-        this.bindEvents();
+        this.storage = {
+            mapSearchUrl: 'mapSearchUrl'
+        };
 
-        $( document ).ready( function(){
-            this.resizeMap();
-        }.bind( this ) );
+        this.html = {
+            containers: {
+                searchContainer: '#searchContainer'
+            },
+            buttons: {
+                redoSearch: '#redo-search-in-map',
+                pagination: 'div.pagination a[data-page]',
+                toggleFilters: '#filter-toggle',
+                toggleSorting: '#sort-toggle',
+                filterCategory: '#filter-category',
+                filterNeighborhood: '#filter-Neighborhood',
+                sortMatch: '#sort-match',
+                sortDistance: '#sort-distance'
+            },
+            links: {
+                sortMatch: '#sort-match-link',
+                sortDistance: '#sort-distance-link',
+                searchListView: '#searchListView',
+                compareListView: '#compareListView'
+            },
+            checkboxes: {
+                autoSearch: '#auto-search-in-map'
+            },
+            forms: {
+                searchForm: '#header-search-form',
+                searchLocationInput: '#searchLocation'
+            },
+            tabs: {
+                sort: 'div.sort-bar .sort__options.sort',
+                filter: 'div.sort-bar .sort__options.filter',
+                filterPanel: '#searchResults div.results'
+            }
+        };
+
+        this.ajax = {
+            action: false,
+            mapDelay: 1000,
+            buttonDelay: 200
+        };
+
+        this.searchAjaxRequest = null;
+
+        this.reportTracker = new ReportTracker;
+
+        this.init();
+        this.bindFilterEvents();
 
         return this;
     };
 
     mapSearchPage.prototype = new view;
 
-    mapSearchPage.prototype.init = function ( options ) {
+    mapSearchPage.prototype.init = function () {
         this.map = null;
         this.markers = [];
         this.options = {
-            itemsListScrollable : '.map-view-aside',
-            mapContainer : 'map-canvas',
+            itemsListScrollable : '#searchResults',
+            mapContainer : 'map',
             mapOptions   : {
-                center: new google.maps.LatLng( 18.2208, -66.5901 ),
-                zoom: 8
+                center: new google.maps.LatLng( googleMapDefaultCenter ),
+                zoom: googleMapDefaultZoom,
+                fullscreenControl: false
             },
-            cards       : '.card-item',
             directions: new directions
         };
 
-        $.extend( this.options, options );
+        var markersBlock = $( '#map-markers' );
+        if ( markersBlock.data( 'google-markers' ) ) {
+            this.options.markers = markersBlock.data( 'google-markers' );
+        }
 
         new select();
 
-        this.initMap(this.options);
-        this.setDefaultHeighForCards(
-            this.$( this.options.cards )
-        )
-    };
+        this.options.directions.bindEventsDirections();
 
-    mapSearchPage.prototype.resizeMap = function(){
-        var mapWrapperWidth = $( this.mapSize.mapWrapper ).width(),
-            mapWrapperHeight = $( this.mapSize.mapWrapper ).height();
-        if( mapWrapperWidth < this.mapSize.mapMediaWidth ){
-            $( this.mapSize.mapImage ).width( mapWrapperWidth );
-            $( this.mapSize.mapImage ).height( mapWrapperHeight - this.mapSize.marginTop );
-        } else{
-            $( this.mapSize.mapImage ).width( mapWrapperWidth - this.mapSize.mapLeftMargin );
-            $( this.mapSize.mapImage ).height( mapWrapperHeight - this.mapSize.marginTop );
-        }
+        this.initMap(this.options);
+        this.handleMapSearch();
     };
 
     mapSearchPage.prototype.initMap = function ( options ) {
         this.map = new google.maps.Map( document.getElementById( options.mapContainer ), this.options.mapOptions );
 
-        $( window ).resize(this.resizeMap.bind( this ));
+        //pass google map to main.js for resizing event
+        map = this.map;
+        this.mapSpinner = new MapSpin( this.options.mapContainer );
 
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers( this.options.markers );
@@ -86,6 +113,28 @@ define(
         });
 
         this.map.fitBounds( bounds );
+
+        google.maps.event.addListenerOnce( this.map, 'bounds_changed', function( event ) {
+            if ( this.getZoom() > googleMapMinZoom ) {
+                this.setZoom( googleMapMinZoom );
+            }
+        });
+    };
+
+    mapSearchPage.prototype.updateMapMarkers = function ( markers ) {
+        this.deleteMarkers();
+
+        if ( !_.isEmpty( markers ) ) {
+            this.addMarkers( markers );
+        }
+    };
+
+    mapSearchPage.prototype.updateGoogleTagTargeting = function ( targeting ) {
+        if ( targeting && typeof googletag != 'undefined' ) {
+            googletag.pubads().clearTargeting();
+            googletag.pubads().setTargeting( 'search', targeting.searchKeywords );
+            googletag.pubads().refresh();
+        }
     };
 
     mapSearchPage.prototype.addMarkers = function ( markers )
@@ -110,23 +159,34 @@ define(
         });
 
         var infoWindow = new google.maps.InfoWindow({
-            content: this.getInfoHTML(
-                markerData.name,
-                markerData.address,
-                markerData.reviewsCount,
-                markerData.rating,
-                markerData.logo,
-                markerData.longitude,
-                markerData.latitude,
-                markerData.profileUrl
-            )
+            content: this.getInfoHTML( markerData )
         });
 
         marker.addListener( 'click', function( event ) {
+            $( document ).trigger( 'disableAutoSearchInMap' );
+
             self.closeAllLables();
             self.scrollTo( markerData.id );
             infoWindow.open( self.map, marker );
+
+            if (!self.mapMarkerTriggered) {
+                self.reportTracker.trackEvent( 'mapMarkerButton', markerData.id );
+            }
+
+            self.mapMarkerTriggered = false;
         });
+
+        if ( document.getElementById( 'show-on-map-' + markerData.id ) ) {
+            google.maps.event.addDomListener(document.getElementById( 'show-on-map-' + markerData.id ), "click", function( e ) {
+                $( document ).trigger( 'disableAutoSearchInMap' );
+                self.map.setCenter( marker.getPosition() );
+
+                self.reportTracker.trackEvent( 'mapShowButton', markerData.id );
+                self.mapMarkerTriggered = true;
+
+                google.maps.event.trigger( marker, 'click' );
+            });
+        }
 
         var markerObjec = {};
         this.markers[markerData.id] = {
@@ -138,12 +198,17 @@ define(
     mapSearchPage.prototype.scrollTo = function ( elementId )
     {
         var card = this.$( '#' + elementId );
-        var offset = card.offset().top;
-        this.$( this.options.itemsListScrollable).first()
-            .animate({
-                scrollTop : offset
-            }, 1500);
-        this.highlightCard( elementId );
+
+        if ( card.offset() ) {
+            var offset = card.offset().top + $( this.options.itemsListScrollable ).scrollTop()
+                - $( this.options.itemsListScrollable ).height()/2 + card.height()/2;
+
+            this.$( this.options.itemsListScrollable ).first()
+                .animate({
+                    scrollTop : offset
+                }, 1500);
+            this.highlightCard( elementId );
+        }
     };
 
     mapSearchPage.prototype.showMarker = function ( event )
@@ -174,52 +239,175 @@ define(
         });
     };
 
-    mapSearchPage.prototype.getInfoHTML = function ( name, address, reviewsCount, avgMark, icon, longitude, latitude, profileUrl )
+    mapSearchPage.prototype.getInfoHTML = function ( data )
     {
-        var directionLink = this.options.directions.getDirection(null, latitude + ',' + longitude);
+        var template;
+        var directionLink = this.options.directions.getDirection(null, data.latitude + ',' + data.longitude);
 
-        var template = "<div class='business-info'>" +
-            "<div>" + name + "</div>" +
-            "<div>" + address + "</div>" +
-            "<a href='" + directionLink + "' target='_blank'>Get Direction <span>&#187;</span></a>"+
-                "<div class=\"reviews\">" +
-                    "<div class=\"star-rating\">";
-                    for ( var i = 1; i < 6; i++ ) {
-                        if ( i <= avgMark ) {
-                            var additionClass = ' fa-star-selected';
-                        } else {
-                            additionClass = '';
-                        }
+        var item = $( '#' + data.id );
 
-                        template += "<span class='fa fa-star-o" + additionClass + "' data-rating=\"" + i + "\"></span>";
-                    }
-                        template += "<input type=\"hidden\" name=\"whatever\" class=\"rating-value\" value=\"" + avgMark + "\">" +
-                    "</div>" +
-                    "<a href='" + profileUrl + "#reviews' target='_blank'><span class=\"reviews-value\">" + reviewsCount + " Reviews</span></a>" +
-                "</div>" +
-            "</div>";
+        var itemContent = item.find( 'div[data-item-content]' );
+        var directionButton = item.find( 'a.get-dir' );
 
-        if ( !_.isUndefined(icon) && !_.isNull(icon) ) {
-            template += "<div class='business-logo'>" +
-                "<img width='60' src='" + icon + "'>" +
-            "</div>";
+        if ( itemContent.length ) {
+            var content = $( '<div class="map-info-window">' ).append( itemContent.clone());
+
+            if ( directionButton.length ) {
+                content.find( '.item__summary' ).append( directionButton.clone() );
+            }
+
+            template = content.html();
+        } else {
+            template = "<div class='business-info'><div>" + data.name + "</div></div>";
         }
 
         return template;
     };
 
-    mapSearchPage.prototype.setDefaultHeighForCards = function ( cards )
-    {
-        _.each( cards, function ( card ) {
-            $(card).data( 'default-offset', $( card ).offset().top )
-        })
+    mapSearchPage.prototype.bindFilterEvents = function () {
+        $( '#filter-category, #filter-Neighborhood' ).on( 'change', function( e ) {
+            var route = $( e.currentTarget ).find( 'option:selected' ).data( 'route' );
+
+            window.location = route;
+        });
     };
 
-    mapSearchPage.prototype.changeSearchData = function ( e ) {
-        var route = $(e.currentTarget).find('option:selected').data('route');
+    mapSearchPage.prototype.successHandler = function( response ) {
+        $( this.html.containers.searchContainer ).html( response.html );
 
-        window.location = route;
-    }
+        var markers = $.parseJSON( response.markers );
+
+        this.updateMapMarkers( markers );
+        this.updateGoogleTagTargeting( response.targeting );
+        this.options.directions.bindEventsDirections();
+
+        window.history.replaceState( this.storage.mapSearchUrl, response.seoData.seoTitle, response.staticSearchUrl );
+
+        document.title = response.seoData.seoTitle;
+        $( 'meta[name=description]' ).attr( 'content', response.seoData.seoDescription );
+
+        $( this.html.links.compareListView ).attr( 'href', response.staticCompareUrl );
+        $( this.html.forms.searchLocationInput ).val( response.location );
+
+        $( document ).trigger( 'searchRequestReady' );
+    };
+
+    mapSearchPage.prototype.doRequest = function ( ajaxURL, data, delay ) {
+        var that = this;
+
+        if ( this.ajax.action ) {
+            clearTimeout( this.ajax.action );
+        }
+
+        that.mapSpinner.requestLoadingStart();
+
+        that.ajax.action = setTimeout(function() {
+            if ( that.searchAjaxRequest ) {
+                that.searchAjaxRequest.abort();
+            }
+
+            that.searchAjaxRequest = $.ajax({
+                url: ajaxURL,
+                type: 'GET',
+                dataType: 'JSON',
+                data: data,
+                success: $.proxy( that.successHandler, that )
+            });
+        }, delay);
+    };
+
+    mapSearchPage.prototype.submitSearch = function ( delay, page ) {
+        var searchData = this.getSearchData();
+
+        this.disableSearchFilters();
+
+        if ( page ) {
+            searchData.page = page;
+        }
+
+        this.doRequest( this.urls.search, searchData, delay );
+    };
+
+    mapSearchPage.prototype.getSearchData = function () {
+        var data = {};
+
+        if ( typeof map != 'undefined' ) {
+            $( this.html.forms.searchForm ).serializeArray().map(
+                function ( x ) {
+                    data[ x.name ] = x.value;
+                }
+            );
+
+            var mapBounds = map.getBounds();
+            var mapCenter = map.getCenter();
+
+            data.tllt = mapBounds.f.b;
+            data.tllg = mapBounds.b.b;
+            data.brlt = mapBounds.f.f;
+            data.brlg = mapBounds.b.f;
+            data.clt  = mapCenter.lat;
+            data.clg  = mapCenter.lng;
+
+            data.geo = '';
+        }
+
+        return data;
+    };
+
+    mapSearchPage.prototype.handleMapSearch = function() {
+        var that = this;
+
+        $( this.html.buttons.redoSearch ).on( 'click', function() {
+            that.submitSearch( that.ajax.buttonDelay );
+        });
+
+        $( document ).on( 'click', this.html.buttons.pagination, function () {
+            var page = $( this ).data( 'page' );
+
+            that.submitSearch( that.ajax.buttonDelay, page );
+        });
+
+        $( document ).on( 'autoSearchRequestTriggered', function() {
+            that.submitSearch( that.ajax.mapDelay );
+        });
+    };
+
+    mapSearchPage.prototype.setMapOnAll =  function( map ) {
+        this.markers.forEach( function( item ) {
+            item.marker.setMap( map );
+        });
+    };
+
+    mapSearchPage.prototype.clearMarkers = function() {
+        this.setMapOnAll( null );
+    };
+
+    mapSearchPage.prototype.deleteMarkers = function() {
+        this.clearMarkers();
+        this.markers = [];
+    };
+
+    mapSearchPage.prototype.disableSearchFilters = function() {
+        this.disableButton( this.html.buttons.toggleFilters );
+        this.disableButton( this.html.buttons.toggleSorting );
+        this.disableButton( this.html.buttons.filterCategory );
+        this.disableButton( this.html.buttons.filterNeighborhood );
+
+        this.disableLink( this.html.links.sortDistance );
+        this.disableLink( this.html.links.sortMatch );
+
+        $( this.html.tabs.sort ).removeClass( 'sort--on' );
+        $( this.html.tabs.filter ).removeClass( 'filter--on' );
+        $( this.html.tabs.filterPanel ).removeClass( 'active__toggle' );
+    };
+
+    mapSearchPage.prototype.disableButton = function( button ) {
+        $( button ).attr( 'disabled', 'disabled');
+    };
+
+    mapSearchPage.prototype.disableLink = function( link ) {
+        $( link ).addClass( 'disabledLink' );
+    };
 
     return mapSearchPage;
 });

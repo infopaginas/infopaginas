@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="coupon")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\CouponRepository")
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\CouponTranslation")
  */
 class Coupon implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface

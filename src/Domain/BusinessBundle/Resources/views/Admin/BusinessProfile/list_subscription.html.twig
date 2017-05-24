@@ -13,8 +13,6 @@ file that was distributed with this source code.
 
 {% block field%}
     {% if object.subscriptionPlan is not null %}
-        <a href="{{ path('admin_domain_business_subscription_edit', {'id' : object.subscription.id }) }}">
-            {{ object.subscriptionPlan }}
-        </a>
+        {{ object.subscriptionPlan }}
     {% endif %}
 {% endblock %}

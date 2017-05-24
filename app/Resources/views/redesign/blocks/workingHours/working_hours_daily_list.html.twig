@@ -1,0 +1,52 @@
+{% if isCompare is not defined %}
+    {% set isCompare = false %}
+{% endif %}
+
+{% set workingHoursCollection = get_business_profile_working_hours_list(businessProfile) %}
+
+{% if workingHoursCollection %}
+    <div class="highlights__item highlights__item--hours {% if isCompare %}highlights__item_hours-row highlights__item_fixed-height{% endif %}">
+        <h3>{% trans %}Business hours{% endtrans %}</h3>
+        <ul>
+            {% for day, workingHours in workingHoursCollection %}
+                {% set dayList = day|split(',') %}
+
+                <li>
+                    <span class="hour__day">
+                        {% for day in dayList %}
+                            {{ day|trans }}{% if loop.index0 < dayList|length - 1 %},{% endif %}
+                        {% endfor %}
+                    </span>
+                    {% if workingHours|length > 0 %}
+                        {% for workingHour in workingHours %}
+                            <span class="hour__hours">
+                                {% if workingHour.openAllTime %}
+                                    {% trans %}business.working.hours.open_all_time{% endtrans %}
+                                {% else %}
+                                    {{ workingHour.timeStart|date(working_hours_date_format) }} - {{ workingHour.timeEnd|date(working_hours_date_format) }};
+                                {% endif %}
+                            </span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="hour__hours">
+                            {% trans %}business.working.hours.closed{% endtrans %}
+                        </span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div><!-- highlights__item -->
+{% elseif businessProfile.getWorkingHours() %}
+    <div class="highlights__item highlights__item--hours">
+        <h3>{% trans %}Business hours{% endtrans %}</h3>
+        <ul>
+            <li>
+                {{ businessProfile.getWorkingHours() }}
+            </li>
+        </ul>
+    </div><!-- highlights__item -->
+{% elseif isCompare %}
+    <div class="highlights__item highlights__item--checklist highlights__item_hours-row highlights__item_fixed-height empty">
+        <ul></ul>
+    </div>
+{% endif %}

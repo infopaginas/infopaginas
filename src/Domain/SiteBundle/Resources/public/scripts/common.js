@@ -36,6 +36,27 @@ requirejs.config({
         },
         'js-cookie' : {
             exports: 'Cookies'
+        },
+        'selectize' : {
+            deps: ['jquery']
+        },
+        'velocity' : {
+            deps: ['jquery']
+        },
+        'velocity-ui' : {
+            deps: ['velocity']
+        },
+        'iframetracker' : {
+            deps: ['jquery']
+        },
+        'highcharts' : {
+            deps: ['jquery']
+        },
+        'jquery-ui' : {
+            deps: ['jquery']
+        },
+        'main-redesign' : {
+            deps: ['selectize']
         }
     },
     paths: {
@@ -50,6 +71,8 @@ requirejs.config({
         'jquery-mobile' : 'domainsite/scripts/vendors/jquery.mobile.custom.min',
         'js-cookie'     : 'domainsite/scripts/vendors/js.cookie.min',
         'bootstrap'     : 'domainsite/scripts/vendors/bootstrap.min',
+        'moment'        : '/bundles/sonatacore/vendor/moment/min/moment.min',
+        'dateTimePicker': '/bundles/sonatacore/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
         'underscore'    : 'domainsite/scripts/vendors/underscore-min',
         'alertify'      : 'domainsite/scripts/vendors/alertify.min',
         'spin'          : 'domainsite/scripts/vendors/spin.min',
@@ -58,9 +81,18 @@ requirejs.config({
         'lightbox'      : 'domainsite/scripts/vendors/simple-lightbox.min',
         'select2'       : 'domainsite/scripts/vendors/select2.min',
         'iframetracker' : 'domainsite/scripts/vendors/jquery.iframetracker',
-        'highcharts' : 'domainsite/scripts/vendors/highcharts',
+        'highcharts'    : 'domainsite/scripts/vendors/highcharts',
 
         'business/modules' : 'domainbusiness/scripts/modules',
-        'business/tools'   : 'domainbusiness/scripts/modules/tools'
-    }
+        'business/tools'   : 'domainbusiness/scripts/modules/tools',
+
+        //redesign
+        'profile-redesign': 'domainsite/scripts/modules/profile',
+        'main-redesign': 'domainsite/scripts/modules/main',
+        'selectize': 'domainsite/scripts/vendors/min/selectize-min',
+        'velocity': 'domainsite/scripts/vendors/min/velocity-min',
+        'velocity-ui': 'domainsite/scripts/vendors/min/velocity-ui-min',
+        'maps-redesign': 'domainsite/scripts/modules/mapsearchpage'
+    },
+    waitSeconds: 0
 });

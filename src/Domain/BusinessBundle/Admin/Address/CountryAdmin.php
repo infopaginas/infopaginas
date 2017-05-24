@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin\Address;
 
+use Domain\BusinessBundle\Entity\Address\Country;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -19,7 +20,9 @@ class CountryAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
             ->add('shortName')
         ;
     }
@@ -43,9 +46,13 @@ class CountryAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $country = $this->getSubject();
+
+        $disableShortNameEdit = in_array(strtolower($country->getShortName()), Country::getRequiredCountries());
+
         $formMapper
             ->add('name')
-            ->add('shortName')
+            ->add('shortName', null, ['read_only' => $disableShortNameEdit])
         ;
     }
 
@@ -68,7 +75,7 @@ class CountryAdmin extends OxaAdmin
      */
     public function isGranted($name, $object = null)
     {
-        $deniedActions = ['DELETE', 'ROLE_PHYSICAL_DELETE_ABLE', 'ROLE_RESTORE_ABLE'];
+        $deniedActions = $this->getDeleteDeniedAction();
 
         if ($object && in_array($name, $deniedActions) &&
             in_array(strtolower($object->getShortName()), $object::getRequiredCountries())

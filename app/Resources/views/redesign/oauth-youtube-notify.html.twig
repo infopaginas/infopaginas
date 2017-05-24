@@ -1,0 +1,17 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                <p>Note: Correct work of youtube synchronization system require access to youtube account.</p>
+                <ul>
+                    <li>Please login into you youtube account that will be used for video upload.</li>
+                    <li>Then follow this <a href="{{ absolute_url(url('oxa_youtube_oauth_authorization')) }}">link</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

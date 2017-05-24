@@ -57,6 +57,7 @@ class UserProfileType extends AbstractType
                     'placeholder' => '11111111',
                 ],
                 'label' => 'Advertiser Id',
+                'required' => false,
             ])
             ->add('phone', TextType::class, [
                 'attr' => [
@@ -71,50 +72,6 @@ class UserProfileType extends AbstractType
                         'message' => 'business_profile.phone.invalid',
                     ]),
                 ],
-            ])
-            ->add('twitterURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'twitter.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Twitter',
-            ])
-            ->add('facebookURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'facebook.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Facebook',
-            ])
-            ->add('googleURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'plus.google.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Google Plus',
-            ])
-            ->add('youtubeURL', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'youtube.example.email.placeholder',
-                ],
-                'constraints' => [
-                    new ConstraintUrlExpanded(),
-                    new Length(['max' => 100]),
-                ],
-                'label' => 'Youtube',
             ])
         ;
     }

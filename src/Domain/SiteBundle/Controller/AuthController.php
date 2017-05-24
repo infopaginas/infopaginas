@@ -17,13 +17,13 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class AuthController extends Controller
 {
-    const ERROR_VALIDATION_FAILURE = 'Validation failure.';
+    const ERROR_VALIDATION_FAILURE = 'user.auth.validation_failure';
 
-    const SUCCESS_REGISTERED_MESSAGE = 'Successfully registered. Please login with your credentials.';
+    const SUCCESS_REGISTERED_MESSAGE = 'user.auth.registration_success';
 
-    const SUCCESS_RESET_LINK_SENT_MESSAGE = 'Reset password link sent to your email. Please check it.';
+    const SUCCESS_RESET_LINK_SENT_MESSAGE = 'user.auth.reset_link_sent';
 
-    const SUCCESS_RESET_PASSWORD_MESSAGE = 'Successfully updated password. You can login with new credentials now.';
+    const SUCCESS_RESET_PASSWORD_MESSAGE = 'user.auth.password_updated';
 
     /**
      * @return JsonResponse
@@ -31,16 +31,21 @@ class AuthController extends Controller
     public function registrationAction() : JsonResponse
     {
         $formHandler = $this->getRegistrationFormHandler();
+        $translator  = $this->getTranslator();
 
         try {
             if ($formHandler->process()) {
-                return $this->getSuccessResponse(self::SUCCESS_REGISTERED_MESSAGE);
+                $message = $translator->trans(self::SUCCESS_REGISTERED_MESSAGE);
+
+                return $this->getSuccessResponse($message);
             }
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage());
         }
 
-        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
+        $message = $translator->trans(self::ERROR_VALIDATION_FAILURE);
+
+        return $this->getFailureResponse($message, $formHandler->getErrors());
     }
 
     /**
@@ -49,16 +54,21 @@ class AuthController extends Controller
     public function sendPasswordResetLinkAction() : JsonResponse
     {
         $formHandler = $this->getResetPasswordRequestFormHandler();
+        $translator  = $this->getTranslator();
 
         try {
             if ($formHandler->process()) {
-                return $this->getSuccessResponse(self::SUCCESS_RESET_LINK_SENT_MESSAGE);
+                $message = $translator->trans(self::SUCCESS_RESET_LINK_SENT_MESSAGE);
+
+                return $this->getSuccessResponse($message);
             }
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage());
         }
 
-        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
+        $message = $translator->trans(self::ERROR_VALIDATION_FAILURE);
+
+        return $this->getFailureResponse($message, $formHandler->getErrors());
     }
 
     /**
@@ -68,16 +78,21 @@ class AuthController extends Controller
     public function resetPasswordAction(Request $request) : JsonResponse
     {
         $formHandler = $this->getResetPasswordFormHandler();
+        $translator  = $this->getTranslator();
 
         try {
             if ($formHandler->process()) {
-                return $this->getSuccessResponse(self::SUCCESS_RESET_PASSWORD_MESSAGE);
+                $message = $translator->trans(self::SUCCESS_RESET_PASSWORD_MESSAGE);
+
+                return $this->getSuccessResponse($message);
             }
         } catch (\Exception $e) {
             return $this->getFailureResponse($e->getMessage());
         }
 
-        return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
+        $message = $translator->trans(self::ERROR_VALIDATION_FAILURE);
+
+        return $this->getFailureResponse($message, $formHandler->getErrors());
     }
 
     /**

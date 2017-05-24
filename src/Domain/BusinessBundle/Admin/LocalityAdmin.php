@@ -26,7 +26,9 @@ class LocalityAdmin extends OxaAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('name')
+            ->add('name', null, [
+                'show_filter' => true,
+            ])
             ->add('area')
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
@@ -60,7 +62,25 @@ class LocalityAdmin extends OxaAdmin
             ->add('name')
             ->add('latitude')
             ->add('longitude')
-            ->add('area')
+            ->add('area', null, [
+                'required' => true,
+            ])
+            ->add('pseudos', 'sonata_type_collection',
+                [
+                    'by_reference'  => false,
+                    'required'      => false,
+                    'read_only'     => true,
+                    'btn_add'       => false,
+                    'type_options' => [
+                        'delete'    => false,
+                    ],
+                ],
+                [
+                    'edit'          => 'inline',
+                    'delete_empty'  => false,
+                    'inline'        => 'table',
+                ]
+            )
         ;
     }
 
@@ -77,6 +97,69 @@ class LocalityAdmin extends OxaAdmin
             ->add('area')
             ->add('updatedAt')
             ->add('updatedUser')
+            ->add('pseudos')
         ;
+    }
+
+    public function preRemove($entity)
+    {
+        $this->replaceBusinessCatalogLocality($entity);
+    }
+
+    /**
+     * @param string $name
+     * @param null $object
+     * @return bool
+     */
+    public function isGranted($name, $object = null)
+    {
+        $deniedActions = $this->getDeleteDeniedAction();
+
+        if ($object && in_array($name, $deniedActions) &&
+            $object->getSlug() == Locality::DEFAULT_CATALOG_LOCALITY_SLUG
+        ) {
+            return false;
+        }
+
+        return parent::isGranted($name, $object);
+    }
+
+    /**
+     * @param Locality $entity
+     */
+    protected function replaceBusinessCatalogLocality($entity)
+    {
+        $container = $this->getConfigurationPool()->getContainer();
+
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        $defaultLocality = $em->getRepository('DomainBusinessBundle:Locality')
+            ->getLocalityBySlug(Locality::DEFAULT_CATALOG_LOCALITY_SLUG);
+
+        if ($defaultLocality) {
+            /* get businesses by catalog locality */
+            $businesses = $entity->getBusinessProfiles();
+
+            $this->updateBusinessProfiles($businesses, $defaultLocality, $entity);
+
+            /* get businesses by service area locality */
+            $businesses = $entity->getBusinessProfile();
+
+            $this->updateBusinessProfiles($businesses, $defaultLocality, $entity);
+        }
+    }
+
+    protected function updateBusinessProfiles($businesses, $defaultLocality, $entity)
+    {
+        foreach ($businesses as $businessProfile) {
+            /** @var BusinessProfile $businessProfile */
+            $businessProfile->setCatalogLocality($defaultLocality);
+
+            if (!$businessProfile->getLocalities()->contains($defaultLocality)) {
+                $businessProfile->addLocality($defaultLocality);
+            }
+
+            $businessProfile->removeLocality($entity);
+        }
     }
 }

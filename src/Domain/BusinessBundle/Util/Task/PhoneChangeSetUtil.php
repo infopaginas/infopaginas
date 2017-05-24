@@ -36,18 +36,31 @@ class PhoneChangeSetUtil
     ) : ArrayCollection {
         $collection = new ArrayCollection();
 
-        foreach (json_decode($change->getNewValue()) as $item) {
-            if (!$item->id) {
-                $phone = new BusinessProfilePhone();
-                $phone->setPhone($item->value);
-                $phone->setBusinessProfile($businessProfile);
-                $entityManager->persist($phone);
-            } else {
-                $phone = $entityManager->getRepository(BusinessProfilePhone::class)->find($item->id);
-                $phone->setPhone($item->value);
-            }
+        $phones = json_decode($change->getNewValue());
+        $dataOld      = json_decode($change->getOldValue());
 
-            $collection->add($phone);
+        if ($dataOld) {
+            foreach ($dataOld as $key => $itemOld) {
+                if (!empty($phones[$key])) {
+                    $phones[$key]->id = $itemOld->id;
+                }
+            }
+        }
+
+        if ($phones) {
+            foreach ($phones as $item) {
+                if (!$item->id) {
+                    $phone = new BusinessProfilePhone();
+                    $phone->setPhone($item->value);
+                    $phone->setBusinessProfile($businessProfile);
+                    $entityManager->persist($phone);
+                } else {
+                    $phone = $entityManager->getRepository(BusinessProfilePhone::class)->find($item->id);
+                    $phone->setPhone($item->value);
+                }
+
+                $collection->add($phone);
+            }
         }
 
         return $collection;

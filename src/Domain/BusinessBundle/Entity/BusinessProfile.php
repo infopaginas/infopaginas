@@ -5,15 +5,14 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Domain\BannerBundle\Entity\Campaign;
 use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\ReportBundle\Entity\SearchLog;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -26,10 +25,8 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
-
 use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
-
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 
@@ -39,7 +36,6 @@ use Domain\SiteBundle\Validator\Constraints as DomainAssert;
  * @ORM\Table(name="business_profile")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  */
 class BusinessProfile implements
@@ -56,7 +52,106 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
+    const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
+    const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
+    const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 255;
+    const BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH = 255;
+    const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
+
+    const BUSINESS_STATUS_ACTIVE   = 'active';
+    const BUSINESS_STATUS_INACTIVE = 'inactive';
+
+    const BUSINESS_PROFILE_ZIP_MAX_LENGTH = 10;
+    const BUSINESS_PROFILE_URL_MAX_LENGTH = 1000;
+
     const DEFAULT_LOCALE = 'en';
+
+    const TRANSLATION_LANG_EN = 'En';
+    const TRANSLATION_LANG_ES = 'Es';
+
+    const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
+    const FLAG_IS_UPDATED = 'isUpdated';
+
+    const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
+    const DISTANCE_TO_BUSINESS_PRECISION = 1;
+
+    // translatable fields
+    const BUSINESS_PROFILE_FIELD_NAME           = 'name';
+    const BUSINESS_PROFILE_FIELD_NAME_EN        = 'nameEn';
+    const BUSINESS_PROFILE_FIELD_NAME_ES        = 'nameEs';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION    = 'description';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION_EN = 'descriptionEn';
+    const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
+    const BUSINESS_PROFILE_FIELD_PRODUCT        = 'product';
+    const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
+    const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
+    const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
+
+    // common fields
+    const BUSINESS_PROFILE_FIELD_WEBSITE    = 'website';
+    const BUSINESS_PROFILE_FIELD_EMAIL      = 'email';
+
+    const BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE     = 'serviceAreasType';
+    const BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS   = 'milesOfMyBusiness';
+
+    const BUSINESS_PROFILE_FIELD_STREET_ADDRESS     = 'streetAddress';
+    const BUSINESS_PROFILE_FIELD_STREET_NUMBER      = 'streetNumber';
+    const BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS   = 'extendedAddress';
+    const BUSINESS_PROFILE_FIELD_CROSS_STREET       = 'crossStreet';
+    const BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS     = 'googleAddress';
+    const BUSINESS_PROFILE_FIELD_STATE              = 'state';
+    const BUSINESS_PROFILE_FIELD_CITY               = 'city';
+    const BUSINESS_PROFILE_FIELD_ZIP_CODE           = 'zipCode';
+    const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS     = 'customAddress';
+    const BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS    = 'useMapAddress';
+    const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
+
+    const BUSINESS_PROFILE_FIELD_TWITTER_URL    = 'twitterURL';
+    const BUSINESS_PROFILE_FIELD_FACEBOOK_URL   = 'facebookURL';
+    const BUSINESS_PROFILE_FIELD_GOOGLE_URL     = 'googleURL';
+    const BUSINESS_PROFILE_FIELD_YOUTUBE_URL    = 'youtubeURL';
+    const BUSINESS_PROFILE_FIELD_INSTAGRAM_URL  = 'instagramURL';
+    const BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL = 'tripAdvisorURL';
+
+    const BUSINESS_PROFILE_FIELD_SEO_TITLE       = 'seoTitle';
+    const BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION = 'seoDescription';
+
+    const BUSINESS_PROFILE_FIELD_LATITUDE = 'latitude';
+    const BUSINESS_PROFILE_FIELD_LONGITUDE = 'longitude';
+
+    // many-to-one relations
+    const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY = 'catalogLocality';
+    const BUSINESS_PROFILE_FIELD_COUNTRY          = 'country';
+
+    // one-to-many relations
+    const BUSINESS_PROFILE_RELATION_WORKING_HOURS   = 'collectionWorkingHours';
+    const BUSINESS_PROFILE_RELATION_PHONES          = 'phones';
+
+    const WORKING_HOURS_ASSOCIATED_FIELD = 'collectionWorkingHours';
+
+    // many-to-many relations
+    const BUSINESS_PROFILE_RELATION_CATEGORIES      = 'categories';
+    const BUSINESS_PROFILE_RELATION_AREAS           = 'areas';
+    const BUSINESS_PROFILE_RELATION_PAYMENT_METHODS = 'paymentMethods';
+    const BUSINESS_PROFILE_RELATION_LOCALITIES      = 'localities';
+    const BUSINESS_PROFILE_RELATION_NEIGHBORHOODS   = 'neighborhoods';
+
+    // one-to-many media relations
+    const BUSINESS_PROFILE_RELATION_IMAGES   = 'images';
+
+    // many-to-one media relations
+    const BUSINESS_PROFILE_RELATION_VIDEO      = 'video';
+    const BUSINESS_PROFILE_RELATION_LOGO       = 'logo';
+    const BUSINESS_PROFILE_RELATION_BACKGROUND = 'background';
+
+    const BUSINESS_PROFILE_FIELD_LOGO       = 'logo';
+    const BUSINESS_PROFILE_FIELD_BACKGROUND = 'background';
+
+    const BUSINESS_PROFILE_RELATION_TRANSLATIONS = 'translations';
+
+    const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
+    const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
     /**
      * @var int
@@ -68,11 +163,12 @@ class BusinessProfile implements
     protected $id;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_NAME_LENGTH
+     * Field related to class constant BUSINESS_PROFILE_FIELD_NAME
      * @var string - Business name
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $name;
@@ -138,36 +234,24 @@ class BusinessProfile implements
     protected $coupons;
 
     /**
-     * @var Campaign[] - Business Campaigns
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Campaign",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     *     )
-     * @Assert\Valid
-     * @ORM\OrderBy({"status" = "ASC"})
-     */
-    protected $campaigns;
-
-    /**
      * @var Category[] - Business category
      * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Category",
      *     inversedBy="businessProfiles",
-     *     cascade={"persist"}
+     *     cascade={"persist"},
+     *     orphanRemoval=false
      *     )
      * @ORM\JoinTable(name="business_profile_categories")
-     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count")
+     * @Assert\Count(min = 1, minMessage = "business_profile.category.min_count", groups={"default"})
      */
     protected $categories;
 
     /**
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @var string - Website
      *
-     * @ORM\Column(name="website", type="string", length=255, nullable=true)
+     * @ORM\Column(name="website", type="string", length=1000, nullable=true)
      * @DomainAssert\ConstraintUrlExpanded()
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $website;
 
@@ -199,6 +283,8 @@ class BusinessProfile implements
     protected $areas;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_SLOGAN
+     * Field related to class constant BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH
      * @var string - Slogan of a Business
      *
      * @Gedmo\Translatable(fallback=true)
@@ -218,50 +304,60 @@ class BusinessProfile implements
     protected $tags;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_DESCRIPTION
+     * Field related to class constant BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH
      * @var string - Description of Business
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="description", type="text", length=1000, nullable=true)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="description", type="text", length=10000, nullable=true)
+     * @Assert\Length(max=10000, maxMessage="business_profile.max_length")
      */
     protected $description;
 
     /**
      * @var string - Description of Business en
      *
-     * @ORM\Column(name="description_en", type="text", length=1000, nullable=true)
+     * @ORM\Column(name="description_en", type="text", length=10000, nullable=true)
      */
     protected $descriptionEn;
 
     /**
      * @var string - Description of Business es
      *
-     * @ORM\Column(name="description_es", type="text", length=1000, nullable=true)
+     * @ORM\Column(name="description_es", type="text", length=10000, nullable=true)
      */
     protected $descriptionEs;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_PRODUCT
+     * Field related to class constant BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH
      * @var string - Products of Business
      *
      * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="product", type="text", length=1000, nullable=true)
-     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="product", type="text", length=10000, nullable=true)
+     * @Assert\Length(max=10000, maxMessage="business_profile.max_length")
      */
     protected $product;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS
+     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
      * @var string - Operational Hours
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="working_hours", type="text", nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $workingHours;
 
     /**
+     * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS
+     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
      * @var string Brands - Brands, Business works with
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="brands", type="text", nullable=true)
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
      */
     protected $brands;
 
@@ -276,54 +372,26 @@ class BusinessProfile implements
     protected $paymentMethods;
 
     /**
-     * @var string - Field is checked, if Description field of profile is set.
-     *
-     * @ORM\Column(name="is_set_description", type="boolean", options={"default" : 0})
-     */
-    protected $isSetDescription = false;
-
-    /**
-     * @var string - Field is checked, if business is marked on map.
-     *
-     * @ORM\Column(name="is_set_map", type="boolean", options={"default" : 0})
-     */
-    protected $isSetMap = false;
-
-    /**
-     * @var string - Field is checked, if Ad is defined.
-     *
-     * @ORM\Column(name="is_set_ad", type="boolean", options={"default" : 0})
-     */
-    protected $isSetAd = false;
-
-    /**
-     * @var string - Field is checked, if Logo field of profile is set.
-     *
-     * @ORM\Column(name="is_set_logo", type="boolean", options={"default" : 0})
-     */
-    protected $isSetLogo = false;
-
-    /**
-     * @var string - Field is checked, if Slogan field of profile is set.
-     *
-     * @ORM\Column(name="is_set_slogan", type="boolean", options={"default" : 0})
-     */
-    protected $isSetSlogan = false;
-
-    /**
-     * @var string - Field is checked, if Video field of profile is set.
-     *
-     * @ORM\Column(name="is_set_video", type="boolean", options={"default" : 0})
-     */
-    protected $isSetVideo = false;
-
-    /**
      * @var string - Used to create human like url
      *
      * @Gedmo\Slug(fields={"name"}, updatable=false)
      * @ORM\Column(name="slug", type="string", length=255)
      */
     protected $slug;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_en", type="string", length=255, nullable=true)
+     */
+    protected $slugEn;
+
+    /**
+     * @var string - Used to create human like url en
+     *
+     * @ORM\Column(name="slug_es", type="string", length=255, nullable=true)
+     */
+    protected $slugEs;
 
     /**
      * @var Task[]
@@ -360,14 +428,28 @@ class BusinessProfile implements
     protected $images;
 
     /**
+     * Logo Field. Related to class constant BUSINESS_PROFILE_FIELD_LOGO
+     *
      * @var Media - Media Logo
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="businessProfiles",
+     *     inversedBy="logoBusinessProfiles",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=true)
      */
     protected $logo;
+
+    /**
+     * Background Field. Related to class constant BUSINESS_PROFILE_FIELD_BACKGROUND
+     *
+     * @var Media - Media Background Image
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="backgroundBusinessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="background_id", referencedColumnName="id", nullable=true)
+     */
+    protected $background;
 
     /**
      * @Gedmo\SortablePosition
@@ -444,6 +526,7 @@ class BusinessProfile implements
     protected $city;
 
     /**
+     * Related to const BUSINESS_PROFILE_ZIP_MAX_LENGTH
      * @var string
      *
      * @ORM\Column(name="zip_code", type="string", length=10, nullable=true)
@@ -475,34 +558,55 @@ class BusinessProfile implements
     protected $hideAddress = false;
 
     /**
-     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
+     * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $twitterURL;
 
     /**
-     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
+     * @ORM\Column(name="facebook_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $facebookURL;
 
     /**
-     * @ORM\Column(name="google_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
+     * @ORM\Column(name="google_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $googleURL;
 
     /**
-     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded()
+     * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
+     * @ORM\Column(name="youtube_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
      */
     protected $youtubeURL;
 
     /**
+     * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL
+     * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     */
+    protected $instagramURL;
+
+    /**
+     * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL
+     * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     */
+    protected $tripAdvisorURL;
+
+    /**
+     * Field related to const BUSINESS_PROFILE_FIELD_COUNTRY
      * @var Country - Country, Business is located in
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Address\Country",
      *     inversedBy="businessProfiles",
@@ -526,10 +630,10 @@ class BusinessProfile implements
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
      * @Assert\NotBlank(groups={"service_area_chosen"})
+     * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
      * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
-     * @Assert\GreaterThanOrEqual(value=0, groups={"service_area_chosen"})
      */
-    protected $milesOfMyBusiness = 100;
+    protected $milesOfMyBusiness;
 
     /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
@@ -552,7 +656,7 @@ class BusinessProfile implements
     protected $neighborhoods;
 
     /**
-     * @var Campaign[] - Business Profile Phones
+     * @var BusinessProfilePhone[] - Business Profile Phones
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfilePhone",
@@ -569,7 +673,10 @@ class BusinessProfile implements
     protected $uid;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Oxa\WistiaBundle\Entity\WistiaMedia", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
+     *     inversedBy="businessProfiles"
+     * )
+     * @ORM\JoinColumn(name="video_id", referencedColumnName="id", nullable=true)
      */
     protected $video;
 
@@ -588,86 +695,38 @@ class BusinessProfile implements
      */
     protected $isClosed;
 
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_en", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "nameEn",
-     *              "descriptionEn"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEn;
-
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="search_fts_es", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "nameEs",
-     *              "descriptionEs"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchFtsEs;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="search_city_fts", type="tsvector", options={
-     *      "customSchemaOptions": {
-     *          "searchFields" : {
-     *              "city"
-     *          }
-     *      }
-     *  }, nullable=true)
-     *
-     */
-    protected $searchCityFts;
-
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickSynchLog",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist"}
-     * )
-     */
-    private $doubleClickSynchLog;
-
-    /**
-     * @var BusinessProfile
-     *
-     * @ORM\OneToOne(targetEntity="Oxa\DfpBundle\Entity\DoubleClickCompany",
-     *     mappedBy="businessProfile",
-     *     cascade={"persist"}
-     * )
-     */
-    private $doubleClickCompany;
-
     /** @var float
      *
      * keeps the distance between user and pusiness. not a part of DB table. calculated during the search
      */
     protected $distance;
 
-     /** @var SearchLog[]
+    /**
+     * Related to WORKING_HOURS_ASSOCIATED_FIELD
+     * @var BusinessProfileWorkingHour[] - Business Profile working hours
      *
      * @ORM\OneToMany(
-     *     targetEntity="Domain\ReportBundle\Entity\SearchLog",
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileWorkingHour",
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
-     * )
+     *     )
      */
-    private $searchLogs;
+    protected $collectionWorkingHours;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="working_hours_json", type="text", nullable=true)
+     */
+    protected $workingHoursJson;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
+     */
+    protected $hasImages;
 
     /**
      * @return mixed
@@ -707,6 +766,16 @@ class BusinessProfile implements
         return $this->getName() ?: '';
     }
 
+    public function __get($prop)
+    {
+        return $this->$prop;
+    }
+
+    public function __isset($prop)
+    {
+        return isset($this->$prop);
+    }
+
     /**
      * Get id
      *
@@ -718,6 +787,32 @@ class BusinessProfile implements
     }
 
     /**
+     * Field related to const BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY
+     * @var $catalogLocality - catalogLocality, Business is located in
+     * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\Locality",
+     *     inversedBy="businessProfiles",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="locality_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank()
+     */
+    protected $catalogLocality;
+
+    /**
+     * Related to FLAG_IS_UPDATED const
+     * @var bool
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 1})
+     */
+    protected $isUpdated;
+
+    /**
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="dc_order_id", type="string", nullable=true, length=255)
+     */
+    protected $dcOrderId;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -726,15 +821,20 @@ class BusinessProfile implements
         $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->localities = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->neighborhoods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->searchLogs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this->isClosed = false;
+        $this->isClosed  = false;
+        $this->isUpdated = true;
+        $this->hasImages = false;
+        $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
 
         $this->uid = uniqid('', true);
     }
@@ -1041,145 +1141,6 @@ class BusinessProfile implements
     public function getWorkingHours()
     {
         return $this->workingHours;
-    }
-
-    /**
-     * Set isSetDescription
-     *
-     * @param boolean $isSetDescription
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetDescription($isSetDescription)
-    {
-        $this->isSetDescription = $isSetDescription;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetDescription
-     *
-     * @return boolean
-     */
-    public function getIsSetDescription()
-    {
-        return $this->isSetDescription;
-    }
-
-    /**
-     * Set isSetMap
-     *
-     * @param boolean $isSetMap
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetMap($isSetMap)
-    {
-        $this->isSetMap = $isSetMap;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetMap
-     *
-     * @return boolean
-     */
-    public function getIsSetMap()
-    {
-        return $this->isSetMap;
-    }
-
-    /**
-     * Set isSetAd
-     *
-     * @param boolean $isSetAd
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetAd($isSetAd)
-    {
-        $this->isSetAd = $isSetAd;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetAd
-     *
-     * @return boolean
-     */
-    public function getIsSetAd()
-    {
-        return $this->isSetAd;
-    }
-
-    /**
-     * Set isSetLogo
-     *
-     * @param boolean $isSetLogo
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetLogo($isSetLogo)
-    {
-        $this->isSetLogo = $isSetLogo;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetLogo
-     *
-     * @return boolean
-     */
-    public function getIsSetLogo()
-    {
-        return $this->isSetLogo;
-    }
-
-    /**
-     * Set isSetSlogan
-     *
-     * @param boolean $isSetSlogan
-     *
-     * @return BusinessProfile
-     */
-    public function setIsSetSlogan($isSetSlogan)
-    {
-        $this->isSetSlogan = $isSetSlogan;
-
-        return $this;
-    }
-
-    /**
-     * Get isSetSlogan
-     *
-     * @return boolean
-     */
-    public function getIsSetSlogan()
-    {
-        return $this->isSetSlogan;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIsSetVideo()
-    {
-        return $this->isSetVideo;
-    }
-
-    /**
-     * @param string $isSetVideo
-     * @return BusinessProfile
-     */
-    public function setIsSetVideo($isSetVideo)
-    {
-        $this->isSetVideo = $isSetVideo;
-
-        return $this;
     }
 
     /**
@@ -1498,6 +1459,30 @@ class BusinessProfile implements
     }
 
     /**
+     * Set background
+     *
+     * @param \Oxa\Sonata\MediaBundle\Entity\Media $background
+     *
+     * @return BusinessProfile
+     */
+    public function setBackground($background = null)
+    {
+        $this->background = $background;
+
+        return $this;
+    }
+
+    /**
+     * Get background
+     *
+     * @return \Oxa\Sonata\MediaBundle\Entity\Media
+     */
+    public function getBackground()
+    {
+        return $this->background;
+    }
+
+    /**
      * Add image
      *
      * @param \Domain\BusinessBundle\Entity\Media\BusinessGallery $image
@@ -1508,10 +1493,6 @@ class BusinessProfile implements
     {
         $this->images[] = $image;
         $image->setBusinessProfile($this);
-
-        if ($image->getType() == OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO) {
-            $this->setLogo($image->getMedia());
-        }
 
         return $this;
     }
@@ -1959,6 +1940,46 @@ class BusinessProfile implements
     }
 
     /**
+     * @return mixed
+     */
+    public function getInstagramURL()
+    {
+        return $this->instagramURL;
+    }
+
+    /**
+     * @param mixed $instagramURL
+     *
+     * @return User
+     */
+    public function setInstagramURL($instagramURL)
+    {
+        $this->instagramURL = $instagramURL;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTripAdvisorURL()
+    {
+        return $this->tripAdvisorURL;
+    }
+
+    /**
+     * @param mixed $tripAdvisorURL
+     *
+     * @return User
+     */
+    public function setTripAdvisorURL($tripAdvisorURL)
+    {
+        $this->tripAdvisorURL = $tripAdvisorURL;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getServiceAreasType()
@@ -1995,7 +2016,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return Locality[]
+     * @return ArrayCollection
      */
     public function getLocalities()
     {
@@ -2012,7 +2033,7 @@ class BusinessProfile implements
     }
 
     /**
-     * @return Neighborhood[]
+     * @return ArrayCollection
      */
     public function getNeighborhoods()
     {
@@ -2026,52 +2047,6 @@ class BusinessProfile implements
     public function setNeighborhoods($neighborhoods)
     {
         $this->neighborhoods = $neighborhoods;
-    }
-
-     /**
-     * Set searchFtsEn
-     *
-     * @param tsvector $searchFtsEn
-     *
-     * @return BusinessProfile
-     */
-    public function setSearchFtsEn($searchFtsEn)
-    {
-        $this->searchFtsEn = $searchFtsEn;
-        return $this;
-    }
-
-    /*
-    * Get searchFtsEn
-    *
-    * @return tsvector
-    */
-    public function getSearchFtsEn()
-    {
-        return $this->searchFtsEn;
-    }
-
-     /**
-     * Set searchFtsEs
-     *
-     * @param tsvector $searchFtsEs
-     *
-     * @return BusinessProfile
-     */
-    public function setSearchFtsEs($searchFtsEs)
-    {
-        $this->searchFtsEs = $searchFtsEs;
-        return $this;
-    }
-
-    /*
-    * Get searchFtsEs
-    *
-    * @return tsvector
-    */
-    public function getSearchFtsEs()
-    {
-        return $this->searchFtsEs;
     }
 
     /**
@@ -2107,19 +2082,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set searchCityFts
-     *
-     * @param tsvector $searchCityFts
-     *
-     * @return BusinessProfile
-     */
-    public function setSearchCityFts($searchCityFts)
-    {
-        $this->searchCityFts = $searchCityFts;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getUid()
@@ -2140,52 +2102,15 @@ class BusinessProfile implements
     public function __clone()
     {
         $this->id = null;
-    }
+        $this->isUpdated = true;
+        $this->createdAt = null;
+        $this->updatedAt = null;
+        $this->updatedUser = null;
+        $this->createdUser = null;
+        $this->businessReviews = new ArrayCollection();
+        $this->video = null;
 
-    /**
-     * Get searchCityFts
-     *
-     * @return tsvector
-     */
-    public function getSearchCityFts()
-    {
-        return $this->searchCityFts;
-    }
-
-    /**
-     * Add campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return BusinessProfile
-     */
-    public function addCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        $this->campaigns[] = $campaign;
-
-        return $this;
-    }
-
-    /**
-     * Remove campaign
-     *
-     * @param \Domain\BannerBundle\Entity\Campaign $campaign
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeCampaign(\Domain\BannerBundle\Entity\Campaign $campaign)
-    {
-        return $this->campaigns->removeElement($campaign);
-    }
-
-    /**
-     * Get campaigns
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCampaigns()
-    {
-        return $this->campaigns;
+        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -2463,23 +2388,6 @@ class BusinessProfile implements
         return $citySlug;
     }
 
-    /**
-     * @return BusinessProfile
-     */
-    public function getDoubleClickSynchLog()
-    {
-        return $this->doubleClickSynchLog;
-    }
-
-    /**
-     * @param BusinessProfile $doubleClickSynchLog
-     * @return BusinessProfile
-     */
-    public function setDoubleClickSynchLog($doubleClickSynchLog)
-    {
-        $this->doubleClickSynchLog = $doubleClickSynchLog;
-    }
-
     /** getting distance
      *
      * @return float
@@ -2501,23 +2409,6 @@ class BusinessProfile implements
         return $this;
     }
 
-    /**
-     * @return BusinessProfile
-     */
-    public function getDoubleClickCompany()
-    {
-        return $this->doubleClickCompany;
-    }
-
-    /**
-     * @param BusinessProfile $doubleClickCompany
-     * @return BusinessProfile
-     */
-    public function setDoubleClickCompany($doubleClickCompany)
-    {
-        $this->doubleClickCompany = $doubleClickCompany;
-    }
-
      /**
      * getting distance prettified
      *
@@ -2525,19 +2416,7 @@ class BusinessProfile implements
      */
     public function getDistanceUX() : string
     {
-        return number_format($this->getDistance(), 2, '.', '');
-    }
-
-    /**
-     * Add searchLog
-     *
-     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
-     * @return BusinessProfile
-     */
-    public function addSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
-    {
-        $this->searchLogs[] = $searchLog;
-        return $this;
+        return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
     }
 
     /**
@@ -2548,30 +2427,352 @@ class BusinessProfile implements
         return $this->getUser() ? $this->getUser()->getAdvertiserId() : '';
     }
 
-    /** Remove searchLog
-     *
-     * @param \Domain\ReportBundle\Entity\SearchLog $searchLog
-     */
-    public function removeSearchLog(\Domain\ReportBundle\Entity\SearchLog $searchLog)
-    {
-        $this->searchLogs->removeElement($searchLog);
-    }
-
-    /**
-     * Get searchLogs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getSearchLogs()
-    {
-        return $this->searchLogs;
-    }
-
     public static function getServiceAreasTypes()
     {
         return [
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
+    }
+
+    /**
+     * Set catalogLocality
+     *
+     * @param \Domain\BusinessBundle\Entity\Locality $catalogLocality
+     *
+     * @return BusinessProfile
+     */
+    public function setCatalogLocality(\Domain\BusinessBundle\Entity\Locality $catalogLocality = null)
+    {
+        $this->catalogLocality = $catalogLocality;
+
+        return $this;
+    }
+
+    /**
+     * Get catalogLocality
+     *
+     * @return \Domain\BusinessBundle\Entity\Locality
+     */
+    public function getCatalogLocality()
+    {
+        return $this->catalogLocality;
+    }
+
+    /**
+     * @param string $slugEn
+     *
+     * @return Category
+     */
+    public function setSlugEn($slugEn)
+    {
+        $this->slugEn = $slugEn;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEn()
+    {
+        return $this->slugEn;
+    }
+
+    /**
+     * @param string $slugEs
+     *
+     * @return Category
+     */
+    public function setSlugEs($slugEs)
+    {
+        $this->slugEs = $slugEs;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugEs()
+    {
+        return $this->slugEs;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return BusinessProfile
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDcOrderId()
+    {
+        return $this->dcOrderId;
+    }
+
+    /**
+     * @param string $dcOrderId
+     *
+     * @return BusinessProfile
+     */
+    public function setDcOrderId($dcOrderId)
+    {
+        $this->dcOrderId = $dcOrderId;
+
+        return $this;
+    }
+
+    public function getActiveStatus()
+    {
+        return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
+    }
+
+    public function getExportCategories()
+    {
+        $data = [];
+
+        $categories = $this->getCategories();
+
+        foreach ($categories as $category) {
+            $data[] = [
+                'id'   => $category->getId(),
+                'name' => $category->getName(),
+            ];
+        }
+
+        return json_encode($data);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCollectionWorkingHours()
+    {
+        return $this->collectionWorkingHours;
+    }
+
+    /**
+     * Add $workingHour
+     *
+     * @param BusinessProfileWorkingHour $workingHour
+     *
+     * @return BusinessProfile
+     */
+    public function addCollectionWorkingHour($workingHour)
+    {
+        $this->collectionWorkingHours[] = $workingHour;
+
+        if ($workingHour) {
+            $workingHour->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $workingHours
+     *
+     * @param BusinessProfileWorkingHour $workingHours
+     */
+    public function removeCollectionWorkingHour(BusinessProfileWorkingHour $workingHours)
+    {
+        $this->collectionWorkingHours->removeElement($workingHours);
+    }
+
+    /**
+     * get list of bilingual fields
+     * @return array
+     */
+    public static function getTranslatableFields()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_NAME,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+            self::BUSINESS_PROFILE_FIELD_PRODUCT,
+            self::BUSINESS_PROFILE_FIELD_BRANDS,
+            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
+            self::BUSINESS_PROFILE_FIELD_SLOGAN,
+        ];
+    }
+
+    public static function getCommonBooleanFields()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+        ];
+    }
+
+    public static function getTaskCommonFields()
+    {
+        return [
+            // translatable field
+            self::BUSINESS_PROFILE_FIELD_NAME,
+            self::BUSINESS_PROFILE_FIELD_NAME_EN,
+            self::BUSINESS_PROFILE_FIELD_NAME_ES,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
+            self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
+
+            self::BUSINESS_PROFILE_FIELD_PRODUCT,
+            self::BUSINESS_PROFILE_FIELD_BRANDS,
+            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
+
+            self::BUSINESS_PROFILE_FIELD_WEBSITE,
+            self::BUSINESS_PROFILE_FIELD_EMAIL,
+
+            self::BUSINESS_PROFILE_FIELD_SERVICE_AREAS_TYPE,
+            self::BUSINESS_PROFILE_FIELD_MILES_OF_MY_BUSINESS,
+
+            self::BUSINESS_PROFILE_FIELD_STREET_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_STREET_NUMBER,
+            self::BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_CROSS_STREET,
+            self::BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_STATE,
+            self::BUSINESS_PROFILE_FIELD_CITY,
+            self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
+            self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+
+            self::BUSINESS_PROFILE_FIELD_TWITTER_URL,
+            self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL,
+            self::BUSINESS_PROFILE_FIELD_GOOGLE_URL,
+            self::BUSINESS_PROFILE_FIELD_YOUTUBE_URL,
+            self::BUSINESS_PROFILE_FIELD_INSTAGRAM_URL,
+            self::BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL,
+
+            // geo
+            self::BUSINESS_PROFILE_FIELD_LATITUDE,
+            self::BUSINESS_PROFILE_FIELD_LONGITUDE,
+        ];
+    }
+
+    public static function getTaskManyToOneRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY,
+            self::BUSINESS_PROFILE_FIELD_COUNTRY,
+        ];
+    }
+
+    public static function getTaskOneToManyRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_WORKING_HOURS,
+            self::BUSINESS_PROFILE_RELATION_PHONES,
+        ];
+    }
+
+    public static function getTaskManyToManyRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_CATEGORIES,
+            self::BUSINESS_PROFILE_RELATION_AREAS,
+            self::BUSINESS_PROFILE_RELATION_PAYMENT_METHODS,
+            self::BUSINESS_PROFILE_RELATION_LOCALITIES,
+            self::BUSINESS_PROFILE_RELATION_NEIGHBORHOODS,
+        ];
+    }
+
+    public static function getTaskMediaManyToOneRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_VIDEO,
+            self::BUSINESS_PROFILE_RELATION_LOGO,
+            self::BUSINESS_PROFILE_RELATION_BACKGROUND,
+        ];
+    }
+
+    public static function getTaskMediaOneToManyRelations()
+    {
+        return [
+            self::BUSINESS_PROFILE_RELATION_IMAGES,
+        ];
+    }
+
+    public static function getTaskSeoBlock()
+    {
+        return [
+            self::BUSINESS_PROFILE_FIELD_SEO_TITLE,
+            self::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
+        ];
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateWorkingHoursData()
+    {
+        $workingHours = DayOfWeekModel::getBusinessProfileWorkingHoursJson($this);
+
+        $this->workingHoursJson = $workingHours;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkingHoursJson()
+    {
+        return $this->workingHoursJson;
+    }
+
+    /**
+     * @param string $workingHoursJson
+     *
+     * @return BusinessProfile
+     */
+    public function setWorkingHoursJson($workingHoursJson)
+    {
+        $this->workingHoursJson = $workingHoursJson;
+
+        return $this;
+    }
+
+    /**
+     * @return \stdClass
+     */
+    public function getWorkingHoursJsonAsObject()
+    {
+        return json_decode($this->getWorkingHoursJson());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getHasImages()
+    {
+        return $this->hasImages;
+    }
+
+    /**
+     * @param boolean $hasImages
+     *
+     * @return BusinessProfile
+     */
+    public function setHasImages($hasImages)
+    {
+        $this->hasImages = $hasImages;
+
+        return $this;
     }
 }

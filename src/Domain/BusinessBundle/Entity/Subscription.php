@@ -30,6 +30,8 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
     use PersonalTranslatable;
     use DatetimePeriodStatusTrait;
 
+    const PROPERTY_NAME_UPDATED_AT = 'updatedAt';
+
     /**
      * @var int
      *
@@ -100,6 +102,11 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
         }
 
         return $result;
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
     }
 
     /**

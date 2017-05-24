@@ -4,10 +4,9 @@ namespace Domain\BannerBundle\Model\Banner;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-
+use Domain\BannerBundle\Model\TypeModel;
 use Oxa\ManagerArchitectureBundle\Model\Factory\Factory;
 use Domain\BannerBundle\Model\TypeInterface as BannerType;
-
 use Domain\BannerBundle\Entity\Banner;
 
 class BannerFactory extends Factory
@@ -23,7 +22,7 @@ class BannerFactory extends Factory
         $this->bannersCollection = new ArrayCollection;
     }
 
-    public function prepearBanners(array $banners)
+    public function prepareBanners(array $banners)
     {
         foreach ($banners as $bannerKey) {
             if ($this->bannersCollection->containsKey($bannerKey)) {
@@ -37,40 +36,9 @@ class BannerFactory extends Factory
     public function get($type)
     {
         $banner = null;
-        switch ($type) {
-            case BannerType::CODE_HOME:
-                $banner = $this->getHomepageBanner();
-                break;
-            case BannerType::CODE_PORTAL:
-                $banner = $this->getPortalBanner();
-                break;
-            case BannerType::CODE_PORTAL_LEFT:
-                $banner = $this->getPortalLeftBanner();
-                break;
-            case BannerType::CODE_PORTAL_RIGHT:
-                $banner = $this->getPortalRightBanner();
-                break;
-            case BannerType::CODE_PORTAL_LEADERBOARD:
-                $banner = $this->getLeaderboardBanner();
-                break;
-            case BannerType::CODE_PORTAL_RIGHT_MOBILE:
-                $banner = $this->getPortalRightMobileBanner();
-                break;
-            case BannerType::CODE_PORTAL_LEFT_MOBILE:
-                $banner = $this->getPortalLeftMobileBanner();
-                break;
-            case BannerType::CODE_SERP_BANNER:
-                $banner = $this->getHomepageLargeBanner();
-                break;
-            case BannerType::CODE_SERP_BOXED:
-                $banner = $this->getProfileBanner();
-                break;
-            case BannerType::CODE_SERP_FEATUREAD:
-                break;
-            case BannerType::CODE_SERP_MOBILE_TOP:
-                break;
-            default:
-                throw new \Exception(self::UNDEFINED_BANNER_TYPE_ERROR);
+
+        if (in_array($type, TypeModel::getBannerTypes())) {
+            $banner = $this->getBannerByCode($type);
         }
 
         return $banner;
@@ -89,115 +57,37 @@ class BannerFactory extends Factory
     {
         return array_map(
             function ($item) {
-                if (null !== $item && null !== $item->getTemplate()) {
-                    return $item->getTemplate()->getTemplateHeader();
+                if (null !== $item && null !== $item->getTemplate() and null !== $item->getType()) {
+                    $bannerTypeCode = $item->getType()->getCode();
+
+                    if (in_array($bannerTypeCode, TypeModel::getBannerResizable())) {
+                        $header = $item->getTemplate()->getResizableHeader();
+                    } elseif (in_array($bannerTypeCode, TypeModel::getBannerResizableInBlock())) {
+                        $header = $item->getTemplate()->getResizableInBlockHeader();
+                    } else {
+                        $header = $item->getTemplate()->getTemplateHeader();
+                    }
+
+                    return [
+                        'data' => $header,
+                        'code' => $bannerTypeCode,
+                    ];
                 }
+
                 return null;
             },
             $this->bannersCollection->toArray()
         );
     }
 
-    protected function getHomepageBanner()
+    protected function getBannerByCode($code)
     {
-        //temporaty logic
-        $homapageBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_HOME);
+        $banners = $this->em->getRepository('DomainBannerBundle:Banner')
+            ->getBannerByTypeCode($code);
 
-        if (count($homapageBanners)) {
-            return $homapageBanners[0];
+        if (count($banners)) {
+            return $banners[0];
         }
-        return null;
-    }
-
-    protected function getPortalBanner()
-    {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_PORTAL);
-
-        if (count($portalBanners)) {
-            return $portalBanners[0];
-        }
-        return null;
-    }
-
-    protected function getPortalLeftBanner()
-    {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_PORTAL_LEFT);
-
-        if (count($portalBanners)) {
-            return $portalBanners[0];
-        }
-        return null;
-    }
-
-    protected function getPortalRightBanner()
-    {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_PORTAL_RIGHT);
-
-        if (count($portalBanners)) {
-            return $portalBanners[0];
-        }
-        return null;
-    }
-
-    protected function getPortalLeftMobileBanner()
-    {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_PORTAL_LEFT_MOBILE);
-
-        if (count($portalBanners)) {
-            return $portalBanners[0];
-        }
-        return null;
-    }
-
-    protected function getPortalRightMobileBanner()
-    {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_PORTAL_RIGHT_MOBILE);
-
-        if (count($portalBanners)) {
-            return $portalBanners[0];
-        }
-        return null;
-    }
-
-    protected function getLeaderboardBanner()
-    {
-        //temporaty logic
-        $leaderboardBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_PORTAL_LEADERBOARD);
-
-        if (count($leaderboardBanners)) {
-            return $leaderboardBanners[0];
-        }
-
-        return null;
-    }
-
-    protected function getProfileBanner()
-    {
-        $portalBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_SERP_BOXED);
-
-        if (count($portalBanners)) {
-            return $portalBanners[0];
-        }
-        return null;
-    }
-
-    protected function getHomepageLargeBanner()
-    {
-        $homepageBanners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode(BannerType::CODE_SERP_BANNER);
-
-        if (count($homepageBanners)) {
-            return $homepageBanners[0];
-        }
-
         return null;
     }
 }

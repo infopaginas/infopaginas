@@ -3,6 +3,7 @@
 namespace Domain\ArticleBundle\Controller;
 
 use Domain\ArticleBundle\Model\Manager\ArticleManager;
+use Domain\BannerBundle\Model\TypeInterface;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -18,13 +19,32 @@ class ArticleController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
+        $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
+
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
+                TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
+            ]
+        );
+
+        $dcDataDTO = $articleManager->getAllArticleDoubleClickData();
+        $seoData   = $articleManager->getArticleListSeoData();
+
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO),
+            'results'           => $articlesResultDTO,
+            'seoData'           => $seoData,
+            'schemaJsonLD'      => $schema,
+            'bannerFactory'     => $bannerFactory,
+            'dcDataDTO'         => $dcDataDTO,
         ];
 
-        return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
+        return $this->render(':redesign:article-list.html.twig', $params);
     }
 
     /**
@@ -33,11 +53,35 @@ class ArticleController extends Controller
      */
     public function viewAction(string $slug)
     {
+        $articleManager = $this->getArticlesManager();
+
+        $article = $articleManager->getArticleBySlug($slug);
+
+        if (!$article or !$article->getIsPublished() or ($article->getExpirationDate() and $article->isExpired())) {
+            throw $this->createNotFoundException();
+        }
+
+        $schema = $articleManager->buildArticlesSchema([$article]);
+
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
+                TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
+            ]
+        );
+
+        $dcDataDTO = $articleManager->getArticleDoubleClickData($article);
+
         $params = [
-            'article' => $this->getArticlesManager()->getArticleBySlug($slug),
+            'article'       => $article,
+            'seoData'       => $article,
+            'schemaJsonLD'  => $schema,
+            'bannerFactory' => $bannerFactory,
+            'dcDataDTO'     => $dcDataDTO,
         ];
 
-        return $this->render('DomainArticleBundle:Default:view.html.twig', $params);
+        return $this->render(':redesign:article-view.html.twig', $params);
     }
 
     /**
@@ -47,14 +91,40 @@ class ArticleController extends Controller
      */
     public function categoryAction(Request $request, string $categorySlug)
     {
+        $category = $this->getCategoryManager()->getCategoryBySlug($categorySlug);
+
+        if ($category->getSlug() != $categorySlug) {
+            return $this->handlePermanentRedirect($category);
+        }
+
+        $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $categorySlug);
+
+        $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
+
+        $bannerFactory = $this->get('domain_banner.factory.banner');
+        $bannerFactory->prepareBanners(
+            [
+                TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
+                TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
+            ]
+        );
+
+        $dcDataDTO = $articleManager->getArticleCategoryListDoubleClickData($category);
+        $seoData   = $articleManager->getArticleListSeoData($category->getName());
+
         $params = [
-            'articlesResultDTO' => $this->getArticlesManager()->getArticlesResultDTO($paramsDTO, $categorySlug),
-            'category' => $this->getCategoryManager()->getCategoryBySlug($categorySlug),
+            'results'           => $articlesResultDTO,
+            'seoData'           => $seoData,
+            'articleCategory'   => $category,
+            'schemaJsonLD'      => $schema,
+            'bannerFactory'     => $bannerFactory,
+            'dcDataDTO'         => $dcDataDTO,
         ];
 
-        return $this->render('DomainArticleBundle:Default:index.html.twig', $params);
+        return $this->render(':redesign:article-list.html.twig', $params);
     }
 
     /**
@@ -83,5 +153,16 @@ class ArticleController extends Controller
     private function getCategoryManager() : CategoryManager
     {
         return $this->get('domain_business.manager.category');
+    }
+
+    private function handlePermanentRedirect($category)
+    {
+        return $this->redirectToRoute(
+            'domain_article_category',
+            [
+                'categorySlug' => $category->getSlug(),
+            ],
+            301
+        );
     }
 }

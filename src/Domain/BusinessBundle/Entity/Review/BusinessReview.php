@@ -26,7 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="business_review")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessReviewRepository")
  * @ORM\HasLifecycleCallbacks
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\Review\BusinessReviewTranslation")
  */
 class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface, TranslatableInterface

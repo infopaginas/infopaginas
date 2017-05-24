@@ -29,3 +29,27 @@ domain_business_register_view:
     defaults: { _controller: DomainBusinessBundle:Profile:registerView }
     options:
         expose: true
+
+domain_business_get_localities:
+    path:     /locality/list/{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Profile:localityList, businessProfileId: null }
+    options:
+        expose: true
+
+domain_business_get_neighborhoods:
+    path:     /neighborhood/list/{businessProfileId}
+    defaults: { _controller: DomainBusinessBundle:Profile:neighborhoodList, businessProfileId: null }
+    options:
+        expose: true
+
+domain_business_claim:
+    path:     /claim
+    defaults: { _controller: DomainBusinessBundle:Profile:claim }
+    options:
+        expose: true
+
+domain_business_category_autocomplite:
+    path:     /category/autocomplete
+    defaults: { _controller: DomainBusinessBundle:Profile:categoryAutocomplete }
+    options:
+        expose: true

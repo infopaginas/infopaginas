@@ -1,0 +1,51 @@
+{% extends "redesign/layout/base.html.twig" %}
+
+{% block bodyClass %}generic-page article-page has-sidebar{% endblock %}
+
+{% block breadcrumbs %}
+    {% include ':redesign/blocks:article-breadcrumbs.html.twig' with {'articleCategory': article.category} %}
+{% endblock %}
+
+{% block body %}
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                <article class="article">
+                    <section class="article__header page-section">
+                        <h1><strong>{{ article.title }}</strong></h1>
+                        <div class="article__category">
+                            <div class="tagcloud">
+                                <a href="{{ absolute_url(path('domain_article_category', {'categorySlug':  article.getCategory().getSlug() })) }}" class="tag">{{ article.getCategory().getName() }}</a>
+                            </div>
+                        </div>
+
+                        <div class="credits">
+                            <ul>
+                                <li><i class="fa fa-pencil"></i>{{ article.authorName }}</li>
+                                <li><i class="fa fa-calendar"></i>{{ article.updatedAt|date(article_date_format) }}</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section class="article-body">
+
+                        <section class="gallery">
+                            <div class="photos">
+                                <div class="article-photo">
+                                    <img src="{% path article.getImage(), 'normal' %}">
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="article-wysiwyg-body">
+                            {{ article.getBody()|raw }}
+                        </div>
+                    </section>
+
+                    {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.ARTICLE_PAGE_BOTTOM } %}
+                </article>
+            </div>
+
+            {% include ':redesign/blocks:side-ads-block.html.twig' with { 'bannerType': BANNER_CODE.ARTICLE_PAGE_RIGHT } %}
+        </div>
+    </div>
+{% endblock %}
