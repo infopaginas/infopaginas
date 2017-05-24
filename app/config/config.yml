@@ -10,6 +10,7 @@ imports:
     - { resource: extra-configs/sonata_translation.yml }
     - { resource: extra-configs/twig_constant.yml }
     - { resource: extra-configs/assetic.yml }
+    - { resource: extra-configs/db_slaves.yml, ignore_errors: true }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
@@ -302,3 +303,10 @@ elastic_search:
 mongo_db:
     host: '%mongodb.host%'
     db:   '%mongodb.db%'
+monolog:
+    channels: [cron]
+    handlers:
+        cron:
+          type: stream
+          path: "%kernel.logs_dir%/cron.log"
+          channels: [cron]

@@ -3,6 +3,7 @@
 /app/bootstrap.php.cache
 /app/cache/*
 /app/config/parameters.yml
+/app/config/extra-configs/db_slaves.yml
 /app/logs/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep

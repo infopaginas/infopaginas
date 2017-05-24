@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\Command;
 
 use Doctrine\ORM\EntityManager;
+use Domain\SiteBundle\Logger\CronLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -35,6 +36,9 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_START, 'execute:start');
+
         $lockHandler = new LockHandler(self::ELASTIC_SYNC_LOCK);
 
         if (!$lockHandler->lock()) {
@@ -48,5 +52,6 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
         $businessProfileManager->handleBusinessElasticSync();
 
         $lockHandler->release();
+        $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');
     }
 }

@@ -12,10 +12,16 @@
             "vendor/googleads/googleads-php-lib/src/Google/AdsApi/Common"
         ]
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/EvgeniySkoptsov/doctrine2.git"
+        }
+    ],
     "require": {
         "php": ">=7.0.0",
         "symfony/symfony": "2.8.9",
-        "doctrine/orm": "^2.4.8",
+        "doctrine/orm": "dev-master#28c51ab00bededfb8909af25ae31cf0a9c799d9b",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",

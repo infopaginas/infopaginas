@@ -32,15 +32,22 @@ class CatalogItemContentCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $logger->addInfo($logger::CATALOG_ITEM_UPDATE, $logger::STATUS_START, 'execute:start');
+
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $this->searchManager = $this->getContainer()->get('domain_search.manager.search');
 
         $this->updateCatalogItem();
+
+        $logger->addInfo($logger::CATALOG_ITEM_UPDATE, $logger::STATUS_END, 'execute:stop');
     }
 
     protected function updateCatalogItem()
     {
         $catalogLocalities = $this->em->getRepository(Locality::class)->getAllLocalitiesIterator();
+
+        $logger = $this->getContainer()->get('domain_site.cron.logger');
 
         foreach ($catalogLocalities as $localityRow) {
             /* @var $catalogLocality \Domain\BusinessBundle\Entity\Locality */
