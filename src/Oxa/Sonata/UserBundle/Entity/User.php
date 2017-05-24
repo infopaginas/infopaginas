@@ -19,7 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="fos_user_user")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\UserBundle\Entity\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("email")
  * */
 class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
 {
