@@ -10,6 +10,7 @@ imports:
     - { resource: extra-configs/sonata_translation.yml }
     - { resource: extra-configs/twig_constant.yml }
     - { resource: extra-configs/assetic.yml }
+    - { resource: extra-configs/db_slaves.yml, ignore_errors: true }
     - { resource: "@OxaSonataUserBundle/Resources/config/services.yml" }
     - { resource: "@DomainArticleBundle/Resources/config/services.yml" }
     - { resource: "@JMaitanSonataMediaCropBundle/Resources/config/services.xml" }
@@ -143,19 +144,6 @@ doctrine:
                 charset:  UTF8
                 mapping_types:
                     enum: string
-                slaves:
-                    slave1:
-                        host:       "%database_slave_host%"
-                        port:       "%database_port%"
-                        dbname:     "%database_name%"
-                        user:       "%database_user%"
-                        password:   "%database_password%"
-                    slave2:
-                        host:       "%database_slave2_host%"
-                        port:       "%database_port%"
-                        dbname:     "%database_name%"
-                        user:       "%database_user%"
-                        password:   "%database_password%"
         types:
             json: Sonata\Doctrine\Types\JsonType
             TaskType: Domain\BusinessBundle\DBAL\Types\TaskType
