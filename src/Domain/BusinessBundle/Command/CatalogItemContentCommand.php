@@ -61,8 +61,6 @@ class CatalogItemContentCommand extends ContainerAwareCommand
                 /* @var $category \Domain\BusinessBundle\Entity\Category */
                 $category = current($categoryRow);
 
-                $logger->addInfo($logger::CATALOG_ITEM_UPDATE, $logger::STATUS_IN_PROGRESS, 'updateCatalogItem:progress');
-
                 $catalogItem = $this->em->getRepository(CatalogItem::class)->findOneBy(
                     [
                         'locality' => $catalogLocality->getId(),
