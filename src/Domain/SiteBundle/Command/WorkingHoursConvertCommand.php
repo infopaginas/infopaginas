@@ -45,7 +45,6 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
             if ($data) {
                 $this->createWorkingHours($data, $business);
                 $this->em->flush();
-                $logger->addInfo($logger::WORKING_HOURS_CONVERT, $logger::STATUS_IN_PROGRESS, 'execute:flush');
                 $this->em->clear();
 
                 $successItemCounter++;
