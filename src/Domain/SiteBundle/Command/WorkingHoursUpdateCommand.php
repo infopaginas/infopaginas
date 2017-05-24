@@ -42,8 +42,6 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
 
     protected function updateWorkingHours()
     {
-        $logger = $this->getContainer()->get('domain_site.cron.logger');
-
         $businesses = $this->em->getRepository(BusinessProfile::class)->getActiveBusinessProfilesIterator();
 
         $batchSize = 20;
@@ -52,7 +50,6 @@ class WorkingHoursUpdateCommand extends ContainerAwareCommand
         foreach ($businesses as $row) {
             /* @var BusinessProfile $business */
             $business = $row[0];
-            $logger->addInfo($logger::WORKING_HOURS_UPDATE, $logger::STATUS_IN_PROGRESS, 'updateWorkingHours:inprogress');
             $business->setWorkingHoursJson(DayOfWeekModel::getBusinessProfileWorkingHoursJson($business));
 
             if (($i % $batchSize) === 0) {
