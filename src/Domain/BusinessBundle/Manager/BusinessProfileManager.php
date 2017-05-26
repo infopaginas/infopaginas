@@ -2396,15 +2396,7 @@ class BusinessProfileManager extends Manager
             foreach ($businesses as $businessRow) {
                 /* @var $business BusinessProfile */
                 $business = current($businessRow);
-                $subscriptionPlan = $business->getSubscriptionPlan();
 
-                if ($subscriptionPlan == null) {
-                    $code = SubscriptionPlan::CODE_FREE;
-                } else {
-                    $code = $subscriptionPlan->getCode();
-                }
-
-                $business->setSubscriptionPlanCode($code);
                 $item = $this->buildBusinessProfileElasticData($business);
 
                 if ($item) {
