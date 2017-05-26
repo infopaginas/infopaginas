@@ -54,7 +54,7 @@ class AddressManager extends DefaultManager
         $request->query->set('clt', $lat);
         $request->query->set('clg', $lon);
         $searchManager = $this->getContainer()->get('domain_search.manager.search');
-        $searchDTO = $searchManager->getLoicalitySearchDTO($request);
+        $searchDTO = $searchManager->getLocalitySearchDTO($request);
         $closestLocality = $this->getContainer()->get('domain_business.manager.business_profile')->searchClosestLocalityInElastic($searchDTO);
 
         return $closestLocality;
