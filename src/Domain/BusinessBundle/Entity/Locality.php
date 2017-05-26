@@ -74,7 +74,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
      *      targetEntity="Domain\BusinessBundle\Entity\Area",
      *      inversedBy="locality"
      * )
-     * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="area_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $area;
 
