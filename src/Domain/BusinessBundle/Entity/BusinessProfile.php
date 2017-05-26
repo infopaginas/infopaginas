@@ -722,14 +722,6 @@ class BusinessProfile implements
     protected $workingHoursJson;
 
     /**
-     * @var int - Subscription code
-     *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="subscription_plan_code", type="integer", nullable=true,  options={"default" : 1})
-     */
-    protected $subscriptionPlanCode;
-
-    /**
      * @var bool
      *
      * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
@@ -2789,18 +2781,14 @@ class BusinessProfile implements
      */
     public function getSubscriptionPlanCode()
     {
-        return $this->subscriptionPlanCode;
-    }
+        $currentSubscriptionPlan = $this->getSubscriptionPlan();
 
-    /**
-     * @param int $subscriptionPlanCode
-     *
-     * @return BusinessProfile
-     */
-    public function setSubscriptionPlanCode($subscriptionPlanCode)
-    {
-        $this->subscriptionPlanCode = $subscriptionPlanCode;
+        if ($currentSubscriptionPlan) {
+            $code = $currentSubscriptionPlan->getCode();
+        } else {
+            $code = SubscriptionPlanInterface::CODE_FREE;
+        }
 
-        return $this;
+        return $code;
     }
 }
