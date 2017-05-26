@@ -208,4 +208,17 @@ class AdminHelper
             ]
         ];
     }
+
+    public static function getAccentedChars()
+    {
+        return [
+            'á' => 'a',
+            'é' => 'e',
+            'í' => 'i',
+            'ñ' => 'n',
+            'ó' => 'o',
+            'ú' => 'u',
+            'ü' => 'u',
+        ];
+    }
 }
