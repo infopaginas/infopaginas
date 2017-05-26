@@ -2,7 +2,7 @@
 
 namespace Domain\ArticleBundle\Repository;
 
-class ArticleGalleryRepository
+class ArticleGalleryRepository extends \Doctrine\ORM\EntityRepository
 {
 
 }
