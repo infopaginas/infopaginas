@@ -5,7 +5,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
     var businessProfile = function() {
         this.urls = {
             saveBusinessProfile: Routing.generate( 'domain_business_profile_save' ),
-            categoryAutoComplete: Routing.generate( 'domain_business_category_autocomplite' )
+            categoryAutoComplete: Routing.generate( 'domain_business_category_autocomplite' ),
+            getLocalityByCoord: Routing.generate( 'domain_search_closest_locality_by_coord' ),
         };
 
         this.serviceAreasAreaChoiceValue = 'area';
@@ -32,6 +33,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 withinMilesOfMyBusinessFieldId: '#' + this.freeProfileFormName + '_milesOfMyBusiness',
                 areasFieldId: '#' + this.freeProfileFormName + '_areas',
                 localitiesFieldId: '#' + this.freeProfileFormName + '_localities',
+                catalogLocalityId: '#' + this.freeProfileFormName + '_catalogLocality',
                 neighborhoodsFieldId: '#' + this.freeProfileFormName + '_neighborhoods',
                 serviceAreaRadioName: '[serviceAreasType]',
                 categoriesId: '#' + this.freeProfileFormName + '_categories',
@@ -116,6 +118,10 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         });
     };
 
+    businessProfile.prototype.updateLocality = function (localityId) {
+        $( this.html.fields.catalogLocalityId ).val( localityId ).trigger('change');
+    };
+
     businessProfile.prototype.updateAddress = function(address)
     {
         var streetNumber = '';
@@ -161,6 +167,15 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         var that = this;
 
         var latlng = event.latLng;
+
+        $.ajax({
+            type: 'POST',
+            url: this.urls.getLocalityByCoord,
+            data: {'clt': latlng.lat(), 'clg': latlng.lng()},
+            success: function(data){
+                that.updateLocality(data['localityId']);
+            }
+        });
 
         this.geocoder.geocode({
             'location': latlng

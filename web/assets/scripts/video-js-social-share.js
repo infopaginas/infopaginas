@@ -20,22 +20,24 @@
      * @type {function}
      */
     function launchTweet(e) {
-      twttr.events.trigger("click", {});
-      e.preventDefault();
+      if ( typeof twttr !== 'undefined' && twttr ) {
+        twttr.events.trigger("click", {});
+        e.preventDefault();
 
-      var link = $( 'a.button-share--twitter' ).data( 'href' );
+        var link = $( 'a.button-share--twitter' ).data( 'href' );
 
-      var width = 500;
-      var height = 300;
+        var width = 500;
+        var height = 300;
 
-      var left = (screen.width / 2) - (width / 2);
-      var top = (screen.height / 2) - (height / 2);
+        var left = (screen.width / 2) - (width / 2);
+        var top = (screen.height / 2) - (height / 2);
 
-      window.open(
-        link,
-        '',
-        'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,width=' + width + ',height=' + height + ',top=' + top + ',left=' + left
-      );
+        window.open(
+          link,
+          '',
+          'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,width=' + width + ',height=' + height + ',top=' + top + ',left=' + left
+        );
+      }
     }
 
     /**

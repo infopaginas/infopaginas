@@ -4,6 +4,7 @@ namespace Domain\ArticleBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
@@ -157,6 +158,17 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     protected $authorName;
 
     /**
+     * @var ArticleGallery[] - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\ArticleBundle\Entity\Media\ArticleGallery",
+     *     mappedBy="article",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
+     *     )
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    protected $images;
+
+    /**
      * Get id
      *
      * @return int
@@ -171,6 +183,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     public function __construct()
     {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
@@ -466,6 +479,33 @@ class Article implements DefaultEntityInterface, TranslatableInterface
     public function setAuthorName($authorName)
     {
         $this->authorName = $authorName;
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    /**
+     * @param ArticleGallery $image
+     */
+    public function addImage(ArticleGallery $image)
+    {
+        $this->images->add($image);
+        $image->setArticle($this);
+        return $this;
+    }
+
+    /**
+     * @param ArticleGallery $image
+     */
+    public function removeImage(ArticleGallery $image)
+    {
+        $this->images->remove($image);
         return $this;
     }
 }

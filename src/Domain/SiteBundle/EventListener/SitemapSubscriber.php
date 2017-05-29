@@ -269,7 +269,7 @@ class SitemapSubscriber implements EventSubscriberInterface
      */
     protected function getBusinessProfilePriority(BusinessProfile $businessProfile)
     {
-        $code = $businessProfile->getSubscription()->getSubscriptionPlan()->getCode();
+        $code = $businessProfile->getSubscriptionPlanCode();
 
         switch ($code) {
             case SubscriptionPlanInterface::CODE_SUPER_VM:

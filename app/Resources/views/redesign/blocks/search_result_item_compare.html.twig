@@ -83,20 +83,9 @@
                 </div>
             {% endif %}
 
-            {% if item.getBrands() %}
-                <div class="highlights__item highlights__item--checklist highlights__item_brands-row highlights__item_fixed-height highlights__item--brand">
-                    <h3>{% trans %}Brands{% endtrans %}</h3>
-                    <ul>
-                        <li>
-                            {{ item.getBrands() }}
-                        </li>
-                    </ul>
-                </div><!-- highlights__item -->
-            {% else %}
                 <div class="highlights__item highlights__item--checklist highlights__item_brands-row highlights__item_fixed-height empty">
                   <ul></ul>
                 </div>
-            {% endif %}
 
             {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': item, 'isCompare': true } %}
 

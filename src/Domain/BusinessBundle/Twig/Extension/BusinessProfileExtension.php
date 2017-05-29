@@ -186,19 +186,10 @@ class BusinessProfileExtension extends \Twig_Extension
      */
     public function mediaTabAllowedForBusiness(BusinessProfile $businessProfile) : bool
     {
-        if (!$businessProfile) {
-            return false;
-        }
+        if ($businessProfile) {
+            $code = $businessProfile->getSubscriptionPlanCode();
 
-        $subscription = $businessProfile->getSubscriptionPlan();
-
-        if ($subscription) {
-            $isPlusPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLUS;
-            $isGoldPlan     = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_GOLD;
-            $isPlatinumPlan = $subscription->getCode() === SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM;
-            $isSuperVm      = $subscription->getCode() === SubscriptionPlanInterface::CODE_SUPER_VM;
-
-            if ($isPlusPlan || $isGoldPlan || $isPlatinumPlan || $isSuperVm) {
+            if ($code >= SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
                 return true;
             }
         }

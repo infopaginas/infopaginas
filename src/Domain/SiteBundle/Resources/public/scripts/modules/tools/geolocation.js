@@ -81,13 +81,12 @@ define(['jquery', 'underscore',  'abstract/view', 'js-cookie', 'jquery-ui'], fun
 
     geolocation.prototype.setToForm = function () {
         // set to form fields coordinates and address
-
         this.$( this.options.searchLocation ).val( this.position.address );
         this.$( this.options.searchLocationGeoLoc ).val( this.position.address );
 
         this.$( this.options.searchLatSelector ).val( this.position.coords.latitude );
         this.$( this.options.searchLngSelector ).val( this.position.coords.longitude );
-    }
+    };
 
     geolocation.prototype.setToUserLocationForm = function () {
         // set to form fields coordinates and address

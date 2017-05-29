@@ -238,10 +238,11 @@ class BusinessGalleryManager
 
     /**
      * @param string $url
+     * @param string $context
      *
      * @return Media|null
      */
-    public function uploadArticleImageFromRemoteFile($url)
+    public function uploadArticleImageFromRemoteFile($url, $context = Media::CONTEXT_ARTICLE)
     {
         $headers = SiteHelper::checkUrlExistence($url);
 
@@ -258,7 +259,7 @@ class BusinessGalleryManager
                 // referencing the temp file (used for validation only)
                 $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
 
-                $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, Media::CONTEXT_ARTICLE);
+                $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
 
                 $this->getEntityManager()->flush();
 

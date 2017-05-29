@@ -30,6 +30,7 @@ class AreaConvertCommand extends ContainerAwareCommand
 
         $this->updateLocalitiesArea();
         $this->updateBusinessLocalities();
+        $this->removeArea();
 
         $this->em->flush();
     }
@@ -38,12 +39,17 @@ class AreaConvertCommand extends ContainerAwareCommand
     {
         $updateLocalityList = $this->getUpdateLocalityList();
 
-        foreach ($updateLocalityList as $localitySlug => $areaName) {
-            $locality = $this->getLocalityBySlug($localitySlug);
-            $area     = $this->getAreaByName($areaName);
+        foreach ($updateLocalityList as $areaName => $localities) {
+            $area = $this->getAreaByName($areaName);
 
-            if ($locality and !$locality->getArea() and $area) {
-                $locality->setArea($area);
+            if ($area) {
+                foreach ($localities as $localitySlug) {
+                    $locality = $this->getLocalityBySlug($localitySlug);
+
+                    if ($locality) {
+                        $locality->setArea($area);
+                    }
+                }
             }
         }
 
@@ -84,6 +90,21 @@ class AreaConvertCommand extends ContainerAwareCommand
         }
     }
 
+    protected function removeArea()
+    {
+        $removeAreaList = $this->getRemoveAreaList();
+
+        foreach ($removeAreaList as $areaName) {
+            $area = $this->getAreaByName($areaName);
+
+            if ($area) {
+                $this->em->remove($area);
+            }
+        }
+
+        $this->em->flush();
+    }
+
     /**
      * @param string $slug
      *
@@ -111,15 +132,109 @@ class AreaConvertCommand extends ContainerAwareCommand
     protected function getUpdateLocalityList()
     {
         $localities = [
-            'santa-isabel'  => 'South',
-            'santurce'      => 'Metro',
-            'camuy'         => 'North',
-            'canovana'      => 'East',
-            'hato-rey'      => 'Metro',
-            'levittown'     => 'Metro',
-            'rio-piedras'   => 'Metro',
+            'Metro' => [
+                // main
+                'dorado',
+                'catano',
+                'toa-alta',
+                'toa-baja',
+                'guaynabo',
+                'san-juan',
+                'carolina',
+                'trujillo-alto',
+                'bayamon',
+
+                // from api
+                'santurce',
+                'hato-rey',
+                'levittown',
+                'rio-piedras',
+            ],
+            'Central' => [
+                'loiza',
+                'rio-grande',
+                'canovanas',
+                'luquillo',
+                'fajardo',
+                'ceiba',
+                'naguabo',
+                'humacao',
+                'yabucoa',
+                'las-piedras',
+                'juncos',
+                'san-lorenzo',
+                'caguas',
+                'aguas-buenas',
+                'cidra',
+                'cayey',
+                'aibonito',
+                'gurabo',
+                'culebra',
+                'vieques',
+            ],
+            'North' => [
+                'quebradillas',
+                'hatillo',
+                'camuy',
+                'lares',
+                'arecibo',
+                'utuado',
+                'barceloneta',
+                'florida',
+                'manati',
+                'vega-baja',
+                'vega-alta',
+                'morovis',
+                'ciales',
+                'orocovis',
+                'corozal',
+                'naranjito',
+                'barranquitas',
+            ],
+            'South' => [
+                'adjuntas',
+                'penuelas',
+                'guayanilla',
+                'yauco',
+                'guanica',
+                'jayuya',
+                'ponce',
+                'villalba',
+                'juana-diaz',
+                'coamo',
+                'santa-isabel',
+                'salinas',
+                'guayama',
+                'patillas',
+                'arroyo',
+                'maunabo',
+            ],
+            'West' => [
+                'aguadilla',
+                'isabela',
+                'moca',
+                'aguada',
+                'san-sebastian',
+                'rincon',
+                'anasco',
+                'las-marias',
+                'mayaguez',
+                'maricao',
+                'hormigueros',
+                'san-german',
+                'cabo-rojo',
+                'lajas',
+                'sabana-grande',
+            ],
         ];
 
         return $localities;
+    }
+
+    protected function getRemoveAreaList()
+    {
+        return [
+            'East',
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Domain\ArticleBundle\Controller;
 
+use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Model\Manager\ArticleManager;
 use Domain\BannerBundle\Model\TypeInterface;
 use Domain\BusinessBundle\Manager\CategoryManager;
@@ -50,12 +51,16 @@ class ArticleController extends Controller
     /**
      * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
+     * @var $article Article
      */
     public function viewAction(string $slug)
     {
+       /** @var $article Article */
         $articleManager = $this->getArticlesManager();
 
         $article = $articleManager->getArticleBySlug($slug);
+
+        $articleGallery = $article->getImages();
 
         if (!$article or !$article->getIsPublished() or ($article->getExpirationDate() and $article->isExpired())) {
             throw $this->createNotFoundException();
@@ -74,11 +79,12 @@ class ArticleController extends Controller
         $dcDataDTO = $articleManager->getArticleDoubleClickData($article);
 
         $params = [
-            'article'       => $article,
-            'seoData'       => $article,
-            'schemaJsonLD'  => $schema,
-            'bannerFactory' => $bannerFactory,
-            'dcDataDTO'     => $dcDataDTO,
+            'article'        => $article,
+            'seoData'        => $article,
+            'articleGallery' => $articleGallery,
+            'schemaJsonLD'   => $schema,
+            'bannerFactory'  => $bannerFactory,
+            'dcDataDTO'      => $dcDataDTO,
         ];
 
         return $this->render(':redesign:article-view.html.twig', $params);

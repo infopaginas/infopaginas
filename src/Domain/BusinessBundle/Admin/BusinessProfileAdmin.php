@@ -1440,7 +1440,7 @@ class BusinessProfileAdmin extends OxaAdmin
             $entity->addTranslation($translation);
         }
 
-        $this->translations[] = [
+        $this->translations[$property . $locale] = [
             'locale'  => $locale,
             'field'   => $property,
             'content' => $data,
@@ -1455,7 +1455,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     protected function prepareTranslationDelete($locale, $field)
     {
-        $this->translations[] = [
+        $this->translations[$field . $locale] = [
             'locale'  => $locale,
             'field'   => $field,
             'content' => null,
@@ -1476,6 +1476,14 @@ class BusinessProfileAdmin extends OxaAdmin
             );
 
             if (!$translation['content']) {
+                if (!$this->checkFieldTranslation($translation['field'])) {
+                    $entity->{'set' . $translation['field']}(null);
+                }
+
+                if (property_exists($entity, $translation['field'] . $translation['locale'])) {
+                    $entity->{'set' . $translation['field'] . $translation['locale']}(null);
+                }
+
                 if ($newTranslation) {
                     $em->remove($newTranslation);
                 }
@@ -1516,5 +1524,21 @@ class BusinessProfileAdmin extends OxaAdmin
         $em->flush();
 
         return $entity;
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function checkFieldTranslation($field)
+    {
+        if (empty($this->translations[$field . BusinessProfile::TRANSLATION_LANG_EN]['content']) and
+            empty($this->translations[$field . BusinessProfile::TRANSLATION_LANG_ES]['content'])
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -15,6 +15,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
             remoteImageURLInputId:       '#remote-image-url',
+            uploadImageInputId:          '#error-image-message',
             imageTypeSelectClassname:    '.select-image-type',
             imageRowContainer:           'div.media__item.image-item',
             imageRowLogoContainer:       'div.media__item.image-item.image-form-logo',
@@ -55,7 +56,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             var file = files[i];
 
             if( file.size > this.maxAllowedFileSize ) {
-                var error = $( this.html.remoteImageURLInputId ).data( 'error-size-limit' );
+                var error = $( this.html.uploadImageInputId ).data( 'error-size-limit' );
 
                 this.imageErrorHandler( error );
                 return false;
@@ -79,21 +80,21 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         var backgroundAdded = filesSelected + backgroundAlreadyAdded;
 
         if( filesAdded > this.maxAllowedFilesCount ) {
-            error = $( this.html.remoteImageURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+            error = $( this.html.uploadImageInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
 
             this.imageErrorHandler( error );
             return false;
         }
 
         if ( fileContextValue == logoTypeConstant && logoAdded > this.maxAllowedMediaItemCount ) {
-            error = $( this.html.remoteImageURLInputId ).data( 'error-logo-limit' ) + this.maxAllowedMediaItemCount;
+            error = $( this.html.uploadImageInputId ).data( 'error-logo-limit' ) + this.maxAllowedMediaItemCount;
 
             this.imageErrorHandler( error );
             return false;
         }
 
         if ( fileContextValue == backgroundTypeConstant && backgroundAdded > this.maxAllowedMediaItemCount ) {
-            error = $( this.html.remoteImageURLInputId ).data( 'error-background-limit' ) + this.maxAllowedMediaItemCount;
+            error = $( this.html.uploadImageInputId ).data( 'error-background-limit' ) + this.maxAllowedMediaItemCount;
 
             this.imageErrorHandler( error );
             return false;
@@ -105,6 +106,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
     //actions before ajax start: show loader / etc
     images.prototype.beforeRequestHandler = function () {
         this.removeImageErrors();
+        this.removeURLErrors();
         $( document ).find( '.' + this.html.imageEditFormClassname ).hide();
         this.spinner.show( this.spinnerContainerId );
 
@@ -140,6 +142,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             this.imageErrorHandler( response.message );
         } else {
             this.removeImageErrors();
+            that.removeURLErrors();
             var $response = $( response );
 
             var $imagesContainer = $( document ).find( '#' + this.html.galleryContainerId );
@@ -226,12 +229,13 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         var that = this;
 
         $( document ).on( 'click', '#' + this.html.buttons.startUploadRemoteFileButtonId, function( event ) {
+            that.removeURLErrors();
             that.removeImageErrors();
 
             if ( !$remoteImageURLInput.val() ) {
                 var error = $( that.html.remoteImageURLInputId ).data( 'error-empty' );
 
-                that.imageErrorHandler( error );
+                that.URLErrorHandler( error );
             } else {
                 if( that.checkMaxAllowedFilesCount( [$remoteImageURLInput.val()] ) == false ) {
                     return false;
@@ -253,7 +257,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
                     beforeSend: $.proxy( that.beforeRequestHandler, that ),
                     complete: $.proxy( that.completeHandler, that ),
                     success: $.proxy( that.onRequestSuccess, that ),
-                    error: $.proxy( that.errorHandler, that )
+                    error: $.proxy( that.URLErrorHandler, that )
                 } );
 
                 event.preventDefault();
@@ -305,19 +309,41 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
     };
 
     images.prototype.imageErrorHandler = function( error ) {
-        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
+        var $uploadImageInputId = $( this.html.uploadImageInputId );
 
-        $remoteImageURLInput.parent().addClass( 'field--not-valid' );
-        $remoteImageURLInput.after( "<span data-error-message class='error'>" + error + "</span>" );
+        this.removeImageErrors();
+        this.removeURLErrors();
+        $uploadImageInputId.parent().addClass( 'field--not-valid' );
+        $uploadImageInputId.after( "<span data-error-message class='error'>" + error + "</span>" );
+
+        return false;
+    };
+
+    images.prototype.URLErrorHandler = function( error ) {
+        var $remoteImageURLInputId = $( this.html.remoteImageURLInputId );
+
+        this.removeImageErrors();
+        this.removeURLErrors();
+        $remoteImageURLInputId.parent().addClass( 'field--not-valid' );
+        $remoteImageURLInputId.after( "<span data-error-message class='error'>" + error + "</span>" );
 
         return false;
     };
 
     images.prototype.removeImageErrors = function() {
-        var $remoteImageURLInput = $( this.html.remoteImageURLInputId );
+        var $uploadImageInputId = $( this.html.uploadImageInputId );
 
-        $remoteImageURLInput.parent().removeClass( 'field--not-valid' );
-        $remoteImageURLInput.parent().find( 'span[data-error-message]' ).remove();
+        $uploadImageInputId.parent().removeClass( 'field--not-valid' );
+        $uploadImageInputId.parent().find( 'span[data-error-message]' ).remove();
+
+        return false;
+    };
+
+    images.prototype.removeURLErrors = function() {
+        var $remoteImageURLInputId = $( this.html.remoteImageURLInputId );
+
+        $remoteImageURLInputId.parent().removeClass( 'field--not-valid' );
+        $remoteImageURLInputId.parent().find( 'span[data-error-message]' ).remove();
 
         return false;
     };

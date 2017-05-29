@@ -13,3 +13,11 @@ sonata_admin:
         j_maitan_sonata_media_crop.crop.extension:
             implements:
                 - Sonata\MediaBundle\Model\MediaInterface
+
+doctrine:
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
+        dql:
+            string_functions:
+                replace: Oxa\Sonata\AdminBundle\DQL\ReplaceFunction
