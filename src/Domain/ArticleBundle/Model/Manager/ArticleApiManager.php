@@ -226,7 +226,7 @@ class ArticleApiManager
                         $dateUpdated = new \DateTime($item->date_updated);
                     }
 
-                    if ($date and $dateUpdated and $dateUpdated > $article->getCreatedAt()) {
+                    if ($date and $dateUpdated and ($dateUpdated > $article->getCreatedAt())) {
                         $article->setCreatedAt($dateUpdated);
                         $article->setActivationDate($date);
                     } else {
