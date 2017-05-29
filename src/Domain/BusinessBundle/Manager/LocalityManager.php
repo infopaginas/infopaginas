@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\LocalityPseudo;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
@@ -123,8 +124,8 @@ class LocalityManager extends Manager
 
         $data = [
             'id'              => $locality->getId(),
-            'auto_suggest_en' => $localityEn,
-            'auto_suggest_es' => $localityEs,
+            'auto_suggest_en' => SearchDataUtil::sanitizeElasticSearchQueryString($localityEn),
+            'auto_suggest_es' => SearchDataUtil::sanitizeElasticSearchQueryString($localityEs),
             'location'             => [
                 'lat' => $locality->getLatitude(),
                 'lon' => $locality->getLongitude(),
