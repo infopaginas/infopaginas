@@ -10,7 +10,6 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -2715,17 +2714,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_SEO_TITLE,
             self::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
         ];
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateWorkingHoursData()
-    {
-        $workingHours = DayOfWeekModel::getBusinessProfileWorkingHoursJson($this);
-
-        $this->workingHoursJson = $workingHours;
     }
 
     /**
