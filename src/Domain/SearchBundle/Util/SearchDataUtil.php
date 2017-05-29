@@ -13,6 +13,8 @@ class SearchDataUtil
     const ORDER_BY_DISTANCE         = 'distance';
     const DEFAULT_ORDER_BY_VALUE    = 'relevance';
 
+    const DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR = ' ';
+
     public static function buildResponceDTO(
         $resutlSet,
         int $totalCount,
@@ -57,5 +59,63 @@ class SearchDataUtil
     public static function getOrderByFromRequest(Request $request)
     {
         return $request->get('order', self::ORDER_BY_RELEVANCE);
+    }
+
+    /**
+     * @param $query string
+     *
+     * @return string
+     */
+    public static function sanitizeElasticSearchQueryString($query)
+    {
+        $string = str_replace(
+            array_keys(self::getElasticSearchReservedChars()),
+            self::DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR,
+            $query
+        );
+
+        $string = preg_replace('/\s+/', self::DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR, $string);
+
+        return $string;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getElasticSearchReservedChars()
+    {
+        //http://npm.taobao.org/package/elasticsearch-sanitize
+        //http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping
+        //characters to escape: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ / AND OR NOT space
+
+        $reservedChars = [
+            '+'     => '\+',
+            '-'     => '\-',
+            '='     => '\=',
+            '&&'    => '\&\&',
+            '||'    => '\|\|',
+            '>'     => '\>',
+            '<'     => '\<',
+            '!'     => '\!',
+            '('     => '\(',
+            ')'     => '\)',
+            '{'     => '\{',
+            '}'     => '\}',
+            '['     => '\[',
+            ']'     => '\]',
+            '^'     => '\^',
+            '"'     => '\"',
+            '~'     => '\~',
+            '*'     => '\*',
+            '?'     => '\?',
+            ':'     => '\:',
+            '\\'    => '\\\\',
+            '/'     => '\/',
+            'AND'   => '\A\N\D',
+            'OR'    => '\O\R',
+            'NOT'   =>'\N\O\T',
+        ];
+
+        return $reservedChars;
     }
 }
