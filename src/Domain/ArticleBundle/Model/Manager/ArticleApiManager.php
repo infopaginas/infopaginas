@@ -215,13 +215,19 @@ class ArticleApiManager
 
                 if ($article) {
                     $date = null;
+                    $dateUpdated = null;
 
-                    if (!empty($item->date) and strtotime($item->date)) {
+                    if (!empty($item->date)
+                        and strtotime($item->date)
+                        and !empty($item->date_updated)
+                        and strtotime($item->date_updated)
+                    ) {
                         $date = new \DateTime($item->date);
+                        $dateUpdated = new \DateTime($item->date_updated);
                     }
 
-                    if ($date and $date > $article->getCreatedAt()) {
-                        $article->setCreatedAt($date);
+                    if ($date and $dateUpdated and $dateUpdated > $article->getCreatedAt()) {
+                        $article->setCreatedAt($dateUpdated);
                         $article->setActivationDate($date);
                     } else {
                         continue;
