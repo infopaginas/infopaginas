@@ -98,7 +98,7 @@ class AdUsageReportManager extends BaseReportManager
 
         foreach ($rawResult as $item) {
             $deviceCategoryId = $item[self::MONGO_DB_FIELD_DEVICE_CATEGORY_ID];
-            $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+            $datetime = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME]);
 
             $click       = $item[self::MONGO_DB_FIELD_CLICKS];
             $impressions = $item[self::MONGO_DB_FIELD_IMPRESSIONS];
