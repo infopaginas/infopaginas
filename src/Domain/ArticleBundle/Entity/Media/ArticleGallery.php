@@ -3,6 +3,7 @@
 namespace Domain\ArticleBundle\Entity\Media;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,6 +62,7 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=false)
+     * @Assert\Valid()
      * @Assert\NotBlank()
      */
     protected $media;
@@ -141,7 +143,7 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
     /**
      * @param \Oxa\Sonata\MediaBundle\Entity\Media $media
      */
-    public function setMedia(\Oxa\Sonata\MediaBundle\Entity\Media $media)
+    public function setMedia(\Oxa\Sonata\MediaBundle\Entity\Media $media = null)
     {
         $this->media = $media;
     }

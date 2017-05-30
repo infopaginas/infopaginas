@@ -10,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -151,7 +152,6 @@ class ArticleAdmin extends OxaAdmin
             ];
         } else {
             $property = [
-                'by_reference' => false,
                 'required' => false,
                 'mapped' => true,
             ];
@@ -197,6 +197,28 @@ class ArticleAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     * @return null
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        foreach ($object->getImages() as $image) {
+
+            if (!$image->getMedia()) {
+                $errorElement->with('images')
+                    ->addViolation($this->getTranslator()->trans(
+                        'form.article.empty_images',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+                break;
+            }
+        }
+    }
 
     public function prePersist($entity)
     {

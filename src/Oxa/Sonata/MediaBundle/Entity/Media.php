@@ -3,6 +3,7 @@
 namespace Oxa\Sonata\MediaBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
@@ -52,6 +53,15 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      * )
      */
     protected $businessGallery;
+
+    /**
+     * @var ArrayCollection - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\ArticleBundle\Entity\Media\ArticleGallery",
+     *     mappedBy="media",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $articleGallery;
 
     /**
      * @var BusinessProfile[]
@@ -269,6 +279,40 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getBusinessGallery()
     {
         return $this->businessGallery;
+    }
+
+
+    /**
+     * Add $articleGallery
+     *
+     * @param ArticleGallery $articleGallery
+     * @return $this
+     */
+    public function addArticleGallery(ArticleGallery $articleGallery)
+    {
+        $this->articleGallery[] = $articleGallery;
+
+        return $this;
+    }
+
+    /**
+     * Remove articleGallery
+     *
+     * @param ArticleGallery $articleGallery
+     */
+    public function removeArticleGallery(ArticleGallery $articleGallery)
+    {
+        $this->articleGallery->removeElement($articleGallery);
+    }
+
+    /**
+     * Get articleGallery
+     *
+     * @return ArrayCollection
+     */
+    public function getArticleGallery()
+    {
+        return $this->articleGallery;
     }
 
     /**
