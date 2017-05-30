@@ -505,7 +505,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      */
     public function removeImage(ArticleGallery $image)
     {
-        $this->images->remove($image);
+        $this->images->removeElement($image);
         return $this;
     }
 }

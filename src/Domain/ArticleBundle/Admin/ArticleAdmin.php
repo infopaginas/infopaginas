@@ -152,6 +152,7 @@ class ArticleAdmin extends OxaAdmin
             ];
         } else {
             $property = [
+                'by_reference' => false,
                 'required' => false,
                 'mapped' => true,
             ];
