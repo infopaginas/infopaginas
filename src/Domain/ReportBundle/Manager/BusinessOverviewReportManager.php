@@ -124,7 +124,7 @@ class BusinessOverviewReportManager extends BaseReportManager
 
             if (in_array($action, BusinessOverviewModel::getTypes())) {
                 $count  = $item[self::MONGO_DB_FIELD_COUNT];
-                $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+                $datetime = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME]);
 
                 $viewDate = $datetime->format($dateFormat);
 

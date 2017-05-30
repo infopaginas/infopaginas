@@ -145,7 +145,7 @@ class SubscriptionReportManager extends BaseReportManager
         foreach ($rawResult as $item) {
             $code     = $item[self::MONGO_DB_FIELD_PLAN_CODE];
             $count    = $item[self::MONGO_DB_FIELD_COUNT];
-            $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+            $datetime = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME]);
 
             $viewDate = $datetime->format(AdminHelper::DATE_FORMAT);
 
