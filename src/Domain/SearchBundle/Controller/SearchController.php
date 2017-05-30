@@ -122,7 +122,7 @@ class SearchController extends Controller
     public function getClosestLocalityByCoordAction(Request $request)
     {
         $searchManager = $this->get('domain_search.manager.search');
-        $searchDTO = $searchManager->getLoicalitySearchDTO($request);
+        $searchDTO = $searchManager->getLocalitySearchDTO($request);
         $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
 
         return new JsonResponse(['localityId' => $closestLocality->getId()]);
