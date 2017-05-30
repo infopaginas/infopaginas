@@ -387,7 +387,9 @@ class SearchManager extends Manager
 
     private function getSaveSearchWords($query)
     {
-        $words = explode(' ', $query);
+        $searchString = SearchDataUtil::sanitizeElasticSearchQueryString($query);
+
+        $words = explode(' ', $searchString);
 
         $data = [];
 
@@ -399,77 +401,10 @@ class SearchManager extends Manager
                     $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
                 }
 
-                $data[] = $this->escapeElasticSpecialCharacter($word);
+                $data[] = $word;
             }
         }
 
         return $data;
-    }
-
-    private function escapeElasticSpecialCharacter($query)
-    {
-        //http://npm.taobao.org/package/elasticsearch-sanitize
-        //http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping
-        //characters to escape: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ / AND OR NOT space
-
-        $search = [
-            '+',
-            '-',
-            '=',
-            '&&',
-            '||',
-            '>',
-            '<',
-            '!',
-            '(',
-            ')',
-            '{',
-            '}',
-            '[',
-            ']',
-            '^',
-            '"',
-            '~',
-            '*',
-            '?',
-            ':',
-            '\\',
-            '/',
-            'AND',
-            'OR',
-            'NOT',
-        ];
-
-        $escaped = [
-            '\+',
-            '\-',
-            '\=',
-            '\&\&',
-            '\|\|',
-            '\>',
-            '\<',
-            '\!',
-            '\(',
-            '\)',
-            '\{',
-            '\}',
-            '\[',
-            '\]',
-            '\^',
-            '\"',
-            '\~',
-            '\*',
-            '\?',
-            '\:',
-            '\\\\',
-            '\/',
-            '\A\N\D',
-            '\O\R',
-            '\N\O\T',
-        ];
-
-        $newQuery = str_replace($search, $escaped, $query);
-
-        return $newQuery;
     }
 }

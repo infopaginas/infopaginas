@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Util\SlugUtil;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
@@ -60,8 +61,8 @@ class CategoryManager extends Manager
 
         $data = [
             'id'              => $category->getId(),
-            'auto_suggest_en' => $categoryEn,
-            'auto_suggest_es' => $categoryEs,
+            'auto_suggest_en' => SearchDataUtil::sanitizeElasticSearchQueryString($categoryEn),
+            'auto_suggest_es' => SearchDataUtil::sanitizeElasticSearchQueryString($categoryEs),
         ];
 
         return $data;

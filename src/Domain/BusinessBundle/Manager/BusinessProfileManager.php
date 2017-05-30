@@ -2214,8 +2214,11 @@ class BusinessProfileManager extends Manager
         $categoryIds = [];
 
         foreach ($businessProfile->getCategories() as $category) {
-            $categories[$enLocale][] = $category->getTranslation('name', $enLocale);
-            $categories[$esLocale][] = $category->getTranslation('name', $esLocale);
+            $categoryEn = $category->getTranslation('name', $enLocale);
+            $categoryEs = $category->getTranslation('name', $esLocale);
+
+            $categories[$enLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($categoryEn);
+            $categories[$esLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($categoryEs);
             $categoryIds[] = $category->getId();
         }
 
@@ -2235,8 +2238,13 @@ class BusinessProfileManager extends Manager
             $localityIds[] = $businessProfile->getCatalogLocality()->getId();
         }
 
-        $autoSuggest[$enLocale][] = $businessProfile->getNameEn();
-        $autoSuggest[$esLocale][] = $businessProfile->getNameEs();
+        $businessProfileNameEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getNameEn());
+        $businessProfileNameEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getNameEs());
+        $businessProfileDescEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEn());
+        $businessProfileDescEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEs());
+
+        $autoSuggest[$enLocale][] = $businessProfileNameEn;
+        $autoSuggest[$esLocale][] = $businessProfileNameEs;
 
         if ($businessProfile->getMilesOfMyBusiness()) {
             $milesOfMyBusiness = $businessProfile->getMilesOfMyBusiness();
@@ -2246,10 +2254,10 @@ class BusinessProfileManager extends Manager
 
         $data = [
             'id'                   => $businessProfile->getId(),
-            'name_en'              => $businessProfile->getNameEn(),
-            'name_es'              => $businessProfile->getNameEs(),
-            'description_en'       => $businessProfile->getDescriptionEn(),
-            'description_es'       => $businessProfile->getDescriptionEs(),
+            'name_en'              => $businessProfileNameEn,
+            'name_es'              => $businessProfileNameEs,
+            'description_en'       => $businessProfileDescEn,
+            'description_es'       => $businessProfileDescEs,
             'miles_of_my_business' => $milesOfMyBusiness,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
