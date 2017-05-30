@@ -200,13 +200,12 @@ class ArticleAdmin extends OxaAdmin
 
     /**
      * @param ErrorElement $errorElement
-     * @param mixed $object
+     * @param Article $article
      * @return null
      */
-    public function validate(ErrorElement $errorElement, $object)
+    public function validate(ErrorElement $errorElement, $article)
     {
-        foreach ($object->getImages() as $image) {
-
+        foreach ($article->getImages() as $image) {
             if (!$image->getMedia()) {
                 $errorElement->with('images')
                     ->addViolation($this->getTranslator()->trans(

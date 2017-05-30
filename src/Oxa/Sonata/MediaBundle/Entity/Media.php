@@ -286,7 +286,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      * Add $articleGallery
      *
      * @param ArticleGallery $articleGallery
-     * @return $this
+     * @return Media $this
      */
     public function addArticleGallery(ArticleGallery $articleGallery)
     {
