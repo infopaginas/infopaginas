@@ -4,6 +4,7 @@ namespace Oxa\Sonata\AdminBundle\Admin;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -124,6 +125,11 @@ class OxaAdmin extends BaseAdmin
      */
     public $showFilters = true;
 
+    /**
+     * @var bool
+     */
+    public $allowBatchRestore = false;
+
     public function setPositionService(PositionHandler $positionHandler)
     {
         $this->positionService = $positionHandler;
@@ -211,6 +217,26 @@ class OxaAdmin extends BaseAdmin
         );
 
         return $parameters;
+    }
+
+    /**
+     * @param $actions array
+     *
+     * @return array
+     */
+    public function configureBatchActions($actions)
+    {
+        if ($this->allowBatchRestore and $this->hasRoute('edit') and
+            $this->hasAccess('edit') and $this->hasRoute('delete') and $this->hasAccess('delete')
+        ) {
+            $actions['restore'] = [
+                'label'                 => 'action_restore',
+                'translation_domain'    => 'SonataAdminBundle',
+                'ask_confirmation'      => true,
+            ];
+        }
+
+        return $actions;
     }
 
     protected function getDeleteDeniedAction()

@@ -58,6 +58,11 @@ class BusinessProfileAdmin extends OxaAdmin
     public $copyAvailable = true;
 
     /**
+     * @var bool
+     */
+    public $allowBatchRestore = true;
+
+    /**
      * @return BusinessProfile
      */
     public function getNewInstance()
@@ -138,6 +143,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
     }
 
@@ -171,6 +179,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 ]
             )
             ->add('isActive')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
 
         $this->addGridActions($listMapper);
@@ -563,6 +574,11 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Profile')
                 ->with('Status')
                     ->add('isActive')
+                    ->add('isDeleted', null, [
+                        'label' => 'Scheduled for deletion',
+                        'required' => false,
+                        'disabled' => true,
+                    ])
                     ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                     ->add('updatedUser', 'sonata_type_model', [
                         'required' => false,
@@ -754,6 +770,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('isActive')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
             ->add('dcOrderId')
         ;
     }
@@ -1159,6 +1178,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $collection
             ->add('show')
+            ->add('restore')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }
