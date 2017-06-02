@@ -20,7 +20,9 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 
 /**
  * Used to customise admin
@@ -50,10 +52,8 @@ class AdminManager extends DefaultManager
             ));
         }
 
-        $em = $this->getEntityManager();
-
-        $em->remove($entity);
-        $em->flush();
+        $this->removeEntity($entity);
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -93,6 +93,34 @@ class AdminManager extends DefaultManager
     }
 
     /**
+     * Restore object with all relations
+     *
+     * @param PostponeRemoveInterface $entity
+     */
+    public function restoreEntity(PostponeRemoveInterface $entity)
+    {
+        $entity->setIsDeleted(false);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Restore objects
+     *
+     * @param $entityArray array
+     */
+    public function restoreEntities(array $entityArray = [])
+    {
+        foreach ($entityArray as $entity) {
+            /** @var $entity PostponeRemoveInterface */
+            if ($entity->getIsDeleted()) {
+                $entity->setIsDeleted(false);
+            }
+        }
+
+        $this->getEntityManager()->flush();
+    }
+
+    /**
      * Check if entity has relation with other entities
      *
      * @param $entity
@@ -122,6 +150,11 @@ class AdminManager extends DefaultManager
 
                 //allow delete business profile
                 if ($entity instanceof BusinessProfile) {
+                    continue;
+                }
+
+                //allow delete article
+                if ($entity instanceof Article) {
                     continue;
                 }
 
@@ -220,7 +253,7 @@ class AdminManager extends DefaultManager
                 ));
             }
 
-            $this->getEntityManager()->remove($entity);
+            $this->removeEntity($entity);
         }
 
         $this->getEntityManager()->flush();
@@ -261,5 +294,59 @@ class AdminManager extends DefaultManager
             )
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param $entity object
+     *
+     * @return string
+     */
+    public function getDeleteSuccessFlashMessage($entity)
+    {
+        if ($entity instanceof PostponeRemoveInterface) {
+            $message = 'flash_postpone_delete_success';
+        } else {
+            $message = 'flash_delete_success';
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param $entityArray array
+     *
+     * @return string
+     */
+    public function getBatchDeleteSuccessFlashMessage($entityArray = [])
+    {
+        $message = 'flash_batch_delete_success';
+
+        if ($entityArray) {
+            $entity = current($entityArray);
+
+            if ($entity and $entity instanceof PostponeRemoveInterface) {
+                $message = 'flash_postpone_batch_delete_success';
+            }
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param $entity object
+     */
+    private function removeEntity($entity)
+    {
+        if ($entity instanceof PostponeRemoveInterface) {
+            $entity->setIsDeleted(true);
+
+            if ($entity instanceof BusinessProfile) {
+                $entity->setIsActive(false);
+            } elseif ($entity instanceof Article) {
+                $entity->setIsPublished(false);
+            }
+        } else {
+            $this->getEntityManager()->remove($entity);
+        }
     }
 }

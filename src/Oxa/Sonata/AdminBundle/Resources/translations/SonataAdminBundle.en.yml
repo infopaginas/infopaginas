@@ -8,8 +8,12 @@ message_batch_physical_delete_confirmation: Are you sure you want to delete phys
 message_batch_physical_delete_confirmation: Are you sure you want to confirm this action and execute it for the 2 selected elements?
 physical_deleting_element: Item to be deleted physically
 delete_item: Delete item: "%object%"
+flash_postpone_delete_success: Item has been scheduled for deletion
+flash_postpone_batch_delete_success: Items have been scheduled for deletion
 action_copy: Copy
 flash_batch_copy_success: The copy has completed successfully
+action_restore: Restore
+flash_restore_success: The restore has completed successfully
 copy_: copy_
 flash_delete_error_rel: Can not delete object which is used in: "%fields%"
 batch_delete_error_rel: Can not delete object with id: "record_id", which is used in: "%fields%"

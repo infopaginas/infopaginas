@@ -10,7 +10,9 @@ use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\PageBundle\Entity\Page;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseMedia as BaseMedia;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,9 +24,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface
+class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface, PostponeRemoveInterface
 {
     use DefaultEntityTrait;
+    use PostponeRemoveTrait;
 
     const UPLOADS_DIR_NAME = 'uploads';
 

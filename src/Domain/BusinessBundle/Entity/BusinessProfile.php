@@ -14,7 +14,9 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -41,12 +43,14 @@ class BusinessProfile implements
     DefaultEntityInterface,
     CopyableEntityInterface,
     TranslatableInterface,
-    GeolocationInterface
+    GeolocationInterface,
+    PostponeRemoveInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
     use SeoTrait;
+    use PostponeRemoveTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';

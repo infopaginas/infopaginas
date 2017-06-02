@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,6 +17,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ArticleAdmin extends OxaAdmin
 {
+    /**
+     * @var bool
+     */
+    public $allowBatchRestore = true;
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -35,6 +41,9 @@ class ArticleAdmin extends OxaAdmin
             ->add('updatedUser')
             ->add('authorName')
             ->add('isExternal')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
     }
 
@@ -55,6 +64,9 @@ class ArticleAdmin extends OxaAdmin
             ->add('updatedUser')
             ->add('authorName')
             ->add('isExternal')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
 
         $this->addGridActions($listMapper);
@@ -92,6 +104,11 @@ class ArticleAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('isExternal', null, [
+                    'required' => false,
+                    'disabled' => true,
+                ])
+                ->add('isDeleted', null, [
+                    'label' => 'Scheduled for deletion',
                     'required' => false,
                     'disabled' => true,
                 ])
@@ -195,6 +212,9 @@ class ArticleAdmin extends OxaAdmin
             ->add('updatedAt')
             ->add('updatedUser')
             ->add('authorName')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
     }
 
@@ -283,6 +303,20 @@ class ArticleAdmin extends OxaAdmin
         $entity->setAuthorName($authorName);
 
         return $entity;
+    }
+
+    /**
+     * Add additional routes
+     *
+     * @param RouteCollection $collection
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection
+            ->remove('export')
+            ->add('show')
+            ->add('restore')
+        ;
     }
 
     /**
