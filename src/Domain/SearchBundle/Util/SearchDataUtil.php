@@ -71,7 +71,7 @@ class SearchDataUtil
         $string = str_replace(
             array_keys(self::getElasticSearchReservedChars()),
             self::DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR,
-            $query
+            mb_strtolower($query)
         );
 
         $string = preg_replace('/\s+/', self::DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR, $string);
