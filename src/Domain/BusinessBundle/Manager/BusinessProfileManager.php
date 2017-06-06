@@ -1888,14 +1888,13 @@ class BusinessProfileManager extends Manager
 
     protected function getElasticSearchQuery(SearchDTO $params, $locale)
     {
-        // see https://jira.oxagile.com/browse/INFT-1197
         $fields = [
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
-//            'description_' . strtolower($locale) . '^1',
+            'products_' . strtolower($locale) . '^1',
             'name_' . strtolower($locale) . '.folded^5',
             'categories_' . strtolower($locale) . '.folded^3',
-//            'description_' . strtolower($locale) . '.folded^1',
+            'products_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -2243,6 +2242,13 @@ class BusinessProfileManager extends Manager
         $businessProfileDescEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEn());
         $businessProfileDescEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEs());
 
+        $businessProfileProdEn = SearchDataUtil::sanitizeElasticSearchQueryString(
+            $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $enLocale)
+        );
+        $businessProfileProdEs = SearchDataUtil::sanitizeElasticSearchQueryString(
+            $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $esLocale)
+        );
+
         $autoSuggest[$enLocale][] = $businessProfileNameEn;
         $autoSuggest[$esLocale][] = $businessProfileNameEs;
 
@@ -2258,6 +2264,8 @@ class BusinessProfileManager extends Manager
             'name_es'              => $businessProfileNameEs,
             'description_en'       => $businessProfileDescEn,
             'description_es'       => $businessProfileDescEs,
+            'products_en'          => $businessProfileProdEn,
+            'products_es'          => $businessProfileProdEs,
             'miles_of_my_business' => $milesOfMyBusiness,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
@@ -2358,6 +2366,28 @@ class BusinessProfileManager extends Manager
                 ],
             ],
             'description_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'products_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'products_es' => [
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
