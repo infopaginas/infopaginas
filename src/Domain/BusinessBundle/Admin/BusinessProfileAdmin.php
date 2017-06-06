@@ -209,6 +209,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Address', ['class' => 'col-md-4',])->end()
                 ->with('Map', ['class' => 'col-md-8',])->end()
                 ->with('Categories', ['class' => 'col-md-6',])->end()
+                ->with('Extra Searches', ['class' => 'col-md-12',])->end()
                 ->with('Social Networks', ['class' => 'col-md-6',])->end()
                 ->with('Gallery')->end()
             ->end()
@@ -441,6 +442,34 @@ class BusinessProfileAdmin extends OxaAdmin
                         'multiple' => true,
                         'expanded' => true,
                     ])
+                ->end()
+                ->with('Extra Searches')
+                    ->add(
+                        'extraSearches',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                        ]
+                    )
+                    ->add(
+                        'phones',
+                        'sonata_type_collection',
+                        [
+                            'by_reference' => false,
+                            'required' => false,
+                        ],
+                        [
+                            'edit' => 'inline',
+                            'delete_empty' => false,
+                            'inline' => 'table',
+                        ]
+                    )
                 ->end()
                 ->with('Gallery')
                     ->add('images', 'sonata_type_collection', [

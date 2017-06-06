@@ -68,6 +68,14 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     private $businessProfile;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileExtraSearch",
+     *     mappedBy="localities"
+     * )
+     */
+    private $extraSearches;
+
+    /**
      * @var Domain\BusinessBundle\Entity\Area
      *
      * @ORM\ManyToOne(
@@ -160,6 +168,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->neighborhoods    = new ArrayCollection();
         $this->catalogItems     = new ArrayCollection();
         $this->pseudos          = new ArrayCollection();
+        $this->extraSearches    = new ArrayCollection();
 
         $this->isUpdated = true;
     }
@@ -231,6 +240,40 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
         $this->businessProfile->removeElement($businessProfile);
 
         return $this;
+    }
+
+    /**
+     * Add $extraSearch
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return Locality
+     */
+    public function addExtraSearch($extraSearch)
+    {
+        $this->extraSearches[] = $extraSearch;
+        $extraSearch->addLocality($this);
+    }
+
+    /**
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return Locality
+     */
+    public function removeExtraSearch(BusinessProfileExtraSearch $extraSearch)
+    {
+        $this->extraSearches->removeElement($extraSearch);
+        $extraSearch->removeLocality($this);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getExtraSearches()
+    {
+        return $this->extraSearches;
     }
 
     /**

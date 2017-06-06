@@ -74,6 +74,7 @@ class BusinessProfile implements
     const TRANSLATION_LANG_ES = 'Es';
 
     const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
+    const ELASTIC_DOCUMENT_TYPE_AD = 'BusinessProfileAd';
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
@@ -704,6 +705,12 @@ class BusinessProfile implements
      */
     protected $distance;
 
+    /** @var bool
+     *
+     * Store business search status, not a part of DB table. calculated during the search
+     */
+    protected $isAd;
+
     /**
      * Related to WORKING_HOURS_ASSOCIATED_FIELD
      * @var BusinessProfileWorkingHour[] - Business Profile working hours
@@ -730,6 +737,18 @@ class BusinessProfile implements
      * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
      */
     protected $hasImages;
+
+    /**
+     * @var BusinessProfileExtraSearch[] - Business Profile extra searches
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileExtraSearch",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    protected $extraSearches;
 
     /**
      * @return mixed
@@ -833,6 +852,7 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->extraSearches = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2412,6 +2432,26 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function getIsAd()
+    {
+        return $this->isAd;
+    }
+
+    /**
+     * @param bool $isAd
+     *
+     * @return BusinessProfile
+     */
+    public function setIsAd($isAd)
+    {
+        $this->isAd = $isAd;
+
+        return $this;
+    }
+
      /**
      * getting distance prettified
      *
@@ -2597,6 +2637,42 @@ class BusinessProfile implements
     public function removeCollectionWorkingHour(BusinessProfileWorkingHour $workingHours)
     {
         $this->collectionWorkingHours->removeElement($workingHours);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getExtraSearches()
+    {
+        return $this->extraSearches;
+    }
+
+    /**
+     * Add $workingHour
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return BusinessProfile
+     */
+    public function addExtraSearch($extraSearch)
+    {
+        $this->extraSearches[] = $extraSearch;
+
+        if ($extraSearch) {
+            $extraSearch->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $extraSearch
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     */
+    public function removeExtraSearch(BusinessProfileExtraSearch $extraSearch)
+    {
+        $this->extraSearches->removeElement($extraSearch);
     }
 
     /**

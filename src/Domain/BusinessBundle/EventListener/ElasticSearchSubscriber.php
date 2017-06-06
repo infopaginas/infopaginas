@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Subscription;
@@ -87,6 +88,10 @@ class ElasticSearchSubscriber implements EventSubscriber
         if ($entity instanceof Category) {
             $this->handleCategoryUpdate($entity, $args->getEntityManager());
         }
+
+        if ($entity instanceof BusinessProfileExtraSearch) {
+            $this->handleExtraSearchUpdate($entity, $args->getEntityManager());
+        }
     }
 
     public function postPersist(LifecycleEventArgs $args)
@@ -95,6 +100,10 @@ class ElasticSearchSubscriber implements EventSubscriber
 
         if ($entity instanceof Subscription) {
             $this->handleSubscriptionUpdate($entity, $args->getEntityManager());
+        }
+
+        if ($entity instanceof BusinessProfileExtraSearch) {
+            $this->handleExtraSearchUpdate($entity, $args->getEntityManager());
         }
     }
 
@@ -109,6 +118,10 @@ class ElasticSearchSubscriber implements EventSubscriber
         if ($entity instanceof Category) {
             $this->handleCategoryUpdate($entity, $args->getEntityManager());
         }
+
+        if ($entity instanceof BusinessProfileExtraSearch) {
+            $this->handleExtraSearchUpdate($entity, $args->getEntityManager());
+        }
     }
 
     public function preRemove(LifecycleEventArgs $args)
@@ -121,6 +134,10 @@ class ElasticSearchSubscriber implements EventSubscriber
 
         if ($entity instanceof Locality) {
             $this->handleLocalityPreRemove($entity);
+        }
+
+        if ($entity instanceof BusinessProfileExtraSearch) {
+            $this->handleExtraSearchPreRemove($entity);
         }
     }
 
@@ -138,6 +155,17 @@ class ElasticSearchSubscriber implements EventSubscriber
         $this->businessStatusManager->manageBusinessStatusPostUpdate([$businessProfile], $em);
     }
 
+    /**
+     * @param $extraSearch  BusinessProfileExtraSearch
+     * @param $em           EntityManager
+     */
+    public function handleExtraSearchUpdate($extraSearch, $em)
+    {
+        $businessProfile = $extraSearch->getBusinessProfile();
+
+        $this->businessStatusManager->manageBusinessStatusPostUpdate([$businessProfile], $em);
+    }
+
     public function handleLocalityPreRemove(Locality $locality)
     {
         $this->businessStatusManager->removeLocalityFromElastic($locality, $this->elasticSearchManager);
@@ -146,5 +174,13 @@ class ElasticSearchSubscriber implements EventSubscriber
     public function handleCategoryPreRemove(Category $category)
     {
         $this->businessStatusManager->removeCategoryFromElastic($category, $this->elasticSearchManager);
+    }
+
+    /**
+     * @param $extraSearch BusinessProfileExtraSearch
+     */
+    public function handleExtraSearchPreRemove(BusinessProfileExtraSearch $extraSearch)
+    {
+        $this->businessStatusManager->removeExtraSearchFromElastic($extraSearch, $this->elasticSearchManager);
     }
 }
