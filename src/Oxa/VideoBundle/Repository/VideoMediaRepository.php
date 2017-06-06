@@ -41,4 +41,25 @@ class VideoMediaRepository extends \Doctrine\ORM\EntityRepository
 
         return $videoIterator;
     }
+
+    /**
+     * @return IterableResult
+     */
+    public function getConvertVideos($status)
+    {
+        $qb = $this->createQueryBuilder('v');
+        $qb
+            ->andWhere('v.status = :status')
+            ->setParameter('status', $status)
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query
+            ->setParameter('status', $status)
+        ;
+
+        $videoIterator = $query->iterate();
+
+        return $videoIterator;
+    }
 }

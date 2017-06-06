@@ -24,6 +24,10 @@ class VideoMedia
     const VIDEO_TITLE_MAX_LENGTH      = 255;
     const VIDEO_TITLE_MAX_DESCRIPTION = 255;
 
+    const VIDEO_STATUS_PENDING = 'pending';
+    const VIDEO_STATUS_ACTIVE  = 'active';
+    const VIDEO_STATUS_ERROR   = 'error';
+
     /**
      * @var int
      *
@@ -141,7 +145,7 @@ class VideoMedia
 
             $this->setCreatedAt(new \DateTime());
             $this->setUpdatedAt(new \DateTime());
-            $this->setStatus('');
+            $this->setStatus($this::VIDEO_STATUS_PENDING);
 
             $this->setYoutubeSupport(true);
             $this->setYoutubeAction(null);

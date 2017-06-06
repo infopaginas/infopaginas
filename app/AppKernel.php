@@ -62,6 +62,7 @@ class AppKernel extends Kernel
             new Happyr\GoogleSiteAuthenticatorBundle\HappyrGoogleSiteAuthenticatorBundle(),
             new Happyr\GoogleAnalyticsBundle\HappyrGoogleAnalyticsBundle(),
             new Aws\Symfony\AwsBundle(),
+            new Dubture\FFmpegBundle\DubtureFFmpegBundle(),
 
             // Oxa Bundles
             new Oxa\Sonata\AdminBundle\OxaSonataAdminBundle(),

@@ -3,6 +3,7 @@
 namespace Oxa\VideoBundle\Manager;
 
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
+use FFMpeg\Format\Video\WebM;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -19,12 +20,22 @@ class VideoManager
         'video/mp4',
         'video/webm',
         'video/ogg',
+        'video/quicktime',
+        'video/avi',
+        'video/mpeg',
+        'video/x-ms-wmv',
+        'video/x-flv',
     ];
     
     private $mimeExtensions = [
-        'video/mp4'     => '.mp4',
-        'video/webm'    => '.webm',
-        'video/ogg'     => '.ogv',
+        'video/mp4'       => '.mp4',
+        'video/webm'      => '.webm',
+        'video/ogg'       => '.ogv',
+        'video/avi'       => '.avi',
+        'video/mpeg'      => '.mpg',
+        'video/x-ms-wmv'  => '.wmv',
+        'video/quicktime' => '.mov',
+        'video/x-flv'     => '.flv',
     ];
 
     private $filesystem;
@@ -95,8 +106,7 @@ class VideoManager
             'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
-
+        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));;
         if (!$uploadedSize) {
             $message = $this->container->get('translator')
                 ->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
@@ -158,6 +168,39 @@ class VideoManager
         file_put_contents($path, file_get_contents($url));
 
         return $path;
+    }
+
+    public function convertVideoMedia(VideoMedia $media)
+    {
+       $ffmpeg = $this->container->get('dubture_ffmpeg.ffmpeg');
+
+       try{
+           $video = $ffmpeg->open($this->getPublicUrl($media));
+           $name  =  uniqid() . '.mp4';
+           $path = $this->container->get('kernel')->getRootDir() . '/../web/uploads/videos/';
+           $video->save(new WebM(), $path . $name);
+       } catch (\Exception $e){
+           $media->setStatus($media::VIDEO_STATUS_ERROR);
+
+           return $media;
+       }
+
+       $fileData = [
+            'name'      => $name,
+            'type'      => 'video/mp4',
+            'ext'       => 'mp4',
+            'path'      => $path . $name,
+       ];
+       $uploadedFileData = $this->uploadLocalFileData($fileData);
+
+       $media->setName($uploadedFileData['name']);
+       $media->setFilepath($uploadedFileData['filepath']);
+       $media->setFilename($uploadedFileData['filename']);
+       $media->setType($uploadedFileData['type']);
+       $media->setStatus($media::VIDEO_STATUS_ACTIVE);
+       unlink($path . $name);
+
+       return $media;
     }
 
     public function getPublicUrl(VideoMedia $media)

@@ -21,6 +21,7 @@ class CronLogger
     const MONGO_AGGREGATE           = 'domain:report-mongo-db:aggregate';
     const BUSINESS_COUNTER          = 'domain:managed-businesses:counter';
     const POSTPONE_REMOVE           = 'data:postpone:remove';
+    const VIDEO_CONVERT             = 'data:video:convert';
 
     const STATUS_START = 'START';
     const STATUS_IN_PROGRESS = 'IN PROGRESS';
