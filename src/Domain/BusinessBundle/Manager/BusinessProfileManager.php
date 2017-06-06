@@ -1524,7 +1524,7 @@ class BusinessProfileManager extends Manager
         $randomize   = $searchParams->randomizeAllowed();
         $coordinates = $searchParams->getCurrentCoordinates();
 
-        if ($allowAds) {
+        if ($allowAds and $searchParams->page == 1) {
             $searchAdQuery = $this->getElasticSearchQueryAd($searchParams, $locale);
             $responseAd = $this->searchBusinessAdElastic($searchAdQuery);
 
@@ -2266,7 +2266,7 @@ class BusinessProfileManager extends Manager
                         'rand' => 'desc',
                     ],
                     // todo use const or param
-                    'size' =>  3,
+                    'size' =>  6,
                 ],
                 'aggs' => [
                     'rand' => [
