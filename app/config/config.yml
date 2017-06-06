@@ -64,6 +64,7 @@ parameters:
     image_back_up_path: '/../web/imageBackUp/'
     video_back_up_path: '/../web/imageBackUp/video/'
     youtube_back_up_path: '/../web/imageBackUp/youtube/'
+    video_download_path: '/../web/uploads/videos/'
     breadcrumb_max_length: 38
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'

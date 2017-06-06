@@ -174,10 +174,10 @@ class VideoManager
     {
        $ffmpeg = $this->container->get('dubture_ffmpeg.ffmpeg');
 
-       try{
+       try {
            $video = $ffmpeg->open($this->getPublicUrl($media));
            $name  =  uniqid() . '.mp4';
-           $path = $this->container->get('kernel')->getRootDir() . '/../web/uploads/videos/';
+           $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
            $video->save(new WebM(), $path . $name);
        } catch (\Exception $e){
            $media->setStatus($media::VIDEO_STATUS_ERROR);
