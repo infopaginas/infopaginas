@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
+use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -417,7 +418,7 @@ class SearchController extends Controller
         ];
 
         if (!$searchManager->checkCatalogRedirect($slugs, $entities)) {
-            return $this->handlePermanentRedirect($locality, $category);
+            return $this->handlePermanentRedirect($locality, $category, $categorySlug);
         }
 
         $searchDTO        = null;
@@ -534,7 +535,7 @@ class SearchController extends Controller
         return $searchData;
     }
 
-    private function handlePermanentRedirect($locality = null, $category = null)
+    private function handlePermanentRedirect($locality = null, $category = null, $categorySlug = null)
     {
         $data = [
             'localitySlug'    => null,
@@ -549,10 +550,16 @@ class SearchController extends Controller
             $data['localitySlug'] = $locality->getSlug();
         }
 
-        return $this->redirectToRoute(
-            'domain_search_catalog',
-            $data,
-            301
-        );
+        if (!empty($data['categorySlug']) or !$categorySlug) {
+            return $this->redirectToRoute('domain_search_catalog', $data, 301);
+        } else {
+            return $this->redirectToRoute(
+                'domain_search_index',
+                [
+                    'q' => SlugUtil::decodeSlug($categorySlug),
+                    'geo' => $locality->getName(),
+                ]
+            );
+        }
     }
 }
