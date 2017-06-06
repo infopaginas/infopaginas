@@ -3,6 +3,7 @@
 namespace Domain\SearchBundle\Controller;
 
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
@@ -11,6 +12,7 @@ use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
@@ -41,12 +43,23 @@ class SearchController extends Controller
         $closestLocality = '';
         $disableFilters = false;
         $seoCategories = [];
+        $allowRedirect = !filter_var($request->get('redirected', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($searchDTO) {
             if ($searchDTO->checkSearchInMap()) {
                 $disableFilters = true;
 
                 $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
+            } else {
+                $category = $this->getCategoryManager()->getCategoryByCustomSlug(
+                    SlugUtil::convertSlug($searchDTO->query)
+                );
+
+                if ($category and !empty($searchDTO->locationValue->locality->getSlug()) and
+                    !$searchDTO->locationValue->ignoreLocality and $allowRedirect
+                ) {
+                    return $this->handleRedirectToCatalog($searchDTO->locationValue->locality, $category);
+                }
             }
 
             $searchResultsDTO = $searchManager->search($searchDTO, $locale, $disableFilters);
@@ -372,6 +385,7 @@ class SearchController extends Controller
         $category   = null;
         $showResults = false;
         $showCatalog = true;
+        $allowRedirect = !filter_var($request->get('redirected', false), FILTER_VALIDATE_BOOLEAN);
 
         $seoLocationName  = null;
         $seoCategories = [];
@@ -418,7 +432,7 @@ class SearchController extends Controller
         ];
 
         if (!$searchManager->checkCatalogRedirect($slugs, $entities)) {
-            return $this->handlePermanentRedirect($locality, $category, $categorySlug);
+            return $this->handlePermanentRedirect($locality, $category, $categorySlug, $allowRedirect);
         }
 
         $searchDTO        = null;
@@ -468,7 +482,11 @@ class SearchController extends Controller
         }
 
         if (!$searchManager->checkCatalogItemHasContent($entities)) {
-            throw $this->createNotFoundException();
+            if ($allowRedirect) {
+                return $this->handleRedirectToSearch($locality, $categorySlug);
+            } else {
+                throw $this->createNotFoundException();
+            }
         }
 
         if (!$locationMarkers) {
@@ -535,8 +553,20 @@ class SearchController extends Controller
         return $searchData;
     }
 
-    private function handlePermanentRedirect($locality = null, $category = null, $categorySlug = null)
-    {
+    /**
+     * @param $locality         Locality
+     * @param $category         Category
+     * @param $categorySlug     string
+     * @param $allowRedirect    bool
+     *
+     * @return RedirectResponse
+     */
+    private function handlePermanentRedirect(
+        $locality = null,
+        $category = null,
+        $categorySlug = null,
+        $allowRedirect = false
+    ) {
         $data = [
             'localitySlug'    => null,
             'categorySlug'    => null,
@@ -550,16 +580,46 @@ class SearchController extends Controller
             $data['localitySlug'] = $locality->getSlug();
         }
 
-        if (!empty($data['categorySlug']) or !$categorySlug) {
+        if (!empty($data['categorySlug']) or !$categorySlug or !$allowRedirect) {
             return $this->redirectToRoute('domain_search_catalog', $data, 301);
         } else {
-            return $this->redirectToRoute(
-                'domain_search_index',
-                [
-                    'q' => SlugUtil::decodeSlug($categorySlug),
-                    'geo' => $locality->getName(),
-                ]
-            );
+            return $this->handleRedirectToSearch($locality, $categorySlug);
         }
+    }
+
+    /**
+     * @param $locality Locality
+     * @param $category Category
+     *
+     * @return RedirectResponse
+     */
+    private function handleRedirectToCatalog($locality, $category)
+    {
+        return $this->redirectToRoute(
+            'domain_search_catalog',
+            [
+                'localitySlug' => $locality->getSlug(),
+                'categorySlug' => $category->getSlug(),
+                'redirected'   => true,
+            ]
+        );
+    }
+
+    /**
+     * @param $locality Locality
+     * @param $categorySlug string
+     *
+     * @return RedirectResponse
+     */
+    private function handleRedirectToSearch($locality, $categorySlug)
+    {
+        return $this->redirectToRoute(
+            'domain_search_index',
+            [
+                'q'          => SlugUtil::decodeSlug($categorySlug),
+                'geo'        => $locality->getName(),
+                'redirected' => true,
+            ]
+        );
     }
 }
