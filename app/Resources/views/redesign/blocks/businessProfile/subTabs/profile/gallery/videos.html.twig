@@ -5,9 +5,9 @@
             {% if media.status == 'active' %}
                 {{ render_video_embed(media, {width: 300, height: 200}) }}
             {% elseif media.status == 'pending' %}
-                <img src="https://placeholdit.imgix.net/~text?txtsize=50&txt=Pending&w=300&h=200" alt="">
+                <img src="{{ video_error_placeholder }}" alt="">
             {% else %}
-                <img src="https://placeholdit.imgix.net/~text?txtsize=50&txt=Error&w=300&h=200" alt="">
+                <img src="{{ video_error_placeholder }}" alt="">
             {% endif %}
 
         </div>

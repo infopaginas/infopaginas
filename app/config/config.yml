@@ -70,6 +70,8 @@ parameters:
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
     google_youtube_privacy: '%google_youtube_video_privacy%'
     google_youtube_channel_id: '%google_youtube_user_channel_id%'
+    video_error_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_error.png'
+    video_pending_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_error.png'
 
 framework:
     #esi:             ~
@@ -116,6 +118,8 @@ twig:
         google_map_min_zoom: '%google_map_min_single_zoom%'
         breadcrumb_max_length: '%breadcrumb_max_length%'
         keyword_max_length: 50
+        video_error_placeholder: '%video_error_placeholder%'
+        video_pending_placeholder: '%video_pending_placeholder%'
 
 #       todo confirm date formats
         review_date_format:        'd M Y H:i'
