@@ -71,7 +71,7 @@ parameters:
     google_youtube_privacy: '%google_youtube_video_privacy%'
     google_youtube_channel_id: '%google_youtube_user_channel_id%'
     video_error_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_error.png'
-    video_pending_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_error.png'
+    video_pending_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_pending.png'
 
 framework:
     #esi:             ~
