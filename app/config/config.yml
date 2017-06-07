@@ -64,11 +64,14 @@ parameters:
     image_back_up_path: '/../web/imageBackUp/'
     video_back_up_path: '/../web/imageBackUp/video/'
     youtube_back_up_path: '/../web/imageBackUp/youtube/'
+    video_download_path: '/../web/uploads/videos/'
     breadcrumb_max_length: 38
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
     google_youtube_privacy: '%google_youtube_video_privacy%'
     google_youtube_channel_id: '%google_youtube_user_channel_id%'
+    video_error_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_error.png'
+    video_pending_placeholder: 'https://s3.amazonaws.com/infopaginas/video/video_pending.png'
 
 framework:
     #esi:             ~
@@ -115,6 +118,8 @@ twig:
         google_map_min_zoom: '%google_map_min_single_zoom%'
         breadcrumb_max_length: '%breadcrumb_max_length%'
         keyword_max_length: 50
+        video_error_placeholder: '%video_error_placeholder%'
+        video_pending_placeholder: '%video_pending_placeholder%'
 
 #       todo confirm date formats
         review_date_format:        'd M Y H:i'
@@ -285,6 +290,12 @@ knp_gaufrette:
         ipgn:
             adapter:    video_storage
             alias:      video_storage_filesystem
+
+dubture_f_fmpeg:
+    ffmpeg_binary: /usr/bin/ffmpeg
+    ffprobe_binary: /usr/bin/ffprobe
+    binary_timeout: 300 # Use 0 for infinite
+    threads_count: 1
 
 aws:
     version:    '2006-03-01'

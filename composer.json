@@ -74,7 +74,8 @@
         "elasticsearch/elasticsearch": "^5.1",
         "google/apiclient": "1.1.7",
         "mongodb/mongodb": "1.1.2",
-        "exercise/htmlpurifier-bundle": "^0.2.4"
+        "exercise/htmlpurifier-bundle": "^0.2.4",
+        "pulse00/ffmpeg-bundle": "^0.6"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0"
