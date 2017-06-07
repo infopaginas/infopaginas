@@ -56,7 +56,7 @@ class BusinessGalleryManager
 
         /** @var UploadedFile $file */
         foreach ($fileBag->get('files') as $file) {
-            if ($file->getSize() <= Media::MEDIA_MAX_SIZE) {
+            if ($file->getSize() <= Media::IMAGE_MAX_SIZE) {
                 $media = $this->createNewMediaEntryFromUploadedFile(
                     $file,
                     $context
@@ -336,7 +336,7 @@ class BusinessGalleryManager
     protected function checkImageSize($headers)
     {
         if (!empty($headers['download_content_length']) and $headers['download_content_length'] > 0 and
-            $headers['download_content_length'] <= Media::MEDIA_MAX_SIZE
+            $headers['download_content_length'] <= Media::IMAGE_MAX_SIZE
         ) {
             return true;
         }

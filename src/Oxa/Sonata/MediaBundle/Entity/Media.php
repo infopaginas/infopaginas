@@ -32,9 +32,9 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     const UPLOADS_DIR_NAME = 'uploads';
 
     /**
-     * Max image size in bytes
+     * Image max size in bytes
      */
-    const MEDIA_MAX_SIZE = 10000000;
+    const IMAGE_MAX_SIZE = 10000000;
 
     /**
      * @var int
