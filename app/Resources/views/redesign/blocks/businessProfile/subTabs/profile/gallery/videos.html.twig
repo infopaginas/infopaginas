@@ -5,7 +5,7 @@
             {% if media.status == 'active' %}
                 {{ render_video_embed(media, {width: 300, height: 200}) }}
             {% elseif media.status == 'pending' %}
-                <img src="{{ video_error_placeholder }}" alt="">
+                <img src="{{ video_pending_placeholder }}" alt="">
             {% else %}
                 <img src="{{ video_error_placeholder }}" alt="">
             {% endif %}
