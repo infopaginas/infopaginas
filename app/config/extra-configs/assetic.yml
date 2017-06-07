@@ -78,3 +78,159 @@ assetic:
                 - 'assets/scripts/video-js-social-share.js'
             filters:
                 - jsqueeze
+        main_redesign_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/main.js'
+            output: 'assetic/js/modules/main.min.js'
+            filters:
+                - jsqueeze
+        profile_redesign_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/profile.js'
+            output: 'assetic/js/modules/profile.min.js'
+            filters:
+                - jsqueeze
+        maps_redesign_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/mapsearchpage.js'
+            output: 'assetic/js/modules/mapSearchPage.min.js'
+            filters:
+                - jsqueeze
+        tools_reset_password_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/resetPassword.js'
+            output: 'assetic/js/modules/tools/resetPassword.min.js'
+            filters:
+                - jsqueeze
+        tools_star_rating_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/star-rating.js'
+            output: 'assetic/js/modules/tools/starRating.min.js'
+            filters:
+                - jsqueeze
+        tools_search_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/search.js'
+            output: 'assetic/js/modules/tools/search.min.js'
+            filters:
+                - jsqueeze
+        tools_geolocation_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/geolocation.js'
+            output: 'assetic/js/modules/tools/geolocation.min.js'
+            filters:
+                - jsqueeze
+        tools_search_menu_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/searchMenu.js'
+            output: 'assetic/js/modules/tools/searchMenu.min.js'
+            filters:
+                - jsqueeze
+        tools_login_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/login.js'
+            output: 'assetic/js/modules/tools/login.min.js'
+            filters:
+                - jsqueeze
+        tools_registration_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/registration.js'
+            output: 'assetic/js/modules/tools/registration.min.js'
+            filters:
+                - jsqueeze
+        abstract_view_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/abstract/view.js'
+            output: 'assetic/js/abstract/view.min.js'
+            filters:
+                - jsqueeze
+        tools_spin_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/spin.js'
+            output: 'assetic/js/modules/tools/spin.min.js'
+            filters:
+                - jsqueeze
+        tools_directions_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/directions.js'
+            output: 'assetic/js/modules/tools/directions.min.js'
+            filters:
+                - jsqueeze
+        tools_select_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/select.js'
+            output: 'assetic/js/modules/tools/select.min.js'
+            filters:
+                - jsqueeze
+        tools_map_spin_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/mapspin.js'
+            output: 'assetic/js/modules/tools/mapSpin.min.js'
+            filters:
+                - jsqueeze
+        tools_report_tracker_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/reportTracker.js'
+            output: 'assetic/js/modules/tools/reportTracker.min.js'
+            filters:
+                - jsqueeze
+        tools_slider_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/slider.js'
+            output: 'assetic/js/modules/tools/slider.min.js'
+            filters:
+                - jsqueeze
+        tools_redirect_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/redirect.js'
+            output: 'assetic/js/modules/tools/redirect.min.js'
+            filters:
+                - jsqueeze
+        tools_interactions_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/interactions.js'
+            output: 'assetic/js/modules/tools/interactions.min.js'
+            filters:
+                - jsqueeze
+        tools_business_form_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/form.js'
+            output: 'assetic/js/modules/tools/form.min.js'
+            filters:
+                - jsqueeze
+        tools_business_phone_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/phones.js'
+            output: 'assetic/js/modules/tools/phones.min.js'
+            filters:
+                - jsqueeze
+        tools_business_working_hours_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/workingHours.js'
+            output: 'assetic/js/modules/tools/workingHours.min.js'
+            filters:
+                - jsqueeze
+        tools_business_form_errors_handler_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/formErrorsHandler.js'
+            output: 'assetic/js/modules/tools/formErrorsHandler.min.js'
+            filters:
+                - jsqueeze
+        tools_business_images_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/images.js'
+            output: 'assetic/js/modules/tools/images.min.js'
+            filters:
+                - jsqueeze
+        tools_business_videos_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/modules/tools/videos.js'
+            output: 'assetic/js/modules/tools/videos.min.js'
+            filters:
+                - jsqueeze
+        user_google_map_js:
+            inputs:
+                - '@DomainBusinessBundle/Resources/public/scripts/google_map.js'
+            output: 'assetic/js/googleMap.min.js'
+            filters:
+                - jsqueeze
