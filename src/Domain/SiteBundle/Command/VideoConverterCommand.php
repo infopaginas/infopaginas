@@ -46,6 +46,7 @@ class VideoConverterCommand extends ContainerAwareCommand
         }
 
         $logger->addInfo($logger::VIDEO_CONVERT, $logger::STATUS_END, 'execute:stop');
+
         $this->em->flush();
         $this->em->clear();
     }

@@ -28,6 +28,8 @@ class VideoMedia
     const VIDEO_STATUS_ACTIVE  = 'active';
     const VIDEO_STATUS_ERROR   = 'error';
 
+    const VIDEO_TYPE_MP4 = 'video/mp4';
+
     /**
      * @var int
      *
@@ -146,7 +148,7 @@ class VideoMedia
             $this->setCreatedAt(new \DateTime());
             $this->setUpdatedAt(new \DateTime());
 
-            if ($this->getType() == 'video/mp4') {
+            if ($this->getType() == $this::VIDEO_TYPE_MP4) {
                 $this->setStatus($this::VIDEO_STATUS_ACTIVE);
             } else {
                 $this->setStatus($this::VIDEO_STATUS_PENDING);
