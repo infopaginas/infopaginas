@@ -38,12 +38,14 @@ class VideoConverterCommand extends ContainerAwareCommand
 
             if (($i % $batchSize) === 0) {
                 $this->em->flush();
+                $output->writeln('Flushed');
                 $this->em->clear();
             }
 
             $i ++;
         }
 
+        $logger->addInfo($logger::VIDEO_CONVERT, $logger::STATUS_END, 'execute:stop');
         $this->em->flush();
         $this->em->clear();
     }
