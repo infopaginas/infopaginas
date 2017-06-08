@@ -116,6 +116,14 @@ class SearchDTO extends AbstractDTO
         $this->isRandomized = $isRandomized;
     }
 
+    /**
+     * @return bool
+     */
+    public function getIsRandomized()
+    {
+        return $this->isRandomized;
+    }
+
     public function randomizeAllowed()
     {
         $randomizeAllowed = false;

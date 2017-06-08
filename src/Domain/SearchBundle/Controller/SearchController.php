@@ -463,6 +463,7 @@ class SearchController extends Controller
 
             //locality lat and lan required
             if ($searchDTO) {
+                $searchDTO->setIsRandomized(true);
                 $dcDataDTO = $searchManager->getDoubleClickCatalogData($searchDTO);
                 $searchResultsDTO = $searchManager->searchCatalog($searchDTO);
 
