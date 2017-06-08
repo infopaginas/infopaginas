@@ -12,8 +12,8 @@ define(['jquery', 'slick'], function( $, Slick ) {
             adaptiveHeight: false,
             variableWidth: false,
             slidesToShow: 1,
-            prevArrow: '<span class="arrow prev"></span>',
-            nextArrow: '<span class="arrow next"></span>'
+            prevArrow: '<span class="arrow prev"><i class="fa fa-arrow-left"></i></span>',
+            nextArrow: '<span class="arrow next"><i class="fa fa-arrow-right"></i></span>'
         });
     });
 });
