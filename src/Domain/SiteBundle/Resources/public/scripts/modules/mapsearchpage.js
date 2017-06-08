@@ -49,7 +49,7 @@ define(
                 filterPanel: '#searchResults div.results'
             }
         };
-
+        var youPos = [];
         this.ajax = {
             action: false,
             mapDelay: 1000,
@@ -105,9 +105,22 @@ define(
         if (!_.isEmpty(this.options.markers)) {
             this.addMarkers( this.options.markers );
         }
-
         var bounds = new google.maps.LatLngBounds();
+        var self = this;
 
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var youPos = {
+                    id: 0,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    name: 'You'
+                };
+                self.addMarker(youPos, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+            });
+
+        }
+        console.log(this.markers);
         _.each(this.markers, function ( markerItem ) {
             bounds.extend( markerItem.marker.getPosition() );
         });
@@ -142,7 +155,7 @@ define(
         _.each( markers, this.addMarker.bind( this ) );
     };
 
-    mapSearchPage.prototype.addMarker = function ( markerData )
+    mapSearchPage.prototype.addMarker = function ( markerData , icon )
     {
         var self = this;
         var marker = new google.maps.Marker({
@@ -157,7 +170,10 @@ define(
             labelAnchor: new google.maps.Point(3, 30),
             labelClass: "labels" // the CSS class for the label
         });
-
+        console.log(icon);
+        if (typeof icon !== "undefined") {
+            marker.setIcon(icon);
+        }
         var infoWindow = new google.maps.InfoWindow({
             content: this.getInfoHTML( markerData )
         });
