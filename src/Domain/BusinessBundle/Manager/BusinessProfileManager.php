@@ -1466,7 +1466,7 @@ class BusinessProfileManager extends Manager
         $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams);
 
         $response = $this->searchBusinessElastic($searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response);
+        $search = $this->getBusinessDataFromElasticResponse($response, $searchParams->getIsRandomized());
 
         $coordinates = $searchParams->getCurrentCoordinates();
 
