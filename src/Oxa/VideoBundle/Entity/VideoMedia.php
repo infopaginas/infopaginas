@@ -145,7 +145,12 @@ class VideoMedia
 
             $this->setCreatedAt(new \DateTime());
             $this->setUpdatedAt(new \DateTime());
-            $this->setStatus($this::VIDEO_STATUS_PENDING);
+
+            if ($this->getType() == 'video/mp4') {
+                $this->setStatus($this::VIDEO_STATUS_ACTIVE);
+            } else {
+                $this->setStatus($this::VIDEO_STATUS_PENDING);
+            }
 
             $this->setYoutubeSupport(true);
             $this->setYoutubeAction(null);
