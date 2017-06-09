@@ -182,6 +182,7 @@ class VideoManager
            if (!file_exists($path)) {
                 mkdir($path);
            }
+
            $format = new X264();
            $format->setAudioCodec("libmp3lame");
            $video->save($format, $path . $name);
