@@ -178,6 +178,11 @@ class VideoManager
            $video = $ffmpeg->open($this->getPublicUrl($media));
            $name  =  uniqid() . '.mp4';
            $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+
+           if (!file_exists($path)) {
+                mkdir($path);
+           }
+
            $video->save(new WebM(), $path . $name);
        } catch (\Exception $e){
            $media->setStatus($media::VIDEO_STATUS_ERROR);
