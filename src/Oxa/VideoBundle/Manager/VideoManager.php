@@ -3,7 +3,7 @@
 namespace Oxa\VideoBundle\Manager;
 
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
-use FFMpeg\Format\Video\WebM;
+use FFMpeg\Format\Video\X264;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +15,7 @@ class VideoManager
 
     const MAX_FILENAME_LENGTH = 240;
     const LINK_LIFE_TIME      = 600;
+    const AUDIO_CODEC = 'libmp3lame';
 
     private static $allowedMimeTypes = [
         'video/mp4',
@@ -183,7 +184,9 @@ class VideoManager
                 mkdir($path);
            }
 
-           $video->save(new WebM(), $path . $name);
+           $format = new X264();
+           $format->setAudioCodec($this::AUDIO_CODEC);
+           $video->save($format, $path . $name);
        } catch (\Exception $e){
            $media->setStatus($media::VIDEO_STATUS_ERROR);
 
@@ -198,12 +201,19 @@ class VideoManager
        ];
        $uploadedFileData = $this->uploadLocalFileData($fileData);
 
+       if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+           $this->filesystem->delete($media->getFilepath() . $media->getFilename());
+       }
+
        $media->setName($uploadedFileData['name']);
        $media->setFilepath($uploadedFileData['filepath']);
        $media->setFilename($uploadedFileData['filename']);
        $media->setType($uploadedFileData['type']);
        $media->setStatus($media::VIDEO_STATUS_ACTIVE);
-       unlink($path . $name);
+
+       if (file_exists($path . $name)) {
+           unlink($path . $name);
+       }
 
        return $media;
     }
