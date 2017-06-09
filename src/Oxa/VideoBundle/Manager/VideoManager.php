@@ -15,6 +15,7 @@ class VideoManager
 
     const MAX_FILENAME_LENGTH = 240;
     const LINK_LIFE_TIME      = 600;
+    const AUDIO_CODEC = 'libmp3lame';
 
     private static $allowedMimeTypes = [
         'video/mp4',
@@ -184,7 +185,7 @@ class VideoManager
            }
 
            $format = new X264();
-           $format->setAudioCodec("libmp3lame");
+           $format->setAudioCodec($this::AUDIO_CODEC);
            $video->save($format, $path . $name);
        } catch (\Exception $e){
            $media->setStatus($media::VIDEO_STATUS_ERROR);
