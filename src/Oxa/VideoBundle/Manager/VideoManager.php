@@ -92,7 +92,7 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            $message = $this->container->get('translator')->trans('Files of type %s are not allowed', [], 'messages');
+            $message = $this->container->get('translator')->trans('You can upload the following file types', [], 'messages');
             throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
@@ -135,6 +135,11 @@ class VideoManager
             'type'      => $headers['content_type'],
             'path'      => $url,
         ];
+
+        if ($fileData['ext'] == null || !isset($headers['content_type'])) {
+            $message = $this->container->get('translator')->trans('the link to the video is invalid', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message));
+        }
 
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
