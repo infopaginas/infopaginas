@@ -9,6 +9,8 @@ class MongoDbManager
 {
     const AGGREGATE_FORMAT_DAILY = 'Y-m-d';
     const DEFAULT_TIME_ZONE      = 'UTC';
+    const OBJECT_ID_FIELD        = '_id';
+    const DEFAULT_BATCH_SIZE     = 1000;
 
     /**
      * @var MongoDB\Client
@@ -162,5 +164,61 @@ class MongoDbManager
     public function generateId()
     {
         return new MongoDB\BSON\ObjectId();
+    }
+
+    /**
+     * @param string $collectionName
+     * @param string $collectionArchiveName
+     * @param string $dateField
+     * @param \DateTime $date
+     */
+    public function archiveCollection($collectionName, $collectionArchiveName, $dateField, $date)
+    {
+        $cursor = $this->find(
+            $collectionName,
+            [
+                $dateField => [
+                    '$lt' => $this->typeUTCDateTime($date),
+                ],
+            ]
+        );
+
+        $i = 0;
+        $delete = [];
+        $insert = [];
+
+        foreach ($cursor as $document) {
+            $insert[] = $document;
+            $delete[] = $document[self::OBJECT_ID_FIELD];
+
+            if (($i % self::DEFAULT_BATCH_SIZE) === 0) {
+                $this->insertMany($collectionArchiveName, $insert);
+                $this->deleteMany(
+                    $collectionName,
+                    [
+                        self::OBJECT_ID_FIELD => [
+                            '$in' => $delete,
+                        ],
+                    ]
+                );
+
+                $insert = [];
+                $delete = [];
+            }
+
+            $i++;
+        }
+
+        if ($insert or $delete) {
+            $this->insertMany($collectionArchiveName, $insert);
+            $this->deleteMany(
+                $collectionName,
+                [
+                    self::OBJECT_ID_FIELD => [
+                        '$in' => $delete,
+                    ],
+                ]
+            );
+        }
     }
 }

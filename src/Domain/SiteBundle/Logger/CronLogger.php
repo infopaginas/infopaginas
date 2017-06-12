@@ -19,6 +19,7 @@ class CronLogger
     const CATALOG_ITEM_UPDATE       = 'domain:business:catalog-item-update';
     const ARTICLE_UPDATE            = 'domain:article:update';
     const MONGO_AGGREGATE           = 'domain:report-mongo-db:aggregate';
+    const MONGO_ARCHIVE             = 'domain:report-mongo-db:archive';
     const BUSINESS_COUNTER          = 'domain:managed-businesses:counter';
     const POSTPONE_REMOVE           = 'data:postpone:remove';
     const VIDEO_CONVERT             = 'data:video:convert';
