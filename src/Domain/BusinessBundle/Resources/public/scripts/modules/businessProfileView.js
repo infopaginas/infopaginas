@@ -1,4 +1,4 @@
-define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/star-rating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
+define( ['jquery', 'bootstrap', 'business/tools/interactions', 'tools/select', 'slick', 'lightbox', 'tools/slider', 'tools/starRating', 'tools/spin', 'tools/redirect', 'tools/resetPassword',
     'tools/login', 'tools/registration' ], function( $, bootstrap, interactionsTracker, select, slick, lightbox, slider, rating, Spin, Redirect ) {
     'use strict';
 

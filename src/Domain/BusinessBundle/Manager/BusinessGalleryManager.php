@@ -56,11 +56,13 @@ class BusinessGalleryManager
 
         /** @var UploadedFile $file */
         foreach ($fileBag->get('files') as $file) {
-            $media = $this->createNewMediaEntryFromUploadedFile(
-                $file,
-                $context
-            );
-            array_push($images, $media);
+            if ($file->getSize() <= Media::IMAGE_MAX_SIZE) {
+                $media = $this->createNewMediaEntryFromUploadedFile(
+                    $file,
+                    $context
+                );
+                array_push($images, $media);
+            }
         }
 
         $this->getEntityManager()->flush();
@@ -84,7 +86,9 @@ class BusinessGalleryManager
     {
         $headers = SiteHelper::checkUrlExistence($url);
 
-        if ($headers && in_array($headers['content_type'], SiteHelper::$imageContentTypes) && exif_imagetype($url)) {
+        if ($headers and in_array($headers['content_type'], SiteHelper::$imageContentTypes) and
+            exif_imagetype($url) and $this->checkImageSize($headers)
+        ) {
             $file = tmpfile();
 
             if ($file === false) {
@@ -322,5 +326,21 @@ class BusinessGalleryManager
         }
 
         return $context;
+    }
+
+    /**
+     * @param $headers array
+     *
+     * @return bool
+     */
+    protected function checkImageSize($headers)
+    {
+        if (!empty($headers['download_content_length']) and $headers['download_content_length'] > 0 and
+            $headers['download_content_length'] <= Media::IMAGE_MAX_SIZE
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

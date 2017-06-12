@@ -199,7 +199,10 @@
                             </section>
                         {% endif %}
 
-                        {% if video_section_allowed_for_business(businessProfile) and businessProfile.getVideo() is not null %}
+                        {% if video_section_allowed_for_business(businessProfile)
+                            and businessProfile.getVideo() is not null
+                            and businessProfile.getVideo().status == 'active'
+                        %}
                             <section class="page-section video">
                                 {{ render_video_embed(businessProfile.getVideo()) }}
                             </section>

@@ -37,4 +37,14 @@ class SlugUtil
 
         return '';
     }
+
+    /**
+     * @param $slug string
+     *
+     * @return string
+     */
+    public static function decodeSlug($slug)
+    {
+        return str_replace('-', ' ', $slug);
+    }
 }

@@ -1,5 +1,5 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapspin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/star-rating'],
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapSpin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/starRating'],
     function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
 

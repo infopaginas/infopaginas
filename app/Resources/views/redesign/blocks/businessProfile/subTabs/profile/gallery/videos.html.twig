@@ -1,7 +1,15 @@
 <div class="media__item video-item">
     <div class="media__item--left">
         <div class="media__field media__thumbnail">
-            {{ render_video_embed(media, {width: 300, height: 200}) }}
+
+            {% if media.status == 'active' %}
+                {{ render_video_embed(media, {width: 300, height: 200}) }}
+            {% elseif media.status == 'pending' %}
+                <img src="{{ video_pending_placeholder }}" alt="">
+            {% else %}
+                <img src="{{ video_error_placeholder }}" alt="">
+            {% endif %}
+
         </div>
     </div>
     <div class="media__item--right">
