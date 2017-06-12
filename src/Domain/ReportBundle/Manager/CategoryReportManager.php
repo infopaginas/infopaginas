@@ -13,6 +13,9 @@ class CategoryReportManager extends BaseReportManager
     const MONGO_DB_COLLECTION_NAME_RAW       = 'category_raw';
     const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'category_aggregate';
 
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'category_archive_raw';
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'category_archive_aggregate';
+
     const MONGO_DB_FIELD_CATEGORY_ID = 'category_id';
     const MONGO_DB_FIELD_COUNT       = 'count';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
@@ -240,14 +243,52 @@ class CategoryReportManager extends BaseReportManager
             ]
         );
 
+        $i = 0;
+        $insert = [];
+
         foreach ($cursor as $document) {
             $document[self::MONGO_DB_FIELD_CATEGORY_ID] = $document['_id'];
             $document[self::MONGO_DB_FIELD_DATE_TIME]   = $aggregateStartDate;
 
             $document['_id'] = $this->mongoDbManager->generateId();
 
-            $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
+            $insert[] = $document;
+
+            if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
+                $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
+                $insert = [];
+            }
         }
+
+        if ($insert) {
+            $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
+        }
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveRawBusinessCategories($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveAggregatedBusinessCategories($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
     }
 
     protected function getCategoryMapping($categoryIds)
