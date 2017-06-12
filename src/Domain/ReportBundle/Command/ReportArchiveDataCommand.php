@@ -38,7 +38,8 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $container = $this->getContainer();
+        $logger = $container->get('domain_site.cron.logger');
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_START, 'execute:start');
 
         $rawDataArchivingDate = $this->getRawDataArchivingDate();
@@ -47,46 +48,25 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
         $output->writeln('Start...');
 
         $output->writeln('Process overview report');
-        $this->getBusinessOverviewReportManager()->archiveRawBusinessInteractions($rawDataArchivingDate);
-        $this->getBusinessOverviewReportManager()->archiveAggregatedBusinessInteractions($aggregatedDataArchivingDate);
+        $businessOverviewReportManager = $container->get('domain_report.manager.business_overview_report_manager');
+        $businessOverviewReportManager->archiveRawBusinessInteractions($rawDataArchivingDate);
+        $businessOverviewReportManager->archiveAggregatedBusinessInteractions($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process overview report');
 
         $output->writeln('Process keyword report');
-        $this->getKeywordsReportManager()->archiveRawBusinessKeywords($rawDataArchivingDate);
-        $this->getKeywordsReportManager()->archiveAggregatedBusinessKeywords($aggregatedDataArchivingDate);
+        $keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
+        $keywordsReportManager->archiveRawBusinessKeywords($rawDataArchivingDate);
+        $keywordsReportManager->archiveAggregatedBusinessKeywords($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
 
         $output->writeln('Process category report');
-        $this->getCategoryReportManager()->archiveRawBusinessCategories($rawDataArchivingDate);
-        $this->getCategoryReportManager()->archiveAggregatedBusinessCategories($aggregatedDataArchivingDate);
+        $categoryReportManager = $container->get('domain_report.manager.category_report_manager');
+        $categoryReportManager->archiveRawBusinessCategories($rawDataArchivingDate);
+        $categoryReportManager->archiveAggregatedBusinessCategories($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
 
         $output->writeln('done');
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_END, 'execute:stop');
-    }
-
-    /**
-     * @return BusinessOverviewReportManager
-     */
-    protected function getBusinessOverviewReportManager()
-    {
-        return $this->getContainer()->get('domain_report.manager.business_overview_report_manager');
-    }
-
-    /**
-     * @return KeywordsReportManager
-     */
-    protected function getKeywordsReportManager()
-    {
-        return $this->getContainer()->get('domain_report.manager.keywords_report_manager');
-    }
-
-    /**
-     * @return CategoryReportManager
-     */
-    protected function getCategoryReportManager()
-    {
-        return $this->getContainer()->get('domain_report.manager.category_report_manager');
     }
 
     /**

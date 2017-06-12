@@ -184,8 +184,8 @@ class MongoDbManager
         );
 
         $i = 0;
-        $delete = [];
         $insert = [];
+        $delete = [];
 
         foreach ($cursor as $document) {
             $insert[] = $document;
