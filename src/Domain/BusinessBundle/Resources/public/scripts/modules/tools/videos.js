@@ -47,6 +47,20 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
         return true;
     };
 
+    //max allowed filesize: 128mb
+    videos.prototype.checkMaxAllowedFileSize = function( files ) {
+        var file = files;
+
+        if( file.size > this.maxAllowedFileSize ) {
+            var error = $( this.html.remoteVideoURLInputId ).data( 'error-size-limit' );
+
+            this.videoErrorHandler( error );
+            return false;
+        }
+
+        return true;
+    };
+
     //show loader spinner
     videos.prototype.beforeRequestHandler = function () {
         this.spinner.show( this.spinnerContainerId );
@@ -76,7 +90,15 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     };
 
     videos.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        this.videoErrorHandler( errorThrown );
+        var messageError;
+
+        if ( jqXHR.responseJSON.message ) {
+            messageError = jqXHR.responseJSON.message;
+        } else {
+            messageError = errorThrown;
+        }
+
+        this.videoErrorHandler( messageError );
     };
 
     //ajax request
@@ -125,10 +147,13 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
 
             var files = document.getElementById( that.html.buttons.fileInputId ).files;
 
-            if( that.checkMaxAllowedFilesCount( files ) == false ) {
-                var error = $( that.html.remoteVideoURLInputId ).data( 'error-size-limit' );
+            that.removeVideoErrors();
 
-                that.videoErrorHandler( error );
+            if( that.checkMaxAllowedFilesCount( files ) == false ) {
+                return false;
+            }
+
+            if( that.checkMaxAllowedFilesCount( files ) == false ) {
                 return false;
             }
 
@@ -153,6 +178,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
             if ( !$remoteVideoURLInput.val() ) {
                 var error = $( that.html.remoteVideoURLInputId ).data( 'error-empty' );
 
+                that.removeVideoErrors();
                 that.videoErrorHandler( error );
             } else {
                 that.removeVideoErrors();
