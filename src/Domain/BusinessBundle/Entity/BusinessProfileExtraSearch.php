@@ -17,6 +17,8 @@ class BusinessProfileExtraSearch
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
+    const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
+
     /**
      * @var int
      *
@@ -96,7 +98,7 @@ class BusinessProfileExtraSearch
         $this->localities = new ArrayCollection();
         $this->areas      = new ArrayCollection();
 
-        $this->milesOfMyBusiness = 100;
+        $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
     }
 
     /**

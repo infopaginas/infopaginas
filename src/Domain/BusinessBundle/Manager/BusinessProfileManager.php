@@ -1707,7 +1707,6 @@ class BusinessProfileManager extends Manager
             $total = $response['hits']['total'];
         }
 
-        // todo use const
         if (!empty($response['aggregations']['ads']['buckets'])) {
             $result = $response['aggregations']['ads']['buckets'];
             $dataIds = [];
@@ -1881,7 +1880,6 @@ class BusinessProfileManager extends Manager
      */
     public function addBusinessesRawToElasticIndex($businessProfiles)
     {
-        // todo remove
         $data = [];
         $response = true;
 
@@ -2591,8 +2589,7 @@ class BusinessProfileManager extends Manager
         $data['service_areas_type'] = $extraSearch->getServiceAreasType();
         $data['locality_ids'] = $localityIds;
 
-        // todo reconsider ads rank
-        $data['subscr_rank'] = 7;
+        $data['subscr_rank'] = SubscriptionPlanInterface::CODE_SUPER_VM;
         $data['parent_id'] = $extraSearch->getBusinessProfile()->getId();
         $data['categories_ids'] = $categoryIds;
 

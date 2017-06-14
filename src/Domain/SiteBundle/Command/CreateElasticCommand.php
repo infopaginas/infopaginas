@@ -27,7 +27,6 @@ class CreateElasticCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        // todo remove
         $this->setName('data:elastic:create');
         $this->setDescription('Add data form db to elastic');
         $this->setDefinition(
