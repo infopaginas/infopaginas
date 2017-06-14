@@ -110,7 +110,7 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
 
     public static function getSuperVmAdsClass()
     {
-        return 'super_vm';
+        return self::CODE_SUPER_VM_CLASS;
     }
 
     /**

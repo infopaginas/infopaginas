@@ -325,7 +325,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      *
      * @return Category
      */
-    public function addExtraSearches($extraSearch)
+    public function addExtraSearch($extraSearch)
     {
         $this->extraSearches[] = $extraSearch;
         $extraSearch->addCategory($this);
@@ -338,7 +338,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      *
      * @param BusinessProfileExtraSearch $extraSearch
      */
-    public function removeExtraSearches($extraSearch)
+    public function removeExtraSearch($extraSearch)
     {
         $this->extraSearches->removeElement($extraSearch);
         $extraSearch->removeCategory($this);

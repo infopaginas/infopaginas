@@ -8,6 +8,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
@@ -86,5 +87,36 @@ class BusinessProfileExtraSearchAdmin extends OxaAdmin
             ->add('serviceAreasType')
             ->add('milesOfMyBusiness')
         ;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param mixed $object
+     * @return null
+     */
+    public function validate(ErrorElement $errorElement, $object)
+    {
+        /** @var BusinessProfileExtraSearch $object */
+        if ($object->getServiceAreasType() == BusinessProfileExtraSearch::SERVICE_AREAS_AREA_CHOICE_VALUE) {
+            if (empty($object->getMilesOfMyBusiness())) {
+                $errorElement->with('milesOfMyBusiness')
+                    ->addViolation($this->getTranslator()->trans(
+                        'business_profile.extra_search.miles_empty',
+                        [],
+                        $this->getTranslationDomain()
+                    ))
+                    ->end()
+                ;
+            }
+        } elseif ($object->getLocalities()->isEmpty()) {
+            $errorElement->with('localities')
+                ->addViolation($this->getTranslator()->trans(
+                    'business_profile.extra_search.localities_empty',
+                    [],
+                    $this->getTranslationDomain()
+                ))
+                ->end()
+            ;
+        }
     }
 }

@@ -284,7 +284,7 @@ class BusinessProfileExtraSearch
     {
         return [
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
-            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
+            self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality',
         ];
     }
 }
