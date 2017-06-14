@@ -90,15 +90,14 @@ class BusinessProfileExtraSearchAdmin extends OxaAdmin
     }
 
     /**
-     * @param ErrorElement $errorElement
-     * @param mixed $object
+     * @param ErrorElement               $errorElement
+     * @param BusinessProfileExtraSearch $extraSearch
      * @return null
      */
-    public function validate(ErrorElement $errorElement, $object)
+    public function validate(ErrorElement $errorElement, $extraSearch)
     {
-        /** @var BusinessProfileExtraSearch $object */
-        if ($object->getServiceAreasType() == BusinessProfileExtraSearch::SERVICE_AREAS_AREA_CHOICE_VALUE) {
-            if (empty($object->getMilesOfMyBusiness())) {
+        if ($extraSearch->getServiceAreasType() == BusinessProfileExtraSearch::SERVICE_AREAS_AREA_CHOICE_VALUE) {
+            if (empty($extraSearch->getMilesOfMyBusiness())) {
                 $errorElement->with('milesOfMyBusiness')
                     ->addViolation($this->getTranslator()->trans(
                         'business_profile.extra_search.miles_empty',
@@ -108,7 +107,7 @@ class BusinessProfileExtraSearchAdmin extends OxaAdmin
                     ->end()
                 ;
             }
-        } elseif ($object->getLocalities()->isEmpty()) {
+        } elseif ($extraSearch->getLocalities()->isEmpty()) {
             $errorElement->with('localities')
                 ->addViolation($this->getTranslator()->trans(
                     'business_profile.extra_search.localities_empty',
