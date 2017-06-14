@@ -395,6 +395,8 @@ Background: Fondo
 Reset: Reiniciar
 Reason: Razón
 Remove: Retirar
+Video status pending: El vídeo se está convirtiendo. Se enviará para su aprobación a nuestros administradores y se publicará automáticamente.
+Video status error: Error: fallo de la conversión, vuelve a cargar el vídeo con los formatos siguientes: MP4, WMV, FLV, AVI, MPG, MOV
 
 business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
 business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =

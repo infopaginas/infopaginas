@@ -395,6 +395,8 @@ Background: Background
 Reset: Reset
 Reason: Reason
 Remove: Remove
+Video status pending: Your video is being converted. It will be submitted for approval to our administrators and then published automatically.
+Video status error: Error: something went wrong, please try to upload the video again with the following formats: MP4, WMV, FLV, AVI, MPG, MOV
 
 business_profile.names_blank: Name field should be filled for at least one language
 business_profile.image_count_limit: Error: too much images added. Max files count =
