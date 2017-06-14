@@ -35,7 +35,7 @@ class Version20170612094249 extends AbstractMigration implements ContainerAwareI
      */
     public function up(Schema $schema)
     {
-        $this->addSql("DROP TABLE IF EXSIST subscription_report_subscription");
+        $this->addSql("DROP TABLE IF EXISTS subscription_report_subscription");
         $this->downgradeSuperVmSubscriptions();
         $this->addConfigValues();
 
