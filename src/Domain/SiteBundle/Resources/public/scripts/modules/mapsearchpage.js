@@ -149,7 +149,7 @@ define(
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 var youPos = {
-                    id: 0,
+                    id: 'user',
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
                     name: 'You'
@@ -185,9 +185,11 @@ define(
             labelAnchor: new google.maps.Point(3, 30),
             labelClass: "labels" // the CSS class for the label
         });
-        if (markerData.id == 0) {
+
+        if (markerData.id === 'user') {
             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
         }
+
         var infoWindow = new google.maps.InfoWindow({
             content: this.getInfoHTML( markerData )
         });
