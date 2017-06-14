@@ -59,7 +59,12 @@ class HasSubscriptionExtension extends \Twig_Extension
     public function getItemSubscriptionClass($env, BusinessProfile $profile)
     {
         $code = $profile->getSubscriptionPlanCode();
-        $class = SubscriptionPlan::getCodeValues()[$code];
+
+        if ($profile->getIsAd()) {
+            $class = SubscriptionPlan::getSuperVmAdsClass();
+        } else {
+            $class = SubscriptionPlan::getCodeValues()[$code];
+        }
 
         return $class;
     }

@@ -91,7 +91,6 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
             self::CODE_PREMIUM_PLUS,
             self::CODE_PREMIUM_GOLD,
             self::CODE_PREMIUM_PLATINUM,
-            self::CODE_SUPER_VM,
         ];
     }
 
@@ -106,8 +105,12 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
             self::CODE_PREMIUM_PLUS     => 'premium_plus',
             self::CODE_PREMIUM_GOLD     => 'premium_gold',
             self::CODE_PREMIUM_PLATINUM => 'premium_platinum',
-            self::CODE_SUPER_VM         => 'super_vm',
         ];
+    }
+
+    public static function getSuperVmAdsClass()
+    {
+        return self::CODE_SUPER_VM_CLASS;
     }
 
     /**
@@ -121,7 +124,6 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
             self::CODE_PREMIUM_PLUS     => 'Premium Plus',
             self::CODE_PREMIUM_GOLD     => 'Premium Gold',
             self::CODE_PREMIUM_PLATINUM => 'Premium Platinum',
-            self::CODE_SUPER_VM         => 'SuperVM',
         ];
     }
 

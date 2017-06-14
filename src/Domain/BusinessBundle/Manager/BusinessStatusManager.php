@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
@@ -84,6 +85,15 @@ class BusinessStatusManager
     public function removeLocalityFromElastic(Locality $entity, ElasticSearchManager $elasticSearch)
     {
         $this->removeItemFromElastic($entity->getId(), Locality::ELASTIC_DOCUMENT_TYPE, $elasticSearch);
+    }
+
+    /**
+     * @param BusinessProfileExtraSearch $entity
+     * @param ElasticSearchManager       $elasticSearch
+     */
+    public function removeExtraSearchFromElastic($entity, $elasticSearch)
+    {
+        $this->removeItemFromElastic($entity->getId(), BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD, $elasticSearch);
     }
 
     /**

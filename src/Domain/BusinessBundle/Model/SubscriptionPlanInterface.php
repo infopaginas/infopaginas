@@ -21,6 +21,8 @@ interface SubscriptionPlanInterface
     const CODE_PREMIUM_PLATINUM = 5;
     const CODE_SUPER_VM         = 6;
 
+    const CODE_SUPER_VM_CLASS   = 'super_vm';
+
     /**
      * @return mixed
      */

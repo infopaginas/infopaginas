@@ -132,3 +132,9 @@ services:
         arguments: [~, Domain\BusinessBundle\Entity\LocalityPseudo, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Locality Pseudo}
+
+    domain_business.admin.business_profile_extrs_search:
+        class: Domain\BusinessBundle\Admin\BusinessProfileExtraSearchAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileExtraSearch, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Extra Search}
