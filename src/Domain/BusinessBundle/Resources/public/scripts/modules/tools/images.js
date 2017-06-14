@@ -20,7 +20,8 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             imageRowContainer:           'div.media__item.image-item',
             imageRowLogoContainer:       'div.media__item.image-item.image-form-logo',
             imageRowBackgroundContainer: 'div.media__item.image-item.image-form-background',
-            fileContextSelect:           '#media-select-image-type'
+            fileContextSelect:           '#media-select-image-type',
+            imageDescriptionFields:      '#gallery textarea[ id *= "_description"]'
         };
 
         this.urls = {
@@ -48,6 +49,7 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         this.handleClickOnRemoveLink();
         this.handleRemoteImageUpload();
         this.handleImageTypeChange();
+        this.handleImageValidationError();
     };
 
     //max allowed filesize: 10mb
@@ -384,6 +386,16 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             }
         } );
     };
+
+    images.prototype.handleImageValidationError = function() {
+        $( document ).on( 'change', this.html.imageDescriptionFields, function() {
+            var description = $( this );
+
+            description.parent().removeClass( 'field--not-valid' );
+            description.parent().find( 'span[data-error-message]' ).remove();
+        });
+    };
+
 
     return images;
 });

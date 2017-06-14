@@ -168,6 +168,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
      *     orphanRemoval=true,
      *     )
      * @ORM\OrderBy({"position" = "ASC"})
+     * @Assert\Valid
      */
     protected $images;
 

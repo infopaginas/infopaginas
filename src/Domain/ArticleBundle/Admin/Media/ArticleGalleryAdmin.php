@@ -90,6 +90,7 @@ class ArticleGalleryAdmin extends OxaAdmin
                 'rows'          => 2,
                 'cols'          => 100,
                 'style'         => 'resize: none',
+                'required'      => true,
                 'placeholder'   => 'Create an image description as ' .
                     'if you were describing the image to someone who cannot see it',
             ]])

@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -84,7 +85,7 @@ class SubDomainListener implements EventSubscriberInterface
             // work around for symfony as it request ignores HTTPS
             $schemeAndHost = str_replace(
                 $request->getScheme(),
-                $request->server->get('REQUEST_SCHEME'),
+                'https',
                 $request->getSchemeAndHttpHost()
             );
 
