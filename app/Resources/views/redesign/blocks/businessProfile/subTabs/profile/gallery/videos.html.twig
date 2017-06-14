@@ -5,9 +5,9 @@
             {% if media.status == 'active' %}
                 {{ render_video_embed(media, {width: 300, height: 200}) }}
             {% elseif media.status == 'pending' %}
-                <img src="{{ video_pending_placeholder }}" alt="">
+                <p>{% trans %}Video status pending{% endtrans %}</p>
             {% else %}
-                <img src="{{ video_error_placeholder }}" alt="">
+                <p>{% trans %}Video status error{% endtrans %}</p>
             {% endif %}
 
         </div>
