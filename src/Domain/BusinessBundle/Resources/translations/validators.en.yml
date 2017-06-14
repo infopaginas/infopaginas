@@ -13,3 +13,5 @@ business_profile:
   service_areas_type: You must choose a valid Service Area
   locality:
     not_empty: You must choose a valid Locality
+  extra_search:
+    max_count: Error too many category-locality combinations, the maximum number is {{ limit }}

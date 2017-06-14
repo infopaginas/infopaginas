@@ -747,6 +747,8 @@ class BusinessProfile implements
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
+     * @Assert\Valid
+     * @Assert\Count(max="5", maxMessage = "business_profile.extra_search.max_count")
      */
     protected $extraSearches;
 

@@ -1471,16 +1471,7 @@ class BusinessProfileManager extends Manager
 
         $coordinates = $searchParams->getCurrentCoordinates();
 
-        $search['data'] = array_map(function ($item) use ($searchParams, $coordinates) {
-            $distance = GeolocationUtils::getDistanceForPoint(
-                $coordinates['lat'],
-                $coordinates['lng'],
-                $item->getLatitude(),
-                $item->getLongitude()
-            );
-
-            return $item->setDistance($distance);
-        }, $search['data']);
+        $search = $this->setBusinessDynamicValues($search, $coordinates);
 
         return $search;
     }
@@ -1514,26 +1505,24 @@ class BusinessProfileManager extends Manager
     /**
      * @param $searchParams SearchDTO
      * @param $locale       string
-     * @param $allowAds     bool
      *
      * @return array
      */
-    protected function searchBusinessInElastic(SearchDTO $searchParams, $locale, $allowAds = true)
+    protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         //randomize feature works only for relevance sorting ("Best match")
         $randomize   = $searchParams->randomizeAllowed();
         $coordinates = $searchParams->getCurrentCoordinates();
 
-        if ($allowAds and $searchParams->page == 1) {
-            $searchAdQuery = $this->getElasticSearchQueryAd($searchParams, $locale);
-            $responseAd = $this->searchBusinessAdElastic($searchAdQuery);
-
-            $searchAd = $this->getBusinessAdDataFromElasticResponse($responseAd);
+        if ($searchParams->checkAdsAllowed()) {
+            $searchAdQuery   = $this->getElasticSearchQueryAd($searchParams, $locale);
+            $responseAd      = $this->searchBusinessAdElastic($searchAdQuery);
+            $searchAd        = $this->getBusinessAdDataFromElasticResponse($responseAd);
             $searchResultAds = $this->setBusinessDynamicValues($searchAd, $coordinates, true);
 
             $excludeIds = array_keys($searchAd['data']);
         } else {
-            $excludeIds = [];
+            $excludeIds      = [];
             $searchResultAds = [];
         }
 
@@ -1545,7 +1534,7 @@ class BusinessProfileManager extends Manager
 
         $search = $this->setBusinessDynamicValues($search, $coordinates);
 
-        if ($allowAds and $searchResultAds) {
+        if ($searchParams->checkAdsAllowed() and $searchResultAds) {
             foreach ($searchResultAds['data'] as $item) {
                 array_unshift($search['data'], $item);
             }
@@ -1728,10 +1717,7 @@ class BusinessProfileManager extends Manager
             }
 
             // randomize was made on elastic search size
-
             $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
-
-            // todo show rand score
 
             foreach ($dataIds as $id) {
                 $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
@@ -2163,17 +2149,19 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param $params SearchDTO
+     * @param $locale string
+     *
+     * @return array
      */
     protected function getElasticSearchQueryAd(SearchDTO $params, $locale)
     {
-        // see https://jira.oxagile.com/browse/INFT-1197
         $fields = [
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
-//            'description_' . strtolower($locale) . '^1',
+            'products_' . strtolower($locale) . '^1',
             'name_' . strtolower($locale) . '.folded^5',
             'categories_' . strtolower($locale) . '.folded^3',
-//            'description_' . strtolower($locale) . '.folded^1',
+            'products_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -2213,11 +2201,8 @@ class BusinessProfileManager extends Manager
         }
 
         $searchQuery = [
-//            todo - not required
             'from' => 0,
             'size' => 0,
-//            'from' => ($params->page - 1) * $params->limit,
-//            'size' => $params->limit,
             'track_scores' => true,
             'query' => [
                 'bool' => [
@@ -2257,15 +2242,13 @@ class BusinessProfileManager extends Manager
         }
 
         $searchQuery['aggs'] = [
-            // todo use const
             'ads' => [
                 'terms' => [
                     'field' => 'parent_id',
                     'order' => [
                         'rand' => 'desc',
                     ],
-                    // todo use const or param
-                    'size' =>  6,
+                    'size' =>  $params->adsPerPage,
                 ],
                 'aggs' => [
                     'rand' => [

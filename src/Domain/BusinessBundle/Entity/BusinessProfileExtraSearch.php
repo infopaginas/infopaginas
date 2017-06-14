@@ -44,6 +44,8 @@ class BusinessProfileExtraSearch
      *     orphanRemoval=false
      *     )
      * @ORM\JoinTable(name="business_profile_extra_search_categories")
+     * @Assert\Valid
+     * @Assert\Count(min = 1)
      */
     protected $categories;
 
@@ -66,6 +68,16 @@ class BusinessProfileExtraSearch
     protected $milesOfMyBusiness;
 
     /**
+     * @var Area[] - Using this field a User may define Areas, business is related to.
+     * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Area",
+     *     inversedBy="extraSearches",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinTable(name="business_profile_extra_search_areas")
+     */
+    protected $areas;
+
+    /**
      * @var Locality[] - Using this field a User may define Localities, business is related to.
      * @ORM\ManyToMany(targetEntity="Domain\BusinessBundle\Entity\Locality",
      *     inversedBy="extraSearches",
@@ -82,6 +94,7 @@ class BusinessProfileExtraSearch
     {
         $this->categories = new ArrayCollection();
         $this->localities = new ArrayCollection();
+        $this->areas      = new ArrayCollection();
 
         $this->milesOfMyBusiness = 100;
     }
@@ -231,6 +244,38 @@ class BusinessProfileExtraSearch
     public function getLocalities()
     {
         return $this->localities;
+    }
+
+    /**
+     * Add area
+     *
+     * @param Area $area
+     *
+     * @return BusinessProfileExtraSearch
+     */
+    public function addArea(Area $area)
+    {
+        $this->areas[] = $area;
+
+        return $this;
+    }
+
+    /**
+     * Remove area
+     *
+     * @param Area $area
+     */
+    public function removeArea($area)
+    {
+        $this->areas->removeElement($area);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAreas()
+    {
+        return $this->areas;
     }
 
     public static function getServiceAreasTypes()

@@ -13,6 +13,9 @@ class SearchDTO extends AbstractDTO
     public $locationValue;
     public $page;
     public $limit;
+    public $adsAllowed;
+    public $adsMaxPages;    // adsMaxPages = 0, means all pages
+    public $adsPerPage;
 
     protected $category;
     protected $catalogLocality;
@@ -32,6 +35,10 @@ class SearchDTO extends AbstractDTO
         $this->neighborhood     = null;
 
         $this->orderBy          = null;
+
+        $this->adsAllowed       = false;
+        $this->adsMaxPages      = 0;
+        $this->adsPerPage       = 0;
     }
 
     public function setCategory($category)
@@ -133,5 +140,19 @@ class SearchDTO extends AbstractDTO
         }
 
         return $randomizeAllowed;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkAdsAllowed()
+    {
+        if ($this->adsAllowed and $this->adsPerPage > 0 and
+            ($this->adsMaxPages === 0 or $this->adsMaxPages >= $this->page)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

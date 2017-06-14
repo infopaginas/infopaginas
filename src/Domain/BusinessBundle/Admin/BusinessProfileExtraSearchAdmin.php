@@ -46,6 +46,14 @@ class BusinessProfileExtraSearchAdmin extends OxaAdmin
                     return $rep->getAvailableCategoriesQb();
                 },
             ])
+            ->add('areas', null, [
+                'multiple' => true,
+                'required' => false,
+                'label' => 'Areas',
+                'query_builder' => function (\Domain\BusinessBundle\Repository\AreaRepository $rep) {
+                    return $rep->getAvailableAreasQb();
+                },
+            ])
             ->add('localities', null, [
                 'multiple' => true,
                 'required' => false,
