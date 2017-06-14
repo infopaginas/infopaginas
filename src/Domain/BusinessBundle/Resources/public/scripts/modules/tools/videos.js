@@ -25,6 +25,8 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
         //max business profile videos count - 1
         this.maxAllowedFilesCount = 1;
 
+        this.maxAllowedFileSize = 128000000;
+
         this.handleFileUploadInput();
         this.handleClickOnRemoveLink();
         this.handleRemoteVideosUpload();
@@ -38,7 +40,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
         var filesAdded = filesSelected + filesAlreadyAdded;
 
         if( filesAdded > this.maxAllowedFilesCount ) {
-            var error = $( this.html.remoteVideoURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+            var error = $( this.html.remoteVideoURLInputId ).data( 'error-count-limit' );
 
             this.videoErrorHandler( error );
             return false;
@@ -49,7 +51,8 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
 
     //max allowed filesize: 128mb
     videos.prototype.checkMaxAllowedFileSize = function( files ) {
-        var file = files;
+        var filesInput = document.getElementById( this.html.buttons.fileInputId );
+        var file = filesInput.files[0];
 
         if( file.size > this.maxAllowedFileSize ) {
             var error = $( this.html.remoteVideoURLInputId ).data( 'error-size-limit' );
@@ -92,7 +95,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     videos.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
         var messageError;
 
-        if ( jqXHR.responseJSON.message ) {
+        if ( jqXHR.responseJSON ) {
             messageError = jqXHR.responseJSON.message;
         } else {
             messageError = errorThrown;
@@ -153,7 +156,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
                 return false;
             }
 
-            if( that.checkMaxAllowedFilesCount( files ) == false ) {
+            if( that.checkMaxAllowedFileSize( files ) == false ) {
                 return false;
             }
 
