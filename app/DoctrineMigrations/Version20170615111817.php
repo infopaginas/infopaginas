@@ -12,15 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Version20170615111817 extends AbstractMigration
 {
     /**
-     * @var $container ContainerInterface
-     */
-    private $container;
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-    /**
      * @param Schema $schema
      */
     public function up(Schema $schema)
