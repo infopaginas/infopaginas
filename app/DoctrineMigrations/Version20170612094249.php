@@ -80,8 +80,6 @@ class Version20170612094249 extends AbstractMigration implements ContainerAwareI
                 foreach ($subscriptions as $subscription) {
                     $subscription->setSubscriptionPlan($premiumPlatinum);
                 }
-
-                $this->em->remove($superVm);
             }
         }
 
