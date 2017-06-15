@@ -34,7 +34,7 @@
                     </div><!-- item__header -->
                     {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
                         <div class="avatar">
-                            <img src="{% path businessProfile.getLogo(), 'preview' %}">
+                            <img src="{% path businessProfile.getLogo(), 'preview' %}" alt="{{ businessProfile.getName() }}">
                         </div>
                     {% endif %}
                     <h1 id="businessProfileName" data-business-profile-id="{{ businessProfile.id }}">&nbsp;{{ businessProfile.getName() }}</h1>
@@ -189,7 +189,7 @@
                                             {% if paymentMethod.type  in PAYMENT_METHOD_TYPE %}
                                                 {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.png' %}
 
-                                                <img src="{{ absolute_url(asset(path)) }}">
+                                                <img src="{{ absolute_url(asset(path)) }}" alt="{{ paymentMethod.getName }}">
                                             {% endif %}
 
                                             <span>{{ paymentMethod.getName }}</span>
@@ -220,12 +220,12 @@
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
-                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{{ photo.description }}">
+                                        <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
                                     </div>
                                 {% endfor %}
                                 {% for ad in advertisements %}
                                     <div class="slider__item">
-                                        <img src="{% path ad.getMedia(), 'normal' %}" alt="{{ ad.description }}">
+                                        <img src="{% path ad.getMedia(), 'normal' %}" alt="{% if ad.description %}{{ ad.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
                                     </div>
                                 {% endfor %}
                             </section>

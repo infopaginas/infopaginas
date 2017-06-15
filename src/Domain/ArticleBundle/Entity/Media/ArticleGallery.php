@@ -42,6 +42,7 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=1000, nullable=true)
+     * @Assert\NotBlank()
      */
     protected $description;
 

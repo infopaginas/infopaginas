@@ -6,7 +6,7 @@
     <div class="item__content clearfix" data-item-content>
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
-                <img width="80" src="{% path item.getLogo(), 'preview' %}">
+                <img width="80" src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}">
                 <div class="att-icons">
                     {% if hasImages and hasSubscription(item, "CODE_PREMIUM_GOLD") %}
                         <i class="fa fa-camera"></i>
