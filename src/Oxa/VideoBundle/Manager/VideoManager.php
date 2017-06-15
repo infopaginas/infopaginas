@@ -217,6 +217,10 @@ class VideoManager
         return $media;
     }
 
+    /**
+     * @param bool $isTemp
+     * @return string
+     */
     public function getLocalUrl(bool $isTemp = false)
     {
         $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
@@ -235,7 +239,11 @@ class VideoManager
         return $path . $name;
     }
 
-    public function deleteLocalMediaFiles(array  $files){
+    /**
+     * @param array $files
+     */
+    public function deleteLocalMediaFiles(array $files)
+    {
 
         foreach ($files as $file) {
             if (file_exists($file)) {
