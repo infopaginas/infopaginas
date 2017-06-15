@@ -178,49 +178,41 @@ class VideoManager
 
     public function convertVideoMedia(VideoMedia $media)
     {
-       $ffmpeg = $this->container->get('dubture_ffmpeg.ffmpeg');
+        $url = $this->getPublicUrl($media);
+        $name  =  uniqid();
+        $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+        shell_exec('cd ' . $path . '; ffmpeg -i "' . $url . '" `basename "'. $name .'"`.mp4');
 
-       try {
-           $video = $ffmpeg->open($this->getPublicUrl($media));
-           $name  =  uniqid() . '.mp4';
-           $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+        if (!file_exists($path . $name)) {
+            $media->setStatus($media::VIDEO_STATUS_ERROR);
 
-           if (!file_exists($path)) {
-                mkdir($path);
-           }
+            return $media;
+        }
 
-           $format = new X264();
-           $format->setAudioCodec($this::AUDIO_CODEC);
-           $video->save($format, $path . $name);
-       } catch (\Exception $e){
-           $media->setStatus($media::VIDEO_STATUS_ERROR);
-
-           return $media;
-       }
-
-       $fileData = [
+        $fileData = [
             'name'      => $name,
             'type'      => 'video/mp4',
             'ext'       => 'mp4',
             'path'      => $path . $name,
-       ];
-       $uploadedFileData = $this->uploadLocalFileData($fileData);
+        ];
 
-       if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
-           $this->filesystem->delete($media->getFilepath() . $media->getFilename());
-       }
+        $uploadedFileData = $this->uploadLocalFileData($fileData);
 
-       $media->setName($uploadedFileData['name']);
-       $media->setFilepath($uploadedFileData['filepath']);
-       $media->setFilename($uploadedFileData['filename']);
-       $media->setType($uploadedFileData['type']);
-       $media->setStatus($media::VIDEO_STATUS_ACTIVE);
+        if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+            $this->filesystem->delete($media->getFilepath() . $media->getFilename());
+        }
 
-       if (file_exists($path . $name)) {
-           unlink($path . $name);
-       }
+        $media->setName($uploadedFileData['name']);
+        $media->setFilepath($uploadedFileData['filepath']);
+        $media->setFilename($uploadedFileData['filename']);
+        $media->setType($uploadedFileData['type']);
+        $media->setStatus($media::VIDEO_STATUS_ACTIVE);
 
-       return $media;
+        if (file_exists($path . $name)) {
+            unlink($path . $name);
+        }
+
+        return $media;
     }
 
     public function getPublicUrl(VideoMedia $media)
