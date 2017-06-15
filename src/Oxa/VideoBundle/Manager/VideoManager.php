@@ -181,29 +181,24 @@ class VideoManager
         $ffmpeg = $this->container->get('dubture_ffmpeg.ffmpeg');
 
         try {
-            $name  =  uniqid() . '.mp4';
-            $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
-            file_put_contents($path . 'temp_' . $name, file_get_contents($this->getPublicUrl($media)));
-            $video = $ffmpeg->open($path . 'temp_' . $name);
-
-            if (!file_exists($path)) {
-                mkdir($path);
-            }
-
+            $file = $this->getLocalUrl();
+            $tempFile = $this->getLocalUrl(true);
+            file_put_contents($tempFile, file_get_contents($this->getPublicUrl($media)));
+            $video = $ffmpeg->open($tempFile);
             $format = new X264();
             $format->setAudioCodec($this::AUDIO_CODEC);
-            $video->save($format, $path . $name);
-        } catch (\Exception $e){
+            $video->save($format, $file);
+        } catch (\Exception $e) {
             $media->setStatus($media::VIDEO_STATUS_ERROR);
 
             return $media;
         }
 
         $fileData = [
-            'name'      => $name,
-            'type'      => 'video/mp4',
-            'ext'       => 'mp4',
-            'path'      => $path . $name,
+            'name' => uniqid(),
+            'type' => 'video/mp4',
+            'ext' => 'mp4',
+            'path' => $file,
         ];
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
@@ -217,17 +212,35 @@ class VideoManager
         $media->setType($uploadedFileData['type']);
         $media->setStatus($media::VIDEO_STATUS_ACTIVE);
 
-        $this->deleteLocalMediaFile($name);
-        $this->deleteLocalMediaFile('temp_' . $name);
+        $this->deleteLocalMediaFiles([$file, $tempFile]);
 
         return $media;
     }
 
-    public function deleteLocalMediaFile($filename){
+    public function getLocalUrl(bool $isTemp = false)
+    {
         $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+        $name = uniqid();
 
-        if (file_exists($path . $filename)) {
-            unlink($path . $filename);
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+
+        if ($isTemp) {
+            $name = 'temp_' . $name;
+        } else {
+            $name = $name . '.mp4';
+        }
+
+        return $path . $name;
+    }
+
+    public function deleteLocalMediaFiles(array  $files){
+
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
         }
     }
 
