@@ -42,6 +42,18 @@ class CategoryManager extends Manager
         return $category;
     }
 
+    /**
+     * @param $categorySlug string
+     *
+     * @return Category|null
+     */
+    public function getCategoryByCustomSlug($categorySlug)
+    {
+        $category = $this->getRepository()->getCategoryByCustomSlug($categorySlug);
+
+        return $category;
+    }
+
     public function getAvailableCategoriesWithContent($locality, $locale = false)
     {
         return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);

@@ -4,41 +4,88 @@ $( document ).ready( function() {
         businessProfileId = parentId
     }
 
-    var localityAjaxCall;
+    var localityAjaxCall = {};
     var neighborhoodAjaxCall;
+    var addExtraSearchLock = false;
 
     var removeVideo         = $( '#' + formId + '_removeVideo' );
     var categoryField       = $( '#' + formId + '_categories' );
     var areasField          = $( '#' + formId + '_areas' );
     var localitiesField     = $( '#' + formId + '_localities' );
     var neighborhoodsField  = $( '#' + formId + '_neighborhoods' );
+    var milesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
 
     var openAllTimeCheckboxes = $( '[ id *= "_openAllTime" ]' );
 
-    $.each( ['#' + formId + '_serviceAreasType label', '#' + formId + '_serviceAreasType label ins'], function( index, fieldId ) {
-        $( fieldId ).on( 'click', function() {
-            var $self = $( this).parent().find( 'input[name="' + formId + '[serviceAreasType]"]' );
-            var withinMilesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
-            var withinMilesOfMyBusinessLabel = $( '#sonata-ba-field-container-' + formId + '_milesOfMyBusiness label' );
+    $( 'input[ id *= "_serviceAreasType_" ]' ).each(function() {
+        if ( $( this ).prop( 'checked' ) ) {
+            handleServiceAreaTypeChange( this );
+        }
+    });
 
-            if ( $self.val() == 'area' ) {
-                disableServiceAreaTypeLocalityFields();
+    $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_serviceAreasType_" ]', function() {
+        if ( $( this ).prop( 'checked' ) ) {
+            handleServiceAreaTypeChange( this );
+        }
+    });
 
-                withinMilesOfMyBusinessField.removeAttr( 'disabled' );
-                withinMilesOfMyBusinessField.attr('required', 'required');
+    function handleServiceAreaTypeChange( elem ) {
+        var isMainBlock = checkServiceAreaTypeBlockMain( elem );
+        var serviceAreaType = $( elem ).val();
 
-                if ( !withinMilesOfMyBusinessLabel.hasClass( 'required' ) ) {
-                    withinMilesOfMyBusinessLabel.addClass( 'required' );
-                }
-            } else {
-                enableServiceAreaTypeLocalityFields();
+        setServiceAreaTypeValidation( elem, serviceAreaType, isMainBlock );
+    }
 
-                withinMilesOfMyBusinessField.attr( 'disabled', 'disabled' );
-                withinMilesOfMyBusinessField.removeAttr( 'required' );
-                withinMilesOfMyBusinessLabel.removeClass( 'required' );
+    function checkServiceAreaTypeBlockMain( elem ) {
+        var input = $( elem ).parent().find( 'input[ id *= "_extraSearches_" ]' );
+
+        if ( input.length ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function setServiceAreaTypeValidation(elem, serviceAreaType, isMainBlock) {
+        var areas, localities, neighborhoods, milesOfMyBusiness;
+
+        if ( !isMainBlock ) {
+            var extraSearchBlock = $( elem )
+                .parents( '.sonata-ba-td-' + formId + '_extraSearches-serviceAreasType')
+                .parent();
+
+            areas          = extraSearchBlock.find( 'select[ id *= "_areas" ]' );
+            localities     = extraSearchBlock.find( 'select[ id *= "_localities" ]' );
+            neighborhoods  = extraSearchBlock.find( 'select[ id *= "_neighborhoods" ]' );
+            milesOfMyBusiness = extraSearchBlock.find( 'input[ id *= "_milesOfMyBusiness" ]' );
+        } else {
+            areas          = areasField;
+            localities     = localitiesField;
+            neighborhoods  = neighborhoodsField;
+            milesOfMyBusiness = milesOfMyBusinessField;
+        }
+
+        if ( serviceAreaType == 'area' ) {
+            areas.attr( 'disabled', 'disabled' );
+            localities.attr( 'disabled', 'disabled' );
+            neighborhoods.attr( 'disabled', 'disabled' );
+
+            milesOfMyBusiness.removeAttr( 'disabled' );
+            milesOfMyBusiness.attr('required', 'required');
+
+            if ( !milesOfMyBusiness.hasClass( 'required' ) ) {
+                milesOfMyBusiness.addClass( 'required' );
             }
-        } );
-    } );
+        } else {
+            areas.removeAttr( 'disabled' );
+            localities.removeAttr( 'disabled' );
+            neighborhoods.removeAttr( 'disabled' );
+
+            milesOfMyBusiness.attr( 'disabled', 'disabled' );
+            milesOfMyBusiness.removeAttr( 'required' );
+            milesOfMyBusiness.removeClass( 'required' );
+        }
+    }
 
     $( 'body' ).on( 'ifChecked ifUnchecked', '[ id *= "_openAllTime" ]', function( index, openAllTimeCheckbox ) {
         checkCollectionWorkingHours( this );
@@ -84,15 +131,18 @@ $( document ).ready( function() {
         } );
     } );
 
-    updatedLocalities();
+    $( document ).on( 'change', 'select[ id *= "_areas" ]', function() {
+        updatedLocalitiesBlock( this );
+    });
+
+    $( 'select[ id *= "_areas" ]').each(function() {
+        updatedLocalitiesBlock( this );
+    });
+
     updatedNeighborhoods();
 
     localitiesField.on( 'change', function() {
         updatedNeighborhoods();
-    });
-
-    areasField.on( 'change', function() {
-        updatedLocalities();
     });
 
     function updatedNeighborhoods() {
@@ -127,6 +177,50 @@ $( document ).ready( function() {
         });
     }
 
+    function updatedLocalitiesBlock( elem ) {
+        var isMainBlock = checkLocalityBlockMain( elem );
+        var elementId = $( elem ).attr( 'id' );
+        var areas, localities;
+        var areasData = $( elem ).val();
+
+        if ( !isMainBlock ) {
+            var extraSearchBlock = $( elem )
+                .parents( '.sonata-ba-td-' + formId + '_extraSearches-areas' )
+                .parent();
+
+            localities = extraSearchBlock.find( 'select[ id *= "_localities" ]' );
+        } else {
+            localities = localitiesField;
+        }
+
+        if ( areasData ) {
+            var data = {
+                'currentLocale': currentLocale,
+                'areas':         areasData
+            };
+
+            if ( localityAjaxCall.hasOwnProperty( elementId ) ) {
+                localityAjaxCall[ elementId ].abort();
+            }
+
+            localityAjaxCall[ elementId ] = $.post( Routing.generate( 'domain_business_get_localities', { businessProfileId: businessProfileId } ), data, function( response ) {
+                updateSelect2FieldValues( localities, response.data );
+            });
+        } else {
+            updateSelect2FieldValues(localities, []);
+        }
+    }
+
+    function checkLocalityBlockMain( elem ) {
+        var select = $( elem ).parent().find( 'select[ id *= "_extraSearches_" ]' );
+
+        if ( select.length ) {
+            return false;
+        }
+
+        return true;
+    }
+
     function setUseMapAddress() {
         $.each( [ 'country','state', 'city', 'zipCode', 'streetAddress' ], function( targetIndex, targetFieldId ) {
             var input = $( '#' + formId + '_' + targetFieldId );
@@ -153,6 +247,7 @@ $( document ).ready( function() {
 
     function updateSelect2FieldValues( field, data ) {
         var html = '';
+        var previousData = field.val();
 
         if ( data ) {
             $.each( data, function ( key, value ) {
@@ -175,24 +270,14 @@ $( document ).ready( function() {
         $.each( data, function ( key, value ) {
             if ( value.selected ) {
                 selectedValues.push( value.id );
+            } else if ( previousData && $.inArray( value.id.toString(), previousData ) > -1 ) {
+                selectedValues.push( value.id );
             }
         });
 
         field.select2( 'val', selectedValues );
 
         field.trigger( 'change' );
-    }
-
-    function disableServiceAreaTypeLocalityFields() {
-        localitiesField.attr( 'disabled', 'disabled' );
-        neighborhoodsField.attr( 'disabled', 'disabled' );
-        areasField.attr( 'disabled', 'disabled' );
-    }
-
-    function enableServiceAreaTypeLocalityFields() {
-        localitiesField.removeAttr( 'disabled' );
-        neighborhoodsField.removeAttr( 'disabled' );
-        areasField.removeAttr( 'disabled' );
     }
 
     $( 'select[data-select-all]' ).after( '<a class="select-all-button">Select all</a>' );
@@ -225,5 +310,25 @@ $( document ).ready( function() {
             pickSeconds: false,
             pick12HourFormat: false
         });
+    });
+
+    $('#sonata-ba-field-container-' + formId + '_extraSearches').on('sonata.add_element', function( event ) {
+        if ( !addExtraSearchLock ) {
+            addExtraSearchLock = true;
+
+            setTimeout(function() {
+                $( 'input[ id *= "_serviceAreasType_" ]' ).each(function() {
+                    if ( $( this ).prop( 'checked' ) ) {
+                        handleServiceAreaTypeChange( this );
+                    }
+                });
+
+                $( '#field_container_' + formId + '_extraSearches select[ id *= "_areas" ]' ).each(function() {
+                    updatedLocalitiesBlock( this );
+                });
+
+                addExtraSearchLock = false;
+            }, 100);
+        }
     });
 } );

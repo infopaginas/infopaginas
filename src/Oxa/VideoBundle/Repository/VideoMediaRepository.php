@@ -54,6 +54,7 @@ class VideoMediaRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('status', $status);
 
         $videoIterator = $query->iterate();
 

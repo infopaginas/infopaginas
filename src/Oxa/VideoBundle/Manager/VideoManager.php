@@ -3,7 +3,7 @@
 namespace Oxa\VideoBundle\Manager;
 
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
-use FFMpeg\Format\Video\WebM;
+use FFMpeg\Format\Video\X264;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +15,7 @@ class VideoManager
 
     const MAX_FILENAME_LENGTH = 240;
     const LINK_LIFE_TIME      = 600;
+    const AUDIO_CODEC = 'libmp3lame';
 
     private static $allowedMimeTypes = [
         'video/mp4',
@@ -91,7 +92,7 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            $message = $this->container->get('translator')->trans('Files of type %s are not allowed', [], 'messages');
+            $message = $this->container->get('translator')->trans('You can upload the following file types', [], 'messages');
             throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
@@ -134,6 +135,11 @@ class VideoManager
             'type'      => $headers['content_type'],
             'path'      => $url,
         ];
+
+        if ($fileData['ext'] == null || !isset($headers['content_type'])) {
+            $message = $this->container->get('translator')->trans('the link to the video is invalid', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message));
+        }
 
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
@@ -178,7 +184,14 @@ class VideoManager
            $video = $ffmpeg->open($this->getPublicUrl($media));
            $name  =  uniqid() . '.mp4';
            $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
-           $video->save(new WebM(), $path . $name);
+
+           if (!file_exists($path)) {
+                mkdir($path);
+           }
+
+           $format = new X264();
+           $format->setAudioCodec($this::AUDIO_CODEC);
+           $video->save($format, $path . $name);
        } catch (\Exception $e){
            $media->setStatus($media::VIDEO_STATUS_ERROR);
 
@@ -193,12 +206,19 @@ class VideoManager
        ];
        $uploadedFileData = $this->uploadLocalFileData($fileData);
 
+       if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+           $this->filesystem->delete($media->getFilepath() . $media->getFilename());
+       }
+
        $media->setName($uploadedFileData['name']);
        $media->setFilepath($uploadedFileData['filepath']);
        $media->setFilename($uploadedFileData['filename']);
        $media->setType($uploadedFileData['type']);
        $media->setStatus($media::VIDEO_STATUS_ACTIVE);
-       unlink($path . $name);
+
+       if (file_exists($path . $name)) {
+           unlink($path . $name);
+       }
 
        return $media;
     }

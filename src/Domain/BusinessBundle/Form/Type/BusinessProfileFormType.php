@@ -353,7 +353,6 @@ class BusinessProfileFormType extends AbstractType
                     $this->setupPremiumGoldPlanFormFields($businessProfile, $event->getForm());
                     break;
                 case SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM:
-                case SubscriptionPlanInterface::CODE_SUPER_VM:
                     $this->setupPremiumPlatinumPlanFormFields($businessProfile, $event->getForm());
                     break;
                 default:
@@ -533,7 +532,7 @@ class BusinessProfileFormType extends AbstractType
             ->add('categoryIds', ChoiceType::class, [
                 'attr' => [
                     'class' => 'form-control selectize-control select-multiple',
-                    'data-placeholder' => 'Select categories',
+                    'placeholder' => 'Select categories',
                     'multiple' => true,
                 ],
                 'label' => 'Categories',

@@ -32,6 +32,9 @@ class KeywordsReportManager
     const MONGO_DB_COLLECTION_NAME_RAW       = 'keyword_raw';
     const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'keyword_aggregate';
 
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'keyword_archive_raw';
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'keyword_archive_aggregate';
+
     const MONGO_DB_FIELD_KEYWORD     = 'keyword';
     const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
     const MONGO_DB_FIELD_COUNT       = 'count';
@@ -192,6 +195,9 @@ class KeywordsReportManager
             ]
         );
 
+        $i = 0;
+        $insert = [];
+
         foreach ($cursor as $document) {
             $document[self::MONGO_DB_FIELD_KEYWORD]     = $document['_id']['keyword'];
             $document[self::MONGO_DB_FIELD_BUSINESS_ID] = $document['_id']['bid'];
@@ -199,7 +205,42 @@ class KeywordsReportManager
 
             $document['_id'] = $this->mongoDbManager->generateId();
 
-            $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
+            $insert[] = $document;
+
+            if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
+                $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
+                $insert = [];
+            }
         }
+
+        if ($insert) {
+            $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
+        }
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveRawBusinessKeywords($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveAggregatedBusinessKeywords($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
     }
 }

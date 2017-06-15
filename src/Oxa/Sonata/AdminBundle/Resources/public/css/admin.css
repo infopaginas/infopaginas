@@ -133,3 +133,15 @@ a.select-all-button {
 table .ui-sortable tr:hover {
     cursor: move;
 }
+
+td[class*="_extraSearches-categories"] {
+    width: 20%;
+}
+
+td[class*="_extraSearches-areas"] {
+    width: 20%;
+}
+
+td[class*="_extraSearches-localities"] {
+    width: 20%;
+}

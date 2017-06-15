@@ -6,10 +6,13 @@ use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\LockHandler;
 
 class VideoConverterCommand extends ContainerAwareCommand
 {
     protected $em;
+
+    const VIDEO_CONVERT_LOCK = 'VIDEO_CONVERT.lock';
 
     protected function configure()
     {
@@ -19,6 +22,12 @@ class VideoConverterCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $lockHandler = new LockHandler(self::VIDEO_CONVERT_LOCK);
+
+        if (!$lockHandler->lock()) {
+            return $output->writeln('Command is locked by another process');
+        }
+
         $logger = $this->getContainer()->get('domain_site.cron.logger');
         $logger->addInfo($logger::VIDEO_CONVERT, $logger::STATUS_START, 'execute:start');
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -38,13 +47,18 @@ class VideoConverterCommand extends ContainerAwareCommand
 
             if (($i % $batchSize) === 0) {
                 $this->em->flush();
+                $output->writeln('Flushed');
                 $this->em->clear();
             }
 
             $i ++;
         }
 
+        $logger->addInfo($logger::VIDEO_CONVERT, $logger::STATUS_END, 'execute:stop');
+
         $this->em->flush();
         $this->em->clear();
+
+        $lockHandler->release();
     }
 }
