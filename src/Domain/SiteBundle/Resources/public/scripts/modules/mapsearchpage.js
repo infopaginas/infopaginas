@@ -121,11 +121,11 @@ define(
         });
     };
 
-    mapSearchPage.prototype.updateMapMarkers = function ( markers ) {
+    mapSearchPage.prototype.updateMapMarkers = function ( markers  ) {
         this.deleteMarkers();
 
         if ( !_.isEmpty( markers ) ) {
-            this.addMarkers( markers );
+            this.addMarkers( markers , true);
         }
     };
 
@@ -141,33 +141,33 @@ define(
         }
     };
 
-    mapSearchPage.prototype.addMarkers = function ( markers )
-    {
+    mapSearchPage.prototype.addMarkers = function (markers, isSearchOnMap) {
         var self = this;
-        // console.log(markers);
 
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
+            navigator.geolocation.getCurrentPosition(function (position) {
                 var youPos = {
-                    id: 'user',
+                    id: 0,
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
-                    name: 'You'
+                    name: youPosText
                 };
 
                 self.addMarker(youPos);
 
-                var bounds = new google.maps.LatLngBounds();
+                if (!isSearchOnMap || typeof isSearchOnMap == 'undefined') {
+                    var bounds = new google.maps.LatLngBounds();
 
-                _.each(self.markers, function ( markerItem ) {
-                    bounds.extend( markerItem.marker.getPosition() );
-                });
+                    _.each(self.markers, function (markerItem) {
+                        bounds.extend(markerItem.marker.getPosition());
+                    });
 
-                self.map.fitBounds( bounds );
+                    self.map.fitBounds(bounds);
+                }
             });
         }
 
-        _.each( markers, this.addMarker.bind( this ) );
+        _.each(markers, this.addMarker.bind(this));
     };
 
     mapSearchPage.prototype.addMarker = function ( markerData )
@@ -186,7 +186,7 @@ define(
             labelClass: "labels" // the CSS class for the label
         });
 
-        if (markerData.id === 'user') {
+        if (markerData.id === 0) {
             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
         }
 
@@ -220,7 +220,6 @@ define(
             });
         }
 
-        var markerObjec = {};
         this.markers[markerData.id] = {
             marker : marker,
             infoWindow : infoWindow
