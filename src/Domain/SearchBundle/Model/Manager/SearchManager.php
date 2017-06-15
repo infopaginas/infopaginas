@@ -166,6 +166,7 @@ class SearchManager extends Manager
 
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+        $searchDTO  = $this->setSearchAdsParams($searchDTO);
 
         $category = SearchDataUtil::getCategoryFromRequest($request);
 
@@ -406,5 +407,29 @@ class SearchManager extends Manager
         }
 
         return $data;
+    }
+
+    /**
+     * @param $searchDTO SearchDTO
+     *
+     * @return SearchDTO
+     */
+    protected function setSearchAdsParams($searchDTO)
+    {
+        $adsAllowed = (bool) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_ALLOWED)->getValue();
+
+        if ($adsAllowed) {
+            $adsPerPage  = (int) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_PER_PAGE)->getValue();
+
+            if ($adsPerPage and $adsPerPage > 0) {
+                $adsMaxPages = (int) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_MAX_PAGE)->getValue();
+
+                $searchDTO->adsMaxPages = $adsMaxPages;
+                $searchDTO->adsPerPage  = $adsPerPage;
+                $searchDTO->adsAllowed  = $adsAllowed;
+            }
+        }
+
+        return $searchDTO;
     }
 }

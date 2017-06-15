@@ -84,6 +84,16 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     protected $businessProfiles;
 
     /**
+     * @var BusinessProfileExtraSearch[]
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileExtraSearch",
+     *     mappedBy="categories"
+     * )
+     */
+    protected $extraSearches;
+
+    /**
      * @var Article[]
      *
      * @ORM\OneToMany(
@@ -185,6 +195,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->articles         = new ArrayCollection();
         $this->reports          = new ArrayCollection();
         $this->catalogItems     = new ArrayCollection();
+        $this->extraSearches    = new ArrayCollection();
 
         $this->isUpdated = true;
     }
@@ -305,6 +316,42 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     public function getBusinessProfiles()
     {
         return $this->businessProfiles;
+    }
+
+    /**
+     * Add extraSearch
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return Category
+     */
+    public function addExtraSearch($extraSearch)
+    {
+        $this->extraSearches[] = $extraSearch;
+        $extraSearch->addCategory($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove extraSearch
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     */
+    public function removeExtraSearch($extraSearch)
+    {
+        $this->extraSearches->removeElement($extraSearch);
+        $extraSearch->removeCategory($this);
+    }
+
+    /**
+     * Get $extraSearches
+     *
+     * @return ArrayCollection
+     */
+    public function getExtraSearches()
+    {
+        return $this->extraSearches;
     }
 
     /**

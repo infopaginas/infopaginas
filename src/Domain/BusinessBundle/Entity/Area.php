@@ -56,6 +56,14 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     protected $businessProfiles;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileExtraSearch",
+     *     mappedBy="areas"
+     * )
+     */
+    private $extraSearches;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
@@ -100,6 +108,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
         $this->businessProfiles = new ArrayCollection();
         $this->translations     = new ArrayCollection();
         $this->locality         = new ArrayCollection();
+        $this->extraSearches    = new ArrayCollection();
     }
 
     public function getMarkCopyPropertyName()
@@ -221,5 +230,39 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
     public function getLocality()
     {
         return $this->locality;
+    }
+
+    /**
+     * Add $extraSearch
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return Area
+     */
+    public function addExtraSearch($extraSearch)
+    {
+        $this->extraSearches[] = $extraSearch;
+        $extraSearch->addArea($this);
+    }
+
+    /**
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return Area
+     */
+    public function removeExtraSearch(BusinessProfileExtraSearch $extraSearch)
+    {
+        $this->extraSearches->removeElement($extraSearch);
+        $extraSearch->removeArea($this);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getExtraSearches()
+    {
+        return $this->extraSearches;
     }
 }

@@ -200,6 +200,24 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
                 ),
                 'format' => 'html',
                 'description' => 'Notify if article API response returns error',
+            ], [
+                'key' => ConfigInterface::SEARCH_ADS_ALLOWED,
+                'title' => 'Allow ads for search results',
+                'value' => 1,
+                'format' => 'text',
+                'description' => 'Set to 1 to enable ads for search results (0 - disable)',
+            ], [
+                'key' => ConfigInterface::SEARCH_ADS_MAX_PAGE,
+                'title' => 'Pages where ads will be shown',
+                'value' => 1,
+                'format' => 'text',
+                'description' => 'Max page number where ads will be shown (set to 0 to show ads at all pages)',
+            ], [
+                'key' => ConfigInterface::SEARCH_ADS_PER_PAGE,
+                'title' => 'Ads per page for search results',
+                'value' => 6,
+                'format' => 'text',
+                'description' => 'Max ads quantity that can be shown at one search page (note it is max quantity)',
             ],
         ];
     }

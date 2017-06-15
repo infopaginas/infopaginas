@@ -1,5 +1,5 @@
 define(
-    ['jquery',  'abstract/view', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/star-rating'],
+    ['jquery',  'abstract/view', 'tools/directions', 'tools/select', 'bootstrap', 'select2', 'tools/starRating'],
     function ( $, view, directions, select) {
     'use strict';
 

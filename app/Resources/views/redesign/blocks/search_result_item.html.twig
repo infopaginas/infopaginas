@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="item__info">
-                    <h2>{% if hasSubscription(item, "CODE_SUPER_VM") %} <i class="fa fa-star"></i> {% endif %}{{ item.name }}</h2>
+                    <h2>{% if item.isAd %} <i class="fa fa-star"></i> {% endif %}{{ item.name }}</h2>
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
                     {% endif %}

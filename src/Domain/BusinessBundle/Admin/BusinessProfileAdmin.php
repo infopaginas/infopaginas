@@ -209,6 +209,17 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Address', ['class' => 'col-md-4',])->end()
                 ->with('Map', ['class' => 'col-md-8',])->end()
                 ->with('Categories', ['class' => 'col-md-6',])->end()
+            ->end()
+        ;
+
+        if ($businessProfile->getId() and
+            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+        ) {
+            $formMapper->tab('Profile')->with('SuperVM')->end()->end();
+        }
+
+        $formMapper
+            ->tab('Profile', ['class' => 'col-md-12',])
                 ->with('Social Networks', ['class' => 'col-md-6',])->end()
                 ->with('Gallery')->end()
             ->end()
@@ -463,6 +474,27 @@ class BusinessProfileAdmin extends OxaAdmin
         if ($businessProfile->getId() and
             $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
         ) {
+            $formMapper
+                ->tab('Profile')
+                    ->with('SuperVM')
+                        ->add(
+                            'extraSearches',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'delete_empty'  => false,
+                                'inline'        => 'table',
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+
+
             if (!$businessProfile->getVideo()) {
                 $formMapper
                     ->tab('Profile')

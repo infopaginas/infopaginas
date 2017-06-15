@@ -395,12 +395,14 @@ Background: Background
 Reset: Reset
 Reason: Reason
 Remove: Remove
+Video status pending: Your video is being converted. It will be submitted for approval to our administrators and then published automatically.
+Video status error: Error: something went wrong, please try to upload the video again with the following formats: MP4, WMV, FLV, AVI, MPG, MOV
 
 business_profile.names_blank: Name field should be filled for at least one language
 business_profile.image_count_limit: Error: too much images added. Max files count =
-business_profile.size_limit: Sorry. Maximum allowed filesize is 10Mb.
+business_profile.size_limit: The video is larger than 128 MB
 business_profile.url.empty: Error: URL field should not be empty.
-business_profile.video_count_limit: Error: too much videos added. Max files count =
+business_profile.video_count_limit: Only one video can be uploaded at a time
 business_profile.max_length: Please use max {{ limit }} symbols
 business_profile.logo.image_count_limit: Error: only single logo is allowed
 business_profile.background.image_count_limit: Error: only single background is allowed
