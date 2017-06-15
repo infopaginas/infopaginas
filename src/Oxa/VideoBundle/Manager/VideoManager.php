@@ -178,12 +178,22 @@ class VideoManager
 
     public function convertVideoMedia(VideoMedia $media)
     {
-        $url = $this->getPublicUrl($media);
-        $name  =  uniqid();
-        $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
-        shell_exec('cd ' . $path . '; ffmpeg -i "' . $url . '" `basename "'. $name .'"`.mp4');
+        $ffmpeg = $this->container->get('dubture_ffmpeg.ffmpeg');
 
-        if (!file_exists($path . $name)) {
+        try {
+            $name  =  uniqid() . '.mp4';
+            $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+            file_put_contents($path . 'temp_' . $name, file_get_contents($this->getPublicUrl($media)));
+            $video = $ffmpeg->open($path . 'temp_' . $name);
+
+            if (!file_exists($path)) {
+                mkdir($path);
+            }
+
+            $format = new X264();
+            $format->setAudioCodec($this::AUDIO_CODEC);
+            $video->save($format, $path . $name);
+        } catch (\Exception $e){
             $media->setStatus($media::VIDEO_STATUS_ERROR);
 
             return $media;
@@ -195,7 +205,6 @@ class VideoManager
             'ext'       => 'mp4',
             'path'      => $path . $name,
         ];
-
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
         if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
@@ -208,11 +217,18 @@ class VideoManager
         $media->setType($uploadedFileData['type']);
         $media->setStatus($media::VIDEO_STATUS_ACTIVE);
 
-        if (file_exists($path . $name)) {
-            unlink($path . $name);
-        }
+        $this->deleteLocalMediaFile($name);
+        $this->deleteLocalMediaFile('temp_' . $name);
 
         return $media;
+    }
+
+    public function deleteLocalMediaFile($filename){
+        $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+
+        if (file_exists($path . $filename)) {
+            unlink($path . $filename);
+        }
     }
 
     public function getPublicUrl(VideoMedia $media)
