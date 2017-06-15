@@ -505,6 +505,14 @@ class SearchController extends Controller
         // hardcode for catalog
         $pageRouter = 'domain_search_index';
 
+        if (!$searchResultsDTO->resultSet && $searchResultsDTO->page != 1) {
+            return $this->redirectToRoute('domain_search_catalog', [
+                'localitySlug' => $localitySlug,
+                'categorySlug' => $categorySlug,
+                'page'         => 1,
+            ]);
+        }
+
         return $this->render(
             ':redesign:catalog.html.twig',
             [
