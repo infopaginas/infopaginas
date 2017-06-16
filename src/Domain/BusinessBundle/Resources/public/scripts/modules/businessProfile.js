@@ -270,9 +270,15 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         var hasError = false;
 
         descriptions.each(function() {
-            if ( !notEmptyString.test( $( this ).val() )) {
-                $( this ).parent().addClass( 'field--not-valid' );
-                $( this ).after( '<span data-error-message class="error">' + $( that.html.imageValidationErrors ).data( 'required' ) + '</span>' );
+            var field       = $( this );
+            var fieldParent = field.parent();
+
+            fieldParent.removeClass( 'field--not-valid' );
+            fieldParent.find( 'span[data-error-message]' ).remove();
+
+            if ( !notEmptyString.test( field.val() )) {
+                fieldParent.addClass( 'field--not-valid' );
+                field.after( '<span data-error-message class="error">' + $( that.html.imageValidationErrors ).data( 'required' ) + '</span>' );
 
                 hasError = true;
             }
