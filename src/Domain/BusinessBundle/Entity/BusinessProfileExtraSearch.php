@@ -5,12 +5,14 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileExtraSearch as BusinessProfileExtraSearchValidator;
 
 /**
  * BusinessProfileExtraSearch
  *
  * @ORM\Table(name="business_profile_extra_search")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileExtraSearchRepository")
+ * @BusinessProfileExtraSearchValidator()
  */
 class BusinessProfileExtraSearch
 {
@@ -64,8 +66,9 @@ class BusinessProfileExtraSearch
      *
      * @ORM\Column(name="miles_of_my_business", type="integer", nullable=true)
      * @Assert\NotBlank(groups={"service_area_chosen"})
-     * @Assert\Type(type="digit", message="business_profile.integer_miles", groups={"service_area_chosen"})
-     * @Assert\Length(max=4, maxMessage="business_profile.max_length", groups={"service_area_chosen"})
+     * @Assert\Type(type="digit", message="business_profile.integer_miles")
+     * @Assert\Length(max=4, maxMessage="business_profile.max_length")
+     * @Assert\GreaterThan(0)
      */
     protected $milesOfMyBusiness;
 
