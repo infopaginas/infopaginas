@@ -112,7 +112,7 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
     /**
      * @param string $description
      */
-    public function setDescription(string $description)
+    public function setDescription($description)
     {
         $this->description = $description;
     }
