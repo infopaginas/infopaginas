@@ -428,6 +428,7 @@ class BusinessProfile implements
      *     orphanRemoval=true,
      *     )
      * @ORM\OrderBy({"position" = "ASC"})
+     * @Assert\Valid
      */
     protected $images;
 

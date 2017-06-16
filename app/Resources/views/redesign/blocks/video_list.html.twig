@@ -5,7 +5,7 @@
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to watch...{% endtrans %}" class="news__item clearfix">
                 {% if item.getLogo() %}
                     <div class="avatar">
-                        <img class="news__img" src="{% path item.getLogo(), 'normal' %}">
+                        <img class="news__img" src="{% path item.getLogo(), 'normal' %}" alt="{{ item.name() }}">
                     </div>
                 {% endif %}
                 <h3 class="news__title">{{ item.getName() }}</h3>

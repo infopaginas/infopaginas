@@ -5,6 +5,7 @@ View more articles: Ver más artículos
 Videos: Videos
 View more videos: Ver más videos
 infopaginos.copyright: © 2016 infopáginas
+infopaginos.image.alt: Infopáginas
 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo: 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo
 PR: PR
 About Us: Acerca de Nosotros
@@ -550,3 +551,4 @@ TripAdvisor: TripAdvisor
 
 popular_searches.title: Búsquedas populares
 google_maps.current_user_position.label: Ubicación actual
+business_profile.image.description.required: Este campo es requerido
