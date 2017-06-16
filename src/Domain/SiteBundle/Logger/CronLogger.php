@@ -35,7 +35,7 @@ class CronLogger
 
     public function addInfo(String $name, String $status, String $message, $level = 100)
     {
-        $cpu = 'CPU Usage' . sys_getloadavg()[0] * 100 . '%';
+        $cpu = 'CPU Usage ' . sys_getloadavg()[0];
         $log = $name . ' ' . $status . ' ' . $message;
         $id = ' PHP-' . getmypid();
 
