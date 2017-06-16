@@ -186,6 +186,7 @@ class VideoManager
             file_put_contents($tempFile, file_get_contents($this->getPublicUrl($media)));
 
             //ffmpeg script for converting video to mp4 format
+            //script taken from FFMpeg Symfony Bundle https://github.com/pulse00/ffmpeg-bundle
             shell_exec('/usr/bin/ffmpeg -y -i ' . $tempFile . ' -threads 1 -vcodec libx264 -acodec ' .
                 'libmp3lame -b:v 1000k -refs 6 -coder 1 -sc_threshold 40 -flags +loop -me_range 16 -subq 7 ' .
                 '-i_qfactor 0.71 -qcomp 0.6 -qdiff 4 -trellis 1 -b:a 128k ' . $file);
