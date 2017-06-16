@@ -3,6 +3,8 @@ define(
     function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
 
+    const greenDot = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+
     var mapSearchPage = function () {
         this.events = {
             '.map-address click' : 'showMarker' //todo
@@ -129,10 +131,6 @@ define(
         }
     };
 
-    mapSearchPage.prototype.getBoundsWithUserLocation = function () {
-
-    };
-
     mapSearchPage.prototype.updateGoogleTagTargeting = function ( targeting ) {
         if ( targeting && typeof googletag != 'undefined' ) {
             googletag.pubads().clearTargeting();
@@ -187,7 +185,7 @@ define(
         });
 
         if (markerData.id === 0) {
-            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+            marker.setIcon(greenDot);
         }
 
         var infoWindow = new google.maps.InfoWindow({
