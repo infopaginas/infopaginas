@@ -3,7 +3,6 @@
 namespace Oxa\VideoBundle\Manager;
 
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
-use FFMpeg\Format\Video\X264;
 use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,6 +15,7 @@ class VideoManager
     const MAX_FILENAME_LENGTH = 240;
     const LINK_LIFE_TIME      = 600;
     const AUDIO_CODEC = 'libmp3lame';
+    const TRUSTED_SCORE = 25;
 
     private static $allowedMimeTypes = [
         'video/mp4',
@@ -178,16 +178,23 @@ class VideoManager
 
     public function convertVideoMedia(VideoMedia $media)
     {
-        $ffmpeg = $this->container->get('dubture_ffmpeg.ffmpeg');
+        $ffprobe = $this->container->get('dubture_ffmpeg.ffprobe');
 
         try {
             $file = $this->getLocalUrl();
             $tempFile = $this->getLocalUrl(true);
             file_put_contents($tempFile, file_get_contents($this->getPublicUrl($media)));
-            $video = $ffmpeg->open($tempFile);
-            $format = new X264();
-            $format->setAudioCodec($this::AUDIO_CODEC);
-            $video->save($format, $file);
+            shell_exec('/usr/bin/ffmpeg -y -i ' . $tempFile . ' -threads 1 -vcodec libx264 -acodec ' .
+                'libmp3lame -b:v 1000k -refs 6 -coder 1 -sc_threshold 40 -flags +loop -me_range 16 -subq 7 ' .
+                '-i_qfactor 0.71 -qcomp 0.6 -qdiff 4 -trellis 1 -b:a 128k ' . $file);
+            $score = $ffprobe->format($file)->get('probe_score');
+
+            if ($score < $this::TRUSTED_SCORE) {
+                $media->setStatus($media::VIDEO_STATUS_ERROR);
+
+                return $media;
+            }
+
         } catch (\Exception $e) {
             $media->setStatus($media::VIDEO_STATUS_ERROR);
 
