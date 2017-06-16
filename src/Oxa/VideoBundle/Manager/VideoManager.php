@@ -184,9 +184,12 @@ class VideoManager
             $file = $this->getLocalUrl();
             $tempFile = $this->getLocalUrl(true);
             file_put_contents($tempFile, file_get_contents($this->getPublicUrl($media)));
+
+            //ffmpeg script for converting video to mp4 format
             shell_exec('/usr/bin/ffmpeg -y -i ' . $tempFile . ' -threads 1 -vcodec libx264 -acodec ' .
                 'libmp3lame -b:v 1000k -refs 6 -coder 1 -sc_threshold 40 -flags +loop -me_range 16 -subq 7 ' .
                 '-i_qfactor 0.71 -qcomp 0.6 -qdiff 4 -trellis 1 -b:a 128k ' . $file);
+
             $score = $ffprobe->format($file)->get('probe_score');
 
             if ($score < $this::TRUSTED_SCORE) {
@@ -194,7 +197,6 @@ class VideoManager
 
                 return $media;
             }
-
         } catch (\Exception $e) {
             $media->setStatus($media::VIDEO_STATUS_ERROR);
 
