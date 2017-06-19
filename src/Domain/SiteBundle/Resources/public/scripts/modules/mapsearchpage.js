@@ -3,7 +3,7 @@ define(
     function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
 
-    const greenDot = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+    const userMarker = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 
     var mapSearchPage = function () {
         this.events = {
@@ -185,7 +185,7 @@ define(
         });
 
         if (markerData.id === 0) {
-            marker.setIcon(greenDot);
+            marker.setIcon(userMarker);
         }
 
         var infoWindow = new google.maps.InfoWindow({
