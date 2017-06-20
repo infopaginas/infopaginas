@@ -98,6 +98,22 @@ class TaskRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getRejectedTaskIteratorWithContentScheduledForDeletion()
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('t')
+            ->where('t.status = :rejectedStatus')
+            ->andWhere('t.contentDeleted = false')
+            ->setParameter(':rejectedStatus', TaskStatusType::TASK_STATUS_REJECTED)
+            ->orderBy('t.id')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter(':rejectedStatus', TaskStatusType::TASK_STATUS_REJECTED);
+
+        return $query->iterate();
+    }
+
     /**
      * Return query builder object (incapsulate in single method)
      *
