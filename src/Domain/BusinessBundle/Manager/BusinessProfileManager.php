@@ -588,6 +588,61 @@ class BusinessProfileManager extends Manager
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @param ChangeSet $changeSet
+     */
+    public function handleRejectedTaskContent(ChangeSet $changeSet)
+    {
+        /** @var ChangeSetEntry $change */
+        foreach ($changeSet->getEntries() as $change) {
+            switch ($change->getAction()) {
+                case ChangeSetCalculator::CHANGE_MEDIA_RELATION_MANY_TO_ONE:
+                    $dataNew  = json_decode($change->getNewValue());
+
+                    if ($dataNew) {
+                        $media = $this->getEntityManager()->getRepository($change->getClassName())->find($dataNew->id);
+
+                        if ($media) {
+                            if ($media instanceof VideoMedia and $media->getBusinessProfiles()->isEmpty()) {
+                                $media->setIsDeleted(true);
+                            } elseif ($media instanceof Media) {
+                                switch ($media->getContext()) {
+                                    case Media::CONTEXT_BUSINESS_PROFILE_LOGO:
+                                        if ($media->getLogoBusinessProfiles()->isEmpty()) {
+                                            $media->setIsDeleted(true);
+                                        }
+
+                                        break;
+                                    case Media::CONTEXT_BUSINESS_PROFILE_BACKGROUND:
+                                        if ($media->getBackgroundBusinessProfiles()->isEmpty()) {
+                                            $media->setIsDeleted(true);
+                                        }
+
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                case ChangeSetCalculator::CHANGE_MEDIA_RELATION_ONE_TO_MANY:
+                    $dataNew = json_decode($change->getNewValue());
+
+                    if ($dataNew) {
+                        foreach ($dataNew as $item) {
+                            $media = $this->em->getRepository(Media::class)->find($item->media);
+
+                            if ($media and $media->getBusinessGallery()->isEmpty()) {
+                                $media->setIsDeleted(true);
+                            }
+                        }
+                    }
+
+                    break;
+            }
+        }
+    }
+
     public function getTaskMediaLink(ChangeSetEntry $change, $value)
     {
         $url = '';

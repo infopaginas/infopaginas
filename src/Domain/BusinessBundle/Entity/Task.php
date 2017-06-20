@@ -97,6 +97,13 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $review;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="content_deleted", type="boolean", options={"default" : 0})
+     */
+    protected $contentDeleted;
+
+    /**
      * Task constructor.
      * By default task should be marked as "OPEN"
      *
@@ -105,6 +112,7 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function __construct()
     {
         $this->status = TaskStatusType::TASK_STATUS_OPEN;
+        $this->contentDeleted = false;
     }
 
     /**
@@ -328,6 +336,26 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setReview($review)
     {
         $this->review = $review;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getContentDeleted()
+    {
+        return $this->contentDeleted;
+    }
+
+    /**
+     * @param boolean $contentDeleted
+     *
+     * @return Task
+     */
+    public function setContentDeleted($contentDeleted)
+    {
+        $this->contentDeleted = $contentDeleted;
+
         return $this;
     }
 

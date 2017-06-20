@@ -6,8 +6,13 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Task;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Oxa\Sonata\MediaBundle\Entity\Media;
+use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Manager\VideoManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -30,6 +35,16 @@ class PostponeRemoveCommand extends ContainerAwareCommand
      */
     protected $em;
 
+    /**
+     * @var VideoManager $videoManager
+     */
+    protected $videoManager;
+
+    /**
+     * @var BusinessProfileManager $businessProfileManager
+     */
+    protected $businessProfileManager;
+
     protected $withDebug;
 
     protected function configure()
@@ -44,7 +59,8 @@ class PostponeRemoveCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = $this->getContainer()->get('domain_site.cron.logger');
+        $container = $this->getContainer();
+        $logger    = $container->get('domain_site.cron.logger');
         $logger->addInfo($logger::POSTPONE_REMOVE, $logger::STATUS_START, 'execute:start');
 
         $lockHandler = new LockHandler(self::POSTPONE_REMOVE_LOCK);
@@ -55,6 +71,10 @@ class PostponeRemoveCommand extends ContainerAwareCommand
             return $output->writeln('Command is locked by another process');
         }
 
+        $this->videoManager           = $container->get('oxa.manager.video');
+        $this->businessProfileManager = $container->get('domain_business.manager.business_profile');
+        $this->em                     = $container->get('doctrine.orm.entity_manager');
+
         $this->handlePostponeRemove();
 
         $lockHandler->release();
@@ -63,7 +83,8 @@ class PostponeRemoveCommand extends ContainerAwareCommand
 
     protected function handlePostponeRemove()
     {
-        $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        // prepare task content for deletion
+        $this->scheduleRejectedTaskContentForDeletion();
 
         // remove businesses
         $this->removeScheduledEntitiesByClass(BusinessProfile::class);
@@ -73,6 +94,9 @@ class PostponeRemoveCommand extends ContainerAwareCommand
 
         // remove images
         $this->removeScheduledEntitiesByClass(Media::class);
+
+        // remove video
+        $this->removeScheduledEntitiesByClass(VideoMedia::class);
     }
 
     /**
@@ -88,7 +112,7 @@ class PostponeRemoveCommand extends ContainerAwareCommand
         foreach ($entities as $row) {
             $entity = current($row);
 
-            $this->em->remove($entity);
+            $this->removeEntity($entity);
 
             if (($i % $batchSize) === 0) {
                 $this->em->flush();
@@ -131,5 +155,48 @@ class PostponeRemoveCommand extends ContainerAwareCommand
         ;
 
         return $queryBuilder;
+    }
+
+    /**
+     * @param mixed $entity
+     */
+    protected function removeEntity($entity)
+    {
+        if ($entity instanceof VideoMedia) {
+            $this->videoManager->removeMedia($entity->getId());
+        } else {
+            $this->em->remove($entity);
+        }
+    }
+
+    protected function scheduleRejectedTaskContentForDeletion()
+    {
+        $businessProfileManager = $this->getContainer()->get('domain_business.manager.business_profile');
+
+        $rejectedTaskIterator = $this->em->getRepository(Task::class)
+            ->getRejectedTaskIteratorWithContentScheduledForDeletion();
+
+        $i     = 0;
+        $batch = 20;
+
+        foreach ($rejectedTaskIterator as $row) {
+            $task = current($row);
+
+            if ($task->getType() == TaskType::TASK_PROFILE_UPDATE) {
+                $businessProfileManager->handleRejectedTaskContent($task->getChangeSet());
+            }
+
+            $task->setContentDeleted(true);
+
+            if (($i % $batch) === 0) {
+                $this->em->flush();
+                $this->em->clear();
+            }
+
+            $i++;
+        }
+
+        $this->em->flush();
+        $this->em->clear();
     }
 }
