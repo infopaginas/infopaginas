@@ -145,3 +145,14 @@ td[class*="_extraSearches-areas"] {
 td[class*="_extraSearches-localities"] {
     width: 20%;
 }
+
+table.business-review-table {
+    width: 100%;
+}
+
+.main-header a.sidebar-logout {
+    float: right;
+    background-color: transparent;
+    background-image: none;
+    padding: 15px 15px;
+}

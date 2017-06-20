@@ -10,7 +10,7 @@
         <i class="glyphicon glyphicon-subtitles"></i>
     </a>
 {% endif %}
-{% if admin.isGranted('SHOW', object) and admin.hasRoute('show') %}
+{% if admin.isGranted('VIEW', object) and admin.hasRoute('show') %}
     <a href="{{ admin.generateObjectUrl('show', object) }}" class="btn btn-sm btn-default show_link btn-list-action"
        title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}">
         <i class="glyphicon glyphicon-eye-open"></i>

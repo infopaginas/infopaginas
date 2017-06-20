@@ -109,7 +109,41 @@ class BusinessProfileExtraSearch
      */
     public function __toString()
     {
-        return (string)$this->getId();
+        if ($this->getId()) {
+            $categories = $this->getCategories();
+            $areas      = $this->getAreas();
+            $localities = $this->getLocalities();
+
+            $categoriesList = [];
+            $areasList      = [];
+            $localitiesList = [];
+
+            foreach ($categories as $category) {
+                $categoriesList[] = $category->getName();
+            }
+
+            foreach ($areas as $area) {
+                $areasList[] = $area->getName();
+            }
+
+            foreach ($localities as $locality) {
+                $localitiesList[] = $locality->getName();
+            }
+
+            $result = sprintf(
+                '%s: Categories: %s; Areas: %s; Localities: %s; Type: %s; Miles %s',
+                $this->getId(),
+                implode(', ', $categoriesList),
+                implode(', ', $areasList),
+                implode(', ', $localitiesList),
+                $this->getServiceAreasType(),
+                $this->getMilesOfMyBusiness()
+            );
+        } else {
+            $result = '';
+        }
+
+        return $result;
     }
 
     /**

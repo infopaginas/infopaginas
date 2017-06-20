@@ -37,19 +37,14 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
     {
         $filename = $this->viewsAndVisitorsReportManager->generateReportName(self::FORMAT);
 
+        $title = $this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle');
+        $title = $this->getSafeTitle($title);
+
         $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-
-        $this->phpExcelObject->getProperties()
-            ->setTitle($this->translator->trans('export.title.business_overview_report', [], 'AdminReportBundle'))
-        ;
-
         $this->phpExcelObject = $this->setData($params);
 
-        $this->phpExcelObject->getActiveSheet()
-            ->setTitle(
-                $this->translator->trans('export.title.active_sheet', [], 'AdminReportBundle')
-            )
-        ;
+        $this->phpExcelObject->getProperties()->setTitle($title);
+        $this->phpExcelObject->getActiveSheet()->setTitle($title);
 
         return $this->sendResponse($filename);
     }

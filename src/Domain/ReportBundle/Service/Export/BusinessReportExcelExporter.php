@@ -90,9 +90,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
             ->getBusinessOverviewReportName($businessProfile->getSlug(), self::FORMAT);
 
         $title = mb_substr($businessProfile->getName(), 0, self::TITLE_MAX_LENGTH);
+        $title = $this->getSafeTitle($title);
 
         $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-
         $this->phpExcelObject = $this->setData($params);
 
         $this->phpExcelObject->getProperties()->setTitle($title);

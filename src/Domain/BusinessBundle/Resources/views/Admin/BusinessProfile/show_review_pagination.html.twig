@@ -1,0 +1,34 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.id is not null %}
+        <div class="row">
+            <div class="col-md-4">
+                <button id="{{ admin.uniqid }}_{{ field_description.name }}Prev" type="button" class="btn green-btn">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    Prev
+                </button>
+
+                <button id="{{ admin.uniqid }}_{{ field_description.name }}Next" type="button" class="btn green-btn">
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    Next
+                </button>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input id="{{ admin.uniqid }}_{{ field_description.name }}Page" type="number" min="1" class="form-control" placeholder="Go to page...">
+                    <span class="input-group-btn">
+                        <button id="{{ admin.uniqid }}_{{ field_description.name }}Go" class="btn btn-default" type="button">Go</button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <span class="form-control">
+                    Page:
+                    <span id="{{ admin.uniqid }}_{{ field_description.name }}Current"></span> /
+                    <span id="{{ admin.uniqid }}_{{ field_description.name }}Total"></span>
+                </span>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

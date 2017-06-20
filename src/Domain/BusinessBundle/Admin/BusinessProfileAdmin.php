@@ -52,6 +52,7 @@ class BusinessProfileAdmin extends OxaAdmin
     use VideoUploadTrait;
 
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
+    const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
     protected $translations = [];
 
@@ -760,58 +761,188 @@ class BusinessProfileAdmin extends OxaAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('id')
-            ->add('logo', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_image.html.twig'
-            ])
-            ->add('background', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_background.html.twig'
-            ])
-            ->add('name')
-            ->add('images')
-            ->add('user')
-            ->add('subscription')
-            ->add('subscriptions')
-            ->add('discount')
-            ->add('coupons')
-            ->add('categories')
-            ->add('catalogLocality')
-            ->add('areas')
-            ->add('localities')
-            ->add('neighborhoods')
-            ->add('brands')
-            ->add('paymentMethods')
-            ->add('businessReviews')
-            ->add('website')
-            ->add('email')
-            ->add('phones')
-            ->add('registrationDate')
-            ->add('slogan')
-            ->add('description', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig'
-            ])
-            ->add('product')
-            ->add('collectionWorkingHours', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig'
-            ])
-            ->add('workingHours', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig'
-            ])
-            ->add('hideAddress')
-            ->add('slug')
-            ->add('updatedAt')
-            ->add('updatedUser')
-            ->add('isActive')
-            ->add('isDeleted', null, [
-                'label' => 'Scheduled for deletion',
-            ])
-            ->add('dcOrderId')
+            ->tab('Profile', ['class' => 'col-md-12',])
+                ->with('Translatable')
+                    ->add('name')
+                    ->add('slogan')
+                    ->add('description', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig',
+                    ])
+                    ->add('product')
+                    ->add('brands')
+                    ->add('workingHours', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig',
+                    ])
+                ->end()
+                ->with('Main')
+                    ->add('id')
+                    ->add('user')
+                    ->add('website')
+                    ->add('email')
+                    ->add('slug')
+                    ->add('collectionWorkingHours', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig',
+                    ])
+                    ->add('phones')
+                ->end()
+                ->with('Address')
+                    ->add('country')
+                    ->add('state')
+                    ->add('catalogLocality')
+                    ->add('zipCode')
+                    ->add('streetAddress')
+                    ->add('customAddress')
+                    ->add('hideAddress')
+                    ->add('latitude')
+                    ->add('longitude')
+                ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
+                ->with('Categories')
+                    ->add('categories')
+                    ->add('serviceAreasType')
+                    ->add('milesOfMyBusiness')
+                    ->add('areas')
+                    ->add('localities')
+                    ->add('neighborhoods')
+                    ->add('paymentMethods')
+                ->end()
+                ->with('SuperVM')
+                    ->add('extraSearches')
+                ->end()
+                ->with('Gallery')
+                    ->add('logo', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_image.html.twig',
+                    ])
+                    ->add('background', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_background.html.twig',
+                    ])
+                    ->add('images')
+                ->end()
+                ->with('Subscription')
+                    ->add('subscription')
+                    ->add('subscriptions')
+                ->end()
+                ->with('Status')
+                    ->add('isActive')
+                    ->add('registrationDate')
+                    ->add('isDeleted', null, [
+                        'label' => 'Scheduled for deletion',
+                    ])
+                    ->add('updatedAt')
+                    ->add('updatedUser')
+                    ->add('createdAt')
+                    ->add('createdUser')
+                ->end()
+                ->with('Coupons', ['class' => 'col-md-6',])
+                    ->add('coupons')
+                ->end()
+                ->with('Discount', ['class' => 'col-md-6',])
+                    ->add('discount')
+                ->end()
+                ->with('DoubleClick')
+                    ->add('dcOrderId', null, [
+                        'label' => 'DC Order Id for Ad Usage Report',
+                    ])
+                ->end()
+            ->end()
+            ->tab('Reviews')
+                ->with('User Reviews')
+                    ->add('reviewPagination', null, [
+                        'label'    => 'Pagination',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_review_pagination.html.twig',
+                    ])
+                    ->add('reviewList', null, [
+                        'label'    => 'businessReviewsList',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_review.html.twig',
+                    ])
+                ->end()
+            ->end()
         ;
+
+        if ($this->getSubject()->getId()) {
+            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_THIS_WEEK);
+
+            $showMapper
+                ->tab('Interactions Report')
+                    ->with('Interactions Report')
+                        ->add('interactionReportFilters', null, [
+                            'label'     => 'Interaction Filters',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                            'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                        ])
+                        ->add('interactionReport', null, [
+                            'label'    => 'Interaction Report',
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('interactionExport', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                        ])
+                    ->end()
+                ->end()
+                ->tab('Keywords Report')
+                    ->with('Keywords Report')
+                        ->add('keywordReportLimit', null, [
+                            'label'     => 'Keyword Limit',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_limit.html.twig',
+                            'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
+                            'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+                        ])
+                        ->add('keywordReportFilters', null, [
+                            'label'     => 'Keyword Filters',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                            'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                        ])
+                        ->add('keywordReport', null, [
+                            'label'     => 'Keyword Report',
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('keywordsExport', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                        ])
+                    ->end()
+                ->end()
+            ;
+
+            if ($this->getSubject()->getDcOrderId()) {
+                $showMapper
+                    ->tab('Ad Usage Report')
+                        ->with('Ad Usage Report')
+                            ->add('adUsageReportFilters', null, [
+                                'label'     => 'Ad Usage Filters',
+                                'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                                'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
+                                'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
+                                'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                            ])
+                            ->add('adUsageReport', null, [
+                                'label'     => 'Ad Usage Report',
+                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                            ])
+                            ->add('adUsageExport', null, [
+                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                            ])
+                        ->end()
+                    ->end()
+                ;
+            }
+        }
     }
 
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
+        $this->templates['show'] = 'DomainBusinessBundle:Admin:show.html.twig';
     }
 
     /**
