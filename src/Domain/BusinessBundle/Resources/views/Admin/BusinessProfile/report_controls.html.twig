@@ -1,0 +1,40 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.id is not null %}
+        <div class="form-group">
+            <label class=" control-label">
+                Date Start
+            </label>
+
+            <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                <div class="input-group">
+                    <div class="input-group date">
+                        <input id="{{ admin.uniqid }}_{{ field_description.name }}DateStart" type="text" class="sonata-medium-date form-control" data-date-format="{{ field_description.options.format }}" value="{{ field_description.options.dateStart }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class=" control-label">
+                Date End
+            </label>
+
+            <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                <div class="input-group">
+                    <div class="input-group date">
+                        <input id="{{ admin.uniqid }}_{{ field_description.name }}DateEnd" type="text" class="sonata-medium-date form-control" data-date-format="{{ field_description.options.format }}" value="{{ field_description.options.dateEnd }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button id="{{ admin.uniqid }}_{{ field_description.name }}Filter" type="button" class="btn btn-primary" data-report-filter>
+                <i class="fa fa-filter" aria-hidden="true"></i>
+                Filter
+            </button>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -20,6 +20,7 @@ class CRUDController extends AdminCRUDController
         $id = $request->get($this->admin->getIdParameter());
 
         $object = $this->admin->getObject($id);
+        $user   = $this->getUser();
 
         if (!$object) {
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
@@ -27,7 +28,7 @@ class CRUDController extends AdminCRUDController
 
         // allow user to see his profile info even he is not granted
         // it's simple alternative to profile page
-        if ($id != $object->getId() && false === $this->admin->isGranted('VIEW', $object)) {
+        if ($id != $user->getId() && false === $this->admin->isGranted('VIEW', $object)) {
             throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException;
         }
 

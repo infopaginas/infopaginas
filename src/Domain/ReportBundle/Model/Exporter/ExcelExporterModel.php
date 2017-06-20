@@ -216,4 +216,24 @@ abstract class ExcelExporterModel implements ExporterInterface
 
         return $response;
     }
+
+    /**
+     * @param string $title
+     *
+     * @return string
+     */
+    protected function getSafeTitle($title)
+    {
+        $forbiddenChars= [
+            '*',
+            ':',
+            '/',
+            '\\',
+            '?',
+            '[',
+            ']',
+        ];
+
+        return str_replace($forbiddenChars, '', $title);
+    }
 }
