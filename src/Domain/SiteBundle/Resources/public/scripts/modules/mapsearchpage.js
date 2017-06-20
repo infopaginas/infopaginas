@@ -3,7 +3,7 @@ define(
     function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
 
-    const userMarker = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+    const userMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 
     var mapSearchPage = function () {
         this.events = {
