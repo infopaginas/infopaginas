@@ -3,10 +3,10 @@ $( document ).ready( function() {
         containers: {
             businessOverviewChartContainerId: '#' + uniqueId + '_interactionReportChartContainer',
             businessOverviewStatsContainerId: '#' + uniqueId + '_interactionReportStatisticsContainer',
-            keywordChartContainerId: '#keywordChartContainer',
-            keywordStatsContainerId: '#keywordStatisticsContainer',
-            adUsageStatsContainerId: '#adUsageStatisticsContainer',
-            adUsageChartContainerId: '#adUsageChartContainer'
+            keywordChartContainerId: '#' + uniqueId + '_keywordReportChartContainer',
+            keywordStatsContainerId: '#' + uniqueId + '_keywordReportStatisticsContainer',
+            adUsageChartContainerId: '#' + uniqueId + '_adUsageReportChartContainer',
+            adUsageStatsContainerId: '#' + uniqueId + '_adUsageReportStatisticsContainer'
         },
         inputs: {
             interactionDateStart:   '#' + uniqueId + '_interactionReportFiltersDateStart',
