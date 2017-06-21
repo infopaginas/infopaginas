@@ -597,6 +597,16 @@ class BusinessProfileAdmin extends OxaAdmin
                                     ),
                                 ),
                             ])
+                            ->add('videoStatus', TextType::class, [
+                                'data_class' => null,
+                                'mapped'     => false,
+                                'required'   => false,
+                                'data'       => $businessProfile->getVideo()->getStatus(),
+                                'attr' => [
+                                    'readonly' => true,
+                                    'disabled' => true,
+                                ],
+                            ])
                         ->end()
                     ->end()
                 ;
