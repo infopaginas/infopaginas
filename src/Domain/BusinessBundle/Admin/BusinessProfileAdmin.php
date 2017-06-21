@@ -97,7 +97,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $list = parent::configureActionButtons($action, $object);
 
         $accessToCopy = [
-            'show',
+            'create',
             'edit',
         ];
 
