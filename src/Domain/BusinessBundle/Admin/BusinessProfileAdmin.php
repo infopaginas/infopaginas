@@ -94,7 +94,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $list = parent::configureActionButtons($action, $object);
 
         $accessToCopy = [
-            'show',
+            'create',
             'edit',
         ];
 
@@ -676,19 +676,27 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Main')
                     ->add('id')
-                    ->add('user')
+                    ->add('user', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
                     ->add('website')
                     ->add('email')
                     ->add('slug')
                     ->add('collectionWorkingHours', null, [
                         'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig',
                     ])
-                    ->add('phones')
+                    ->add('phones', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
                 ->end()
                 ->with('Address')
-                    ->add('country')
+                    ->add('country', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
                     ->add('state')
-                    ->add('catalogLocality')
+                    ->add('catalogLocality', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
                     ->add('zipCode')
                     ->add('streetAddress')
                     ->add('customAddress')
@@ -705,29 +713,45 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
-                    ->add('categories')
+                    ->add('categories', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
                     ->add('serviceAreasType')
                     ->add('milesOfMyBusiness')
-                    ->add('areas')
-                    ->add('localities')
-                    ->add('neighborhoods')
-                    ->add('paymentMethods')
+                    ->add('areas', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('localities', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('neighborhoods', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('paymentMethods', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
                 ->end()
                 ->with('SuperVM')
-                    ->add('extraSearches')
+                    ->add('extraSearches', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
                 ->end()
                 ->with('Gallery')
                     ->add('logo', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_image.html.twig',
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
                     ])
                     ->add('background', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_background.html.twig',
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
                     ])
-                    ->add('images')
+                    ->add('images', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_one_to_many.html.twig',
+                    ])
                 ->end()
                 ->with('Subscription')
                     ->add('subscription')
-                    ->add('subscriptions')
+                    ->add('subscriptions', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
                 ->end()
                 ->with('Status')
                     ->add('isActive')
@@ -736,12 +760,18 @@ class BusinessProfileAdmin extends OxaAdmin
                         'label' => 'Scheduled for deletion',
                     ])
                     ->add('updatedAt')
-                    ->add('updatedUser')
+                    ->add('updatedUser', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
                     ->add('createdAt')
-                    ->add('createdUser')
+                    ->add('createdUser', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
                 ->end()
                 ->with('Coupons', ['class' => 'col-md-6',])
-                    ->add('coupons')
+                    ->add('coupons', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_coupon_orm_one_to_many.html.twig',
+                    ])
                 ->end()
                 ->with('Discount', ['class' => 'col-md-6',])
                     ->add('discount')

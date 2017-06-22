@@ -36,8 +36,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     };
 
     //only 1 video allowed
-    videos.prototype.checkMaxAllowedFilesCount = function( files ) {
-        var filesSelected = files.length;
+    videos.prototype.checkMaxAllowedFilesCount = function( filesSelected ) {
         var filesAlreadyAdded = $( document ).find( this.html.videoRowContainer ).length;
 
         var filesAdded = filesSelected + filesAlreadyAdded;
@@ -155,7 +154,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
 
             that.removeVideoErrors();
 
-            if( that.checkMaxAllowedFilesCount( files ) == false ) {
+            if( that.checkMaxAllowedFilesCount( files.length ) == false ) {
                 return false;
             }
 
@@ -188,6 +187,10 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
                 that.videoErrorHandler( error );
             } else {
                 that.removeVideoErrors();
+
+                if( that.checkMaxAllowedFilesCount( 1 ) == false ) {
+                    return false;
+                }
 
                 var data = {
                     url: $remoteVideoURLInput.val(),
