@@ -26,20 +26,20 @@ class RedirectController extends Controller
             die();
         }
 
-        $path = explode('/', $uri);
+        $pathParts = explode('/', $uri);
 
-        switch ($path[0]) {
+        switch ($pathParts[0]) {
             case self::REDIRECT_PREFIX_BUSINESS:
                 // business page redirect
-                $data = $this->getBusinessRedirectData($path);
+                $data = $this->getBusinessRedirectData($pathParts);
                 break;
             case self::REDIRECT_PREFIX_CATALOG:
                 // catalog redirect
-                $data = $this->getCatalogRedirectData($path);
+                $data = $this->getCatalogRedirectData($pathParts);
                 break;
             default:
                 // redirect to search page
-                $data = $this->getDefaultRedirectData($path);
+                $data = $this->getDefaultRedirectData($pathParts);
                 break;
         }
 
@@ -51,15 +51,15 @@ class RedirectController extends Controller
     }
 
     /**
-     * @param array $path
+     * @param array $pathParts
      *
      * @return array
      */
-    protected function getBusinessRedirectData($path)
+    protected function getBusinessRedirectData($pathParts)
     {
-        end($path);
-        $business   = prev($path);
-        $locality   = prev($path);
+        end($pathParts);
+        $business   = prev($pathParts);
+        $locality   = prev($pathParts);
 
         return [
             'params' => [
@@ -71,15 +71,15 @@ class RedirectController extends Controller
     }
 
     /**
-     * @param array $path
+     * @param array $pathParts
      *
      * @return array
      */
-    protected function getCatalogRedirectData($path)
+    protected function getCatalogRedirectData($pathParts)
     {
-        end($path);
-        $category   = prev($path);
-        $locality   = prev($path);
+        end($pathParts);
+        $category   = prev($pathParts);
+        $locality   = prev($pathParts);
 
         return [
             'params' => [
@@ -91,15 +91,15 @@ class RedirectController extends Controller
     }
 
     /**
-     * @param array $path
+     * @param array $pathParts
      *
      * @return array
      */
-    protected function getDefaultRedirectData($path)
+    protected function getDefaultRedirectData($pathParts)
     {
         return [
             'params' => [
-                'q' => implode(' ', $path),
+                'q' => implode(' ', $pathParts),
             ],
             'route' => 'domain_search_index',
         ];
