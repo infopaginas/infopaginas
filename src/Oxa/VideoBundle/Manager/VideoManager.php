@@ -81,6 +81,11 @@ class VideoManager
         return $status;
     }
 
+    /**
+     * @param int $id
+     *
+     * @return bool
+     */
     public function scheduleVideoForRemove($id)
     {
         $status = true;
@@ -338,6 +343,11 @@ class VideoManager
         return $media;
     }
 
+    /**
+     * @param VideoMedia $media
+     *
+     * @return VideoMedia
+     */
     public function regenerateVideoPoster(VideoMedia $media)
     {
         $ffmpeg  = $this->container->get('dubture_ffmpeg.ffmpeg');
