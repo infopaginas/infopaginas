@@ -147,7 +147,7 @@ class VideoMedia implements PostponeRemoveInterface
      *
      * @var Media - Media poster
      * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
-     *     inversedBy="videoPosters",
+     *     inversedBy="videoMedia",
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="poster_id", referencedColumnName="id", nullable=true)

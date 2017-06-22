@@ -27,7 +27,13 @@ class VideoPosterRegenerateCommand extends ContainerAwareCommand
             $videoMedia = $row[0];
             $output->writeln('Processing video: '. $videoMedia->getId());
 
-            $videoManager->regenerateVideoPoster($videoMedia);
+            $status = $videoManager->regenerateVideoPoster($videoMedia);
+
+            if (!$status) {
+                $output->writeln('Error: fail to create poster: '. $videoMedia->getId());
+            } else {
+                $output->writeln('Done');
+            }
 
             $em->flush();
             $em->clear();

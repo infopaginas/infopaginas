@@ -124,7 +124,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      *     cascade={"persist"}
      * )
      */
-    protected $videoPosters;
+    protected $videoMedia;
 
     /**
      * Get id
@@ -212,7 +212,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     {
         $this->galleryHasMedias = new ArrayCollection();
         $this->backgroundPages  = new ArrayCollection();
-        $this->videoPosters     = new ArrayCollection();
+        $this->videoMedia       = new ArrayCollection();
     }
 
     /**
@@ -536,9 +536,9 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      *
      * @return Media
      */
-    public function addVideoPoster(VideoMedia $videoMedia)
+    public function addVideoMedia(VideoMedia $videoMedia)
     {
-        $this->videoPosters[] = $videoMedia;
+        $this->videoMedia[] = $videoMedia;
 
         return $this;
     }
@@ -548,9 +548,9 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      *
      * @param VideoMedia $videoMedia
      */
-    public function removeVideoPoster(VideoMedia $videoMedia)
+    public function removeVideoMedia(VideoMedia $videoMedia)
     {
-        $this->videoPosters->removeElement($videoMedia);
+        $this->videoMedia->removeElement($videoMedia);
     }
 
     /**
@@ -558,8 +558,8 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      *
      * @return ArrayCollection
      */
-    public function getVideoPosters()
+    public function getVideoMedia()
     {
-        return $this->videoPosters;
+        return $this->videoMedia;
     }
 }

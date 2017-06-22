@@ -346,12 +346,13 @@ class VideoManager
     /**
      * @param VideoMedia $media
      *
-     * @return VideoMedia
+     * @return bool
      */
     public function regenerateVideoPoster(VideoMedia $media)
     {
         $ffmpeg  = $this->container->get('dubture_ffmpeg.ffmpeg');
         $galleryManager = $this->container->get('domain_business.manager.business_gallery');
+        $status = true;
 
         $videoFile  = $this->getLocalUrl();
         $posterFile = $this->getLocalUrl(false, 'png');
@@ -365,7 +366,9 @@ class VideoManager
             $frame->save($posterFile);
 
             $galleryManager->createNewPosterFromLocalFile($media, $posterFile);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+            $status = false;
+        }
 
         $this->deleteLocalMediaFiles(
             [
@@ -374,7 +377,7 @@ class VideoManager
             ]
         );
 
-        return $media;
+        return $status;
     }
 
     /**
