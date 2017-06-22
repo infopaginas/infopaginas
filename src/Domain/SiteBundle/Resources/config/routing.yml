@@ -34,6 +34,12 @@ domain_site_user:
 
 # 301 redirect for old urls
 
+domain_site_redirect_qr:
+    path:     /{path}.html
+    defaults: { _controller: DomainSiteBundle:Redirect:index }
+    requirements:
+        path: .+
+
 domain_site_redirect_sign_up:
     path:     /sign_up
     defaults:
