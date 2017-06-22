@@ -10,6 +10,7 @@ class RedirectController extends Controller
 {
     const REDIRECT_PREFIX_BUSINESS = 'page';
     const REDIRECT_PREFIX_CATALOG  = 'business';
+
     /**
      * @param Request $request
      *
