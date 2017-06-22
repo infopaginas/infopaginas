@@ -552,3 +552,4 @@ TripAdvisor: TripAdvisor
 popular_searches.title: Búsquedas populares
 google_maps.current_user_position.label: Ubicación actual
 business_profile.image.description.required: Este campo es requerido
+business_profile.video.description.required: Este campo es requerido

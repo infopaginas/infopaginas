@@ -1,0 +1,14 @@
+<div class="col-md-12">
+    <a href="{{ url }}" target="_blank">reference</a>
+</div>
+{% if media.status == VIDEO_STATUS.ACTIVE %}
+    <div class="col-md-12">
+        <video id="video-{{ media.id }}" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" data-setup='{"fluid": false}' {% if media.poster %}poster="{% path media.poster, 'normal' %}"{% endif %}>
+            <source src="{{ url }}" type='{{ media.type }}'>
+            <p class="vjs-no-js">
+                {% trans %}To view this video please enable JavaScript, and consider upgrading to a web browser that{% endtrans %}
+                <a href="http://videojs.com/html5-video-support/" target="_blank">{% trans %}supports HTML5 video{% endtrans %}</a>
+            </p>
+        </video>
+    </div>
+{% endif %}

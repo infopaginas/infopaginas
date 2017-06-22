@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Symfony\Component\Validator\Constraints as Assert;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 
 /**
  * VideoMedia
@@ -141,6 +142,18 @@ class VideoMedia implements PostponeRemoveInterface
      */
     protected $businessProfiles;
 
+    /**
+     * Logo Field. Related to class constant BUSINESS_PROFILE_FIELD_LOGO
+     *
+     * @var Media - Media poster
+     * @ORM\ManyToOne(targetEntity="Oxa\Sonata\MediaBundle\Entity\Media",
+     *     inversedBy="videoMedia",
+     *     cascade={"persist"}
+     *     )
+     * @ORM\JoinColumn(name="poster_id", referencedColumnName="id", nullable=true)
+     */
+    protected $poster;
+
     public function __construct(array $videoMediaData = [])
     {
         if (!empty($videoMediaData)) {
@@ -148,21 +161,25 @@ class VideoMedia implements PostponeRemoveInterface
             $this->setType($videoMediaData['type']);
             $this->setFilename($videoMediaData['filename']);
             $this->setFilepath($videoMediaData['filepath']);
-
-            $this->setCreatedAt(new \DateTime());
-            $this->setUpdatedAt(new \DateTime());
-
-            if ($this->getType() == $this::VIDEO_TYPE_MP4) {
-                $this->setStatus($this::VIDEO_STATUS_ACTIVE);
-            } else {
-                $this->setStatus($this::VIDEO_STATUS_PENDING);
-            }
-
-            $this->setYoutubeSupport(true);
-            $this->setYoutubeAction(null);
-
-            $this->businessProfiles = new ArrayCollection();
         }
+
+        $this->setStatus($this::VIDEO_STATUS_PENDING);
+
+        $this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
+
+        $this->setYoutubeSupport(true);
+        $this->setYoutubeAction(null);
+
+        $this->businessProfiles = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName() ?: (string)$this->getId();
     }
 
     /**
@@ -493,6 +510,30 @@ class VideoMedia implements PostponeRemoveInterface
     public function getYoutubeAction()
     {
         return $this->youtubeAction;
+    }
+
+    /**
+     * Set poster
+     *
+     * @param Media|null $poster
+     *
+     * @return VideoMedia
+     */
+    public function setPoster($poster = null)
+    {
+        $this->poster = $poster;
+
+        return $this;
+    }
+
+    /**
+     * Get poster
+     *
+     * @return Media
+     */
+    public function getPoster()
+    {
+        return $this->poster;
     }
 
     public function getYoutubeTitle()

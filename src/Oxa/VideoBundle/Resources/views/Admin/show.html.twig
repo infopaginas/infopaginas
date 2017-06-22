@@ -1,0 +1,12 @@
+{% extends 'OxaSonataAdminBundle:CRUD:show.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ absolute_url(asset('bundles/oxavideo/css/video-js.5.8.8.css')) }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ absolute_url(asset('bundles/oxavideo/scripts/video.5.8.8.min.js')) }}"></script>
+{% endblock %}

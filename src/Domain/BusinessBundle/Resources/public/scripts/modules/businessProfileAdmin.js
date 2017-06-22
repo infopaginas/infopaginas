@@ -8,7 +8,6 @@ $( document ).ready( function() {
     var neighborhoodAjaxCall;
     var addExtraSearchLock = false;
 
-    var removeVideo         = $( '#' + formId + '_removeVideo' );
     var categoryField       = $( '#' + formId + '_categories' );
     var areasField          = $( '#' + formId + '_areas' );
     var localitiesField     = $( '#' + formId + '_localities' );
@@ -112,16 +111,6 @@ $( document ).ready( function() {
             timeEnd.prop( 'readonly', false );
         }
     }
-
-    hideVideoAdd();
-
-    removeVideo.on( 'ifChecked ifUnchecked' , function( e, aux ){
-        if( removeVideo.prop( 'checked' ) ){
-            showVideoAdd();
-        }else{
-            hideVideoAdd();
-        }
-    });
 
     var useMapAddress = $( '#' + formId + '_useMapAddress' );
 
@@ -231,18 +220,6 @@ $( document ).ready( function() {
                 input.removeAttr( 'disabled' );
             }
         } );
-    }
-
-    function hideVideoAdd() {
-        $( '#' + formId + '_videoFile[data-hidden-field]').parent().parent().hide();
-        $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().hide();
-        $( '#' + formId + '_videoName' ).parent().parent().show();
-    }
-
-    function showVideoAdd() {
-        $( '#' + formId + '_videoFile[data-hidden-field]' ).parent().parent().show();
-        $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().show();
-        $( '#' + formId + '_videoName' ).parent().parent().hide();
     }
 
     function updateSelect2FieldValues( field, data ) {

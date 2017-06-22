@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Domain\PageBundle\Entity\Page;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
@@ -117,6 +118,15 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     protected $articles;
 
     /**
+     * @var VideoMedia[]
+     * @ORM\OneToMany(targetEntity="Oxa\VideoBundle\Entity\VideoMedia",
+     *     mappedBy="poster",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $videoMedia;
+
+    /**
      * Get id
      *
      * @return integer $id
@@ -178,6 +188,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
             self::CONTEXT_ARTICLE                       => self::CONTEXT_ARTICLE,
             self::CONTEXT_ARTICLE_IMAGES                => self::CONTEXT_ARTICLE_IMAGES,
             self::CONTEXT_PAGE_BACKGROUND               => self::CONTEXT_PAGE_BACKGROUND,
+            self::CONTEXT_VIDEO_POSTER                  => self::CONTEXT_VIDEO_POSTER,
         ];
     }
 
@@ -201,6 +212,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     {
         $this->galleryHasMedias = new ArrayCollection();
         $this->backgroundPages  = new ArrayCollection();
+        $this->videoMedia       = new ArrayCollection();
     }
 
     /**
@@ -515,5 +527,39 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function removeGalleryHasMedia(\Oxa\Sonata\MediaBundle\Entity\GalleryHasMedia $galleryHasMedia)
     {
         $this->galleryHasMedias->removeElement($galleryHasMedia);
+    }
+
+    /**
+     * Add videoMedia poster
+     *
+     * @param VideoMedia $videoMedia
+     *
+     * @return Media
+     */
+    public function addVideoMedia(VideoMedia $videoMedia)
+    {
+        $this->videoMedia[] = $videoMedia;
+
+        return $this;
+    }
+
+    /**
+     * Remove videoMedia poster
+     *
+     * @param VideoMedia $videoMedia
+     */
+    public function removeVideoMedia(VideoMedia $videoMedia)
+    {
+        $this->videoMedia->removeElement($videoMedia);
+    }
+
+    /**
+     * Get videoMedia posters
+     *
+     * @return ArrayCollection
+     */
+    public function getVideoMedia()
+    {
+        return $this->videoMedia;
     }
 }

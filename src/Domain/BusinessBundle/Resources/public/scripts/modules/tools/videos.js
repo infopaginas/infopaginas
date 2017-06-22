@@ -11,7 +11,9 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
             videoContainerId: '#video',
             removeVideoLinkId: '#remove-video',
             remoteVideoURLInputId: '#remote-video-url',
-            videoRowContainer: 'div.media__item.video-item'
+            videoRowContainer: 'div.media__item.video-item',
+            videoTitleFields: '#video input[ id *= "_title"]',
+            videoDescriptionFields: '#video textarea[ id *= "_description"]'
         };
 
         this.urls = {
@@ -30,6 +32,7 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
         this.handleFileUploadInput();
         this.handleClickOnRemoveLink();
         this.handleRemoteVideosUpload();
+        this.handleVideoValidationError();
     };
 
     //only 1 video allowed
@@ -249,6 +252,15 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
                 $this.parent().removeClass( 'field-active field-filled' );
                 $this.parent().find( 'label' ).removeClass( 'label-active' );
             }
+        });
+    };
+
+    videos.prototype.handleVideoValidationError = function() {
+        $( document ).on( 'change', this.html.videoDescriptionFields + ',' + this.html.videoTitleFields, function() {
+            var description = $( this );
+
+            description.parent().removeClass( 'field--not-valid' );
+            description.parent().find( 'span[data-error-message]' ).remove();
         });
     };
 

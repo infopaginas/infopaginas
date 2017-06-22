@@ -475,7 +475,7 @@ class BusinessProfileManager extends Manager
                                     }
                                 } elseif ($dataOld->id != $dataNew->id) {
                                     // replace
-                                    $this->getVideoManager()->removeMedia($dataOld->id);
+                                    $this->getVideoManager()->scheduleVideoForRemove($dataOld->id);
 
                                     if ($media->getYoutubeSupport()) {
                                         $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
@@ -495,7 +495,7 @@ class BusinessProfileManager extends Manager
                     } else {
                         // remove
                         if ($change->getClassName() == VideoMedia::class and $businessProfile->getVideo()) {
-                            $this->getVideoManager()->removeMedia($businessProfile->getVideo()->getId());
+                            $this->getVideoManager()->scheduleVideoForRemove($businessProfile->getVideo()->getId());
                         }
 
                         $accessor->setValue($businessProfile, $change->getFieldName(), null);
