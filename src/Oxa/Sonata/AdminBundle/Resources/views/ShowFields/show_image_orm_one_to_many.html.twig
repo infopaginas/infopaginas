@@ -1,0 +1,11 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    <ul class="sonata-ba-show-one-to-many">
+        {% for element in value %}
+            <li>
+                <img src="{% path element, 'preview' %}" alt="{{ element.description }}">
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
