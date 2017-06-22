@@ -156,3 +156,8 @@ table.business-review-table {
     background-image: none;
     padding: 15px 15px;
 }
+
+img.video-poster {
+    max-width: 100%;
+    height: auto;
+}

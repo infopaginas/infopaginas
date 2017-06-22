@@ -50,7 +50,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             areasFieldSpan: '.area-field',
             asteriskClass: 'i.fa-asterisk',
             asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>',
-            imageValidationErrors: '#imageValidationErrors'
+            imageValidationErrors: '#imageValidationErrors',
+            videoValidationErrors: '#videoValidationErrors'
         };
 
         this.ajax = {
@@ -287,6 +288,30 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         return hasError;
     };
 
+    businessProfile.prototype.validateVideo = function() {
+        var that = this;
+        var fields = $( '#video' ).find( 'textarea[ id *= "_description"], input[ id *= "_title"]' );
+        var notEmptyString = /\S/;
+        var hasError = false;
+
+        fields.each(function() {
+            var field       = $( this );
+            var fieldParent = field.parent();
+
+            fieldParent.removeClass( 'field--not-valid' );
+            fieldParent.find( 'span[data-error-message]' ).remove();
+
+            if ( !notEmptyString.test( field.val() )) {
+                fieldParent.addClass( 'field--not-valid' );
+                field.after( '<span data-error-message class="error">' + $( that.html.videoValidationErrors ).data( 'required' ) + '</span>' );
+
+                hasError = true;
+            }
+        });
+
+        return hasError;
+    };
+
     businessProfile.prototype.handleProfileSave = function() {
         var that = this;
 
@@ -294,7 +319,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             that.formSubmitting = true;
             event.preventDefault();
 
-            if ( that.validateImages() ) {
+            if ( that.validateImages() || that.validateVideo() ) {
                 that.formSubmitting = false;
 
                 return false;

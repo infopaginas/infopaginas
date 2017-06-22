@@ -7,6 +7,7 @@ use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use FFMpeg\Coordinate\TimeCode;
 
 class VideoManager
 {
@@ -16,6 +17,7 @@ class VideoManager
     const LINK_LIFE_TIME      = 600;
     const AUDIO_CODEC = 'libmp3lame';
     const TRUSTED_SCORE = 25;
+    const POSTER_AT_SECOND = 3;
 
     private static $allowedMimeTypes = [
         'video/mp4',
@@ -53,23 +55,38 @@ class VideoManager
         $this->container = $container;
     }
 
-    public function removeMedia($id)
+    /**
+     * @param VideoMedia $video
+     *
+     * @return bool
+     */
+    public function removeVideo($video)
+    {
+        $status = true;
+
+        if ($video and $video->getBusinessProfiles()->isEmpty()) {
+            if ($this->filesystem->getAdapter()->exists($video->getFilepath() . $video->getFilename())) {
+                $this->filesystem->delete($video->getFilepath() . $video->getFilename());
+            }
+
+            if ($video->getYoutubeSupport() and $video->getYoutubeId()) {
+                $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_REMOVE);
+            } else {
+                $this->container->get('doctrine.orm.entity_manager')->remove($video);
+            }
+        } else {
+            $status = false;
+        }
+
+        return $status;
+    }
+
+    public function scheduleVideoForRemove($id)
     {
         $status = true;
 
         $media = $this->videoMediaManager->find($id);
-
-        if ($media) {
-            if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
-                $status = $this->filesystem->delete($media->getFilepath() . $media->getFilename());
-            }
-
-            if ($media->getYoutubeSupport() and $media->getYoutubeId()) {
-                $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_REMOVE);
-            } else {
-                $this->container->get('doctrine.orm.entity_manager')->remove($media);
-            }
-        }
+        $media->setIsDeleted(true);
 
         return $status;
     }
@@ -86,6 +103,28 @@ class VideoManager
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
         return $this->videoMediaManager->save($uploadedFileData);
+    }
+
+    /**
+     * @param VideoMedia $video
+     * @param UploadedFile $file
+     *
+     * @return VideoMedia
+     */
+    public function addVideoLocalFile(VideoMedia $video, UploadedFile $file) : VideoMedia
+    {
+        $fileData = [
+            'name'      => $file->getClientOriginalName(),
+            'type'      => $file->getClientMimeType(),
+            'ext'       => $file->getClientOriginalExtension(),
+            'path'      => $file->getPathname(),
+        ];
+
+        $uploadedFileData = $this->uploadLocalFileData($fileData);
+
+        $video = $this->addVideoProperties($video, $uploadedFileData);
+
+        return $video;
     }
 
     public function uploadLocalFileData(array $data) : array
@@ -146,6 +185,53 @@ class VideoManager
         return $this->videoMediaManager->save($uploadedFileData);
     }
 
+    /**
+     * @param VideoMedia $video
+     * @param string     $url
+     *
+     * @return VideoMedia
+     */
+    public function addVideoFromRemoteFile(VideoMedia $video, $url)
+    {
+        $headers = SiteHelper::checkUrlExistence($url);
+
+        $fileData = [
+            'name'      => $this->generateFilenameForUrl($url),
+            'ext'       => $this->getExtensionByMime($headers['content_type']),
+            'type'      => $headers['content_type'],
+            'path'      => $url,
+        ];
+
+        if ($fileData['ext'] == null || !isset($headers['content_type'])) {
+            $message = $this->container->get('translator')->trans('the link to the video is invalid', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message));
+        }
+
+        $uploadedFileData = $this->uploadLocalFileData($fileData);
+
+        $video = $this->addVideoProperties($video, $uploadedFileData);
+
+        return $video;
+    }
+
+    /**
+     * @param VideoMedia $video
+     * @param array      $data
+     *
+     * @return VideoMedia
+     */
+    protected function addVideoProperties($video, $data)
+    {
+        $video->setName($data['name']);
+        $video->setType($data['type']);
+        $video->setFilename($data['filename']);
+        $video->setFilepath($data['filepath']);
+
+        $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
+
+        return $video;
+    }
+
     public function uploadTempYoutubeFile($url)
     {
         $headers = SiteHelper::checkUrlExistence($url);
@@ -179,10 +265,14 @@ class VideoManager
     public function convertVideoMedia(VideoMedia $media)
     {
         $ffprobe = $this->container->get('dubture_ffmpeg.ffprobe');
+        $ffmpeg  = $this->container->get('dubture_ffmpeg.ffmpeg');
+        $galleryManager = $this->container->get('domain_business.manager.business_gallery');
+
+        $file = $this->getLocalUrl();
+        $tempFile = $this->getLocalUrl(true);
+        $posterFile = $this->getLocalUrl(false, 'png');
 
         try {
-            $file = $this->getLocalUrl();
-            $tempFile = $this->getLocalUrl(true);
             file_put_contents($tempFile, file_get_contents($this->getPublicUrl($media)));
 
             //ffmpeg script for converting video to mp4 format
@@ -198,8 +288,23 @@ class VideoManager
 
                 return $media;
             }
+
+            $video = $ffmpeg->open($file);
+
+            $frame = $video->frame(TimeCode::fromSeconds(self::POSTER_AT_SECOND));
+            $frame->save($posterFile);
+
+            $galleryManager->createNewPosterFromLocalFile($media, $posterFile);
         } catch (\Exception $e) {
             $media->setStatus($media::VIDEO_STATUS_ERROR);
+
+            $this->deleteLocalMediaFiles(
+                [
+                    $file,
+                    $tempFile,
+                    $posterFile,
+                ]
+            );
 
             return $media;
         }
@@ -222,16 +327,53 @@ class VideoManager
         $media->setType($uploadedFileData['type']);
         $media->setStatus($media::VIDEO_STATUS_ACTIVE);
 
-        $this->deleteLocalMediaFiles([$file, $tempFile]);
+        $this->deleteLocalMediaFiles(
+            [
+                $file,
+                $tempFile,
+                $posterFile,
+            ]
+        );
+
+        return $media;
+    }
+
+    public function regenerateVideoPoster(VideoMedia $media)
+    {
+        $ffmpeg  = $this->container->get('dubture_ffmpeg.ffmpeg');
+        $galleryManager = $this->container->get('domain_business.manager.business_gallery');
+
+        $videoFile  = $this->getLocalUrl();
+        $posterFile = $this->getLocalUrl(false, 'png');
+
+        try {
+            file_put_contents($videoFile, file_get_contents($this->getPublicUrl($media)));
+
+            $video = $ffmpeg->open($videoFile);
+
+            $frame = $video->frame(TimeCode::fromSeconds(self::POSTER_AT_SECOND));
+            $frame->save($posterFile);
+
+            $galleryManager->createNewPosterFromLocalFile($media, $posterFile);
+        } catch (\Exception $e) {}
+
+        $this->deleteLocalMediaFiles(
+            [
+                $videoFile,
+                $posterFile,
+            ]
+        );
 
         return $media;
     }
 
     /**
      * @param bool $isTemp
+     * @param string $extension
+     *
      * @return string
      */
-    public function getLocalUrl(bool $isTemp = false)
+    public function getLocalUrl(bool $isTemp = false, $extension = 'mp4')
     {
         $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
         $name = uniqid();
@@ -243,7 +385,7 @@ class VideoManager
         if ($isTemp) {
             $name = 'temp_' . $name;
         } else {
-            $name = $name . '.mp4';
+            $name .= '.' . $extension;
         }
 
         return $path . $name;

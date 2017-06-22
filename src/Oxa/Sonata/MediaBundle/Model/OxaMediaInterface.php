@@ -20,6 +20,7 @@ interface OxaMediaInterface
     const CONTEXT_ARTICLE                       = 'article';
     const CONTEXT_PAGE_BACKGROUND               = 'page_background';
     const CONTEXT_ARTICLE_IMAGES                = 'article_images';
+    const CONTEXT_VIDEO_POSTER                  = 'video_poster';
 
     /**
      * @return mixed

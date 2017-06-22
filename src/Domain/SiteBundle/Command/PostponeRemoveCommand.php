@@ -163,7 +163,11 @@ class PostponeRemoveCommand extends ContainerAwareCommand
     protected function removeEntity($entity)
     {
         if ($entity instanceof VideoMedia) {
-            $this->videoManager->removeMedia($entity->getId());
+            $status = $this->videoManager->removeVideo($entity);
+
+            if (!$status) {
+                $entity->setIsDeleted(false);
+            }
         } else {
             $this->em->remove($entity);
         }

@@ -43,11 +43,7 @@ class BusinessProfileListener implements EventSubscriber
             if ($entity->getVideo()) {
                 $media = $entity->getVideo();
 
-                if ($media->getYoutubeSupport() and $media->getYoutubeId()) {
-                    $media->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_REMOVE);
-                } else {
-                    $em->remove($media);
-                }
+                $media->setIsDeleted(true);
             }
         }
     }
