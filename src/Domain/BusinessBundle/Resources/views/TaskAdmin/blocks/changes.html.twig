@@ -31,8 +31,14 @@
                 <tr class="sonata-ba-view-container">
                     <td>{{ normalize_task_fieldname_label(row.fieldName)|trans }}</td>
                     <td>{{ normalize_task_changeaction_label(row.action) }}</td>
-                    <td>{{ row.oldValue }}</td>
-                    <td>{{ row.newValue }}</td>
+
+                    {% if row.fieldName == BUSINESS_PROFILE_FIELD_PANORAMA_ID %}
+                        <td>{% include 'DomainBusinessBundle:TaskAdmin/fields:panorama_field.html.twig' with {panoramaId: row.oldValue} %}</td>
+                        <td>{% include 'DomainBusinessBundle:TaskAdmin/fields:panorama_field.html.twig' with {panoramaId: row.newValue} %}</td>
+                    {% else %}
+                        <td>{{ row.oldValue }}</td>
+                        <td>{{ row.newValue }}</td>
+                    {% endif %}
                 </tr>
             {% elseif row.action == CHANGE_SET_TYPE.TRANSLATION %}
                 <tr class="sonata-ba-view-container">

@@ -1,0 +1,8 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if value %}
+        {{ value }}
+        {% include 'DomainBusinessBundle:TaskAdmin/fields:panorama_field.html.twig' with {panoramaId: value} %}
+    {% endif %}
+{% endblock %}

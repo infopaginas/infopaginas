@@ -231,6 +231,12 @@
                             </section>
                         {% endif %}
 
+                        {% if businessProfile.panoramaId %}
+                            <section class="page-section panorama-frame hide-before">
+                                {% include ':redesign/blocks/panorama:panorama_iframe.html.twig' with {panoramaId: businessProfile.panoramaId, title: businessProfile.name} %}
+                            </section>
+                        {% endif %}
+
                         {% if businessProfile.getDiscount() is not null %}
                             <section class="page-section description-section">
                                 <div class="container">

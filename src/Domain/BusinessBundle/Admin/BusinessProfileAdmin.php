@@ -465,6 +465,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         ]
                     ])
+                    ->add('panoramaId')
                 ->end()
             ->end()
         ;
@@ -745,6 +746,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('images', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_one_to_many.html.twig',
+                    ])
+                    ->add('panoramaId', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_panorama.html.twig',
                     ])
                 ->end()
                 ->with('Subscription')

@@ -114,6 +114,39 @@ class ChangeSetCalculator
         return $changeSet;
     }
 
+    /**
+     * @param EntityManagerInterface $em
+     * @param BusinessProfile        $businessProfile
+     * @param string                 $panoramaId
+     *
+     * @return ChangeSet|null
+     */
+    public static function getPanoramaChangeSet(EntityManagerInterface $em, $businessProfile, $panoramaId)
+    {
+        $oldPanoramaId = $businessProfile->getPanoramaId();
+
+        if ($oldPanoramaId != $panoramaId) {
+            $entry = self::buildChangeSetEntryObject(
+                $businessProfile::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
+                $oldPanoramaId,
+                $panoramaId,
+                self::CHANGE_COMMON_PROPERTY
+            );
+
+            $changeSet = new ChangeSet();
+
+            $entry->setChangeSet($changeSet);
+            $changeSet->addEntry($entry);
+
+            $em->persist($entry);
+            $em->persist($changeSet);
+
+            return $changeSet;
+        }
+
+        return null;
+    }
+
     private static function buildChangeSetEntryObject($fieldName, $oldValue, $newValue, $action, $class = '')
     {
         $entry = new ChangeSetEntry();
