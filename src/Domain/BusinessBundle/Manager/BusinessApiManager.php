@@ -47,6 +47,9 @@ class BusinessApiManager
         $this->tasksManager = $container->get('domain_business.manager.tasks');
     }
 
+    /**
+     * @return array
+     */
     protected function getSearchClosestBusinessRequiredParams()
     {
         return [
@@ -56,6 +59,9 @@ class BusinessApiManager
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function addPanoramaRequiredParams()
     {
         return [
@@ -65,6 +71,11 @@ class BusinessApiManager
         ];
     }
 
+    /**
+     * @param string
+     *
+     * @return array
+     */
     protected function getResponse($error)
     {
         return [
@@ -73,6 +84,11 @@ class BusinessApiManager
         ];
     }
 
+    /**
+     * @param array
+     *
+     * @return array
+     */
     protected function prepareSearchClosestBusinessesParameters(array $params)
     {
         $error  = '';
@@ -104,6 +120,11 @@ class BusinessApiManager
         return [$result, $params];
     }
 
+    /**
+     * @param array
+     *
+     * @return array
+     */
     protected function prepareAddPanoramaParameters(array $params)
     {
         $error  = '';
