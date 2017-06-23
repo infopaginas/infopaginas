@@ -1,0 +1,7 @@
+domain_business_search_closest_businesses:
+     path:     /business/search
+     defaults: { _controller: DomainBusinessBundle:Api:searchClosestBusinesses }
+
+domain_business_panorama_add:
+     path:     /business/panorama/add
+     defaults: { _controller: DomainBusinessBundle:Api:addBusinessPanorama }

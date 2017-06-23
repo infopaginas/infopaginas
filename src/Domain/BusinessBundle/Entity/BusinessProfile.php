@@ -91,6 +91,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
     const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
     const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
+    const BUSINESS_PROFILE_FIELD_PANORAMA_ID    = 'panoramaId';
 
     // common fields
     const BUSINESS_PROFILE_FIELD_WEBSITE    = 'website';
@@ -836,6 +837,12 @@ class BusinessProfile implements
      * @ORM\Column(name="dc_order_id", type="string", nullable=true, length=255)
      */
     protected $dcOrderId;
+
+    /**
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="panorama_id", type="string", nullable=true, length=255)
+     */
+    protected $panoramaId;
 
     /**
      * Constructor
@@ -2585,6 +2592,26 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getPanoramaId()
+    {
+        return $this->panoramaId;
+    }
+
+    /**
+     * @param string $panoramaId
+     *
+     * @return BusinessProfile
+     */
+    public function setPanoramaId($panoramaId)
+    {
+        $this->panoramaId = $panoramaId;
+
+        return $this;
+    }
+
     public function getActiveStatus()
     {
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
@@ -2712,6 +2739,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
+            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,

@@ -698,6 +698,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     window.onload = function() {
         $( document ).trigger( 'resize' );
         $( '.section--slider' ).removeClass( 'hide-before' );
+        $( '.panorama-frame' ).removeClass( 'hide-before' );
     };
 
     // map controls

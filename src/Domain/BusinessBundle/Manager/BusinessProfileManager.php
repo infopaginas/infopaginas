@@ -274,6 +274,18 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param SearchDTO $searchParams
+     *
+     * @return array
+     */
+    public function searchClosestBusinesses(SearchDTO $searchParams)
+    {
+        $searchResultsData = $this->searchClosestBusinessesInElastic($searchParams);
+
+        return $searchResultsData;
+    }
+
+    /**
      * @param int $id
      * @param string $locale
      * @return null|object
@@ -1616,6 +1628,26 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param $searchParams SearchDTO
+     *
+     * @return array
+     */
+    protected function searchClosestBusinessesInElastic(SearchDTO $searchParams)
+    {
+        $searchQuery = $this->getElasticSearchClosestBusinessesQuery($searchParams);
+
+        $response = $this->searchBusinessElastic($searchQuery);
+
+        $search = $this->getBusinessDataFromElasticResponse($response);
+
+        $coordinates = $searchParams->getCurrentCoordinates();
+
+        $search = $this->setBusinessDynamicValues($search, $coordinates);
+
+        return $search;
+    }
+
+    /**
      * @param string   $query
      * @param string   $locale
      * @param int|null $limit
@@ -2193,6 +2225,67 @@ class BusinessProfileManager extends Manager
             $searchQuery['query']['bool']['must_not'][] = [
                 'ids' => [
                     'values' => $excludeIds,
+                ],
+            ];
+        }
+
+        return $searchQuery;
+    }
+
+    /**
+     * @param SearchDTO $params
+     *
+     * @return array
+     */
+    protected function getElasticSearchClosestBusinessesQuery(SearchDTO $params)
+    {
+        $coordinates = $params->getCurrentCoordinates();
+
+        $sort['_geo_distance'] = [
+            'location' => [
+                'lat' => $coordinates['lat'],
+                'lon' => $coordinates['lng'],
+            ],
+            'unit' => 'mi',
+            'order' => 'asc'
+        ];
+        $sort['_score'] = [
+            'order' => 'desc'
+        ];
+
+        $searchQuery = [
+            'from' => ($params->page - 1) * $params->limit,
+            'size' => $params->limit,
+            'track_scores' => true,
+            'sort' => [
+                $sort
+            ],
+        ];
+
+        if ($params->query) {
+            $searchQuery['query'] = [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    [
+                                        'query_string' => [
+                                            'default_operator' => 'AND',
+                                            'fields' => [
+                                                'name_en',
+                                                'name_en.folded',
+                                                'name_es',
+                                                'name_es.folded',
+                                            ],
+                                            'query' => $params->query,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ];
         }
