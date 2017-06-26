@@ -101,6 +101,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Phones}
 
+    domain_business.admin.business_profile_keyword:
+        class: Domain\BusinessBundle\Admin\BusinessProfileKeywordAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileKeyword, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Keywords}
+
     domain_business.admin.neighborhood_zip:
         class: Domain\BusinessBundle\Admin\NeighborhoodZipAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]
