@@ -674,6 +674,20 @@ class BusinessProfile implements
     protected $phones;
 
     /**
+     * @var BusinessProfileKeyword[] - Business Profile Keywords
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileKeyword",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @Assert\Count(max="5", maxMessage = "business_profile.keywords.max_count")
+     */
+    protected $keywords;
+
+    /**
      * @ORM\Column(name="uid", type="string")
      */
     protected $uid;
@@ -863,6 +877,7 @@ class BusinessProfile implements
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
         $this->extraSearches = new ArrayCollection();
+        $this->keywords      = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2329,6 +2344,42 @@ class BusinessProfile implements
     public function removePhone(\Domain\BusinessBundle\Entity\BusinessProfilePhone $phone)
     {
         $this->phones->removeElement($phone);
+    }
+
+    /**
+     * Add keyword
+     *
+     * @param BusinessProfileKeyword $keyword
+     *
+     * @return BusinessProfile
+     */
+    public function addKeyword(BusinessProfileKeyword $keyword)
+    {
+        $this->keywords[] = $keyword;
+
+        if ($keyword) {
+            $keyword->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove keyword
+     *
+     * @param BusinessProfileKeyword $keyword
+     */
+    public function removeKeyword(BusinessProfileKeyword $keyword)
+    {
+        $this->keywords->removeElement($keyword);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
     }
 
     /**

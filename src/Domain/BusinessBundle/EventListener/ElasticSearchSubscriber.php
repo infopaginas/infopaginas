@@ -8,6 +8,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
+use Domain\BusinessBundle\Entity\BusinessProfileKeyword;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Subscription;
@@ -92,6 +93,10 @@ class ElasticSearchSubscriber implements EventSubscriber
         if ($entity instanceof BusinessProfileExtraSearch) {
             $this->handleExtraSearchUpdate($entity, $args->getEntityManager());
         }
+
+        if ($entity instanceof BusinessProfileKeyword) {
+            $this->handleKeywordUpdate($entity, $args->getEntityManager());
+        }
     }
 
     public function postPersist(LifecycleEventArgs $args)
@@ -104,6 +109,10 @@ class ElasticSearchSubscriber implements EventSubscriber
 
         if ($entity instanceof BusinessProfileExtraSearch) {
             $this->handleExtraSearchUpdate($entity, $args->getEntityManager());
+        }
+
+        if ($entity instanceof BusinessProfileKeyword) {
+            $this->handleKeywordUpdate($entity, $args->getEntityManager());
         }
     }
 
@@ -121,6 +130,10 @@ class ElasticSearchSubscriber implements EventSubscriber
 
         if ($entity instanceof BusinessProfileExtraSearch) {
             $this->handleExtraSearchUpdate($entity, $args->getEntityManager());
+        }
+
+        if ($entity instanceof BusinessProfileKeyword) {
+            $this->handleKeywordUpdate($entity, $args->getEntityManager());
         }
     }
 
@@ -182,5 +195,16 @@ class ElasticSearchSubscriber implements EventSubscriber
     public function handleExtraSearchPreRemove(BusinessProfileExtraSearch $extraSearch)
     {
         $this->businessStatusManager->removeExtraSearchFromElastic($extraSearch, $this->elasticSearchManager);
+    }
+
+    /**
+     * @param BusinessProfileKeyword $keyword
+     * @param EntityManager          $em
+     */
+    public function handleKeywordUpdate(BusinessProfileKeyword $keyword, EntityManager $em)
+    {
+        $businessProfile = $keyword->getBusinessProfile();
+
+        $this->businessStatusManager->manageBusinessStatusPostUpdate([$businessProfile], $em);
     }
 }
