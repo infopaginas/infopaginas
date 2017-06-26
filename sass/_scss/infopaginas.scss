@@ -1839,6 +1839,10 @@ $thumb-width-mb: 60px;
   .section--slider, .panorama-frame {
     margin-bottom: 40px;
     padding: 20px 0;
+
+    h3.panorama-title {
+      text-align: center;
+    }
   }
 
   .item__header {

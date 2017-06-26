@@ -553,3 +553,4 @@ popular_searches.title: Búsquedas populares
 google_maps.current_user_position.label: Ubicación actual
 business_profile.image.description.required: Este campo es requerido
 business_profile.video.description.required: Este campo es requerido
+business_profile.panorama.title: Se trata de un panorama 360, arrastre la imagen para mirar alrededor

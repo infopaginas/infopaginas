@@ -233,6 +233,7 @@
 
                         {% if businessProfile.panoramaId %}
                             <section class="page-section panorama-frame hide-before">
+                                <h3 class="panorama-title">{% trans %}business_profile.panorama.title{% endtrans %}</h3>
                                 {% include ':redesign/blocks/panorama:panorama_iframe.html.twig' with {panoramaId: businessProfile.panoramaId, title: businessProfile.name} %}
                             </section>
                         {% endif %}
