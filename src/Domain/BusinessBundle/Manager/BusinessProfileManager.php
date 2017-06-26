@@ -2704,8 +2704,10 @@ class BusinessProfileManager extends Manager
             'name_' . strtolower($locale) . '.folded^4',
             'keywords_' . strtolower($locale) . '^5',
             'keywords_' . strtolower($locale) . '.folded^5',
-            'categories_' . strtolower($locale) . '^5',
-            'categories_' . strtolower($locale) . '.folded^5',
+            'categories_en^5',
+            'categories_en.folded^5',
+            'categories_es^5',
+            'categories_es.folded^5',
             'products_' . strtolower($locale) . '^3',
             'products_' . strtolower($locale) . '.folded^3',
         ];
