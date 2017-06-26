@@ -291,6 +291,14 @@ class VideoManager
             if ($score < $this::TRUSTED_SCORE) {
                 $media->setStatus($media::VIDEO_STATUS_ERROR);
 
+                $this->deleteLocalMediaFiles(
+                    [
+                        $file,
+                        $tempFile,
+                        $posterFile,
+                    ]
+                );
+
                 return $media;
             }
 
