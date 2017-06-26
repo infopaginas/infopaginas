@@ -145,16 +145,21 @@ class BusinessGalleryManager
     /**
      * @param VideoMedia $video
      * @param string     $path
+     * @param bool       $removeOldPoster
      *
-     * @return $video|null
+     * @return VideoMedia|null
      * @throws \Exception
      */
-    public function createNewPosterFromLocalFile(VideoMedia $video, string $path)
+    public function createNewPosterFromLocalFile(VideoMedia $video, string $path, bool $removeOldPoster = false)
     {
         $isExist = file_exists($path);
 
         if ($isExist && in_array(mime_content_type($path), SiteHelper::$imageContentTypes) && exif_imagetype($path)) {
             $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+            if ($removeOldPoster and $video->getPoster()) {
+                $this->entityManager->remove($video->getPoster());
+            }
 
             $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, OxaMediaInterface::CONTEXT_VIDEO_POSTER);
 

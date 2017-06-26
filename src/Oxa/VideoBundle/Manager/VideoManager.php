@@ -345,10 +345,11 @@ class VideoManager
 
     /**
      * @param VideoMedia $media
+     * @param bool       $removeOldPoster
      *
      * @return bool
      */
-    public function regenerateVideoPoster(VideoMedia $media)
+    public function regenerateVideoPoster(VideoMedia $media, $removeOldPoster = true)
     {
         $ffmpeg  = $this->container->get('dubture_ffmpeg.ffmpeg');
         $galleryManager = $this->container->get('domain_business.manager.business_gallery');
@@ -365,7 +366,7 @@ class VideoManager
             $frame = $video->frame(TimeCode::fromSeconds(self::POSTER_AT_SECOND));
             $frame->save($posterFile);
 
-            $galleryManager->createNewPosterFromLocalFile($media, $posterFile);
+            $galleryManager->createNewPosterFromLocalFile($media, $posterFile, $removeOldPoster);
         } catch (\Exception $e) {
             $status = false;
         }
