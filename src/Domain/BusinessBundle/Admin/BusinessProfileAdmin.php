@@ -216,6 +216,10 @@ class BusinessProfileAdmin extends OxaAdmin
             $formMapper->tab('Profile')->with('SuperVM')->end()->end();
         }
 
+        if ($businessProfile->getId() and $subscriptionPlan->getCode() > SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper->tab('Profile')->with('Keywords')->end()->end();
+        }
+
         $formMapper
             ->tab('Profile', ['class' => 'col-md-12',])
                 ->with('Social Networks', ['class' => 'col-md-6',])->end()
@@ -504,6 +508,28 @@ class BusinessProfileAdmin extends OxaAdmin
             ;
         }
 
+        if ($businessProfile->getId() and $subscriptionPlan->getCode() > SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper
+                ->tab('Profile')
+                ->with('Keywords')
+                    ->add(
+                        'keywords',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                        ]
+                    )
+                    ->end()
+                ->end()
+            ;
+        }
+
         $formMapper
             ->tab('Profile')
                 ->with('Status')
@@ -734,6 +760,11 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('SuperVM')
                     ->add('extraSearches', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('Keywords')
+                    ->add('keywords', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
                     ])
                 ->end()

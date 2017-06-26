@@ -2110,14 +2110,7 @@ class BusinessProfileManager extends Manager
 
     protected function getElasticSearchQuery(SearchDTO $params, $locale, $excludeIds = [])
     {
-        $fields = [
-            'name_' . strtolower($locale) . '^5',
-            'categories_' . strtolower($locale) . '^3',
-            'products_' . strtolower($locale) . '^1',
-            'name_' . strtolower($locale) . '.folded^5',
-            'categories_' . strtolower($locale) . '.folded^3',
-            'products_' . strtolower($locale) . '.folded^1',
-        ];
+        $fields = $this->getBusinessSearchFields($locale);
 
         $filters = [];
 
@@ -2301,14 +2294,7 @@ class BusinessProfileManager extends Manager
      */
     protected function getElasticSearchQueryAd(SearchDTO $params, $locale)
     {
-        $fields = [
-            'name_' . strtolower($locale) . '^5',
-            'categories_' . strtolower($locale) . '^3',
-            'products_' . strtolower($locale) . '^1',
-            'name_' . strtolower($locale) . '.folded^5',
-            'categories_' . strtolower($locale) . '.folded^3',
-            'products_' . strtolower($locale) . '.folded^1',
-        ];
+        $fields = $this->getBusinessSearchFields($locale);
 
         $filters = [];
 
@@ -2665,6 +2651,18 @@ class BusinessProfileManager extends Manager
             $milesOfMyBusiness = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
         }
 
+        $keywords = [
+            $enLocale => [],
+            $esLocale => [],
+        ];
+
+        if ($businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
+            foreach ($businessProfile->getKeywords() as $keyword) {
+                $keywords[$enLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword->getValueEn());
+                $keywords[$esLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword->getValueEs());
+            }
+        }
+
         $data = [
             'id'                   => $businessProfile->getId(),
             'name_en'              => $businessProfileNameEn,
@@ -2676,6 +2674,8 @@ class BusinessProfileManager extends Manager
             'miles_of_my_business' => $milesOfMyBusiness,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
+            'keywords_en'          => $keywords[$enLocale],
+            'keywords_es'          => $keywords[$esLocale],
             'auto_suggest_en'      => $autoSuggest[$enLocale],
             'auto_suggest_es'      => $autoSuggest[$esLocale],
             'location'             => [
@@ -2690,6 +2690,25 @@ class BusinessProfileManager extends Manager
         ];
 
         return $data;
+    }
+
+    /**
+     * @param string $locale
+     *
+     * @return array
+     */
+    public function getBusinessSearchFields($locale)
+    {
+        return [
+            'name_' . strtolower($locale) . '^4',
+            'name_' . strtolower($locale) . '.folded^4',
+            'keywords_' . strtolower($locale) . '^5',
+            'keywords_' . strtolower($locale) . '.folded^5',
+            'categories_' . strtolower($locale) . '^5',
+            'categories_' . strtolower($locale) . '.folded^5',
+            'products_' . strtolower($locale) . '^3',
+            'products_' . strtolower($locale) . '.folded^3',
+        ];
     }
 
     /**
@@ -2858,6 +2877,28 @@ class BusinessProfileManager extends Manager
                 ],
             ],
             'products_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'keywords_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'keywords_es' => [
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
