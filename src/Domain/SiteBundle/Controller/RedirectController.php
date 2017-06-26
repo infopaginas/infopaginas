@@ -10,6 +10,8 @@ class RedirectController extends Controller
 {
     const REDIRECT_PREFIX_BUSINESS = 'page';
     const REDIRECT_PREFIX_CATALOG  = 'business';
+    const LOCALE_EN = 'en';
+    const LOCALE_ES = 'es';
 
     /**
      * @param Request $request
@@ -18,7 +20,7 @@ class RedirectController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $uri = $request->attributes->get('path');
+        $uri = strtolower($request->attributes->get('path'));
 
         if (strpos($uri, 'google') === 0 and file_exists($uri . '.html')) {
             // for google domain verification
@@ -27,6 +29,13 @@ class RedirectController extends Controller
         }
 
         $pathParts = explode('/', $uri);
+
+        $locale = self::LOCALE_EN;
+        $currentLocale = $request->getLocale();
+
+        if (strpos($uri, '/' . self::LOCALE_ES . '/') !== false) {
+            $locale = self::LOCALE_ES;
+        }
 
         switch ($pathParts[0]) {
             case self::REDIRECT_PREFIX_BUSINESS:
@@ -43,11 +52,9 @@ class RedirectController extends Controller
                 break;
         }
 
-        return $this->redirectToRoute(
-            $data['route'],
-            $data['params'],
-            301
-        );
+        $redirectUrl = $this->getRedirectUrl($data, $locale, $currentLocale);
+
+        return $this->redirect($redirectUrl, 301);
     }
 
     /**
@@ -103,5 +110,36 @@ class RedirectController extends Controller
             ],
             'route' => 'domain_search_index',
         ];
+    }
+
+    /**
+     * @param array     $data
+     * @param string    $locale
+     * @param string    $currentLocale
+     *
+     * @return string
+     */
+    protected function getRedirectUrl($data, $locale, $currentLocale)
+    {
+        $router = $this->get('router');
+
+        if ($locale and $locale != $currentLocale) {
+            $defaultHost = $this->getParameter('router.request_context.host');
+            $context = $router->getContext();
+
+            if ($locale == self::LOCALE_EN) {
+                $context->setHost($locale . '.' . $defaultHost);
+            } else {
+                $context->setHost($defaultHost);
+            }
+        }
+
+        $redirectUrl = $router->generate(
+            $data['route'],
+            $data['params'],
+            true
+        );
+
+        return $redirectUrl;
     }
 }
