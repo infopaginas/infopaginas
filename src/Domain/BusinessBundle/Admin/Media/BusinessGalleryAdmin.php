@@ -72,6 +72,7 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('description', null, ['attr' => [
                 'rows'          => 2,
                 'cols'          => 100,
+                'required'      => true,
                 'style'         => 'resize: none',
                 'placeholder'   => 'Create an image description as ' .
                     'if you were describing the image to someone who cannot see it',

@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Domain\BusinessBundle\Entity\Area;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Entity\Category;
@@ -585,6 +586,61 @@ class BusinessProfileManager extends Manager
         }
 
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param ChangeSet $changeSet
+     */
+    public function handleRejectedTaskContent(ChangeSet $changeSet)
+    {
+        /** @var ChangeSetEntry $change */
+        foreach ($changeSet->getEntries() as $change) {
+            switch ($change->getAction()) {
+                case ChangeSetCalculator::CHANGE_MEDIA_RELATION_MANY_TO_ONE:
+                    $dataNew  = json_decode($change->getNewValue());
+
+                    if ($dataNew) {
+                        $media = $this->getEntityManager()->getRepository($change->getClassName())->find($dataNew->id);
+
+                        if ($media) {
+                            if ($media instanceof VideoMedia and $media->getBusinessProfiles()->isEmpty()) {
+                                $media->setIsDeleted(true);
+                            } elseif ($media instanceof Media) {
+                                switch ($media->getContext()) {
+                                    case Media::CONTEXT_BUSINESS_PROFILE_LOGO:
+                                        if ($media->getLogoBusinessProfiles()->isEmpty()) {
+                                            $media->setIsDeleted(true);
+                                        }
+
+                                        break;
+                                    case Media::CONTEXT_BUSINESS_PROFILE_BACKGROUND:
+                                        if ($media->getBackgroundBusinessProfiles()->isEmpty()) {
+                                            $media->setIsDeleted(true);
+                                        }
+
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                case ChangeSetCalculator::CHANGE_MEDIA_RELATION_ONE_TO_MANY:
+                    $dataNew = json_decode($change->getNewValue());
+
+                    if ($dataNew) {
+                        foreach ($dataNew as $item) {
+                            $media = $this->em->getRepository(Media::class)->find($item->media);
+
+                            if ($media and $media->getBusinessGallery()->isEmpty()) {
+                                $media->setIsDeleted(true);
+                            }
+                        }
+                    }
+
+                    break;
+            }
+        }
     }
 
     public function getTaskMediaLink(ChangeSetEntry $change, $value)
@@ -1466,17 +1522,34 @@ class BusinessProfileManager extends Manager
         $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams);
 
         $response = $this->searchBusinessElastic($searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response);
+        $search = $this->getBusinessDataFromElasticResponse($response, $searchParams->getIsRandomized());
 
         $coordinates = $searchParams->getCurrentCoordinates();
 
-        $search['data'] = array_map(function ($item) use ($searchParams, $coordinates) {
+        $search = $this->setBusinessDynamicValues($search, $coordinates);
+
+        return $search;
+    }
+
+    /**
+     * @param $search       array
+     * @param $coordinates  array
+     * @param $isAd         bool
+     *
+     * @return array
+     */
+    protected function setBusinessDynamicValues($search, $coordinates, $isAd = false)
+    {
+        $search['data'] = array_map(function ($item) use ($coordinates, $isAd) {
+            /** @var $item BusinessProfile */
             $distance = GeolocationUtils::getDistanceForPoint(
                 $coordinates['lat'],
                 $coordinates['lng'],
                 $item->getLatitude(),
                 $item->getLongitude()
             );
+
+            $item->setIsAd($isAd);
 
             return $item->setDistance($distance);
         }, $search['data']);
@@ -1484,27 +1557,43 @@ class BusinessProfileManager extends Manager
         return $search;
     }
 
+    /**
+     * @param $searchParams SearchDTO
+     * @param $locale       string
+     *
+     * @return array
+     */
     protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
     {
         //randomize feature works only for relevance sorting ("Best match")
-        $randomize = $searchParams->randomizeAllowed();
-
-        $searchQuery = $this->getElasticSearchQuery($searchParams, $locale);
-        $response = $this->searchBusinessElastic($searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response, $randomize);
-
+        $randomize   = $searchParams->randomizeAllowed();
         $coordinates = $searchParams->getCurrentCoordinates();
 
-        $search['data'] = array_map(function ($item) use ($searchParams, $coordinates) {
-            $distance = GeolocationUtils::getDistanceForPoint(
-                $coordinates['lat'],
-                $coordinates['lng'],
-                $item->getLatitude(),
-                $item->getLongitude()
-            );
+        if ($searchParams->checkAdsAllowed()) {
+            $searchAdQuery   = $this->getElasticSearchQueryAd($searchParams, $locale);
+            $responseAd      = $this->searchBusinessAdElastic($searchAdQuery);
+            $searchAd        = $this->getBusinessAdDataFromElasticResponse($responseAd);
+            $searchResultAds = $this->setBusinessDynamicValues($searchAd, $coordinates, true);
 
-            return $item->setDistance($distance);
-        }, $search['data']);
+            $excludeIds = array_keys($searchAd['data']);
+        } else {
+            $excludeIds      = [];
+            $searchResultAds = [];
+        }
+
+        $searchQuery = $this->getElasticSearchQuery($searchParams, $locale, $excludeIds);
+
+        $response = $this->searchBusinessElastic($searchQuery);
+
+        $search = $this->getBusinessDataFromElasticResponse($response, $randomize);
+
+        $search = $this->setBusinessDynamicValues($search, $coordinates);
+
+        if ($searchParams->checkAdsAllowed() and $searchResultAds) {
+            foreach ($searchResultAds['data'] as $item) {
+                array_unshift($search['data'], $item);
+            }
+        }
 
         return $search;
     }
@@ -1579,6 +1668,18 @@ class BusinessProfileManager extends Manager
         return $response;
     }
 
+    /**
+     * @param $searchQuery array
+     *
+     * @return array
+     */
+    protected function searchBusinessAdElastic($searchQuery)
+    {
+        $response = $this->searchElastic($searchQuery, BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD);
+
+        return $response;
+    }
+
     protected function searchBusinessElastic($searchQuery)
     {
         $response = $this->searchElastic($searchQuery, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
@@ -1647,6 +1748,46 @@ class BusinessProfileManager extends Manager
         ];
     }
 
+    /**
+     * @param $response array
+     *
+     * @return array
+     */
+    protected function getBusinessAdDataFromElasticResponse($response)
+    {
+        $data  = [];
+        $total = 0;
+
+        if (!empty($response['hits']['total'])) {
+            $total = $response['hits']['total'];
+        }
+
+        if (!empty($response['aggregations']['ads']['buckets'])) {
+            $result = $response['aggregations']['ads']['buckets'];
+            $dataIds = [];
+
+            foreach ($result as $item) {
+                $dataIds[] = $item['key'];
+            }
+
+            // randomize was made on elastic search size
+            $dataRaw = $this->getRepository()->findBusinessProfilesByIdsArray($dataIds);
+
+            foreach ($dataIds as $id) {
+                $item = $this->searchBusinessByIdsInArray($dataRaw, $id);
+
+                if ($item) {
+                    $data[$id] = $item;
+                }
+            }
+        }
+
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
+    }
+
     protected function searchBusinessByIdsInArray($data, $id)
     {
         foreach ($data as $item) {
@@ -1699,13 +1840,17 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
+    /**
+     * @return array
+     */
     protected function getElasticSearchMappings()
     {
-        $businessMapping = $this->getBusinessElasticSearchMapping();
-        $categoryMapping = $this->categoryManager->getCategoryElasticSearchMapping();
-        $localityMapping = $this->localityManager->getLocalityElasticSearchMapping();
+        $businessMapping   = $this->getBusinessElasticSearchMapping();
+        $businessAdMapping = $this->getBusinessAdElasticSearchMapping();
+        $categoryMapping   = $this->categoryManager->getCategoryElasticSearchMapping();
+        $localityMapping   = $this->localityManager->getLocalityElasticSearchMapping();
 
-        $mappings = array_merge($businessMapping, $categoryMapping, $localityMapping);
+        $mappings = array_merge($businessMapping, $businessAdMapping, $categoryMapping, $localityMapping);
 
         return $mappings;
     }
@@ -1716,6 +1861,27 @@ class BusinessProfileManager extends Manager
 
         $data = [
             BusinessProfile::ELASTIC_DOCUMENT_TYPE => [
+                '_source' => [
+                    'enabled' => $sourceEnabled,
+                ],
+                'properties' => $properties,
+            ],
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @param $sourceEnabled bool
+     *
+     * @return array
+     */
+    protected function getBusinessAdElasticSearchMapping($sourceEnabled = true)
+    {
+        $properties = $this->getBusinessAdElasticSearchIndexParams();
+
+        $data = [
+            BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD => [
                 '_source' => [
                     'enabled' => $sourceEnabled,
                 ],
@@ -1806,6 +1972,18 @@ class BusinessProfileManager extends Manager
      *
      * @return mixed
      */
+    public function addBusinessesAdToElasticIndex($data)
+    {
+        $response = $this->addElasticBulkItemData($data, BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD);
+
+        return $response;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
     public function addCategoriesToElasticIndex($data)
     {
         $response = $this->addElasticBulkItemData($data, Category::ELASTIC_DOCUMENT_TYPE);
@@ -1872,6 +2050,18 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
+    /**
+     * @param $id int
+     *
+     * @return bool
+     */
+    public function removeBusinessAdFromElastic($id)
+    {
+        $status = $this->removeItemFromElastic($id, BusinessProfile::ELASTIC_DOCUMENT_TYPE_AD);
+
+        return $status;
+    }
+
     public function removeCategoryFromElastic($id)
     {
         $status = $this->removeItemFromElastic($id, Category::ELASTIC_DOCUMENT_TYPE);
@@ -1886,16 +2076,15 @@ class BusinessProfileManager extends Manager
         return $status;
     }
 
-    protected function getElasticSearchQuery(SearchDTO $params, $locale)
+    protected function getElasticSearchQuery(SearchDTO $params, $locale, $excludeIds = [])
     {
-        // see https://jira.oxagile.com/browse/INFT-1197
         $fields = [
             'name_' . strtolower($locale) . '^5',
             'categories_' . strtolower($locale) . '^3',
-//            'description_' . strtolower($locale) . '^1',
+            'products_' . strtolower($locale) . '^1',
             'name_' . strtolower($locale) . '.folded^5',
             'categories_' . strtolower($locale) . '.folded^3',
-//            'description_' . strtolower($locale) . '.folded^1',
+            'products_' . strtolower($locale) . '.folded^1',
         ];
 
         $filters = [];
@@ -1999,6 +2188,130 @@ class BusinessProfileManager extends Manager
         if ($locationFilter) {
             $searchQuery['query']['bool']['filter'][] = $locationFilter;
         }
+
+        if ($excludeIds) {
+            $searchQuery['query']['bool']['must_not'][] = [
+                'ids' => [
+                    'values' => $excludeIds,
+                ],
+            ];
+        }
+
+        return $searchQuery;
+    }
+
+    /**
+     * @param $params SearchDTO
+     * @param $locale string
+     *
+     * @return array
+     */
+    protected function getElasticSearchQueryAd(SearchDTO $params, $locale)
+    {
+        $fields = [
+            'name_' . strtolower($locale) . '^5',
+            'categories_' . strtolower($locale) . '^3',
+            'products_' . strtolower($locale) . '^1',
+            'name_' . strtolower($locale) . '.folded^5',
+            'categories_' . strtolower($locale) . '.folded^3',
+            'products_' . strtolower($locale) . '.folded^1',
+        ];
+
+        $filters = [];
+
+        $sort['_script'] = [
+            'script' => 'Math.random()',
+            'type'   => 'number',
+            'params' => [],
+            'order' => 'asc',
+        ];
+
+        $category = $params->getCategory();
+
+        if ($category) {
+            $filters[] = [
+                'match' => [
+                    'categories_ids' => $category
+                ],
+            ];
+        }
+
+        $neighborhood = $params->getNeighborhood();
+
+        if ($neighborhood) {
+            $filters[] = [
+                'match' => [
+                    'neighborhood_ids' => $neighborhood
+                ],
+            ];
+        }
+
+        $locationQuery  = [];
+        $locationFilter = $this->getElasticLocationFilter($params);
+
+        if (!$locationFilter) {
+            $locationQuery = $this->getElasticLocationQuery($params);
+        }
+
+        $searchQuery = [
+            'from' => 0,
+            'size' => 0,
+            'track_scores' => true,
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'bool' => [
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    [
+                                        'query_string' => [
+                                            'default_operator' => 'AND',
+                                            'fields' => $fields,
+                                            'query' => $params->query,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'sort' => [
+                $sort
+            ],
+        ];
+
+        if ($locationQuery) {
+            $searchQuery['query']['bool']['must'][] = $locationQuery;
+        }
+
+        foreach ($filters as $filter) {
+            $searchQuery['query']['bool']['must'][] = $filter;
+        }
+
+        if ($locationFilter) {
+            $searchQuery['query']['bool']['filter'][] = $locationFilter;
+        }
+
+        $searchQuery['aggs'] = [
+            'ads' => [
+                'terms' => [
+                    'field' => 'parent_id',
+                    'order' => [
+                        'rand' => 'desc',
+                    ],
+                    'size' =>  $params->adsPerPage,
+                ],
+                'aggs' => [
+                    'rand' => [
+                        'max' => [
+                            'script' => 'Math.random()',
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         return $searchQuery;
     }
@@ -2214,8 +2527,11 @@ class BusinessProfileManager extends Manager
         $categoryIds = [];
 
         foreach ($businessProfile->getCategories() as $category) {
-            $categories[$enLocale][] = $category->getTranslation('name', $enLocale);
-            $categories[$esLocale][] = $category->getTranslation('name', $esLocale);
+            $categoryEn = $category->getTranslation('name', $enLocale);
+            $categoryEs = $category->getTranslation('name', $esLocale);
+
+            $categories[$enLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($categoryEn);
+            $categories[$esLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($categoryEs);
             $categoryIds[] = $category->getId();
         }
 
@@ -2235,8 +2551,20 @@ class BusinessProfileManager extends Manager
             $localityIds[] = $businessProfile->getCatalogLocality()->getId();
         }
 
-        $autoSuggest[$enLocale][] = $businessProfile->getNameEn();
-        $autoSuggest[$esLocale][] = $businessProfile->getNameEs();
+        $businessProfileNameEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getNameEn());
+        $businessProfileNameEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getNameEs());
+        $businessProfileDescEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEn());
+        $businessProfileDescEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEs());
+
+        $businessProfileProdEn = SearchDataUtil::sanitizeElasticSearchQueryString(
+            $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $enLocale)
+        );
+        $businessProfileProdEs = SearchDataUtil::sanitizeElasticSearchQueryString(
+            $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $esLocale)
+        );
+
+        $autoSuggest[$enLocale][] = $businessProfileNameEn;
+        $autoSuggest[$esLocale][] = $businessProfileNameEs;
 
         if ($businessProfile->getMilesOfMyBusiness()) {
             $milesOfMyBusiness = $businessProfile->getMilesOfMyBusiness();
@@ -2246,10 +2574,12 @@ class BusinessProfileManager extends Manager
 
         $data = [
             'id'                   => $businessProfile->getId(),
-            'name_en'              => $businessProfile->getNameEn(),
-            'name_es'              => $businessProfile->getNameEs(),
-            'description_en'       => $businessProfile->getDescriptionEn(),
-            'description_es'       => $businessProfile->getDescriptionEs(),
+            'name_en'              => $businessProfileNameEn,
+            'name_es'              => $businessProfileNameEs,
+            'description_en'       => $businessProfileDescEn,
+            'description_es'       => $businessProfileDescEs,
+            'products_en'          => $businessProfileProdEn,
+            'products_es'          => $businessProfileProdEs,
             'miles_of_my_business' => $milesOfMyBusiness,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
@@ -2267,6 +2597,69 @@ class BusinessProfileManager extends Manager
         ];
 
         return $data;
+    }
+
+    /**
+     * @param $extraSearch  BusinessProfileExtraSearch
+     * @param $data         array
+     *
+     * @return array
+     */
+    public function buildBusinessProfileChildElasticData($extraSearch, $data)
+    {
+        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
+        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $categories = [
+            $enLocale => [],
+            $esLocale => [],
+        ];
+
+        $categoryIds = [];
+
+        foreach ($extraSearch->getCategories() as $category) {
+            $categoryEn = $category->getTranslation('name', $enLocale);
+            $categoryEs = $category->getTranslation('name', $esLocale);
+
+            $categories[$enLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($categoryEn);
+            $categories[$esLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($categoryEs);
+            $categoryIds[] = $category->getId();
+        }
+
+        $localityIds = [];
+
+        foreach ($extraSearch->getLocalities() as $locality) {
+            $localityIds[] = $locality->getId();
+        }
+
+        if ($extraSearch->getMilesOfMyBusiness()) {
+            $milesOfMyBusiness = $extraSearch->getMilesOfMyBusiness();
+        } else {
+            $milesOfMyBusiness = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
+        }
+
+        $data['id'] = $extraSearch->getId();
+        $data['miles_of_my_business'] = $milesOfMyBusiness;
+        $data['categories_en'] = $categories[$enLocale];
+        $data['categories_es'] = $categories[$esLocale];
+        $data['service_areas_type'] = $extraSearch->getServiceAreasType();
+        $data['locality_ids'] = $localityIds;
+
+        $data['subscr_rank'] = SubscriptionPlanInterface::CODE_SUPER_VM;
+        $data['parent_id'] = $extraSearch->getBusinessProfile()->getId();
+        $data['categories_ids'] = $categoryIds;
+
+        return $data;
+    }
+
+    protected function getBusinessAdElasticSearchIndexParams()
+    {
+        $params = $this->getBusinessElasticSearchIndexParams();
+
+        $params['parent_id'] = [
+            'type' => 'integer'
+        ];
+
+        return $params;
     }
 
     protected function getBusinessElasticSearchIndexParams()
@@ -2360,6 +2753,28 @@ class BusinessProfileManager extends Manager
                     ],
                 ],
             ],
+            'products_en' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
+            'products_es' => [
+                'type' => 'string',
+                'analyzer' => 'autocomplete',
+                'search_analyzer' => 'autocomplete_search',
+                'fields' => [
+                    'folded' => [
+                        'type' => 'string',
+                        'analyzer' => 'folding',
+                    ],
+                ],
+            ],
             'location' => [
                 'type' => 'geo_point'
             ],
@@ -2401,6 +2816,7 @@ class BusinessProfileManager extends Manager
 
                 if ($item) {
                     $data[] = $item;
+                    $this->handleBusinessAdsElasticData($business, $item);
                 } else {
                     $this->removeBusinessFromElastic($business->getId());
                 }
@@ -2427,6 +2843,29 @@ class BusinessProfileManager extends Manager
             }
 
             $this->em->flush();
+        }
+    }
+
+    /**
+     * @param $business     BusinessProfile
+     * @param $parentData   array
+     */
+    protected function handleBusinessAdsElasticData($business, $parentData)
+    {
+        $ads = [];
+
+        if (!$business->getExtraSearches()->isEmpty()) {
+            foreach ($business->getExtraSearches() as $extraSearch) {
+                if ($business->getSubscriptionPlanCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+                    $ads[] = $this->buildBusinessProfileChildElasticData($extraSearch, $parentData);
+                } else {
+                    $this->removeBusinessAdFromElastic($extraSearch->getId());
+                }
+            }
+        }
+
+        if ($ads) {
+            $this->addBusinessesAdToElasticIndex($ads);
         }
     }
 

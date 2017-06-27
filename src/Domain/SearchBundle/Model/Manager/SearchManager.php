@@ -166,6 +166,7 @@ class SearchManager extends Manager
 
         $limit      = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+        $searchDTO  = $this->setSearchAdsParams($searchDTO);
 
         $category = SearchDataUtil::getCategoryFromRequest($request);
 
@@ -387,7 +388,9 @@ class SearchManager extends Manager
 
     private function getSaveSearchWords($query)
     {
-        $words = explode(' ', $query);
+        $searchString = SearchDataUtil::sanitizeElasticSearchQueryString($query);
+
+        $words = explode(' ', $searchString);
 
         $data = [];
 
@@ -399,77 +402,34 @@ class SearchManager extends Manager
                     $word = mb_substr($word, 0, ElasticSearchManager::AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED);
                 }
 
-                $data[] = $this->escapeElasticSpecialCharacter($word);
+                $data[] = $word;
             }
         }
 
         return $data;
     }
 
-    private function escapeElasticSpecialCharacter($query)
+    /**
+     * @param $searchDTO SearchDTO
+     *
+     * @return SearchDTO
+     */
+    protected function setSearchAdsParams($searchDTO)
     {
-        //http://npm.taobao.org/package/elasticsearch-sanitize
-        //http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Escaping
-        //characters to escape: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ / AND OR NOT space
+        $adsAllowed = (bool) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_ALLOWED)->getValue();
 
-        $search = [
-            '+',
-            '-',
-            '=',
-            '&&',
-            '||',
-            '>',
-            '<',
-            '!',
-            '(',
-            ')',
-            '{',
-            '}',
-            '[',
-            ']',
-            '^',
-            '"',
-            '~',
-            '*',
-            '?',
-            ':',
-            '\\',
-            '/',
-            'AND',
-            'OR',
-            'NOT',
-        ];
+        if ($adsAllowed) {
+            $adsPerPage  = (int) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_PER_PAGE)->getValue();
 
-        $escaped = [
-            '\+',
-            '\-',
-            '\=',
-            '\&\&',
-            '\|\|',
-            '\>',
-            '\<',
-            '\!',
-            '\(',
-            '\)',
-            '\{',
-            '\}',
-            '\[',
-            '\]',
-            '\^',
-            '\"',
-            '\~',
-            '\*',
-            '\?',
-            '\:',
-            '\\\\',
-            '\/',
-            '\A\N\D',
-            '\O\R',
-            '\N\O\T',
-        ];
+            if ($adsPerPage and $adsPerPage > 0) {
+                $adsMaxPages = (int) $this->configService->getSetting(ConfigInterface::SEARCH_ADS_MAX_PAGE)->getValue();
 
-        $newQuery = str_replace($search, $escaped, $query);
+                $searchDTO->adsMaxPages = $adsMaxPages;
+                $searchDTO->adsPerPage  = $adsPerPage;
+                $searchDTO->adsAllowed  = $adsAllowed;
+            }
+        }
 
-        return $newQuery;
+        return $searchDTO;
     }
 }

@@ -1,0 +1,16 @@
+{% for review in reviews %}
+    <tr>
+        <td>{{ review.id }}</td>
+        <td>
+            {% if review.user %}
+                {{ review.user.id }} - {{ review.user.getFullName }}
+            {% endif %}
+        </td>
+        <td>{{ review.username }}
+
+        </td>
+        <td>{{ review.rating }}</td>
+        <td>{{ review.content }}</td>
+        <td>{{ review.createdAt|date(report_generated_datetime_format) }}</td>
+    </tr>
+{% endfor %}

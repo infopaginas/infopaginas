@@ -1,0 +1,20 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.id is not null %}
+        <table class="business-review-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Display name</th>
+                    <th>Rating</th>
+                    <th>Text</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody id="{{ admin.uniqid }}_{{ field_description.name }}Table">
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

@@ -90,6 +90,53 @@ class ReviewsController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function reviewListAdminAction(Request $request)
+    {
+        $businessProfileId = (int)$request->get('businessProfileId');
+
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+
+        if (!$businessProfile) {
+            throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
+        }
+
+        $paramsDTO = $this->getReviewsListQueryParamsDTO($request);
+
+        $reviewsResultDTO = $this->getBusinessReviewsManager()
+            ->getBusinessProfileReviewsResultDTO($businessProfile, $paramsDTO);
+
+        $data = $this->prepareBusinessReviewList($reviewsResultDTO);
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @param ReviewsResultsDTO $reviewsResultsDTO
+     *
+     * @return array
+     */
+    protected function prepareBusinessReviewList($reviewsResultsDTO)
+    {
+        $reviewList = $this->renderView(
+            ':redesign/blocks/review:review-list-ajax.html.twig',
+            [
+                'reviews' => $reviewsResultsDTO->resultSet,
+            ]
+        );
+
+        return [
+            'data'        => $reviewList,
+            'page'        => $reviewsResultsDTO->page,
+            'pageCount'   => $reviewsResultsDTO->pageCount,
+            'resultCount' => $reviewsResultsDTO->resultCount,
+        ];
+    }
+
+    /**
      * @return ReviewFormHandler
      */
     private function getReviewFormHandler() : ReviewFormHandler

@@ -3,13 +3,16 @@
 namespace Oxa\Sonata\MediaBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Coupon;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\PageBundle\Entity\Page;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\MediaBundle\Entity\BaseMedia as BaseMedia;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,11 +24,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface
+class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface, PostponeRemoveInterface
 {
     use DefaultEntityTrait;
+    use PostponeRemoveTrait;
 
     const UPLOADS_DIR_NAME = 'uploads';
+
+    /**
+     * Image max size in bytes
+     */
+    const IMAGE_MAX_SIZE = 10000000;
 
     /**
      * @var int
@@ -52,6 +61,15 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      * )
      */
     protected $businessGallery;
+
+    /**
+     * @var ArrayCollection - Media Images
+     * @ORM\OneToMany(targetEntity="Domain\ArticleBundle\Entity\Media\ArticleGallery",
+     *     mappedBy="media",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $articleGallery;
 
     /**
      * @var BusinessProfile[]
@@ -269,6 +287,40 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getBusinessGallery()
     {
         return $this->businessGallery;
+    }
+
+
+    /**
+     * Add $articleGallery
+     *
+     * @param ArticleGallery $articleGallery
+     * @return Media $this
+     */
+    public function addArticleGallery(ArticleGallery $articleGallery)
+    {
+        $this->articleGallery[] = $articleGallery;
+
+        return $this;
+    }
+
+    /**
+     * Remove articleGallery
+     *
+     * @param ArticleGallery $articleGallery
+     */
+    public function removeArticleGallery(ArticleGallery $articleGallery)
+    {
+        $this->articleGallery->removeElement($articleGallery);
+    }
+
+    /**
+     * Get articleGallery
+     *
+     * @return ArrayCollection
+     */
+    public function getArticleGallery()
+    {
+        return $this->articleGallery;
     }
 
     /**

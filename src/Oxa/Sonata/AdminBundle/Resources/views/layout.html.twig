@@ -26,3 +26,35 @@
         </a>
     {% endspaceless %}
 {% endblock %}
+
+{% block sonata_top_nav_menu %}
+    {% if app.user and is_granted('ROLE_SONATA_ADMIN') %}
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                {% block sonata_top_nav_menu_add_block %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-plus-square fa-fw" aria-hidden="true"></i> <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </a>
+                        {% include sonata_admin.adminPool.getTemplate('add_block') %}
+                    </li>
+                {% endblock %}
+                {% block sonata_top_nav_menu_user_block %}
+                    <li class="dropdown user-menu">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw" aria-hidden="true"></i> <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            {% include sonata_admin.adminPool.getTemplate('user_block') %}
+                        </ul>
+                    </li>
+                {% endblock %}
+            </ul>
+        </div>
+    {% elseif app.user and is_granted('ROLE_SALES_MANAGER') %}
+        {% set logoutUri  = url('sonata_user_admin_security_logout') %}
+        {% set logoutText = 'user_block_logout'|trans({}, 'SonataUserBundle') %}
+
+        <a href="{{ logoutUri }}" class="sidebar-logout"><i class="fa fa-sign-out fa-fw"></i> {{ logoutText }}</a>
+    {% endif %}
+{% endblock %}

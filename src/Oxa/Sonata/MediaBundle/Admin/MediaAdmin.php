@@ -21,6 +21,11 @@ class MediaAdmin extends BaseMediaAdmin
     public $showFilters = false;
 
     /**
+     * @var bool
+     */
+    public $allowBatchRestore = true;
+
+    /**
      * @param FormMapper $formMapper
      */
     protected function configureFormFields(FormMapper $formMapper)
@@ -39,6 +44,11 @@ class MediaAdmin extends BaseMediaAdmin
             ->add('url', UrlType::class, [
                 'required' => false,
                 'constraints' => new Url()
+            ])
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+                'required' => false,
+                'disabled' => true,
             ])
         ;
     }
@@ -113,6 +123,7 @@ class MediaAdmin extends BaseMediaAdmin
         $collection
             ->remove('export')
             ->remove('show')
+            ->add('restore')
         ;
     }
 }

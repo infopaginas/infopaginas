@@ -5,6 +5,7 @@ View more articles: Ver más artículos
 Videos: Videos
 View more videos: Ver más videos
 infopaginos.copyright: © 2016 infopáginas
+infopaginos.image.alt: Infopáginas
 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo: 90 Calle San Martin Rodval Bldg. Suite 201 Guaynabo
 PR: PR
 About Us: Acerca de Nosotros
@@ -395,12 +396,14 @@ Background: Fondo
 Reset: Reiniciar
 Reason: Razón
 Remove: Retirar
+Video status pending: El vídeo se está convirtiendo. Se enviará para su aprobación a nuestros administradores y se publicará automáticamente.
+Video status error: Error: fallo de la conversión, vuelve a cargar el vídeo con los formatos siguientes: MP4, WMV, FLV, AVI, MPG, MOV
 
 business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
 business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =
-business_profile.size_limit: Lo siento. El tamaño máximo permitido es de 10Mb.
+business_profile.size_limit: El video es más grande que 128 MB
 business_profile.url.empty: Error: el campo URL no debe estar vacío.
-business_profile.video_count_limit: Error: demasiados videos agregados. Máximo conteo de archivos =
+business_profile.video_count_limit: Solo se puede subir un vídeo a la vez
 business_profile.max_length: Por favor, use max {{ limit }} símbolos
 business_profile.logo.image_count_limit: Error: sólo se permite un solo logotipo
 business_profile.background.image_count_limit: Error: sólo se permite un fondo único
@@ -547,3 +550,5 @@ Instagram: Instagram
 TripAdvisor: TripAdvisor
 
 popular_searches.title: Búsquedas populares
+google_maps.current_user_position.label: Ubicación actual
+business_profile.image.description.required: Este campo es requerido

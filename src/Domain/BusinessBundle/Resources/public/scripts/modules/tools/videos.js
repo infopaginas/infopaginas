@@ -25,20 +25,36 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
         //max business profile videos count - 1
         this.maxAllowedFilesCount = 1;
 
+        this.maxAllowedFileSize = 128000000;
+
         this.handleFileUploadInput();
         this.handleClickOnRemoveLink();
         this.handleRemoteVideosUpload();
     };
 
     //only 1 video allowed
-    videos.prototype.checkMaxAllowedFilesCount = function( files ) {
-        var filesSelected = files.length;
+    videos.prototype.checkMaxAllowedFilesCount = function( filesSelected ) {
         var filesAlreadyAdded = $( document ).find( this.html.videoRowContainer ).length;
 
         var filesAdded = filesSelected + filesAlreadyAdded;
 
         if( filesAdded > this.maxAllowedFilesCount ) {
-            var error = $( this.html.remoteVideoURLInputId ).data( 'error-count-limit' ) + this.maxAllowedFilesCount;
+            var error = $( this.html.remoteVideoURLInputId ).data( 'error-count-limit' );
+
+            this.videoErrorHandler( error );
+            return false;
+        }
+
+        return true;
+    };
+
+    //max allowed filesize: 128mb
+    videos.prototype.checkMaxAllowedFileSize = function( files ) {
+        var filesInput = document.getElementById( this.html.buttons.fileInputId );
+        var file = filesInput.files[0];
+
+        if( file.size > this.maxAllowedFileSize ) {
+            var error = $( this.html.remoteVideoURLInputId ).data( 'error-size-limit' );
 
             this.videoErrorHandler( error );
             return false;
@@ -76,7 +92,15 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
     };
 
     videos.prototype.errorHandler = function( jqXHR, textStatus, errorThrown ) {
-        this.videoErrorHandler( errorThrown );
+        var messageError;
+
+        if ( jqXHR.responseJSON ) {
+            messageError = jqXHR.responseJSON.message;
+        } else {
+            messageError = errorThrown;
+        }
+
+        this.videoErrorHandler( messageError );
     };
 
     //ajax request
@@ -125,10 +149,13 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
 
             var files = document.getElementById( that.html.buttons.fileInputId ).files;
 
-            if( that.checkMaxAllowedFilesCount( files ) == false ) {
-                var error = $( that.html.remoteVideoURLInputId ).data( 'error-size-limit' );
+            that.removeVideoErrors();
 
-                that.videoErrorHandler( error );
+            if( that.checkMaxAllowedFilesCount( files.length ) == false ) {
+                return false;
+            }
+
+            if( that.checkMaxAllowedFileSize( files ) == false ) {
                 return false;
             }
 
@@ -153,9 +180,14 @@ define(['jquery', 'bootstrap', 'tools/spin'], function( $, bootstrap, Spin ) {
             if ( !$remoteVideoURLInput.val() ) {
                 var error = $( that.html.remoteVideoURLInputId ).data( 'error-empty' );
 
+                that.removeVideoErrors();
                 that.videoErrorHandler( error );
             } else {
                 that.removeVideoErrors();
+
+                if( that.checkMaxAllowedFilesCount( 1 ) == false ) {
+                    return false;
+                }
 
                 var data = {
                     url: $remoteVideoURLInput.val(),

@@ -1,0 +1,8 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.id is not null %}
+        <div class="chart-container" id="{{ admin.uniqid }}_{{ field_description.name }}ChartContainer"></div>
+        <div class="form__section scrollable-table" id="{{ admin.uniqid }}_{{ field_description.name }}StatisticsContainer"></div>
+    {% endif %}
+{% endblock %}

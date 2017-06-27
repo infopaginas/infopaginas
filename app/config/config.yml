@@ -22,7 +22,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.0.0'
+    app_version: '1.1.0'
     locale: en
     locales: [en, es]
     locale_data:
@@ -64,6 +64,7 @@ parameters:
     image_back_up_path: '/../web/imageBackUp/'
     video_back_up_path: '/../web/imageBackUp/video/'
     youtube_back_up_path: '/../web/imageBackUp/youtube/'
+    video_download_path: '/../web/uploads/videos/'
     breadcrumb_max_length: 38
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
@@ -285,6 +286,12 @@ knp_gaufrette:
         ipgn:
             adapter:    video_storage
             alias:      video_storage_filesystem
+
+dubture_f_fmpeg:
+    ffmpeg_binary: /usr/bin/ffmpeg
+    ffprobe_binary: /usr/bin/ffprobe
+    binary_timeout: 300 # Use 0 for infinite
+    threads_count: 1
 
 aws:
     version:    '2006-03-01'

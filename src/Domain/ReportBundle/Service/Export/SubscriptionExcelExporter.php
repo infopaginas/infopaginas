@@ -37,19 +37,14 @@ class SubscriptionExcelExporter extends ExcelExporterModel
     {
         $filename = $this->subscriptionReportManager->generateReportName(self::FORMAT);
 
+        $title = $this->translator->trans('export.title.subscription_report', [], 'AdminReportBundle');
+        $title = $this->getSafeTitle($title);
+
         $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
+        $this->phpExcelObject = $this->setData($parameters);
 
-        $this->phpExcelObject->getProperties()
-            ->setTitle($this->translator->trans('export.title.subscription_report', [], 'AdminReportBundle'))
-        ;
-
-        $this->setData($parameters);
-
-        $this->phpExcelObject->getActiveSheet()
-            ->setTitle(
-                $this->translator->trans('export.title.active_sheet', [], 'AdminReportBundle')
-            )
-        ;
+        $this->phpExcelObject->getProperties()->setTitle($title);
+        $this->phpExcelObject->getActiveSheet()->setTitle($title);
 
         return $this->sendResponse($filename);
     }

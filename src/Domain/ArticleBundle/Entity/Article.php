@@ -9,8 +9,10 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
@@ -24,11 +26,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\ArticleBundle\Repository\ArticleRepository")
  * @Gedmo\TranslationEntity(class="Domain\ArticleBundle\Entity\Translation\ArticleTranslation")
  */
-class Article implements DefaultEntityInterface, TranslatableInterface
+class Article implements DefaultEntityInterface, TranslatableInterface, PostponeRemoveInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use SeoTrait;
+    use PostponeRemoveTrait;
 
     const ARTICLE_FIELD_TITLE = 'title';
     const ARTICLE_FIELD_BODY  = 'body';
@@ -165,6 +168,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      *     orphanRemoval=true,
      *     )
      * @ORM\OrderBy({"position" = "ASC"})
+     * @Assert\Valid
      */
     protected $images;
 
@@ -505,7 +509,7 @@ class Article implements DefaultEntityInterface, TranslatableInterface
      */
     public function removeImage(ArticleGallery $image)
     {
-        $this->images->remove($image);
+        $this->images->removeElement($image);
         return $this;
     }
 }

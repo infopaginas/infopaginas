@@ -112,7 +112,9 @@ class ViewsAndVisitorsReportManager extends BaseReportManager
 
             if (in_array($action, BusinessOverviewModel::getTypes())) {
                 $count    = $item[BusinessOverviewReportManager::MONGO_DB_FIELD_COUNT];
-                $datetime = $item[BusinessOverviewReportManager::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+                $datetime = DatesUtil::convertMongoDbTimeToDatetime(
+                    $item[BusinessOverviewReportManager::MONGO_DB_FIELD_DATE_TIME]
+                );
 
                 $viewDate = $datetime->format($dateFormat);
 

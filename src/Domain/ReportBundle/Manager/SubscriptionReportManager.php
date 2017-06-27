@@ -143,18 +143,21 @@ class SubscriptionReportManager extends BaseReportManager
         $stats['mapping']['total'] = 'subscription_report.total';
 
         foreach ($rawResult as $item) {
-            $code     = $item[self::MONGO_DB_FIELD_PLAN_CODE];
-            $count    = $item[self::MONGO_DB_FIELD_COUNT];
-            $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+            $code = $item[self::MONGO_DB_FIELD_PLAN_CODE];
 
-            $viewDate = $datetime->format(AdminHelper::DATE_FORMAT);
+            if (in_array($code, SubscriptionPlan::getCodes())) {
+                $count    = $item[self::MONGO_DB_FIELD_COUNT];
+                $datetime = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME]);
 
-            // for chart
-            $stats['chart'][$code][$dates[$viewDate]] += $count;
+                $viewDate = $datetime->format(AdminHelper::DATE_FORMAT);
 
-            // for table
-            $stats['results'][$viewDate][$code]       += $count;
-            $stats['results'][$viewDate]['total']     += $count;
+                // for chart
+                $stats['chart'][$code][$dates[$viewDate]] += $count;
+
+                // for table
+                $stats['results'][$viewDate][$code]       += $count;
+                $stats['results'][$viewDate]['total']     += $count;
+            }
         }
 
         return $stats;

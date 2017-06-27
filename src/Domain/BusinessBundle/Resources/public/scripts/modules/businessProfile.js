@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'tools/mapspin', 'business/tools/phones', 'business/tools/workingHours', 'selectize'], function( $, bootstrap, FormHandler, Spin, select, businessProfileClose, MapSpin ) {
+define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/select', 'business/tools/businessProfileClose', 'tools/mapSpin', 'business/tools/phones', 'business/tools/workingHours', 'selectize'], function( $, bootstrap, FormHandler, Spin, select, businessProfileClose, MapSpin ) {
     'use strict';
 
     //init businessProfile object variables
@@ -49,7 +49,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             localitiesFieldSpan: '.locality-field',
             areasFieldSpan: '.area-field',
             asteriskClass: 'i.fa-asterisk',
-            asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>'
+            asteriskTag: '<i class="fa fa-asterisk" aria-hidden="true"></i>',
+            imageValidationErrors: '#imageValidationErrors'
         };
 
         this.ajax = {
@@ -262,11 +263,42 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         } );
     };
 
+    businessProfile.prototype.validateImages = function() {
+        var that = this;
+        var descriptions = $( '#gallery' ).find( 'textarea[ id *= "_description"]' );
+        var notEmptyString = /\S/;
+        var hasError = false;
+
+        descriptions.each(function() {
+            var field       = $( this );
+            var fieldParent = field.parent();
+
+            fieldParent.removeClass( 'field--not-valid' );
+            fieldParent.find( 'span[data-error-message]' ).remove();
+
+            if ( !notEmptyString.test( field.val() )) {
+                fieldParent.addClass( 'field--not-valid' );
+                field.after( '<span data-error-message class="error">' + $( that.html.imageValidationErrors ).data( 'required' ) + '</span>' );
+
+                hasError = true;
+            }
+        });
+
+        return hasError;
+    };
+
     businessProfile.prototype.handleProfileSave = function() {
         var that = this;
 
         $( document ).on( 'submit' , this.html.forms.newProfileRequestFormId , function( event ) {
             that.formSubmitting = true;
+            event.preventDefault();
+
+            if ( that.validateImages() ) {
+                that.formSubmitting = false;
+
+                return false;
+            }
 
             var data = [{
                 name: 'locale',

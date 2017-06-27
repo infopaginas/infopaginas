@@ -15,6 +15,9 @@ class BusinessOverviewReportManager extends BaseReportManager
     const MONGO_DB_COLLECTION_NAME_RAW       = 'overview_raw';
     const MONGO_DB_COLLECTION_NAME_AGGREGATE = 'overview_aggregate';
 
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW       = 'overview_archive_raw';
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE = 'overview_archive_aggregate';
+
     const MONGO_DB_FIELD_ACTION      = 'action';
     const MONGO_DB_FIELD_BUSINESS_ID = 'business_id';
     const MONGO_DB_FIELD_COUNT       = 'count';
@@ -124,7 +127,7 @@ class BusinessOverviewReportManager extends BaseReportManager
 
             if (in_array($action, BusinessOverviewModel::getTypes())) {
                 $count  = $item[self::MONGO_DB_FIELD_COUNT];
-                $datetime = $item[self::MONGO_DB_FIELD_DATE_TIME]->toDateTime();
+                $datetime = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME]);
 
                 $viewDate = $datetime->format($dateFormat);
 
@@ -299,6 +302,9 @@ class BusinessOverviewReportManager extends BaseReportManager
             ]
         );
 
+        $i = 0;
+        $insert = [];
+
         foreach ($cursor as $document) {
             $document[self::MONGO_DB_FIELD_ACTION]      = $document['_id']['action'];
             $document[self::MONGO_DB_FIELD_BUSINESS_ID] = $document['_id']['bid'];
@@ -306,8 +312,43 @@ class BusinessOverviewReportManager extends BaseReportManager
 
             $document['_id'] = $this->mongoDbManager->generateId();
 
-            $this->mongoDbManager->insertOne(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $document);
+            $insert[] = $document;
+
+            if (($i % MongoDbManager::DEFAULT_BATCH_SIZE) === 0) {
+                $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
+                $insert = [];
+            }
         }
+
+        if ($insert) {
+            $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
+        }
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveRawBusinessInteractions($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME_RAW,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_RAW,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveAggregatedBusinessInteractions($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME_AGGREGATE,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE_AGGREGATE,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
     }
 
     public function getThisYearSearchParams($params)

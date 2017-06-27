@@ -14,17 +14,29 @@ class VideoManager
 
     const MAX_FILENAME_LENGTH = 240;
     const LINK_LIFE_TIME      = 600;
+    const AUDIO_CODEC = 'libmp3lame';
+    const TRUSTED_SCORE = 25;
 
     private static $allowedMimeTypes = [
         'video/mp4',
         'video/webm',
         'video/ogg',
+        'video/quicktime',
+        'video/avi',
+        'video/mpeg',
+        'video/x-ms-wmv',
+        'video/x-flv',
     ];
     
     private $mimeExtensions = [
-        'video/mp4'     => '.mp4',
-        'video/webm'    => '.webm',
-        'video/ogg'     => '.ogv',
+        'video/mp4'       => '.mp4',
+        'video/webm'      => '.webm',
+        'video/ogg'       => '.ogv',
+        'video/avi'       => '.avi',
+        'video/mpeg'      => '.mpg',
+        'video/x-ms-wmv'  => '.wmv',
+        'video/quicktime' => '.mov',
+        'video/x-flv'     => '.flv',
     ];
 
     private $filesystem;
@@ -80,7 +92,7 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            $message = $this->container->get('translator')->trans('Files of type %s are not allowed', [], 'messages');
+            $message = $this->container->get('translator')->trans('You can upload the following file types', [], 'messages');
             throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
@@ -95,8 +107,7 @@ class VideoManager
             'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
-
+        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));;
         if (!$uploadedSize) {
             $message = $this->container->get('translator')
                 ->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
@@ -124,6 +135,11 @@ class VideoManager
             'type'      => $headers['content_type'],
             'path'      => $url,
         ];
+
+        if ($fileData['ext'] == null || !isset($headers['content_type'])) {
+            $message = $this->container->get('translator')->trans('the link to the video is invalid', [], 'messages');
+            throw new \InvalidArgumentException(sprintf($message));
+        }
 
         $uploadedFileData = $this->uploadLocalFileData($fileData);
 
@@ -158,6 +174,91 @@ class VideoManager
         file_put_contents($path, file_get_contents($url));
 
         return $path;
+    }
+
+    public function convertVideoMedia(VideoMedia $media)
+    {
+        $ffprobe = $this->container->get('dubture_ffmpeg.ffprobe');
+
+        try {
+            $file = $this->getLocalUrl();
+            $tempFile = $this->getLocalUrl(true);
+            file_put_contents($tempFile, file_get_contents($this->getPublicUrl($media)));
+
+            //ffmpeg script for converting video to mp4 format
+            //script taken from FFMpeg Symfony Bundle https://github.com/pulse00/ffmpeg-bundle
+            shell_exec('/usr/bin/ffmpeg -y -i ' . $tempFile . ' -threads 1 -vcodec libx264 -acodec ' .
+                'libmp3lame -b:v 1000k -refs 6 -coder 1 -sc_threshold 40 -flags +loop -me_range 16 -subq 7 ' .
+                '-i_qfactor 0.71 -qcomp 0.6 -qdiff 4 -trellis 1 -b:a 128k ' . $file);
+
+            $score = $ffprobe->format($file)->get('probe_score');
+
+            if ($score < $this::TRUSTED_SCORE) {
+                $media->setStatus($media::VIDEO_STATUS_ERROR);
+
+                return $media;
+            }
+        } catch (\Exception $e) {
+            $media->setStatus($media::VIDEO_STATUS_ERROR);
+
+            return $media;
+        }
+
+        $fileData = [
+            'name' => uniqid(),
+            'type' => 'video/mp4',
+            'ext' => 'mp4',
+            'path' => $file,
+        ];
+        $uploadedFileData = $this->uploadLocalFileData($fileData);
+
+        if ($this->filesystem->getAdapter()->exists($media->getFilepath() . $media->getFilename())) {
+            $this->filesystem->delete($media->getFilepath() . $media->getFilename());
+        }
+
+        $media->setName($uploadedFileData['name']);
+        $media->setFilepath($uploadedFileData['filepath']);
+        $media->setFilename($uploadedFileData['filename']);
+        $media->setType($uploadedFileData['type']);
+        $media->setStatus($media::VIDEO_STATUS_ACTIVE);
+
+        $this->deleteLocalMediaFiles([$file, $tempFile]);
+
+        return $media;
+    }
+
+    /**
+     * @param bool $isTemp
+     * @return string
+     */
+    public function getLocalUrl(bool $isTemp = false)
+    {
+        $path = $this->container->get('kernel')->getRootDir() . $this->container->getParameter('video_download_path');
+        $name = uniqid();
+
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+
+        if ($isTemp) {
+            $name = 'temp_' . $name;
+        } else {
+            $name = $name . '.mp4';
+        }
+
+        return $path . $name;
+    }
+
+    /**
+     * @param array $files
+     */
+    public function deleteLocalMediaFiles(array $files)
+    {
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
     }
 
     public function getPublicUrl(VideoMedia $media)

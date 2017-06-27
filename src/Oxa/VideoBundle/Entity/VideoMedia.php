@@ -5,6 +5,8 @@ namespace Oxa\VideoBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,8 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="video_media")
  * @ORM\Entity(repositoryClass="Oxa\VideoBundle\Repository\VideoMediaRepository")
  */
-class VideoMedia
+class VideoMedia implements PostponeRemoveInterface
 {
+    use PostponeRemoveTrait;
+
     const YOUTUBE_ACTION_ADD     = 'YOUTUBE_ACTION_ADD';
     const YOUTUBE_ACTION_UPDATE  = 'YOUTUBE_ACTION_UPDATE';
     const YOUTUBE_ACTION_REMOVE  = 'YOUTUBE_ACTION_REMOVE';
@@ -23,6 +27,12 @@ class VideoMedia
 
     const VIDEO_TITLE_MAX_LENGTH      = 255;
     const VIDEO_TITLE_MAX_DESCRIPTION = 255;
+
+    const VIDEO_STATUS_PENDING = 'pending';
+    const VIDEO_STATUS_ACTIVE  = 'active';
+    const VIDEO_STATUS_ERROR   = 'error';
+
+    const VIDEO_TYPE_MP4 = 'video/mp4';
 
     /**
      * @var int
@@ -141,7 +151,12 @@ class VideoMedia
 
             $this->setCreatedAt(new \DateTime());
             $this->setUpdatedAt(new \DateTime());
-            $this->setStatus('');
+
+            if ($this->getType() == $this::VIDEO_TYPE_MP4) {
+                $this->setStatus($this::VIDEO_STATUS_ACTIVE);
+            } else {
+                $this->setStatus($this::VIDEO_STATUS_PENDING);
+            }
 
             $this->setYoutubeSupport(true);
             $this->setYoutubeAction(null);

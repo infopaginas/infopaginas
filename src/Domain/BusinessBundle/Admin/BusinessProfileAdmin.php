@@ -52,10 +52,16 @@ class BusinessProfileAdmin extends OxaAdmin
     use VideoUploadTrait;
 
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
+    const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
     protected $translations = [];
 
     public $copyAvailable = true;
+
+    /**
+     * @var bool
+     */
+    public $allowBatchRestore = true;
 
     /**
      * @return BusinessProfile
@@ -91,7 +97,7 @@ class BusinessProfileAdmin extends OxaAdmin
         $list = parent::configureActionButtons($action, $object);
 
         $accessToCopy = [
-            'show',
+            'create',
             'edit',
         ];
 
@@ -138,6 +144,9 @@ class BusinessProfileAdmin extends OxaAdmin
             ])
             ->add('registrationDate', 'doctrine_orm_datetime_range', $this->defaultDatagridDatetimeTypeOptions)
             ->add('isActive')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
     }
 
@@ -171,6 +180,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 ]
             )
             ->add('isActive')
+            ->add('isDeleted', null, [
+                'label' => 'Scheduled for deletion',
+            ])
         ;
 
         $this->addGridActions($listMapper);
@@ -198,6 +210,17 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Address', ['class' => 'col-md-4',])->end()
                 ->with('Map', ['class' => 'col-md-8',])->end()
                 ->with('Categories', ['class' => 'col-md-6',])->end()
+            ->end()
+        ;
+
+        if ($businessProfile->getId() and
+            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
+        ) {
+            $formMapper->tab('Profile')->with('SuperVM')->end()->end();
+        }
+
+        $formMapper
+            ->tab('Profile', ['class' => 'col-md-12',])
                 ->with('Social Networks', ['class' => 'col-md-6',])->end()
                 ->with('Gallery')->end()
             ->end()
@@ -452,6 +475,27 @@ class BusinessProfileAdmin extends OxaAdmin
         if ($businessProfile->getId() and
             $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
         ) {
+            $formMapper
+                ->tab('Profile')
+                    ->with('SuperVM')
+                        ->add(
+                            'extraSearches',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'delete_empty'  => false,
+                                'inline'        => 'table',
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+
+
             if (!$businessProfile->getVideo()) {
                 $formMapper
                     ->tab('Profile')
@@ -553,6 +597,16 @@ class BusinessProfileAdmin extends OxaAdmin
                                     ),
                                 ),
                             ])
+                            ->add('videoStatus', TextType::class, [
+                                'data_class' => null,
+                                'mapped'     => false,
+                                'required'   => false,
+                                'data'       => $businessProfile->getVideo()->getStatus(),
+                                'attr' => [
+                                    'readonly' => true,
+                                    'disabled' => true,
+                                ],
+                            ])
                         ->end()
                     ->end()
                 ;
@@ -563,6 +617,11 @@ class BusinessProfileAdmin extends OxaAdmin
             ->tab('Profile')
                 ->with('Status')
                     ->add('isActive')
+                    ->add('isDeleted', null, [
+                        'label' => 'Scheduled for deletion',
+                        'required' => false,
+                        'disabled' => true,
+                    ])
                     ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
                     ->add('updatedUser', 'sonata_type_model', [
                         'required' => false,
@@ -712,55 +771,218 @@ class BusinessProfileAdmin extends OxaAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('id')
-            ->add('logo', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_image.html.twig'
-            ])
-            ->add('background', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_background.html.twig'
-            ])
-            ->add('name')
-            ->add('images')
-            ->add('user')
-            ->add('subscription')
-            ->add('subscriptions')
-            ->add('discount')
-            ->add('coupons')
-            ->add('categories')
-            ->add('catalogLocality')
-            ->add('areas')
-            ->add('localities')
-            ->add('neighborhoods')
-            ->add('brands')
-            ->add('paymentMethods')
-            ->add('businessReviews')
-            ->add('website')
-            ->add('email')
-            ->add('phones')
-            ->add('registrationDate')
-            ->add('slogan')
-            ->add('description', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig'
-            ])
-            ->add('product')
-            ->add('collectionWorkingHours', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig'
-            ])
-            ->add('workingHours', null, [
-                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig'
-            ])
-            ->add('hideAddress')
-            ->add('slug')
-            ->add('updatedAt')
-            ->add('updatedUser')
-            ->add('isActive')
-            ->add('dcOrderId')
+            ->tab('Profile', ['class' => 'col-md-12',])
+                ->with('Translatable')
+                    ->add('name')
+                    ->add('slogan')
+                    ->add('description', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_description.html.twig',
+                    ])
+                    ->add('product')
+                    ->add('brands')
+                    ->add('workingHours', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig',
+                    ])
+                ->end()
+                ->with('Main')
+                    ->add('id')
+                    ->add('user', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
+                    ->add('website')
+                    ->add('email')
+                    ->add('slug')
+                    ->add('collectionWorkingHours', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig',
+                    ])
+                    ->add('phones', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('Address')
+                    ->add('country', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
+                    ->add('state')
+                    ->add('catalogLocality', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
+                    ->add('zipCode')
+                    ->add('streetAddress')
+                    ->add('customAddress')
+                    ->add('hideAddress')
+                    ->add('latitude')
+                    ->add('longitude')
+                ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
+                ->with('Categories')
+                    ->add('categories', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('serviceAreasType')
+                    ->add('milesOfMyBusiness')
+                    ->add('areas', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('localities', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('neighborhoods', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                    ->add('paymentMethods', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('SuperVM')
+                    ->add('extraSearches', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('Gallery')
+                    ->add('logo', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
+                    ])
+                    ->add('background', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
+                    ])
+                    ->add('images', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('Subscription')
+                    ->add('subscription')
+                    ->add('subscriptions', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('Status')
+                    ->add('isActive')
+                    ->add('registrationDate')
+                    ->add('isDeleted', null, [
+                        'label' => 'Scheduled for deletion',
+                    ])
+                    ->add('updatedAt')
+                    ->add('updatedUser', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
+                    ->add('createdAt')
+                    ->add('createdUser', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+                    ])
+                ->end()
+                ->with('Coupons', ['class' => 'col-md-6',])
+                    ->add('coupons', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_coupon_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+                ->with('Discount', ['class' => 'col-md-6',])
+                    ->add('discount')
+                ->end()
+                ->with('DoubleClick')
+                    ->add('dcOrderId', null, [
+                        'label' => 'DC Order Id for Ad Usage Report',
+                    ])
+                ->end()
+            ->end()
+            ->tab('Reviews')
+                ->with('User Reviews')
+                    ->add('reviewPagination', null, [
+                        'label'    => 'Pagination',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_review_pagination.html.twig',
+                    ])
+                    ->add('reviewList', null, [
+                        'label'    => 'businessReviewsList',
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_review.html.twig',
+                    ])
+                ->end()
+            ->end()
         ;
+
+        if ($this->getSubject()->getId()) {
+            $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_THIS_WEEK);
+
+            $showMapper
+                ->tab('Interactions Report')
+                    ->with('Interactions Report')
+                        ->add('interactionReportFilters', null, [
+                            'label'     => 'Interaction Filters',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                            'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                        ])
+                        ->add('interactionReport', null, [
+                            'label'    => 'Interaction Report',
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('interactionExport', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                        ])
+                    ->end()
+                ->end()
+                ->tab('Keywords Report')
+                    ->with('Keywords Report')
+                        ->add('keywordReportLimit', null, [
+                            'label'     => 'Keyword Limit',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_limit.html.twig',
+                            'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
+                            'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
+                        ])
+                        ->add('keywordReportFilters', null, [
+                            'label'     => 'Keyword Filters',
+                            'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                            'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
+                            'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                        ])
+                        ->add('keywordReport', null, [
+                            'label'     => 'Keyword Report',
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                        ])
+                        ->add('keywordsExport', null, [
+                            'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                        ])
+                    ->end()
+                ->end()
+            ;
+
+            if ($this->getSubject()->getDcOrderId()) {
+                $showMapper
+                    ->tab('Ad Usage Report')
+                        ->with('Ad Usage Report')
+                            ->add('adUsageReportFilters', null, [
+                                'label'     => 'Ad Usage Filters',
+                                'template'  => 'DomainBusinessBundle:Admin:BusinessProfile/report_controls.html.twig',
+                                'dateStart' => $dateRange->getStartDate()->format(DatesUtil::DATE_DB_FORMAT),
+                                'dateEnd'   => $dateRange->getEndDate()->format(DatesUtil::DATE_DB_FORMAT),
+                                'format'    => self::DATE_PICKER_REPORT_FORMAT,
+                            ])
+                            ->add('adUsageReport', null, [
+                                'label'     => 'Ad Usage Report',
+                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
+                            ])
+                            ->add('adUsageExport', null, [
+                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                            ])
+                        ->end()
+                    ->end()
+                ;
+            }
+        }
     }
 
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
+        $this->templates['show'] = 'DomainBusinessBundle:Admin:show.html.twig';
     }
 
     /**
@@ -1159,6 +1381,7 @@ class BusinessProfileAdmin extends OxaAdmin
     {
         $collection
             ->add('show')
+            ->add('restore')
             ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }

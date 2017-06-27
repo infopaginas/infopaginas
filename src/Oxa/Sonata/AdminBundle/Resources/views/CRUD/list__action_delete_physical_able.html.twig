@@ -10,15 +10,21 @@
         <i class="glyphicon glyphicon-subtitles"></i>
     </a>
 {% endif %}
-{% if admin.isGranted('SHOW', object) and admin.hasRoute('show') %}
+{% if admin.isGranted('VIEW', object) and admin.hasRoute('show') %}
     <a href="{{ admin.generateObjectUrl('show', object) }}" class="btn btn-sm btn-default show_link btn-list-action"
        title="{{ 'action_show'|trans({}, 'SonataAdminBundle') }}">
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
 {% endif %}
-{% if admin.isGranted('DELETE', object) and admin.hasRoute('delete') %}
+{% if admin.isGranted('DELETE', object) and admin.hasRoute('delete') and (object.isDeleted is defined and not object.isDeleted or object.isDeleted is not defined) %}
     <a href="{{ admin.generateObjectUrl('delete', object) }}" class="btn btn-sm btn-default delete_link btn-list-action"
        title="{{ 'action_delete'|trans({}, 'SonataAdminBundle') }}">
         <i class="glyphicon glyphicon-trash"></i>
+    </a>
+{% endif %}
+{% if admin.isGranted('DELETE', object) and admin.hasRoute('restore') and object.isDeleted is defined and object.isDeleted %}
+    <a href="{{ admin.generateObjectUrl('restore', object) }}" class="btn btn-sm btn-default delete_link btn-list-action"
+       title="{{ 'action_restore'|trans({}, 'SonataAdminBundle') }}">
+        <i class="glyphicon glyphicon-upload"></i>
     </a>
 {% endif %}

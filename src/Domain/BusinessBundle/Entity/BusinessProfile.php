@@ -10,12 +10,13 @@ use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
+use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
+use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -42,12 +43,14 @@ class BusinessProfile implements
     DefaultEntityInterface,
     CopyableEntityInterface,
     TranslatableInterface,
-    GeolocationInterface
+    GeolocationInterface,
+    PostponeRemoveInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
     use LocationTrait;
     use SeoTrait;
+    use PostponeRemoveTrait;
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
@@ -71,6 +74,7 @@ class BusinessProfile implements
     const TRANSLATION_LANG_ES = 'Es';
 
     const ELASTIC_DOCUMENT_TYPE = 'BusinessProfile';
+    const ELASTIC_DOCUMENT_TYPE_AD = 'BusinessProfileAd';
     const FLAG_IS_UPDATED = 'isUpdated';
 
     const DEFAULT_MILES_FROM_MY_BUSINESS = 0;
@@ -424,6 +428,7 @@ class BusinessProfile implements
      *     orphanRemoval=true,
      *     )
      * @ORM\OrderBy({"position" = "ASC"})
+     * @Assert\Valid
      */
     protected $images;
 
@@ -701,6 +706,12 @@ class BusinessProfile implements
      */
     protected $distance;
 
+    /** @var bool
+     *
+     * Store business search status, not a part of DB table. calculated during the search
+     */
+    protected $isAd;
+
     /**
      * Related to WORKING_HOURS_ASSOCIATED_FIELD
      * @var BusinessProfileWorkingHour[] - Business Profile working hours
@@ -727,6 +738,20 @@ class BusinessProfile implements
      * @ORM\Column(name="has_images", type="boolean", options={"default" : 0})
      */
     protected $hasImages;
+
+    /**
+     * @var BusinessProfileExtraSearch[] - Business Profile extra searches
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileExtraSearch",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @Assert\Count(max="5", maxMessage = "business_profile.extra_search.max_count")
+     */
+    protected $extraSearches;
 
     /**
      * @return mixed
@@ -830,6 +855,7 @@ class BusinessProfile implements
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->extraSearches = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2409,6 +2435,26 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function getIsAd()
+    {
+        return $this->isAd;
+    }
+
+    /**
+     * @param bool $isAd
+     *
+     * @return BusinessProfile
+     */
+    public function setIsAd($isAd)
+    {
+        $this->isAd = $isAd;
+
+        return $this;
+    }
+
      /**
      * getting distance prettified
      *
@@ -2597,6 +2643,42 @@ class BusinessProfile implements
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getExtraSearches()
+    {
+        return $this->extraSearches;
+    }
+
+    /**
+     * Add $workingHour
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     *
+     * @return BusinessProfile
+     */
+    public function addExtraSearch($extraSearch)
+    {
+        $this->extraSearches[] = $extraSearch;
+
+        if ($extraSearch) {
+            $extraSearch->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove $extraSearch
+     *
+     * @param BusinessProfileExtraSearch $extraSearch
+     */
+    public function removeExtraSearch(BusinessProfileExtraSearch $extraSearch)
+    {
+        $this->extraSearches->removeElement($extraSearch);
+    }
+
+    /**
      * get list of bilingual fields
      * @return array
      */
@@ -2715,17 +2797,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_SEO_TITLE,
             self::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
         ];
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updateWorkingHoursData()
-    {
-        $workingHours = DayOfWeekModel::getBusinessProfileWorkingHoursJson($this);
-
-        $this->workingHoursJson = $workingHours;
     }
 
     /**

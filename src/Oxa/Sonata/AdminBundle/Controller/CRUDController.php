@@ -76,7 +76,7 @@ class CRUDController extends SortableAdminController
                 $this->addFlash(
                     'sonata_flash_success',
                     $this->trans(
-                        'flash_delete_success',
+                        $adminManager->getDeleteSuccessFlashMessage($object),
                         [
                             '%name%' => $this->escapeHtml($objectName),
                         ],
@@ -138,6 +138,49 @@ class CRUDController extends SortableAdminController
     }
 
     /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function restoreAction(Request $request)
+    {
+        try {
+            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
+            $adminManager->restoreEntity($this->admin->getSubject());
+            $this->addFlash(
+                'sonata_flash_success',
+                $this->get('translator')->trans('flash_restore_success', [], 'SonataAdminBundle')
+            );
+        } catch (\Exception $e) {
+            $this->addFlash('sonata_flash_error', $e->getMessage());
+        }
+
+        return $this->saveFilterResponse();
+    }
+
+    /**
+     * @param ProxyQuery $query
+     *
+     * @return RedirectResponse
+     */
+    public function batchActionRestore(ProxyQuery $query)
+    {
+        try {
+            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
+            $adminManager->restoreEntities($query->execute());
+
+            $this->addFlash(
+                'sonata_flash_success',
+                $this->get('translator')->trans('flash_restore_success', [], 'SonataAdminBundle')
+            );
+        } catch (\Exception $e) {
+            $this->addFlash('sonata_flash_error', $e->getMessage());
+        }
+
+        return $this->saveFilterResponse();
+    }
+
+    /**
      * Copy records
      *
      * @param ProxyQuery $query
@@ -169,10 +212,12 @@ class CRUDController extends SortableAdminController
     public function batchActionDelete(ProxyQueryInterface $query)
     {
         try {
-            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-            $adminManager->removeEntities($query->execute());
+            $entityArray = $query->execute();
 
-            $this->addFlash('sonata_flash_success', 'flash_batch_delete_success');
+            $adminManager = $this->get('oxa.sonata.manager.admin_manager');
+            $adminManager->removeEntities($entityArray);
+
+            $this->addFlash('sonata_flash_success', $adminManager->getBatchDeleteSuccessFlashMessage($entityArray));
         } catch (\Exception $e) {
             $this->addFlash('sonata_flash_error', $e->getMessage());
         }

@@ -1,7 +1,9 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapspin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/star-rating'],
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapSpin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/starRating'],
     function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
     'use strict';
+
+    const userMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 
     var mapSearchPage = function () {
         this.events = {
@@ -121,11 +123,11 @@ define(
         });
     };
 
-    mapSearchPage.prototype.updateMapMarkers = function ( markers ) {
+    mapSearchPage.prototype.updateMapMarkers = function ( markers  ) {
         this.deleteMarkers();
 
         if ( !_.isEmpty( markers ) ) {
-            this.addMarkers( markers );
+            this.addMarkers( markers , true);
         }
     };
 
@@ -137,9 +139,33 @@ define(
         }
     };
 
-    mapSearchPage.prototype.addMarkers = function ( markers )
-    {
-        _.each( markers, this.addMarker.bind( this ) );
+    mapSearchPage.prototype.addMarkers = function (markers, isSearchOnMap) {
+        var self = this;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var youPos = {
+                    id: 0,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    name: youPosText
+                };
+
+                self.addMarker(youPos);
+
+                if (!isSearchOnMap || typeof isSearchOnMap == 'undefined') {
+                    var bounds = new google.maps.LatLngBounds();
+
+                    _.each(self.markers, function (markerItem) {
+                        bounds.extend(markerItem.marker.getPosition());
+                    });
+
+                    self.map.fitBounds(bounds);
+                }
+            });
+        }
+
+        _.each(markers, this.addMarker.bind(this));
     };
 
     mapSearchPage.prototype.addMarker = function ( markerData )
@@ -157,6 +183,10 @@ define(
             labelAnchor: new google.maps.Point(3, 30),
             labelClass: "labels" // the CSS class for the label
         });
+
+        if (markerData.id === 0) {
+            marker.setIcon(userMarker);
+        }
 
         var infoWindow = new google.maps.InfoWindow({
             content: this.getInfoHTML( markerData )
@@ -188,7 +218,6 @@ define(
             });
         }
 
-        var markerObjec = {};
         this.markers[markerData.id] = {
             marker : marker,
             infoWindow : infoWindow

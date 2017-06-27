@@ -254,4 +254,18 @@ class DatesUtil
 
         return $date;
     }
+
+    /**
+     * @param $mongoDateTime MongoDB\BSON\UTCDateTime
+     *
+     * @return \Datetime
+     */
+    public static function convertMongoDbTimeToDatetime($mongoDateTime)
+    {
+        /** @var $datetime \Datetime */
+        $datetime = $mongoDateTime->toDateTime();
+        $datetime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+
+        return $datetime;
+    }
 }

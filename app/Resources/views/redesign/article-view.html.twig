@@ -31,11 +31,11 @@
                         {% if (articleGallery|length > 0) %}
                             <section class="page-section photos slider section--slider hide-before">
                                 <div class="slider__item">
-                                    <img src="{% path article.getImage(), 'normal' %}" alt="">
+                                    <img src="{% path article.getImage(), 'normal' %}" alt="{{ article.title }}">
                                 </div>
                                 {% for image in articleGallery %}
                                     <div class="slider__item">
-                                        <img src="{% path image.getMedia(), 'normal' %}" alt="{{ image.description }}">
+                                        <img src="{% path image.getMedia(), 'normal' %}" alt="{% if image.description %}{{ image.description }}{% else %}{{ article.title }}{% endif %}">
                                     </div>
                                 {% endfor %}
                             </section>
@@ -43,7 +43,7 @@
                             <section class="gallery">
                                 <div class="photos">
                                     <div class="article-photo">
-                                        <img src="{% path article.getImage(), 'normal' %}">
+                                        <img src="{% path article.getImage(), 'normal' %}" alt="{{ article.title }}">
                                     </div>
                                 </div>
                             </section>
