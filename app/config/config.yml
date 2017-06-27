@@ -70,6 +70,7 @@ parameters:
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
     google_youtube_privacy: '%google_youtube_video_privacy%'
     google_youtube_channel_id: '%google_youtube_user_channel_id%'
+    google_badge_partner_id: '6032772200'
 
 framework:
     #esi:             ~
@@ -110,6 +111,7 @@ twig:
         - 'DomainBusinessBundle:Form:fields.html.twig'
     globals:
         app_version: '%app_version%'
+        google_badge_partner_id: '%google_badge_partner_id%'
         google_map_api_key: '%google_map_api_key%'
         google_map_default_center: '%google_map_default_center%'
         google_map_default_zoom: '%google_map_default_zoom%'
