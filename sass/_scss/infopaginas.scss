@@ -1836,12 +1836,29 @@ $thumb-width-mb: 60px;
 
 .profile {
 
-  .section--slider, .panorama-frame {
+  .section--slider {
+    margin-bottom: 40px;
+    padding: 20px 0;
+  }
+
+  .panorama-frame {
     margin-bottom: 40px;
     padding: 20px 0;
 
     h3.panorama-title {
       text-align: center;
+    }
+
+    iframe {
+      height: 500px;
+
+      @media only screen and (max-height: 740px) {
+        height: 430px;
+      }
+
+      @media only screen and (max-height: 640px) {
+        height: 410px;
+      }
     }
   }
 
