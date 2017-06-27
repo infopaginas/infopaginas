@@ -1864,10 +1864,6 @@ $thumb-width-mb: 60px;
       height: 500px;
 
       @media only screen and (max-height: 740px) {
-        height: 430px;
-      }
-
-      @media only screen and (max-height: 640px) {
         height: 410px;
       }
     }
