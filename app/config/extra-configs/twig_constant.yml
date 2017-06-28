@@ -103,3 +103,7 @@ twig:
             ERROR:      'error'
             ACTIVE:     'active'
             PENDING:    'pending'
+
+        KEYWORD_VALIDATION:
+            MAX_LENGTH: 255
+            MIN_LENGTH: 2

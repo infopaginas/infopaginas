@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BusinessProfileKeyword
 {
+    const KEYWORD_MIN_LENGTH = 2;
+    const KEYWORD_MAX_LENGTH = 255;
     /**
      * @var int
      *
@@ -26,9 +28,14 @@ class BusinessProfileKeyword
      * @var string - keyword
      *
      * @ORM\Column(name="value_en", type="string", length=255)
-     * @Assert\NotBlank()
-     * @Assert\Length(min="2", max="255")
-     * @Assert\Regex("/^\w*$/")
+     * @Assert\NotBlank(message="business_profile.keywords.not_blank")
+     * @Assert\Length(
+     *      min="2",
+     *      max="255",
+     *      minMessage="business_profile.keywords.min_length",
+     *      maxMessage="business_profile.keywords.max_length",
+     *  )
+     * @Assert\Regex("/^\w*$/", message="business_profile.keywords.one_word")
      */
     private $valueEn;
 
