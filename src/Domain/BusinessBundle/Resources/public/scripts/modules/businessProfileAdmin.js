@@ -336,7 +336,7 @@ $( document ).ready( function() {
     });
 
     function handleKeywordValidationError( input, errors ) {
-        input.closest( 'tr' ).find( '.sonata-ba-field-error-messages').remove();
+        input.closest( 'td' ).find( '.sonata-ba-field-error-messages').remove();
 
         if ( errors.length ) {
             var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
