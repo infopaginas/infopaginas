@@ -259,6 +259,7 @@ class SearchManager extends Manager
 
         $limit     = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+        $searchDTO = $this->setSearchAdsParams($searchDTO);
 
         if ($category instanceof Category) {
             $searchDTO->setCategory($category);
