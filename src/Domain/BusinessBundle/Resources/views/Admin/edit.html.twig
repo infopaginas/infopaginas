@@ -7,6 +7,14 @@
         var parentId = '{{ app.request.get('id', null) }}';
         var businessProfileId = '{{ form.vars.value.id }}';
         var currentLocale = '{{ form.vars.value.locale }}';
+        var errorList = {
+            'keyword':{
+                'minLength': '{{ 'business_profile.keywords.min_length'|trans({'{{ limit }}': KEYWORD_VALIDATION.MIN_LENGTH}, 'validators') }}',
+                'maxLength': '{{ 'business_profile.keywords.max_length'|trans({'{{ limit }}': KEYWORD_VALIDATION.MAX_LENGTH}, 'validators') }}',
+                'notBlank': '{{ 'business_profile.keywords.not_blank'|trans({}, 'validators') }}',
+                'oneWord': '{{ 'business_profile.keywords.one_word'|trans({}, 'validators') }}'
+            }
+        };
     </script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>

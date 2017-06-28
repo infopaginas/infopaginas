@@ -18,4 +18,8 @@ business_profile:
     miles_empty: This field is required
     localities_empty: This field is required
   keywords:
-      max_count: Error too many keywords, the maximum number is {{ limit }}
+    max_count: Error too many keywords, the maximum number is {{ limit }}
+    not_blank: Error the field cannot be blank.
+    max_length: Error the maximum number of symbols is {{ limit }}.
+    min_length: Error the minimum number of symbols is {{ limit }}.
+    one_word: Error one keyword can consist of one word only.

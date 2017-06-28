@@ -146,6 +146,10 @@ td[class*="_extraSearches-localities"] {
     width: 20%;
 }
 
+td[class*="_keywords-valueEn"], td[class*="_keywords-valueEs"] {
+    width: 45%;
+}
+
 table.business-review-table {
     width: 100%;
 }

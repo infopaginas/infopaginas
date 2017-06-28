@@ -13,6 +13,7 @@ $( document ).ready( function() {
     var localitiesField     = $( '#' + formId + '_localities' );
     var neighborhoodsField  = $( '#' + formId + '_neighborhoods' );
     var milesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
+    var keywordSelectors = '#sonata-ba-field-container-' + formId + '_keywords input[ id *= "_value" ]';
 
     var openAllTimeCheckboxes = $( '[ id *= "_openAllTime" ]' );
 
@@ -308,4 +309,45 @@ $( document ).ready( function() {
             }, 100);
         }
     });
+
+    $( document ).on( 'input', keywordSelectors, function() {
+        var value = $( this ).val();
+        var errors = [];
+
+        if ( !value ) {
+            errors.push( errorList.keyword.notBlank );
+        }
+
+        if ( value.length > 255 ) {
+            errors.push( errorList.keyword.maxLength );
+        }
+
+        if ( value && value.length < 2 ) {
+            errors.push( errorList.keyword.minLength );
+        }
+
+        var validateOneWord = /^\w*$/;
+
+        if ( !validateOneWord.test( value )) {
+            errors.push( errorList.keyword.oneWord );
+        }
+
+        handleKeywordValidationError( $( this ), errors );
+    });
+
+    function handleKeywordValidationError( input, errors ) {
+        input.closest( 'tr' ).find( '.sonata-ba-field-error-messages').remove();
+
+        if ( errors.length ) {
+            var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
+
+            $.each(errors, function( index, value ) {
+                errorHtml += '<li><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + value + '</li>';
+            });
+
+            errorHtml += '</ul></div>';
+
+            input.after( errorHtml );
+        }
+    }
 } );

@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfileKeyword;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
@@ -44,9 +45,19 @@ class BusinessProfileKeywordAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $keywordAttributes = [
+            'required'  => true,
+            'minLength' => BusinessProfileKeyword::KEYWORD_MIN_LENGTH,
+            'maxLength' => BusinessProfileKeyword::KEYWORD_MAX_LENGTH,
+        ];
+
         $formMapper
-            ->add('valueEn')
-            ->add('valueEs')
+            ->add('valueEn', null, [
+                'attr' => $keywordAttributes,
+            ])
+            ->add('valueEs', null, [
+                'attr' => $keywordAttributes,
+            ])
         ;
     }
 
