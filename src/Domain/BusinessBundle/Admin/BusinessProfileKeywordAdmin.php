@@ -45,19 +45,11 @@ class BusinessProfileKeywordAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $keywordAttributes = [
-            'required'  => true,
-            'minLength' => BusinessProfileKeyword::KEYWORD_MIN_LENGTH,
-            'maxLength' => BusinessProfileKeyword::KEYWORD_MAX_LENGTH,
-        ];
+        $keywordFormParams = $this->getKeywordFormParams();
 
         $formMapper
-            ->add('valueEn', null, [
-                'attr' => $keywordAttributes,
-            ])
-            ->add('valueEs', null, [
-                'attr' => $keywordAttributes,
-            ])
+            ->add('valueEn', null, $keywordFormParams)
+            ->add('valueEs', null, $keywordFormParams)
         ;
     }
 
@@ -71,5 +63,48 @@ class BusinessProfileKeywordAdmin extends OxaAdmin
             ->add('valueEn')
             ->add('valueEs')
         ;
+    }
+
+    /**
+     * @return array
+     */
+    private function getKeywordFormParams()
+    {
+        $keywordValidationPattern = $this->getKeywordPatternConstraint();
+
+        return [
+            'attr' => [
+                'required'  => true,
+                'minLength' => BusinessProfileKeyword::KEYWORD_MIN_LENGTH,
+                'maxLength' => BusinessProfileKeyword::KEYWORD_MAX_LENGTH,
+                'pattern'   => $this->getHtmlKeywordPattern($keywordValidationPattern),
+            ],
+            'constraints' => [
+                new Regex([
+                    'pattern' => $keywordValidationPattern,
+                    'message' => 'business_profile.keywords.one_word',
+                ]),
+            ],
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    private function getKeywordPatternConstraint()
+    {
+        $validators = $this->getConfigurationPool()->getContainer()->getParameter('validators');
+
+        return $validators['keyword']['one_word'];
+    }
+
+    /**
+     * @param string $pattern
+     *
+     * @return string
+     */
+    private function getHtmlKeywordPattern($pattern)
+    {
+        return str_replace(['/^', '$/'], '', $pattern);
     }
 }

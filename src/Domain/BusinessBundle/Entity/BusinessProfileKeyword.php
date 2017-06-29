@@ -35,10 +35,6 @@ class BusinessProfileKeyword
      *      minMessage="business_profile.keywords.min_length",
      *      maxMessage="business_profile.keywords.max_length",
      *  )
-     * @Assert\Regex(
-     *      "/^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*$/",
-     *      message="business_profile.keywords.one_word"
-     * )
      */
     private $valueEn;
 
@@ -53,10 +49,6 @@ class BusinessProfileKeyword
      *      minMessage="business_profile.keywords.min_length",
      *      maxMessage="business_profile.keywords.max_length",
      *  )
-     * @Assert\Regex(
-     *      "/^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ]*$/",
-     *      message="business_profile.keywords.one_word"
-     * )
      */
     private $valueEs;
 
