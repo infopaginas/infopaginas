@@ -326,7 +326,7 @@ $( document ).ready( function() {
             errors.push( errorList.keyword.minLength );
         }
 
-        var validateOneWord = /^\w*$/;
+        var validateOneWord = validators.keyword.oneWord;
 
         if ( !validateOneWord.test( value )) {
             errors.push( errorList.keyword.oneWord );

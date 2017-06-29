@@ -35,7 +35,6 @@ class BusinessProfileKeyword
      *      minMessage="business_profile.keywords.min_length",
      *      maxMessage="business_profile.keywords.max_length",
      *  )
-     * @Assert\Regex("/^\w*$/", message="business_profile.keywords.one_word")
      */
     private $valueEn;
 
@@ -43,9 +42,13 @@ class BusinessProfileKeyword
      * @var string - keyword
      *
      * @ORM\Column(name="value_es", type="string", length=255)
-     * @Assert\NotBlank()
-     * @Assert\Length(min="2", max="255")
-     * @Assert\Regex("/^\w*$/")
+     * @Assert\NotBlank(message="business_profile.keywords.not_blank")
+     * @Assert\Length(
+     *      min="2",
+     *      max="255",
+     *      minMessage="business_profile.keywords.min_length",
+     *      maxMessage="business_profile.keywords.max_length",
+     *  )
      */
     private $valueEs;
 
