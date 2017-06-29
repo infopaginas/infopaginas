@@ -12,6 +12,10 @@ class MongoDbManager
     const OBJECT_ID_FIELD        = '_id';
     const DEFAULT_BATCH_SIZE     = 1000;
 
+    // see https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/
+    const INDEX_TYPE_ASC  = 1;
+    const INDEX_TYPE_DESC = -1;
+
     /**
      * @var MongoDB\Client
      */

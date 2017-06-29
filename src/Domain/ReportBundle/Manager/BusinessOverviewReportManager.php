@@ -269,6 +269,11 @@ class BusinessOverviewReportManager extends BaseReportManager
 
     public function aggregateBusinessInteractions($period)
     {
+        $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
+            self::MONGO_DB_FIELD_BUSINESS_ID => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_DATE_TIME   => MongoDbManager::INDEX_TYPE_DESC,
+        ]);
+
         $aggregateStartDate = $this->mongoDbManager->typeUTCDateTime($period->getStartDate());
         $aggregateEndDate   = $this->mongoDbManager->typeUTCDateTime($period->getEndDate());
 
