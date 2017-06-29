@@ -50,6 +50,9 @@ class BusinessProfilePhoneAdmin extends OxaAdmin
                         'message' => 'business_profile.phone.invalid',
                     ]),
                 ],
+                'attr' => [
+                    'required' => true,
+                ],
             ])
         ;
     }
