@@ -670,6 +670,7 @@ class BusinessProfile implements
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
+     * @Assert\Valid
      */
     protected $phones;
 

@@ -5,7 +5,8 @@ $( document ).ready( function() {
             'keywords',
             'extraSearches',
             'subscriptions',
-            'images'
+            'images',
+            'phones'
         ];
 
         var inputsSelector = 'input[required = "required"], input[data-required = "required"], textarea[required = "required"], textarea[data-required = "required"]';
