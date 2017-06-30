@@ -1529,16 +1529,39 @@ class BusinessProfileManager extends Manager
         return $country;
     }
 
+    /**
+     * @param SearchDTO $searchParams
+     *
+     * @return array
+     */
     protected function searchCatalogBusinessInElastic(SearchDTO $searchParams)
     {
-        $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams);
+        $coordinates = $searchParams->getCurrentCoordinates();
+
+        if ($searchParams->checkAdsAllowed()) {
+            $searchAdQuery   = $this->getCatalogBusinessSearchQueryAd($searchParams);
+            $responseAd      = $this->searchBusinessAdElastic($searchAdQuery);
+            $searchAd        = $this->getBusinessAdDataFromElasticResponse($responseAd);
+            $searchResultAds = $this->setBusinessDynamicValues($searchAd, $coordinates, true);
+
+            $excludeIds = array_keys($searchAd['data']);
+        } else {
+            $excludeIds      = [];
+            $searchResultAds = [];
+        }
+
+        $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams, $excludeIds);
 
         $response = $this->searchBusinessElastic($searchQuery);
         $search = $this->getBusinessDataFromElasticResponse($response, $searchParams->getIsRandomized());
 
-        $coordinates = $searchParams->getCurrentCoordinates();
-
         $search = $this->setBusinessDynamicValues($search, $coordinates);
+
+        if ($searchParams->checkAdsAllowed() and $searchResultAds) {
+            foreach ($searchResultAds['data'] as $item) {
+                array_unshift($search['data'], $item);
+            }
+        }
 
         return $search;
     }
@@ -2395,7 +2418,13 @@ class BusinessProfileManager extends Manager
         return $searchQuery;
     }
 
-    protected function getCatalogBusinessSearchQuery(SearchDTO $params)
+    /**
+     * @param SearchDTO $params
+     * @param array     $excludeIds
+     *
+     * @return array
+     */
+    protected function getCatalogBusinessSearchQuery(SearchDTO $params, $excludeIds = [])
     {
         $filters = [];
 
@@ -2468,6 +2497,90 @@ class BusinessProfileManager extends Manager
         if ($locationFilter) {
             $searchQuery['query']['bool']['filter'][] = $locationFilter;
         }
+
+        if ($excludeIds) {
+            $searchQuery['query']['bool']['must_not'][] = [
+                'ids' => [
+                    'values' => $excludeIds,
+                ],
+            ];
+        }
+
+        return $searchQuery;
+    }
+
+    /**
+     * @param SearchDTO $params
+     *
+     * @return array
+     */
+    protected function getCatalogBusinessSearchQueryAd(SearchDTO $params)
+    {
+        $filters = [];
+
+        $sort['_script'] = [
+            'script' => 'Math.random()',
+            'type'   => 'number',
+            'params' => [],
+            'order'  => 'asc',
+        ];
+
+        $category = $params->getCategory()->getId();
+
+        if ($category) {
+            $filters[] = [
+                'match' => [
+                    'categories_ids' => $category,
+                ],
+            ];
+        }
+
+        $locationQuery  = [];
+        $locationFilter = $this->getElasticLocationFilter($params);
+
+        if (!$locationFilter) {
+            $locationQuery = $this->getElasticLocationQuery($params);
+        }
+
+        $searchQuery = [
+            'from' => 0,
+            'size' => 0,
+            'track_scores' => true,
+            'sort' => [
+                $sort,
+            ],
+        ];
+
+        if ($locationQuery) {
+            $searchQuery['query']['bool']['must'][] = $locationQuery;
+        }
+
+        foreach ($filters as $filter) {
+            $searchQuery['query']['bool']['must'][] = $filter;
+        }
+
+        if ($locationFilter) {
+            $searchQuery['query']['bool']['filter'][] = $locationFilter;
+        }
+
+        $searchQuery['aggs'] = [
+            'ads' => [
+                'terms' => [
+                    'field' => 'parent_id',
+                    'order' => [
+                        'rand' => 'desc',
+                    ],
+                    'size' =>  $params->adsPerPage,
+                ],
+                'aggs' => [
+                    'rand' => [
+                        'max' => [
+                            'script' => 'Math.random()',
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         return $searchQuery;
     }
