@@ -91,6 +91,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
     const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
     const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
+    const BUSINESS_PROFILE_FIELD_PANORAMA_ID    = 'panoramaId';
 
     // common fields
     const BUSINESS_PROFILE_FIELD_WEBSITE    = 'website';
@@ -669,8 +670,23 @@ class BusinessProfile implements
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
      *     )
+     * @Assert\Valid
      */
     protected $phones;
+
+    /**
+     * @var BusinessProfileKeyword[] - Business Profile Keywords
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileKeyword",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     * @Assert\Count(max="5", maxMessage = "business_profile.keywords.max_count")
+     */
+    protected $keywords;
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -838,6 +854,12 @@ class BusinessProfile implements
     protected $dcOrderId;
 
     /**
+     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @ORM\Column(name="panorama_id", type="string", nullable=true, length=255)
+     */
+    protected $panoramaId;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -856,6 +878,7 @@ class BusinessProfile implements
         $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
         $this->extraSearches = new ArrayCollection();
+        $this->keywords      = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2325,6 +2348,42 @@ class BusinessProfile implements
     }
 
     /**
+     * Add keyword
+     *
+     * @param BusinessProfileKeyword $keyword
+     *
+     * @return BusinessProfile
+     */
+    public function addKeyword(BusinessProfileKeyword $keyword)
+    {
+        $this->keywords[] = $keyword;
+
+        if ($keyword) {
+            $keyword->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove keyword
+     *
+     * @param BusinessProfileKeyword $keyword
+     */
+    public function removeKeyword(BusinessProfileKeyword $keyword)
+    {
+        $this->keywords->removeElement($keyword);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
      * Set discount
      *
      * @param string $discount
@@ -2585,6 +2644,26 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getPanoramaId()
+    {
+        return $this->panoramaId;
+    }
+
+    /**
+     * @param string $panoramaId
+     *
+     * @return BusinessProfile
+     */
+    public function setPanoramaId($panoramaId)
+    {
+        $this->panoramaId = $panoramaId;
+
+        return $this;
+    }
+
     public function getActiveStatus()
     {
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
@@ -2712,6 +2791,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
+            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,

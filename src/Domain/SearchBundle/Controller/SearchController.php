@@ -626,7 +626,7 @@ class SearchController extends Controller
             'domain_search_index',
             [
                 'q'          => SlugUtil::decodeSlug($categorySlug),
-                'geo'        => $locality->getName(),
+                'geo'        => $locality ? $locality->getName() : '',
                 'redirected' => true,
             ]
         );

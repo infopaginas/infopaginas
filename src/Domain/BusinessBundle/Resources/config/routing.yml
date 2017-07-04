@@ -25,3 +25,7 @@ domain_business_admin_reports:
 domain_business_admin_reviews:
     resource: "@DomainBusinessBundle/Resources/config/routing/adminReviews.yml"
     prefix: /admin/reviews
+
+domain_business_api:
+    resource: "@DomainBusinessBundle/Resources/config/routing/api.yml"
+    prefix: /api

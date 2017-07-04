@@ -40,7 +40,18 @@ class VideoMediaEmbedExtension extends \Twig_Extension
                         'js',
                     ],
                 ]
-            )
+            ),
+            'render_video_admin_embed' => new \Twig_Function_Method(
+                $this,
+                'renderAdminVideoPreview',
+                [
+                    'needs_environment' => true,
+                    'is_safe' => [
+                        'html',
+                        'js',
+                    ],
+                ]
+            ),
         ];
     }
 
@@ -75,6 +86,27 @@ class VideoMediaEmbedExtension extends \Twig_Extension
             [
                 'media'         => $media,
                 'dimensions'    => $dimensions,
+                'url'           => $url,
+            ]
+        );
+
+        return $html;
+    }
+
+    /**
+     * @param \Twig_Environment $env
+     * @param VideoMedia        $media
+     *
+     * @return string
+     */
+    public function renderAdminVideoPreview(\Twig_Environment $env, VideoMedia $media)
+    {
+        $url = $this->filesystem->getAdapter()->getUrl($media->getFilepath() . $media->getFilename());
+
+        $html = $env->render(
+            ':redesign/blocks/video:video_admin_embed.html.twig',
+            [
+                'media'         => $media,
                 'url'           => $url,
             ]
         );

@@ -204,7 +204,7 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
             /* @var $videoMedia VideoMedia */
             $videoMedia = $row[0];
 
-            if ($videoMedia and $videoMedia->getBusinessProfiles()->isEmpty()) {
+            if ($videoMedia->getBusinessProfiles()->isEmpty()) {
                 $response = $this->youtubeVideoManager->removeMedia($videoMedia);
 
                 $youtubeError = $response['error'];
@@ -225,6 +225,8 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
                 }
 
                 $i ++;
+            } else {
+                $videoMedia->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
             }
         }
 

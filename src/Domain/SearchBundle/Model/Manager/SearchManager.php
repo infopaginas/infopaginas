@@ -2,6 +2,7 @@
 
 namespace Domain\SearchBundle\Model\Manager;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
@@ -145,6 +146,39 @@ class SearchManager extends Manager
         return $response;
     }
 
+    /**
+     * @param SearchDTO $searchParams
+     *
+     * @return array
+     */
+    public function searchClosestBusinessesApi(SearchDTO $searchParams)
+    {
+        $search = $this->businessProfileManager->searchClosestBusinesses($searchParams);
+
+        $response = [
+            'total' => $search['total'],
+            'data'  => [],
+        ];
+
+        foreach ($search['data'] as $businessProfile) {
+            /** @var BusinessProfile $businessProfile */
+            $response['data'][] = [
+                'id'  => $businessProfile->getId(),
+                'uid' => $businessProfile->getUid(),
+                'name' => [
+                    'en' => $businessProfile->getNameEn(),
+                    'es' => $businessProfile->getNameEs(),
+                ],
+                'location' => [
+                    'lat' => $businessProfile->getLatitude(),
+                    'lng' => $businessProfile->getLongitude(),
+                ],
+            ];
+        }
+
+        return $response;
+    }
+
     public function getLocalitySearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
@@ -193,6 +227,25 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return SearchDTO
+     */
+    public function getSearchApiDTO($params)
+    {
+        $location = $this->geolocationManager->buildLocationValueFromApi($params);
+
+        $query = $this->getSafeSearchString($params['q']);
+
+        $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, (int)$params['p'], (int)$params['pp']);
+        $searchDTO  = $this->setSearchAdsParams($searchDTO);
+
+        $searchDTO->setOrderBy(SearchDataUtil::ORDER_BY_DISTANCE);
+
+        return $searchDTO;
+    }
+
     public function getSearchCatalogDTO($request, $locality, $category)
     {
         $location = $this->geolocationManager->buildCatalogLocationValue($locality);
@@ -206,6 +259,7 @@ class SearchManager extends Manager
 
         $limit     = (int) $this->configService->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
         $searchDTO = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
+        $searchDTO = $this->setSearchAdsParams($searchDTO);
 
         if ($category instanceof Category) {
             $searchDTO->setCategory($category);

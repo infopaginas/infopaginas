@@ -35,6 +35,7 @@ class AdminHelper
     const FILTER_DATE_PERIOD_CLASS  = 'oxa_filter_date_period';
 
     const MAX_IMAGE_FILESIZE = '10M';
+    const MAX_VIDEO_FILESIZE = '128M';
 
     /**
      * @return array
@@ -205,6 +206,26 @@ class AdminHelper
                 "image/jpeg",
                 "image/jpg",
                 "image/gif",
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getFormVideoFileConstrain()
+    {
+        return [
+            'maxSize' => self::MAX_VIDEO_FILESIZE,
+            'mimeTypes' => [
+                'video/mp4',
+                'video/webm',
+                'video/ogg',
+                'video/quicktime',
+                'video/avi',
+                'video/mpeg',
+                'video/x-ms-wmv',
+                'video/x-flv',
             ]
         ];
     }

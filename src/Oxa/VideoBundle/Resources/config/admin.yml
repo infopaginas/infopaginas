@@ -1,0 +1,6 @@
+services:
+    oxa.admin.video:
+        class: Oxa\VideoBundle\Admin\VideoAdmin
+        arguments: [~, Oxa\VideoBundle\Entity\VideoMedia, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Video}

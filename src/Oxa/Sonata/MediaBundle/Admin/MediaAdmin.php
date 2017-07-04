@@ -39,7 +39,10 @@ class MediaAdmin extends BaseMediaAdmin
             ->remove('copyright')
             ->add('binaryContent', FileType::class, [
                 'required' => false,
-                'constraints' => new File(AdminHelper::getFormImageFileConstrain())
+                'constraints' => new File(AdminHelper::getFormImageFileConstrain()),
+                'attr' => [
+                    'accept' => 'image/*',
+                ],
             ])
             ->add('url', UrlType::class, [
                 'required' => false,

@@ -15,6 +15,7 @@ use Domain\BusinessBundle\Repository\BusinessGalleryRepository;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
+use Oxa\VideoBundle\Entity\VideoMedia;
 use Sonata\MediaBundle\Entity\MediaManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
@@ -138,6 +139,37 @@ class BusinessGalleryManager
             return $businessProfile;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * @param VideoMedia $video
+     * @param string     $path
+     * @param bool       $removeOldPoster
+     *
+     * @return VideoMedia|null
+     * @throws \Exception
+     */
+    public function createNewPosterFromLocalFile(VideoMedia $video, string $path, bool $removeOldPoster = false)
+    {
+        $isExist = file_exists($path);
+
+        if ($isExist && in_array(mime_content_type($path), SiteHelper::$imageContentTypes) && exif_imagetype($path)) {
+            $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+            if ($removeOldPoster and $video->getPoster()) {
+                $this->entityManager->remove($video->getPoster());
+            }
+
+            $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, OxaMediaInterface::CONTEXT_VIDEO_POSTER);
+
+            $video->setPoster($media);
+
+            $this->entityManager->flush();
+
+            return $video;
+        } else {
+            return null;
         }
     }
 

@@ -157,11 +157,11 @@
                                 {% include ':redesign/blocks/workingHours:working_hours_daily_list.html.twig' with { 'businessProfile': businessProfile } %}
 
                                 {% if businessProfile.getBrands() %}
-                                    <div class="highlights__item highlights__item--checklist">
+                                    <div class="highlights__item">
                                         <h3>{% trans %}Brands{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                {{ businessProfile.getBrands() }}
+                                                {{ businessProfile.getBrands()|nl2br }}
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -172,7 +172,7 @@
                                         <h3>{% trans %}Products or Services{% endtrans %}</h3>
                                         <ul>
                                             <li>
-                                                {{ businessProfile.getProduct() }}
+                                                {{ businessProfile.getProduct()|nl2br }}
                                             </li>
                                         </ul>
                                     </div><!-- highlights__item -->
@@ -228,6 +228,13 @@
                                         <img src="{% path ad.getMedia(), 'normal' %}" alt="{% if ad.description %}{{ ad.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
                                     </div>
                                 {% endfor %}
+                            </section>
+                        {% endif %}
+
+                        {% if businessProfile.panoramaId %}
+                            <section class="page-section panorama-frame hide-before">
+                                <h3 class="panorama-title">{% trans %}business_profile.panorama.title{% endtrans %}</h3>
+                                {% include ':redesign/blocks/panorama:panorama_iframe.html.twig' with {panoramaId: businessProfile.panoramaId, title: businessProfile.name} %}
                             </section>
                         {% endif %}
 

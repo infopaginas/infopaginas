@@ -60,4 +60,28 @@ class VideoMediaRepository extends \Doctrine\ORM\EntityRepository
 
         return $videoIterator;
     }
+
+    /**
+     * @param bool $getAll
+     *
+     * @return IterableResult
+     */
+    public function getActiveVideoIterator($getAll = false)
+    {
+        $qb = $this->createQueryBuilder('v');
+        $qb
+            ->andWhere('v.status = :status')
+            ->orderBy('v.id')
+            ->setParameter('status', VideoMedia::VIDEO_STATUS_ACTIVE)
+        ;
+
+        if (!$getAll) {
+            $qb->andWhere('v.poster IS NULL');
+        }
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+        $query->setParameter('status', VideoMedia::VIDEO_STATUS_ACTIVE);
+
+        return $query->iterate();
+    }
 }

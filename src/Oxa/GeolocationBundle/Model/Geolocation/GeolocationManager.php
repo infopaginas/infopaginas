@@ -103,6 +103,21 @@ class GeolocationManager extends Manager
     }
 
     /**
+     * @param array $params
+     *
+     * @return LocationValueObject
+     */
+    public function buildLocationValueFromApi($params)
+    {
+        $geoData = [
+            'lat' => (float)$params['lat'],
+            'lng' => (float)$params['lng'],
+        ];
+
+        return $this->buildLocationValue($geoData);
+    }
+
+    /**
      * @param Locality $locality
      *
      * @return LocationValueObject|null

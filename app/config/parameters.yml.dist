@@ -63,3 +63,6 @@ parameters:
 
     # article api access token
     infopaginas_media_access_token: '29a993b3f5d302f222ad1b208098b31ac0eb70ed'
+
+    # teleportme access token
+    teleportme_access_token: '358345fc5ddcea15eb3595e7bb84fb0c'

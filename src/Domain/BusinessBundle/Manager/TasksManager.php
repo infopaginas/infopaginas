@@ -396,4 +396,29 @@ class TasksManager
 
         return $changeSetCalculator;
     }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param string          $panoramaId
+     *
+     * @return bool
+     */
+    public function createAddPanoramaTask(BusinessProfile $businessProfile, $panoramaId)
+    {
+        $changeSetCalculator = $this->getChangeSetCalculator($businessProfile);
+
+        $changeSet = $changeSetCalculator::getPanoramaChangeSet($this->em, $businessProfile, $panoramaId);
+
+        if (!$changeSet or ($changeSet and $changeSet->getEntries()->isEmpty())) {
+            return [];
+        }
+
+        $task = TasksFactory::create(TaskType::TASK_PROFILE_UPDATE, $businessProfile);
+
+        $task->setChangeSet($changeSet);
+
+        $result = $this->save($task, false);
+
+        return $result;
+    }
 }

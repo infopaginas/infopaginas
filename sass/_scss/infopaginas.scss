@@ -417,6 +417,17 @@ $side-padding-mb: 16px;
   }
 }
 
+.google-badge {
+  .google-badge-block {
+    margin: auto;
+    width: 220px;
+
+    @media only screen and (max-height: 460px) {
+      display: none;
+    }
+  }
+}
+
 .nav-close {
   position: absolute;
   right: 0;
@@ -1839,6 +1850,23 @@ $thumb-width-mb: 60px;
   .section--slider {
     margin-bottom: 40px;
     padding: 20px 0;
+  }
+
+  .panorama-frame {
+    margin-bottom: 40px;
+    padding: 20px 0;
+
+    h3.panorama-title {
+      text-align: center;
+    }
+
+    iframe {
+      height: 500px;
+
+      @media only screen and (max-height: 740px) {
+        height: 410px;
+      }
+    }
   }
 
   .item__header {
@@ -4089,7 +4117,7 @@ li.active {
 
 .article {
   .slider {
-    width: 500px;
+    max-width: 500px;
   }
 }
 

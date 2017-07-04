@@ -13,7 +13,6 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
-use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -49,8 +48,6 @@ use Ivory\CKEditorBundle\Form\Type\CKEditorType;
  */
 class BusinessProfileAdmin extends OxaAdmin
 {
-    use VideoUploadTrait;
-
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
@@ -217,6 +214,10 @@ class BusinessProfileAdmin extends OxaAdmin
             $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
         ) {
             $formMapper->tab('Profile')->with('SuperVM')->end()->end();
+        }
+
+        if ($businessProfile->getId() and $subscriptionPlan->getCode() > SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper->tab('Profile')->with('Keywords')->end()->end();
         }
 
         $formMapper
@@ -468,6 +469,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         ]
                     ])
+                    ->add('panoramaId')
                 ->end()
             ->end()
         ;
@@ -495,122 +497,37 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
 
-
-            if (!$businessProfile->getVideo()) {
-                $formMapper
-                    ->tab('Profile')
-                        ->with('Video')
-                            ->add('videoFile', FileType::class, [
-                                'attr' => [
-                                    'accept' => 'webm, mp4, ogg, video/webm, video/mp4, video/ogg',
-                                ],
-                                'data_class' => null,
-                                'mapped' => false,
-                                'required' => false,
-                            ])
-                            ->add('videoUrl', TextType::class, [
-                                'data_class' => null,
-                                'mapped' => false,
-                                'required' => false,
-                            ])
-                            ->add('videoTitle', TextType::class, [
-                                'data_class' => null,
-                                'mapped' => false,
-                                'required' => false,
-                                'constraints' => array(
-                                    new Length(
-                                        [
-                                            'max' => VideoMedia::VIDEO_TITLE_MAX_LENGTH,
-                                        ]
-                                    ),
-                                ),
-                            ])
-                            ->add('videoDescription', TextareaType::class, [
-                                'data_class' => null,
-                                'mapped' => false,
-                                'required' => false,
-                                'constraints' => array(
-                                    new Length(
-                                        [
-                                            'max' => VideoMedia::VIDEO_TITLE_MAX_DESCRIPTION,
-                                        ]
-                                    ),
-                                ),
-                            ])
-                        ->end()
-                    ->end();
-            } else {
-                $formMapper
-                    ->tab('Profile')
-                        ->with('Video')
-                            ->add('removeVideo', CheckboxType::class, [
-                                'mapped' => false,
-                                'required' => false,
-                            ])
-                            ->add('videoName', TextType::class, [
-                                'mapped' => false,
-                                'required' => false,
-                                'attr' => [
-                                    'value' => $businessProfile->getVideo()->getName(),
-                                ],
-                            ])
-                            ->add('videoFile', FileType::class, [
-                                'attr' => [
-                                    'accept' => 'webm, mp4, ogg, video/webm, video/mp4, video/ogg',
-                                    'data-hidden-field' => true,
-                                ],
-                                'data_class' => null,
-                                'mapped' => false,
-                                'required' => false,
-                            ])
-                            ->add('videoUrl', TextType::class, [
-                                'attr' => [
-                                    'data-hidden-field' => true,
-                                ],
-                                'data_class' => null,
-                                'mapped' => false,
-                                'required' => false,
-                            ])
-                            ->add('videoTitle', TextType::class, [
-                                'mapped' => false,
-                                'required' => false,
-                                'attr' => [
-                                    'value' => $businessProfile->getVideo()->getTitle(),
-                                ],
-                                'constraints' => array(
-                                    new Length(
-                                        [
-                                            'max' => VideoMedia::VIDEO_TITLE_MAX_LENGTH,
-                                        ]
-                                    ),
-                                ),
-                            ])
-                            ->add('videoDescription', TextareaType::class, [
-                                'mapped' => false,
-                                'required' => false,
-                                'data' => $businessProfile->getVideo()->getDescription(),
-                                'constraints' => array(
-                                    new Length(
-                                        [
-                                            'max' => VideoMedia::VIDEO_TITLE_MAX_LENGTH,
-                                        ]
-                                    ),
-                                ),
-                            ])
-                            ->add('videoStatus', TextType::class, [
-                                'data_class' => null,
-                                'mapped'     => false,
-                                'required'   => false,
-                                'data'       => $businessProfile->getVideo()->getStatus(),
-                                'attr' => [
-                                    'readonly' => true,
-                                    'disabled' => true,
-                                ],
-                            ])
-                        ->end()
+            $formMapper
+                ->tab('Profile')
+                    ->with('Video')
+                        ->add('video', 'sonata_type_model_list', [
+                            'required' => false,
+                        ])
                     ->end()
-                ;
-            }
+                ->end()
+            ;
+        }
+
+        if ($businessProfile->getId() and $subscriptionPlan->getCode() > SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper
+                ->tab('Profile')
+                ->with('Keywords')
+                    ->add(
+                        'keywords',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                        ]
+                    )
+                    ->end()
+                ->end()
+            ;
         }
 
         $formMapper
@@ -846,6 +763,11 @@ class BusinessProfileAdmin extends OxaAdmin
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
                     ])
                 ->end()
+                ->with('Keywords')
+                    ->add('keywords', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                ->end()
                 ->with('Gallery')
                     ->add('logo', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
@@ -855,6 +777,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('images', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_one_to_many.html.twig',
+                    ])
+                    ->add('panoramaId', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_panorama.html.twig',
                     ])
                 ->end()
                 ->with('Subscription')
@@ -1223,95 +1148,7 @@ class BusinessProfileAdmin extends OxaAdmin
     private function preSave($entity)
     {
         $entity = $this->handleTranslationBlock($entity);
-        $entity = $this->setVideoValue($entity);
-        $entity = $this->handleSeoBlockUpdate($entity);
-    }
-
-    private function setVideoValue($entity)
-    {
-        $form = $this->getForm();
-        $container = $this->getConfigurationPool()->getContainer();
-
-        /** @var Request $request */
-        $request = Request::createFromGlobals();
-        $files = current($request->files->all());
-
-        if ($form->has('removeVideo') && $form->get('removeVideo')->getData()) {
-            $container->get('oxa.manager.video')->removeMedia($entity->getVideo()->getId());
-            $entity->setVideo(null);
-        }
-
-        if ($files) {
-            $videoMediaData = $this->uploadVideo($entity);
-
-            if ($videoMediaData) {
-                $videoMediaData->setTitle($form->get('videoTitle')->getData());
-                $videoMediaData->setDescription($form->get('videoDescription')->getData());
-                $videoMediaData->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_ADD);
-
-                $entity->setVideo($videoMediaData);
-            } else {
-                /* @var $video VideoMedia */
-                $video = $entity->getVideo();
-
-                if ($video) {
-                    $video->setName($form->get('videoName')->getData());
-                    $video->setTitle($form->get('videoTitle')->getData());
-                    $video->setDescription($form->get('videoDescription')->getData());
-
-                    if ($video->getYoutubeSupport() and !$video->getYoutubeAction()) {
-                        $video->setYoutubeAction(VideoMedia::YOUTUBE_ACTION_UPDATE);
-                    }
-                }
-            }
-        }
-
-        return $entity;
-    }
-
-    private function uploadVideo(BusinessProfile $businessProfile)
-    {
-        /** @var ContainerInterface $container */
-        $container = $this->getConfigurationPool()->getContainer();
-
-        /** @var Request $request */
-        $request = Request::createFromGlobals();
-
-        $media = null;
-        $files = current($request->files->all());
-
-        if ($files) {
-            if (!isset($files['videoFile']) || (isset($files['videoFile']) && $files['videoFile'] == null)) {
-                $form = $this->getForm();
-
-                if ($form->has('videoUrl') && $form->get('videoUrl')->getData()) {
-                    try {
-                        $media = $container->get('oxa.manager.video')
-                            ->uploadRemoteFile($form->get('videoUrl')->getData());
-                    } catch (\Exception $e) {
-                        $media = null;
-                    }
-                }
-
-                return $media;
-            }
-
-            try {
-                $media = $container->get('oxa.manager.video')->uploadLocalFile(current($files));
-            } catch (\Exception $e) {
-                $media = null;
-            }
-        }
-
-        return $media;
-    }
-
-    private function getMediaUploadDirectory()
-    {
-        /** @var ContainerInterface $container */
-        $container = $this->getConfigurationPool()->getContainer();
-
-        return $container->getParameter('videos_upload_path');
+        $this->handleSeoBlockUpdate($entity);
     }
 
     /**

@@ -8,12 +8,12 @@ $( document ).ready( function() {
     var neighborhoodAjaxCall;
     var addExtraSearchLock = false;
 
-    var removeVideo         = $( '#' + formId + '_removeVideo' );
     var categoryField       = $( '#' + formId + '_categories' );
     var areasField          = $( '#' + formId + '_areas' );
     var localitiesField     = $( '#' + formId + '_localities' );
     var neighborhoodsField  = $( '#' + formId + '_neighborhoods' );
     var milesOfMyBusinessField = $( '#' + formId + '_milesOfMyBusiness' );
+    var keywordSelectors = '#sonata-ba-field-container-' + formId + '_keywords input[ id *= "_value" ]';
 
     var openAllTimeCheckboxes = $( '[ id *= "_openAllTime" ]' );
 
@@ -112,16 +112,6 @@ $( document ).ready( function() {
             timeEnd.prop( 'readonly', false );
         }
     }
-
-    hideVideoAdd();
-
-    removeVideo.on( 'ifChecked ifUnchecked' , function( e, aux ){
-        if( removeVideo.prop( 'checked' ) ){
-            showVideoAdd();
-        }else{
-            hideVideoAdd();
-        }
-    });
 
     var useMapAddress = $( '#' + formId + '_useMapAddress' );
 
@@ -233,18 +223,6 @@ $( document ).ready( function() {
         } );
     }
 
-    function hideVideoAdd() {
-        $( '#' + formId + '_videoFile[data-hidden-field]').parent().parent().hide();
-        $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().hide();
-        $( '#' + formId + '_videoName' ).parent().parent().show();
-    }
-
-    function showVideoAdd() {
-        $( '#' + formId + '_videoFile[data-hidden-field]' ).parent().parent().show();
-        $( '#' + formId + '_videoUrl[data-hidden-field]' ).parent().parent().show();
-        $( '#' + formId + '_videoName' ).parent().parent().hide();
-    }
-
     function updateSelect2FieldValues( field, data ) {
         var html = '';
         var previousData = field.val();
@@ -331,4 +309,45 @@ $( document ).ready( function() {
             }, 100);
         }
     });
+
+    $( document ).on( 'input', keywordSelectors, function() {
+        var value = $( this ).val();
+        var errors = [];
+
+        if ( !value ) {
+            errors.push( errorList.keyword.notBlank );
+        }
+
+        if ( value.length > 255 ) {
+            errors.push( errorList.keyword.maxLength );
+        }
+
+        if ( value && value.length < 2 ) {
+            errors.push( errorList.keyword.minLength );
+        }
+
+        var validateOneWord = validators.keyword.oneWord;
+
+        if ( !validateOneWord.test( value )) {
+            errors.push( errorList.keyword.oneWord );
+        }
+
+        handleKeywordValidationError( $( this ), errors );
+    });
+
+    function handleKeywordValidationError( input, errors ) {
+        input.closest( 'td' ).find( '.sonata-ba-field-error-messages').remove();
+
+        if ( errors.length ) {
+            var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
+
+            $.each(errors, function( index, value ) {
+                errorHtml += '<li><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + value + '</li>';
+            });
+
+            errorHtml += '</ul></div>';
+
+            input.after( errorHtml );
+        }
+    }
 } );

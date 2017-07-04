@@ -67,6 +67,7 @@ sonata_admin:
                 icon: <i class="fa fa-picture-o"></i>
                 items:
                     - sonata.media.admin.media
+                    - oxa.admin.video
             oxa.admin.group.config:
                 label: Configs
                 icon: <i class="fa fa-cogs"></i>
