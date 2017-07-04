@@ -33,7 +33,7 @@
                         {% include ':redesign/blocks/banners:search-page-top.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_TOP } %}
 
                         <div class="number-results">
-                            We've found {{ results.resultCount }} results
+                            {% trans with {'{-count-}': results.resultCount} %}search_results.count.total{% endtrans %}
                         </div>
 
                         {% for item in results.resultSet %}
