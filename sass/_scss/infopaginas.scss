@@ -4849,6 +4849,10 @@ table {
   }
 }
 
+.photo-description-field {
+  flex: 1 1 60%;
+}
+
 .media__check {
   @media only screen and (max-width: 805px) {
     flex: 0 0 auto;
