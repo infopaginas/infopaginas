@@ -32,6 +32,10 @@
                     {% if results.resultSet is defined and results.resultSet is not empty and results.resultSet is not null %}
                         {% include ':redesign/blocks/banners:search-page-top.html.twig' with { 'bannerType': BANNER_CODE.SEARCH_PAGE_TOP } %}
 
+                        <div class="number-results">
+                            We've found {{ results.resultCount }} results
+                        </div>
+
                         {% for item in results.resultSet %}
                             {% include ':redesign/blocks:search_result_item.html.twig' with { 'item' : item, 'iterator' : loop.index } %}
                         {% endfor %}
