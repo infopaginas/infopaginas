@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\ReportBundle\Model\UserActionModel;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
@@ -40,11 +41,21 @@ class TaskAdmin extends OxaAdmin
         $this->tasksManager->setReviewerForTask($task, $reviewer);
 
         $request = $this->getRequest()->request->all();
+        $status = '';
 
         if (isset($request['status']) && $request['status'] == TaskStatusType::TASK_STATUS_REJECTED) {
             $this->tasksManager->reject($task);
+            $status = UserActionModel::TYPE_ACTION_TASK_REJECT;
         } elseif (isset($request['status']) && $request['status'] == TaskStatusType::TASK_STATUS_CLOSED) {
             $this->tasksManager->approve($task);
+            $status = UserActionModel::TYPE_ACTION_TASK_APPROVE;
+        }
+
+        if ($status) {
+            $this->handleActionLog(
+                $status,
+                $task
+            );
         }
     }
 

@@ -58,7 +58,7 @@ class CategoryAdminCRUDController extends CRUDController
                 $objectName = $this->admin->toString($object);
 
                 try {
-                    $adminManager->deletePhysicalEntity($object);
+                    $adminManager->deletePhysicalEntity($object, $this->admin);
 
                     if ($this->isXmlHttpRequest()) {
                         return $this->renderJson(

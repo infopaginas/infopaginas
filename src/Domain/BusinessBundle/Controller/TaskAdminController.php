@@ -45,6 +45,11 @@ class TaskAdminController extends CRUDController
             throw new AccessDeniedException();
         }
 
+        $preResponse = $this->preList($this->getRequest());
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
         $datagrid = $this->admin->getDatagrid();
         $formView = $datagrid->getForm()->createView();
 
@@ -94,6 +99,11 @@ class TaskAdminController extends CRUDController
 
         if (false === $this->admin->isGranted('VIEW', $object)) {
             throw new AccessDeniedException();
+        }
+
+        $preResponse = $this->preShow($request, $object);
+        if ($preResponse !== null) {
+            return $preResponse;
         }
 
         $this->admin->setSubject($object);

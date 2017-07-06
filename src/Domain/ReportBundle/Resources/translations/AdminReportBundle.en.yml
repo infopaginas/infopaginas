@@ -15,6 +15,7 @@ export.title.business_overview_report: Business Overview Report
 export.title.business_overview_report_for: Business Overview Report for
 export.title.all_businesses: All businesses
 export.title.active_sheet: Main
+export.title.user_action_report: CMS History Report
 export.generated_date: Report generated
 export.date_period: Date period
 export.start_date: Start date
@@ -26,3 +27,32 @@ list.label_impressions: Impressions
 list.label.clicks: Clicks
 all: All
 export.title.ad_usage_report: Ad Usage Report Data
+
+user_action_report:
+  action:
+    view_show_page: Vist show page
+    view_list_page: Vist list page
+    view_create_page: Vist create page
+    view_update_page: Vist edit page
+
+    create: Create item
+    update: Update item
+    physical_delete: Physical delete item
+    postpone_delete: Postpone delete item
+    restore: Restore item
+    export: Export data
+
+    task_approve: Approve task
+    task_reject: Reject task
+
+    login: Login
+    logout: Logout
+  mapping:
+    user_name: User Name
+    user_id: User ID
+    datetime: Date
+    entity: Entity
+    action: Action
+    data: Data
+
+flash_export_report_requested: Report export has been requested

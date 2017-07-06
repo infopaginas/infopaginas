@@ -22,3 +22,17 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Views and Impressions Report}
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:ViewsAndVisitorsReport\list.html.twig']]
+
+    domain_report.admin.user_action_report:
+        class: Domain\ReportBundle\Admin\UserActionReportAdmin
+        arguments: [~, Domain\ReportBundle\Entity\UserActionReport, DomainReportBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: CMS History Log}
+        calls:
+            - [ setTemplate, ['list', 'DomainReportBundle:Admin:UserActionReport\list.html.twig']]
+
+    domain_report.admin.export_report:
+        class: Domain\ReportBundle\Admin\ExportReportAdmin
+        arguments: [~, Domain\ReportBundle\Entity\ExportReport, DomainReportBundle:CRUDPostponeExport]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Export Reports}

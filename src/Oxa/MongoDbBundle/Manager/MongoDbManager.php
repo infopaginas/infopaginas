@@ -103,6 +103,24 @@ class MongoDbManager
 
     /**
      * @param       $collectionName
+     * @param array $query
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function count($collectionName, $query = [], $options = [])
+    {
+        try {
+            $result = $this->client->$collectionName->count($query, $options);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param       $collectionName
      * @param array $data
      *
      * @return mixed

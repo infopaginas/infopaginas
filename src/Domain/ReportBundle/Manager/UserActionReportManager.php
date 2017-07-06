@@ -1,0 +1,256 @@
+<?php
+
+namespace Domain\ReportBundle\Manager;
+
+use Domain\ReportBundle\Model\UserActionModel;
+use Domain\ReportBundle\Util\DatesUtil;
+use Oxa\MongoDbBundle\Manager\MongoDbManager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Oxa\Sonata\UserBundle\Entity\User;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+
+class UserActionReportManager extends BaseReportManager
+{
+    const MONGO_DB_COLLECTION_NAME          = 'user_action';
+    const MONGO_DB_COLLECTION_NAME_ARCHIVE  = 'user_action_archive';
+
+    const MONGO_DB_FIELD_USER_NAME   = 'user_name';
+    const MONGO_DB_FIELD_USER_ID     = 'user_id';
+    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
+    const MONGO_DB_FIELD_ENTITY      = 'entity';
+    const MONGO_DB_FIELD_ACTION      = 'action';
+    const MONGO_DB_FIELD_DATA        = 'data';
+
+    const MONGO_DB_DEFAULT_USER      = 'unknown';
+    const MONGO_DB_DEFAULT_USER_ID   = 0;
+
+    protected $reportName = 'user_action_report';
+
+    /** @var  TokenStorage $tokenStorage */
+    protected $tokenStorage;
+
+    /** @var MongoDbManager $mongoDbManager */
+    protected $mongoDbManager;
+
+    /**
+     * @param TokenStorage $tokenStorage
+     * @param MongoDbManager $mongoDbManager
+     */
+    public function __construct(TokenStorage $tokenStorage, MongoDbManager $mongoDbManager)
+    {
+        $this->tokenStorage     = $tokenStorage;
+        $this->mongoDbManager   = $mongoDbManager;
+    }
+
+    public function getUserActionReportData(array $params = [])
+    {
+        $userActionRawResult = $this->getUserActionsData($params);
+        $total = $this->countUserActionsData();
+
+        $result = $this->prepareUserActionReportStats($userActionRawResult);
+
+        $currentPage = $params['_page'];
+        $lastPage = ceil($total / $params['_per_page']);
+        $nextPage = $lastPage;
+        $previousPage = 1;
+
+        if ($currentPage + 1 < $lastPage) {
+            $nextPage = $currentPage + 1;
+        }
+
+        if ($currentPage - 1 > 1) {
+            $previousPage = $currentPage - 1;
+        }
+
+        $rangePage = AdminHelper::getPageRanges($currentPage, $lastPage);
+
+        $result['currentPage']  = $currentPage;
+        $result['rangePage']    = $rangePage;
+        $result['lastPage']     = $lastPage;
+        $result['nextPage']     = $nextPage;
+        $result['previousPage'] = $previousPage;
+        $result['perPage']      = $params['_per_page'];
+        $result['total']        = $total;
+
+        return $result;
+    }
+
+    public function getUserActionReportExportData()
+    {
+        $userActionRawResult = $this->getUserActionsExportData();
+
+        $result = $this->prepareUserActionReportStats($userActionRawResult);
+
+        return $result;
+    }
+
+    protected function prepareUserActionReportStats($rawResult) : array
+    {
+        $mapping = self::getUserActionReportMapping();
+        $results = [];
+
+        foreach ($rawResult as $rowKey => $item) {
+            foreach ($mapping as $key => $value) {
+                if (array_key_exists($key, $item)) {
+                    switch ($key) {
+                        case self::MONGO_DB_FIELD_DATE_TIME:
+                            $value = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME])
+                                ->format(AdminHelper::DATETIME_FORMAT);
+                            break;
+                        case self::MONGO_DB_FIELD_DATA:
+                            $value = $item[self::MONGO_DB_FIELD_DATA]->getArrayCopy();
+                            break;
+                        default:
+                            $value = $item[$key];
+                            break;
+                    }
+
+                    $results[$rowKey][$key] = $value;
+                }
+            }
+        }
+
+        return [
+            'mapping' => $mapping,
+            'results' => $results,
+        ];
+    }
+
+    /**
+     * @param string $action
+     * @param array  $data
+     *
+     * @return bool
+     */
+    public function registerUserAction($action, $data = [])
+    {
+        if (!in_array($action, UserActionModel::getTypes())) {
+            return false;
+        }
+
+        $data = $this->buildUserAction($action, $data);
+        $this->insertUserAction($data);
+
+        return true;
+    }
+
+    /**
+     * @param string $action
+     * @param array  $data
+     *
+     * @return array
+     */
+    protected function buildUserAction($action, $data = [])
+    {
+        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
+
+        if ($this->tokenStorage->getToken() !== null and $this->tokenStorage->getToken()->getUser() instanceof User) {
+            $currentUser = $this->tokenStorage->getToken()->getUser();
+            $userName   = $currentUser->getFullname();
+            $userId     = $currentUser->getId();
+        } else {
+            $userName = self::MONGO_DB_DEFAULT_USER;
+            $userId   = self::MONGO_DB_DEFAULT_USER_ID;
+        }
+
+        $data = [
+            self::MONGO_DB_FIELD_USER_NAME => $userName,
+            self::MONGO_DB_FIELD_USER_ID   => $userId,
+            self::MONGO_DB_FIELD_DATE_TIME => $date,
+            self::MONGO_DB_FIELD_ENTITY    => $data['entity'],
+            self::MONGO_DB_FIELD_ACTION    => $action,
+            self::MONGO_DB_FIELD_DATA      => $data,
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function insertUserAction($data)
+    {
+        $this->mongoDbManager->insertOne(
+            self::MONGO_DB_COLLECTION_NAME,
+            $data
+        );
+    }
+
+    /**
+     * @param $date \Datetime
+     */
+    public function archiveUserActions($date)
+    {
+        $this->mongoDbManager->archiveCollection(
+            self::MONGO_DB_COLLECTION_NAME,
+            self::MONGO_DB_COLLECTION_NAME_ARCHIVE,
+            self::MONGO_DB_FIELD_DATE_TIME,
+            $date
+        );
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public function getUserActionsData($params)
+    {
+        $cursor = $this->mongoDbManager->find(
+            self::MONGO_DB_COLLECTION_NAME,
+            [],
+            [
+                'skip'  => (int) ($params['_per_page'] * ($params['_page'] - 1)),
+                'limit' => (int) $params['_per_page'],
+                'sort'  => [
+                    self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
+                ],
+            ]
+        );
+
+        return $cursor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserActionsExportData()
+    {
+        $cursor = $this->mongoDbManager->find(
+            self::MONGO_DB_COLLECTION_NAME,
+            [],
+            [
+                'sort'  => [
+                    self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
+                ],
+            ]
+        );
+
+        return $cursor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function countUserActionsData()
+    {
+        $count = $this->mongoDbManager->count(
+            self::MONGO_DB_COLLECTION_NAME,
+            []
+        );
+
+        return $count;
+    }
+
+    public static function getUserActionReportMapping()
+    {
+        return [
+            self::MONGO_DB_FIELD_USER_NAME   => 'user_action_report.mapping.user_name',
+            self::MONGO_DB_FIELD_USER_ID     => 'user_action_report.mapping.user_id',
+            self::MONGO_DB_FIELD_DATE_TIME   => 'user_action_report.mapping.datetime',
+            self::MONGO_DB_FIELD_ENTITY      => 'user_action_report.mapping.entity',
+            self::MONGO_DB_FIELD_ACTION      => 'user_action_report.mapping.action',
+            self::MONGO_DB_FIELD_DATA        => 'user_action_report.mapping.data',
+        ];
+    }
+}

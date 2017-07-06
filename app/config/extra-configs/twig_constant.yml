@@ -107,3 +107,11 @@ twig:
         KEYWORD_VALIDATION:
             MAX_LENGTH: 255
             MIN_LENGTH: 2
+
+        USER_ACTION:
+            MAPPING:
+                ACTION: 'action'
+                INFO:   'data'
+            DATA:
+                URL:  'url'
+                TYPE: 'type'

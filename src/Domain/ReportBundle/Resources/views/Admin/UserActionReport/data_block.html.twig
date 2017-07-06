@@ -1,0 +1,14 @@
+<ul>
+    {% for key, value in data %}
+        <li>
+            {{ key }} -
+            {% if key == USER_ACTION.DATA.URL %}
+                <a href="{{ value }}" target="_blank">watch</a>
+            {% elseif key == USER_ACTION.DATA.TYPE %}
+                {{ events[value]|trans({},'AdminReportBundle') }}
+            {% else %}
+                {{ value }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

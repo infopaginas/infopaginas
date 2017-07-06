@@ -65,6 +65,13 @@ services:
             - [ setViewsAndVisitorsReportManager, [ '@domain_report.manager.views_and_visitors' ]]
             - [ setTranslator, [ '@translator.default' ]]
 
+    domain_report.exporter.user_action_excel_exporter:
+        class: Domain\ReportBundle\Service\Export\UserActionExcelExporter
+        calls:
+            - [ setPhpExcel, [ '@phpexcel' ]]
+            - [ setUserActionReportManager, [ '@domain_report.manager.user_action_report_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+
     domain_report.google_analytics.data_fetcher:
         class: Domain\ReportBundle\Google\Analytics\DataFetcher
         parent: happyr.google_analytics.data_fetcher
@@ -105,3 +112,14 @@ services:
     domain_report.manager.business_report_api_manager:
             class: Domain\ReportBundle\Manager\BusinessReportApiManager
             arguments: [ '@service_container' ]
+
+    domain_report.manager.user_action_report_manager:
+        class: Domain\ReportBundle\Manager\UserActionReportManager
+        arguments:
+            - '@security.token_storage'
+            - '@mongodb.manager'
+
+    domain_report.manager.postpone_export_report:
+        class: Domain\ReportBundle\Manager\PostponeExportReportManager
+        arguments:
+            - '@service_container'

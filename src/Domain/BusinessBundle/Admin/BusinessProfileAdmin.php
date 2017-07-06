@@ -1124,6 +1124,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function postPersist($entity)
     {
+        parent::postPersist($entity);
         // workaround for translation callback
         $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
         $entity = $this->handleEntityPostPersist($entity);
@@ -1138,6 +1139,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function postUpdate($entity)
     {
+        parent::postUpdate($entity);
         // workaround for translation callback
         $this->handleTranslationPostUpdate($entity);
     }
