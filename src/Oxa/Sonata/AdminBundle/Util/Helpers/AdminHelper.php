@@ -37,6 +37,8 @@ class AdminHelper
     const MAX_IMAGE_FILESIZE = '10M';
     const MAX_VIDEO_FILESIZE = '128M';
 
+    const MAX_PAGE_RANGE_SIZE = 25;
+
     /**
      * @return array
      */
@@ -241,5 +243,33 @@ class AdminHelper
             'ú' => 'u',
             'ü' => 'u',
         ];
+    }
+
+    /**
+     * @param int $currentPage
+     * @param int $lastPage
+     *
+     * @return array
+     */
+    public static function getPageRanges($currentPage, $lastPage)
+    {
+        $firstPage = 1;
+
+        $startPage = $firstPage;
+        $endPage   = $lastPage;
+
+        $range = floor(self::MAX_PAGE_RANGE_SIZE/2);
+
+        if ($currentPage - $firstPage > $range) {
+            $startPage = $currentPage - $range;
+        }
+
+        if ($lastPage - $currentPage > $range) {
+            $endPage = $currentPage + $range;
+        }
+
+        $pageRange = range($startPage, $endPage);
+
+        return $pageRange;
     }
 }

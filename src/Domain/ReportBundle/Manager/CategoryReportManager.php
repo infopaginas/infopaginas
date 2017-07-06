@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class CategoryReportManager extends BaseReportManager
 {
@@ -89,6 +90,8 @@ class CategoryReportManager extends BaseReportManager
             $previousPage = $currentPage - 1;
         }
 
+        $rangePage = AdminHelper::getPageRanges($currentPage, $lastPage);
+
         $categoryData = [
             'results'      => $data,
             'labels'       => $labels,
@@ -100,6 +103,7 @@ class CategoryReportManager extends BaseReportManager
             'previousPage' => $previousPage,
             'perPage'      => $params['_per_page'],
             'dates'        => $params['dateObject'],
+            'rangePage'    => $rangePage,
         ];
 
         return $categoryData;
@@ -218,6 +222,10 @@ class CategoryReportManager extends BaseReportManager
 
     public function aggregateBusinessCategories($period)
     {
+        $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
+            self::MONGO_DB_FIELD_DATE_TIME   => MongoDbManager::INDEX_TYPE_DESC,
+        ]);
+
         $aggregateStartDate = $this->mongoDbManager->typeUTCDateTime($period->getStartDate());
         $aggregateEndDate   = $this->mongoDbManager->typeUTCDateTime($period->getEndDate());
 

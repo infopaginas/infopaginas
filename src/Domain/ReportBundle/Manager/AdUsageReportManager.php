@@ -150,6 +150,11 @@ class AdUsageReportManager extends BaseReportManager
 
     protected function insertOrderStats($data)
     {
+        $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME, [
+            self::MONGO_DB_FIELD_ORDER_ID  => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
+        ]);
+
         $this->mongoDbManager->insertMany(
             self::MONGO_DB_COLLECTION_NAME,
             $data

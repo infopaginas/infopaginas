@@ -2,7 +2,10 @@
 
 namespace Domain\ReportBundle\Controller;
 
+use Domain\ReportBundle\Entity\ExportReport;
+use Domain\ReportBundle\Model\PostponeExportInterface;
 use \Oxa\Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -41,10 +44,63 @@ class CRUDController extends Controller
             );
         }
 
+        $preResponse = $this->preExport($request, $this->admin->getSubject());
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
+        if ($this->admin->getNewInstance() instanceof PostponeExportInterface) {
+            return $this->createPostponeExportReport($entityClass, $format, $params);
+        }
+
         return $this->get('domain_report.exporter')->getResponse(
             $entityClass,
             $format,
             $params
         );
+    }
+
+    /**
+     * @param string $entityClass
+     * @param string $format
+     * @param array  $parameters
+     *
+     * @return RedirectResponse
+     */
+    protected function createPostponeExportReport($entityClass, $format, $parameters = [])
+    {
+        $this->addPostponeExportReport($entityClass, $format, $parameters);
+
+        $this->addFlash(
+            'sonata_flash_success',
+            $this->trans('flash_export_report_requested', [], 'AdminReportBundle')
+        );
+
+        return new RedirectResponse($this->admin->generateUrl('list'));
+    }
+
+    /**
+     * @param string $entityClass
+     * @param string $format
+     * @param array  $parameters
+     */
+    protected function addPostponeExportReport($entityClass, $format, $parameters = [])
+    {
+        $exportReport = new ExportReport();
+
+        $exportReport->setFormat($format);
+        $exportReport->setClass($entityClass);
+
+        $exportReport->setParams($parameters);
+
+        $user = $this->getUser();
+        if ($user) {
+            $exportReport->setUser($user);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($exportReport);
+        $em->flush();
     }
 }

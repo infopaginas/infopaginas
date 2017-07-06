@@ -194,7 +194,13 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->setHeaderFontStyle('C', 7);
     }
 
-    protected function sendResponse($filename)
+    /**
+     * @param string $filename
+     * @param string $path
+     *
+     * @return Response
+     */
+    protected function sendResponse($filename, $path = '')
     {
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $this->phpExcelObject->setActiveSheetIndex(0);
@@ -213,6 +219,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         $response->headers->set('Pragma', 'public');
         $response->headers->set('Cache-Control', 'maxage=1');
         $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        if ($path) {
+            $this->phpExcel->createWriter($this->phpExcelObject)->save($path);
+        }
 
         return $response;
     }

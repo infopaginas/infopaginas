@@ -12,6 +12,10 @@ class MongoDbManager
     const OBJECT_ID_FIELD        = '_id';
     const DEFAULT_BATCH_SIZE     = 1000;
 
+    // see https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/
+    const INDEX_TYPE_ASC  = 1;
+    const INDEX_TYPE_DESC = -1;
+
     /**
      * @var MongoDB\Client
      */
@@ -90,6 +94,24 @@ class MongoDbManager
     {
         try {
             $result = $this->client->$collectionName->find($query, $options);
+        } catch (\Exception $e) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param       $collectionName
+     * @param array $query
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function count($collectionName, $query = [], $options = [])
+    {
+        try {
+            $result = $this->client->$collectionName->count($query, $options);
         } catch (\Exception $e) {
             $result = false;
         }

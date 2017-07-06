@@ -4,12 +4,13 @@ namespace Domain\ReportBundle\Service\Export;
 
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Entity\SubscriptionReport;
+use Domain\ReportBundle\Entity\UserActionReport;
 use Domain\ReportBundle\Entity\Visitor;
-use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\ReportInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class Exporter
@@ -26,12 +27,13 @@ class Exporter
      * @param string $entityClass
      * @param string $format
      * @param array $parameters
+     * @param string $path
      *
      * @return Response|\Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function getResponse($entityClass, $format, $parameters = [])
+    public function getResponse($entityClass, $format, $parameters = [], $path = '')
     {
-        $parameters = $this->prepareFilterParameters($parameters);
+        $parameters = $this->prepareFilterParameters($parameters, $path);
         $response   = [];
 
         switch ($entityClass) {
@@ -68,18 +70,34 @@ class Exporter
                 }
 
                 break;
+            case UserActionReport::class:
+                switch ($format) {
+                    case ReportInterface::FORMAT_EXCEL:
+                        $response = $this->getUserActionExcelExporter()->getResponse($parameters);
+                        break;
+                }
+
+                break;
         }
 
         return $response;
     }
 
-    protected function prepareFilterParameters($params)
+    /**
+     * @param array $params
+     * @param string $path
+     *
+     * @return array
+     */
+    protected function prepareFilterParameters($params, $path)
     {
         $filterParameters = $params['filter'];
 
         unset($params['filter']);
 
         $params = array_merge($filterParameters, $params);
+
+        $params['exportPath'] = $path;
 
         return $params;
     }
@@ -141,10 +159,10 @@ class Exporter
     }
 
     /**
-     * @return CategoryReportManager
+     * @return UserActionExcelExporter
      */
-    protected function getCategoryReportManager()
+    protected function getUserActionExcelExporter()
     {
-        return $this->container->get('domain_report.manager.category_report_manager');
+        return $this->container->get('domain_report.exporter.user_action_excel_exporter');
     }
 }

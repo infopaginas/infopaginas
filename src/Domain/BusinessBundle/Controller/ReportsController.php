@@ -12,6 +12,7 @@ use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\UserActionModel;
 use Domain\ReportBundle\Service\Export\BusinessReportExcelExporter;
 use Domain\ReportBundle\Util\DatesUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -165,6 +166,8 @@ class ReportsController extends Controller
 
         $params['businessProfile'] = $businessProfile;
 
+        $this->userActionExportLog($businessProfile);
+
         return $this->getExcelExporterService()->getResponse($params);
     }
 
@@ -189,7 +192,37 @@ class ReportsController extends Controller
 
         $params['businessProfile'] = $businessProfile;
 
+        $this->userActionExportLog($businessProfile);
+
         return $this->getPdfExporterService()->getResponse($params);
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     */
+    protected function userActionExportLog($businessProfile)
+    {
+        $userActionReportManager = $this->get('domain_report.manager.user_action_report_manager');
+
+        $id = $businessProfile->getId();
+
+        $entityPath = explode('\\', get_class($businessProfile));
+        $entityName = end($entityPath);
+
+        $userActionReportManager->registerUserAction(
+            UserActionModel::TYPE_ACTION_EXPORT,
+            [
+                'entity' => $entityName,
+                'type'   => UserActionModel::TYPE_ACTION_EXPORT,
+                'id'     => $id,
+                'url' => $this->generateUrl(
+                    'admin_domain_business_businessprofile_show',
+                    [
+                        'id' => $id,
+                    ]
+                ),
+            ]
+        );
     }
 
     protected function prepareReportParameters($requestData)

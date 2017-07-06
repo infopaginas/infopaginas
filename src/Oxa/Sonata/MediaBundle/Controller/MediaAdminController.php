@@ -71,6 +71,11 @@ class MediaAdminController extends CRUDController
             throw new AccessDeniedException();
         }
 
+        $preResponse = $this->preList($this->getRequest());
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
         $datagrid = $this->admin->getDatagrid();
         if ($this->admin->getPersistentParameter('context')) {
             $datagrid->setValue('context', null, $this->admin->getPersistentParameter('context'));

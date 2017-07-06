@@ -37,6 +37,7 @@ security:
                 default_target_path:   /admin/dashboard
             logout:
                 path:           /admin/logout
+                success_handler: oxa.user.logout_handler
             anonymous:          true
 
         # -> end custom configuration
@@ -66,6 +67,7 @@ security:
                 failure_handler: oxa.user.authentication_handler
             logout:
                 path: /logout
+                success_handler: oxa.user.logout_handler
 
     access_control:
         # URL of FOSUserBundle which need to be available to anonymous users

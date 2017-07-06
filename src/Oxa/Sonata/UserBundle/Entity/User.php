@@ -2,8 +2,10 @@
 
 namespace Oxa\Sonata\UserBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\ReportBundle\Entity\ExportReport;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\AvailableUserEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\UserCUableEntityTrait;
@@ -71,6 +73,17 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     protected $businessProfiles;
 
     /**
+     * @var ExportReport[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\ReportBundle\Entity\ExportReport",
+     *     mappedBy="user",
+     *     cascade={"persist"}
+     *     )
+     */
+    protected $exports;
+
+    /**
      * @var Task[]
      *
      * @ORM\OneToMany(targetEntity="Domain\BusinessBundle\Entity\Task", mappedBy="reviewer")
@@ -122,9 +135,10 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     {
         parent::__construct();
 
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
+        $this->tasks            = new ArrayCollection();
+        $this->businessReviews  = new ArrayCollection();
+        $this->exports          = new ArrayCollection();
         $this->businessesCount = 0;
     }
 
@@ -376,6 +390,40 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
     public function getBusinessProfiles()
     {
         return $this->businessProfiles;
+    }
+
+    /**
+     * Add ExportReport
+     *
+     * @param ExportReport $exportReport
+     *
+     * @return User
+     */
+    public function addExportReport(ExportReport $exportReport)
+    {
+        $this->exports[] = $exportReport;
+
+        return $this;
+    }
+
+    /**
+     * Remove ExportReport
+     *
+     * @param ExportReport $exportReport
+     */
+    public function removeExportReport(ExportReport $exportReport)
+    {
+        $this->exports->removeElement($exportReport);
+    }
+
+    /**
+     * Get ExportReport
+     *
+     * @return ArrayCollection
+     */
+    public function getExportReports()
+    {
+        return $this->exports;
     }
 
     /**

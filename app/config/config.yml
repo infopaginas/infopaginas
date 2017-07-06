@@ -65,6 +65,7 @@ parameters:
     video_back_up_path: '/../web/imageBackUp/video/'
     youtube_back_up_path: '/../web/imageBackUp/youtube/'
     video_download_path: '/../web/uploads/videos/'
+    export_report_path: '/../web/uploads/export/'
     breadcrumb_max_length: 38
     google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
     google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
@@ -290,10 +291,20 @@ knp_gaufrette:
                 options:
                     create:     true
                     directory:  'video/%sonata_media.cdn.folder%'
+        report_storage:
+            aws_s3:
+                service_id:     aws.s3
+                bucket_name:    %amazon_aws_bucket_name%
+                options:
+                    create:     true
+                    directory:  'report/%sonata_media.cdn.folder%'
     filesystems:
         ipgn:
             adapter:    video_storage
             alias:      video_storage_filesystem
+        export:
+            adapter:    report_storage
+            alias:      report_storage_filesystem
 
 dubture_f_fmpeg:
     ffmpeg_binary: /usr/bin/ffmpeg
