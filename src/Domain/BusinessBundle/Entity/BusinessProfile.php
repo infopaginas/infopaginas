@@ -12,9 +12,12 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\ReportBundle\Model\PostponeExportInterface;
+use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -44,7 +47,9 @@ class BusinessProfile implements
     CopyableEntityInterface,
     TranslatableInterface,
     GeolocationInterface,
-    PostponeRemoveInterface
+    PostponeRemoveInterface,
+    ReportInterface,
+    PostponeExportInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -2669,20 +2674,192 @@ class BusinessProfile implements
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
     }
 
+    /**
+     * @return bool
+     */
+    public function getHasVideo()
+    {
+        return (bool) $this->getVideo();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasMedia()
+    {
+        if ($this->getBackground() or ($this->getLogo()) or !$this->getImages()->isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportAreas()
+    {
+        $areaList = [];
+
+        $areas = $this->getAreas();
+
+        foreach ($areas as $area) {
+            $areaList[] = $area->getName();
+        }
+
+        return implode(', ', $areaList);
+    }
+
+    /**
+     * @return string
+     */
     public function getExportCategories()
     {
-        $data = [];
+        $categoryList = [];
 
         $categories = $this->getCategories();
 
         foreach ($categories as $category) {
-            $data[] = [
-                'id'   => $category->getId(),
-                'name' => $category->getName(),
-            ];
+            $categoryList[] = $category->getName();
         }
 
-        return json_encode($data);
+        return implode(', ', $categoryList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportPhones()
+    {
+        $phoneList = [];
+
+        $phones = $this->getPhones();
+
+        foreach ($phones as $phone) {
+            $phoneList[] = $phone->getPhone();
+        }
+
+        return implode(', ', $phoneList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSubscriptionPlan()
+    {
+        $currentSubscriptionPlan = $this->getSubscriptionPlan();
+
+        if ($currentSubscriptionPlan) {
+            $name = $currentSubscriptionPlan->getName();
+        } else {
+            $name = '';
+        }
+
+        return $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSubscriptionStartDate()
+    {
+        $currentSubscription = $this->getSubscription();
+
+        if ($currentSubscription) {
+            $date = $currentSubscription->getStartDate()->format(AdminHelper::DATETIME_FORMAT);
+        } else {
+            $date = '';
+        }
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSubscriptionEndDate()
+    {
+        $currentSubscription = $this->getSubscription();
+
+        if ($currentSubscription) {
+            $date = $currentSubscription->getEndDate()->format(AdminHelper::DATETIME_FORMAT);
+        } else {
+            $date = '';
+        }
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportUpdatedAt()
+    {
+        $date = $this->getUpdatedAt();
+
+        if ($date) {
+            $date = $date->format(AdminHelper::DATETIME_FORMAT);
+        } else {
+            $date = '';
+        }
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportCreatedAt()
+    {
+        $date = $this->getCreatedAt();
+
+        if ($date) {
+            $date = $date->format(AdminHelper::DATETIME_FORMAT);
+        } else {
+            $date = '';
+        }
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportUserUpdatedAt()
+    {
+        $date = '';
+
+        $user = $this->getUser();
+
+        if ($user) {
+            $date = $user->getUpdatedAt();
+
+            if ($date) {
+                $date = $date->format(AdminHelper::DATETIME_FORMAT);
+            }
+        }
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportUserCreatedAt()
+    {
+        $date = '';
+
+        $user = $this->getUser();
+
+        if ($user) {
+            $date = $user->getCreatedAt();
+
+            if ($date) {
+                $date = $date->format(AdminHelper::DATETIME_FORMAT);
+            }
+        }
+
+        return $date;
     }
 
     /**
@@ -2941,5 +3118,15 @@ class BusinessProfile implements
         }
 
         return $code;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getExportFormats()
+    {
+        return [
+            self::FORMAT_EXCEL => self::FORMAT_EXCEL,
+        ];
     }
 }

@@ -33,7 +33,7 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse($params = []) : Response
+    public function getResponse($params = [])
     {
         $filename = $this->viewsAndVisitorsReportManager->generateReportName(self::FORMAT);
 

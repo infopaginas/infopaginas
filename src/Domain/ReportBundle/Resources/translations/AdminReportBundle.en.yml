@@ -16,6 +16,7 @@ export.title.business_overview_report_for: Business Overview Report for
 export.title.all_businesses: All businesses
 export.title.active_sheet: Main
 export.title.user_action_report: CMS History Report
+export.title.businesses_report: Businesses Report
 export.generated_date: Report generated
 export.date_period: Date period
 export.start_date: Start date
@@ -55,4 +56,5 @@ user_action_report:
     action: Action
     data: Data
 
-flash_export_report_requested: Report export has been requested
+flash_export_report_requested: Report is being generated. To see its status please go to reports page
+flash_export_report_request_error: Error the report could not be sent, please reload the page and try again.

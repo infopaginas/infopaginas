@@ -53,40 +53,44 @@ class PostponeExportReportManager
         foreach ($exports as $row) {
             /** @var ExportReport $export */
             $export = current($row);
+            $format = $export->getFormat();
+            $links  = [];
+            $status = ExportReport::STATUS_ERROR;
 
-            $format   = $export->getFormat();
-            $filePath = $exportPath . uniqid('', true) . '.' . $format;
+            $filePaths = $this->exporter->getResponse(
+                $export->getClass(),
+                $format,
+                $export->getParams(),
+                $exportPath
+            );
 
-            $fileData = $this->getFileData($format, $filePath);
+            $this->em->clear();
 
-            if ($fileData) {
-                $this->exporter->getResponse(
-                    $export->getClass(),
-                    $format,
-                    $export->getParams(),
-                    $filePath
-                );
+            if ($filePaths) {
+                foreach ($filePaths as $filePath) {
+                    $fileData = $this->getFileData($format, $filePath);
 
-                $result = $this->uploadLocalFileData($fileData);
-            } else {
-                $result['status'] = false;
-            }
+                    if ($fileData) {
+                        $result = $this->uploadLocalFileData($fileData);
 
-            if (!$result['status']) {
-                $export->setStatus(ExportReport::STATUS_ERROR);
-            } else {
-                $export->setStatus(ExportReport::STATUS_READY);
+                        if ($result['status']) {
+                            $links[] = $result['link'];
+                        }
 
-                $export->setLinks([
-                    $result['link']
-                ]);
+                        unlink($filePath);
+                    }
+                }
+
+                $status = ExportReport::STATUS_READY;
             }
 
             $this->mailer->sendReportExportProcessedEmailMessage($export);
 
-            unlink($filePath);
-
-            $this->em->flush();
+            $this->em->getRepository(ExportReport::class)->setExportReportData(
+                $export->getId(),
+                $status,
+                json_encode($links)
+            );
             $this->em->clear();
         }
     }

@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Manager;
 
+use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Model\UserActionModel;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -75,13 +76,66 @@ class UserActionReportManager extends BaseReportManager
         return $result;
     }
 
+    /**
+     * @return array
+     */
     public function getUserActionReportExportData()
     {
         $userActionRawResult = $this->getUserActionsExportData();
 
-        $result = $this->prepareUserActionReportStats($userActionRawResult);
+        $result = $this->prepareUserActionExportReportStats($userActionRawResult);
+
+        unset($userActionRawResult);
 
         return $result;
+    }
+
+    /**
+     * @param array
+     *
+     * @return array
+     */
+    protected function prepareUserActionExportReportStats($rawResult)
+    {
+        $mapping = self::getUserActionReportMapping();
+        $results = [];
+
+        $maxPerFile = ExporterInterface::MAX_ROW_PER_FILE;
+        $counter    = 0;
+        $page       = 0;
+
+        foreach ($rawResult as $rowKey => $item) {
+            foreach ($mapping as $key => $value) {
+                if (array_key_exists($key, $item)) {
+                    switch ($key) {
+                        case self::MONGO_DB_FIELD_DATE_TIME:
+                            $value = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME])
+                                ->format(AdminHelper::DATETIME_FORMAT);
+                            break;
+                        case self::MONGO_DB_FIELD_DATA:
+                            $value = $item[self::MONGO_DB_FIELD_DATA]->getArrayCopy();
+                            break;
+                        default:
+                            $value = $item[$key];
+                            break;
+                    }
+
+                    $results[$page][$rowKey][$key] = $value;
+                }
+            }
+
+            $counter++;
+
+            if ($counter >= $maxPerFile) {
+                $counter = 0;
+                $page++;
+            }
+        }
+
+        return [
+            'mapping' => $mapping,
+            'results' => $results,
+        ];
     }
 
     protected function prepareUserActionReportStats($rawResult) : array

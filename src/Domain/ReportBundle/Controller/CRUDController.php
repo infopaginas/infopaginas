@@ -69,12 +69,19 @@ class CRUDController extends Controller
      */
     protected function createPostponeExportReport($entityClass, $format, $parameters = [])
     {
-        $this->addPostponeExportReport($entityClass, $format, $parameters);
+        try {
+            $this->addPostponeExportReport($entityClass, $format, $parameters);
 
-        $this->addFlash(
-            'sonata_flash_success',
-            $this->trans('flash_export_report_requested', [], 'AdminReportBundle')
-        );
+            $this->addFlash(
+                'sonata_flash_success',
+                $this->trans('flash_export_report_requested', [], 'AdminReportBundle')
+            );
+        } catch (\Exception $e) {
+            $this->addFlash(
+                'sonata_flash_error',
+                $this->trans('flash_export_report_request_error', [], 'AdminReportBundle')
+            );
+        }
 
         return new RedirectResponse($this->admin->generateUrl('list'));
     }

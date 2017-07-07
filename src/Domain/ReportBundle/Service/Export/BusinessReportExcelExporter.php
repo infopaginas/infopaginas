@@ -81,7 +81,7 @@ class BusinessReportExcelExporter extends ExcelExporterModel
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse($params = []) : Response
+    public function getResponse($params = [])
     {
         /* @var BusinessProfile $businessProfile */
         $businessProfile = $params['businessProfile'];

@@ -55,7 +55,7 @@ class BusinessReportPdfExporter extends PdfExporterModel
      * @param array $params
      * @return Response
      */
-    public function getResponse($params = []) : Response
+    public function getResponse($params = [])
     {
         $currentYearParams  = $this->businessOverviewReportManager->getThisYearSearchParams($params);
         $previousYearParams = $this->businessOverviewReportManager->getThisLastSearchParams($params);

@@ -2,6 +2,7 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\UserActionReport;
@@ -29,7 +30,7 @@ class Exporter
      * @param array $parameters
      * @param string $path
      *
-     * @return Response|\Symfony\Component\HttpFoundation\StreamedResponse
+     * @return Response|\Symfony\Component\HttpFoundation\StreamedResponse|array
      */
     public function getResponse($entityClass, $format, $parameters = [], $path = '')
     {
@@ -74,6 +75,14 @@ class Exporter
                 switch ($format) {
                     case ReportInterface::FORMAT_EXCEL:
                         $response = $this->getUserActionExcelExporter()->getResponse($parameters);
+                        break;
+                }
+
+                break;
+            case BusinessProfile::class:
+                switch ($format) {
+                    case ReportInterface::FORMAT_EXCEL:
+                        $response = $this->getBusinessProfileExcelExporter()->getResponse($parameters);
                         break;
                 }
 
@@ -164,5 +173,13 @@ class Exporter
     protected function getUserActionExcelExporter()
     {
         return $this->container->get('domain_report.exporter.user_action_excel_exporter');
+    }
+
+    /**
+     * @return BusinessProfileExcelExporter
+     */
+    protected function getBusinessProfileExcelExporter()
+    {
+        return $this->container->get('domain_report.exporter.business_profile_excel_exporter');
     }
 }

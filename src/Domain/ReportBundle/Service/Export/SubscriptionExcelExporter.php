@@ -33,7 +33,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse($parameters = []) : Response
+    public function getResponse($parameters = [])
     {
         $filename = $this->subscriptionReportManager->generateReportName(self::FORMAT);
 

@@ -48,19 +48,18 @@ class Version20170706123258 extends AbstractMigration implements ContainerAwareI
 
     protected function addNotificationTemplate()
     {
-        if (!$this->checkNewConfigValue(ConfigInterface::MAIL_REPORT_EXPORT_PROCESSED)) {
-            $value = $this->container->get('twig')
-                ->render('OxaConfigBundle:Fixtures:mail_export_report_processed.html.twig');
+        $configMail = $this->getConfigByKey(ConfigInterface::MAIL_REPORT_EXPORT_PROCESSED);
 
-            $configMail = new Config();
-            $configMail->setKey(ConfigInterface::MAIL_REPORT_EXPORT_PROCESSED);
-            $configMail->setTitle('Export report processed template');
-            $configMail->setValue($value);
-            $configMail->setFormat('html');
-            $configMail->setDescription('Notify if export report is processed');
+        $value = $this->container->get('twig')
+            ->render('OxaConfigBundle:Fixtures:mail_export_report_processed.html.twig');
 
-            $this->em->persist($configMail);
-        }
+        $configMail->setKey(ConfigInterface::MAIL_REPORT_EXPORT_PROCESSED);
+        $configMail->setTitle('Export report processed template');
+        $configMail->setValue($value);
+        $configMail->setFormat('html');
+        $configMail->setDescription('Notify if export report is processed');
+
+        $this->em->persist($configMail);
 
         $this->em->flush();
     }
@@ -68,9 +67,9 @@ class Version20170706123258 extends AbstractMigration implements ContainerAwareI
     /**
      * @param string $key
      *
-     * @return bool
+     * @return Config
      */
-    protected function checkNewConfigValue($key)
+    protected function getConfigByKey($key)
     {
         $config = $this->em->getRepository(Config::class)->findOneBy(
             [
@@ -78,6 +77,10 @@ class Version20170706123258 extends AbstractMigration implements ContainerAwareI
             ]
         );
 
-        return (bool)$config;
+        if (!$config) {
+            $config = new Config();
+        }
+
+        return $config;
     }
 }

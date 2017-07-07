@@ -2,31 +2,29 @@
 
 namespace Domain\ReportBundle\Service\Export;
 
-use Domain\ReportBundle\Manager\UserActionReportManager;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\ReportBundle\Model\Exporter\ExcelExporterModel;
-use Domain\ReportBundle\Model\UserActionModel;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class UserActionExcelExporter
+ * Class BusinessProfileExcelExporter
  * @package Domain\ReportBundle\Export
  */
-class UserActionExcelExporter extends ExcelExporterModel
+class BusinessProfileExcelExporter extends ExcelExporterModel
 {
     /**
-     * @var UserActionReportManager $userActionReportManager
+     * @var BusinessProfileManager $businessProfileManager
      */
-    protected $userActionReportManager;
+    protected $businessProfileManager;
 
     protected $mainTableInitRow = 2;
     protected $mainTableInitCol = 'B';
 
     /**
-     * @param UserActionReportManager $service
+     * @param BusinessProfileManager $service
      */
-    public function setUserActionReportManager(UserActionReportManager $service)
+    public function setBusinessProfileManager(BusinessProfileManager $service)
     {
-        $this->userActionReportManager = $service;
+        $this->businessProfileManager = $service;
     }
 
     /**
@@ -36,21 +34,18 @@ class UserActionExcelExporter extends ExcelExporterModel
      */
     public function getResponse($parameters = [])
     {
-        $title = $this->translator->trans('export.title.user_action_report', [], 'AdminReportBundle');
+        $title = $this->translator->trans('export.title.businesses_report', [], 'AdminReportBundle');
         $title = $this->getSafeTitle($title);
 
-        $data = $this->userActionReportManager->getUserActionReportExportData();
+        $data = $this->businessProfileManager->getBusinessProfileExportData($parameters);
 
         $files = [];
 
-        foreach ($data['results'] as $page) {
+        foreach ($data as $page) {
             $path = $this->generateTempFilePath($parameters['exportPath']);
 
             $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-            $this->phpExcelObject = $this->setData([
-                'mapping' => $data['mapping'],
-                'results' => $page,
-            ]);
+            $this->phpExcelObject = $this->setData($page);
 
             $this->phpExcelObject->getProperties()->setTitle($title);
             $this->phpExcelObject->getActiveSheet()->setTitle($title);
@@ -88,10 +83,12 @@ class UserActionExcelExporter extends ExcelExporterModel
         $this->setFontStyle($col, $row);
         $this->setBorderStyle($col, $row);
 
-        foreach ($data['mapping'] as $name) {
+        $mapping = array_keys(current($data));
+
+        foreach ($mapping as $name) {
             $this->activeSheet->setCellValue(
                 $col . $row,
-                $this->translator->trans($name, [], 'AdminReportBundle')
+                $name
             );
 
             $this->setTextAlignmentStyle($col, $row);
@@ -100,26 +97,12 @@ class UserActionExcelExporter extends ExcelExporterModel
             $col++;
         }
 
-        $eventsMapping = UserActionModel::EVENT_TYPES;
-
-        foreach ($data['results'] as $rowData) {
+        foreach ($data as $rowData) {
             $col = $this->mainTableInitCol;
             $row++;
 
-            foreach ($data['mapping'] as $key => $value) {
-                if ($key == UserActionReportManager::MONGO_DB_FIELD_DATA) {
-                    $info = implode(PHP_EOL, $rowData[$key]);
-                    $this->activeSheet->setCellValue($col . $row, $info);
-                    $this->activeSheet->getRowDimension($row)->setRowHeight(-1);
-                    $this->activeSheet->getStyle($col . $row)->getAlignment()->setWrapText(true);
-                } elseif ($key == UserActionReportManager::MONGO_DB_FIELD_ACTION) {
-                    $this->activeSheet->setCellValue(
-                        $col . $row,
-                        $this->translator->trans($eventsMapping[$rowData[$key]], [], 'AdminReportBundle')
-                    );
-                } else {
-                    $this->activeSheet->setCellValue($col . $row, $rowData[$key]);
-                }
+            foreach ($rowData as $key => $value) {
+                $this->activeSheet->setCellValue($col . $row, $value);
 
                 $this->setColumnSizeStyle($col);
                 $this->setBorderStyle($col, $row);
