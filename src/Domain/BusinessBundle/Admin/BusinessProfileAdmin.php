@@ -412,6 +412,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('customAddress')
                     ->add('hideAddress')
+                    ->add('hideMap')
                 ->end()
                 ->with('Map')
                     ->add('useMapAddress', null, [
@@ -728,6 +729,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('streetAddress')
                     ->add('customAddress')
                     ->add('hideAddress')
+                    ->add('hideMap')
                     ->add('latitude')
                     ->add('longitude')
                 ->end()

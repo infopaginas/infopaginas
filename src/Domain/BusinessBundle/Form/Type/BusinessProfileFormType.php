@@ -231,6 +231,10 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Hide Address',
                 'required' => false,
             ])
+            ->add('hideMap', CheckboxType::class, [
+                'label' => 'Hide Map',
+                'required' => false,
+            ])
             ->add('twitterURL', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
