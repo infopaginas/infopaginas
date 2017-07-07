@@ -165,7 +165,12 @@ class ProfileController extends Controller
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
 
-        $locationMarkers  = $this->getBusinessProfilesManager()->getLocationMarkersFromProfileData([$businessProfile]);
+        if (!$businessProfile->getHideMap()) {
+            $locationMarkers  = $this->getBusinessProfilesManager()
+                ->getLocationMarkersFromProfileData([$businessProfile]);
+        } else {
+            $locationMarkers = [];
+        }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 

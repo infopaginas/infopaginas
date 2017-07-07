@@ -116,6 +116,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS     = 'customAddress';
     const BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS    = 'useMapAddress';
     const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
+    const BUSINESS_PROFILE_FIELD_HIDE_MAP           = 'hideMap';
 
     const BUSINESS_PROFILE_FIELD_TWITTER_URL    = 'twitterURL';
     const BUSINESS_PROFILE_FIELD_FACEBOOK_URL   = 'facebookURL';
@@ -567,6 +568,13 @@ class BusinessProfile implements
      * @ORM\Column(name="hide_address", type="boolean", options={"default" : 0})
      */
     protected $hideAddress = false;
+
+    /**
+     * @var bool - If checkbox is checked, google map is hidden.
+     *
+     * @ORM\Column(name="hide_map", type="boolean", options={"default" : 0})
+     */
+    protected $hideMap = false;
 
     /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
@@ -1747,6 +1755,26 @@ class BusinessProfile implements
     public function getHideAddress()
     {
         return $this->hideAddress;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHideMap()
+    {
+        return $this->hideMap;
+    }
+
+    /**
+     * @param bool $hideMap
+     *
+     * @return BusinessProfile
+     */
+    public function setHideMap($hideMap)
+    {
+        $this->hideMap = $hideMap;
+
+        return $this;
     }
 
     /**
@@ -2955,6 +2983,7 @@ class BusinessProfile implements
         return [
             self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_MAP,
         ];
     }
 
@@ -2968,7 +2997,8 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
-            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
+//            don't track field via business owner task
+//            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
@@ -2991,6 +3021,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_MAP,
 
             self::BUSINESS_PROFILE_FIELD_TWITTER_URL,
             self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL,

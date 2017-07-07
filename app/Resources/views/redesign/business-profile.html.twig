@@ -284,10 +284,12 @@
 
                         {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_BOTTOM } %}
 
-                        <section class="page-section profile-map">
-                            <div id="map"></div>
-                            <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
-                        </section>
+                        {% if not businessProfile.hideMap %}
+                            <section class="page-section profile-map">
+                                <div id="map"></div>
+                                <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
+                            </section>
+                        {% endif %}
 
                     </article><!-- profile -->
 

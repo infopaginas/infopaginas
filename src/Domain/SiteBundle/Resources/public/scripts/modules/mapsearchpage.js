@@ -20,7 +20,8 @@ define(
 
         this.html = {
             containers: {
-                searchContainer: '#searchContainer'
+                searchContainer: '#searchContainer',
+                mapContainer: '#map'
             },
             buttons: {
                 redoSearch: '#redo-search-in-map',
@@ -71,6 +72,8 @@ define(
     mapSearchPage.prototype = new view;
 
     mapSearchPage.prototype.init = function () {
+        var mapContainer = $( this.html.containers.mapContainer );
+
         this.map = null;
         this.markers = [];
         this.options = {
@@ -84,17 +87,19 @@ define(
             directions: new directions
         };
 
-        var markersBlock = $( '#map-markers' );
-        if ( markersBlock.data( 'google-markers' ) ) {
-            this.options.markers = markersBlock.data( 'google-markers' );
+        if ( mapContainer.length ) {
+            var markersBlock = $( '#map-markers' );
+            if ( markersBlock.data( 'google-markers' ) ) {
+                this.options.markers = markersBlock.data( 'google-markers' );
+            }
+
+            this.initMap(this.options);
+            this.handleMapSearch();
         }
 
         new select();
 
         this.options.directions.bindEventsDirections();
-
-        this.initMap(this.options);
-        this.handleMapSearch();
     };
 
     mapSearchPage.prototype.initMap = function ( options ) {
