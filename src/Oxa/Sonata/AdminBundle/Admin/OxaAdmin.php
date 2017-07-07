@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Util\Traits\StatusTrait;
 use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -364,13 +365,24 @@ class OxaAdmin extends BaseAdmin
                 break;
             case UserActionModel::TYPE_ACTION_VIEW_SHOW_PAGE:
             case UserActionModel::TYPE_ACTION_POSTPONE_DELETE:
-                $url = $this->generateUrl(
-                    self::SONATA_URL_TYPE_SHOW,
-                    [
-                        'id' => $entity->getId(),
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                );
+                if ($this->hasRoute(self::SONATA_URL_TYPE_SHOW)) {
+                    $urlType = self::SONATA_URL_TYPE_SHOW;
+                } elseif ($this->hasRoute(self::SONATA_URL_TYPE_EDIT)) {
+                    $urlType = self::SONATA_URL_TYPE_EDIT;
+                } else {
+                    $urlType = '';
+                }
+
+                if ($urlType) {
+                    $url = $this->generateUrl(
+                        $urlType,
+                        [
+                            'id' => $entity->getId(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+                }
+
                 break;
             case UserActionModel::TYPE_ACTION_VIEW_LIST_PAGE:
             case UserActionModel::TYPE_ACTION_EXPORT:
