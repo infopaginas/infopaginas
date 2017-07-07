@@ -3,6 +3,7 @@
 namespace Domain\ReportBundle\Repository;
 
 use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Domain\ReportBundle\Entity\ExportReport;
 
 class ExportReportRepository extends \Doctrine\ORM\EntityRepository
 {
@@ -21,5 +22,29 @@ class ExportReportRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter('status', $status);
 
         return $query->iterate();
+    }
+
+    /**
+     * @param int    $id
+     * @param string $status
+     * @param array  $links
+     * @return mixed
+     */
+    public function setExportReportData($id, $status, $links)
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update(ExportReport::class, 'er')
+            ->where('er.id = :id')
+            ->setParameter('id', $id)
+            ->set('er.status', ':status')
+            ->setParameter('status', $status)
+            ->set('er.links', ':links')
+            ->setParameter('links', $links)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
     }
 }

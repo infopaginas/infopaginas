@@ -36,7 +36,7 @@ class UserActionReport implements ReportInterface, PostponeExportInterface
     public static function getExportFormats()
     {
         return [
-            self::CODE_EXCEL_CATEGORY_REPORT    => self::FORMAT_EXCEL,
+            self::FORMAT_EXCEL => self::FORMAT_EXCEL,
         ];
     }
 }

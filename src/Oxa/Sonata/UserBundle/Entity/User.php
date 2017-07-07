@@ -399,7 +399,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      *
      * @return User
      */
-    public function addExportReport(ExportReport $exportReport)
+    public function addExport(ExportReport $exportReport)
     {
         $this->exports[] = $exportReport;
 
@@ -411,7 +411,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      *
      * @param ExportReport $exportReport
      */
-    public function removeExportReport(ExportReport $exportReport)
+    public function removeExport(ExportReport $exportReport)
     {
         $this->exports->removeElement($exportReport);
     }
@@ -421,7 +421,7 @@ class User extends BaseUser implements DefaultEntityInterface, UserRoleInterface
      *
      * @return ArrayCollection
      */
-    public function getExportReports()
+    public function getExports()
     {
         return $this->exports;
     }

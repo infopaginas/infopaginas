@@ -123,3 +123,10 @@ services:
         class: Domain\ReportBundle\Manager\PostponeExportReportManager
         arguments:
             - '@service_container'
+
+    domain_report.exporter.business_profile_excel_exporter:
+        class: Domain\ReportBundle\Service\Export\BusinessProfileExcelExporter
+        calls:
+            - [ setPhpExcel, [ '@phpexcel' ]]
+            - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
+            - [ setTranslator, [ '@translator.default' ]]

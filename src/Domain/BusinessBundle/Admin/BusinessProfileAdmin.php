@@ -1225,21 +1225,41 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @return array
+     */
     public function getExportFormats()
     {
-        return [
-            'business_profile.admin.export.csv' => 'csv',
-        ];
+        return BusinessProfile::getExportFormats();
     }
 
     public function getExportFields()
     {
-        $exportFields['ID']   = 'id';
-        $exportFields['Name'] = 'nameEn';
-        $exportFields['Slug'] = 'slug';
-        $exportFields['Categories name+ID']  = 'exportCategories';
-        $exportFields['Business Admin ID']   = 'user.id';
-        $exportFields['Business Admin Name'] = 'user.fullName';
+        $exportFields['ID']         = 'id';
+        $exportFields['Name']       = 'nameEn';
+        $exportFields['Slug']       = 'slug';
+        $exportFields['hasVideo']   = 'hasVideo';
+        $exportFields['hasMedia']   = 'hasMedia';
+        $exportFields['areas']      = 'exportAreas';
+        $exportFields['categories'] = 'exportCategories';
+        $exportFields['phones']     = 'exportPhones';
+
+        $exportFields['subscriptionPlan']       = 'exportSubscriptionPlan';
+        $exportFields['subscriptionStartDate']  = 'exportSubscriptionStartDate';
+        $exportFields['subscriptionEndDate']    = 'exportSubscriptionEndDate';
+
+        $exportFields['updatedDate']        = 'exportUpdatedAt';
+        $exportFields['updatedByUserId']    = 'updatedUser.id';
+        $exportFields['updatedByUser']      = 'updatedUser.fullName';
+
+        $exportFields['createdDate']        = 'exportCreatedAt';
+        $exportFields['createdByUserId']    = 'createdUser.id';
+        $exportFields['createdByUser']      = 'createdUser.fullName';
+
+        $exportFields['userId']     = 'user.id';
+        $exportFields['userName']   = 'user.fullName';
+        $exportFields['userAccountUpdateDate']   = 'exportUserUpdatedAt';
+        $exportFields['userAccountCreationDate'] = 'exportUserCreatedAt';
 
         return $exportFields;
     }

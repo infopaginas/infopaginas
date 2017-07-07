@@ -228,6 +228,36 @@ abstract class ExcelExporterModel implements ExporterInterface
     }
 
     /**
+     * @param string $path
+     *
+     * @return bool
+     */
+    protected function saveResponse($path)
+    {
+        try {
+            // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+            $this->phpExcelObject->setActiveSheetIndex(0);
+            $this->phpExcel->createWriter($this->phpExcelObject)->save($path);
+
+            $status = true;
+        } catch (\Exception $e) {
+            $status = false;
+        }
+
+        return $status;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function generateTempFilePath($path)
+    {
+        return $path . uniqid('', true) . '.' . self::FORMAT;
+    }
+
+    /**
      * @param string $title
      *
      * @return string
