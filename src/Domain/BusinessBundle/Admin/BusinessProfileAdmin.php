@@ -340,18 +340,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'btn_add' => false,
                         'query' => $query,
                     ])
-                    ->add('logo', 'sonata_type_model_list', [
-                        'required' => false
-                    ], ['link_parameters' => [
-                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]])
-                    ->add('background', 'sonata_type_model_list', [
-                        'required' => false
-                    ], ['link_parameters' => [
-                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]])
                     ->add('website')
                     ->add('email', EmailType::class, [
                         'required' => false,
@@ -456,6 +444,31 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
                 ->with('Gallery')
+                    ->add(
+                        'logo', 'sonata_type_model_list',
+                        [
+                            'required' => false,
+                        ],
+                        [
+                            'link_parameters' => [
+                                'context'  => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            ]
+                        ]
+                    )
+                    ->add(
+                        'background',
+                        'sonata_type_model_list',
+                        [
+                            'required' => false,
+                        ],
+                        [
+                            'link_parameters' => [
+                                'context'  => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            ]
+                        ]
+                    )
                     ->add('images', 'sonata_type_collection', [
                         'by_reference' => false,
                         'required' => false,
