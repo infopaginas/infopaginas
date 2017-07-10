@@ -17,6 +17,7 @@ export.title.all_businesses: All businesses
 export.title.active_sheet: Main
 export.title.user_action_report: CMS History Report
 export.title.businesses_report: Businesses Report
+export.title.default: Report
 export.generated_date: Report generated
 export.date_period: Date period
 export.start_date: Start date

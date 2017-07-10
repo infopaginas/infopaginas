@@ -3346,4 +3346,26 @@ class BusinessProfileManager extends Manager
 
         return $data;
     }
+
+    /**
+     * @param array $filter
+     *
+     * @return \Exporter\Source\SourceIteratorInterface
+     */
+    public function getBusinessProfileExportDataIterator($filter = [])
+    {
+        $admin = $this->container->get('domain_business.admin.business_profile');
+
+        $params['filter'] = $filter;
+
+        $request = new Request($params);
+
+        $admin->setRequest($request);
+
+        $iterator = $admin->getDataSourceIterator();
+
+        unset($admin, $params, $request);
+
+        return $iterator;
+    }
 }

@@ -14,6 +14,7 @@ use Symfony\Component\Translation\Translator;
 abstract class ExcelExporterModel implements ExporterInterface
 {
     const FORMAT = 'xls';
+    const ROW_AUTO_HEIGHT = -1;
 
     /**
      * @var Factory $phpExcel
@@ -225,36 +226,6 @@ abstract class ExcelExporterModel implements ExporterInterface
         }
 
         return $response;
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return bool
-     */
-    protected function saveResponse($path)
-    {
-        try {
-            // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-            $this->phpExcelObject->setActiveSheetIndex(0);
-            $this->phpExcel->createWriter($this->phpExcelObject)->save($path);
-
-            $status = true;
-        } catch (\Exception $e) {
-            $status = false;
-        }
-
-        return $status;
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    protected function generateTempFilePath($path)
-    {
-        return $path . uniqid('', true) . '.' . self::FORMAT;
     }
 
     /**

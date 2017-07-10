@@ -79,15 +79,11 @@ class UserActionReportManager extends BaseReportManager
     /**
      * @return array
      */
-    public function getUserActionReportExportData()
+    public function getUserActionReportExportDataIterator()
     {
-        $userActionRawResult = $this->getUserActionsExportData();
+        $userActionCursor = $this->getUserActionsExportData();
 
-        $result = $this->prepareUserActionExportReportStats($userActionRawResult);
-
-        unset($userActionRawResult);
-
-        return $result;
+        return $userActionCursor;
     }
 
     /**
@@ -95,47 +91,31 @@ class UserActionReportManager extends BaseReportManager
      *
      * @return array
      */
-    protected function prepareUserActionExportReportStats($rawResult)
+    public function convertMongoDataToArray($rawData)
     {
         $mapping = self::getUserActionReportMapping();
-        $results = [];
+        $result  = [];
 
-        $maxPerFile = ExporterInterface::MAX_ROW_PER_FILE;
-        $counter    = 0;
-        $page       = 0;
-
-        foreach ($rawResult as $rowKey => $item) {
-            foreach ($mapping as $key => $value) {
-                if (array_key_exists($key, $item)) {
-                    switch ($key) {
-                        case self::MONGO_DB_FIELD_DATE_TIME:
-                            $value = DatesUtil::convertMongoDbTimeToDatetime($item[self::MONGO_DB_FIELD_DATE_TIME])
-                                ->format(AdminHelper::DATETIME_FORMAT);
-                            break;
-                        case self::MONGO_DB_FIELD_DATA:
-                            $value = $item[self::MONGO_DB_FIELD_DATA]->getArrayCopy();
-                            break;
-                        default:
-                            $value = $item[$key];
-                            break;
-                    }
-
-                    $results[$page][$rowKey][$key] = $value;
+        foreach ($mapping as $key => $value) {
+            if (array_key_exists($key, $rawData)) {
+                switch ($key) {
+                    case self::MONGO_DB_FIELD_DATE_TIME:
+                        $value = DatesUtil::convertMongoDbTimeToDatetime($rawData[self::MONGO_DB_FIELD_DATE_TIME])
+                            ->format(AdminHelper::DATETIME_FORMAT);
+                        break;
+                    case self::MONGO_DB_FIELD_DATA:
+                        $value = $rawData[self::MONGO_DB_FIELD_DATA]->getArrayCopy();
+                        break;
+                    default:
+                        $value = $rawData[$key];
+                        break;
                 }
-            }
 
-            $counter++;
-
-            if ($counter >= $maxPerFile) {
-                $counter = 0;
-                $page++;
+                $result[$key] = $value;
             }
         }
 
-        return [
-            'mapping' => $mapping,
-            'results' => $results,
-        ];
+        return $result;
     }
 
     protected function prepareUserActionReportStats($rawResult) : array

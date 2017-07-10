@@ -3,13 +3,13 @@
 namespace Domain\ReportBundle\Service\Export;
 
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
-use Domain\ReportBundle\Model\Exporter\ExcelExporterModel;
+use Domain\ReportBundle\Model\Exporter\ExcelPostponedExporterModel;
 
 /**
  * Class BusinessProfileExcelExporter
  * @package Domain\ReportBundle\Export
  */
-class BusinessProfileExcelExporter extends ExcelExporterModel
+class BusinessProfileExcelExporter extends ExcelPostponedExporterModel
 {
     /**
      * @var BusinessProfileManager $businessProfileManager
@@ -18,6 +18,8 @@ class BusinessProfileExcelExporter extends ExcelExporterModel
 
     protected $mainTableInitRow = 2;
     protected $mainTableInitCol = 'B';
+
+    protected $reportTitle = 'export.title.businesses_report';
 
     /**
      * @param BusinessProfileManager $service
@@ -28,89 +30,82 @@ class BusinessProfileExcelExporter extends ExcelExporterModel
     }
 
     /**
-     * @param array $parameters
-     * @return Array
-     * @throws \PHPExcel_Exception
+     * @param string $title
+     * @param array  $parameters
      */
-    public function getResponse($parameters = [])
+    protected function setData($title, $parameters = [])
     {
-        $title = $this->translator->trans('export.title.businesses_report', [], 'AdminReportBundle');
-        $title = $this->getSafeTitle($title);
+        $dataIterator = $this->businessProfileManager->getBusinessProfileExportDataIterator($parameters);
 
-        $data = $this->businessProfileManager->getBusinessProfileExportData($parameters);
+        $this->initProperties();
 
-        $files = [];
+        foreach ($dataIterator as $item) {
+            if ($this->isNewPage) {
+                $this->createPHPExcelObject($title . $this->page);
+                $path = $this->generateTempFilePath($parameters['exportPath'], $this->page);
+                $this->generateHeaderTable(array_keys($item));
 
-        foreach ($data as $page) {
-            $path = $this->generateTempFilePath($parameters['exportPath']);
+                $this->isNewPage = false;
+            }
 
-            $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-            $this->phpExcelObject = $this->setData($page);
+            $this->generateMainTable($item);
+            $this->counter++;
 
-            $this->phpExcelObject->getProperties()->setTitle($title);
-            $this->phpExcelObject->getActiveSheet()->setTitle($title);
-
-            $status = $this->saveResponse($path);
-
-            if ($status) {
-                $files[] = $path;
+            if ($this->counter >= self::MAX_ROW_PER_FILE) {
+                $this->saveDataToFile($path);
+                $this->isNewPage = true;
             }
         }
 
-        unset($data);
+        // save last page
+        if ($this->counter) {
+            $this->saveDataToFile($path);
+        }
 
-        return $files;
+        unset($dataIterator);
     }
 
     /**
      * @param array $data
-     * @return \PHPExcel
-     * @throws \PHPExcel_Exception
      */
-    protected function setData($data)
-    {
-        $this->activeSheet = $this->phpExcelObject->setActiveSheetIndex(0);
-        $this->generateMainTable($data);
-
-        return $this->phpExcelObject;
-    }
-
     protected function generateMainTable($data)
     {
-        $row = $this->mainTableInitRow;
-        $col = $this->mainTableInitCol;
+        $this->currentCol = $this->mainTableInitCol;
+        $this->currentRow++;
 
-        $this->setFontStyle($col, $row);
-        $this->setBorderStyle($col, $row);
+        foreach ($data as $value) {
+            $this->activeSheet->setCellValue($this->currentCol . $this->currentRow, $value);
 
-        $mapping = array_keys(current($data));
+            $this->setColumnSizeStyle($this->currentCol);
+            $this->setBorderStyle($this->currentCol, $this->currentRow);
 
-        foreach ($mapping as $name) {
+            $this->currentCol++;
+        }
+
+        $this->setRowSizeStyle($this->currentRow);
+    }
+
+    /**
+     * @param array $headers
+     */
+    protected function generateHeaderTable($headers)
+    {
+        $this->currentRow = $this->mainTableInitRow;
+        $this->currentCol = $this->mainTableInitCol;
+
+        $this->setFontStyle($this->currentCol, $this->currentRow);
+        $this->setBorderStyle($this->currentCol, $this->currentRow);
+
+        foreach ($headers as $name) {
             $this->activeSheet->setCellValue(
-                $col . $row,
+                $this->currentCol . $this->currentRow,
                 $name
             );
 
-            $this->setTextAlignmentStyle($col, $row);
-            $this->setFontStyle($col, $row);
-            $this->setBorderStyle($col, $row);
-            $col++;
-        }
-
-        foreach ($data as $rowData) {
-            $col = $this->mainTableInitCol;
-            $row++;
-
-            foreach ($rowData as $key => $value) {
-                $this->activeSheet->setCellValue($col . $row, $value);
-
-                $this->setColumnSizeStyle($col);
-                $this->setBorderStyle($col, $row);
-
-                $col++;
-            }
-
-            $this->setRowSizeStyle($row);
+            $this->setTextAlignmentStyle($this->currentCol, $this->currentRow);
+            $this->setFontStyle($this->currentCol, $this->currentRow);
+            $this->setBorderStyle($this->currentCol, $this->currentRow);
+            $this->currentCol++;
         }
     }
 }
