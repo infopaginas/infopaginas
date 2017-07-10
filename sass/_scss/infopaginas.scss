@@ -1484,6 +1484,14 @@ $thumb-width-mb: 60px;
   h5 {
     color: $grey--light;
   }
+
+  div:first-child {
+    border: 1px solid #808080;
+  }
+}
+
+#search-float-bottom div:nth-child(2) {
+  border: 1px solid #808080;
 }
 
 .ad-desktop {
