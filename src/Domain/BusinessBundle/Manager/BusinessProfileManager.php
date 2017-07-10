@@ -3312,44 +3312,6 @@ class BusinessProfileManager extends Manager
     /**
      * @param array $filter
      *
-     * @return array
-     */
-    public function getBusinessProfileExportData($filter = [])
-    {
-        $admin = $this->container->get('domain_business.admin.business_profile');
-
-        $params['filter'] = $filter;
-
-        $request = new Request($params);
-
-        $admin->setRequest($request);
-
-        $iterator = $admin->getDataSourceIterator();
-
-        $data = [];
-
-        $maxPerFile = ExporterInterface::MAX_ROW_PER_FILE;
-        $counter    = 0;
-        $page       = 0;
-
-        foreach ($iterator as $item) {
-            $data[$page][] = $item;
-            $counter++;
-
-            if ($counter >= $maxPerFile) {
-                $counter = 0;
-                $page++;
-            }
-        }
-
-        unset($admin, $params, $request, $iterator);
-
-        return $data;
-    }
-
-    /**
-     * @param array $filter
-     *
      * @return \Exporter\Source\SourceIteratorInterface
      */
     public function getBusinessProfileExportDataIterator($filter = [])
