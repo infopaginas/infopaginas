@@ -1263,18 +1263,18 @@ class BusinessProfileAdmin extends OxaAdmin
         $exportFields['subscriptionStartDate']  = 'exportSubscriptionStartDate';
         $exportFields['subscriptionEndDate']    = 'exportSubscriptionEndDate';
 
-        $exportFields['updatedDate']        = 'exportUpdatedAt';
+        $exportFields['updatedDate']        = 'updatedAt';
         $exportFields['updatedByUserId']    = 'updatedUser.id';
         $exportFields['updatedByUser']      = 'updatedUser.fullName';
 
-        $exportFields['createdDate']        = 'exportCreatedAt';
+        $exportFields['createdDate']        = 'createdAt';
         $exportFields['createdByUserId']    = 'createdUser.id';
         $exportFields['createdByUser']      = 'createdUser.fullName';
 
         $exportFields['userId']     = 'user.id';
         $exportFields['userName']   = 'user.fullName';
-        $exportFields['userAccountUpdateDate']   = 'exportUserUpdatedAt';
-        $exportFields['userAccountCreationDate'] = 'exportUserCreatedAt';
+        $exportFields['userAccountUpdateDate']   = 'user.updatedAt';
+        $exportFields['userAccountCreationDate'] = 'user.createdAt';
 
         return $exportFields;
     }

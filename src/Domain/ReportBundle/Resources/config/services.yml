@@ -130,3 +130,15 @@ services:
             - [ setPhpExcel, [ '@phpexcel' ]]
             - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
             - [ setTranslator, [ '@translator.default' ]]
+
+    domain_report.exporter.user_action_csv_exporter:
+        class: Domain\ReportBundle\Service\Export\UserActionCsvExporter
+        calls:
+            - [ setUserActionReportManager, [ '@domain_report.manager.user_action_report_manager' ]]
+            - [ setTranslator, [ '@translator.default' ]]
+
+    domain_report.exporter.business_profile_csv_exporter:
+        class: Domain\ReportBundle\Service\Export\BusinessProfileCsvExporter
+        calls:
+            - [ setBusinessProfileManager, [ '@domain_business.manager.business_profile' ]]
+            - [ setTranslator, [ '@translator.default' ]]

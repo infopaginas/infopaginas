@@ -43,6 +43,7 @@ use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -3325,6 +3326,7 @@ class BusinessProfileManager extends Manager
         $admin->setRequest($request);
 
         $iterator = $admin->getDataSourceIterator();
+        $iterator->setDateTimeFormat(AdminHelper::DATETIME_FORMAT);
 
         unset($admin, $params, $request);
 

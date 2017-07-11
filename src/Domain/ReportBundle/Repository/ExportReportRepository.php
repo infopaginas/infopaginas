@@ -8,6 +8,8 @@ use Domain\ReportBundle\Entity\ExportReport;
 class ExportReportRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
+     * @param string $status
+     *
      * @return IterableResult
      */
     public function getExportReportByStatusIterator($status)

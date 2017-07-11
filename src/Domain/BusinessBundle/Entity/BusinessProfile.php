@@ -2819,78 +2819,6 @@ class BusinessProfile implements
     }
 
     /**
-     * @return string
-     */
-    public function getExportUpdatedAt()
-    {
-        $date = $this->getUpdatedAt();
-
-        if ($date) {
-            $date = $date->format(AdminHelper::DATETIME_FORMAT);
-        } else {
-            $date = '';
-        }
-
-        return $date;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExportCreatedAt()
-    {
-        $date = $this->getCreatedAt();
-
-        if ($date) {
-            $date = $date->format(AdminHelper::DATETIME_FORMAT);
-        } else {
-            $date = '';
-        }
-
-        return $date;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExportUserUpdatedAt()
-    {
-        $date = '';
-
-        $user = $this->getUser();
-
-        if ($user) {
-            $date = $user->getUpdatedAt();
-
-            if ($date) {
-                $date = $date->format(AdminHelper::DATETIME_FORMAT);
-            }
-        }
-
-        return $date;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExportUserCreatedAt()
-    {
-        $date = '';
-
-        $user = $this->getUser();
-
-        if ($user) {
-            $date = $user->getCreatedAt();
-
-            if ($date) {
-                $date = $date->format(AdminHelper::DATETIME_FORMAT);
-            }
-        }
-
-        return $date;
-    }
-
-    /**
      * @return ArrayCollection
      */
     public function getCollectionWorkingHours()
@@ -3157,7 +3085,7 @@ class BusinessProfile implements
     public static function getExportFormats()
     {
         return [
-            self::FORMAT_EXCEL => self::FORMAT_EXCEL,
+            self::FORMAT_CSV => self::FORMAT_CSV,
         ];
     }
 }

@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PostponeExportReportManager
 {
+    const EXPORT_REPORT_LIMIT = 5;
+
     /** @var  ContainerInterface $container */
     protected $container;
 
@@ -49,6 +51,8 @@ class PostponeExportReportManager
         if (!file_exists($exportPath)) {
             mkdir($exportPath);
         }
+
+        $counter = 0;
 
         foreach ($exports as $row) {
             /** @var ExportReport $export */
@@ -92,6 +96,13 @@ class PostponeExportReportManager
                 json_encode($links)
             );
             $this->em->clear();
+
+
+            $counter++;
+
+            if ($counter >= self::EXPORT_REPORT_LIMIT) {
+                break;
+            }
         }
     }
 
@@ -109,6 +120,9 @@ class PostponeExportReportManager
                 break;
             case ReportInterface::FORMAT_PDF:
                 $type = 'application/pdf';
+                break;
+            case ReportInterface::FORMAT_CSV:
+                $type = 'text/csv';
                 break;
             default:
                 $type = '';
