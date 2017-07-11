@@ -35,6 +35,11 @@ This code manage the many-to-[one|many] association field popup
 
         var target = jQuery(this);
 
+        // see - https://github.com/sonata-project/SonataDoctrineORMAdminBundle/pull/591/files
+        if (target.attr('href').length === 0 || target.attr('href') === '#') {
+            return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
 

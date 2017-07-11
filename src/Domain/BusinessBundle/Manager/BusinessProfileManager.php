@@ -43,6 +43,7 @@ use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -3312,9 +3313,9 @@ class BusinessProfileManager extends Manager
     /**
      * @param array $filter
      *
-     * @return array
+     * @return \Exporter\Source\SourceIteratorInterface
      */
-    public function getBusinessProfileExportData($filter = [])
+    public function getBusinessProfileExportDataIterator($filter = [])
     {
         $admin = $this->container->get('domain_business.admin.business_profile');
 
@@ -3325,25 +3326,10 @@ class BusinessProfileManager extends Manager
         $admin->setRequest($request);
 
         $iterator = $admin->getDataSourceIterator();
+        $iterator->setDateTimeFormat(AdminHelper::DATETIME_FORMAT);
 
-        $data = [];
+        unset($admin, $params, $request);
 
-        $maxPerFile = ExporterInterface::MAX_ROW_PER_FILE;
-        $counter    = 0;
-        $page       = 0;
-
-        foreach ($iterator as $item) {
-            $data[$page][] = $item;
-            $counter++;
-
-            if ($counter >= $maxPerFile) {
-                $counter = 0;
-                $page++;
-            }
-        }
-
-        unset($admin, $params, $request, $iterator);
-
-        return $data;
+        return $iterator;
     }
 }

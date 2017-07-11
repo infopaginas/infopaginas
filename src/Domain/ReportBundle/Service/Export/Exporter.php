@@ -76,6 +76,9 @@ class Exporter
                     case ReportInterface::FORMAT_EXCEL:
                         $response = $this->getUserActionExcelExporter()->getResponse($parameters);
                         break;
+                    case ReportInterface::FORMAT_CSV:
+                        $response = $this->getUserActionCsvExporter()->getResponse($parameters);
+                        break;
                 }
 
                 break;
@@ -83,6 +86,9 @@ class Exporter
                 switch ($format) {
                     case ReportInterface::FORMAT_EXCEL:
                         $response = $this->getBusinessProfileExcelExporter()->getResponse($parameters);
+                        break;
+                    case ReportInterface::FORMAT_CSV:
+                        $response = $this->getBusinessProfileCsvExporter()->getResponse($parameters);
                         break;
                 }
 
@@ -176,10 +182,26 @@ class Exporter
     }
 
     /**
+     * @return UserActionCsvExporter
+     */
+    protected function getUserActionCsvExporter()
+    {
+        return $this->container->get('domain_report.exporter.user_action_csv_exporter');
+    }
+
+    /**
      * @return BusinessProfileExcelExporter
      */
     protected function getBusinessProfileExcelExporter()
     {
         return $this->container->get('domain_report.exporter.business_profile_excel_exporter');
+    }
+
+    /**
+     * @return BusinessProfileCsvExporter
+     */
+    protected function getBusinessProfileCsvExporter()
+    {
+        return $this->container->get('domain_report.exporter.business_profile_csv_exporter');
     }
 }

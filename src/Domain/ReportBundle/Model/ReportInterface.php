@@ -10,6 +10,7 @@ interface ReportInterface
 {
     const FORMAT_PDF = 'pdf';
     const FORMAT_EXCEL = 'xls';
+    const FORMAT_CSV = 'csv';
 
     const CODE_PDF_SUBSCRIPTION_REPORT              = 'pdf_subscription_report';
     const CODE_EXCEL_SUBSCRIPTION_REPORT            = 'excel_subscription_report';
