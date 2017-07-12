@@ -485,12 +485,34 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
 
 //ad
+    var searchFloatBottom = $( '#search-float-bottom' );
+    var hideBannerButton  = $( '#ad-close' );
 
-    $('#ad-close').on( 'click', function() {
+    hideBannerButton.on( 'click', function() {
         $( this ).parent().remove();
         showMap.removeClass( 'floating-offset' );
     });
 
+    if ( searchFloatBottom.length ) {
+        var googleTagBlock = searchFloatBottom.find( 'div:nth-child(2)' );
+
+        if ( googleTagBlock.is(':visible') ) {
+            hideBannerButton.removeClass( 'hidden' );
+        } else {
+            hideBannerButton.addClass( 'hidden' );
+        }
+
+        googletag.pubads().addEventListener( 'slotRenderEnded', function( event ) {
+            if (googleTagBlock.length && event.slot.getSlotElementId() == googleTagBlock.attr( 'id' )) {
+
+                if ( event.isEmpty ) {
+                    hideBannerButton.addClass( 'hidden' );
+                } else {
+                    hideBannerButton.removeClass( 'hidden' );
+                }
+            }
+        });
+    }
 
 //media querie conditional scripts
 
@@ -509,7 +531,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           video.load();
       }
 
-      $( '#search-float-bottom' ).remove();
+      searchFloatBottom.remove();
     } else {
       var mapStateSize = 'device';
     }
