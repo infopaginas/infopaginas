@@ -54,9 +54,4 @@ class SiteHelper
 
         return $info;
     }
-
-    public static function generateBusinessSubfolder($businessId)
-    {
-        return substr($businessId, -1) . DIRECTORY_SEPARATOR . $businessId;
-    }
 }

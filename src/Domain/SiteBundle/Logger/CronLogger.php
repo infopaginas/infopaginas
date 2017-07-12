@@ -9,7 +9,6 @@ class CronLogger
     private $logger;
 
     const ELASTIC_SYNC              = 'data:elastic:sync';
-    const SUBSC_UPDATE              = 'data:subscription:update';
     const YOUTUBE_UPLOAD            = 'data:youtube-video:upload';
     const WORKING_HOURS_CONVERT     = 'data:working-hours:convert';
     const WORKING_HOURS_UPDATE      = 'data:working-hours:update';
