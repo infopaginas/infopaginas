@@ -380,6 +380,9 @@ class YoutubeManager
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function getYoutubeErrors()
     {
         return [

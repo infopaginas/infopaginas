@@ -23,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -44,6 +45,11 @@ class VideosController extends Controller
 
     const FILE_NOT_PROVIDED_MESSAGE = 'Videofile is not provided.';
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function localFileUploadAction(Request $request)
     {
         $business = $this->getBusinessProfileFromRequestData($request);

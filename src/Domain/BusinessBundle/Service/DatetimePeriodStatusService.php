@@ -20,6 +20,10 @@ class DatetimePeriodStatusService
      */
     private $subscriptionStatusManager;
 
+    /**
+     * @param EntityManager $em
+     * @param SubscriptionStatusManager $subscriptionStatusManager
+     */
     public function __construct(EntityManager $em, SubscriptionStatusManager $subscriptionStatusManager)
     {
         $this->em = $em;
@@ -28,6 +32,8 @@ class DatetimePeriodStatusService
 
     /**
      * Set Expired status if it's
+     *
+     * @return int
      */
     public function updateStatus()
     {
@@ -63,6 +69,9 @@ class DatetimePeriodStatusService
         return $updatedRecordsCount;
     }
 
+    /**
+     * @return int
+     */
     public function createActiveSubscriptions()
     {
         $createdRecordsCount = 0;
@@ -99,6 +108,9 @@ class DatetimePeriodStatusService
         return $createdRecordsCount;
     }
 
+    /**
+     * @return int
+     */
     public function updateActiveSubscriptions()
     {
         $updatedRecordsCount = 0;

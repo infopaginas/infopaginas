@@ -43,6 +43,11 @@ class UserActionReportManager extends BaseReportManager
         $this->mongoDbManager   = $mongoDbManager;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getUserActionReportData(array $params = [])
     {
         $userActionRawResult = $this->getUserActionsData($params);
@@ -118,6 +123,11 @@ class UserActionReportManager extends BaseReportManager
         return $result;
     }
 
+    /**
+     * @param mixed $rawResult
+     *
+     * @return array
+     */
     protected function prepareUserActionReportStats($rawResult) : array
     {
         $mapping = self::getUserActionReportMapping();
@@ -211,7 +221,7 @@ class UserActionReportManager extends BaseReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveUserActions($date)
     {
@@ -276,6 +286,9 @@ class UserActionReportManager extends BaseReportManager
         return $count;
     }
 
+    /**
+     * @return array
+     */
     public static function getUserActionReportMapping()
     {
         return [

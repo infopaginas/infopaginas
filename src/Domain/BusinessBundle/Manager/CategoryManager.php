@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
@@ -21,6 +22,11 @@ class CategoryManager extends Manager
         return $this->getRepository()->searchAutosuggest($name, $locale);
     }
 
+    /**
+     * @param array $profileList
+     *
+     * @return array
+     */
     public function getCategoriesByProfiles(array $profileList)
     {
         return $this->getRepository()->getCategoryByBusinessesIds(
@@ -33,6 +39,11 @@ class CategoryManager extends Manager
         );
     }
 
+    /**
+     * @param string $categorySlug
+     *
+     * @return Category|null
+     */
     public function getCategoryBySlug($categorySlug)
     {
         $customSlug = SlugUtil::convertSlug($categorySlug);
@@ -54,11 +65,22 @@ class CategoryManager extends Manager
         return $category;
     }
 
+    /**
+     * @param Locality $locality
+     * @param string|bool $locale
+     *
+     * @return Category[]
+     */
     public function getAvailableCategoriesWithContent($locality, $locale = false)
     {
         return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }
 
+    /**
+     * @param Category $category
+     *
+     * @return array
+     */
     public function buildCategoryElasticData(Category $category)
     {
         if (!$category->getIsActive()) {
@@ -80,6 +102,11 @@ class CategoryManager extends Manager
         return $data;
     }
 
+    /**
+     * @param bool $sourceEnabled
+     *
+     * @return array
+     */
     public function getCategoryElasticSearchMapping($sourceEnabled = true)
     {
         $properties = $this->getCategoryElasticSearchIndexParams();
@@ -110,6 +137,9 @@ class CategoryManager extends Manager
         return $data;
     }
 
+    /**
+     * @return array
+     */
     protected function getCategoryElasticSearchIndexParams()
     {
         $params = [
@@ -177,6 +207,11 @@ class CategoryManager extends Manager
         return $searchQuery;
     }
 
+    /**
+     * @param array $response
+     *
+     * @return array
+     */
     public function getCategoryFromElasticResponse($response)
     {
         $data  = [];
@@ -211,6 +246,12 @@ class CategoryManager extends Manager
         ];
     }
 
+    /**
+     * @param array $data
+     * @param int $id
+     *
+     * @return array
+     */
     protected function searchCategoryByIdsInArray($data, $id)
     {
         foreach ($data as $item) {

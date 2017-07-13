@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 6/8/16
- * Time: 12:07 PM
- */
 
 namespace Domain\BusinessBundle\Form\Type;
 
@@ -85,7 +79,7 @@ class GoogleMapFrontType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getName()
     {

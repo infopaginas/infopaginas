@@ -5,6 +5,7 @@ namespace Domain\PageBundle\Controller;
 use Domain\BannerBundle\Model\TypeInterface;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -48,6 +49,11 @@ class DefaultController extends Controller
         return $this->renderPageByCode($code);
     }
 
+    /**
+     * @param string $slug
+     *
+     * @return Response
+     */
     private function renderPageByCode($slug)
     {
         $page = $this->get('domain_page.manager.page')->getPageByCode($slug);

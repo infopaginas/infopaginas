@@ -800,21 +800,33 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @param string $locale
+     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
     }
 
+    /**
+     * @return string
+     */
     public function getLocale()
     {
         return $this->locale;
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
@@ -877,21 +889,22 @@ class BusinessProfile implements
      */
     public function __construct()
     {
-        $this->coupons = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->localities = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->neighborhoods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->extraSearches = new ArrayCollection();
-        $this->keywords      = new ArrayCollection();
+        $this->coupons                  = new ArrayCollection();
+        $this->subscriptions            = new ArrayCollection();
+        $this->categories               = new ArrayCollection();
+        $this->areas                    = new ArrayCollection();
+        $this->localities               = new ArrayCollection();
+        $this->neighborhoods            = new ArrayCollection();
+        $this->tags                     = new ArrayCollection();
+        $this->paymentMethods           = new ArrayCollection();
+        $this->businessReviews          = new ArrayCollection();
+        $this->images                   = new ArrayCollection();
+        $this->translations             = new ArrayCollection();
+        $this->phones                   = new ArrayCollection();
+        $this->collectionWorkingHours   = new ArrayCollection();
+        $this->extraSearches            = new ArrayCollection();
+        $this->keywords                 = new ArrayCollection();
+        $this->tasks                    = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -2519,7 +2532,7 @@ class BusinessProfile implements
      * Setting distance
      *
      * @param float $distance
-     * @return this
+     * @return BusinessProfile
      */
     public function setDistance(float $distance)
     {
@@ -2906,6 +2919,10 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * get list of boolean fields
+     * @return array
+     */
     public static function getCommonBooleanFields()
     {
         return [
@@ -2915,6 +2932,10 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * get list of common task fields
+     * @return array
+     */
     public static function getTaskCommonFields()
     {
         return [
@@ -2964,6 +2985,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskManyToOneRelations()
     {
         return [
@@ -2972,6 +2996,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskOneToManyRelations()
     {
         return [
@@ -2980,6 +3007,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskManyToManyRelations()
     {
         return [
@@ -2991,6 +3021,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskMediaManyToOneRelations()
     {
         return [
@@ -3000,6 +3033,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskMediaOneToManyRelations()
     {
         return [
@@ -3007,6 +3043,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskSeoBlock()
     {
         return [

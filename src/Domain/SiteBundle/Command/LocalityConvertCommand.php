@@ -4,6 +4,7 @@ namespace Domain\SiteBundle\Command;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,6 +25,10 @@ class LocalityConvertCommand extends ContainerAwareCommand
         $this->setDescription('Localities conversion');
     }
 
+    /**
+     * @param InputInterface    $input
+     * @param OutputInterface   $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -65,6 +70,11 @@ class LocalityConvertCommand extends ContainerAwareCommand
         $this->em->flush();
     }
 
+    /**
+     * @param string $name
+     *
+     * @return Locality|null
+     */
     protected function getLocalityItemByName($name)
     {
         $locality = $this->em->getRepository('DomainBusinessBundle:Locality')->findOneBy(['name' => $name]);
@@ -106,6 +116,9 @@ class LocalityConvertCommand extends ContainerAwareCommand
         return $query->iterate();
     }
 
+    /**
+     * @return array
+     */
     public static function getDeleteLocalities()
     {
         $localities = [

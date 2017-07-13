@@ -112,6 +112,9 @@ class CategoryReportAdmin extends ReportAdmin
         return $parameters;
     }
 
+    /**
+     * @return CategoryReportManager
+     */
     protected function getCategoryReportManager() : CategoryReportManager
     {
         return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.category_report_manager');

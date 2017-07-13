@@ -257,16 +257,27 @@ class CRUDController extends SortableAdminController
         $this->getLogger()->error($e->getMessage(), $context);
     }
 
+    /**
+     * @param Request $request
+     */
     protected function preList(Request $request)
     {
         $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_LIST_PAGE);
     }
 
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
     protected function preShow(Request $request, $object)
     {
         $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_SHOW_PAGE, $object);
     }
 
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
     protected function preEdit(Request $request, $object)
     {
         if (!$request->request->get($this->admin->getUniqid(), false)) {
@@ -274,16 +285,28 @@ class CRUDController extends SortableAdminController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
     protected function preCreate(Request $request, $object)
     {
         $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_CREATE_PAGE, $object);
     }
 
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
     protected function preDelete(Request $request, $object)
     {
         $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_DELETE_PAGE, $object);
     }
 
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
     protected function preExport(Request $request, $object)
     {
         $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_EXPORT, $object);

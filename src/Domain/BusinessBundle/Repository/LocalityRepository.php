@@ -15,6 +15,9 @@ use Oxa\GeolocationBundle\Utils\GeolocationUtils;
  */
 class LocalityRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailableLocalitiesQb()
     {
         $qb = $this->createQueryBuilder('l')
@@ -23,6 +26,9 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    /**
+     * @return Locality[]
+     */
     public function getAvailableLocalities()
     {
         $qb = $this->getAvailableLocalitiesQb()
@@ -33,6 +39,12 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    /**
+     * @param string $localityName
+     * @param string $locale
+     *
+     * @return Locality|null
+     */
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -49,6 +61,11 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $query;
     }
 
+    /**
+     * @param string $localityName
+     *
+     * @return Locality|null
+     */
     public function getLocalityByName($localityName)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -65,6 +82,12 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $query;
     }
 
+    /**
+     * @param string $localitySlug
+     * @param string|bool $customSlug
+     *
+     * @return Locality|null
+     */
     public function getLocalityBySlug($localitySlug, $customSlug = false)
     {
         $query = $this->getAvailableLocalitiesQb()
@@ -97,6 +120,12 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $iterateResult;
     }
 
+    /**
+     * @param string $name
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
     public function getLocalitiesByNameAndLocality($name, $locale)
     {
         $qb = $this->createQueryBuilder('l')
@@ -130,6 +159,9 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $iterateLocalities;
     }
 
+    /**
+     * @return Locality[]
+     */
     public function getCatalogLocalitiesWithContent()
     {
         $qb = $this->createQueryBuilder('l')

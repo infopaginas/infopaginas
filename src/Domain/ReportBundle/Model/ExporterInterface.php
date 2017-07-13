@@ -12,5 +12,8 @@ interface ExporterInterface
 {
     const MAX_ROW_PER_FILE = 50000;
 
+    /**
+     * @param array
+     */
     public function getResponse($parameters = []);
 }

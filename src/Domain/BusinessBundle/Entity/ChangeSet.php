@@ -41,7 +41,7 @@ class ChangeSet
      */
     public function __construct()
     {
-        $this->entries = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->entries = new ArrayCollection();
     }
 
     /**
@@ -55,7 +55,7 @@ class ChangeSet
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getEntries()
     {
@@ -63,21 +63,21 @@ class ChangeSet
     }
 
     /**
-     * @param mixed $entry
+     * @param ChangeSetEntry $entry
+     *
      * @return ChangeSet
      */
     public function addEntry($entry)
     {
         $this->entries[] = $entry;
+
         return $this;
     }
 
     /**
-     * Remove subscription
-     *
-     * @param \Domain\BusinessBundle\Entity\ChangeSetEntry $changeSetEntry
+     * @param ChangeSetEntry $changeSetEntry
      */
-    public function removeEntry(\Domain\BusinessBundle\Entity\ChangeSetEntry $changeSetEntry)
+    public function removeEntry(ChangeSetEntry $changeSetEntry)
     {
         $this->entries->removeElement($changeSetEntry);
     }

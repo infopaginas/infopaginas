@@ -2,7 +2,6 @@
 
 namespace Domain\ArticleBundle\Model\Manager;
 
-use Doctrine\ORM\EntityManager;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
@@ -30,6 +29,9 @@ class ArticleManager extends Manager
         $this->em = $container->get('doctrine.orm.entity_manager');
     }
 
+    /**
+     * @return Article[]
+     */
     public function fetchHomepageArticles()
     {
         $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT);
@@ -37,6 +39,11 @@ class ArticleManager extends Manager
         return $homepageArticles;
     }
 
+    /**
+     * @param Article $article
+     *
+     * @return DCDataDTO
+     */
     public function getArticleDoubleClickData(Article $article) : DCDataDTO
     {
         return new DCDataDTO(
@@ -49,6 +56,9 @@ class ArticleManager extends Manager
         );
     }
 
+    /**
+     * @return DCDataDTO
+     */
     public function getAllArticleDoubleClickData() : DCDataDTO
     {
         return new DCDataDTO(
@@ -59,6 +69,11 @@ class ArticleManager extends Manager
         );
     }
 
+    /**
+     * @param Category $category
+     *
+     * @return DCDataDTO
+     */
     public function getArticleCategoryListDoubleClickData(Category $category) : DCDataDTO
     {
         return new DCDataDTO(
@@ -87,6 +102,11 @@ class ArticleManager extends Manager
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
 
+    /**
+     * @param string $slug
+     *
+     * @return Article|null
+     */
     public function getArticleBySlug($slug)
     {
         return $this->getRepository()->findOneBy(['slug' => $slug]);
@@ -174,6 +194,9 @@ class ArticleManager extends Manager
         return $url;
     }
 
+    /**
+     * @return array
+     */
     private function getPublisherLogo()
     {
         $request = $this->container->get('request');
@@ -191,7 +214,12 @@ class ArticleManager extends Manager
         return $logo;
     }
 
-    public function getArticleListSeoData($category = null)
+    /**
+     * @param string $category
+     *
+     * @return array
+     */
+    public function getArticleListSeoData($category = '')
     {
         $translator  = $this->container->get('translator');
         $seoSettings = $this->container->getParameter('seo_custom_settings');

@@ -47,6 +47,9 @@ class ElasticSearchSubscriber implements EventSubscriber
         $this->elasticSearchManager = $elasticSearchManager;
     }
 
+    /**
+     * @return array
+     */
     public function getSubscribedEvents()
     {
         return [
@@ -78,6 +81,9 @@ class ElasticSearchSubscriber implements EventSubscriber
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function postUpdate(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -99,6 +105,9 @@ class ElasticSearchSubscriber implements EventSubscriber
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -116,6 +125,9 @@ class ElasticSearchSubscriber implements EventSubscriber
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function postRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -137,6 +149,9 @@ class ElasticSearchSubscriber implements EventSubscriber
         }
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function preRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -154,6 +169,10 @@ class ElasticSearchSubscriber implements EventSubscriber
         }
     }
 
+    /**
+     * @param Category $category
+     * @param EntityManager $em
+     */
     public function handleCategoryUpdate(Category $category, EntityManager $em)
     {
         $businessProfiles = $category->getBusinessProfiles();
@@ -161,6 +180,10 @@ class ElasticSearchSubscriber implements EventSubscriber
         $this->businessStatusManager->manageBusinessStatusPostUpdate($businessProfiles, $em);
     }
 
+    /**
+     * @param Subscription $subscription
+     * @param EntityManager $em
+     */
     public function handleSubscriptionUpdate(Subscription $subscription, EntityManager $em)
     {
         $businessProfile = $subscription->getBusinessProfile();
@@ -179,11 +202,17 @@ class ElasticSearchSubscriber implements EventSubscriber
         $this->businessStatusManager->manageBusinessStatusPostUpdate([$businessProfile], $em);
     }
 
+    /**
+     * @param Locality $locality
+     */
     public function handleLocalityPreRemove(Locality $locality)
     {
         $this->businessStatusManager->removeLocalityFromElastic($locality, $this->elasticSearchManager);
     }
 
+    /**
+     * @param Category $category
+     */
     public function handleCategoryPreRemove(Category $category)
     {
         $this->businessStatusManager->removeCategoryFromElastic($category, $this->elasticSearchManager);

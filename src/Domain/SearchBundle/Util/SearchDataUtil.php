@@ -15,6 +15,16 @@ class SearchDataUtil
 
     const DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR = ' ';
 
+    /**
+     * @param array $resutlSet
+     * @param int   $totalCount
+     * @param int   $page
+     * @param int   $pageCount
+     * @param array $categories
+     * @param \Doctrine\Common\Collections\ArrayCollection $neighborhoods
+     *
+     * @return SearchResultsDTO
+     */
     public static function buildResponceDTO(
         $resutlSet,
         int $totalCount,
@@ -26,36 +36,73 @@ class SearchDataUtil
         return new SearchResultsDTO($resutlSet, $totalCount, $page, $pageCount, $categories, $neighborhoods);
     }
 
+    /**
+     * @param string $query
+     * @param LocationValueObject $location
+     * @param int   $page
+     * @param int   $limit
+     *
+     * @return SearchDTO
+     */
     public static function buildRequestDTO($query, LocationValueObject $location, int $page, int $limit) : SearchDTO
     {
         return new SearchDTO($query, $location, $page, $limit);
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public static function getQueryFromRequest(Request $request)
     {
         return $request->get('q', null);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return int
+     */
     public static function getPageFromRequest(Request $request) : int
     {
         return $request->get('page', 1);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public static function getCategoryFromRequest(Request $request)
     {
         return $request->get('category', null);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public static function getCatalogLocalityFromRequest(Request $request)
     {
         return $request->get('catalogLocality', null);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public static function getNeighborhoodFromRequest(Request $request)
     {
         return $request->get('neighborhood', null);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public static function getOrderByFromRequest(Request $request)
     {
         return $request->get('order', self::ORDER_BY_RELEVANCE);

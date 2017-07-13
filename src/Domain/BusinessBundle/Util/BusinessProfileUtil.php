@@ -7,11 +7,23 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class BusinessProfileUtil
 {
+    /**
+     * @param array $searchResults
+     *
+     * @return array
+     */
     public static function extractBusinessProfiles(array $searchResults)
     {
         return array_column($searchResults, 'id');
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param ContainerInterface $container
+     * @param string|bool $locale
+     *
+     * @return string
+     */
     public static function seoTitleBuilder(
         BusinessProfile $businessProfile,
         ContainerInterface $container,
@@ -54,6 +66,13 @@ class BusinessProfileUtil
         return $seoTitle;
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param ContainerInterface $container
+     * @param string|bool $locale
+     *
+     * @return string
+     */
     public static function seoDescriptionBuilder(
         BusinessProfile $businessProfile,
         ContainerInterface $container,

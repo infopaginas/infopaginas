@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/29/16
- * Time: 12:02 PM
- */
 
 namespace Domain\BusinessBundle\Manager;
 

@@ -13,6 +13,9 @@ class Config
 
     protected $config;
 
+    /**
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -27,6 +30,11 @@ class Config
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return Config|null
+     */
     public function getSetting($key)
     {
         if (!$this->config) {

@@ -51,8 +51,14 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
+    /**
+     * @var array
+     */
     protected $translations = [];
 
+    /**
+     * @var bool
+     */
     public $copyAvailable = true;
 
     /**
@@ -919,6 +925,10 @@ class BusinessProfileAdmin extends OxaAdmin
         }
     }
 
+    /**
+     * @param string $name
+     * @param string $template
+     */
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
@@ -1248,6 +1258,9 @@ class BusinessProfileAdmin extends OxaAdmin
         return BusinessProfile::getExportFormats();
     }
 
+    /**
+     * @return array
+     */
     public function getExportFields()
     {
         $exportFields['ID']         = 'id';

@@ -12,6 +12,9 @@ use Doctrine\ORM\QueryBuilder;
  */
 class AreaRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailableAreasQb() : QueryBuilder
     {
         $qb = $this->createQueryBuilder('a');

@@ -108,6 +108,9 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
         ];
     }
 
+    /**
+     * @return string
+     */
     public static function getSuperVmAdsClass()
     {
         return self::CODE_SUPER_VM_CLASS;
@@ -155,6 +158,9 @@ class SubscriptionPlan implements DefaultEntityInterface, SubscriptionPlanInterf
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';

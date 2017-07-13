@@ -87,6 +87,9 @@ class Subscription implements DefaultEntityInterface, TranslatableInterface, Dat
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if ($this->getId()) {

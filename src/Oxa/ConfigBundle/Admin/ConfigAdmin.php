@@ -74,6 +74,11 @@ class ConfigAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param string $context
+     *
+     * @return ProxyQueryInterface
+     */
     public function createQuery($context = 'list')
     {
         $query = parent::createQuery($context);
@@ -86,6 +91,9 @@ class ConfigAdmin extends OxaAdmin
         return $query;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         parent::configureRoutes($collection);

@@ -125,11 +125,17 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
         $this->isPublished  = false;
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'title';
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitle() ?: '';

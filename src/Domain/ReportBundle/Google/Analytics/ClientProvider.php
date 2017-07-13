@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 02.09.16
- * Time: 17:35
- */
 
 namespace Domain\ReportBundle\Google\Analytics;
 

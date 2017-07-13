@@ -37,9 +37,9 @@ class BusinessOverviewPdfExporter extends PdfExporterModel
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/BusinessOverviewReport:pdf_report.html.twig',
-            array(
-                'viewsAndVisitorsData' => $businessOverviewData
-            )
+            [
+                'viewsAndVisitorsData' => $businessOverviewData,
+            ]
         );
 
         return $this->sendResponse($html, $filename);

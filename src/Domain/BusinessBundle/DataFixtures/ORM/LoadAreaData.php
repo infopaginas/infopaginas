@@ -33,7 +33,7 @@ class LoadAreaData extends AbstractFixture implements ContainerAwareInterface, O
     ];
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {

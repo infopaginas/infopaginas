@@ -97,6 +97,11 @@ class ElasticSearchManager
         return $status;
     }
 
+    /**
+     * @param array $mappings
+     *
+     * @return array
+     */
     public function createIndex($mappings)
     {
         $params = [
@@ -152,6 +157,12 @@ class ElasticSearchManager
         return $response;
     }
 
+    /**
+     * @param int $id
+     * @param string|bool $documentType
+     *
+     * @return array
+     */
     public function deleteItem($id, $documentType = false)
     {
         if (!$documentType) {
@@ -169,6 +180,9 @@ class ElasticSearchManager
         return $response;
     }
 
+    /**
+     * @return array
+     */
     public function deleteIndex()
     {
         $params = [

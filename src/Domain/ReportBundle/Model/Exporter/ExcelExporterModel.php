@@ -52,6 +52,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->translator = $service;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setFontStyle($col, $row)
     {
         $this->activeSheet
@@ -60,6 +64,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setTextAlignmentStyle($col, $row)
     {
         $this->activeSheet
@@ -69,6 +77,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setBorderStyle($col, $row)
     {
         $this->activeSheet
@@ -77,6 +89,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     */
     protected function setColumnSizeStyle($col)
     {
         $this->activeSheet
@@ -85,6 +100,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param int $row
+     */
     protected function setRowSizeStyle($row)
     {
         $this->activeSheet
@@ -93,6 +111,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setHeaderFontStyle($col, $row)
     {
         $this->activeSheet
@@ -101,6 +123,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @return array
+     */
     protected function getBorderStyle()
     {
         return [
@@ -112,6 +137,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getFontStyle()
     {
         return [
@@ -121,6 +149,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getHeaderFontStyle()
     {
         return [
@@ -135,6 +166,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     */
     protected function generateCommonHeader($startDate, $endDate)
     {
         $this->activeSheet->setCellValue(

@@ -32,6 +32,9 @@ class SubscriptionReport implements ReportInterface
         return $this->id;
     }
 
+    /**
+     * @return array
+     */
     public static function getExportFormats()
     {
         return [

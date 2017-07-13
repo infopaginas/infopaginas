@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 16.09.16
- * Time: 17:10
- */
 
 namespace Domain\ReportBundle\Command;
 

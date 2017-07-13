@@ -99,6 +99,11 @@ class SubscriptionStatusManager
         return false;
     }
 
+    /**
+     * @param Subscription $subscription
+     * @param string $status
+     * @param \Doctrine\ORM\UnitOfWork $uow
+     */
     protected function updateSubscriptionStatus(Subscription $subscription, $status, \Doctrine\ORM\UnitOfWork $uow)
     {
         $uow->propertyChanged(

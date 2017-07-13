@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 30.08.16
- * Time: 14:08
- */
 
 namespace Domain\BusinessBundle\Model\DataType;
 

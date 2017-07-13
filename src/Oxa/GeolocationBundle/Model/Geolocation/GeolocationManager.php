@@ -17,6 +17,11 @@ class GeolocationManager extends Manager
 {
     protected $confingService;
 
+    /**
+     * @param EntityManager $em
+     * @param Config $confingService
+     * @param LocalityManager $localityManager
+     */
     public function __construct(EntityManager $em, Config $confingService, LocalityManager $localityManager)
     {
         parent::__construct($em);
@@ -25,10 +30,22 @@ class GeolocationManager extends Manager
         $this->localityManager = $localityManager;
     }
 
-    public function buildLocationValue($geoData) {
+    /**
+     * @param array $geoData
+     *
+     * @return LocationValueObject
+     */
+    public function buildLocationValue($geoData)
+    {
         return new LocationValueObject($geoData);
     }
 
+    /**
+     * @param Request $request
+     * @param bool $useUserGeo
+     *
+     * @return LocationValueObject|null
+     */
     public function buildLocationValueFromRequest(Request $request, $useUserGeo = true)
     {
         $geo    = $request->get('geo', null);

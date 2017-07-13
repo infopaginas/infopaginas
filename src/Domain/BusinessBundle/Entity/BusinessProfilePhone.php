@@ -45,6 +45,9 @@ class BusinessProfilePhone
      */
     protected $businessProfile;
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getPhone() ?: '';
@@ -70,6 +73,7 @@ class BusinessProfilePhone
 
     /**
      * @param string $phone
+     *
      * @return BusinessProfilePhone
      */
     public function setPhone($phone)

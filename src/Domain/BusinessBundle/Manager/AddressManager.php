@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/14/16
- * Time: 12:02 PM
- */
 
 namespace Domain\BusinessBundle\Manager;
 
@@ -49,7 +43,14 @@ class AddressManager extends DefaultManager
         return $response->getResults();
     }
 
-    public function getClosestLocalityByCoord($lat, $lon){
+    /**
+     * @param float $lat
+     * @param float $lon
+     *
+     * @return int
+     */
+    public function getClosestLocalityByCoord($lat, $lon)
+    {
         $request = new Request();
         $request->query->set('clt', $lat);
         $request->query->set('clg', $lon);

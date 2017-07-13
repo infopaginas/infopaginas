@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/30/16
- * Time: 4:31 PM
- */
 
 namespace Oxa\ConfigBundle\Model;
 

@@ -3,7 +3,6 @@
 namespace Domain\ArticleBundle\Entity\Media;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Exception\ValidatorException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -91,14 +90,6 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
     }
 
     /**

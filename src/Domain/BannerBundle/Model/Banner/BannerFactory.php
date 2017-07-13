@@ -13,8 +13,14 @@ class BannerFactory extends Factory
 {
     const UNDEFINED_BANNER_TYPE_ERROR = 'Undefined banner type!';
 
+    /**
+     * @var ArrayCollection
+     */
     protected $bannersCollection;
 
+    /**
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         parent::__construct($entityManager);
@@ -22,6 +28,10 @@ class BannerFactory extends Factory
         $this->bannersCollection = new ArrayCollection;
     }
 
+    /**
+     * @param array $banners
+     * @throws \Exception
+     */
     public function prepareBanners(array $banners)
     {
         foreach ($banners as $bannerKey) {
@@ -33,6 +43,11 @@ class BannerFactory extends Factory
         }
     }
 
+    /**
+     * @param int $type
+     *
+     * @return Banner|null
+     */
     public function get($type)
     {
         $banner = null;
@@ -44,6 +59,12 @@ class BannerFactory extends Factory
         return $banner;
     }
 
+    /**
+     * @param int $type
+     *
+     * @return Banner|null
+     * @throws \Exception
+     */
     public function retrieve($type)
     {
         if ($this->bannersCollection->containsKey($type)) {
@@ -53,6 +74,9 @@ class BannerFactory extends Factory
         }
     }
 
+    /**
+     * @return array|null
+     */
     public function getItemsHeaders()
     {
         return array_map(
@@ -80,6 +104,11 @@ class BannerFactory extends Factory
         );
     }
 
+    /**
+     * @param int $code
+     *
+     * @return Banner|null
+     */
     protected function getBannerByCode($code)
     {
         $banners = $this->em->getRepository('DomainBannerBundle:Banner')

@@ -33,6 +33,9 @@ class UserActionReport implements ReportInterface, PostponeExportInterface
         return $this->id;
     }
 
+    /**
+     * @return array
+     */
     public static function getExportFormats()
     {
         return [

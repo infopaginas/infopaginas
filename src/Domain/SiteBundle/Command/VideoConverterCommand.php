@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Doctrine\ORM\EntityManager;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,6 +11,7 @@ use Symfony\Component\Filesystem\LockHandler;
 
 class VideoConverterCommand extends ContainerAwareCommand
 {
+    /* @var EntityManager $em */
     protected $em;
 
     const VIDEO_CONVERT_LOCK = 'VIDEO_CONVERT.lock';
@@ -20,6 +22,10 @@ class VideoConverterCommand extends ContainerAwareCommand
         $this->setDescription('Converting video files');
     }
 
+    /**
+     * @param InputInterface    $input
+     * @param OutputInterface   $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $lockHandler = new LockHandler(self::VIDEO_CONVERT_LOCK);

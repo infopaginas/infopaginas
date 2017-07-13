@@ -190,6 +190,9 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitle() ?: '';
@@ -496,20 +499,26 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
 
     /**
      * @param ArticleGallery $image
+     *
+     * @return Article
      */
     public function addImage(ArticleGallery $image)
     {
         $this->images->add($image);
         $image->setArticle($this);
+
         return $this;
     }
 
     /**
      * @param ArticleGallery $image
+     *
+     * @return Article
      */
     public function removeImage(ArticleGallery $image)
     {
         $this->images->removeElement($image);
+
         return $this;
     }
 }

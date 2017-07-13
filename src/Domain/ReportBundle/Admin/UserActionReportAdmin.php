@@ -74,6 +74,9 @@ class UserActionReportAdmin extends ReportAdmin
         return UserActionReport::getExportFormats();
     }
 
+    /**
+     * @return UserActionReportManager
+     */
     protected function getUserActionReportManager() : UserActionReportManager
     {
         return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.user_action_report_manager');

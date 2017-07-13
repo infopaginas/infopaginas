@@ -3,7 +3,7 @@
 namespace Domain\ReportBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\ReportBundle\Service\StemmerService;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 
@@ -40,11 +40,19 @@ class KeywordsReportManager
     const MONGO_DB_FIELD_COUNT       = 'count';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
 
+    /**
+     * @param MongoDbManager $mongoDbManager
+     */
     public function __construct(MongoDbManager $mongoDbManager)
     {
         $this->mongoDbManager = $mongoDbManager;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getKeywordsData(array $params = [])
     {
         $stats = $this->getKeywordsDataFromMongoDb($params);
@@ -73,6 +81,7 @@ class KeywordsReportManager
 
     /**
      * @param array $params
+     *
      * @return mixed
      */
     protected function getKeywordsDataFromMongoDb(array $params)
@@ -85,6 +94,11 @@ class KeywordsReportManager
         return $this->getBusinessKeywordsData($params);
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function getBusinessKeywordsData($params)
     {
         $cursor = $this->mongoDbManager->aggregateData(
@@ -127,6 +141,13 @@ class KeywordsReportManager
         return $result;
     }
 
+    /**
+     * @param int       $businessId
+     * @param string    $keyword
+     * @param MongoDB\BSON\UTCDateTime $date
+     *
+     * @return array
+     */
     protected function buildSingleBusinessKeyword($businessId, $keyword, $date)
     {
         $data = [
@@ -138,6 +159,12 @@ class KeywordsReportManager
         return $data;
     }
 
+    /**
+     * @param BusinessProfile[] $businessProfiles
+     * @param string $keywords
+     *
+     * @return array
+     */
     protected function buildBusinessKeywords($businessProfiles, $keywords)
     {
         $data = [];
@@ -152,6 +179,9 @@ class KeywordsReportManager
         return $data;
     }
 
+    /**
+     * @param array $data
+     */
     protected function insertBusinessKeywords($data)
     {
         $this->mongoDbManager->insertMany(
@@ -160,6 +190,9 @@ class KeywordsReportManager
         );
     }
 
+    /**
+     * @param ReportDatesRangeVO $period
+     */
     public function aggregateBusinessKeywords($period)
     {
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
@@ -224,7 +257,7 @@ class KeywordsReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveRawBusinessKeywords($date)
     {
@@ -237,7 +270,7 @@ class KeywordsReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveAggregatedBusinessKeywords($date)
     {

@@ -30,6 +30,8 @@ class SiteHelper
 
     /**
      * @param string $url
+     *
+     * @return mixed
      */
     public static function checkUrlExistence(string $url)
     {

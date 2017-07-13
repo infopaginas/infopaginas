@@ -85,11 +85,17 @@ class Tag implements DefaultEntityInterface, CopyableEntityInterface, Translatab
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';

@@ -62,6 +62,9 @@ class BusinessProfileKeyword
      */
     protected $businessProfile;
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getValueEn() . ' - ' . $this->getValueEs();

@@ -161,6 +161,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $total
+     */
     protected function generateTotalTable($total)
     {
         $this->activeSheet->setCellValue('E6', 'Total Profile Impressions');
@@ -178,6 +181,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->setHeaderFontStyle('F', 7);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     */
     protected function generateBusinessInfoTable(BusinessProfile $businessProfile)
     {
         $this->activeSheet->setCellValue('E2', 'Name');
@@ -195,6 +201,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->setHeaderFontStyle('F', 3);
     }
 
+    /**
+     * @param array $interactionCurrentData
+     */
     protected function generateCurrentOverviewTable($interactionCurrentData)
     {
         $row = $this->currentOverviewInitRow;
@@ -238,6 +247,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $interactionData
+     */
     protected function generateInteractionTable($interactionData)
     {
         $row = $this->interactionInitRow;
@@ -333,6 +345,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $keywordsData
+     */
     protected function generateKeywordsTable($keywordsData)
     {
         $row = $this->keywordsTableInitRow;
@@ -365,6 +380,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $params
+     */
     protected function generateYearTable($params)
     {
         $row = $params['initRow'];
@@ -412,6 +430,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $adUsageData
+     */
     protected function generateAdUsageTable($adUsageData)
     {
         $row = $this->adUsageInitRow;

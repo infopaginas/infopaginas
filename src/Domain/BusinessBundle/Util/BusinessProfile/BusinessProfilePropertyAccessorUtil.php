@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 31.08.16
- * Time: 22:45
- */
 
 namespace Domain\BusinessBundle\Util\BusinessProfile;
 

@@ -12,6 +12,9 @@ use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
  */
 class HasSubscriptionExtension extends \Twig_Extension
 {
+    /**
+     * @return array
+     */
     public function getFunctions()
     {
         return array(

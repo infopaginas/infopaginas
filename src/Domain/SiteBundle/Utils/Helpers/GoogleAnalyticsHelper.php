@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 15.09.16
- * Time: 17:52
- */
 
 namespace Domain\SiteBundle\Utils\Helpers;
 

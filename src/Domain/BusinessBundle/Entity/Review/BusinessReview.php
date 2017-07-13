@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/18/16
- * Time: 5:40 PM
- */
 
 namespace Domain\BusinessBundle\Entity\Review;
 
@@ -107,11 +101,17 @@ class BusinessReview implements DefaultEntityInterface, CopyableEntityInterface,
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getId() ? sprintf('%s: %s', $this->getId(), $this->getBusinessProfile()->__toString()) : '';

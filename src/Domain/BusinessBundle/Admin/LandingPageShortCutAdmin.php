@@ -93,6 +93,10 @@ class LandingPageShortCutAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param string $name
+     * @param string $template
+     */
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:LandingPageShortCut/edit.html.twig';
