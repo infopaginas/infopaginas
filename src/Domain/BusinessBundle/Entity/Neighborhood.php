@@ -59,7 +59,7 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
      *
      * @ORM\ManyToOne(
      *      targetEntity="Domain\BusinessBundle\Entity\Locality",
-     *      inversedBy="locality"
+     *      inversedBy="neighborhoods"
      * )
      * @ORM\JoinColumn(name="locality_id", referencedColumnName="id")
      */
