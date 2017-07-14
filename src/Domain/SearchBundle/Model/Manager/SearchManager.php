@@ -45,35 +45,10 @@ class SearchManager extends Manager
         parent::__construct($em);
 
         $this->configService            = $configService;
-        $this->businessProfileManager  = $businessProfileManager;
+        $this->businessProfileManager   = $businessProfileManager;
         $this->categoriesManager        = $categoryManager;
         $this->geolocationManager       = $geolocationManager;
         $this->localityManager          = $localityManager;
-    }
-
-    public function getAutocompleteDataByPhrase(string $phrase)
-    {
-    }
-
-    public function getAutocompleteDataByLocation(LocationValueObject $location)
-    {
-    }
-
-    public function getAutocompleteDataByPhraseAndLocation(string $phrase, LocationValueObject $location)
-    {
-    }
-
-    public function searchByPhrase(string $phrase)
-    {
-    }
-
-    public function searchByLocation(LocationValueObject $location)
-    {
-    }
-
-    public function searchByPhraseAndLocation(string $phrase, string $location)
-    {
-        $this->getRepository()->getSearchQuery($phrase, $location);
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace Domain\PageBundle\Controller;
 
 use Domain\BannerBundle\Model\TypeInterface;
-use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Domain\PageBundle\Entity\Page;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,9 +14,7 @@ class DefaultController extends Controller
      */
     public function viewContactAction()
     {
-        $code = $this->get('domain_page.manager.page')->getPage()::CODE_CONTACT_US;
-
-        return $this->renderPageByCode($code);
+        return $this->renderPageByCode(Page::CODE_CONTACT_US);
     }
 
     /**
@@ -24,9 +22,7 @@ class DefaultController extends Controller
      */
     public function viewTermsAction()
     {
-        $code = $this->get('domain_page.manager.page')->getPage()::CODE_TERMS_OF_USE;
-
-        return $this->renderPageByCode($code);
+        return $this->renderPageByCode(Page::CODE_TERMS_OF_USE);
     }
 
     /**
@@ -34,9 +30,7 @@ class DefaultController extends Controller
      */
     public function viewPrivacyAction()
     {
-        $code = $this->get('domain_page.manager.page')->getPage()::CODE_PRIVACY_STATEMENT;
-
-        return $this->renderPageByCode($code);
+        return $this->renderPageByCode(Page::CODE_PRIVACY_STATEMENT);
     }
 
     /**
@@ -44,19 +38,17 @@ class DefaultController extends Controller
      */
     public function viewAdvertiseAction()
     {
-        $code = $this->get('domain_page.manager.page')->getPage()::CODE_ADVERTISE;
-
-        return $this->renderPageByCode($code);
+        return $this->renderPageByCode(Page::CODE_ADVERTISE);
     }
 
     /**
-     * @param string $slug
+     * @param int $code
      *
      * @return Response
      */
-    private function renderPageByCode($slug)
+    private function renderPageByCode($code)
     {
-        $page = $this->get('domain_page.manager.page')->getPageByCode($slug);
+        $page = $this->get('domain_page.manager.page')->getPageByCode($code);
 
         $bannerFactory = $this->get('domain_banner.factory.banner');
 

@@ -30,38 +30,6 @@ use Doctrine\Common\Collections\Criteria;
 class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
-     * @param int $id
-     * @param string $locale
-     * @return mixed
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findWithLocale(int $id, string $locale)
-    {
-        $qb = $this->createQueryBuilder('bp');
-
-        $qb->select('bp')
-            ->where('bp.id = :id')
-            ->leftJoin('bp.categories', 'categories')
-            ->setParameter('id', $id);
-
-        $query = $qb->getQuery();
-
-        $query->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
-        );
-
-        // Force the locale
-        $query->setHint(
-            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-            $locale
-        );
-
-        return $query->getSingleResult();
-    }
-
-    /**
      * @param UserInterface $user
      * @return array
      */
@@ -105,11 +73,9 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    protected function getEmptyQueryBuilder()
-    {
-        return $this->getEntityManager()->createQueryBuilder();
-    }
-
+    /**
+     * @return QueryBuilder
+     */
     protected function getQueryBuilder()
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder('bp');
@@ -123,24 +89,16 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param int $limit
+     * @param int $offset
+     */
     protected function addLimitOffsetQueryBuilder(QueryBuilder $queryBuilder, $limit, $offset)
     {
         return $queryBuilder
             ->setMaxResults($limit)
             ->setFirstResult($offset)
-        ;
-    }
-
-    protected function addOrderBySubscriptionPlanQueryBuilder(QueryBuilder &$queryBuilder)
-    {
-        return $queryBuilder
-            ->addSelect('sp.rank as subscription')
-            ->leftJoin('bp.subscriptions', 's')
-            ->leftJoin('s.subscriptionPlan', 'sp')
-            ->andWhere('s.status = :subscriptionStatus')
-            ->setParameter('subscriptionStatus', StatusInterface::STATUS_ACTIVE)
-            ->addGroupBy('sp.rank')
-            ->addOrderBy('subscription', 'DESC')
         ;
     }
 
@@ -171,67 +129,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $objects;
     }
 
-    /**
-     * Get business profiles ids array
-     *
-     * @param int|null $limit
-     * @return BusinessProfile[]|null
-     */
-    public function getIndexedBusinessProfileIds(int $limit = null)
-    {
-        $query = $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('bp.id')
-            ->from('DomainBusinessBundle:BusinessProfile', 'bp', 'bp.id')
-        ;
-
-        if ($limit) {
-            $query->setMaxResults($limit);
-        }
-
-        $result = $query
-            ->getQuery()
-            ->getResult()
-        ;
-
-        return array_keys($result);
-    }
-
-    /**
-     * Adding distance value between points
-     *
-     * @param QueryBuilder &$queryBuilder
-     * @param LocationValueObject $location
-     *
-     * @return queryBuilder
-     */
-    protected function addDistanceBetweenPointsQueryBuilder(QueryBuilder $queryBuilder, LocationValueObject $location)
-    {
-        return $queryBuilder
-            ->addSelect($this->getDistanceBetweenPointsSql() . ' AS distance')
-            ->setParameter('userLatitude', $location->lat)
-            ->setParameter('userLongitude', $location->lng)
-        ;
-    }
-
-    private function getDistanceBetweenPointsSql()
-    {
-        return '(' . GeolocationUtils::getEarthDiameterMiles() . ' * sin (
-                sqrt (
-                    ( 1 - cos (
-                        (bp.latitude - :userLatitude) * PI()/180
-                        )
-                    ) / 2
-                    +
-                    cos (:userLatitude * PI()/180)
-                    *
-                    cos (bp.latitude * PI()/180)
-                    *
-                    ( 1 - cos( ( bp.longitude - :userLongitude ) * PI()/180 ) ) / 2)
-                ))';
-    }
-
     public function getHomepageVideos($limit)
     {
         $qb = $this->getVideosQuery()->setMaxResults($limit);
@@ -248,52 +145,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = new Paginator($qb, $fetchJoin = false);
 
         return $results;
-    }
-
-    public function getBusinessProfilesWithAllowedAdUnitsForFilter() : array
-    {
-        $qb = $this->createQueryBuilder('bp');
-        $qb
-            ->innerJoin('bp.subscriptions', 'bp_s', Join::INNER_JOIN)
-            ->innerJoin('bp_s.subscriptionPlan', 'bps_s', Join::INNER_JOIN)
-            ->where('bp.isActive = True')
-            ->andWhere('bp_s.isActive = True')
-            ->andWhere('bps_s.code >= :priorityPlanCode')
-            ->setParameter('priorityPlanCode', SubscriptionPlanInterface::CODE_PRIORITY)
-        ;
-
-        $result = [];
-
-        /** @var BusinessProfile $businessProfile */
-        foreach ($qb->getQuery()->getResult() as $businessProfile) {
-            $result[$businessProfile->getId()] = $businessProfile->getName();
-        }
-
-        return $result;
-    }
-
-    public function getBusinessProfilesForFilter()
-    {
-        $qb = $this->createQueryBuilder('bp')
-            ->where('bp.isActive = True')
-        ;
-
-        $result = [];
-
-        /** @var BusinessProfile $businessProfile */
-        foreach ($qb->getQuery()->getResult() as $businessProfile) {
-            $result[$businessProfile->getId()] = $businessProfile->getName();
-        }
-
-        return $result;
-    }
-
-    public function getBusinessProfilesWithAllowedAdUnits() : array
-    {
-        $qb = $this->createQueryBuilder('bp');
-        $qb->where('bp.isActive = True');
-
-        return $qb->getQuery()->getResult();
     }
 
     private function getVideosQuery()
@@ -351,33 +202,6 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $results = $queryBuilder->getQuery()->getResult();
 
         return count($results);
-    }
-
-    /**
-     * Main search functionality
-     *
-     * @param SearchDTO $searchParams
-     * @param string    $locale
-     * @return array
-     */
-    public function searchCatalog(SearchDTO $searchParams, $locale)
-    {
-        if (!$searchParams->locationValue) {
-            return null;
-        }
-
-        $limit  = $searchParams->limit;
-        $offset = ($searchParams->page - 1) * $limit;
-        $queryBuilder = $this->getQueryBuilder();
-
-        $this->addDistanceBetweenPointsQueryBuilder($queryBuilder, $searchParams->locationValue);
-        $this->addCatalogSearchQueryBuilder($queryBuilder, $searchParams);
-        $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
-        $this->addOrderBySubscriptionPlanQueryBuilder($queryBuilder);
-
-        $results = $queryBuilder->getQuery()->getResult();
-
-        return $results;
     }
 
     protected function addSearchByCatalogCategoryQueryBuilder(QueryBuilder $queryBuilder, $category)

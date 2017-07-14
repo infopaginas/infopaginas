@@ -6,8 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\BusinessBundle\Entity\Category;
-use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
-use Domain\BusinessBundle\Util\Traits\DatetimePeriodStatusTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;

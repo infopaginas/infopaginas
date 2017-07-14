@@ -314,37 +314,6 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->setRowSizeStyle($row);
     }
 
-    protected function generatePreviousOverviewTable($interactionPreviousData)
-    {
-        $row = $this->previousOverviewInitRow;
-        $col = $this->previousOverviewInitCol;
-
-        $this->activeSheet->setCellValue($col . $row, 'Previous Month Impressions');
-        $this->setFontStyle($col, $row);
-        $this->setBorderStyle($col, $row);
-        $col++;
-
-        $this->activeSheet->setCellValue($col . $row, 'Previous Month Views');
-        $this->setFontStyle($col, $row);
-        $this->setBorderStyle($col, $row);
-        $row++;
-
-        foreach ($interactionPreviousData['results'] as $overview) {
-            $col = $this->previousOverviewInitCol;
-            $this->activeSheet->setCellValue($col . $row, $overview[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
-
-            $this->setColumnSizeStyle($col);
-            $this->setBorderStyle($col, $row);
-
-            $col++;
-            $this->activeSheet->setCellValue($col . $row, $overview[BusinessOverviewModel::TYPE_CODE_VIEW]);
-
-            $this->setColumnSizeStyle($col);
-            $this->setBorderStyle($col, $row);
-            $row++;
-        }
-    }
-
     /**
      * @param array $keywordsData
      */
@@ -517,25 +486,5 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
 
         $this->setRowSizeStyle($row);
-    }
-
-    protected function getExcelService()
-    {
-        return $this->phpExcel;
-    }
-
-    protected function getAdUsageReportManager() : AdUsageReportManager
-    {
-        return $this->adUsageReportManager;
-    }
-
-    protected function getKeywordsReportManager() : KeywordsReportManager
-    {
-        return $this->keywordsReportManager;
-    }
-
-    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
-    {
-        return $this->businessOverviewReportManager;
     }
 }

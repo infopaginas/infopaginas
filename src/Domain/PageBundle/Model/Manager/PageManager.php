@@ -26,14 +26,6 @@ class PageManager extends Manager
     }
 
     /**
-     * @return Page
-     */
-    public function getPage()
-    {
-        return new Page();
-    }
-
-    /**
      * @param Page $entity
      * @param ContainerInterface $container
      *

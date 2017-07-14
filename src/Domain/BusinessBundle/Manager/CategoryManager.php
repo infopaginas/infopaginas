@@ -17,11 +17,6 @@ class CategoryManager extends Manager
     const AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT = 10;
     const AUTO_SUGGEST_SEPARATOR = ' ';
 
-    public function searchAutosuggestByName(string $name, string $locale)
-    {
-        return $this->getRepository()->searchAutosuggest($name, $locale);
-    }
-
     /**
      * @param array $profileList
      *

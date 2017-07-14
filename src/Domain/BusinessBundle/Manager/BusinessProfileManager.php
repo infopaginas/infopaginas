@@ -123,18 +123,6 @@ class BusinessProfileManager extends Manager
         $this->elasticSearchManager->setDocumentType(BusinessProfile::ELASTIC_DOCUMENT_TYPE);
     }
 
-    public function searchByPhraseAndLocation(string $phrase, LocationValueObject $location, $categoryFilter = null)
-    {
-        $locationName = $location->name;
-        if (empty($locationName)) {
-            $locationName = self::DEFAULT_LOCALE_NAME;
-        }
-
-        // TODO Move to filtering functionality
-        $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->searchWithQueryBuilder($phrase, $locationName, $categoryFilter);
-    }
-
     /**
      * @param string $query
      * @param string $locale
@@ -163,17 +151,6 @@ class BusinessProfileManager extends Manager
         $categories = $this->searchCategoryAutoSuggestInElastic($query, $locale, $limit);
 
         return $categories;
-    }
-
-    public function searchWithMapByPhraseAndLocation(string $phrase, string $location)
-    {
-        if (!$location) {
-            $location = self::DEFAULT_LOCALE_NAME;
-        }
-
-        // TODO Move to filtering functionality
-        $phrase = preg_replace("/[^a-zA-Z0-9\s]+/", "", $phrase);
-        return $this->getRepository()->searchWithQueryBuilder($phrase, $location);
     }
 
     /**
@@ -919,11 +896,6 @@ class BusinessProfileManager extends Manager
         }
 
         return $isAllowed;
-    }
-
-    public function findOneBusinessProfile()
-    {
-        return $this->getRepository()->findOneBy([]);
     }
 
     /**
