@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\Zip;
 use Domain\BusinessBundle\Entity\LocalityPseudo;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
@@ -40,7 +41,7 @@ class LocalityManager extends Manager
         if (ctype_digit(strval($localityName))) {
             // find via neighborhood by int ZIP code
 
-            $zip = $this->em->getRepository('DomainBusinessBundle:Zip')->findOneBy(['zipCode' => $localityName]);
+            $zip = $this->em->getRepository(Zip::class)->findOneBy(['zipCode' => $localityName]);
 
             if ($zip) {
                 $locality = $zip->getNeighborhood()->getLocality();

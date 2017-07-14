@@ -138,7 +138,7 @@ class LocalityAdmin extends OxaAdmin
 
         $em = $container->get('doctrine.orm.entity_manager');
 
-        $defaultLocality = $em->getRepository('DomainBusinessBundle:Locality')
+        $defaultLocality = $em->getRepository(Locality::class)
             ->getLocalityBySlug(Locality::DEFAULT_CATALOG_LOCALITY_SLUG);
 
         if ($defaultLocality) {

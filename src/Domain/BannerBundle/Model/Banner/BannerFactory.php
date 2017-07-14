@@ -111,8 +111,7 @@ class BannerFactory extends Factory
      */
     protected function getBannerByCode($code)
     {
-        $banners = $this->em->getRepository('DomainBannerBundle:Banner')
-            ->getBannerByTypeCode($code);
+        $banners = $this->em->getRepository(Banner::class)->getBannerByTypeCode($code);
 
         if (count($banners)) {
             return $banners[0];

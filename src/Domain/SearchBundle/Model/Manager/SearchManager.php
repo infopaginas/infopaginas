@@ -9,21 +9,19 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
-
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager;
 use Oxa\ConfigBundle\Service\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
-
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
-
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\CatalogItem;
 
 class SearchManager extends Manager
 {
@@ -414,7 +412,7 @@ class SearchManager extends Manager
                 $currentCategory = null;
             }
 
-            $data = $this->em->getRepository('DomainBusinessBundle:CatalogItem')
+            $data = $this->em->getRepository(CatalogItem::class)
                 ->checkCatalogItemHasContent($entities['locality'], $currentCategory);
         }
 

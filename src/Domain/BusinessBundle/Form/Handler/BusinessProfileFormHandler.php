@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -171,9 +172,9 @@ class BusinessProfileFormHandler extends BaseFormHandler
         foreach (BusinessProfile::getTaskMediaManyToOneRelations() as $mediaItem) {
             if (!empty($this->requestParams[$mediaItem])) {
                 if ($mediaItem == BusinessProfile::BUSINESS_PROFILE_RELATION_VIDEO) {
-                    $repository = $this->em->getRepository('OxaVideoBundle:VideoMedia');
+                    $repository = $this->em->getRepository(VideoMedia::class);
                 } else {
-                    $repository = $this->em->getRepository('OxaSonataMediaBundle:Media');
+                    $repository = $this->em->getRepository(Media::class);
                 }
 
                 $entity = $repository->find($this->requestParams[$mediaItem]['id']);
@@ -204,8 +205,7 @@ class BusinessProfileFormHandler extends BaseFormHandler
                             /* @var BusinessGallery gallery */
                             $galleryNew = clone $gallery;
 
-                            $media = $this->em->getRepository('OxaSonataMediaBundle:Media')
-                                ->find($params[$key]['media']);
+                            $media = $this->em->getRepository(Media::class)->find($params[$key]['media']);
 
                             $galleryNew->setMedia($media);
                             $galleryNew->setDescription($params[$key]['description']);
@@ -219,7 +219,7 @@ class BusinessProfileFormHandler extends BaseFormHandler
                 foreach ($params as $item) {
                     $galleryNew = new BusinessGallery();
 
-                    $media = $this->em->getRepository('OxaSonataMediaBundle:Media')->find($item['media']);
+                    $media = $this->em->getRepository(Media::class)->find($item['media']);
 
                     $galleryNew->setMedia($media);
                     $galleryNew->setDescription($item['description']);

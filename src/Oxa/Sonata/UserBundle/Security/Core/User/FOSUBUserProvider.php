@@ -129,6 +129,6 @@ class FOSUBUserProvider extends BaseClass
      */
     private function getGroupsRepository() : EntityRepository
     {
-        return $this->em->getRepository('OxaSonataUserBundle:Group');
+        return $this->em->getRepository(Group::class);
     }
 }

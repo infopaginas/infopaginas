@@ -77,7 +77,7 @@ class LocalityConvertCommand extends ContainerAwareCommand
      */
     protected function getLocalityItemByName($name)
     {
-        $locality = $this->em->getRepository('DomainBusinessBundle:Locality')->findOneBy(['name' => $name]);
+        $locality = $this->em->getRepository(Locality::class)->findOneBy(['name' => $name]);
 
         return $locality;
     }

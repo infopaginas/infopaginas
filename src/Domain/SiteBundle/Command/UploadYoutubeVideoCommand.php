@@ -3,8 +3,8 @@
 namespace Domain\SiteBundle\Command;
 
 use Doctrine\ORM\EntityManager;
-use Domain\BusinessBundle\Model\VideoMappingModel;
 use Domain\SiteBundle\Mailer\Mailer;
+use Oxa\Sonata\UserBundle\Entity\User;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Manager\VideoMediaManager;
 use Oxa\VideoBundle\Manager\YoutubeManager;
@@ -86,19 +86,22 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
         }
 
         if ($currentError !== false) {
-            $admins = $this->em->getRepository('OxaSonataUserBundle:User')->findByRole('ROLE_ADMINISTRATOR');
+            $admins = $this->em->getRepository(User::class)->findByRole('ROLE_ADMINISTRATOR');
 
             $this->mailer->sendYoutubeTokenErrorEmailMessage($currentError, $admins);
         }
         $logger->addInfo($logger::YOUTUBE_UPLOAD, $logger::STATUS_END, 'execute:stop');
     }
 
+    /**
+     * @return array
+     */
     protected function uploadVideo()
     {
         $error  = false;
         $status = true;
 
-        $videoMapping = $this->em->getRepository('OxaVideoBundle:VideoMedia')
+        $videoMapping = $this->em->getRepository(VideoMedia::class)
             ->getVideoForYoutubeActionIterator(VideoMedia::YOUTUBE_ACTION_ADD);
 
         $batchSize = 20;
@@ -146,12 +149,15 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function updateVideo()
     {
         $error  = false;
         $status = true;
 
-        $videoMapping = $this->em->getRepository('OxaVideoBundle:VideoMedia')
+        $videoMapping = $this->em->getRepository(VideoMedia::class)
             ->getVideoForYoutubeActionIterator(VideoMedia::YOUTUBE_ACTION_UPDATE);
 
         $batchSize = 20;
@@ -194,12 +200,15 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function removeVideo()
     {
         $error  = false;
         $status = true;
 
-        $videoMapping = $this->em->getRepository('OxaVideoBundle:VideoMedia')
+        $videoMapping = $this->em->getRepository(VideoMedia::class)
             ->getVideoForYoutubeActionIterator(VideoMedia::YOUTUBE_ACTION_REMOVE);
 
         $batchSize = 20;

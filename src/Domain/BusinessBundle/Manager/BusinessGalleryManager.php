@@ -313,7 +313,7 @@ class BusinessGalleryManager
      */
     private function getRepository() : BusinessGalleryRepository
     {
-        return $this->getEntityManager()->getRepository('DomainBusinessBundle:Media\BusinessGallery');
+        return $this->getEntityManager()->getRepository(BusinessGallery::class);
     }
 
     /**

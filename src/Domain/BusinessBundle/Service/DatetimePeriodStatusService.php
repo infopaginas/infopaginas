@@ -79,7 +79,7 @@ class DatetimePeriodStatusService
         $batchSize = 20;
         $i = 0;
 
-        $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+        $businessProfilesIterator = $this->em->getRepository(BusinessProfile::class)
             ->getBusinessesWithoutActiveSubscriptionIterator();
 
         foreach ($businessProfilesIterator as $row) {
@@ -118,7 +118,7 @@ class DatetimePeriodStatusService
         $batchSize = 20;
         $i = 0;
 
-        $businessProfilesIterator = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+        $businessProfilesIterator = $this->em->getRepository(BusinessProfile::class)
             ->getBusinessesWithMultipleActiveSubscriptionsIterator();
 
         foreach ($businessProfilesIterator as $row) {

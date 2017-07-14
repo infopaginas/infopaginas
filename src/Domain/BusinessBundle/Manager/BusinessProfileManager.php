@@ -1566,7 +1566,7 @@ class BusinessProfileManager extends Manager
      */
     public function getDefaultProfileCountry()
     {
-        $country = $this->em->getRepository('DomainBusinessBundle:Address\Country')->findOneBy(
+        $country = $this->em->getRepository(Country::class)->findOneBy(
             ['shortName' => strtoupper(Country::PUERTO_RICO_SHORT_NAME)]
         );
 
