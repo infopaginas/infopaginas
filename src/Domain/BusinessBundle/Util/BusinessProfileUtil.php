@@ -23,15 +23,12 @@ class BusinessProfileUtil
         $titleMaxLength = $seoSettings['title_max_length'];
 
         $businessProfileMaxLength = $seoSettings['business_name_length'];
-        $localityMaxLength = $seoSettings['locality_length'];
         $brandMaxLength = $seoSettings['brand_length'];
 
         if ($locale) {
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation('name', strtolower($locale));
             $businessProfileName = $businessProfile
                 ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
         } else {
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
             $businessProfileName = $businessProfile->getName();
             $locale = $businessProfile->getLocale();
         }
@@ -42,7 +39,6 @@ class BusinessProfileUtil
             'business_profile.seoTitle',
             [
                 'name'     => mb_substr($businessProfileName, 0, $businessProfileMaxLength),
-                'location' => mb_substr($catalogLocalityName, 0, $localityMaxLength),
                 'company'  => mb_substr($companyName, 0, $brandMaxLength),
             ],
             'messages',

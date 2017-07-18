@@ -366,7 +366,7 @@ Go to watch...: Ir a ver...
 Sort: Ordenar
 View: Ver
 
-business_profile.seoTitle: name en location | company
+business_profile.seoTitle: name | company
 business_profile.seoDescription.main: name en location
 business_profile.seoDescription.open: esta abierto hours.
 business_profile.seoDescription.link: Para más información visite link
@@ -432,6 +432,8 @@ business_profile.message.created: El perfil de negocio se creó correctamente (l
 business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 user.reset_password_request.email.not_found: El usuario {-email-} no existe
 business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
+business_profile.seoTitle.search: categories en locality
+business_profile.seoTitle.catalog: Catálogo en locality
 
 #admin
 action_copy: Copy
