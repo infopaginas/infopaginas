@@ -226,8 +226,9 @@ class ArticleApiManager
                         $dateUpdated = new \DateTime($item->date_updated);
                     }
 
-                    if ($date and $dateUpdated and ($dateUpdated > $article->getCreatedAt())) {
-                        $article->setCreatedAt($dateUpdated);
+                    if ($date and $dateUpdated and ($dateUpdated > $article->getApiUpdatedDate())) {
+                        $article->setApiUpdatedDate($dateUpdated);
+                        $article->setApiCreatedDAte($date);
                         $article->setActivationDate($date);
                     } else {
                         continue;
@@ -340,6 +341,14 @@ class ArticleApiManager
             $date = new \DateTime();
         }
 
+        if (!empty($data->date_updated) and strtotime($data->date_updated)) {
+            $dateUpdated = new \DateTime($data->date_updated);
+        } else {
+            $dateUpdated = new \DateTime();
+        }
+
+        $article->setApiUpdatedDAte($dateUpdated);
+        $article->setApiCreatedDAte($date);
         $article->setActivationDate($date);
 
         return $article;

@@ -138,6 +138,18 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
     protected $expirationDate;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="api_created_date", type="datetime", nullable=true)
+     */
+    protected $apiCreatedDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="api_updated_date", type="datetime", nullable=true)
+     */
+    protected $apiUpdatedDate;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="external_id", type="integer", nullable=true)
@@ -433,6 +445,46 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
     }
 
     /**
+     * @param \DateTime $apiCreatedDate
+     *
+     * @return Article
+     */
+    public function setApiCreatedDate($apiCreatedDate)
+    {
+        $this->apiCreatedDate = $apiCreatedDate;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getApiCreatedDate()
+    {
+        return $this->apiCreatedDate;
+    }
+
+    /**
+     * @param \DateTime $apiUpdatedDate
+     *
+     * @return Article
+     */
+    public function setApiUpdatedDate($apiUpdatedDate)
+    {
+        $this->apiUpdatedDate = $apiUpdatedDate;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getApiUpdatedDate()
+    {
+        return $this->apiUpdatedDate;
+    }
+
+    /**
      * @return int
      */
     public function getExternalId()
@@ -511,5 +563,14 @@ class Article implements DefaultEntityInterface, TranslatableInterface, Postpone
     {
         $this->images->removeElement($image);
         return $this;
+    }
+
+    public function getArticleDisplayedCreatedDate()
+    {
+        if ($this->getIsExternal()) {
+            return $this->getApiCreatedDate();
+        } else {
+            return $this->getCreatedAt();
+        }
     }
 }
