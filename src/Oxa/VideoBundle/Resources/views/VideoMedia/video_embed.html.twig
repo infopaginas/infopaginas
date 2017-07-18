@@ -1,4 +1,4 @@
-<video id="video-{{ media.id }}" class="video-js" controls preload="auto" width="{{ dimensions.width }}" height="{{ dimensions.height }}" data-setup="{}">
+<video id="video-{{ media.id }}" class="video-js" controls preload="none" width="{{ dimensions.width }}" height="{{ dimensions.height }}" data-setup="{}">
     <source src="{{ url }}" type='{{ media.type }}'>
     <p class="vjs-no-js">
       {% trans %}To view this video please enable JavaScript, and consider upgrading to a web browser that{% endtrans %}
