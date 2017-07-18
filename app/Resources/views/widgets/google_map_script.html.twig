@@ -1,8 +1,20 @@
-<script src="https://maps.googleapis.com/maps/api/js?v=3&signed_in=false&libraries=drawing,places&key={{ google_map_api_key }}"></script>
-
 <script type="text/javascript">
     var googleMapDefaultCenter = '{{ google_map_default_center }}';
     var googleMapDefaultZoom   = {{ google_map_default_zoom }};
     var googleMapMinZoom       = {{ google_map_min_zoom }};
-    var youPosText = '{% trans %}google_maps.current_user_position.label{% endtrans %}'
+    var youPosText             = '{% trans %}google_maps.current_user_position.label{% endtrans %}';
+    var googleMapScriptLoaded  = false;
+    var googleMapScriptInit    = false;
+    var googleMapRequested     = false;
+
+    function initMap() {
+        googleMapScriptLoaded = true;
+
+        var event = new CustomEvent( 'googleMapScriptLoaded' );
+        document.dispatchEvent( event );
+    }
 </script>
+
+{% if hideMap is not defined or not hideMap %}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&libraries=drawing,places&key={{ google_map_api_key }}&callback=initMap"></script>
+{% endif %}

@@ -340,7 +340,7 @@
 {% block scripts %}
     {{ parent() }}
 
-    {% include ':widgets:google_map_script.html.twig' %}
+    {% include ':widgets:google_map_script.html.twig' with {hideMap: businessProfile.hideMap} %}
 
     <script type="text/javascript">
         var map;
