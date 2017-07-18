@@ -204,6 +204,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('English', ['class' => 'col-md-6',])->end()
                 ->with('Spanish', ['class' => 'col-md-6',])->end()
                 ->with('Main', ['class' => 'col-md-12',])->end()
+                ->with('Social Networks', ['class' => 'col-md-12',])->end()
                 ->with('Address', ['class' => 'col-md-4',])->end()
                 ->with('Map', ['class' => 'col-md-8',])->end()
                 ->with('Categories', ['class' => 'col-md-6',])->end()
@@ -222,7 +223,6 @@ class BusinessProfileAdmin extends OxaAdmin
 
         $formMapper
             ->tab('Profile', ['class' => 'col-md-12',])
-                ->with('Social Networks', ['class' => 'col-md-6',])->end()
                 ->with('Gallery')->end()
             ->end()
         ;
@@ -372,6 +372,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         ]
                     )
                 ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
             ->end()
         ;
 
@@ -412,14 +420,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])
-                ->end()
-                ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
@@ -730,6 +730,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
                     ])
                 ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
                 ->with('Address')
                     ->add('country', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
@@ -745,14 +753,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('hideMap')
                     ->add('latitude')
                     ->add('longitude')
-                ->end()
-                ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
