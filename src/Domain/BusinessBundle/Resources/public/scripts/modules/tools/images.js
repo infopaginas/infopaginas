@@ -33,10 +33,10 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         this.spinnerContainerId = 'images-spin-container';
 
         //10Mb (per specification)
-        this.maxAllowedFileSize = 10000000;
+        this.maxAllowedFileSize = 10485760;
 
         //1Mb
-        this.maxAllowedBackgroundFileSize = 1000000;
+        this.maxAllowedBackgroundFileSize = 1048576;
         this.imageContextBackground = 'business_profile_background';
 
         //max business profile images count - 25

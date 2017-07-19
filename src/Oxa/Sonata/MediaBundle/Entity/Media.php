@@ -37,14 +37,14 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     /**
      * Image max size in bytes = 10Mb
      */
-    const IMAGE_MAX_SIZE = 10000000;
+    const IMAGE_MAX_SIZE = 10485760;
 
     /**
      * Background max size in bytes = 1Mb
      */
-    const IMAGE_BACKGROUND_MAX_SIZE = 1000000;
+    const IMAGE_BACKGROUND_MAX_SIZE = 1048576;
 
-    const BYTES_IN_MEGABYTE = 1000000;
+    const BYTES_IN_MEGABYTE = 1048576;
 
     /**
      * @var int
