@@ -405,6 +405,9 @@ Video status error: Error: fallo de la conversión, vuelve a cargar el vídeo co
 business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
 business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =
 business_profile.size_limit: El video es más grande que 128 MB
+business_profile.video.size_limit: El video es más grande que 128 MB
+business_profile.image.size_limit: La imagen es más grande que 10 MB
+business_profile.background.size_limit: La imagen es más grande que 1 MB
 business_profile.url.empty: Error: el campo URL no debe estar vacío.
 business_profile.video_count_limit: Solo se puede subir un vídeo a la vez
 business_profile.max_length: Por favor, use max {{ limit }} símbolos

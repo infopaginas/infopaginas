@@ -57,7 +57,7 @@ class BusinessGalleryManager
 
         /** @var UploadedFile $file */
         foreach ($fileBag->get('files') as $file) {
-            if ($file->getSize() <= Media::IMAGE_MAX_SIZE) {
+            if ($this->checkUploadedFileSize($file->getSize(), $context)) {
                 $media = $this->createNewMediaEntryFromUploadedFile(
                     $file,
                     $context
@@ -88,7 +88,7 @@ class BusinessGalleryManager
         $headers = SiteHelper::checkUrlExistence($url);
 
         if ($headers and in_array($headers['content_type'], SiteHelper::$imageContentTypes) and
-            exif_imagetype($url) and $this->checkImageSize($headers)
+            exif_imagetype($url) and $this->checkImageSize($headers, $context)
         ) {
             $file = tmpfile();
 
@@ -361,15 +361,31 @@ class BusinessGalleryManager
     }
 
     /**
-     * @param $headers array
+     * @param array  $headers
+     * @param string $context
      *
      * @return bool
      */
-    protected function checkImageSize($headers)
+    protected function checkImageSize($headers, $context)
     {
         if (!empty($headers['download_content_length']) and $headers['download_content_length'] > 0 and
-            $headers['download_content_length'] <= Media::IMAGE_MAX_SIZE
+            $this->checkUploadedFileSize($headers['download_content_length'], $context)
         ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int     $size
+     * @param string  $context
+     *
+     * @return bool
+     */
+    protected function checkUploadedFileSize($size, $context)
+    {
+        if (Media::getMediaMaxSizeByContext($context) >= $size) {
             return true;
         }
 
