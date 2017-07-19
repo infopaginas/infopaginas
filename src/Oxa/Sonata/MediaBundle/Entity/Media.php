@@ -44,6 +44,8 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
      */
     const IMAGE_BACKGROUND_MAX_SIZE = 1000000;
 
+    const BYTES_IN_MEGABYTE = 1000000;
+
     /**
      * @var int
      *
@@ -577,9 +579,9 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     {
         $maxSize = self::getMediaMaxSizeByContext($this->getContext());
 
-        if($maxSize < $this->getSize()){
+        if($maxSize < $this->getSize()) {
             $context->buildViolation('media.max_size')
-                ->setParameter('{{ limit }}', $maxSize / 1000000)
+                ->setParameter('{{ limit }}', $maxSize / self::BYTES_IN_MEGABYTE)
                 ->atPath('binaryContent')
                 ->addViolation()
             ;
