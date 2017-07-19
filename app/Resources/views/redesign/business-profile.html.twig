@@ -286,7 +286,9 @@
 
                         {% if not businessProfile.hideMap %}
                             <section class="page-section profile-map">
-                                <div id="map"></div>
+                                <div id="map" class="business-map">
+                                    {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+                                </div>
                                 <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
                             </section>
                         {% endif %}
