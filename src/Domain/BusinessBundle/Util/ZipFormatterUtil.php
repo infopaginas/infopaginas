@@ -6,6 +6,7 @@ class ZipFormatterUtil
 {
     const ZIP_CODE_SEPARATOR_POSITION = 5;
     const ZIP_CODE_SEPARATOR = '-';
+
     /**
      * @param string $zipCode
      *
