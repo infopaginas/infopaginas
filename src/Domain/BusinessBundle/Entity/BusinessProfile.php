@@ -12,6 +12,7 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Util\ZipFormatterUtil;
 use Domain\ReportBundle\Model\PostponeExportInterface;
 use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -1670,7 +1671,7 @@ class BusinessProfile implements
      */
     public function setZipCode($zipCode)
     {
-        $this->zipCode = $zipCode;
+        $this->zipCode = ZipFormatterUtil::getFormattedZip($zipCode);
 
         return $this;
     }
