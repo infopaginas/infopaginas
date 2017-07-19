@@ -19,11 +19,13 @@ use Sonata\MediaBundle\Entity\BaseMedia as BaseMedia;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(name="media__media")
  * @ORM\Entity(repositoryClass="Oxa\Sonata\MediaBundle\Repository\MediaRepository")
  * @ORM\HasLifecycleCallbacks
+ * @Assert\Callback(methods={"validateMediaSize"})
  */
 class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterface, PostponeRemoveInterface
 {
@@ -33,9 +35,14 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     const UPLOADS_DIR_NAME = 'uploads';
 
     /**
-     * Image max size in bytes
+     * Image max size in bytes = 10Mb
      */
     const IMAGE_MAX_SIZE = 10000000;
+
+    /**
+     * Background max size in bytes = 1Mb
+     */
+    const IMAGE_BACKGROUND_MAX_SIZE = 1000000;
 
     /**
      * @var int
@@ -561,5 +568,40 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     public function getVideoMedia()
     {
         return $this->videoMedia;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function validateMediaSize(ExecutionContextInterface $context)
+    {
+        $maxSize = self::getMediaMaxSizeByContext($this->getContext());
+
+        if($maxSize < $this->getSize()){
+            $context->buildViolation('media.max_size')
+                ->setParameter('{{ limit }}', $maxSize / 1000000)
+                ->atPath('binaryContent')
+                ->addViolation()
+            ;
+        }
+    }
+
+    /**
+     * @param string $context
+     *
+     * @return int
+     */
+    public static function getMediaMaxSizeByContext($context)
+    {
+        switch ($context) {
+            case self::CONTEXT_BUSINESS_PROFILE_BACKGROUND:
+                $maxSize = self::IMAGE_BACKGROUND_MAX_SIZE;
+                break;
+            default:
+                $maxSize = self::IMAGE_MAX_SIZE;
+                break;
+        }
+
+        return $maxSize;
     }
 }

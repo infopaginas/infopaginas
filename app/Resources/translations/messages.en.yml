@@ -405,6 +405,9 @@ Video status error: Error: something went wrong, please try to upload the video 
 business_profile.names_blank: Name field should be filled for at least one language
 business_profile.image_count_limit: Error: too much images added. Max files count =
 business_profile.size_limit: The video is larger than 128 MB
+business_profile.video.size_limit: The video is larger than 128 MB
+business_profile.image.size_limit: The image is larger than 10 MB
+business_profile.background.size_limit: The image is larger than 1 MB
 business_profile.url.empty: Error: URL field should not be empty.
 business_profile.video_count_limit: Only one video can be uploaded at a time
 business_profile.max_length: Please use max {{ limit }} symbols
