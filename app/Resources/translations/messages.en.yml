@@ -562,3 +562,4 @@ business_profile.video.description.required: This field is required
 business_profile.panorama.title: This is a 360 panorama, drag the image to look around
 
 search_results.count.total: We've found {-count-} results
+google_map.empty_block.message: Please wait, loading...

@@ -1593,6 +1593,28 @@ $thumb-width-mb: 60px;
   }
 }
 
+.business-map {
+  position: relative;
+}
+
+#empty-map-placeholder {
+  position: absolute;
+  width: 60%;
+  z-index: 9999;
+  left: 20%;
+  top: 39%;
+
+  img {
+    display: block;
+    margin: auto;
+    width: 40%;
+  }
+
+  p {
+    text-align: center;
+  }
+}
+
 .button--show-map, .button--hide-map, .button--toggle-filters {
   background: $green;
   bottom: 15px;
