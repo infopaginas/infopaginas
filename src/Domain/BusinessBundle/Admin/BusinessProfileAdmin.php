@@ -66,17 +66,25 @@ class BusinessProfileAdmin extends OxaAdmin
     public function getNewInstance()
     {
         $instance = parent::getNewInstance();
+        $container = $this->getConfigurationPool()->getContainer();
 
         if ($this->getRequest()->getMethod() == Request::METHOD_GET) {
             $parentId = $this->getRequest()->get('id', null);
 
             if ($parentId) {
-                $container = $this->getConfigurationPool()->getContainer();
                 $parent    = $container->get('doctrine')->getRepository(BusinessProfile::class)->find($parentId);
 
                 if ($parent) {
                     $instance = $this->cloneParentEntity($parent);
                 }
+            }
+        }
+
+        if (!$instance->getCountry()) {
+            $country = $container->get('domain_business.manager.business_profile')->getDefaultProfileCountry();
+
+            if ($country) {
+                $instance->setCountry($country);
             }
         }
 
