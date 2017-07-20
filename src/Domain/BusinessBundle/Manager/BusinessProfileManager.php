@@ -1472,13 +1472,16 @@ class BusinessProfileManager extends Manager
         $descriptionCategoriesSeparator = $seoSettings['description_category_separator'];
         $categoriesCut = $seoSettings['description_category_cut'];
 
-        if ($isCatalog) {
-            $seoTitle = $translator->trans('Catalog');
+        $seoTitle = '';
+        $categoryData = [];
+
+        if (!$locality) {
+            $localityText = Locality::ALL_LOCALITY;
         } else {
-            $seoTitle = $translator->trans('Search');
+            $localityText = $locality;
         }
 
-        $categoryData = [];
+        $localityText = mb_substr($localityText, 0, $titleLocalityMaxLength);
 
         if ($categories) {
             $itemsCount = count($categories);
@@ -1496,22 +1499,39 @@ class BusinessProfileManager extends Manager
             }
         }
 
+        $categoryText = implode($descriptionCategoriesSeparator, $categoryData);
+
         $seoDescription = $translator->trans(
             'business_profile.seoDescription.search',
             [
-                '{-categories-}' => implode($descriptionCategoriesSeparator, $categoryData),
-                '{-locality-}'   => $locality,
+                '{-categories-}' => $categoryText,
+                '{-locality-}'   => $localityText,
             ],
             'messages'
         );
 
-        if ($locality) {
-            $seoTitle .= ' ' . $translator->trans('in') . ' ' . mb_substr($locality, 0, $titleLocalityMaxLength);
-        }
+        if ($categories) {
+            $seoTitle = $translator->trans(
+                'business_profile.seoTitle.search',
+                [
+                    'categories' => $categoryText,
+                    'locality'   => $localityText,
+                ],
+                'messages'
+            );
+        } elseif ($isCatalog) {
+            if ($locality) {
+                $seoTitle = $translator->trans(
+                    'business_profile.seoTitle.catalog',
+                    [
+                        'locality'   => $localityText,
+                    ],
+                    'messages'
+                );
 
-        if (current($categories)) {
-            $category1 = mb_substr(current($categories), 0, $titleCategoryMaxLength);
-            $seoTitle .= ' ' . $translator->trans('for') . ' ' . $category1;
+            } else {
+                $seoTitle = $translator->trans('Catalog');
+            }
         }
 
         $seoTitle .=' | ' . $companyName;

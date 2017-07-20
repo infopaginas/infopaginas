@@ -366,7 +366,7 @@ Go to watch...: Go to watch...
 Sort: Sort
 View: View
 
-business_profile.seoTitle: name in location | company
+business_profile.seoTitle: name | company
 business_profile.seoDescription.main: name in location
 business_profile.seoDescription.open: is open hours.
 business_profile.seoDescription.link: For more information, visit link
@@ -435,6 +435,8 @@ business_profile.message.created: Business profile was successfully created (cha
 business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
 user.reset_password_request.email.not_found: User {-email-} doesn't exists
 business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
+business_profile.seoTitle.search: categories in locality
+business_profile.seoTitle.catalog: Catalog in locality
 
 #admin
 action_copy: Copy

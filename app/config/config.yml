@@ -53,7 +53,7 @@ parameters:
         company_name: 'Infopáginas'
         title_max_length: 60
         title_category_max_length: 20
-        business_name_length: 26    # + 4 sign
+        business_name_length: 45    # + 3 sign
         locality_length: 15         # + 3 sign
         brand_length: 12
         description_max_length: 160
