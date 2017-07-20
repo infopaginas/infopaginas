@@ -178,6 +178,7 @@ This code manage the many-to-[one|many] association field popup
                 // related create admin
                 jQuery('a', field_dialog_{{ id }}).on('click', field_dialog_form_action_{{ id }});
                 jQuery('form', field_dialog_{{ id }}).on('submit', field_dialog_form_action_{{ id }});
+                jQuery('form', field_dialog_{{ id }}).on('change', reset_error_field_dialog_form_action_{{ id }});
 
                 // open the dialog in modal mode
                 field_dialog_{{ id }}.modal();
@@ -185,6 +186,24 @@ This code manage the many-to-[one|many] association field popup
                 Admin.setup_list_modal(field_dialog_{{ id }});
             }
         });
+    };
+
+    // reset form errors
+    var reset_error_field_dialog_form_action_{{ id }} = function(event) {
+
+        var element = jQuery(this);
+
+        // return if the link is an anchor inside the same page
+        if (this.nodeName == 'A' && (element.attr('href').length == 0 || element.attr('href')[0] == '#')) {
+            return;
+        }
+
+        if (this.nodeName == 'FORM') {
+            // remove errors
+            element.find( '#{{ id }}_request_status' ).remove();
+            element.find( '.has-error' ).removeClass( 'has-error' );
+            element.find( '.sonata-ba-field-error-messages' ).remove();
+        }
     };
 
     // handle the post data
@@ -208,9 +227,11 @@ This code manage the many-to-[one|many] association field popup
         if (this.nodeName == 'FORM') {
             var url  = element.attr('action');
             var type = element.attr('method');
+            var button = element.find('button[type = "submit"]');
         } else if (this.nodeName == 'A') {
             var url  = element.attr('href');
             var type = 'GET';
+            var button = false;
         } else {
             alert('unexpected element : @' + this.nodeName + '@');
             return;
@@ -228,6 +249,11 @@ This code manage the many-to-[one|many] association field popup
         var form = jQuery(this);
 
         Admin.log('[{{ id }}|field_dialog_form_action] execute ajax call');
+
+        if ( button ) {
+            element.find( '#{{ id }}_request_status' ).remove();
+            button.after('<span class="orm-pop-up-status" id="{{ id }}_request_status"><img src="{{ asset('assets/images/spinner-empty-background.gif') }}"> Please wait, loading...</span>')
+        }
 
         // the ajax post
         jQuery(form).ajaxSubmit({
@@ -279,16 +305,30 @@ This code manage the many-to-[one|many] association field popup
 
                     {% endif %}
 
+                    if ( button ) {
+                        element.find( '#{{ id }}_request_status' ).remove();
+                    }
+
                     return;
                 }
 
                 // otherwise, display form error
                 field_dialog_content_{{ id }}.html(data);
 
+                if ( button ) {
+                    element.find( '#{{ id }}_request_status' ).remove();
+                }
+
                 Admin.shared_setup(field_dialog_{{ id }});
 
                 // reattach the event
                 jQuery('form', field_dialog_{{ id }}).submit(field_dialog_form_action_{{ id }});
+                jQuery('form', field_dialog_{{ id }}).on('change', reset_error_field_dialog_form_action_{{ id }});
+            },
+            error: function( data ) {
+                if ( button ) {
+                    element.find( '#{{ id }}_request_status' ).html( data.statusText );
+                }
             }
         });
 
