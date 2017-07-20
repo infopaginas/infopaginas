@@ -165,3 +165,11 @@ img.video-poster {
     max-width: 100%;
     height: auto;
 }
+
+span.orm-pop-up-status {
+    padding-left: 20px;
+}
+
+span.orm-pop-up-status img {
+    height: 30px;
+}
