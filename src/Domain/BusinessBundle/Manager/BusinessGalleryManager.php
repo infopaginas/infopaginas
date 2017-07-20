@@ -80,41 +80,54 @@ class BusinessGalleryManager
      * @param string          $context
      * @param string          $url
      *
-     * @return BusinessProfile|bool
+     * @return array
      * @throws \Exception
      */
     public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $context, string $url)
     {
         $headers = SiteHelper::checkUrlExistence($url);
+        $error = [];
 
-        if ($headers and in_array($headers['content_type'], SiteHelper::$imageContentTypes) and
-            exif_imagetype($url) and $this->checkImageSize($headers, $context)
-        ) {
-            $file = tmpfile();
+        if ($headers and in_array($headers['content_type'], SiteHelper::$imageContentTypes) and exif_imagetype($url)) {
+            if ($this->checkImageSize($headers, $context)) {
+                $file = tmpfile();
 
-            if ($file === false) {
-                throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+                if ($file === false) {
+                    throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+                }
+
+                $ext = pathinfo($url, PATHINFO_EXTENSION);
+                // Put content in this file
+                $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext  ;
+                file_put_contents($path, file_get_contents($url));
+
+                // the UploadedFile of the user image
+                // referencing the temp file (used for validation only)
+                $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+                $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
+
+                $this->getEntityManager()->flush();
+
+                $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
+
+                return $error;
+            } else {
+                $error = [
+                    'message' => 'business_profile.images.invalid_size',
+                    'params'  => [
+                        '{{ limit }}' => Media::getMediaMaxSizeByContext($context) / Media::BYTES_IN_MEGABYTE,
+                    ],
+                ];
             }
-
-            $ext = pathinfo($url, PATHINFO_EXTENSION);
-            // Put content in this file
-            $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext  ;
-            file_put_contents($path, file_get_contents($url));
-
-            // the UploadedFile of the user image
-            // referencing the temp file (used for validation only)
-            $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
-
-            $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
-
-            $this->getEntityManager()->flush();
-
-            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
-
-            return $businessProfile;
         } else {
-            return false;
+            $error = [
+                'message' => 'business_profile.images.invalid_url',
+                'params'  => [],
+            ];
         }
+
+        return $error;
     }
 
     /**

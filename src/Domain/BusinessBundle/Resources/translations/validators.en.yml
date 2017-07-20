@@ -6,6 +6,7 @@ business_profile:
     digit_dash: Only digits and dash are allowed
   images:
     invalid_url: Error: Invalid image URL.
+    invalid_size: The image is larger than {{ limit }} MB
   video:
     invalid_url: Error: Invalid video URL.
   category:
