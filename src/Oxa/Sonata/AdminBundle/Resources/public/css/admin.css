@@ -173,3 +173,7 @@ span.orm-pop-up-status {
 span.orm-pop-up-status img {
     height: 30px;
 }
+
+textarea.vertical-resize {
+    resize: vertical;
+}

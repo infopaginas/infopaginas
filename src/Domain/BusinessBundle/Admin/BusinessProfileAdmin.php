@@ -1384,6 +1384,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('product' . $locale, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Products',
                 'required' => false,
@@ -1400,6 +1401,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('brands' . $locale, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Brands',
                 'required' => false,
@@ -1416,6 +1418,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('workingHours' . $locale, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Working hours',
                 'required' => false,
