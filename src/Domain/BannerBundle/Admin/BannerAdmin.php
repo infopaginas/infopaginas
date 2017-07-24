@@ -75,7 +75,11 @@ class BannerAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('title')
-                ->add('description')
+                ->add('description', null, [
+                    'attr' => [
+                        'class' => 'vertical-resize',
+                    ],
+                ])
                 ->add('isPublished')
             ->end()
             ->with('Type')

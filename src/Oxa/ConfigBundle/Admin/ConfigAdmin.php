@@ -47,7 +47,11 @@ class ConfigAdmin extends OxaAdmin
     {
         $formMapper
             ->add('title')
-            ->add('description')
+            ->add('description', null, [
+                'attr' => [
+                    'class' => 'vertical-resize',
+                ],
+            ])
             ->add('format', 'choice', [
                 'choices' => [
                     'html' => 'html',
@@ -57,7 +61,12 @@ class ConfigAdmin extends OxaAdmin
                     'class' => 'formatter'
                 ]
             ])
-            ->add('value', 'ckeditor', ['config_name' => 'default'])
+            ->add('value', 'ckeditor', [
+                'config_name' => 'default',
+                'attr' => [
+                    'class' => 'vertical-resize',
+                ],
+            ])
         ;
     }
 

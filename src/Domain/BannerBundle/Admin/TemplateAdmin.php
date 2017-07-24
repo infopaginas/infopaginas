@@ -54,6 +54,7 @@ class TemplateAdmin extends OxaAdmin
             ->add('body', null, [
                 'attr' => [
                     'rows' => 20,
+                    'class' => 'vertical-resize',
                 ]
             ])
             ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])

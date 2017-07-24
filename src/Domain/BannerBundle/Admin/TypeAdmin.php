@@ -49,7 +49,11 @@ class TypeAdmin extends OxaAdmin
         $formMapper
             ->add('name')
             ->add('placement')
-            ->add('comment')
+            ->add('comment', null, [
+                'attr' => [
+                    'class' => 'vertical-resize',
+                ],
+            ])
         ;
     }
 

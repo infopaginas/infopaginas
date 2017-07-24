@@ -4,7 +4,7 @@ define(['jquery', 'tools/spin'], function( $, Spin ) {
     var login = function() {
         this.urls = {
             login_check: Routing.generate('fos_user_security_check'),
-            home: Routing.generate('domain_site_home_index')
+            home: Routing.generate('domain_site_user_profile')
         };
 
         this.html = {

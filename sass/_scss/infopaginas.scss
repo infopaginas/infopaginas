@@ -1484,6 +1484,14 @@ $thumb-width-mb: 60px;
   h5 {
     color: $grey--light;
   }
+
+  div:first-child {
+    border: 1px solid #808080;
+  }
+}
+
+#search-float-bottom div:nth-child(2) {
+  border: 1px solid #808080;
 }
 
 .ad-desktop {
@@ -1582,6 +1590,28 @@ $thumb-width-mb: 60px;
   @media only screen and (max-width: 804px) {
     height: calc(100vh - 82px);
     width: 100%;  
+  }
+}
+
+.business-map {
+  position: relative;
+}
+
+#empty-map-placeholder {
+  position: absolute;
+  width: 60%;
+  z-index: 9999;
+  left: 20%;
+  top: 39%;
+
+  img {
+    display: block;
+    margin: auto;
+    width: 40%;
+  }
+
+  p {
+    text-align: center;
   }
 }
 
@@ -2104,6 +2134,10 @@ $thumb-width-mb: 60px;
     line-height: 75px;
     padding: 0;
     text-align: center;
+
+    &.profile-page {
+      width: 33%;
+    }
 
     i {
       font-size: 1.7em;
@@ -5790,4 +5824,12 @@ a.select-all-button {
   width: 100%;
   height: 500px;
   margin: 0 auto;
+
+  @media only screen and (max-height: 740px) {
+    height: 350px;
+  }
+}
+
+.report-button-group button {
+  margin: 10px;
 }

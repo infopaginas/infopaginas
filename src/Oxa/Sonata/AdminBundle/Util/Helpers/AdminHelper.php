@@ -207,7 +207,6 @@ class AdminHelper
     public static function getFormImageFileConstrain()
     {
         return [
-            'maxSize' => self::MAX_IMAGE_FILESIZE,
             'mimeTypes' => [
                 "image/png",
                 "image/jpeg",
