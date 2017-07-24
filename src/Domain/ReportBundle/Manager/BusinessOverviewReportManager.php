@@ -323,6 +323,8 @@ class BusinessOverviewReportManager extends BaseReportManager
                 $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
                 $insert = [];
             }
+
+            $i++;
         }
 
         if ($insert) {
