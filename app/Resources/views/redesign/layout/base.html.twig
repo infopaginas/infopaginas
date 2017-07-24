@@ -64,6 +64,10 @@
             {% include ':widgets:google_tag_manager_no_script.html.twig' %}
         {% endblock %}
 
+        {% block systemNoJsWarning %}
+            {% include ':redesign/errors:no-js-warning.html.twig' %}
+        {% endblock %}
+
         {% block searchHeader %}
             {% include ':redesign/blocks:header.html.twig' %}
         {% endblock %}

@@ -566,3 +566,5 @@ business_profile.panorama.title: This is a 360 panorama, drag the image to look 
 
 search_results.count.total: We've found {-count-} results
 google_map.empty_block.message: Please wait, loading...
+
+no_js.warning.message: Your browser's Javascript functionality is turned off. Please turn it on so that you can experience the full capabilities of this site.
