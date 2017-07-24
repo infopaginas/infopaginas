@@ -9,6 +9,7 @@ interface BusinessFormHandlerInterface
     const MESSAGE_BUSINESS_PROFILE_CLOSED  = 'business_profile.message.closed';
     const MESSAGE_BUSINESS_PROFILE_CREATED = 'business_profile.message.created';
     const MESSAGE_BUSINESS_PROFILE_UPDATED = 'business_profile.message.updated';
+    const MESSAGE_BUSINESS_PROFILE_WELCOME = 'business_profile.message.welcome';
 
     const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
 }
