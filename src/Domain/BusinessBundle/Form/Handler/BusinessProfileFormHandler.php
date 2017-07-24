@@ -28,13 +28,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Class BusinessProfileFormHandler
  * @package Domain\BusinessBundle\Form\Handler
  */
-class BusinessProfileFormHandler extends BaseFormHandler
+class BusinessProfileFormHandler extends BaseFormHandler implements BusinessFormHandlerInterface
 {
-    const MESSAGE_BUSINESS_PROFILE_CREATED = 'business_profile.message.created';
-    const MESSAGE_BUSINESS_PROFILE_UPDATED = 'business_profile.message.updated';
-
-    const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
-
     /** @var Request  */
     protected $request;
 

@@ -11,17 +11,12 @@ namespace Domain\BusinessBundle\Form\Handler;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHandlerInterface
+class BusinessCloseRequestFormHandler extends BaseFormHandler implements BusinessFormHandlerInterface
 {
-    const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id is not found';
-    const MESSAGE_BUSINESS_PROFILE_CLOSED = 'business_profile.message.closed';
-    const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
-
     /** @var Request $request */
     private $request;
 
