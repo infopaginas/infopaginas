@@ -196,6 +196,7 @@ services:
             - '@request'
             - '@domain_business.manager.business_profile'
             - '@domain_business.manager.tasks'
+            - '@translator'
 
     #event listeners section
     domain_business.listener.datetime_period_status_subscriber:

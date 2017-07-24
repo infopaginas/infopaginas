@@ -433,6 +433,7 @@ Successfully updated password: Successfully updated password
 Validation failure: Validation failure
 business_profile.message.created: Business profile was successfully created (changes will be applied after admin confirmation)
 business_profile.message.updated: Business profile was successfully updated (changes will be applied after admin confirmation)
+business_profile.message.closed: Business profile was successfully updated (changes will be applied after admin confirmation)
 user.reset_password_request.email.not_found: User {-email-} doesn't exists
 business_profile.seoDescription.search: Find best {-categories-} in {-locality-}
 business_profile.seoTitle.search: categories in locality
