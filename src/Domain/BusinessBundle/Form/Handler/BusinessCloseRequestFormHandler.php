@@ -14,10 +14,13 @@ use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHandlerInterface
 {
     const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id is not found';
+    const MESSAGE_BUSINESS_PROFILE_CLOSED = 'business_profile.message.closed';
+    const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
 
     /** @var Request $request */
     private $request;
@@ -28,16 +31,21 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHan
     /** @var TasksManager $tasksManager */
     private $tasksManager;
 
+    /** @var TranslatorInterface $translator */
+    protected $translator;
+
     public function __construct(
         FormInterface $form,
         Request $request,
         BusinessProfileManager $businessProfileManager,
-        TasksManager $tasksManager
+        TasksManager $tasksManager,
+        TranslatorInterface $translator
     ) {
         $this->form                   = $form;
         $this->request                = $request;
         $this->businessProfileManager = $businessProfileManager;
         $this->tasksManager           = $tasksManager;
+        $this->translator             = $translator;
     }
 
     public function process()
@@ -70,6 +78,15 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHan
 
         $closureReason = $this->form->get('reason')->getData();
         $this->tasksManager->createCloseProfileConfirmationRequest($businessProfile, $closureReason);
+
+        $session = $this->request->getSession();
+
+        if ($session) {
+            $session->getFlashBag()->add(
+                self::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
+                $this->translator->trans(self::MESSAGE_BUSINESS_PROFILE_CLOSED)
+            );
+        }
     }
 
     /**
