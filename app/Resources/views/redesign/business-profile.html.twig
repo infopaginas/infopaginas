@@ -43,19 +43,19 @@
                     {% endif %}
                     <div class="header-actions">
                         {% if not businessProfile.getHideAddress() %}
-                            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
+                            <a class="get-dir button button--small button--featured link-pointer profile-page" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
                                 <i class="fa fa-location-arrow"></i>
                                 <span>{% trans %}Directions{% endtrans %}</span>
                             </a>
                         {% endif %}
                         {% if businessProfile.getPhones()|length > 0 %}
-                            <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">
+                            <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call profile-page" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">
                                 <i class="fa fa-phone"></i>
                                 <span>{% trans %}Call{% endtrans %}</span>
                             </a>
                         {% endif %}
                         {% if businessProfile.getWebsite() %}
-                            <a class="button button--small button--featured redirect-event link-pointer" data-href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
+                            <a class="button button--small button--featured redirect-event link-pointer profile-page" data-href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
                                 <i class="fa fa-external-link"></i>
                                 <span>{% trans %}Web{% endtrans %}</span>
                             </a>

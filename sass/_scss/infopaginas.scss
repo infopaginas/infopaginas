@@ -2135,6 +2135,10 @@ $thumb-width-mb: 60px;
     padding: 0;
     text-align: center;
 
+    &.profile-page {
+      width: 33%;
+    }
+
     i {
       font-size: 1.7em;
       height: .5em;
