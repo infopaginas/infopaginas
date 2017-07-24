@@ -177,3 +177,7 @@ span.orm-pop-up-status img {
 textarea.vertical-resize {
     resize: vertical;
 }
+
+.export-report-button-group button {
+    margin: 10px;
+}
