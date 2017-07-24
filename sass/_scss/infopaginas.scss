@@ -5824,6 +5824,10 @@ a.select-all-button {
   width: 100%;
   height: 500px;
   margin: 0 auto;
+
+  @media only screen and (max-height: 740px) {
+    height: 350px;
+  }
 }
 
 .report-button-group button {
