@@ -47,30 +47,27 @@ $( document ).ready( function() {
         excelExportURL: Routing.generate( 'domain_business_admin_reports_excel_export' )
     };
 
-    var pdfExportButton = '<div class="form-group"><button type="button" href="' + reportUrls.pdfExportURL + '" id="export-pdf" class="btn green-btn"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>PDF</button></div>';
-    var excelExportButton = '<div class="form-group"><button type="button" href="' + reportUrls.excelExportURL + '" id="export-excel" class="btn green-btn"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Excel</button></div>';
-    var printButton = '<div class="form-group"><button type="button" href="' + reportUrls.pdfExportURL + '" id="print" class="btn green-btn"><i class="fa fa-print" aria-hidden="true"></i>Print</button></div>';
+    var exportButtons = '<div class="export-report-button-group">' +
+        '<button type="button" href="' + reportUrls.excelExportURL + '" id="export-excel" class="btn green-btn"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Excel</button>' +
+        '<button type="button" href="' + reportUrls.pdfExportURL + '" id="export-pdf" class="btn green-btn"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>PDF</button>' +
+        '<button type="button" href="' + reportUrls.pdfExportURL + '" id="print" class="btn green-btn"><i class="fa fa-print" aria-hidden="true"></i>Print</button>' +
+        '</div>'
+    ;
 
     var interactionDateEndContainer = $( '#sonata-ba-field-container-' + formId + '_interactionDateEnd' );
-    interactionDateEndContainer.after( printButton );
-    interactionDateEndContainer.after( pdfExportButton );
-    interactionDateEndContainer.after( excelExportButton );
+    interactionDateEndContainer.after( exportButtons );
     interactionDateEndContainer.after( '<div class="form__section scrollable-table" id="businessOverviewStatisticsContainer"></div>' );
     interactionDateEndContainer.after( '<div id="businessOverviewChartContainer" class="chart-container"></div>' );
     interactionDateEndContainer.after( '<div class="form-group"><button id="interactionFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     var keywordLimitContainer = $( '#sonata-ba-field-container-' + formId + '_keywordLimit' );
-    keywordLimitContainer.after( printButton );
-    keywordLimitContainer.after( pdfExportButton );
-    keywordLimitContainer.after( excelExportButton );
+    keywordLimitContainer.after( exportButtons );
     keywordLimitContainer.after( '<div class="form__section scrollable-table" id="keywordStatisticsContainer"></div>' );
     keywordLimitContainer.after( '<div id="keywordChartContainer" class="chart-container"></div>' );
     keywordLimitContainer.after( '<div class="form-group"><button id="keywordFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
 
     var adUsageDateEndContainer = $( '#sonata-ba-field-container-' + formId + '_adUsageDateEnd' );
-    adUsageDateEndContainer.after( printButton );
-    adUsageDateEndContainer.after( pdfExportButton );
-    adUsageDateEndContainer.after( excelExportButton );
+    adUsageDateEndContainer.after( exportButtons );
     adUsageDateEndContainer.after( '<div class="form__section scrollable-table" id="adUsageStatisticsContainer"></div>' );
     adUsageDateEndContainer.after( '<div id="adUsageChartContainer" class="chart-container"></div>' );
     adUsageDateEndContainer.after( '<div class="form-group"><button id="adUsageFilter" type="button" class="btn btn-primary"><i class="fa fa-filter" aria-hidden="true"></i> Filter </button></div>' );
