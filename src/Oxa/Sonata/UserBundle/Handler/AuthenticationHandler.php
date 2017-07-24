@@ -8,6 +8,7 @@
 
 namespace Oxa\Sonata\UserBundle\Handler;
 
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,8 +54,23 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     {
         $redirect = false;
 
-        if ($this->security->isGranted('ROLE_ADMINISTRATOR')) {
+        $adminRoles = [
+            'ROLE_ADMINISTRATOR',
+            'ROLE_CONTENT_MANAGER',
+            'ROLE_SALES_MANAGER',
+        ];
+
+        if ($this->security->isGranted($adminRoles)) {
             $redirect = $this->router->generate('sonata_admin_dashboard');
+        } else {
+            $session = $request->getSession();
+
+            if ($session) {
+                $session->getFlashBag()->add(
+                    BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
+                    $this->translator->trans(BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_WELCOME)
+                );
+            }
         }
 
         return new JsonResponse([
