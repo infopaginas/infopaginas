@@ -178,6 +178,10 @@ textarea.vertical-resize {
     resize: vertical;
 }
 
+textarea[id *= "_description"] {
+    resize: vertical;
+}
+
 .export-report-button-group button {
     margin: 10px;
 }
