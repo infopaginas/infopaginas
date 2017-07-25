@@ -596,26 +596,26 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var mediaQueryTablet = window.matchMedia( "(min-width: 740px)" );
 
         if ( mapStateSize == 'desktop' ) {
+            // desktop -> desktop
+            // desktop -> device
             $.Velocity.RunSequence( resizeSequenceDesktop, { mobileHA: true } );
             $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
         } else if ( mediaQuery.matches ) {
+            // device -> desktop
             $.Velocity.RunSequence( resizeSequenceDevice, { mobileHA: true } );
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
-        } else if ( !(mapStateSize == 'device' && mediaQueryTablet.matches) ) {
+        }
+        else if ( !mediaQueryTablet.matches ) {
+            // device -> device
+            if ( mapState == 'expanded' ) {
+                resultsMap.css( 'transform', 'translateY(' + getMapTranslateY()  + ')' );
+            }
+        } else {
+            // device -> tablet
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
-        }
-
-        if ( mapStateSize == 'device' && mediaQuery.matches ) {
-            resultsMap.css( 'height', $( window ).height() - 45 + 'px' );
-            resultsMap.css( 'bottom', '0' );
-        }
-
-        if ( mapStateSize == 'desktop' && !mediaQuery.matches ) {
-            resultsMap.css( 'height', $( window ).height() - 82 + 'px' );
-            resultsMap.css( 'bottom', '-115vh' );
         }
 
         if ( mediaQuery.matches ) {
@@ -833,6 +833,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     function closeMapSequenceHideBlock() {
         $( '#searchResults' ).css( 'display', 'block' );
+        resultsMap.css( 'bottom', -window.innerHeight + 'px' );
     }
 
     function triggerMapResize() {
