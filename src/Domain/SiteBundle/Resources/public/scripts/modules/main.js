@@ -607,8 +607,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $.Velocity.RunSequence( resizeSequenceDevice, { mobileHA: true } );
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
-        }
-        else if ( !mediaQueryTablet.matches ) {
+        } else if ( !mediaQueryTablet.matches ) {
             // device -> device
             if ( mapState == 'expanded' ) {
                 resultsMap.css( 'transform', 'translateY(' + getMapTranslateY()  + ')' );
