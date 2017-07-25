@@ -1647,6 +1647,10 @@ $thumb-width-mb: 60px;
     top: 100px;
     width: 10em;
 
+    &.button--hide-map {
+      top: 55px;
+    }
+
     span {
       display: inline-block;
       line-height: 2em;
