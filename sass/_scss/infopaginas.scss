@@ -1651,6 +1651,10 @@ $thumb-width-mb: 60px;
       top: 55px;
     }
 
+    &.button--show-map {
+      transform: translateX(500px) translateY(0px);
+    }
+
     span {
       display: inline-block;
       line-height: 2em;
@@ -1950,6 +1954,7 @@ $thumb-width-mb: 60px;
     box-shadow: 0 4px 8px transparentize($black, .85);
     margin: 0 auto;
     max-width: 900px;
+    min-width: 500px;
     padding: 20px 30px;
   }
 }
