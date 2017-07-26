@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 08.07.16
- * Time: 12:05
- */
 
 namespace Domain\BusinessBundle\Twig\Extension;
 

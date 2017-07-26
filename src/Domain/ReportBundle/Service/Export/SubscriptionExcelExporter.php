@@ -66,6 +66,9 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $subscriptionData
+     */
     protected function generateMainTable($subscriptionData)
     {
         $row = $this->mainTableInitRow;

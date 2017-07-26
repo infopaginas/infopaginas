@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\UserBundle\Manager\UsersManager;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -166,9 +167,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         foreach (BusinessProfile::getTaskMediaManyToOneRelations() as $mediaItem) {
             if (!empty($this->requestParams[$mediaItem])) {
                 if ($mediaItem == BusinessProfile::BUSINESS_PROFILE_RELATION_VIDEO) {
-                    $repository = $this->em->getRepository('OxaVideoBundle:VideoMedia');
+                    $repository = $this->em->getRepository(VideoMedia::class);
                 } else {
-                    $repository = $this->em->getRepository('OxaSonataMediaBundle:Media');
+                    $repository = $this->em->getRepository(Media::class);
                 }
 
                 $entity = $repository->find($this->requestParams[$mediaItem]['id']);
@@ -199,8 +200,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
                             /* @var BusinessGallery gallery */
                             $galleryNew = clone $gallery;
 
-                            $media = $this->em->getRepository('OxaSonataMediaBundle:Media')
-                                ->find($params[$key]['media']);
+                            $media = $this->em->getRepository(Media::class)->find($params[$key]['media']);
 
                             $galleryNew->setMedia($media);
                             $galleryNew->setDescription($params[$key]['description']);
@@ -214,7 +214,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
                 foreach ($params as $item) {
                     $galleryNew = new BusinessGallery();
 
-                    $media = $this->em->getRepository('OxaSonataMediaBundle:Media')->find($item['media']);
+                    $media = $this->em->getRepository(Media::class)->find($item['media']);
 
                     $galleryNew->setMedia($media);
                     $galleryNew->setDescription($item['description']);
@@ -364,6 +364,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return $this->businessProfileNew;
     }
 
+    /**
+     * @param array $post
+     */
     private function checkTranslationBlock($post)
     {
         //check name not blank
@@ -398,6 +401,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         }
     }
 
+    /**
+     * @param string $field
+     *
+     * @return int
+     */
     private function getFieldMaxLength($field)
     {
         switch ($field) {
@@ -427,6 +435,13 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return $maxLength;
     }
 
+    /**
+     * @param array $post
+     * @param string $field
+     * @param string $locale
+     *
+     * @return bool
+     */
     private function checkFieldLocaleLength($post, $field, $locale)
     {
         $maxLength = $this->getFieldMaxLength($field);
@@ -445,6 +460,11 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return true;
     }
 
+    /**
+     * @param array $post
+     *
+     * @return bool
+     */
     private function checkTranslationBlockNameBlank($post)
     {
         $fieldNameEn = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_EN;
@@ -502,6 +522,13 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return $data;
     }
 
+    /**
+     * @param string $property
+     * @param string $data
+     * @param string $locale
+     *
+     * @return bool
+     */
     private function addBusinessTranslation($property, $data, $locale)
     {
         if ($this->businessProfileOld) {
@@ -536,6 +563,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return $this->businessProfileNew;
     }
 
+    /**
+     * @return array
+     */
     private function getSkippedProperties()
     {
         return [

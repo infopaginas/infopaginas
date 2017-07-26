@@ -317,6 +317,9 @@ class BusinessProfileExtraSearch
         return $this->areas;
     }
 
+    /**
+     * @return array
+     */
     public static function getServiceAreasTypes()
     {
         return [

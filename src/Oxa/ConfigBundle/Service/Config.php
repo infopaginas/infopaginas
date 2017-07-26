@@ -3,6 +3,7 @@
 namespace Oxa\ConfigBundle\Service;
 
 use Doctrine\ORM\EntityManager;
+use Oxa\ConfigBundle\Entity\Config as SystemConfig;
 
 class Config
 {
@@ -13,6 +14,9 @@ class Config
 
     protected $config;
 
+    /**
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -20,13 +24,18 @@ class Config
 
     protected function buildConfig()
     {
-        $settings = $this->em->getRepository('OxaConfigBundle:Config')->findAll();
+        $settings = $this->em->getRepository(SystemConfig::class)->findAll();
 
         foreach ($settings as $setting) {
             $this->config[$setting->getKey()] = $setting;
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return Config|null
+     */
     public function getSetting($key)
     {
         if (!$this->config) {

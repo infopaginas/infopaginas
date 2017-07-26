@@ -87,6 +87,9 @@ class ExportReport
         $this->status    = self::STATUS_PENDING;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getType();

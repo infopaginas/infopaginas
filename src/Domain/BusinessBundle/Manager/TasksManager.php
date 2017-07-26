@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Xedin
- * Date: 16.05.16
- * Time: 15:41
- */
 
 namespace Domain\BusinessBundle\Manager;
 
@@ -91,6 +85,12 @@ class TasksManager
         return $this->save($task);
     }
 
+    /**
+     * @param mixed $entityNew
+     * @param mixed $entityOld
+     *
+     * @return array
+     */
     public function createUpdateProfileConfirmationRequest($entityNew, $entityOld) : array
     {
         $changeSetCalculator = $this->getChangeSetCalculator($entityNew);

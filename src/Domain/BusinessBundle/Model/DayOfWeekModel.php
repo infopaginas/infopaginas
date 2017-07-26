@@ -29,6 +29,9 @@ class DayOfWeekModel
     const SCHEMA_ORG_OPEN_TIME_FORMAT = 'H:i';
     const FORM_DEFAULT_FORMAT = 'h:i a';
 
+    /**
+     * @return array
+     */
     public static function getDayOfWeekMapping()
     {
         return [
@@ -62,6 +65,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getDaysOfWeek()
     {
         return [
@@ -75,6 +81,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getDaysOfWeekStartWithSunday()
     {
         return [
@@ -88,6 +97,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getAllDaysOfWeek()
     {
         return [
@@ -103,6 +115,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getWeekday()
     {
         return [
@@ -114,6 +129,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getWeekend()
     {
         return [
@@ -340,6 +358,11 @@ class DayOfWeekModel
         return $data;
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
     public static function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
     {
         $workingHours = $businessProfile->getCollectionWorkingHours();
@@ -442,6 +465,11 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @param BusinessProfileWorkingHour[] $workingHours
+     *
+     * @return array
+     */
     public static function getWorkingHoursWeekList($workingHours)
     {
         $dailyHours = [];
@@ -457,6 +485,12 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
+    /**
+     * @param array $dailyHours
+     * @param string $dayCode
+     *
+     * @return array
+     */
     public static function mergeCustomDayToReal($dailyHours, $dayCode)
     {
         if (!empty($dailyHours[$dayCode])) {
@@ -487,6 +521,11 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
+    /**
+     * @param array $dailyHours
+     *
+     * @return array
+     */
     public static function sortDailyWorkingHours($dailyHours)
     {
         foreach ($dailyHours as $key => $hours) {
@@ -499,6 +538,11 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
+    /**
+     * @param array $dailyHours
+     *
+     * @return array
+     */
     public static function orderDailyWorkingDayByDay($dailyHours)
     {
         $ordered = [];
@@ -514,6 +558,11 @@ class DayOfWeekModel
         return $ordered;
     }
 
+    /**
+     * @param array $dailyHours
+     *
+     * @return array
+     */
     public static function mergeSimilarWorkingDays($dailyHours)
     {
         $data = [];

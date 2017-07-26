@@ -70,6 +70,9 @@ class CategoryExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $categoryData
+     */
     protected function generateMainTable($categoryData)
     {
         $row = $this->mainTableInitRow;

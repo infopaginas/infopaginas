@@ -177,6 +177,11 @@ class AdminHelper
         ];
     }
 
+    /**
+     * Used to set report options
+     *
+     * @return array
+     */
     public static function getReportDateTypeOptions()
     {
         return [

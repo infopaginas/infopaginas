@@ -15,16 +15,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class PageManager extends Manager
 {
+    /**
+     * @param int $code
+     *
+     * @return Page|null
+     */
     public function getPageByCode($code)
     {
         return $this->getRepository()->findOneBy(['code' => $code]);
     }
 
-    public function getPage()
-    {
-        return new Page();
-    }
-
+    /**
+     * @param Page $entity
+     * @param ContainerInterface $container
+     *
+     * @return Page
+     */
     public function setPageSeoData(Page $entity, ContainerInterface $container)
     {
         $seoSettings = $container->getParameter('seo_custom_settings');

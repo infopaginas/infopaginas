@@ -133,6 +133,10 @@ class SubscriptionAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param ErrorElement $errorElement
+     * @param Subscription $object
+     */
     public function validate(ErrorElement $errorElement, $object)
     {
         if ($object->getStartDate() > new \DateTime('now')) {

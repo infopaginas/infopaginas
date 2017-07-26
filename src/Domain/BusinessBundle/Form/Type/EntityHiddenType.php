@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 13.07.16
- * Time: 22:50
- */
-
 namespace Domain\BusinessBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ObjectManager;

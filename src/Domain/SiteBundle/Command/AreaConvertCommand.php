@@ -24,6 +24,10 @@ class AreaConvertCommand extends ContainerAwareCommand
         $this->setDescription('Areas conversion');
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -129,6 +133,9 @@ class AreaConvertCommand extends ContainerAwareCommand
         return $area;
     }
 
+    /**
+     * @return array
+     */
     protected function getUpdateLocalityList()
     {
         $localities = [
@@ -231,6 +238,9 @@ class AreaConvertCommand extends ContainerAwareCommand
         return $localities;
     }
 
+    /**
+     * @return array
+     */
     protected function getRemoveAreaList()
     {
         return [

@@ -22,7 +22,7 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
     protected $container;
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
@@ -38,6 +38,9 @@ class LoadTypeData extends AbstractFixture implements ContainerAwareInterface, O
         $manager->flush();
     }
 
+    /**
+     * @return array
+     */
     public static function getData()
     {
         return [

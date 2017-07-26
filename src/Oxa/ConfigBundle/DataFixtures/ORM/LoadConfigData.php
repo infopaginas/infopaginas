@@ -19,7 +19,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
     protected $container;
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
@@ -42,6 +42,9 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
         $manager->flush();
     }
 
+    /**
+     * @return array
+     */
     private function getData()
     {
         return [

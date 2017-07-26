@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 29.06.16
- * Time: 10:44
- */
 
 namespace Oxa\Sonata\UserBundle\Manager;
 

@@ -32,6 +32,7 @@ class ReviewsController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function listAction(Request $request)
@@ -72,6 +73,7 @@ class ReviewsController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function saveAction(Request $request) : JsonResponse

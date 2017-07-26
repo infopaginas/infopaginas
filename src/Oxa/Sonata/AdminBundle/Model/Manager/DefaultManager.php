@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/14/16
- * Time: 3:05 PM
- */
 
 namespace Oxa\Sonata\AdminBundle\Model\Manager;
 

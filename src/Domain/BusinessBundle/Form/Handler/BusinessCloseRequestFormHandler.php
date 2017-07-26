@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 15.08.16
- * Time: 22:53
- */
 
 namespace Domain\BusinessBundle\Form\Handler;
 
@@ -43,6 +37,9 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements Busines
         $this->translator             = $translator;
     }
 
+    /**
+     * @return bool
+     */
     public function process()
     {
         if ($this->request->getMethod() == 'POST') {

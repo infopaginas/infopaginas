@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\Address\Country;
 
 /**
@@ -30,6 +31,9 @@ class CountryRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailableCountriesQb()
     {
         $qb = $this->createQueryBuilder('c');

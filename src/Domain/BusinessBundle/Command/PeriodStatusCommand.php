@@ -23,7 +23,8 @@ class PeriodStatusCommand extends ContainerAwareCommand
     }
 
     /**
-     * Used manage objects statuses
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

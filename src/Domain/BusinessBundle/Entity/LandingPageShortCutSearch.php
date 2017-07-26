@@ -65,6 +65,9 @@ class LandingPageShortCutSearch
      */
     protected $landingPageShortCut;
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitleEn() ?: '';

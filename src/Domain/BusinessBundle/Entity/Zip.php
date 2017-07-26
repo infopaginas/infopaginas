@@ -36,7 +36,7 @@ class Zip
     protected $zipCode;
 
     /**
-     * @var Domain\BusinessBundle\Entity\Neighborhood
+     * @var \Domain\BusinessBundle\Entity\Neighborhood
      *
      * @ORM\ManyToOne(
      *      targetEntity="Domain\BusinessBundle\Entity\Neighborhood",

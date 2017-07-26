@@ -18,6 +18,9 @@ class SecurityListener
         $this->userActionReportManager = $userActionReportManager;
     }
 
+    /**
+     * @param InteractiveLoginEvent $event
+     */
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
         if ($this->security->isGranted('ROLE_SALES_MANAGER') or $this->security->isGranted('ROLE_ADMIN')) {

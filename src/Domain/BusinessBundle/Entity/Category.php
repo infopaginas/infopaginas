@@ -200,11 +200,17 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->isUpdated = true;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -569,6 +575,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public static function getDefaultCategories()
     {
         return [
@@ -577,6 +586,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getSystemCategorySlugs()
     {
         return [

@@ -5,6 +5,7 @@ namespace Domain\ReportBundle\Manager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Repository\CategoryRepository;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -119,6 +120,11 @@ class CategoryReportManager extends BaseReportManager
         $this->insertBusinessCategories($data);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
     protected function buildBusinessCategories(BusinessProfile $businessProfile)
     {
         $data = [];
@@ -131,6 +137,12 @@ class CategoryReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param int $categoryId
+     * @param MongoDB\BSON\UTCDateTime $date
+     *
+     * @return array
+     */
     protected function buildSingleBusinessCategory($categoryId, $date)
     {
         $data = [
@@ -141,6 +153,11 @@ class CategoryReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
     protected function insertBusinessCategories($data)
     {
         $this->mongoDbManager->insertMany(
@@ -149,6 +166,11 @@ class CategoryReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function getCategoryDataFromMongo($params)
     {
         $cursor = $this->mongoDbManager->aggregateData(
@@ -220,6 +242,9 @@ class CategoryReportManager extends BaseReportManager
         ];
     }
 
+    /**
+     * @param ReportDatesRangeVO $period
+     */
     public function aggregateBusinessCategories($period)
     {
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
@@ -276,7 +301,7 @@ class CategoryReportManager extends BaseReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveRawBusinessCategories($date)
     {
@@ -289,7 +314,7 @@ class CategoryReportManager extends BaseReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveAggregatedBusinessCategories($date)
     {
@@ -301,6 +326,11 @@ class CategoryReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param array $categoryIds
+     *
+     * @return array
+     */
     protected function getCategoryMapping($categoryIds)
     {
         $data = [];
@@ -314,6 +344,9 @@ class CategoryReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @return CategoryRepository
+     */
     protected function getCategoryRepository() : CategoryRepository
     {
         return $this->getEntityManager()->getRepository(Category::class);

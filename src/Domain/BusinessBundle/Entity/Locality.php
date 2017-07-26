@@ -76,7 +76,7 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
     private $extraSearches;
 
     /**
-     * @var Domain\BusinessBundle\Entity\Area
+     * @var Area
      *
      * @ORM\ManyToOne(
      *      targetEntity="Domain\BusinessBundle\Entity\Area",
@@ -193,11 +193,13 @@ class Locality implements GeolocationInterface, DefaultEntityInterface, Translat
 
     /**
      * @param string $name
+     *
      * @return Locality
      */
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 

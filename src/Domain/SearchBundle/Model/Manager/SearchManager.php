@@ -9,21 +9,19 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
-
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Oxa\GeolocationBundle\Model\Geolocation\GeolocationManager;
 use Oxa\ConfigBundle\Service\Config;
 use Oxa\ConfigBundle\Model\ConfigInterface;
-
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
-
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\CatalogItem;
 
 class SearchManager extends Manager
 {
@@ -45,37 +43,19 @@ class SearchManager extends Manager
         parent::__construct($em);
 
         $this->configService            = $configService;
-        $this->businessProfileManager  = $businessProfileManager;
+        $this->businessProfileManager   = $businessProfileManager;
         $this->categoriesManager        = $categoryManager;
         $this->geolocationManager       = $geolocationManager;
         $this->localityManager          = $localityManager;
     }
 
-    public function getAutocompleteDataByPhrase(string $phrase)
-    {
-    }
-
-    public function getAutocompleteDataByLocation(LocationValueObject $location)
-    {
-    }
-
-    public function getAutocompleteDataByPhraseAndLocation(string $phrase, LocationValueObject $location)
-    {
-    }
-
-    public function searchByPhrase(string $phrase)
-    {
-    }
-
-    public function searchByLocation(LocationValueObject $location)
-    {
-    }
-
-    public function searchByPhraseAndLocation(string $phrase, string $location)
-    {
-        $this->getRepository()->getSearchQuery($phrase, $location);
-    }
-
+    /**
+     * @param SearchDTO $searchParams
+     * @param string    $locale
+     * @param bool      $ignoreFilters
+     *
+     * @return SearchResultsDTO
+     */
     public function search(SearchDTO $searchParams, string $locale, $ignoreFilters = false) : SearchResultsDTO
     {
         $search = $this->businessProfileManager->search($searchParams, $locale);
@@ -117,6 +97,11 @@ class SearchManager extends Manager
         return $response;
     }
 
+    /**
+     * @param SearchDTO $searchParams
+     *
+     * @return SearchResultsDTO
+     */
     public function searchCatalog(SearchDTO $searchParams) : SearchResultsDTO
     {
         $search = $this->businessProfileManager->searchCatalog($searchParams);
@@ -179,6 +164,11 @@ class SearchManager extends Manager
         return $response;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return SearchDTO
+     */
     public function getLocalitySearchDTO(Request $request)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
@@ -187,6 +177,12 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
+    /**
+     * @param Request $request
+     * @param bool $isRandomized
+     *
+     * @return SearchDTO
+     */
     public function getSearchDTO(Request $request, $isRandomized = true)
     {
         $location = $this->geolocationManager->buildLocationValueFromRequest($request);
@@ -246,6 +242,13 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
+    /**
+     * @param Request $request
+     * @param Locality $locality
+     * @param category $category
+     *
+     * @return SearchDTO
+     */
     public function getSearchCatalogDTO($request, $locality, $category)
     {
         $location = $this->geolocationManager->buildCatalogLocationValue($locality);
@@ -284,6 +287,11 @@ class SearchManager extends Manager
         return $searchDTO;
     }
 
+    /**
+     * @param SearchDTO $searchDTO
+     *
+     * @return DCDataDTO
+     */
     public function getDoubleClickData(SearchDTO $searchDTO) : DCDataDTO
     {
         $categoriesSlugSet = [];
@@ -301,6 +309,11 @@ class SearchManager extends Manager
         );
     }
 
+    /**
+     * @param SearchDTO $searchDTO
+     *
+     * @return DCDataDTO
+     */
     public function getDoubleClickCatalogData(SearchDTO $searchDTO) : DCDataDTO
     {
         $categoriesSlugSet = [];
@@ -316,6 +329,11 @@ class SearchManager extends Manager
         );
     }
 
+    /**
+     * @param SearchDTO $searchDTO
+     *
+     * @return string
+     */
     protected function getCategorySlugFromFilters(SearchDTO $searchDTO)
     {
         $categorySlug = '';
@@ -331,6 +349,11 @@ class SearchManager extends Manager
         return $categorySlug;
     }
 
+    /**
+     * @param string $localitySlug
+     *
+     * @return Locality|null
+     */
     public function searchCatalogLocality($localitySlug)
     {
         $locality = null;
@@ -346,6 +369,11 @@ class SearchManager extends Manager
         return $locality;
     }
 
+    /**
+     * @param string $categorySlug
+     *
+     * @return Category|null
+     */
     public function searchCatalogCategory($categorySlug)
     {
         $category = null;
@@ -364,6 +392,11 @@ class SearchManager extends Manager
         return $category;
     }
 
+    /**
+     * @param array $entities
+     *
+     * @return bool
+     */
     public function checkCatalogItemHasContent($entities)
     {
         $data = true;
@@ -379,7 +412,7 @@ class SearchManager extends Manager
                 $currentCategory = null;
             }
 
-            $data = $this->em->getRepository('DomainBusinessBundle:CatalogItem')
+            $data = $this->em->getRepository(CatalogItem::class)
                 ->checkCatalogItemHasContent($entities['locality'], $currentCategory);
         }
 
@@ -403,6 +436,11 @@ class SearchManager extends Manager
         return $data;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
     protected function sortItems($data)
     {
         $result = [];
@@ -416,12 +454,24 @@ class SearchManager extends Manager
         return $result;
     }
 
+    /**
+     * @param array $slugs
+     * @param array $entities
+     *
+     * @return bool
+     */
     public function checkCatalogRedirect($slugs, $entities)
     {
         return $this->checkCatalogSlug($slugs['locality'], $entities['locality']) and
             $this->checkCatalogSlug($slugs['category'], $entities['category']);
     }
 
+    /**
+     * @param string $requestSlug
+     * @param mixed $entity
+     *
+     * @return bool
+     */
     private function checkCatalogSlug($requestSlug, $entity)
     {
         if ($requestSlug and !($entity and $entity->getSlug() == $requestSlug)) {
@@ -431,6 +481,11 @@ class SearchManager extends Manager
         return true;
     }
 
+    /**
+     * @param string $query
+     *
+     * @return string
+     */
     public function getSafeSearchString($query)
     {
         $words = $this->getSaveSearchWords($query);
@@ -440,6 +495,11 @@ class SearchManager extends Manager
         return $search;
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array
+     */
     private function getSaveSearchWords($query)
     {
         $searchString = SearchDataUtil::sanitizeElasticSearchQueryString($query);

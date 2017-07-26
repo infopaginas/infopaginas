@@ -27,6 +27,11 @@ use Oxa\Sonata\UserBundle\Entity\User;
  */
 class ReportsController extends Controller
 {
+    /**
+     * @param int $businessProfileId
+     *
+     * @return Response
+     */
     public function indexAction(int $businessProfileId)
     {
         /** @var BusinessProfile $businessProfile */
@@ -61,6 +66,11 @@ class ReportsController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function overviewAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
@@ -74,6 +84,11 @@ class ReportsController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function overviewAdminAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
@@ -82,6 +97,11 @@ class ReportsController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function adUsageAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
@@ -97,6 +117,11 @@ class ReportsController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function adUsageAdminAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
@@ -110,6 +135,11 @@ class ReportsController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function keywordsAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
@@ -123,6 +153,11 @@ class ReportsController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function keywordsAdminAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->request->all());
@@ -131,6 +166,11 @@ class ReportsController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function interactionsTrackAction(Request $request)
     {
         $businessProfileId = $request->request->get('id', null);
@@ -145,6 +185,11 @@ class ReportsController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function excelExportAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->query->all());
@@ -158,6 +203,11 @@ class ReportsController extends Controller
         return $this->getExcelExporterService()->getResponse($params);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function excelAdminExportAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->query->all());
@@ -171,6 +221,11 @@ class ReportsController extends Controller
         return $this->getExcelExporterService()->getResponse($params);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function pdfExportAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->query->all());
@@ -184,6 +239,11 @@ class ReportsController extends Controller
         return $this->getPdfExporterService()->getResponse($params);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function pdfAdminExportAction(Request $request)
     {
         $params = $this->prepareReportParameters($request->query->all());
@@ -225,6 +285,11 @@ class ReportsController extends Controller
         );
     }
 
+    /**
+     * @param array $requestData
+     *
+     * @return array
+     */
     protected function prepareReportParameters($requestData)
     {
         $params = [
@@ -248,6 +313,11 @@ class ReportsController extends Controller
         return $params;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function prepareOverviewResponse($params)
     {
         $businessOverviewReportManager = $this->getBusinessOverviewReportManager();
@@ -269,6 +339,11 @@ class ReportsController extends Controller
         ];
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function prepareKeywordsResponse($params)
     {
         $keywordsReportManager = $this->getKeywordsReportManager();
@@ -288,6 +363,11 @@ class ReportsController extends Controller
         ];
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function prepareAdUsageResponse($params)
     {
         $adUsageData = $this->getAdUsageReportManager()->getAdUsageData($params);
@@ -307,6 +387,9 @@ class ReportsController extends Controller
         ];
     }
 
+    /**
+     * @return \Domain\ReportBundle\Model\Exporter\PdfExporterModel
+     */
     protected function getPdfExporterService()
     {
         return $this->get('domain_report.exporter.pdf');
@@ -320,26 +403,43 @@ class ReportsController extends Controller
         return $this->get('domain_report.exporter.excel');
     }
 
+    /**
+     * @return KeywordsReportManager
+     */
     protected function getKeywordsReportManager() : KeywordsReportManager
     {
         return $this->get('domain_report.manager.keywords_report_manager');
     }
 
+    /**
+     * @return AdUsageReportManager
+     */
     protected function getAdUsageReportManager() : AdUsageReportManager
     {
         return $this->get('domain_report.manager.ad_usage');
     }
 
+    /**
+     * @return BusinessOverviewReportManager
+     */
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
+    /**
+     * @return BusinessProfileManager
+     */
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->get('domain_business.manager.business_profile');
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @throws \Exception
+     */
     protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
     {
         $token = $this->get('security.context')->getToken();

@@ -536,6 +536,9 @@ class VideoMedia implements PostponeRemoveInterface
         return $this->poster;
     }
 
+    /**
+     * @return string
+     */
     public function getYoutubeTitle()
     {
         $title = '';
@@ -554,6 +557,9 @@ class VideoMedia implements PostponeRemoveInterface
         return $title;
     }
 
+    /**
+     * @return string
+     */
     public function getYoutubeDescription()
     {
         $title = '';

@@ -22,6 +22,10 @@ class ManagedBusinessesCounterCommand extends ContainerAwareCommand
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');

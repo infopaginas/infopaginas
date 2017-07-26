@@ -152,6 +152,9 @@ class ExportReportAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @return array
+     */
     public function getExportFormats()
     {
         return [
@@ -159,6 +162,9 @@ class ExportReportAdmin extends OxaAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getExportFields()
     {
         $exportFields['ID']         = 'id';

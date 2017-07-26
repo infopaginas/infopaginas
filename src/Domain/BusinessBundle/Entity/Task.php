@@ -134,7 +134,8 @@ class Task implements DefaultEntityInterface, TaskInterface
     }
 
     /**
-     * @param mixed $type
+     * @param string $type
+     *
      * @return Task
      */
     public function setType($type)
@@ -144,7 +145,7 @@ class Task implements DefaultEntityInterface, TaskInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getStatus()
     {

@@ -66,6 +66,9 @@ class BusinessOverviewExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $overviewData
+     */
     protected function generateMainTable($overviewData)
     {
         $row = $this->mainTableInitRow;

@@ -75,6 +75,9 @@ class BusinessProfileWorkingHour
         $this->isOpenAllTime = false;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $data = [

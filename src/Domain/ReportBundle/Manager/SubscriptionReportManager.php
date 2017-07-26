@@ -23,6 +23,9 @@ class SubscriptionReportManager extends BaseReportManager
     /** @var MongoDbManager $mongoDbManager */
     protected $mongoDbManager;
 
+    /**
+     * @param MongoDbManager $mongoDbManager
+     */
     public function __construct(MongoDbManager $mongoDbManager)
     {
         $this->mongoDbManager = $mongoDbManager;
@@ -36,6 +39,11 @@ class SubscriptionReportManager extends BaseReportManager
         return $this->getSubscriptionPlanRepository()->findBy([], ['id' => 'ASC']);
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getSubscriptionsReportData(array $params = [])
     {
         $result = [
@@ -70,6 +78,13 @@ class SubscriptionReportManager extends BaseReportManager
         $this->insertSubscriptionPlanStats($data);
     }
 
+    /**
+     * @param int $code
+     * @param int $count
+     * @param MongoDB\BSON\UTCDateTime $date
+     *
+     * @return array
+     */
     protected function buildSingleSubscriptionPlanStat($code, $count, $date)
     {
         $data = [
@@ -81,6 +96,11 @@ class SubscriptionReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param array $stats
+     *
+     * @return array
+     */
     protected function buildSubscriptionPlanStats($stats)
     {
         $data = [];
@@ -93,6 +113,9 @@ class SubscriptionReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param array $data
+     */
     protected function insertSubscriptionPlanStats($data)
     {
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME, [
@@ -105,6 +128,11 @@ class SubscriptionReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
     public function getSubscriptionPlanStats($params)
     {
         $cursor = $this->mongoDbManager->find(
@@ -120,6 +148,12 @@ class SubscriptionReportManager extends BaseReportManager
         return $cursor;
     }
 
+    /**
+     * @param array $dates
+     * @param mixed $rawResult
+     *
+     * @return array
+     */
     protected function prepareSubscriptionReportStats($dates, $rawResult)
     {
         $subscriptionPlans = $this->getSubscriptionPlans();
@@ -167,11 +201,17 @@ class SubscriptionReportManager extends BaseReportManager
         return $stats;
     }
 
+    /**
+     * @return SubscriptionPlanRepository
+     */
     protected function getSubscriptionPlanRepository() : SubscriptionPlanRepository
     {
         return $this->getEntityManager()->getRepository(SubscriptionPlan::class);
     }
 
+    /**
+     * @return SubscriptionRepository
+     */
     protected function getSubscriptionRepository() : SubscriptionRepository
     {
         return $this->getEntityManager()->getRepository(Subscription::class);

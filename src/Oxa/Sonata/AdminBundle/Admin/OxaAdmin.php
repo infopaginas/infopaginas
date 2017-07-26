@@ -201,6 +201,9 @@ class OxaAdmin extends BaseAdmin
         }
     }
 
+    /**
+     * @return array
+     */
     public function getFilterParameters()
     {
         $parameters = parent::getFilterParameters();
@@ -247,6 +250,9 @@ class OxaAdmin extends BaseAdmin
         return $actions;
     }
 
+    /**
+     * @return array
+     */
     protected function getDeleteDeniedAction()
     {
         return [
@@ -254,6 +260,9 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getAllowViewOnlyAction()
     {
         return [
@@ -263,6 +272,9 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getDeniedAllButViewAndEditActions()
     {
         return [

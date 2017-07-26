@@ -39,6 +39,13 @@ abstract class PdfExporterModel implements ExporterInterface
         $this->pdfGenerator = $service;
     }
 
+    /**
+     * @param string $html
+     * @param string $filename
+     * @param bool $print
+     *
+     * @return Response
+     */
     protected function sendResponse($html, $filename, $print = false)
     {
         $content = $this->pdfGenerator->generatePDF($html, 'UTF-8');

@@ -13,6 +13,11 @@ use Domain\ReportBundle\Manager\BusinessReportApiManager;
  */
 class ApiController extends Controller
 {
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function overviewAction(Request $request)
     {
         $params = $request->query->all();
@@ -22,6 +27,11 @@ class ApiController extends Controller
         return new JsonResponse($result);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function keywordsAction(Request $request)
     {
         $params = $request->query->all();

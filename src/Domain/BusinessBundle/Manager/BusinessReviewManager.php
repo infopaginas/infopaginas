@@ -10,10 +10,8 @@ use Domain\BusinessBundle\Repository\BusinessReviewRepository;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 12.08.16
- * Time: 11:26
+ * Class BusinessReviewManager
+ * @package Domain\BusinessBundle\Manager
  */
 class BusinessReviewManager extends \Oxa\ManagerArchitectureBundle\Model\Manager\Manager
 {

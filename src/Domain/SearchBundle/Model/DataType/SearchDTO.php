@@ -4,15 +4,30 @@ namespace Domain\SearchBundle\Model\DataType;
 
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
-use Doctrine\Common\Collections\ArrayCollection;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
 class SearchDTO extends AbstractDTO
 {
+    /**
+     * @var string $query
+     */
     public $query;
+
+    /**
+     * @var LocationValueObject $locationValue
+     */
     public $locationValue;
+
+    /**
+     * @var int $page
+     */
     public $page;
+
+    /**
+     * @var int $limit
+     */
     public $limit;
+
     public $adsAllowed;
     public $adsMaxPages;    // adsMaxPages = 0, means all pages
     public $adsPerPage;
@@ -22,8 +37,18 @@ class SearchDTO extends AbstractDTO
     protected $neighborhood;
 
     protected $orderBy;
+
+    /**
+     * @var bool $isRandomized
+     */
     protected $isRandomized;
 
+    /**
+     * @param string $query
+     * @param LocationValueObject   $locationValue
+     * @param int   $page
+     * @param int   $limit
+     */
     public function __construct(string $query, LocationValueObject $locationValue, int $page, int $limit)
     {
         $this->query            = $query;
@@ -87,6 +112,9 @@ class SearchDTO extends AbstractDTO
         return $this->orderBy;
     }
 
+    /**
+     * @return array
+     */
     public function getCurrentCoordinates()
     {
         if ($this->locationValue->userLat and $this->locationValue->userLng) {
@@ -105,6 +133,9 @@ class SearchDTO extends AbstractDTO
         ];
     }
 
+    /**
+     * @return bool
+     */
     public function checkSearchInMap()
     {
         $location = $this->locationValue;
@@ -118,6 +149,9 @@ class SearchDTO extends AbstractDTO
         return false;
     }
 
+    /**
+     * @param bool $isRandomized
+     */
     public function setIsRandomized($isRandomized)
     {
         $this->isRandomized = $isRandomized;
@@ -131,6 +165,9 @@ class SearchDTO extends AbstractDTO
         return $this->isRandomized;
     }
 
+    /**
+     * @return bool
+     */
     public function randomizeAllowed()
     {
         $randomizeAllowed = false;

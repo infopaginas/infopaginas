@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * TagRepository
  *
@@ -10,6 +12,9 @@ namespace Domain\BusinessBundle\Repository;
  */
 class TagRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailableTagsQb()
     {
         $qb = $this->createQueryBuilder('t');

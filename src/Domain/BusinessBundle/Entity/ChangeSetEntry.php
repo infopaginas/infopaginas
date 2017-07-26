@@ -65,7 +65,7 @@ class ChangeSetEntry
     }
 
     /**
-     * @return mixed
+     * @return ChangeSet
      */
     public function getChangeSet()
     {
@@ -73,17 +73,19 @@ class ChangeSetEntry
     }
 
     /**
-     * @param mixed $changeSet
+     * @param ChangeSet $changeSet
+     *
      * @return ChangeSetEntry
      */
     public function setChangeSet($changeSet)
     {
         $this->changeSet = $changeSet;
+
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFieldName()
     {
@@ -91,17 +93,18 @@ class ChangeSetEntry
     }
 
     /**
-     * @param mixed $fieldName
+     * @param string $fieldName
      * @return ChangeSetEntry
      */
     public function setFieldName($fieldName)
     {
         $this->fieldName = $fieldName;
+
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getOldValue()
     {
@@ -109,17 +112,19 @@ class ChangeSetEntry
     }
 
     /**
-     * @param mixed $oldValue
+     * @param string|null $oldValue
+     *
      * @return ChangeSetEntry
      */
     public function setOldValue($oldValue)
     {
         $this->oldValue = $oldValue;
+
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getNewValue()
     {
@@ -127,17 +132,19 @@ class ChangeSetEntry
     }
 
     /**
-     * @param mixed $newValue
+     * @param string|null $newValue
+     *
      * @return ChangeSetEntry
      */
     public function setNewValue($newValue)
     {
         $this->newValue = $newValue;
+
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAction()
     {
@@ -145,17 +152,19 @@ class ChangeSetEntry
     }
 
     /**
-     * @param mixed $action
+     * @param string $action
+     *
      * @return ChangeSetEntry
      */
     public function setAction($action)
     {
         $this->action = $action;
+
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getClassName()
     {
@@ -163,12 +172,14 @@ class ChangeSetEntry
     }
 
     /**
-     * @param mixed $className
+     * @param string|null $className
+     *
      * @return ChangeSetEntry
      */
     public function setClassName($className)
     {
         $this->className = $className;
+
         return $this;
     }
 }

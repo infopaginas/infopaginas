@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/31/16
- * Time: 10:44 AM
- */
 
 namespace Domain\BannerBundle\Model;
 

@@ -97,6 +97,11 @@ class BusinessReportPdfExporter extends PdfExporterModel
         return $this->sendResponse($html, $filename, $params['print']);
     }
 
+    /**
+     * @param array $interactionData
+     *
+     * @return array
+     */
     protected function prepareInteractionDataTable($interactionData)
     {
         $eventsPerPage = 5;

@@ -56,6 +56,9 @@ class BusinessProfileFormType extends AbstractType
         $this->isUserSectionRequired = $isUserSectionRequired;
     }
 
+    /**
+     * @param Session $session
+     */
     public function setCurrentUser(Session $session)
     {
         if ($session->has('_security_user')) {
@@ -65,6 +68,10 @@ class BusinessProfileFormType extends AbstractType
         }
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->isUserSectionRequired) {
@@ -368,6 +375,10 @@ class BusinessProfileFormType extends AbstractType
         });
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
     private function setupServiceAreasFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $milesOfMyBusinessFieldOptions = [
@@ -452,6 +463,10 @@ class BusinessProfileFormType extends AbstractType
         $form->add('neighborhoods', EntityType::class, $neighborhoodsFieldOptions);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
     private function setupPremiumPlatinumPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupPremiumGoldPlanFormFields($businessProfile, $form);
@@ -472,11 +487,19 @@ class BusinessProfileFormType extends AbstractType
         ]);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
     private function setupPremiumGoldPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupPremiumPlusPlanFormFields($businessProfile, $form);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
     private function setupPremiumPlusPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupPriorityPlanFormFields($businessProfile, $form);
@@ -517,6 +540,10 @@ class BusinessProfileFormType extends AbstractType
         $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     */
     private function setupPriorityPlanFormFields(BusinessProfile $businessProfile, FormInterface $form)
     {
         $this->setupFreePlanFormFields($businessProfile, $form);
@@ -556,6 +583,11 @@ class BusinessProfileFormType extends AbstractType
         $builder->get('categoryIds')->resetViewTransformers();
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     * @param string $locale
+     */
     private function addTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
     {
         $form
@@ -608,6 +640,11 @@ class BusinessProfileFormType extends AbstractType
         ;
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param FormInterface $form
+     * @param string $locale
+     */
     private function addSloganTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
     {
         $form->add('slogan' . $locale, TextType::class, [
@@ -618,6 +655,9 @@ class BusinessProfileFormType extends AbstractType
         ]);
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

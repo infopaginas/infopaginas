@@ -55,11 +55,11 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
     private $businessProfile;
 
     /**
-     * @var Domain\BusinessBundle\Entity\Locality
+     * @var Locality
      *
      * @ORM\ManyToOne(
      *      targetEntity="Domain\BusinessBundle\Entity\Locality",
-     *      inversedBy="locality"
+     *      inversedBy="neighborhoods"
      * )
      * @ORM\JoinColumn(name="locality_id", referencedColumnName="id")
      */
@@ -93,7 +93,7 @@ class Neighborhood implements DefaultEntityInterface, TranslatableInterface
      */
     public function __construct()
     {
-        $this->businessProfile  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfile  = new ArrayCollection();
         $this->translations     = new ArrayCollection();
         $this->zips             = new ArrayCollection();
     }

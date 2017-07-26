@@ -90,11 +90,17 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -200,6 +206,9 @@ class Country implements DefaultEntityInterface, CopyableEntityInterface, Transl
      */
     public static function getRequiredCountries()
     {
-        return [self::PUERTO_RICO_SHORT_NAME, self::USA_SHORT_NAME];
+        return [
+            self::PUERTO_RICO_SHORT_NAME,
+            self::USA_SHORT_NAME,
+        ];
     }
 }

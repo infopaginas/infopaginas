@@ -42,7 +42,7 @@ class FileUploadFormHandler extends BaseFormHandler implements FormHandlerInterf
      */
     public function process() : bool
     {
-        if ($this->request->getMethod() == 'POST') {
+        if ($this->request->getMethod() == Request::METHOD_POST) {
             $this->form->handleRequest($this->request);
 
             if ($this->form->isValid()) {

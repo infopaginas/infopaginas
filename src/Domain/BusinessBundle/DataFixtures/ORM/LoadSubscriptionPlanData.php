@@ -22,7 +22,7 @@ class LoadSubscriptionPlanData extends AbstractFixture implements ContainerAware
     protected $manager;
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {

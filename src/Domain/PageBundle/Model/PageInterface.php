@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 6/02/16
- * Time: 11:44 AM
- */
 
 namespace Domain\PageBundle\Model;
 

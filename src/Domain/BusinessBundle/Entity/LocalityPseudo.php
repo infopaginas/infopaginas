@@ -47,6 +47,9 @@ class LocalityPseudo
      */
     protected $locality;
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';

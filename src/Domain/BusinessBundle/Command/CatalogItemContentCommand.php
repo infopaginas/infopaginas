@@ -30,6 +30,10 @@ class CatalogItemContentCommand extends ContainerAwareCommand
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
@@ -46,8 +50,6 @@ class CatalogItemContentCommand extends ContainerAwareCommand
     protected function updateCatalogItem()
     {
         $catalogLocalities = $this->em->getRepository(Locality::class)->getAllLocalitiesIterator();
-
-        $logger = $this->getContainer()->get('domain_site.cron.logger');
 
         foreach ($catalogLocalities as $localityRow) {
             /* @var $catalogLocality \Domain\BusinessBundle\Entity\Locality */
@@ -105,6 +107,12 @@ class CatalogItemContentCommand extends ContainerAwareCommand
         }
     }
 
+    /**
+     * @param Locality $catalogLocality
+     * @param Category $category
+     *
+     * @return int
+     */
     protected function getCountCatalogItemContent($catalogLocality, $category)
     {
         $request = new Request();

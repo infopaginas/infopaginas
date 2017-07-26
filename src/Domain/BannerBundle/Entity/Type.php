@@ -97,6 +97,9 @@ class Type extends TypeModel implements DefaultEntityInterface, TranslatableInte
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
