@@ -2485,7 +2485,6 @@ class BusinessProfileManager extends Manager
         $sort['_script'] = [
             'script' => 'Math.random()',
             'type'   => 'number',
-            'params' => [],
             'order' => 'asc',
         ];
 
@@ -2682,7 +2681,6 @@ class BusinessProfileManager extends Manager
         $sort['_script'] = [
             'script' => 'Math.random()',
             'type'   => 'number',
-            'params' => [],
             'order'  => 'asc',
         ];
 
@@ -2756,8 +2754,9 @@ class BusinessProfileManager extends Manager
         $locationQuery = [];
 
         if (!$params->locationValue->ignoreLocality) {
-            $distanceScript = 'doc["location"].arcDistanceInMiles(' . $params->locationValue->lat . ', '
-                . $params->locationValue->lng . ') < doc["miles_of_my_business"].value';
+            $distanceScript = 'doc["location"].arcDistance(' . $params->locationValue->lat . ', '
+                . $params->locationValue->lng . ') * ' . ElasticSearchManager::MILES_IN_METER
+                . ' < doc["miles_of_my_business"].value';
 
             if ($params->locationValue->locality) {
                 $localityId = $params->locationValue->locality->getId();

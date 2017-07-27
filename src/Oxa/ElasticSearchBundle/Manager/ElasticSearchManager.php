@@ -11,6 +11,7 @@ class ElasticSearchManager
 
     const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
     const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 40;
+    const MILES_IN_METER = 0.000621371;
 
     // max = 8 as elastic original precision
     const ROTATION_RANK_PRECISION = 1;
