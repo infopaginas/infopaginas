@@ -75,12 +75,11 @@ class GeolocationManager extends Manager
 
         if ($geo and $geo != Locality::ALL_LOCALITY) {
             // get locality by name and locale
-            $locality = $this->localityManager->getLocalityByNameAndLocale($geo, $request->getLocale());
+            $locality = $this->localityManager->getLocalityByName($geo);
         } else {
             // empty search - show default
-            $locality = $this->localityManager->getLocalityByNameAndLocale(
-                $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY),
-                $request->getLocale()
+            $locality = $this->localityManager->getLocalityByName(
+                $this->confingService->getValue(ConfigInterface::DEFAULT_SEARCH_CITY)
             );
 
             $request->query->set('geo', Locality::ALL_LOCALITY);

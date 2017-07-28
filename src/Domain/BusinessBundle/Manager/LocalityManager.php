@@ -56,6 +56,16 @@ class LocalityManager extends Manager
     }
 
     /**
+     * @param string $localityName
+     *
+     * @return Locality|null
+     */
+    public function getLocalityByName($localityName)
+    {
+        return $this->getRepository()->getLocalityByName($localityName);
+    }
+
+    /**
      * @param string $localitySlug
      *
      * @return Locality|null
