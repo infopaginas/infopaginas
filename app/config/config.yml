@@ -218,8 +218,8 @@ hwi_oauth:
                 email:          email
         google:
             type:                google
-            client_id:           584296512785-clg06us2ajt6b0s38u41r0nlr9h4mbs6.apps.googleusercontent.com
-            client_secret:       5J_TAMDieaCliwy4HVvI9Wfk
+            client_id:           '257125561113-k1b051ctf2uvgii4um1v5intdj7habeg.apps.googleusercontent.com'
+            client_secret:       '5BFK_k2oVD7Uh-Gn85LrHYcC'
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
 
 fos_js_routing:
