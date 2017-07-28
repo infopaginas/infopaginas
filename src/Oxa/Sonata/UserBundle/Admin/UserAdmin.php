@@ -182,7 +182,7 @@ class UserAdmin extends OxaAdmin
             $roles = $this->getConfigurationPool()
                 ->getContainer()
                 ->get('doctrine')
-                ->getRepository('OxaSonataUserBundle:Group')
+                ->getRepository(Group::class)
                 ->getEqualOrLowerPriorityRoles($loggedUser->getRole()->getCode())
             ;
 

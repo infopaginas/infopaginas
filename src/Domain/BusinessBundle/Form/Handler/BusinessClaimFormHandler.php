@@ -44,6 +44,9 @@ class BusinessClaimFormHandler extends BaseFormHandler
         $this->currentUser        = $tokenStorage->getToken()->getUser();
     }
 
+    /**
+     * @return bool
+     */
     public function process()
     {
         if ($this->request->getMethod() == Request::METHOD_POST) {

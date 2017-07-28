@@ -3,6 +3,7 @@
 namespace Domain\ArticleBundle\Repository;
 
 use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Domain\ArticleBundle\Entity\Article;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 /**
@@ -54,7 +55,8 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param int $limit
-     * @return array
+     *
+     * @return Article[]
      */
     public function getArticlesForHomepage(int $limit)
     {

@@ -23,6 +23,10 @@ class BusinessCategoryFixCommand extends ContainerAwareCommand
         $this->setDescription('Fix business category');
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -59,6 +63,9 @@ class BusinessCategoryFixCommand extends ContainerAwareCommand
         return $businessProfile;
     }
 
+    /**
+     * @return Category|null
+     */
     protected function getDefaultCategory()
     {
         $slug = Category::CATEGORY_UNDEFINED_SLUG;

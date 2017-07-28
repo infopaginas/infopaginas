@@ -143,7 +143,7 @@
                                     <li><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, admin.categoryData.previousPage)) }}" title="{{ 'link_previous_pager'|trans({}, 'SonataAdminBundle') }}">&lsaquo;</a></li>
                                 {% endif %}
 
-                                {% for page in 1..admin.categoryData.lastPage %}
+                                {% for page in admin.categoryData.rangePage %}
                                     {% if page == admin.datagrid.pager.page %}
                                         <li class="active"><a href="{{ admin.generateUrl('list', admin.modelmanager.paginationparameters(admin.datagrid, page)) }}">{{ page }}</a></li>
                                     {% else %}

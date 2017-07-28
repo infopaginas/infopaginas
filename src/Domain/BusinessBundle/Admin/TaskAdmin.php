@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\Task;
+use Domain\ReportBundle\Model\UserActionModel;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
@@ -33,6 +35,9 @@ class TaskAdmin extends OxaAdmin
         '_sort_order' => 'DESC',
     );
 
+    /**
+     * @param Task $task
+     */
     public function postUpdate($task)
     {
         $reviewer = $this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
@@ -40,14 +45,27 @@ class TaskAdmin extends OxaAdmin
         $this->tasksManager->setReviewerForTask($task, $reviewer);
 
         $request = $this->getRequest()->request->all();
+        $status = '';
 
         if (isset($request['status']) && $request['status'] == TaskStatusType::TASK_STATUS_REJECTED) {
             $this->tasksManager->reject($task);
+            $status = UserActionModel::TYPE_ACTION_TASK_REJECT;
         } elseif (isset($request['status']) && $request['status'] == TaskStatusType::TASK_STATUS_CLOSED) {
             $this->tasksManager->approve($task);
+            $status = UserActionModel::TYPE_ACTION_TASK_APPROVE;
+        }
+
+        if ($status) {
+            $this->handleActionLog(
+                $status,
+                $task
+            );
         }
     }
 
+    /**
+     * @param TasksManager $tasksManager
+     */
     public function setTasksManager(TasksManager $tasksManager)
     {
         $this->tasksManager = $tasksManager;
@@ -94,7 +112,11 @@ class TaskAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper->add('rejectReason');
+        $formMapper->add('rejectReason', null, [
+            'attr' => [
+                'class' => 'vertical-resize',
+            ],
+        ]);
 
         $formMapper->add(
             'businessProfile.businessReviews',
@@ -133,6 +155,9 @@ class TaskAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('remove');

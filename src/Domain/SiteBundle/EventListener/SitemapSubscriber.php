@@ -3,6 +3,7 @@
 namespace Domain\SiteBundle\EventListener;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\CatalogItem;
 use Domain\BusinessBundle\Entity\Category;
@@ -95,8 +96,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addBusinessProfiles()
     {
-        $businessProfiles = $this->manager->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getActiveBusinessProfilesIterator();
+        $businessProfiles = $this->manager->getRepository(BusinessProfile::class)->getActiveBusinessProfilesIterator();
 
         foreach ($businessProfiles as $row) {
             /* @var $businessProfile \Domain\BusinessBundle\Entity\BusinessProfile */
@@ -165,8 +165,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addArticleList()
     {
-        $articles = $this->manager->getRepository('DomainArticleBundle:Article')
-            ->getActiveArticlesIterator();
+        $articles = $this->manager->getRepository(Article::class)->getActiveArticlesIterator();
 
         foreach ($articles as $row) {
             /* @var $article \Domain\ArticleBundle\Entity\Article */
@@ -216,8 +215,7 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addArticleCategoryList()
     {
-        $categories = $this->manager->getRepository('DomainBusinessBundle:Category')
-            ->getAvailableCategoriesIterator();
+        $categories = $this->manager->getRepository(Category::class)->getAvailableCategoriesIterator();
 
         foreach ($categories as $row) {
             /* @var $category \Domain\BusinessBundle\Entity\Category */

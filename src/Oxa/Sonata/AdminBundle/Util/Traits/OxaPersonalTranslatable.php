@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 7/12/16
- * Time: 7:09 PM
- */
 
 namespace Oxa\Sonata\AdminBundle\Util\Traits;
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Xedin
- * Date: 16.05.16
- * Time: 15:21
- */
 
 namespace Domain\BusinessBundle\Model\Task;
 

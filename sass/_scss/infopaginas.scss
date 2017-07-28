@@ -1484,6 +1484,14 @@ $thumb-width-mb: 60px;
   h5 {
     color: $grey--light;
   }
+
+  div:first-child {
+    border: 1px solid #808080;
+  }
+}
+
+#search-float-bottom div:nth-child(2) {
+  border: 1px solid #808080;
 }
 
 .ad-desktop {
@@ -1585,6 +1593,28 @@ $thumb-width-mb: 60px;
   }
 }
 
+.business-map {
+  position: relative;
+}
+
+#empty-map-placeholder {
+  position: absolute;
+  width: 60%;
+  z-index: 9999;
+  left: 20%;
+  top: 39%;
+
+  img {
+    display: block;
+    margin: auto;
+    width: 40%;
+  }
+
+  p {
+    text-align: center;
+  }
+}
+
 .button--show-map, .button--hide-map, .button--toggle-filters {
   background: $green;
   bottom: 15px;
@@ -1616,6 +1646,14 @@ $thumb-width-mb: 60px;
     line-height: 2.2em;
     top: 100px;
     width: 10em;
+
+    &.button--hide-map {
+      top: 55px;
+    }
+
+    &.button--show-map {
+      transform: translateX(500px) translateY(0px);
+    }
 
     span {
       display: inline-block;
@@ -1916,6 +1954,7 @@ $thumb-width-mb: 60px;
     box-shadow: 0 4px 8px transparentize($black, .85);
     margin: 0 auto;
     max-width: 900px;
+    min-width: 500px;
     padding: 20px 30px;
   }
 }
@@ -2104,6 +2143,10 @@ $thumb-width-mb: 60px;
     line-height: 75px;
     padding: 0;
     text-align: center;
+
+    &.profile-page {
+      width: 33%;
+    }
 
     i {
       font-size: 1.7em;
@@ -4849,6 +4892,10 @@ table {
   }
 }
 
+.photo-description-field {
+  flex: 1 1 60%;
+}
+
 .media__check {
   @media only screen and (max-width: 805px) {
     flex: 0 0 auto;
@@ -4872,14 +4919,14 @@ table {
   .video-item {
     align-items: flex-start;
 
-    @media only screen and (min-width: 320px) and (max-width: 414px) and (orientation: portrait) {
+    @media only screen and (min-width: 320px) and (max-width: 414px) {
       flex-wrap: wrap;
     }
 
     .media__item--left {
       margin-right: 10px;
 
-      @media only screen and (min-width: 320px) and (max-width: 414px) and (orientation: portrait) {
+      @media only screen and (min-width: 320px) and (max-width: 414px) {
         flex: 0 0 100%;
         flex-wrap: wrap;
       }
@@ -4889,7 +4936,7 @@ table {
       align-items: flex-start;
       width: 100%;
 
-      @media only screen and (min-width: 320px) and (max-width: 414px) and (orientation: portrait) {
+      @media only screen and (min-width: 320px) and (max-width: 414px) {
         margin-top: 10px;
       }
     }
@@ -4904,11 +4951,11 @@ table {
       width: 300px;
     }
 
-    @media only screen and (min-width: 320px) and (max-width: 414px) and (orientation: portrait) {
+    @media only screen and (min-width: 320px) and (max-width: 414px) {
       width: 100%;
     }
 
-    @media only screen and (max-width: 736px) and (max-height: 414px) and (orientation: landscape) {
+    @media only screen and (min-width: 413px) and (max-width: 736px) and (max-height: 414px) and (orientation: landscape) {
       width: 300px;
     }
   }
@@ -5460,6 +5507,25 @@ input[type='radio'], input[type='checkbox'] {
   position: relative;
 }
 
+.number-results {
+  background-color: #fff;
+  border-bottom: 1px solid $grey--light;
+  color: #1e4b82;
+  padding: 15px 35px 10px;
+  font-size: 16px;
+  font-family: 'Roboto Medium', sans serif;
+
+  @media only screen and (max-width: 804px) {
+    padding-left: 23px;
+  }
+}
+
+.main-results-resize {
+  .number-results {
+    padding: 15px 15px 10px;
+  }
+}
+
 .att-icons {
   bottom: -25px;
   position: absolute;
@@ -5752,11 +5818,11 @@ a.select-all-button {
       height: 250px;
     }
 
-    @media only screen and (min-width: 320px) and (max-width: 414px) and (orientation: portrait) {
+    @media only screen and (min-width: 320px) and (max-width: 414px) {
       width: 100%;
     }
 
-    @media only screen and (max-width: 736px) and (max-height: 414px) and (orientation: landscape) {
+    @media only screen and (min-width: 413px) and (max-width: 736px) and (max-height: 414px) and (orientation: landscape) {
       width: 300px;
     }
   }
@@ -5767,4 +5833,26 @@ a.select-all-button {
   width: 100%;
   height: 500px;
   margin: 0 auto;
+
+  @media only screen and (max-height: 740px) {
+    height: 350px;
+  }
+}
+
+.report-button-group button {
+  margin: 10px;
+}
+
+span.no-js-warning-message {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  line-height: 19px;
+  font-size: 14px;
+  background-color: rgba(30, 75, 130, 1);
+  color: rgba(255, 255, 255, 1);
+  text-align: center;
+  z-index: 9999999;
 }

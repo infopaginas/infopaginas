@@ -20,7 +20,9 @@ define(
 
         this.html = {
             containers: {
-                searchContainer: '#searchContainer'
+                searchContainer: '#searchContainer',
+                mapContainer:    '#map',
+                mapMarkers:      '#map-markers'
             },
             buttons: {
                 redoSearch: '#redo-search-in-map',
@@ -76,25 +78,13 @@ define(
         this.options = {
             itemsListScrollable : '#searchResults',
             mapContainer : 'map',
-            mapOptions   : {
-                center: new google.maps.LatLng( googleMapDefaultCenter ),
-                zoom: googleMapDefaultZoom,
-                fullscreenControl: false
-            },
             directions: new directions
         };
-
-        var markersBlock = $( '#map-markers' );
-        if ( markersBlock.data( 'google-markers' ) ) {
-            this.options.markers = markersBlock.data( 'google-markers' );
-        }
 
         new select();
 
         this.options.directions.bindEventsDirections();
-
-        this.initMap(this.options);
-        this.handleMapSearch();
+        this.initMapCallback();
     };
 
     mapSearchPage.prototype.initMap = function ( options ) {
@@ -299,6 +289,62 @@ define(
 
             window.location = route;
         });
+    };
+
+    mapSearchPage.prototype.initMapCallback = function () {
+        this.initMapRequestedListener();
+
+        if ( !googleMapScriptInit ) {
+            if ( googleMapScriptLoaded && googleMapRequested ) {
+                this.initMapHandler();
+            } else {
+                this.initMapListener();
+            }
+        }
+    };
+
+    mapSearchPage.prototype.initMapRequestedListener = function () {
+        var self = this;
+
+        $( document ).on( 'googleMapScriptRequested', function() {
+            googleMapRequested = true;
+
+            if ( googleMapScriptLoaded && googleMapRequested && !googleMapScriptInit ) {
+                self.initMapHandler();
+            }
+        });
+    };
+
+    mapSearchPage.prototype.initMapListener = function () {
+        var self = this;
+
+        $( document ).on( 'googleMapScriptLoaded', function() {
+            if ( googleMapScriptLoaded && googleMapRequested && !googleMapScriptInit ) {
+                self.initMapHandler();
+            }
+        });
+    };
+
+    mapSearchPage.prototype.initMapHandler = function () {
+        var mapContainer = $( this.html.containers.mapContainer );
+        googleMapScriptInit = true;
+
+        this.options.mapOptions = {
+            center: new google.maps.LatLng( googleMapDefaultCenter ),
+            zoom: googleMapDefaultZoom,
+            fullscreenControl: false
+        };
+
+        if ( mapContainer.length ) {
+            var markersBlock = $( this.html.containers.mapMarkers );
+
+            if ( markersBlock.data( 'google-markers' ) ) {
+                this.options.markers = markersBlock.data( 'google-markers' );
+            }
+
+            this.initMap( this.options );
+            this.handleMapSearch();
+        }
     };
 
     mapSearchPage.prototype.successHandler = function( response ) {

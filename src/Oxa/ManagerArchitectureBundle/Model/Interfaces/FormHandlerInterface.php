@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 25.07.16
- * Time: 14:57
- */
 
 namespace Oxa\ManagerArchitectureBundle\Model\Interfaces;
 

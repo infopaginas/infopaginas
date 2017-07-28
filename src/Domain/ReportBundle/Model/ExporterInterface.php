@@ -10,5 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 interface ExporterInterface
 {
-    public function getResponse($parameters = []) : Response;
+    const MAX_ROW_PER_FILE = 50000;
+
+    /**
+     * @param array
+     */
+    public function getResponse($parameters = []);
 }

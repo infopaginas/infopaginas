@@ -54,6 +54,9 @@ class BusinessOverviewModel implements ReportInterface
         self::TYPE_CODE_EMAIL_CLICK           => 'interaction_report.email.click',
     ];
 
+    /**
+     * @return array
+     */
     public static function getExportFormats()
     {
         return [
@@ -62,6 +65,9 @@ class BusinessOverviewModel implements ReportInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTypes()
     {
         return [

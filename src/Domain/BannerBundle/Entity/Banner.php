@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
-use Oxa\Sonata\MediaBundle\Entity\Media;
 use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -125,11 +124,17 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
         $this->isPublished  = false;
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'title';
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitle() ?: '';

@@ -19,11 +19,19 @@ class ViewsAndVisitorsReportManager extends BaseReportManager
 
     protected $reportName = 'view_and_visitors_report';
 
+    /**
+     * @param BusinessOverviewReportManager $businessOverviewReportManager
+     */
     public function __construct(BusinessOverviewReportManager $businessOverviewReportManager)
     {
         $this->businessOverviewReportManager = $businessOverviewReportManager;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getViewsAndVisitorsData(array $params = [])
     {
         $params['businessProfileId'] = 0;
@@ -80,6 +88,13 @@ class ViewsAndVisitorsReportManager extends BaseReportManager
         return $result;
     }
 
+    /**
+     * @param array     $dates
+     * @param mixed     $rawResult
+     * @param string    $dateFormat
+     *
+     * @return array
+     */
     protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat) : array
     {
         $stats = [];

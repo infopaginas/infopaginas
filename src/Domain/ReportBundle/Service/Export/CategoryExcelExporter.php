@@ -34,7 +34,7 @@ class CategoryExcelExporter extends ExcelExporterModel
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse($params = []) : Response
+    public function getResponse($params = [])
     {
         $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
 
@@ -70,6 +70,9 @@ class CategoryExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $categoryData
+     */
     protected function generateMainTable($categoryData)
     {
         $row = $this->mainTableInitRow;

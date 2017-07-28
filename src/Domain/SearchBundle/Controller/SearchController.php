@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Domain\BannerBundle\Model\TypeInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SearchController
@@ -27,6 +28,9 @@ class SearchController extends Controller
 {
     /**
      * Main Search page
+     * @param Request $request
+     *
+     * @return Response
      */
     public function indexAction(Request $request)
     {
@@ -131,6 +135,7 @@ class SearchController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function getClosestLocalityByCoordAction(Request $request)
@@ -142,6 +147,9 @@ class SearchController extends Controller
         return new JsonResponse(['localityId' => $closestLocality->getId()]);
     }
 
+    /**
+     * @return BusinessOverviewReportManager
+     */
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
@@ -149,6 +157,10 @@ class SearchController extends Controller
 
     /**
      * Source endpoint for jQuery UI Autocomplete plugin in search widget
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function autocompleteAction(Request $request)
     {
@@ -182,6 +194,11 @@ class SearchController extends Controller
         return (new JsonResponse)->setData($data);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function compareAction(Request $request)
     {
         $searchManager = $this->get('domain_search.manager.search');
@@ -258,6 +275,11 @@ class SearchController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function mapAction(Request $request)
     {
         $searchManager = $this->get('domain_search.manager.search');
@@ -379,7 +401,15 @@ class SearchController extends Controller
         return $this->get('domain_business.manager.category');
     }
 
-    public function catalogAction(Request $request, $localitySlug = '', $categorySlug = '') {
+    /**
+     * @param Request $request
+     * @param string $localitySlug
+     * @param string $categorySlug
+     *
+     * @return Response
+     */
+    public function catalogAction(Request $request, $localitySlug = '', $categorySlug = '')
+    {
         $searchManager = $this->get('domain_search.manager.search');
 
         $category   = null;
@@ -538,6 +568,11 @@ class SearchController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
     private function getSearchDataByRequest(Request $request)
     {
         $keys = [

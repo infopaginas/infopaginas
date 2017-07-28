@@ -115,6 +115,7 @@ class BusinessReviewAdmin extends OxaAdmin
     /**
      * @param ErrorElement $errorElement
      * @param mixed $object
+     *
      * @return null
      */
     public function validate(ErrorElement $errorElement, $object)

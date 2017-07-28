@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/30/16
- * Time: 4:31 PM
- */
 
 namespace Oxa\ConfigBundle\Model;
 
@@ -40,4 +34,5 @@ interface ConfigInterface
     const SEARCH_ADS_ALLOWED                = 'SEARCH_ADS_ALLOWED';
     const SEARCH_ADS_MAX_PAGE               = 'SEARCH_ADS_MAX_PAGE';
     const SEARCH_ADS_PER_PAGE               = 'SEARCH_ADS_PER_PAGE';
+    const MAIL_REPORT_EXPORT_PROCESSED      = 'MAIL_REPORT_EXPORT_PROCESSED';
 }

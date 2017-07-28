@@ -2,8 +2,10 @@
 
 namespace Domain\BusinessBundle\Manager;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Entity\Zip;
 use Domain\BusinessBundle\Entity\LocalityPseudo;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
@@ -12,6 +14,11 @@ use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
 {
+    /**
+     * @param Locality|null $locality
+     *
+     * @return ArrayCollection|null
+     */
     public function getLocalityNeighborhoods($locality)
     {
         if ($locality) {
@@ -23,12 +30,18 @@ class LocalityManager extends Manager
         return $neighborhoods;
     }
 
+    /**
+     * @param string $localityName
+     * @param string $locale
+     *
+     * @return Locality|null
+     */
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         if (ctype_digit(strval($localityName))) {
             // find via neighborhood by int ZIP code
 
-            $zip = $this->em->getRepository('DomainBusinessBundle:Zip')->findOneBy(['zipCode' => $localityName]);
+            $zip = $this->em->getRepository(Zip::class)->findOneBy(['zipCode' => $localityName]);
 
             if ($zip) {
                 $locality = $zip->getNeighborhood()->getLocality();
@@ -42,6 +55,11 @@ class LocalityManager extends Manager
         return $locality;
     }
 
+    /**
+     * @param string $localitySlug
+     *
+     * @return Locality|null
+     */
     public function getLocalityBySlug($localitySlug)
     {
         $customSlug = SlugUtil::convertSlug($localitySlug);
@@ -63,6 +81,9 @@ class LocalityManager extends Manager
         return $locality;
     }
 
+    /**
+     * @return Locality[]
+     */
     public function findAll()
     {
         $locality = $this->getRepository()->getAvailableLocalities();
@@ -70,6 +91,12 @@ class LocalityManager extends Manager
         return $locality;
     }
 
+    /**
+     * @param string $localityName
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
     public function getLocalitiesByName(string $localityName, string $locale)
     {
         $localities = $this->getRepository()->getLocalitiesByNameAndLocality($localityName, $locale);
@@ -77,6 +104,12 @@ class LocalityManager extends Manager
         return $localities;
     }
 
+    /**
+     * @param string $localityName
+     * @param string $locale
+     *
+     * @return array
+     */
     public function getLocalitiesAutocomplete(string $localityName, string $locale)
     {
         $result     = [];
@@ -89,6 +122,9 @@ class LocalityManager extends Manager
         return $result;
     }
 
+    /**
+     * @return Locality[]
+     */
     public function getCatalogLocalitiesWithContent()
     {
         $catalogLocalitiesWithContent = $this->getRepository()->getCatalogLocalitiesWithContent();
@@ -110,6 +146,11 @@ class LocalityManager extends Manager
         return $data;
     }
 
+    /**
+     * @param Locality $locality
+     *
+     * @return array
+     */
     public function buildLocalityElasticData(Locality $locality)
     {
         $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
@@ -135,6 +176,11 @@ class LocalityManager extends Manager
         return $data;
     }
 
+    /**
+     * @param bool $sourceEnabled
+     *
+     * @return array
+     */
     public function getLocalityElasticSearchMapping($sourceEnabled = true)
     {
         $properties = $this->getLocalityElasticSearchIndexParams();
@@ -151,6 +197,9 @@ class LocalityManager extends Manager
         return $data;
     }
 
+    /**
+     * @return array
+     */
     protected function getLocalityElasticSearchIndexParams()
     {
         $params = [
@@ -184,6 +233,11 @@ class LocalityManager extends Manager
         return $params;
     }
 
+    /**
+     * @param SearchDTO $params
+     *
+     * @return array
+     */
     public function getElasticClosestSearchQuery(SearchDTO $params)
     {
         $searchQuery = [
@@ -208,6 +262,11 @@ class LocalityManager extends Manager
         return $searchQuery;
     }
 
+    /**
+     * @param array $response
+     *
+     * @return array
+     */
     public function getLocalityFromElasticResponse($response)
     {
         $data  = [];
@@ -242,6 +301,12 @@ class LocalityManager extends Manager
         ];
     }
 
+    /**
+     * @param array $data
+     * @param int $id
+     *
+     * @return array
+     */
     protected function getLocalityByIdsInArray($data, $id)
     {
         foreach ($data as $item) {

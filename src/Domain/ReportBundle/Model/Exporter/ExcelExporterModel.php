@@ -14,6 +14,7 @@ use Symfony\Component\Translation\Translator;
 abstract class ExcelExporterModel implements ExporterInterface
 {
     const FORMAT = 'xls';
+    const ROW_AUTO_HEIGHT = -1;
 
     /**
      * @var Factory $phpExcel
@@ -51,6 +52,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->translator = $service;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setFontStyle($col, $row)
     {
         $this->activeSheet
@@ -59,6 +64,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setTextAlignmentStyle($col, $row)
     {
         $this->activeSheet
@@ -68,6 +77,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setBorderStyle($col, $row)
     {
         $this->activeSheet
@@ -76,6 +89,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     */
     protected function setColumnSizeStyle($col)
     {
         $this->activeSheet
@@ -84,6 +100,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param int $row
+     */
     protected function setRowSizeStyle($row)
     {
         $this->activeSheet
@@ -92,6 +111,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setHeaderFontStyle($col, $row)
     {
         $this->activeSheet
@@ -100,6 +123,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @return array
+     */
     protected function getBorderStyle()
     {
         return [
@@ -111,6 +137,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getFontStyle()
     {
         return [
@@ -120,6 +149,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getHeaderFontStyle()
     {
         return [
@@ -134,6 +166,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     */
     protected function generateCommonHeader($startDate, $endDate)
     {
         $this->activeSheet->setCellValue(
@@ -194,7 +230,13 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->setHeaderFontStyle('C', 7);
     }
 
-    protected function sendResponse($filename)
+    /**
+     * @param string $filename
+     * @param string $path
+     *
+     * @return Response
+     */
+    protected function sendResponse($filename, $path = '')
     {
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $this->phpExcelObject->setActiveSheetIndex(0);
@@ -213,6 +255,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         $response->headers->set('Pragma', 'public');
         $response->headers->set('Cache-Control', 'maxage=1');
         $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        if ($path) {
+            $this->phpExcel->createWriter($this->phpExcelObject)->save($path);
+        }
 
         return $response;
     }

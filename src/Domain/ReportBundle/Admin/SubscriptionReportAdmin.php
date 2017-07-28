@@ -76,6 +76,9 @@ class SubscriptionReportAdmin extends ReportAdmin
         return $parameters;
     }
 
+    /**
+     * @return SubscriptionReportManager
+     */
     protected function getSubscriptionReportManager() : SubscriptionReportManager
     {
         return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.subscription_report_manager');

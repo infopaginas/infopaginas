@@ -33,7 +33,7 @@ class SubscriptionExcelExporter extends ExcelExporterModel
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse($parameters = []) : Response
+    public function getResponse($parameters = [])
     {
         $filename = $this->subscriptionReportManager->generateReportName(self::FORMAT);
 
@@ -66,6 +66,9 @@ class SubscriptionExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $subscriptionData
+     */
     protected function generateMainTable($subscriptionData)
     {
         $row = $this->mainTableInitRow;

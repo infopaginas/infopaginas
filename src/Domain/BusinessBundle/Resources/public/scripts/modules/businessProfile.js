@@ -39,6 +39,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
                 categoriesId: '#' + this.freeProfileFormName + '_categories',
                 categoryOptions: '#category_options'
             },
+            pageHeader: 'header.header',
+            scrollBlock: 'html, body',
+            mainTabsSelector: 'div.tab-pane',
             closeBusinessProfileLoadingSpinnerContainerId: 'close-business-profile-spinner-container',
             loadingSpinnerContainerClass: '.spinner-container',
             mapContainerId: 'google-map',
@@ -312,6 +315,24 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         return hasError;
     };
 
+    businessProfile.prototype.scrollToError = function() {
+        var errorBlock = $( 'span[data-error-message]' ).first().parent();
+        var errorTab   = errorBlock.parents( 'div.tab-pane' );
+        var errorTabId = errorTab.attr( 'id' );
+
+        if ( errorBlock.length && errorTabId ) {
+            var headerHeight = $( this.html.pageHeader ).height();
+
+            $( 'li a[href = "#' + errorTabId + '"]' ).click();
+
+            if ( errorBlock.length ) {
+                $( this.html.scrollBlock ).animate({
+                    scrollTop: errorBlock.offset().top - headerHeight
+                }, 1000);
+            }
+        }
+    };
+
     businessProfile.prototype.handleProfileSave = function() {
         var that = this;
 
@@ -320,6 +341,7 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             event.preventDefault();
 
             if ( that.validateImages() || that.validateVideo() ) {
+                that.scrollToError();
                 that.formSubmitting = false;
 
                 return false;

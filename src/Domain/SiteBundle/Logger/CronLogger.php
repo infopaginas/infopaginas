@@ -9,7 +9,6 @@ class CronLogger
     private $logger;
 
     const ELASTIC_SYNC              = 'data:elastic:sync';
-    const SUBSC_UPDATE              = 'data:subscription:update';
     const YOUTUBE_UPLOAD            = 'data:youtube-video:upload';
     const WORKING_HOURS_CONVERT     = 'data:working-hours:convert';
     const WORKING_HOURS_UPDATE      = 'data:working-hours:update';
@@ -20,6 +19,7 @@ class CronLogger
     const ARTICLE_UPDATE            = 'domain:article:update';
     const MONGO_AGGREGATE           = 'domain:report-mongo-db:aggregate';
     const MONGO_ARCHIVE             = 'domain:report-mongo-db:archive';
+    const POSTPONE_EXPORT           = 'domain:postpone-export:report';
     const BUSINESS_COUNTER          = 'domain:managed-businesses:counter';
     const POSTPONE_REMOVE           = 'data:postpone:remove';
     const VIDEO_CONVERT             = 'data:video:convert';

@@ -4,7 +4,8 @@ define(['jquery'], function( $ ) {
     //init businessProfile object variables
     var businessProfileClose = function() {
         this.urls = {
-            closeBusinessProfileURL: Routing.generate('domain_business_profile_close')
+            closeBusinessProfileURL: Routing.generate('domain_business_profile_close'),
+            userProfilePage:         Routing.generate('domain_site_user_profile')
         };
 
         this.html = {
@@ -91,6 +92,7 @@ define(['jquery'], function( $ ) {
                     if( response.success ) {
                         $( self.html.modals.closeBusinessProfileModalId ).modalFunc({close: true});
                         $( self.html.forms.closeBusinessProfileFormId )[0].reset();
+                        document.location.href = self.urls.userProfilePage;
                     } else {
                         if ( !$.isEmptyObject( response.errors ) ) {
                             self.enableFieldsHighlight( self.html.forms.closeBusinessProfileFormId, response.errors );

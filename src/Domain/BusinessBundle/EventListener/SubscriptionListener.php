@@ -23,6 +23,9 @@ class SubscriptionListener implements EventSubscriber
      */
     private $subscriptionStatusManager;
 
+    /**
+     * @return array
+     */
     public function getSubscribedEvents()
     {
         return [
@@ -38,6 +41,9 @@ class SubscriptionListener implements EventSubscriber
         $this->subscriptionStatusManager = $manager;
     }
 
+    /**
+     * @param OnFlushEventArgs $args
+     */
     public function onFlush(OnFlushEventArgs $args)
     {
         $em = $args->getEntityManager();

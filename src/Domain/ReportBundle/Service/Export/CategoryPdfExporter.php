@@ -29,7 +29,7 @@ class CategoryPdfExporter extends PdfExporterModel
      * @param array $params
      * @return Response
      */
-    public function getResponse($params = []) : Response
+    public function getResponse($params = [])
     {
         $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
 

@@ -3,8 +3,10 @@ namespace Oxa\Sonata\AdminBundle\Admin;
 
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Util\Traits\StatusTrait;
+use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Pix\SortableBehaviorBundle\Services\PositionHandler;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -13,9 +15,15 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class OxaAdmin extends BaseAdmin
 {
+    const SONATA_URL_TYPE_LIST   = 'list';
+    const SONATA_URL_TYPE_CREATE = 'create';
+    const SONATA_URL_TYPE_EDIT   = 'edit';
+    const SONATA_URL_TYPE_SHOW   = 'show';
+
     /**
      * Valid form datetime format
      */
@@ -193,6 +201,9 @@ class OxaAdmin extends BaseAdmin
         }
     }
 
+    /**
+     * @return array
+     */
     public function getFilterParameters()
     {
         $parameters = parent::getFilterParameters();
@@ -239,6 +250,9 @@ class OxaAdmin extends BaseAdmin
         return $actions;
     }
 
+    /**
+     * @return array
+     */
     protected function getDeleteDeniedAction()
     {
         return [
@@ -246,6 +260,9 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getAllowViewOnlyAction()
     {
         return [
@@ -255,11 +272,139 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getDeniedAllButViewAndEditActions()
     {
         return [
             'CREATE',
             'DELETE',
         ];
+    }
+
+    /**
+     * @param mixed $entity
+     */
+    public function postUpdate($entity)
+    {
+        $this->handleActionLog(UserActionModel::TYPE_ACTION_UPDATE, $entity);
+    }
+
+    /**
+     * @param mixed $entity
+     */
+    public function postPersist($entity)
+    {
+        $this->handleActionLog(UserActionModel::TYPE_ACTION_CREATE, $entity);
+    }
+
+    /**
+     * @param mixed $entity
+     */
+    public function postRemove($entity)
+    {
+        $this->handleActionLog(UserActionModel::TYPE_ACTION_PHYSICAL_DELETE, $entity);
+    }
+
+    /**
+     * @param string $action
+     * @param mixed  $entity
+     */
+    public function handleActionLog($action, $entity = null)
+    {
+        $container = $this->getConfigurationPool()->getContainer();
+        $actionReportManager = $container->get('domain_report.manager.user_action_report_manager');
+
+        $data = $this->generateUserLogData($action, $entity);
+
+        $actionReportManager->registerUserAction($action, $data);
+    }
+
+    /**
+     * @param mixed  $entity
+     * @param string $action
+     *
+     * @return array
+     */
+    public function generateUserLogData($action, $entity = null)
+    {
+        $data = [
+            'entity' => $this->getClassnameLabel(),
+            'type'   => $action,
+        ];
+
+        if ($entity and $entity->getId()) {
+            $data['id'] = $entity->getId();
+        }
+
+        $url = $this->getActionReportUrl($action, $entity);
+
+        if ($url) {
+            $data['url'] = $url;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $action
+     * @param mixed  $entity
+     *
+     * @return string
+     */
+    protected function getActionReportUrl($action, $entity = null)
+    {
+        $url = '';
+
+        switch ($action) {
+            case UserActionModel::TYPE_ACTION_VIEW_CREATE_PAGE:
+                $url = $this->generateUrl(self::SONATA_URL_TYPE_CREATE, [], UrlGeneratorInterface::ABSOLUTE_URL);
+                break;
+            case UserActionModel::TYPE_ACTION_VIEW_UPDATE_PAGE:
+            case UserActionModel::TYPE_ACTION_CREATE:
+            case UserActionModel::TYPE_ACTION_UPDATE:
+            case UserActionModel::TYPE_ACTION_RESTORE:
+                if ($entity and $entity->getId()) {
+                    $url = $this->generateUrl(
+                        self::SONATA_URL_TYPE_EDIT,
+                        [
+                            'id' => $entity->getId(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+                }
+                break;
+            case UserActionModel::TYPE_ACTION_VIEW_SHOW_PAGE:
+            case UserActionModel::TYPE_ACTION_POSTPONE_DELETE:
+                if ($this->hasRoute(self::SONATA_URL_TYPE_SHOW)) {
+                    $urlType = self::SONATA_URL_TYPE_SHOW;
+                } elseif ($this->hasRoute(self::SONATA_URL_TYPE_EDIT)) {
+                    $urlType = self::SONATA_URL_TYPE_EDIT;
+                } else {
+                    $urlType = '';
+                }
+
+                if ($urlType) {
+                    $url = $this->generateUrl(
+                        $urlType,
+                        [
+                            'id' => $entity->getId(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+                }
+
+                break;
+            case UserActionModel::TYPE_ACTION_VIEW_LIST_PAGE:
+            case UserActionModel::TYPE_ACTION_EXPORT:
+                $url = $this->generateUrl(
+                    self::SONATA_URL_TYPE_LIST, $this->getRequest()->query->all(),
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+                break;
+        }
+
+        return $url;
     }
 }

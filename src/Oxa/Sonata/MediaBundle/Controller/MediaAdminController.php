@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/23/16
- * Time: 7:06 PM
- */
 
 namespace Oxa\Sonata\MediaBundle\Controller;
 
@@ -69,6 +63,11 @@ class MediaAdminController extends CRUDController
     {
         if (false === $this->admin->isGranted('LIST')) {
             throw new AccessDeniedException();
+        }
+
+        $preResponse = $this->preList($this->getRequest());
+        if ($preResponse !== null) {
+            return $preResponse;
         }
 
         $datagrid = $this->admin->getDatagrid();

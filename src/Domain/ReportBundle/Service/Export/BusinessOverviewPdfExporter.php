@@ -29,7 +29,7 @@ class BusinessOverviewPdfExporter extends PdfExporterModel
      * @param array $params
      * @return Response
      */
-    public function getResponse($params = []) : Response
+    public function getResponse($params = [])
     {
         $filename = $this->viewsAndVisitorsReportManager->generateReportName(self::FORMAT);
 
@@ -37,9 +37,9 @@ class BusinessOverviewPdfExporter extends PdfExporterModel
 
         $html = $this->templateEngine->render(
             'DomainReportBundle:Admin/BusinessOverviewReport:pdf_report.html.twig',
-            array(
-                'viewsAndVisitorsData' => $businessOverviewData
-            )
+            [
+                'viewsAndVisitorsData' => $businessOverviewData,
+            ]
         );
 
         return $this->sendResponse($html, $filename);

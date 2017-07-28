@@ -5,6 +5,7 @@ namespace Domain\ReportBundle\Command;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -95,6 +96,11 @@ class ReportAggregationCommand extends ContainerAwareCommand
         return $this->getContainer()->get('domain_report.manager.category_report_manager');
     }
 
+    /**
+     * @param InputInterface $input
+     *
+     * @return ReportDatesRangeVO
+     */
     protected function getAggregationPeriod(InputInterface $input)
     {
         if ($input->getOption('period')) {

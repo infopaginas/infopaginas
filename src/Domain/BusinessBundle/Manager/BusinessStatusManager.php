@@ -64,7 +64,7 @@ class BusinessStatusManager
             if (!$entity->getIsUpdated()) {
                 $entity->setIsUpdated(true);
 
-                $em->getRepository('DomainBusinessBundle:BusinessProfile')->setUpdatedBusinessProfile($entity->getId());
+                $em->getRepository(BusinessProfile::class)->setUpdatedBusinessProfile($entity->getId());
             }
         }
     }

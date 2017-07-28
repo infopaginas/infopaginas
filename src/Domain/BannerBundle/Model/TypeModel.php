@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/31/16
- * Time: 11:58 AM
- */
 
 namespace Domain\BannerBundle\Model;
 
@@ -146,7 +140,7 @@ class TypeModel implements TypeInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMediaFormat() : string
     {

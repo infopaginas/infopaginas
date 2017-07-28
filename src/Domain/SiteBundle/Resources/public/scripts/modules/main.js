@@ -216,25 +216,25 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     }
 
     var openMapSequence = [
-        { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: showMap, p: { translateX: 0, translateY: 120 }, o: { duration: 400, easing: "easeOutCubic", complete: triggerMapResize } },
         { e: resultsMap, p: { translateY: function() {return getMapTranslateY()} }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: 0, translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger( map, 'resize' ); $( '#searchResults' ).css( 'display', 'none' ); } } }
+        { e: hideMap, p: { translateX: 0, translateY: -120 }, o: { duration: 200, easing: "easeOutCubic", complete: openMapSequenceHideBlock } }
     ];
 
     var closeMapSequence = [
-        { e: hideMap, p: { translateX: 0, translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false, complete: function() { $( '#searchResults' ).css( 'display', 'block' ); } } },
+        { e: hideMap, p: { translateX: 0, translateY: 120 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false, complete: closeMapSequenceHideBlock } },
         { e: resultsMap, p: { translateX: 0, translateY: 0 }, o: { duration: 600, delay: 200, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: triggerMapResize } },
     ];
 
     var openMapDeskSequence = [
         { e: showMap, p: { translateX: 500, translateY: 0 }, o: { duration: 200, easing: "easeOuCubic", sequenceQueue: false } },
-        { e: hideMap, p: { translateX: -520, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } }
+        { e: hideMap, p: { translateX: -520, translateY: 0 }, o: { duration: 200, easing: "easeOutCubic", complete: triggerMapResize } }
     ];
 
     var closeMapDeskSequence = [
         { e: hideMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", sequenceQueue: false } },
-        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: function() { google.maps.event.trigger(map, 'resize'); } } },
+        { e: showMap, p: { translateX: 0, translateY: 0 }, o: { duration: 300, easing: "easeOutCubic", complete: triggerMapResize } },
     ];
 
     var resizeSequenceDevice = [
@@ -485,16 +485,40 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
 
 //ad
+    var searchFloatBottom = $( '#search-float-bottom' );
+    var hideBannerButton  = $( '#ad-close' );
 
-    $('#ad-close').on( 'click', function() {
+    hideBannerButton.on( 'click', function() {
         $( this ).parent().remove();
         showMap.removeClass( 'floating-offset' );
     });
 
+    if ( searchFloatBottom.length ) {
+        var googleTagBlock = searchFloatBottom.find( 'div:nth-child(2)' );
+
+        if ( googleTagBlock.is(':visible') ) {
+            hideBannerButton.removeClass( 'hidden' );
+        } else {
+            hideBannerButton.addClass( 'hidden' );
+        }
+
+        googletag.pubads().addEventListener( 'slotRenderEnded', function( event ) {
+            if (googleTagBlock.length && event.slot.getSlotElementId() == googleTagBlock.attr( 'id' )) {
+
+                if ( event.isEmpty ) {
+                    hideBannerButton.addClass( 'hidden' );
+                } else {
+                    hideBannerButton.removeClass( 'hidden' );
+                }
+            }
+        });
+    }
 
 //media querie conditional scripts
 
     var mediaquery = window.matchMedia("(min-width: 804px)");
+    var mapContainer = '#map';
+    var hasMap = $( mapContainer ).length;
 
     if (mediaquery.matches) {
       var mapStateSize = 'desktop';
@@ -509,7 +533,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
           video.load();
       }
 
-      $( '#search-float-bottom' ).remove();
+      searchFloatBottom.remove();
+      if ( hasMap ) {
+        triggerMapRequestedIfVisible();
+      }
     } else {
       var mapStateSize = 'device';
     }
@@ -569,26 +596,25 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var mediaQueryTablet = window.matchMedia( "(min-width: 740px)" );
 
         if ( mapStateSize == 'desktop' ) {
+            // desktop -> desktop
+            // desktop -> device
             $.Velocity.RunSequence( resizeSequenceDesktop, { mobileHA: true } );
             $.Velocity.RunSequence( closeMapDeskSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll results--map-view' );
             $( '.dropdown-call' ).removeClass( 'dropdown-call-button-additional' );
         } else if ( mediaQuery.matches ) {
+            // device -> desktop
             $.Velocity.RunSequence( resizeSequenceDevice, { mobileHA: true } );
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
             $( 'body' ).removeClass( 'body--no-scroll' );
-        } else if ( !(mapStateSize == 'device' && mediaQueryTablet.matches) ) {
+        } else if ( !mediaQueryTablet.matches ) {
+            // device -> device
+            if ( mapState == 'expanded' ) {
+                resultsMap.css( 'transform', 'translateY(' + getMapTranslateY()  + ')' );
+            }
+        } else {
+            // device -> tablet
             $.Velocity.RunSequence( closeMapSequence, { mobileHA: true } );
-        }
-
-        if ( mapStateSize == 'device' && mediaQuery.matches ) {
-            resultsMap.css( 'height', $( window ).height() - 45 + 'px' );
-            resultsMap.css( 'bottom', '0' );
-        }
-
-        if ( mapStateSize == 'desktop' && !mediaQuery.matches ) {
-            resultsMap.css( 'height', $( window ).height() - 82 + 'px' );
-            resultsMap.css( 'bottom', '-115vh' );
         }
 
         if ( mediaQuery.matches ) {
@@ -598,6 +624,11 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         }
     });
 
+    if ( hasMap ) {
+        $( window ).scroll(function() {
+            triggerMapRequestedIfVisible();
+        });
+    }
 
     var comparisonListToggle = $('#comparison-list-toggle');
     var comparisonListHide = $('#comparison-list-hide');
@@ -791,5 +822,45 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
                 $( this ).css( 'background-image', '' );
             }
         });
+    }
+
+    function openMapSequenceHideBlock() {
+        triggerMapResize();
+        $( '#searchResults' ).css( 'display', 'none' );
+        triggerMapRequested();
+    }
+
+    function closeMapSequenceHideBlock() {
+        $( '#searchResults' ).css( 'display', 'block' );
+        resultsMap.css( 'bottom', -window.innerHeight + 'px' );
+    }
+
+    function triggerMapResize() {
+        if ( typeof google != 'undefined' && googleMapScriptInit ) {
+            google.maps.event.trigger( map, 'resize' );
+        }
+    }
+
+    function triggerMapRequested() {
+        $( document ).trigger( 'googleMapScriptRequested' );
+    }
+
+    function isScrolledIntoView( element, fullyInView ) {
+        var pageTop         = $( window ).scrollTop();
+        var pageBottom      = pageTop + $( window ).height();
+        var elementTop      = $( element ).offset().top;
+        var elementBottom   = elementTop + $( element ).height();
+
+        if ( fullyInView === true ) {
+            return ((pageTop < elementTop) && (pageBottom > elementBottom));
+        } else {
+            return ((elementTop <= pageBottom) && (elementBottom >= pageTop));
+        }
+    }
+
+    function triggerMapRequestedIfVisible() {
+        if ( isScrolledIntoView( mapContainer ) ) {
+            triggerMapRequested();
+        }
     }
 });

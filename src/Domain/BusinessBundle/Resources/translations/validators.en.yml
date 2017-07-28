@@ -6,6 +6,7 @@ business_profile:
     digit_dash: Only digits and dash are allowed
   images:
     invalid_url: Error: Invalid image URL.
+    invalid_size: The image is larger than {{ limit }} MB
   video:
     invalid_url: Error: Invalid video URL.
   category:
@@ -23,3 +24,5 @@ business_profile:
     max_length: Error the maximum number of symbols is {{ limit }}.
     min_length: Error the minimum number of symbols is {{ limit }}.
     one_word: Error one keyword can consist of one word only.
+
+media.max_size: Media max size is {{ limit }} Mb

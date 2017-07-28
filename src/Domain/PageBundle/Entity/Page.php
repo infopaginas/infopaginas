@@ -126,6 +126,9 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitle() ?: '';

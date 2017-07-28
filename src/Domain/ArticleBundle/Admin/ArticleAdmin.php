@@ -240,17 +240,28 @@ class ArticleAdmin extends OxaAdmin
         }
     }
 
+    /**
+     * @param Article $entity
+     */
     public function prePersist($entity)
     {
         $entity = $this->preSave($entity);
         $entity = $this->setAuthorName($entity);
     }
 
+    /**
+     * @param Article $entity
+     */
     public function preUpdate($entity)
     {
         $this->preSave($entity);
     }
 
+    /**
+     * @param Article $entity
+     *
+     * @return Article
+     */
     private function preSave($entity)
     {
         $entity = $this->setSeoDate($entity);

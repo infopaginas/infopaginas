@@ -1,24 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 15.08.16
- * Time: 22:53
- */
 
 namespace Domain\BusinessBundle\Form\Handler;
 
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
-use Oxa\ManagerArchitectureBundle\Model\Interfaces\FormHandlerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
-class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHandlerInterface
+class BusinessCloseRequestFormHandler extends BaseFormHandler implements BusinessFormHandlerInterface
 {
-    const BUSINESS_NOT_FOUND_ERROR_MESSAGE = 'Business id is not found';
-
     /** @var Request $request */
     private $request;
 
@@ -28,18 +20,26 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHan
     /** @var TasksManager $tasksManager */
     private $tasksManager;
 
+    /** @var TranslatorInterface $translator */
+    protected $translator;
+
     public function __construct(
         FormInterface $form,
         Request $request,
         BusinessProfileManager $businessProfileManager,
-        TasksManager $tasksManager
+        TasksManager $tasksManager,
+        TranslatorInterface $translator
     ) {
         $this->form                   = $form;
         $this->request                = $request;
         $this->businessProfileManager = $businessProfileManager;
         $this->tasksManager           = $tasksManager;
+        $this->translator             = $translator;
     }
 
+    /**
+     * @return bool
+     */
     public function process()
     {
         if ($this->request->getMethod() == 'POST') {
@@ -70,6 +70,15 @@ class BusinessCloseRequestFormHandler extends BaseFormHandler implements FormHan
 
         $closureReason = $this->form->get('reason')->getData();
         $this->tasksManager->createCloseProfileConfirmationRequest($businessProfile, $closureReason);
+
+        $session = $this->request->getSession();
+
+        if ($session) {
+            $session->getFlashBag()->add(
+                self::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
+                $this->translator->trans(self::MESSAGE_BUSINESS_PROFILE_CLOSED)
+            );
+        }
     }
 
     /**

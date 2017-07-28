@@ -30,7 +30,7 @@ class WorkingHoursConvertCommand extends ContainerAwareCommand
         $logger->addInfo($logger::WORKING_HOURS_CONVERT, $logger::STATUS_START, 'execute:start');
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $businessesWithTextWorkingHours = $this->em->getRepository('DomainBusinessBundle:BusinessProfile')
+        $businessesWithTextWorkingHours = $this->em->getRepository(BusinessProfile::class)
             ->getBusinessesWithTextWorkingHoursIterator();
 
         $successItemCounter = 0;

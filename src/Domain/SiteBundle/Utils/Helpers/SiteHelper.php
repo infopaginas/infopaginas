@@ -30,6 +30,8 @@ class SiteHelper
 
     /**
      * @param string $url
+     *
+     * @return mixed
      */
     public static function checkUrlExistence(string $url)
     {
@@ -53,10 +55,5 @@ class SiteHelper
         curl_close($handle);
 
         return $info;
-    }
-
-    public static function generateBusinessSubfolder($businessId)
-    {
-        return substr($businessId, -1) . DIRECTORY_SEPARATOR . $businessId;
     }
 }

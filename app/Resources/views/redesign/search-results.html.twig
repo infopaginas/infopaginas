@@ -38,7 +38,9 @@
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>
 
-            <div id="map" class="map"></div>
+            <div id="map" class="map">
+                {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+            </div>
             <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
 

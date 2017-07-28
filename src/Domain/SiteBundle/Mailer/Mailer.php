@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 29.06.16
- * Time: 12:49
- */
 
 namespace Domain\SiteBundle\Mailer;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
+use Domain\ReportBundle\Entity\ExportReport;
 use FOS\UserBundle\Model\UserInterface;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
@@ -192,6 +187,30 @@ class Mailer
         $subject = 'BUSINESS PROFILE CLAIM [' . $task->getBusinessProfile()->getName() . '] - Rejected';
 
         $this->send($task->getCreatedUser()->getEmail(), $subject, $message, $contentType);
+    }
+
+    /**
+     * @param ExportReport $export
+     */
+    public function sendReportExportProcessedEmailMessage($export)
+    {
+        $message = $this->getConfigService()->getValue(ConfigInterface::MAIL_REPORT_EXPORT_PROCESSED);
+
+        $link = $this->router->generate(
+            'admin_domain_report_exportreport_show',
+            [
+                'id' => $export->getId(),
+            ],
+            Router::ABSOLUTE_URL
+        );
+
+        $message = str_replace('{LINK}', $link, $message);
+
+        $contentType = 'text/html';
+
+        $subject = 'REPORT ' . strtoupper($export->getType()) . ' ' . strtoupper($export->getStatus());
+
+        $this->send($export->getUser()->getEmail(), $subject, $message, $contentType);
     }
 
     /**

@@ -38,6 +38,11 @@ class AdUsageReportManager extends BaseReportManager
         $this->mongoDbManager = $mongoDbManager;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getAdUsageData(array $params = [])
     {
         $result = [
@@ -70,6 +75,12 @@ class AdUsageReportManager extends BaseReportManager
         return $result;
     }
 
+    /**
+     * @param array $dates
+     * @param mixed $rawResult
+     *
+     * @return array
+     */
     protected function prepareAdUsageReportStats($dates, $rawResult)
     {
         $stat = [];
@@ -124,6 +135,11 @@ class AdUsageReportManager extends BaseReportManager
         return $stat;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
     protected function getAdUsageStats($params)
     {
         $cursor = $this->mongoDbManager->find(
@@ -148,8 +164,16 @@ class AdUsageReportManager extends BaseReportManager
         $this->insertOrderStats($data);
     }
 
+    /**
+     * @param array $data
+     */
     protected function insertOrderStats($data)
     {
+        $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME, [
+            self::MONGO_DB_FIELD_ORDER_ID  => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
+        ]);
+
         $this->mongoDbManager->insertMany(
             self::MONGO_DB_COLLECTION_NAME,
             $data
@@ -187,6 +211,12 @@ class AdUsageReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param array $orderData
+     * @param MongoDB\BSON\UTCDateTime $date
+     *
+     * @return array
+     */
     protected function buildOrderStat($orderData, $date)
     {
         $data = [
@@ -202,6 +232,9 @@ class AdUsageReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public static function getDeviceList()
     {
         return [

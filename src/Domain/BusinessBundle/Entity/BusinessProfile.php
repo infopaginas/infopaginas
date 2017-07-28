@@ -12,9 +12,13 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Util\ZipFormatterUtil;
+use Domain\ReportBundle\Model\PostponeExportInterface;
+use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
 use Oxa\Sonata\AdminBundle\Util\Traits\PostponeRemoveTrait;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -44,7 +48,9 @@ class BusinessProfile implements
     CopyableEntityInterface,
     TranslatableInterface,
     GeolocationInterface,
-    PostponeRemoveInterface
+    PostponeRemoveInterface,
+    ReportInterface,
+    PostponeExportInterface
 {
     use DefaultEntityTrait;
     use PersonalTranslatable;
@@ -111,6 +117,7 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS     = 'customAddress';
     const BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS    = 'useMapAddress';
     const BUSINESS_PROFILE_FIELD_HIDE_ADDRESS       = 'hideAddress';
+    const BUSINESS_PROFILE_FIELD_HIDE_MAP           = 'hideMap';
 
     const BUSINESS_PROFILE_FIELD_TWITTER_URL    = 'twitterURL';
     const BUSINESS_PROFILE_FIELD_FACEBOOK_URL   = 'facebookURL';
@@ -564,6 +571,13 @@ class BusinessProfile implements
     protected $hideAddress = false;
 
     /**
+     * @var bool - If checkbox is checked, google map is hidden.
+     *
+     * @ORM\Column(name="hide_map", type="boolean", options={"default" : 0})
+     */
+    protected $hideMap = false;
+
+    /**
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
@@ -787,21 +801,33 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @param string $locale
+     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
     }
 
+    /**
+     * @return string
+     */
     public function getLocale()
     {
         return $this->locale;
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
@@ -864,21 +890,22 @@ class BusinessProfile implements
      */
     public function __construct()
     {
-        $this->coupons = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->localities = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->neighborhoods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->extraSearches = new ArrayCollection();
-        $this->keywords      = new ArrayCollection();
+        $this->coupons                  = new ArrayCollection();
+        $this->subscriptions            = new ArrayCollection();
+        $this->categories               = new ArrayCollection();
+        $this->areas                    = new ArrayCollection();
+        $this->localities               = new ArrayCollection();
+        $this->neighborhoods            = new ArrayCollection();
+        $this->tags                     = new ArrayCollection();
+        $this->paymentMethods           = new ArrayCollection();
+        $this->businessReviews          = new ArrayCollection();
+        $this->images                   = new ArrayCollection();
+        $this->translations             = new ArrayCollection();
+        $this->phones                   = new ArrayCollection();
+        $this->collectionWorkingHours   = new ArrayCollection();
+        $this->extraSearches            = new ArrayCollection();
+        $this->keywords                 = new ArrayCollection();
+        $this->tasks                    = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
@@ -1657,7 +1684,7 @@ class BusinessProfile implements
      */
     public function setZipCode($zipCode)
     {
-        $this->zipCode = $zipCode;
+        $this->zipCode = ZipFormatterUtil::getFormattedZip($zipCode);
 
         return $this;
     }
@@ -1742,6 +1769,26 @@ class BusinessProfile implements
     public function getHideAddress()
     {
         return $this->hideAddress;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHideMap()
+    {
+        return $this->hideMap;
+    }
+
+    /**
+     * @param bool $hideMap
+     *
+     * @return BusinessProfile
+     */
+    public function setHideMap($hideMap)
+    {
+        $this->hideMap = $hideMap;
+
+        return $this;
     }
 
     /**
@@ -2486,7 +2533,7 @@ class BusinessProfile implements
      * Setting distance
      *
      * @param float $distance
-     * @return this
+     * @return BusinessProfile
      */
     public function setDistance(float $distance)
     {
@@ -2669,20 +2716,120 @@ class BusinessProfile implements
         return $this->getIsActive() ? self::BUSINESS_STATUS_ACTIVE : self::BUSINESS_STATUS_INACTIVE;
     }
 
+    /**
+     * @return bool
+     */
+    public function getHasVideo()
+    {
+        return (bool) $this->getVideo();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasMedia()
+    {
+        if ($this->getBackground() or ($this->getLogo()) or !$this->getImages()->isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportAreas()
+    {
+        $areaList = [];
+
+        $areas = $this->getAreas();
+
+        foreach ($areas as $area) {
+            $areaList[] = $area->getName();
+        }
+
+        return implode(', ', $areaList);
+    }
+
+    /**
+     * @return string
+     */
     public function getExportCategories()
     {
-        $data = [];
+        $categoryList = [];
 
         $categories = $this->getCategories();
 
         foreach ($categories as $category) {
-            $data[] = [
-                'id'   => $category->getId(),
-                'name' => $category->getName(),
-            ];
+            $categoryList[] = $category->getName();
         }
 
-        return json_encode($data);
+        return implode(', ', $categoryList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportPhones()
+    {
+        $phoneList = [];
+
+        $phones = $this->getPhones();
+
+        foreach ($phones as $phone) {
+            $phoneList[] = $phone->getPhone();
+        }
+
+        return implode(', ', $phoneList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSubscriptionPlan()
+    {
+        $currentSubscriptionPlan = $this->getSubscriptionPlan();
+
+        if ($currentSubscriptionPlan) {
+            $name = $currentSubscriptionPlan->getName();
+        } else {
+            $name = '';
+        }
+
+        return $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSubscriptionStartDate()
+    {
+        $currentSubscription = $this->getSubscription();
+
+        if ($currentSubscription) {
+            $date = $currentSubscription->getStartDate()->format(AdminHelper::DATETIME_FORMAT);
+        } else {
+            $date = '';
+        }
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportSubscriptionEndDate()
+    {
+        $currentSubscription = $this->getSubscription();
+
+        if ($currentSubscription) {
+            $date = $currentSubscription->getEndDate()->format(AdminHelper::DATETIME_FORMAT);
+        } else {
+            $date = '';
+        }
+
+        return $date;
     }
 
     /**
@@ -2773,14 +2920,23 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * get list of boolean fields
+     * @return array
+     */
     public static function getCommonBooleanFields()
     {
         return [
             self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_MAP,
         ];
     }
 
+    /**
+     * get list of common task fields
+     * @return array
+     */
     public static function getTaskCommonFields()
     {
         return [
@@ -2791,7 +2947,8 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
-            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
+//            don't track field via business owner task
+//            self::BUSINESS_PROFILE_FIELD_PANORAMA_ID,
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
@@ -2814,6 +2971,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_USE_MAP_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_HIDE_ADDRESS,
+            self::BUSINESS_PROFILE_FIELD_HIDE_MAP,
 
             self::BUSINESS_PROFILE_FIELD_TWITTER_URL,
             self::BUSINESS_PROFILE_FIELD_FACEBOOK_URL,
@@ -2828,6 +2986,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskManyToOneRelations()
     {
         return [
@@ -2836,6 +2997,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskOneToManyRelations()
     {
         return [
@@ -2844,6 +3008,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskManyToManyRelations()
     {
         return [
@@ -2855,6 +3022,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskMediaManyToOneRelations()
     {
         return [
@@ -2864,6 +3034,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskMediaOneToManyRelations()
     {
         return [
@@ -2871,6 +3044,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskSeoBlock()
     {
         return [
@@ -2941,5 +3117,15 @@ class BusinessProfile implements
         }
 
         return $code;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getExportFormats()
+    {
+        return [
+            self::FORMAT_CSV => self::FORMAT_CSV,
+        ];
     }
 }

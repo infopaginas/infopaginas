@@ -51,8 +51,14 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
+    /**
+     * @var array
+     */
     protected $translations = [];
 
+    /**
+     * @var bool
+     */
     public $copyAvailable = true;
 
     /**
@@ -66,17 +72,25 @@ class BusinessProfileAdmin extends OxaAdmin
     public function getNewInstance()
     {
         $instance = parent::getNewInstance();
+        $container = $this->getConfigurationPool()->getContainer();
 
         if ($this->getRequest()->getMethod() == Request::METHOD_GET) {
             $parentId = $this->getRequest()->get('id', null);
 
             if ($parentId) {
-                $container = $this->getConfigurationPool()->getContainer();
                 $parent    = $container->get('doctrine')->getRepository(BusinessProfile::class)->find($parentId);
 
                 if ($parent) {
                     $instance = $this->cloneParentEntity($parent);
                 }
+            }
+        }
+
+        if (!$instance->getCountry()) {
+            $country = $container->get('domain_business.manager.business_profile')->getDefaultProfileCountry();
+
+            if ($country) {
+                $instance->setCountry($country);
             }
         }
 
@@ -204,6 +218,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('English', ['class' => 'col-md-6',])->end()
                 ->with('Spanish', ['class' => 'col-md-6',])->end()
                 ->with('Main', ['class' => 'col-md-12',])->end()
+                ->with('Social Networks', ['class' => 'col-md-12',])->end()
                 ->with('Address', ['class' => 'col-md-4',])->end()
                 ->with('Map', ['class' => 'col-md-8',])->end()
                 ->with('Categories', ['class' => 'col-md-6',])->end()
@@ -222,7 +237,6 @@ class BusinessProfileAdmin extends OxaAdmin
 
         $formMapper
             ->tab('Profile', ['class' => 'col-md-12',])
-                ->with('Social Networks', ['class' => 'col-md-6',])->end()
                 ->with('Gallery')->end()
             ->end()
         ;
@@ -340,18 +354,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'btn_add' => false,
                         'query' => $query,
                     ])
-                    ->add('logo', 'sonata_type_model_list', [
-                        'required' => false
-                    ], ['link_parameters' => [
-                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]])
-                    ->add('background', 'sonata_type_model_list', [
-                        'required' => false
-                    ], ['link_parameters' => [
-                        'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
-                        'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                    ]])
                     ->add('website')
                     ->add('email', EmailType::class, [
                         'required' => false,
@@ -384,6 +386,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         ]
                     )
                 ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
             ->end()
         ;
 
@@ -412,6 +422,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('customAddress')
                     ->add('hideAddress')
+                    ->add('hideMap')
                 ->end()
                 ->with('Map')
                     ->add('useMapAddress', null, [
@@ -423,14 +434,6 @@ class BusinessProfileAdmin extends OxaAdmin
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                     ])
-                ->end()
-                ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
@@ -456,6 +459,31 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                 ->end()
                 ->with('Gallery')
+                    ->add(
+                        'logo', 'sonata_type_model_list',
+                        [
+                            'required' => false,
+                        ],
+                        [
+                            'link_parameters' => [
+                                'context'  => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_LOGO,
+                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            ]
+                        ]
+                    )
+                    ->add(
+                        'background',
+                        'sonata_type_model_list',
+                        [
+                            'required' => false,
+                        ],
+                        [
+                            'link_parameters' => [
+                                'context'  => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
+                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            ]
+                        ]
+                    )
                     ->add('images', 'sonata_type_collection', [
                         'by_reference' => false,
                         'required' => false,
@@ -716,6 +744,14 @@ class BusinessProfileAdmin extends OxaAdmin
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
                     ])
                 ->end()
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
                 ->with('Address')
                     ->add('country', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
@@ -728,16 +764,9 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('streetAddress')
                     ->add('customAddress')
                     ->add('hideAddress')
+                    ->add('hideMap')
                     ->add('latitude')
                     ->add('longitude')
-                ->end()
-                ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
                 ->end()
                 ->with('Categories')
                     ->add('categories', null, [
@@ -904,6 +933,10 @@ class BusinessProfileAdmin extends OxaAdmin
         }
     }
 
+    /**
+     * @param string $name
+     * @param string $template
+     */
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
@@ -1124,6 +1157,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function postPersist($entity)
     {
+        parent::postPersist($entity);
         // workaround for translation callback
         $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
         $entity = $this->handleEntityPostPersist($entity);
@@ -1138,6 +1172,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function postUpdate($entity)
     {
+        parent::postUpdate($entity);
         // workaround for translation callback
         $this->handleTranslationPostUpdate($entity);
     }
@@ -1223,21 +1258,44 @@ class BusinessProfileAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @return array
+     */
     public function getExportFormats()
     {
-        return [
-            'business_profile.admin.export.csv' => 'csv',
-        ];
+        return BusinessProfile::getExportFormats();
     }
 
+    /**
+     * @return array
+     */
     public function getExportFields()
     {
-        $exportFields['ID']   = 'id';
-        $exportFields['Name'] = 'nameEn';
-        $exportFields['Slug'] = 'slug';
-        $exportFields['Categories name+ID']  = 'exportCategories';
-        $exportFields['Business Admin ID']   = 'user.id';
-        $exportFields['Business Admin Name'] = 'user.fullName';
+        $exportFields['ID']         = 'id';
+        $exportFields['Name']       = 'nameEn';
+        $exportFields['Slug']       = 'slug';
+        $exportFields['hasVideo']   = 'hasVideo';
+        $exportFields['hasMedia']   = 'hasMedia';
+        $exportFields['areas']      = 'exportAreas';
+        $exportFields['categories'] = 'exportCategories';
+        $exportFields['phones']     = 'exportPhones';
+
+        $exportFields['subscriptionPlan']       = 'exportSubscriptionPlan';
+        $exportFields['subscriptionStartDate']  = 'exportSubscriptionStartDate';
+        $exportFields['subscriptionEndDate']    = 'exportSubscriptionEndDate';
+
+        $exportFields['updatedDate']        = 'updatedAt';
+        $exportFields['updatedByUserId']    = 'updatedUser.id';
+        $exportFields['updatedByUser']      = 'updatedUser.fullName';
+
+        $exportFields['createdDate']        = 'createdAt';
+        $exportFields['createdByUserId']    = 'createdUser.id';
+        $exportFields['createdByUser']      = 'createdUser.fullName';
+
+        $exportFields['userId']     = 'user.id';
+        $exportFields['userName']   = 'user.fullName';
+        $exportFields['userAccountUpdateDate']   = 'user.updatedAt';
+        $exportFields['userAccountCreationDate'] = 'user.createdAt';
 
         return $exportFields;
     }
@@ -1339,6 +1397,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('product' . $locale, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Products',
                 'required' => false,
@@ -1355,6 +1414,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('brands' . $locale, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Brands',
                 'required' => false,
@@ -1371,6 +1431,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('workingHours' . $locale, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Working hours',
                 'required' => false,

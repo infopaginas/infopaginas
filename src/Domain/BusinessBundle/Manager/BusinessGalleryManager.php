@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 17.07.16
- * Time: 16:09
- */
 
 namespace Domain\BusinessBundle\Manager;
 
@@ -57,7 +51,7 @@ class BusinessGalleryManager
 
         /** @var UploadedFile $file */
         foreach ($fileBag->get('files') as $file) {
-            if ($file->getSize() <= Media::IMAGE_MAX_SIZE) {
+            if ($this->checkUploadedFileSize($file->getSize(), $context)) {
                 $media = $this->createNewMediaEntryFromUploadedFile(
                     $file,
                     $context
@@ -80,41 +74,54 @@ class BusinessGalleryManager
      * @param string          $context
      * @param string          $url
      *
-     * @return BusinessProfile|bool
+     * @return array
      * @throws \Exception
      */
     public function createNewEntryFromRemoteFile(BusinessProfile $businessProfile, string $context, string $url)
     {
         $headers = SiteHelper::checkUrlExistence($url);
+        $error = [];
 
-        if ($headers and in_array($headers['content_type'], SiteHelper::$imageContentTypes) and
-            exif_imagetype($url) and $this->checkImageSize($headers)
-        ) {
-            $file = tmpfile();
+        if ($headers and in_array($headers['content_type'], SiteHelper::$imageContentTypes) and exif_imagetype($url)) {
+            if ($this->checkImageSize($headers, $context)) {
+                $file = tmpfile();
 
-            if ($file === false) {
-                throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+                if ($file === false) {
+                    throw new \Exception(self::CANT_CREATE_TEMP_FILE_ERROR_MESSAGE);
+                }
+
+                $ext = pathinfo($url, PATHINFO_EXTENSION);
+                // Put content in this file
+                $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext  ;
+                file_put_contents($path, file_get_contents($url));
+
+                // the UploadedFile of the user image
+                // referencing the temp file (used for validation only)
+                $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
+
+                $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
+
+                $this->getEntityManager()->flush();
+
+                $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
+
+                return $error;
+            } else {
+                $error = [
+                    'message' => 'business_profile.images.invalid_size',
+                    'params'  => [
+                        '{{ limit }}' => Media::getMediaMaxSizeByContext($context) / Media::BYTES_IN_MEGABYTE,
+                    ],
+                ];
             }
-
-            $ext = pathinfo($url, PATHINFO_EXTENSION);
-            // Put content in this file
-            $path = stream_get_meta_data($file)['uri'] . uniqid() . '.' . $ext  ;
-            file_put_contents($path, file_get_contents($url));
-
-            // the UploadedFile of the user image
-            // referencing the temp file (used for validation only)
-            $uploadedFile = new UploadedFile($path, $path, null, null, null, true);
-
-            $media = $this->createNewMediaEntryFromUploadedFile($uploadedFile, $context);
-
-            $this->getEntityManager()->flush();
-
-            $businessProfile = $this->addNewItemToBusinessProfileGallery($businessProfile, $media);
-
-            return $businessProfile;
         } else {
-            return false;
+            $error = [
+                'message' => 'business_profile.images.invalid_url',
+                'params'  => [],
+            ];
         }
+
+        return $error;
     }
 
     /**
@@ -319,7 +326,7 @@ class BusinessGalleryManager
      */
     private function getRepository() : BusinessGalleryRepository
     {
-        return $this->getEntityManager()->getRepository('DomainBusinessBundle:Media\BusinessGallery');
+        return $this->getEntityManager()->getRepository(BusinessGallery::class);
     }
 
     /**
@@ -361,15 +368,31 @@ class BusinessGalleryManager
     }
 
     /**
-     * @param $headers array
+     * @param array  $headers
+     * @param string $context
      *
      * @return bool
      */
-    protected function checkImageSize($headers)
+    protected function checkImageSize($headers, $context)
     {
         if (!empty($headers['download_content_length']) and $headers['download_content_length'] > 0 and
-            $headers['download_content_length'] <= Media::IMAGE_MAX_SIZE
+            $this->checkUploadedFileSize($headers['download_content_length'], $context)
         ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int     $size
+     * @param string  $context
+     *
+     * @return bool
+     */
+    protected function checkUploadedFileSize($size, $context)
+    {
+        if (Media::getMediaMaxSizeByContext($context) >= $size) {
             return true;
         }
 

@@ -10,6 +10,9 @@ class LoadPageData extends OxaAbstractFixture
 {
     protected $order = 20;
 
+    /**
+     * @return array
+     */
     protected function loadData()
     {
         $dataArray = [

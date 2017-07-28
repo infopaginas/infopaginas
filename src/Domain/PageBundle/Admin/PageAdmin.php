@@ -124,17 +124,26 @@ class PageAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param Page $entity
+     */
     public function prePersist($entity)
     {
         $this->preSave($entity);
     }
 
+    /**
+     * @param Page $entity
+     */
     public function preUpdate($entity)
     {
         /** @var Page $entity */
         $this->preSave($entity);
     }
 
+    /**
+     * @param Page $entity
+     */
     private function preSave($entity)
     {
         $entity = $this->setSeoDate($entity);

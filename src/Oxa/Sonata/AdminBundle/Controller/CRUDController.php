@@ -5,6 +5,8 @@ namespace Oxa\Sonata\AdminBundle\Controller;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\StatusInterface;
+use Domain\ReportBundle\Entity\ExportReport;
+use Domain\ReportBundle\Model\UserActionModel;
 use Pix\SortableBehaviorBundle\Controller\SortableAdminController;
 use Sonata\AdminBundle\Controller\CRUDController as BaseSonataCRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -61,7 +63,7 @@ class CRUDController extends SortableAdminController
             $objectName = $this->admin->toString($object);
 
             try {
-                $adminManager->deletePhysicalEntity($object);
+                $adminManager->deletePhysicalEntity($object, $this->admin);
 
                 if ($this->isXmlHttpRequest()) {
                     return $this->renderJson(
@@ -146,7 +148,7 @@ class CRUDController extends SortableAdminController
     {
         try {
             $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-            $adminManager->restoreEntity($this->admin->getSubject());
+            $adminManager->restoreEntity($this->admin->getSubject(), $this->admin);
             $this->addFlash(
                 'sonata_flash_success',
                 $this->get('translator')->trans('flash_restore_success', [], 'SonataAdminBundle')
@@ -167,7 +169,7 @@ class CRUDController extends SortableAdminController
     {
         try {
             $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-            $adminManager->restoreEntities($query->execute());
+            $adminManager->restoreEntities($query->execute(), $this->admin);
 
             $this->addFlash(
                 'sonata_flash_success',
@@ -215,7 +217,7 @@ class CRUDController extends SortableAdminController
             $entityArray = $query->execute();
 
             $adminManager = $this->get('oxa.sonata.manager.admin_manager');
-            $adminManager->removeEntities($entityArray);
+            $adminManager->removeEntities($entityArray, $this->admin);
 
             $this->addFlash('sonata_flash_success', $adminManager->getBatchDeleteSuccessFlashMessage($entityArray));
         } catch (\Exception $e) {
@@ -253,5 +255,60 @@ class CRUDController extends SortableAdminController
             $context['previous_exception_message'] = $e->getPrevious()->getMessage();
         }
         $this->getLogger()->error($e->getMessage(), $context);
+    }
+
+    /**
+     * @param Request $request
+     */
+    protected function preList(Request $request)
+    {
+        $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_LIST_PAGE);
+    }
+
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
+    protected function preShow(Request $request, $object)
+    {
+        $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_SHOW_PAGE, $object);
+    }
+
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
+    protected function preEdit(Request $request, $object)
+    {
+        if (!$request->request->get($this->admin->getUniqid(), false)) {
+            $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_UPDATE_PAGE, $object);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
+    protected function preCreate(Request $request, $object)
+    {
+        $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_CREATE_PAGE, $object);
+    }
+
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
+    protected function preDelete(Request $request, $object)
+    {
+        $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_VIEW_DELETE_PAGE, $object);
+    }
+
+    /**
+     * @param Request $request
+     * @param mixed $object
+     */
+    protected function preExport(Request $request, $object)
+    {
+        $this->admin->handleActionLog(UserActionModel::TYPE_ACTION_EXPORT, $object);
     }
 }

@@ -12,6 +12,9 @@ class ConfigExtension extends \Twig_Extension
 {
     private $config;
 
+    /**
+     * @param Config $config
+     */
     public function __construct(Config $config)
     {
         $this->config = $config;

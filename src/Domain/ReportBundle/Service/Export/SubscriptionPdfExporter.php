@@ -29,7 +29,7 @@ class SubscriptionPdfExporter extends PdfExporterModel
      * @param array $parameters
      * @return Response
      */
-    public function getResponse($parameters = []) : Response
+    public function getResponse($parameters = [])
     {
         $filename = $this->subscriptionReportManager->generateReportName(self::FORMAT);
 

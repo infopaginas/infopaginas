@@ -3,7 +3,7 @@
 
     {% if banner is not null and banner.template is not null and (banner.isPublished or is_granted(SECURITY_ROLE.ADMINISTRATOR)) %}
         <div class="ad ad-mobile ad--bottom ad--active" id="search-float-bottom">
-            <button id="ad-close" type="button" class="button-close-ad"><i class="fa fa-remove"></i></button>
+            <button id="ad-close" type="button" class="button-close-ad hidden"><i class="fa fa-remove"></i></button>
             {% include 'DomainSiteBundle:Layout:widgets/banner_double_click_widget.html.twig' %}
         </div>
     {% endif %}

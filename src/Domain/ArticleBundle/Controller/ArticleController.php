@@ -5,11 +5,13 @@ namespace Domain\ArticleBundle\Controller;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Model\Manager\ArticleManager;
 use Domain\BannerBundle\Model\TypeInterface;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ArticleController extends Controller
@@ -51,7 +53,6 @@ class ArticleController extends Controller
     /**
      * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
-     * @var $article Article
      */
     public function viewAction(string $slug)
     {
@@ -161,6 +162,11 @@ class ArticleController extends Controller
         return $this->get('domain_business.manager.category');
     }
 
+    /**
+     * @param Category $category
+     *
+     * @return RedirectResponse
+     */
     private function handlePermanentRedirect($category)
     {
         return $this->redirectToRoute(

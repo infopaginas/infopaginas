@@ -88,6 +88,9 @@ class Template implements DefaultEntityInterface, TranslatableInterface
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';

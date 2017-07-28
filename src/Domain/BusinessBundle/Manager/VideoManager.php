@@ -21,6 +21,9 @@ class VideoManager
 
     private $repository;
 
+    /**
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         $this->em = $entityManager;
@@ -63,6 +66,11 @@ class VideoManager
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
 
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return array
+     */
     public function getVideosSeoData(ContainerInterface $container)
     {
         $translator  = $container->get('translator');

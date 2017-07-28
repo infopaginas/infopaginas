@@ -32,6 +32,11 @@ class CRUDController extends AdminCRUDController
             throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException;
         }
 
+        $preResponse = $this->preShow($request, $object);
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
         $this->admin->setSubject($object);
 
         return $this->render($this->admin->getTemplate('show'), [

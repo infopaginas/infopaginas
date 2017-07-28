@@ -78,6 +78,9 @@ class VideoAdmin extends OxaAdmin
                     ),
                     new NotBlank(),
                 ],
+                'attr' => [
+                    'class' => 'vertical-resize',
+                ],
             ])
         ;
 

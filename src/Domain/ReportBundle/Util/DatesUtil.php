@@ -36,6 +36,9 @@ class DatesUtil
     const START_END_DATE_ARRAY_FORMAT = 'd-m-Y';
     const DATE_DB_FORMAT              = 'Y-m-d';
 
+    /**
+     * @return array
+     */
     public static function getReportDataRanges()
     {
         return [
@@ -48,6 +51,12 @@ class DatesUtil
         ];
     }
 
+    /**
+     * @param string $range
+     *
+     * @return ReportDatesRangeVO
+     * @throws \Exception
+     */
     public static function getDateRangeValueObjectFromRangeType(string $range)
     {
         switch ($range) {
@@ -97,6 +106,11 @@ class DatesUtil
         return new ReportDatesRangeVO($start, $end);
     }
 
+    /**
+     * @param ReportDatesRangeVO $dateRange
+     *
+     * @return array
+     */
     public static function getDateAsArrayFromVO(ReportDatesRangeVO $dateRange)
     {
         $date['start'] = $dateRange->getStartDate()->format(self::START_END_DATE_ARRAY_FORMAT);
@@ -105,6 +119,12 @@ class DatesUtil
         return $date;
     }
 
+    /**
+     * @param array $requestData
+     * @param string $dateFormat
+     *
+     * @return ReportDatesRangeVO
+     */
     public static function getDateAsDateRangeVOFromRequestData(array $requestData, string $dateFormat)
     {
         $start = \DateTime::createFromFormat($dateFormat, $requestData['start']);
@@ -113,6 +133,12 @@ class DatesUtil
         return new ReportDatesRangeVO($start, $end);
     }
 
+    /**
+     * @param string $start
+     * @param string $end
+     *
+     * @return ReportDatesRangeVO
+     */
     public static function getDateRangeVOFromDateString(string $start, string $end) : ReportDatesRangeVO
     {
         $startDate = \DateTime::createFromFormat(DatesUtil::START_END_DATE_ARRAY_FORMAT, $start);
@@ -124,6 +150,12 @@ class DatesUtil
         return new ReportDatesRangeVO($startDate, $endDate);
     }
 
+    /**
+     * @param array $requestData
+     * @param string $dateFormat
+     *
+     * @return array
+     */
     public static function getDateAsArrayFromRequestData(array $requestData, string $format = self::DATE_DB_FORMAT)
     {
         $date['start'] = \DateTime::createFromFormat($format, $requestData['start'])
@@ -195,26 +227,43 @@ class DatesUtil
         }
     }
 
+    /**
+     * @return \DateTime
+     */
     public static function getThisWeekStart()
     {
         return new \DateTime('monday this week');
     }
 
+    /**
+     * @return \DateTime
+     */
     public static function getThisWeekEnd()
     {
         return new \DateTime('sunday this week');
     }
 
+    /**
+     * @return \DateTime
+     */
     public static function getYesterday()
     {
         return new \DateTime('yesterday');
     }
 
+    /**
+     * @return \DateTime
+     */
     public static function getToday()
     {
         return new \DateTime('today');
     }
 
+    /**
+     * @param string $period
+     *
+     * @return \Datetime
+     */
     public static function getAdUsageReportDateByPeriod($period)
     {
         switch ($period) {
@@ -229,6 +278,11 @@ class DatesUtil
         return $date;
     }
 
+    /**
+     * @param string $period
+     *
+     * @return string
+     */
     public static function getAdUsageReportRangeByPeriod($period)
     {
         switch ($period) {
@@ -243,7 +297,12 @@ class DatesUtil
         return $range;
     }
 
-
+    /**
+     * @param string $date
+     * @param string $format
+     *
+     * @return string
+     */
     public static function convertMonthlyFormattedDate($date, $format)
     {
         $newDate = \DateTime::createFromFormat(AdminHelper::DATE_MONTH_FORMAT, $date);

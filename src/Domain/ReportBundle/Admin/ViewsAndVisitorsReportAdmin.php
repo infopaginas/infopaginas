@@ -89,6 +89,9 @@ class ViewsAndVisitorsReportAdmin extends ReportAdmin
         return $parameters;
     }
 
+    /**
+     * @return ViewsAndVisitorsReportManager
+     */
     protected function getViewsAndVisitorsReportManager() : ViewsAndVisitorsReportManager
     {
         return $this->getConfigurationPool()->getContainer()->get('domain_report.manager.views_and_visitors');

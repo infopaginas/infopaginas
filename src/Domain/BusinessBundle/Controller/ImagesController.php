@@ -71,13 +71,13 @@ class ImagesController extends Controller
             $this->throwBusinessNotFoundException();
         }
 
-        $business = $this->getBusinessGalleryManager()->createNewEntryFromRemoteFile(
+        $error = $this->getBusinessGalleryManager()->createNewEntryFromRemoteFile(
             $business,
             $request->get('context', OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES),
             $request->get('url')
         );
 
-        if ($business) {
+        if (!$error) {
             $imagesForm = $this->getImagesForm($business);
 
             return $this->render(':redesign/blocks/businessProfile/subTabs/profile/gallery:images.html.twig', [
@@ -87,7 +87,7 @@ class ImagesController extends Controller
             ]);
         } else {
             return $this->getFailureResponse(
-                $this->getTranslator()->trans('business_profile.images.invalid_url', [], 'validators'),
+                $this->getTranslator()->trans($error['message'], $error['params'], 'validators'),
                 []
             );
         }

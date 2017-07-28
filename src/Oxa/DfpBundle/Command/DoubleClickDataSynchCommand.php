@@ -38,6 +38,10 @@ class DoubleClickDataSynchCommand extends ContainerAwareCommand
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $period = $this->getSynchronizationPeriod($input);
@@ -50,6 +54,11 @@ class DoubleClickDataSynchCommand extends ContainerAwareCommand
 
     }
 
+    /**
+     * @param InputInterface  $input
+     *
+     * @return string
+     */
     protected function getSynchronizationPeriod(InputInterface $input)
     {
         if ($input->getOption('period')) {

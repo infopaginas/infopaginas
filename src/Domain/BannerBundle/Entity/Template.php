@@ -131,7 +131,7 @@ class Template implements DefaultEntityInterface, TranslatableInterface
     /**
      * Set Header
      *
-     * @param string $Header
+     * @param string $templateHeader
      *
      * @return Template
      */
@@ -244,16 +244,27 @@ class Template implements DefaultEntityInterface, TranslatableInterface
         return $this->translations;
     }
 
+    /**
+     * @return string
+     */
     public function getResizableHeader()
     {
         return $this->getHeaderWithSizeTag(self::TAG_RESIZABLE_COMMON);
     }
 
+    /**
+     * @return string
+     */
     public function getResizableInBlockHeader()
     {
         return $this->getHeaderWithSizeTag(self::TAG_RESIZABLE_IN_BLOCK);
     }
 
+    /**
+     * @param string $tag
+     *
+     * @return string
+     */
     protected function getHeaderWithSizeTag($tag)
     {
         $header = $this->getTemplateHeader();

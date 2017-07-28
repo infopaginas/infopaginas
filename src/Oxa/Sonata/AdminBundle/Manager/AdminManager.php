@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/14/16
- * Time: 12:02 PM
- */
 declare(strict_types=1);
 
 namespace Oxa\Sonata\AdminBundle\Manager;
@@ -19,10 +13,12 @@ use Domain\BusinessBundle\Entity\LandingPageShortCut;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
 use Oxa\Sonata\AdminBundle\Model\PostponeRemoveInterface;
+use Sonata\AdminBundle\Admin\AdminInterface;
 
 /**
  * Used to customise admin
@@ -36,9 +32,10 @@ class AdminManager extends DefaultManager
      * Delete record completely
      *
      * @param $entity
+     * @param AdminInterface $admin
      * @throws InvalidArgumentException
      */
-    public function deletePhysicalEntity($entity)
+    public function deletePhysicalEntity($entity, AdminInterface $admin)
     {
         $existDependentFields = $this->checkExistDependentEntity($entity);
 
@@ -52,7 +49,7 @@ class AdminManager extends DefaultManager
             ));
         }
 
-        $this->removeEntity($entity);
+        $this->removeEntity($entity, $admin);
         $this->getEntityManager()->flush();
     }
 
@@ -96,24 +93,30 @@ class AdminManager extends DefaultManager
      * Restore object with all relations
      *
      * @param PostponeRemoveInterface $entity
+     * @param AdminInterface $admin
      */
-    public function restoreEntity(PostponeRemoveInterface $entity)
+    public function restoreEntity(PostponeRemoveInterface $entity, $admin)
     {
         $entity->setIsDeleted(false);
         $this->getEntityManager()->flush();
+
+        $admin->handleActionLog(UserActionModel::TYPE_ACTION_RESTORE, $entity);
     }
 
     /**
      * Restore objects
      *
      * @param $entityArray array
+     * @param AdminInterface $admin
      */
-    public function restoreEntities(array $entityArray = [])
+    public function restoreEntities(array $entityArray = [], $admin)
     {
         foreach ($entityArray as $entity) {
             /** @var $entity PostponeRemoveInterface */
             if ($entity->getIsDeleted()) {
                 $entity->setIsDeleted(false);
+
+                $admin->handleActionLog(UserActionModel::TYPE_ACTION_RESTORE, $entity);
             }
         }
 
@@ -235,9 +238,10 @@ class AdminManager extends DefaultManager
      * Delete records softly
      *
      * @param array $entityArray
+     * @param AdminInterface $admin
      * @throws \Exception
      */
-    public function removeEntities(array $entityArray = [])
+    public function removeEntities(array $entityArray = [], $admin)
     {
         foreach ($entityArray as $entity) {
             $existDependentFields = $this->checkExistDependentEntity($entity);
@@ -253,7 +257,7 @@ class AdminManager extends DefaultManager
                 ));
             }
 
-            $this->removeEntity($entity);
+            $this->removeEntity($entity, $admin);
         }
 
         $this->getEntityManager()->flush();
@@ -334,11 +338,16 @@ class AdminManager extends DefaultManager
 
     /**
      * @param $entity object
+     * @param AdminInterface $admin
      */
-    private function removeEntity($entity)
+    private function removeEntity($entity, $admin)
     {
         if ($entity instanceof PostponeRemoveInterface) {
             $entity->setIsDeleted(true);
+            $admin->handleActionLog(
+                UserActionModel::TYPE_ACTION_POSTPONE_DELETE,
+                $entity
+            );
 
             if ($entity instanceof BusinessProfile) {
                 $entity->setIsActive(false);
@@ -347,6 +356,10 @@ class AdminManager extends DefaultManager
             }
         } else {
             $this->getEntityManager()->remove($entity);
+            $admin->handleActionLog(
+                UserActionModel::TYPE_ACTION_PHYSICAL_DELETE,
+                $entity
+            );
         }
     }
 }

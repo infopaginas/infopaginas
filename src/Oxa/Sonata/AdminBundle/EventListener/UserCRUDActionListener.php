@@ -21,11 +21,17 @@ class UserCRUDActionListener
 
     private $user;
 
+    /**
+     * @param TokenStorageInterface $token
+     */
     public function __construct(TokenStorageInterface $token)
     {
         $this->tokenStorage = $token;
     }
 
+    /**
+     * @param OnFlushEventArgs $args
+     */
     public function onFlush(OnFlushEventArgs $args)
     {
         if (is_null($this->tokenStorage->getToken())) {

@@ -43,6 +43,9 @@ class ProfileController extends Controller
     const ERROR_EMAIL_ALREADY_USED = 'Email is already in use. Please put another';
     const ERROR_ACCESS_NOT_ALLOWED = 'You haven\'t access to this page!';
 
+    /**
+     * @return array
+     */
     protected function getMediaContextTypes()
     {
         $types = [
@@ -70,6 +73,7 @@ class ProfileController extends Controller
     /**
      * @param Request $request
      * @param int $id
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, int $id)
@@ -131,6 +135,7 @@ class ProfileController extends Controller
      * @param Request $request
      * @param string $citySlug
      * @param string $slug
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function viewAction(Request $request, $citySlug, string $slug)
@@ -165,7 +170,12 @@ class ProfileController extends Controller
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
 
-        $locationMarkers  = $this->getBusinessProfilesManager()->getLocationMarkersFromProfileData([$businessProfile]);
+        if (!$businessProfile->getHideMap()) {
+            $locationMarkers  = $this->getBusinessProfilesManager()
+                ->getLocationMarkersFromProfileData([$businessProfile]);
+        } else {
+            $locationMarkers = [];
+        }
 
         $bannerFactory  = $this->get('domain_banner.factory.banner');
 
@@ -206,6 +216,7 @@ class ProfileController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function claimAction(Request $request) : JsonResponse
@@ -223,6 +234,11 @@ class ProfileController extends Controller
         return $this->getFailureResponse(self::ERROR_VALIDATION_FAILURE, $formHandler->getErrors());
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function closeAction(Request $request)
     {
         $formHandler = $this->getBusinessProfileCloseRequestFormHandler();
@@ -308,6 +324,9 @@ class ProfileController extends Controller
         return $this->createForm(new BusinessReviewType());
     }
 
+    /**
+     * @return CategoryReportManager
+     */
     protected function getCategoryReportManager() : CategoryReportManager
     {
         return $this->get('domain_report.manager.category_report_manager');
@@ -337,11 +356,18 @@ class ProfileController extends Controller
         return $this->get('domain_business.form.handler.business_profile');
     }
 
+    /**
+     * @return BusinessOverviewReportManager
+     */
     protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
     {
         return $this->get('domain_report.manager.business_overview_report_manager');
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @throws \Exception
+     */
     protected function checkBusinessProfileAccess(BusinessProfile $businessProfile)
     {
         $token = $this->get('security.context')->getToken();
@@ -362,6 +388,7 @@ class ProfileController extends Controller
 
     /**
      * @param bool $businessProfile
+     *
      * @return FormInterface
      */
     private function getBusinessProfileForm($businessProfile = false) : FormInterface

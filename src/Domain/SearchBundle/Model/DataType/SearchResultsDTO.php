@@ -7,13 +7,52 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class SearchResultsDTO extends AbstractDTO
 {
-    public $resultSet;     // array/ArrayCollection of results
-    public $resultCount;   // total amount of results
-    public $page;          // current page
-    public $pageCount;     // total amount of pages
-    public $categories;    // list of related categories
-    public $neighborhoods; // ArrayCollection of neighborhoods
+    /**
+     * @var array|ArrayCollection $resultSet
+     */
+    public $resultSet;
 
+    /**
+     * total amount of results
+     *
+     * @var int $resultCount
+     */
+    public $resultCount;
+
+    /**
+     * current page
+     *
+     * @var int $page
+     */
+    public $page;
+
+    /**
+     * total amount of pages
+     *
+     * @var int $pageCount
+     */
+    public $pageCount;
+
+    /**
+     * list of related categories
+     *
+     * @var array $categories
+     */
+    public $categories;
+
+    /**
+     * @var ArrayCollection $neighborhoods
+     */
+    public $neighborhoods;
+
+    /**
+     * @param array|ArrayCollection $resultSet
+     * @param int $resultCount
+     * @param int $page
+     * @param int $pageCount
+     * @param array $categories
+     * @param ArrayCollection $neighborhoods
+     */
     public function __construct(
         array $resultSet,
         int $resultCount,
