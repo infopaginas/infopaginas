@@ -177,9 +177,8 @@ class ProfileController extends Controller
             $locationMarkers = [];
         }
 
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
-
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
                 TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
@@ -205,7 +204,7 @@ class ProfileController extends Controller
             'advertisements'  => $advertisements,
             'lastReview'      => $lastReview,
             'reviewForm'      => $reviewForm->createView(),
-            'bannerFactory'   => $bannerFactory,
+            'banners'         => $banners,
             'dcDataDTO'       => $dcDataDTO,
             'schemaJsonLD'    => $schema,
             'markers'         => $locationMarkers,

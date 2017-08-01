@@ -80,6 +80,10 @@
             {{ render(controller('DomainSiteBundle:Home:authModalRedesign')) }}
         {% endblock %}
 
+        {% block bannerSettings %}
+            {% include ':redesign/blocks/banners:ads-settings.html.twig' %}
+        {% endblock %}
+
         <!-- Scripts -->
         {% block scripts %}
             <script src="{{ absolute_url(asset('assetic/app_common_js.js')) }}"></script>
@@ -94,7 +98,10 @@
                 requirejs(['{{ absolute_url(asset("assetic/require_common_js.js")) }}'], function(common) {
                     requirejs(['{{ absolute_url(asset("assetic/require_homepage_js.js")) }}'], function(Homepage) {
                         var siteHomepage = new Homepage();
-                    })
+                    });
+                    requirejs(['{{ absolute_url(asset("assetic/require_ads_handler_js.js")) }}'], function(ads) {
+                        var ads = new ads();
+                    });
                 })
             </script>
         {% endblock %}

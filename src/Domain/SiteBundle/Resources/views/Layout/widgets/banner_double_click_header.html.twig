@@ -1,14 +1,7 @@
-{% if bannerFactory is defined and bannerFactory is not null %}
-    {% if dcDataDTO is defined and dcDataDTO is not null %}
-    {%      set dcData = dcDataDTO %}
-    {%  else %}
-    {%      set dcData = null %}
-    {%  endif %}
-    {%
-        include 'DomainBannerBundle:Default:double_click_header_template.html.twig'
-            with {
-                'bannerHeaders' : bannerFactory.getItemsHeaders,
-                'dcDataDTO'     : dcData
-            }
-    %}
+{% if banners is defined %}
+    <script async="async" src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+    <script>
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+    </script>
 {% endif %}

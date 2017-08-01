@@ -34,8 +34,8 @@ class HomeController extends Controller
         $articles       = $articleManager->fetchHomepageArticles();
         $videos         = $videoManager->fetchHomepageVideos();
 
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_HOME_VERTICAL,
                 TypeInterface::CODE_LANDING_PAGE_RIGHT,
@@ -53,7 +53,7 @@ class HomeController extends Controller
         return $this->render(
             ':redesign:homepage.html.twig',
             [
-                'bannerFactory' => $bannerFactory,
+                'banners'       => $banners,
                 'articles'      => $articles,
                 'videos'        => $videos,
                 'locale'        => $locale,
