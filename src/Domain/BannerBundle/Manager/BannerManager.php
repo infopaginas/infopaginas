@@ -50,15 +50,15 @@ class BannerManager
      */
     protected function checkBannerCodes(array $banners)
     {
-        $data = [];
+        $bannerCodes = [];
 
         foreach ($banners as $bannerKey) {
-            if (empty($data[$bannerKey]) and in_array($bannerKey, TypeModel::getBannerTypes())) {
-                $data[$bannerKey] = $bannerKey;
+            if (empty($bannerCodes[$bannerKey]) and in_array($bannerKey, TypeModel::getBannerTypes())) {
+                $bannerCodes[$bannerKey] = $bannerKey;
             }
         }
 
-        return $data;
+        return $bannerCodes;
     }
 
     /**
@@ -69,7 +69,7 @@ class BannerManager
     protected function prepareBannerData($banners)
     {
         $bannersSizeData = TypeModel::getCodeSizeData();
-        $data = [];
+        $bannerData = [];
 
         foreach ($banners as $banner) {
             $code = $banner->getCode();
@@ -79,7 +79,7 @@ class BannerManager
                 $isMobile = true;
             }
 
-            $data[$code] = [
+            $bannerData[$code] = [
                 'htmlId'        => $banner->getHtmlId(),
                 'slotId'        => $banner->getSlotId(),
                 'sizes'         => $bannersSizeData[$code],
@@ -89,7 +89,7 @@ class BannerManager
             ];
         }
 
-        return $data;
+        return $bannerData;
     }
 
     /**

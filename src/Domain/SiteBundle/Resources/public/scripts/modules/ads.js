@@ -64,21 +64,21 @@ define(['jquery'], function ( $ ) {
         googletag.cmd.push(function() {
             // init header
             var googleResponsiveCommonSize = self.getResponsiveCommonSizeMapping( googletag );
-            var googleResponsiveBlockSize = self.getResponsiveBlockSizeMapping( googletag );
+            var googleResponsiveBlockSize  = self.getResponsiveBlockSizeMapping( googletag );
 
             $.each( self.options.adsData, function() {
                 var item = this;
 
                 if ( item && ((item.isMobile && window.innerWidth < BASE_BREAK_POINT) || !item.isMobile) ) {
-                    var slot = googletag.defineSlot(item.slotId, item.sizes, item.htmlId);
+                    var slot = googletag.defineSlot( item.slotId, item.sizes, item.htmlId );
 
                     if ( item.type == self.options.type.resizable ) {
-                        slot.defineSizeMapping(googleResponsiveCommonSize);
-                    } else if ( item.type == self.options.type.resizableBlock ) {
-                        slot.defineSizeMapping(googleResponsiveBlockSize);
+                        slot.defineSizeMapping( googleResponsiveCommonSize );
+                    } else if ( item.type == self.options.type.resizableBlock && googleResponsiveBlockSize ) {
+                        slot.defineSizeMapping( googleResponsiveBlockSize );
                     }
 
-                    slot.addService(googletag.pubads());
+                    slot.addService( googletag.pubads() );
                 }
             });
 
@@ -99,7 +99,7 @@ define(['jquery'], function ( $ ) {
                 googletag.pubads().setTargeting( 'categories', slugTargeting );
             }
 
-            googletag.pubads().collapseEmptyDivs(true);
+            googletag.pubads().collapseEmptyDivs( true );
             googletag.pubads().enableSingleRequest();
             googletag.enableServices();
         });
@@ -127,10 +127,10 @@ define(['jquery'], function ( $ ) {
 
     ads.prototype.getResponsiveCommonSizeMapping = function ( googletag ) {
         return googletag.sizeMapping().
-            addSize([0, 0], []).
-            addSize([BANNER_BREAK_POINT_320x50, 0], BANNER_SIZE_320x50). // Mobile
-            addSize([BANNER_BREAK_POINT_468x60, 0], BANNER_SIZE_468x60). // Tablet
-            addSize([BANNER_BREAK_POINT_728x90, 0], BANNER_SIZE_728x90). // Desktop
+            addSize( [0, 0], [] ).
+            addSize( [BANNER_BREAK_POINT_320x50, 0], BANNER_SIZE_320x50 ). // Mobile
+            addSize( [BANNER_BREAK_POINT_468x60, 0], BANNER_SIZE_468x60 ). // Tablet
+            addSize( [BANNER_BREAK_POINT_728x90, 0], BANNER_SIZE_728x90 ). // Desktop
             build();
     };
 
@@ -140,18 +140,21 @@ define(['jquery'], function ( $ ) {
 
         var resizableWidth;
 
-        if (windowWidth >= BASE_BREAK_POINT) {
+        if ( windowWidth >= BASE_BREAK_POINT ) {
             resizableWidth = windowWidth * RESPONSIVE_ADS_BLOCK_SIZE;
         } else {
             resizableWidth = windowWidth;
         }
 
-        if (resizableWidth >= BANNER_BREAK_POINT_728x90) {
-            googleResponsiveBlockSize = googletag.sizeMapping().addSize([0, 0], BANNER_SIZE_728x90).build();
-        } else if (resizableWidth >= BANNER_BREAK_POINT_468x60) {
-            googleResponsiveBlockSize = googletag.sizeMapping().addSize([0, 0], BANNER_SIZE_468x60).build();
+        if ( resizableWidth >= BANNER_BREAK_POINT_728x90 ) {
+            googleResponsiveBlockSize = googletag.sizeMapping().addSize( [0, 0], BANNER_SIZE_728x90 ).build();
+        } else if ( resizableWidth >= BANNER_BREAK_POINT_468x60 ) {
+            googleResponsiveBlockSize = googletag.sizeMapping().addSize( [0, 0], BANNER_SIZE_468x60 ).build();
         } else if (resizableWidth >= BANNER_BREAK_POINT_320x50) {
-            googleResponsiveBlockSize = googletag.sizeMapping().addSize([0, 0], BANNER_SIZE_320x50).build();
+            googleResponsiveBlockSize = googletag.sizeMapping().addSize( [0, 0], BANNER_SIZE_320x50 ).build();
+        } else {
+            // screen width less than 320 is not supported
+            googleResponsiveBlockSize = null;
         }
 
         return googleResponsiveBlockSize;
