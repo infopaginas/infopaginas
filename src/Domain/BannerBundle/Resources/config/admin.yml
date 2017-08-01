@@ -4,15 +4,3 @@ services:
         arguments: [~, Domain\BannerBundle\Entity\Banner, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Banners}
-
-    domain_banner.admin.template:
-        class: Domain\BannerBundle\Admin\TemplateAdmin
-        arguments: [~, Domain\BannerBundle\Entity\Template, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Templates}
-
-    domain_banner.admin.type:
-        class: Domain\BannerBundle\Admin\TypeAdmin
-        arguments: [~, Domain\BannerBundle\Entity\Type, OxaSonataAdminBundle:CRUD]
-        tags:
-            - {name: sonata.admin, manager_type: orm, group: admin, label: Types}

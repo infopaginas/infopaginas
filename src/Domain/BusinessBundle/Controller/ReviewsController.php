@@ -55,8 +55,8 @@ class ReviewsController extends Controller
             $businessProfile
         );
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
                 TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
@@ -67,7 +67,7 @@ class ReviewsController extends Controller
             'businessProfile'  => $businessProfile,
             'reviewsResultDTO' => $reviewsResultDTO,
             'schemaJsonLD'     => $schema,
-            'bannerFactory'    => $bannerFactory,
+            'banners'          => $banners,
         ]);
     }
 

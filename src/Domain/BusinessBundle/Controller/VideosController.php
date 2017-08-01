@@ -122,8 +122,8 @@ class VideosController extends Controller
 
         $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_VIDEO_PAGE_RIGHT,
                 TypeInterface::CODE_VIDEO_PAGE_BOTTOM,
@@ -133,9 +133,9 @@ class VideosController extends Controller
         $seoData = $this->getVideoManager()->getVideosSeoData($this->container);
 
         $params = [
-            'results'       => $videoResultDTO,
-            'seoData'       => $seoData,
-            'bannerFactory' => $bannerFactory,
+            'results' => $videoResultDTO,
+            'seoData' => $seoData,
+            'banners' => $banners,
         ];
 
         return $this->render(':redesign:video-list.html.twig', $params);

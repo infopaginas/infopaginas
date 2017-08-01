@@ -1,6 +1,5 @@
 services:
-    domain_banner.factory.banner:
-        class: Domain\BannerBundle\Model\Banner\BannerFactory
-        arguments: ['@doctrine.orm.entity_manager']
-
-
+    domain_banner.manager.banner:
+        class: Domain\BannerBundle\Manager\BannerManager
+        arguments:
+            - '@service_container'

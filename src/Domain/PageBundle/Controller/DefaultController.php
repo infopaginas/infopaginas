@@ -50,9 +50,8 @@ class DefaultController extends Controller
     {
         $page = $this->get('domain_page.manager.page')->getPageByCode($code);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_PORTAL_RIGHT,
                 TypeInterface::CODE_STATIC_BOTTOM,
@@ -60,9 +59,9 @@ class DefaultController extends Controller
         );
 
         $params = [
-            'page'          => $page,
-            'seoData'       => $page,
-            'bannerFactory' => $bannerFactory,
+            'page'      => $page,
+            'seoData'   => $page,
+            'banners'   => $banners,
         ];
 
         return $this->render(':redesign:static-page-view.html.twig', $params);
