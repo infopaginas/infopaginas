@@ -5576,7 +5576,13 @@ input[type='radio'], input[type='checkbox'] {
     }
   }
 
-  padding-bottom: 50px;
+  @media only screen and (max-width: 804px) {
+    &.float-ad-spacing {
+      padding-bottom: 95px;
+    }
+
+    padding-bottom: 0;
+  }
 }
 
 .vjs-social-share {
