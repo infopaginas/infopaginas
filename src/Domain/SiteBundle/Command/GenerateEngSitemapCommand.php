@@ -40,31 +40,49 @@ class GenerateEngSitemapCommand extends ContainerAwareCommand
         shell_exec('rm -rf ' . $engSiteMapPath);
         shell_exec('mkdir ' . $engSiteMapPath);
 
-        // copy esp sitemap
+        /*
+         * copy default sitemap files (spanish)
+         *
+         * Copy all files in folder that matches with pattern "sitemap.*" to folder for english sitemap.
+         * Command doesn't change filenames
+         */
         shell_exec(
             'cd ' . $path . ' && for file in sitemap.*; do cp "$file" ' . self::ENG_SITEMAP_DIRECTORY . '"${file}";done'
         );
 
-        // unzip files
+        /*
+         * Extract all files in folder that matches with pattern "sitemap.*.gz"
+         */
         shell_exec('cd ' . $engSiteMapPath . ' && gunzip sitemap.*.gz');
 
         // replace host
         $host = $this->getBaseHost();
         $engHost = $this->locale . '.' . $host;
 
-        // replace host in main file
+        /*
+         * Search value "host" and replace all occurrences with "$engHost/sitemapEn" in "sitemap.xml" file.
+         * "sitemapEn" is added because urls should point to correct files (not to default one)
+         * Save result to same file.
+         */
         shell_exec(
             'cd ' . $engSiteMapPath .
             ' && sed -i "s/' . $host . '/' . $engHost . '\/' . self::ENG_SITEMAP_DIRECTORY . 'g" sitemap.xml'
         );
 
-        // replace host in child files
+        /*
+         * For all files in folder that matches pattern "sitemap.*.xml",
+         * search value "host" and replace all occurrences with "$engHost".
+         * Save result to same files.
+         */
         shell_exec(
             'cd ' . $engSiteMapPath .
             ' && for file in sitemap.*.xml; do sed -i "s/' . $host . '/' . $engHost . '/g" "${file}";done'
         );
 
-        // gzip child files
+        /*
+         * Archive (gzip) all files in folder that matches with pattern "sitemap.*.xml".
+         * Main file (sitemap.xml) shouldn't be archived.
+         */
         shell_exec('cd ' . $engSiteMapPath . ' && gzip sitemap.*.xml');
     }
 
