@@ -143,7 +143,9 @@ class ProfileController extends Controller
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
-        if (!$businessProfile or !$businessProfile->getIsActive()) {
+        if (!$businessProfile) {
+            throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
+        } elseif (!$businessProfile->getIsActive()) {
             throw $this->createNotFoundException();
         }
 
