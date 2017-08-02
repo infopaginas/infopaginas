@@ -186,7 +186,7 @@
                                 <ul>
                                     {% for paymentMethod in businessProfile.paymentMethods %}
                                         <li>
-                                            {% if paymentMethod.type  in PAYMENT_METHOD_TYPE %}
+                                            {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
                                                 {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.png' %}
 
                                                 <img src="{{ absolute_url(asset(path)) }}" alt="{{ paymentMethod.getName }}">
