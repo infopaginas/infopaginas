@@ -14,13 +14,17 @@ domain_site_user:
     resource: "@DomainSiteBundle/Resources/config/routes/user.yml"
     prefix:   /user
 
-# 301 redirect for old urls
+# 301 and 410 redirect for old urls
 
 domain_site_redirect_qr:
     path:     /{path}.html
     defaults: { _controller: DomainSiteBundle:Redirect:index }
     requirements:
         path: .+
+
+domain_site_consult:
+    path:     /consulta
+    defaults: { _controller: DomainSiteBundle:Redirect:consult }
 
 domain_site_redirect_sign_up:
     path:     /sign_up

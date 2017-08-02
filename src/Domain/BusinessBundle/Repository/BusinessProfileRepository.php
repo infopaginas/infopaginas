@@ -264,6 +264,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         $query = $this->getQueryBuilder()
             ->where('bp.slug = :businessProfileSlug')
             ->setParameter('businessProfileSlug', $businessProfileSlug)
+            ->setMaxResults(1)
         ;
 
         if ($customSlug) {
