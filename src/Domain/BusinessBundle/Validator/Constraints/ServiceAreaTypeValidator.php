@@ -2,25 +2,26 @@
 
 namespace Domain\BusinessBundle\Validator\Constraints;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class BusinessProfileExtraSearchValidator extends ConstraintValidator
+class ServiceAreaTypeValidator extends ConstraintValidator
 {
     /**
-     * @param BusinessProfileExtraSearch     $extraSearch
-     * @param Constraint                     $constraint
+     * @param BusinessProfile|BusinessProfileExtraSearch     $object
+     * @param Constraint $constraint
      */
-    public function validate($extraSearch, Constraint $constraint)
+    public function validate($object, Constraint $constraint)
     {
         $path = '';
 
-        if ($extraSearch->getServiceAreasType() == $extraSearch::SERVICE_AREAS_AREA_CHOICE_VALUE) {
-            if (empty($extraSearch->getMilesOfMyBusiness())) {
+        if ($object->getServiceAreasType() == $object::SERVICE_AREAS_AREA_CHOICE_VALUE) {
+            if (empty($object->getMilesOfMyBusiness())) {
                 $path = 'milesOfMyBusiness';
             }
-        } elseif ($extraSearch->getLocalities()->isEmpty()) {
+        } elseif ($object->getLocalities()->isEmpty()) {
             $path = 'localities';
         }
 
