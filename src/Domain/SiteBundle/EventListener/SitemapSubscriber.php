@@ -46,7 +46,7 @@ class SitemapSubscriber implements EventSubscriberInterface
     /**
      * @var array
      */
-    private $languages = ['en'];
+    private $languages = [];
 
     /**
      * @var RequestContext
