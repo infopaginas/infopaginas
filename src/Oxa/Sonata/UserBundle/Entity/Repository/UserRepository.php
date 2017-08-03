@@ -5,9 +5,36 @@ namespace Oxa\Sonata\UserBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 class UserRepository extends EntityRepository
 {
+    /**
+     * @param array $roles
+     *
+     * @return QueryBuilder
+     */
+    public function findByRolesQb($roles)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('u')
+            ->from($this->_entityName, 'u')
+            ->leftJoin('u.groups', 'g')
+        ;
+
+        foreach ($roles as $key => $role) {
+            $qb->
+                orWhere($qb->expr()->orX(
+                    $qb->expr()->like('u.roles', ':role' . $key),
+                    $qb->expr()->like('g.roles', ':role' . $key)
+                ))
+                ->setParameter('role' . $key, '%"' . $role . '"%')
+            ;
+        }
+
+        return $qb;
+    }
+
     /**
      * @param string $role
      *

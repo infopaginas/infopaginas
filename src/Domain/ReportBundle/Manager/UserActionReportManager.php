@@ -19,6 +19,7 @@ class UserActionReportManager extends BaseReportManager
     const MONGO_DB_FIELD_USER_ID     = 'user_id';
     const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
     const MONGO_DB_FIELD_ENTITY      = 'entity';
+    const MONGO_DB_FIELD_ENTITY_NAME = 'entity_name';
     const MONGO_DB_FIELD_ACTION      = 'action';
     const MONGO_DB_FIELD_DATA        = 'data';
 
@@ -51,7 +52,7 @@ class UserActionReportManager extends BaseReportManager
     public function getUserActionReportData(array $params = [])
     {
         $userActionRawResult = $this->getUserActionsData($params);
-        $total = $this->countUserActionsData();
+        $total = $this->countUserActionsData($params);
 
         $result = $this->prepareUserActionReportStats($userActionRawResult);
 
@@ -82,11 +83,13 @@ class UserActionReportManager extends BaseReportManager
     }
 
     /**
+     * @param array $parameters
+     *
      * @return array
      */
-    public function getUserActionReportExportDataIterator()
+    public function getUserActionReportExportDataIterator($parameters)
     {
-        $userActionCursor = $this->getUserActionsExportData();
+        $userActionCursor = $this->getUserActionsExportData($parameters);
 
         return $userActionCursor;
     }
@@ -197,16 +200,21 @@ class UserActionReportManager extends BaseReportManager
             $userId   = self::MONGO_DB_DEFAULT_USER_ID;
         }
 
-        $data = [
-            self::MONGO_DB_FIELD_USER_NAME => $userName,
-            self::MONGO_DB_FIELD_USER_ID   => $userId,
-            self::MONGO_DB_FIELD_DATE_TIME => $date,
-            self::MONGO_DB_FIELD_ENTITY    => $data['entity'],
-            self::MONGO_DB_FIELD_ACTION    => $action,
-            self::MONGO_DB_FIELD_DATA      => $data,
+        if (empty($data['entityName'])) {
+            $data['entityName'] = '';
+        }
+
+        $userAction = [
+            self::MONGO_DB_FIELD_USER_NAME      => $userName,
+            self::MONGO_DB_FIELD_USER_ID        => $userId,
+            self::MONGO_DB_FIELD_DATE_TIME      => $date,
+            self::MONGO_DB_FIELD_ENTITY         => $data['entity'],
+            self::MONGO_DB_FIELD_ENTITY_NAME    => $data['entityName'],
+            self::MONGO_DB_FIELD_ACTION         => $action,
+            self::MONGO_DB_FIELD_DATA           => $data,
         ];
 
-        return $data;
+        return $userAction;
     }
 
     /**
@@ -214,6 +222,13 @@ class UserActionReportManager extends BaseReportManager
      */
     protected function insertUserAction($data)
     {
+        $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME, [
+            self::MONGO_DB_FIELD_USER_ID    => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_ACTION     => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_ENTITY     => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_DATE_TIME  => MongoDbManager::INDEX_TYPE_DESC,
+        ]);
+
         $this->mongoDbManager->insertOne(
             self::MONGO_DB_COLLECTION_NAME,
             $data
@@ -242,7 +257,7 @@ class UserActionReportManager extends BaseReportManager
     {
         $cursor = $this->mongoDbManager->find(
             self::MONGO_DB_COLLECTION_NAME,
-            [],
+            $this->getMongoSearchQuery($params),
             [
                 'skip'  => (int) ($params['_per_page'] * ($params['_page'] - 1)),
                 'limit' => (int) $params['_per_page'],
@@ -256,13 +271,15 @@ class UserActionReportManager extends BaseReportManager
     }
 
     /**
+     * @param array $params
+     *
      * @return mixed
      */
-    public function getUserActionsExportData()
+    public function getUserActionsExportData($params)
     {
         $cursor = $this->mongoDbManager->find(
             self::MONGO_DB_COLLECTION_NAME,
-            [],
+            $this->getMongoSearchQuery($params),
             [
                 'sort'  => [
                     self::MONGO_DB_FIELD_DATE_TIME => MongoDbManager::INDEX_TYPE_DESC,
@@ -274,13 +291,15 @@ class UserActionReportManager extends BaseReportManager
     }
 
     /**
+     * @param array $params
+     *
      * @return mixed
      */
-    public function countUserActionsData()
+    public function countUserActionsData($params)
     {
         $count = $this->mongoDbManager->count(
             self::MONGO_DB_COLLECTION_NAME,
-            []
+            $this->getMongoSearchQuery($params)
         );
 
         return $count;
@@ -296,8 +315,57 @@ class UserActionReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_USER_ID     => 'user_action_report.mapping.user_id',
             self::MONGO_DB_FIELD_DATE_TIME   => 'user_action_report.mapping.datetime',
             self::MONGO_DB_FIELD_ENTITY      => 'user_action_report.mapping.entity',
+            self::MONGO_DB_FIELD_ENTITY_NAME => 'user_action_report.mapping.entity_name',
             self::MONGO_DB_FIELD_ACTION      => 'user_action_report.mapping.action',
             self::MONGO_DB_FIELD_DATA        => 'user_action_report.mapping.data',
         ];
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    protected function getMongoSearchQuery($params)
+    {
+        $query = [];
+
+        if (!empty($params['username']['value'])) {
+            $query[self::MONGO_DB_FIELD_USER_ID] = (int) $params['username']['value'];
+        }
+
+        if (!empty($params['action']['value'])) {
+            $query[self::MONGO_DB_FIELD_ACTION] = $params['action']['value'];
+        }
+
+        if (!empty($params['entity']['value'])) {
+            $query[self::MONGO_DB_FIELD_ENTITY] = $this->mongoDbManager->typeRegularExpression($params['entity']['value']);
+        }
+
+        $datetime = [];
+
+        if (!empty($params['date']['value']['start'])) {
+            $start = \DateTime::createFromFormat(AdminHelper::FILTER_DATE_FORMAT, $params['date']['value']['start']);
+
+            if ($start) {
+                $start->setTime(0, 0, 0);
+                $datetime['$gte'] = $this->mongoDbManager->typeUTCDateTime($start);
+            }
+        }
+
+        if (!empty($params['date']['value']['end'])) {
+            $end = \DateTime::createFromFormat(AdminHelper::FILTER_DATE_FORMAT, $params['date']['value']['end']);
+
+            if ($end) {
+                $end->setTime(23, 59, 59);
+                $datetime['$lte'] = $this->mongoDbManager->typeUTCDateTime($end);
+            }
+        }
+
+        if ($datetime) {
+            $query[self::MONGO_DB_FIELD_DATE_TIME] = $datetime;
+        }
+
+        return $query;
     }
 }

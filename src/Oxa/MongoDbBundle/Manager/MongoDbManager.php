@@ -189,6 +189,17 @@ class MongoDbManager
     }
 
     /**
+     * @param string $pattern
+     * @param string $flags
+     *
+     * @return MongoDB\BSON\Regex
+     */
+    public function typeRegularExpression($pattern, $flags = '')
+    {
+        return new MongoDB\BSON\Regex($pattern, $flags);
+    }
+
+    /**
      * @param string $collectionName
      * @param string $collectionArchiveName
      * @param string $dateField

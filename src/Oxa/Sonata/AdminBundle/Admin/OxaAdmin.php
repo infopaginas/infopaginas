@@ -330,8 +330,9 @@ class OxaAdmin extends BaseAdmin
     public function generateUserLogData($action, $entity = null)
     {
         $data = [
-            'entity' => $this->getClassnameLabel(),
-            'type'   => $action,
+            'entity'        => $this->getClassnameLabel(),
+            'entityName'    => (string) $entity,
+            'type'          => $action,
         ];
 
         if ($entity and $entity->getId()) {

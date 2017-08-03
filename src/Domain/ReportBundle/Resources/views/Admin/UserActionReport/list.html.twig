@@ -32,6 +32,14 @@
                                                     {% include 'DomainReportBundle:Admin/UserActionReport:data_block.html.twig' with {data: row[key], events: admin.events} %}
                                                 {% elseif key == USER_ACTION.MAPPING.ACTION %}
                                                     {{ admin.events[row[key]]|trans({},'AdminReportBundle') }}
+                                                {% elseif key == USER_ACTION.MAPPING.ENTITY_NAME %}
+                                                    {% if row[USER_ACTION.MAPPING.INFO][USER_ACTION.DATA.URL] is defined and row[key] is defined and row[key] %}
+                                                        <a href="{{ row[USER_ACTION.MAPPING.INFO][USER_ACTION.DATA.URL] }}">{{ row[key] }}</a>
+                                                    {% elseif row[key] is defined and row[key] %}
+                                                        {{ row[key] }}
+                                                    {% else %}
+                                                        {{ 'user_action_report.no_associated_entity'|trans({},'AdminReportBundle') }}
+                                                    {% endif %}
                                                 {% else %}
                                                     {{ row[key] }}
                                                 {% endif %}
