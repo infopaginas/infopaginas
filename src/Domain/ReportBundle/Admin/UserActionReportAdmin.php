@@ -69,11 +69,13 @@ class UserActionReportAdmin extends ReportAdmin
                     'property'  => 'fullName',
                     'class' => 'Oxa\Sonata\UserBundle\Entity\User',
                     'query_builder' => function (\Oxa\Sonata\UserBundle\Entity\Repository\UserRepository $rep) {
-                        return $rep->findByRolesQb([
-                            'ROLE_SALES_MANAGER',
-                            'ROLE_CONTENT_MANAGER',
-                            'ROLE_ADMINISTRATOR',
-                        ]);
+                        return $rep->findByRolesQb(
+                            [
+                                'ROLE_SALES_MANAGER',
+                                'ROLE_CONTENT_MANAGER',
+                                'ROLE_ADMINISTRATOR',
+                            ]
+                        );
                     },
                 ],
             ])
@@ -143,8 +145,8 @@ class UserActionReportAdmin extends ReportAdmin
             !empty($this->datagridValues['date']['value']['end'])
         ) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 }
