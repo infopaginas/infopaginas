@@ -36,7 +36,7 @@ class UserActionExcelExporter extends ExcelPostponedExporterModel
      */
     protected function setData($title, $parameters = [])
     {
-        $dataIterator = $this->userActionReportManager->getUserActionReportExportDataIterator();
+        $dataIterator = $this->userActionReportManager->getUserActionReportExportDataIterator($parameters);
         $headers = UserActionReportManager::getUserActionReportMapping();
 
         $this->initProperties();
@@ -89,6 +89,11 @@ class UserActionExcelExporter extends ExcelPostponedExporterModel
                 $this->activeSheet->setCellValue(
                     $this->currentCol . $this->currentRow,
                     $this->translator->trans($eventsMapping[$value], [], 'AdminReportBundle')
+                );
+            } elseif ($key == UserActionReportManager::MONGO_DB_FIELD_ENTITY_NAME and !$value) {
+                $this->activeSheet->setCellValue(
+                    $this->currentCol . $this->currentRow,
+                    $this->translator->trans('user_action_report.no_associated_entity', [], 'AdminReportBundle')
                 );
             } else {
                 $this->activeSheet->setCellValue($this->currentCol . $this->currentRow, $value);

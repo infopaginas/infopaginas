@@ -272,9 +272,10 @@ class ReportsController extends Controller
         $userActionReportManager->registerUserAction(
             UserActionModel::TYPE_ACTION_EXPORT,
             [
-                'entity' => $entityName,
-                'type'   => UserActionModel::TYPE_ACTION_EXPORT,
-                'id'     => $id,
+                'entity'        => $entityName,
+                'entityName'    => (string) $businessProfile,
+                'type'          => UserActionModel::TYPE_ACTION_EXPORT,
+                'id'            => $id,
                 'url' => $this->generateUrl(
                     'admin_domain_business_businessprofile_show',
                     [

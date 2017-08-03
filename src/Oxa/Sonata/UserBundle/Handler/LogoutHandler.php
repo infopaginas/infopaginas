@@ -43,8 +43,9 @@ class LogoutHandler extends DefaultLogoutSuccessHandler implements LogoutSuccess
     {
         if ($this->security->isGranted('ROLE_SALES_MANAGER') or $this->security->isGranted('ROLE_ADMIN')) {
             $this->userActionReportManager->registerUserAction(UserActionModel::TYPE_ACTION_LOGOUT, [
-                'entity' => UserActionModel::ENTITY_TYPE_AUTH,
-                'type'   => UserActionModel::TYPE_ACTION_LOGOUT,
+                'entity'        => UserActionModel::ENTITY_TYPE_AUTH,
+                'entityName'    => '',
+                'type'          => UserActionModel::TYPE_ACTION_LOGOUT,
             ]);
         }
 
