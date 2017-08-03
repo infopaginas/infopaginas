@@ -327,4 +327,30 @@ class DatesUtil
 
         return $datetime;
     }
+
+    /**
+     * @param \Datetime $datetime
+     *
+     * @return \Datetime
+     */
+    public static function setDayStart($datetime)
+    {
+        // set time to day start (0h 0m 0s)
+        $datetime->setTime(0, 0, 0);
+
+        return $datetime;
+    }
+
+    /**
+     * @param \Datetime $datetime
+     *
+     * @return \Datetime
+     */
+    public static function setDayEnd($datetime)
+    {
+        // set time to day end (23h 59m 59s)
+        $datetime->setTime(23, 59, 59);
+
+        return $datetime;
+    }
 }

@@ -348,7 +348,7 @@ class UserActionReportManager extends BaseReportManager
             $start = \DateTime::createFromFormat(AdminHelper::FILTER_DATE_FORMAT, $params['date']['value']['start']);
 
             if ($start) {
-                $start->setTime(0, 0, 0);
+                $start = DatesUtil::setDayStart($start);
                 $datetime['$gte'] = $this->mongoDbManager->typeUTCDateTime($start);
             }
         }
@@ -357,7 +357,7 @@ class UserActionReportManager extends BaseReportManager
             $end = \DateTime::createFromFormat(AdminHelper::FILTER_DATE_FORMAT, $params['date']['value']['end']);
 
             if ($end) {
-                $end->setTime(23, 59, 59);
+                $end = DatesUtil::setDayEnd($end);
                 $datetime['$lte'] = $this->mongoDbManager->typeUTCDateTime($end);
             }
         }

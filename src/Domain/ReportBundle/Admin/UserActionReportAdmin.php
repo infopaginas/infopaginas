@@ -92,9 +92,9 @@ class UserActionReportAdmin extends ReportAdmin
                 ],
                 'field_type' => 'choice'
             ])
-            ->add('date', 'doctrine_orm_datetime_range', [
+            ->add('date', 'doctrine_orm_date_range', [
                 'show_filter' => $this->checkDateFilter() ?: null,
-                'field_type'  => 'sonata_type_datetime_range_picker',
+                'field_type'  => 'sonata_type_date_range_picker',
                 'field_options' => [
                     'field_options' => [
                         'format'        => AdminHelper::FILTER_DATE_RANGE_FORMAT,
