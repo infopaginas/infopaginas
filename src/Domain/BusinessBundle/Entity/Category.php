@@ -205,7 +205,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
      */
     public function __toString()
     {
-        return $this->getName() ?: '';
+        return $this->getSearchTextEn() . ' / ' . $this->getSearchTextEs();
     }
 
     /**
