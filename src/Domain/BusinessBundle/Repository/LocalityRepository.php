@@ -52,7 +52,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->from('DomainBusinessBundle:Locality', 'l')
             ->leftJoin('l.translations', 't')
             ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
-            ->setParameter('name', strtolower($localityName))
+            ->setParameter('name', mb_strtolower($localityName))
             ->setParameter('locale', $locale)
             ->setMaxResults(1)
             ->getQuery()
@@ -73,7 +73,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->from('DomainBusinessBundle:Locality', 'l')
             ->leftJoin('l.translations', 't')
             ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
-            ->setParameter('name', strtolower($localityName))
+            ->setParameter('name', mb_strtolower($localityName))
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
@@ -130,7 +130,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.translations', 'lt')
-            ->setParameter('name', '%' . strtolower($name) . '%')
+            ->setParameter('name', '%' . mb_strtolower($name) . '%')
             ->setParameter('locale', $locale)
         ;
 
