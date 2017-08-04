@@ -179,7 +179,6 @@ class ArticleAdmin extends OxaAdmin
                 ->add('images', 'sonata_type_collection', $property, [
                     'edit' => 'inline',
                     'inline' => 'table',
-                    'sortable' => 'position',
                     'link_parameters' => [
                         'context' => OxaMediaInterface::CONTEXT_ARTICLE_IMAGES,
                         'provider' => OxaMediaInterface::PROVIDER_IMAGE,

@@ -9,8 +9,6 @@ services:
         arguments: [~, Domain\ArticleBundle\Entity\Media\ArticleGallery, OxaSonataAdminBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Article Gallery}
-        calls:
-             - [setPositionService, ['@pix_sortable_behavior.position']]
     domain_article.manager.article:
         class: Domain\ArticleBundle\Model\Manager\ArticleManager
         arguments: ['@service_container']
