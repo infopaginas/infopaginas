@@ -2246,7 +2246,8 @@ $thumb-width-mb: 60px;
   }
 
   a {
-    background: $grey--light;
+    background: $blue;
+    color: $white;
     border-radius: $button-radius;
     display: inline-block;
     padding: 5px 20px;
@@ -2258,8 +2259,8 @@ $thumb-width-mb: 60px;
     }
 
     &:hover {
-      background: $blue;
-      color: $white;
+      background: $grey--light;
+      color: $orange;
     }
   }
 }
