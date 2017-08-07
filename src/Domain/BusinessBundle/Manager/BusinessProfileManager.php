@@ -1601,6 +1601,7 @@ class BusinessProfileManager extends Manager
     protected function searchCatalogBusinessInElastic(SearchDTO $searchParams)
     {
         $coordinates = $searchParams->getCurrentCoordinates();
+        $randomize   = $searchParams->randomizeAllowed();
 
         if ($searchParams->checkAdsAllowed()) {
             $searchAdQuery   = $this->getCatalogBusinessSearchQueryAd($searchParams);
@@ -1617,7 +1618,7 @@ class BusinessProfileManager extends Manager
         $searchQuery = $this->getCatalogBusinessSearchQuery($searchParams, $excludeIds);
 
         $response = $this->searchBusinessElastic($searchQuery);
-        $search = $this->getBusinessDataFromElasticResponse($response, $searchParams->getIsRandomized());
+        $search = $this->getBusinessDataFromElasticResponse($response, $randomize);
 
         $search = $this->setBusinessDynamicValues($search, $coordinates);
 
