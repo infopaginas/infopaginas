@@ -744,6 +744,12 @@ class BusinessProfile implements
      */
     protected $isAd;
 
+    /** @var int
+     *
+     * Current business position at page
+     */
+    protected $displayedPosition;
+
     /**
      * Related to WORKING_HOURS_ASSOCIATED_FIELD
      * @var BusinessProfileWorkingHour[] - Business Profile working hours
@@ -2560,6 +2566,26 @@ class BusinessProfile implements
     public function setIsAd($isAd)
     {
         $this->isAd = $isAd;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayedPosition()
+    {
+        return $this->displayedPosition;
+    }
+
+    /**
+     * @param int $displayedPosition
+     *
+     * @return BusinessProfile
+     */
+    public function setDisplayedPosition($displayedPosition)
+    {
+        $this->displayedPosition = $displayedPosition;
 
         return $this;
     }
