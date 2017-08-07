@@ -15,13 +15,14 @@ class UserActionReportManager extends BaseReportManager
     const MONGO_DB_COLLECTION_NAME          = 'user_action';
     const MONGO_DB_COLLECTION_NAME_ARCHIVE  = 'user_action_archive';
 
-    const MONGO_DB_FIELD_USER_NAME   = 'user_name';
-    const MONGO_DB_FIELD_USER_ID     = 'user_id';
-    const MONGO_DB_FIELD_DATE_TIME   = 'datetime';
-    const MONGO_DB_FIELD_ENTITY      = 'entity';
-    const MONGO_DB_FIELD_ENTITY_NAME = 'entity_name';
-    const MONGO_DB_FIELD_ACTION      = 'action';
-    const MONGO_DB_FIELD_DATA        = 'data';
+    const MONGO_DB_FIELD_USER_NAME     = 'user_name';
+    const MONGO_DB_FIELD_USER_ID       = 'user_id';
+    const MONGO_DB_FIELD_DATE_TIME     = 'datetime';
+    const MONGO_DB_FIELD_ENTITY        = 'entity';
+    const MONGO_DB_FIELD_ENTITY_SEARCH = 'entity_search';
+    const MONGO_DB_FIELD_ENTITY_NAME   = 'entity_name';
+    const MONGO_DB_FIELD_ACTION        = 'action';
+    const MONGO_DB_FIELD_DATA          = 'data';
 
     const MONGO_DB_DEFAULT_USER      = 'unknown';
     const MONGO_DB_DEFAULT_USER_ID   = 0;
@@ -209,6 +210,7 @@ class UserActionReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_USER_ID        => $userId,
             self::MONGO_DB_FIELD_DATE_TIME      => $date,
             self::MONGO_DB_FIELD_ENTITY         => $data['entity'],
+            self::MONGO_DB_FIELD_ENTITY_SEARCH  => mb_strtolower($data['entity']),
             self::MONGO_DB_FIELD_ENTITY_NAME    => $data['entityName'],
             self::MONGO_DB_FIELD_ACTION         => $action,
             self::MONGO_DB_FIELD_DATA           => $data,
@@ -339,7 +341,9 @@ class UserActionReportManager extends BaseReportManager
         }
 
         if (!empty($params['entity']['value'])) {
-            $query[self::MONGO_DB_FIELD_ENTITY] = $this->mongoDbManager->typeRegularExpression($params['entity']['value']);
+            $entitySearch = mb_strtolower($params['entity']['value']);
+
+            $query[self::MONGO_DB_FIELD_ENTITY_SEARCH] = $this->mongoDbManager->typeRegularExpression($entitySearch);
         }
 
         $datetime = [];
