@@ -442,7 +442,6 @@ class SearchController extends Controller
             $seoLocationName = $locality->getName();
 
             if ($category) {
-                $request->attributes->set('category', $category->getName());
                 $request->attributes->set('q', $category->getName());
                 $showCatalog = false;
 
@@ -540,8 +539,9 @@ class SearchController extends Controller
             true
         );
 
-        // hardcode for catalog
-        $pageRouter = 'domain_search_index';
+        $pageRouter = 'domain_search_catalog';
+        $searchData['localitySlug'] = $localitySlug;
+        $searchData['categorySlug'] = $categorySlug;
 
         return $this->render(
             ':redesign:catalog.html.twig',
