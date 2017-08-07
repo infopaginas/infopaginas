@@ -96,6 +96,9 @@ class BusinessProfileManager extends Manager
     /** @var ContainerInterface $container */
     private $container;
 
+    /** @var int $position */
+    private $position = 1;
+
     /**
      * Manager constructor.
      *
@@ -182,19 +185,23 @@ class BusinessProfileManager extends Manager
             }
 
             $profilesArray[] = [
-                "id"            => $profile->getId(),
-                "name"          => $profile->getName(),
-                "address"       => $profile->getShortAddress(),
-                "reviewsCount"  => $profile->getBusinessReviewsCount(),
-                "logo"          => $logoPath,
-                "background"    => $backgndPath,
-                "latitude"      => $profile->getLatitude(),
-                "longitude"     => $profile->getLongitude(),
+                'id'            => $profile->getId(),
+                'name'          => $profile->getName(),
+                'address'       => $profile->getShortAddress(),
+                'reviewsCount'  => $profile->getBusinessReviewsCount(),
+                'logo'          => $logoPath,
+                'background'    => $backgndPath,
+                'latitude'      => $profile->getLatitude(),
+                'longitude'     => $profile->getLongitude(),
                 'rating'        => $this->calculateReviewsAvgRatingForBusinessProfile($profile),
-                "profileUrl"    => $this->container->get('router')->generate('domain_business_profile_view', [
-                    'slug'          => $profile->getSlug(),
-                    'citySlug'      => $profile->getCatalogLocality()->getSlug(),
-                ]),
+                'labelNumber'   => (string) $profile->getDisplayedPosition(),
+                'profileUrl'    => $this->container->get('router')->generate(
+                    'domain_business_profile_view',
+                    [
+                        'slug'          => $profile->getSlug(),
+                        'citySlug'      => $profile->getCatalogLocality()->getSlug(),
+                    ]
+                ),
             ];
         }
 
@@ -1623,6 +1630,8 @@ class BusinessProfileManager extends Manager
         $search = $this->setBusinessDynamicValues($search, $coordinates);
 
         if ($searchParams->checkAdsAllowed() and $searchResultAds) {
+            $searchResultAds['data'] = array_reverse($searchResultAds['data']);
+
             foreach ($searchResultAds['data'] as $item) {
                 array_unshift($search['data'], $item);
             }
@@ -1648,6 +1657,9 @@ class BusinessProfileManager extends Manager
                 $item->getLatitude(),
                 $item->getLongitude()
             );
+
+            $item->setDisplayedPosition($this->position);
+            $this->position++;
 
             $item->setIsAd($isAd);
 
@@ -1690,6 +1702,8 @@ class BusinessProfileManager extends Manager
         $search = $this->setBusinessDynamicValues($search, $coordinates);
 
         if ($searchParams->checkAdsAllowed() and $searchResultAds) {
+            $searchResultAds['data'] = array_reverse($searchResultAds['data']);
+
             foreach ($searchResultAds['data'] as $item) {
                 array_unshift($search['data'], $item);
             }
