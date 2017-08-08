@@ -90,6 +90,7 @@ class UploadYoutubeVideoCommand extends ContainerAwareCommand
 
             $this->mailer->sendYoutubeTokenErrorEmailMessage($currentError, $admins);
         }
+
         $logger->addInfo($logger::YOUTUBE_UPLOAD, $logger::STATUS_END, 'execute:stop');
     }
 

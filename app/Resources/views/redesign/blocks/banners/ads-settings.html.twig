@@ -1,0 +1,21 @@
+{% if banners is defined %}
+    <span id="adsSettings" data-dfp-ads="{{ banners|json_encode() }}"
+        {% if dcDataDTO is defined and dcDataDTO is not null %}
+            {% if dcDataDTO.searchKeywords is not empty %}
+                data-dfp-targeting-search="{{ dcDataDTO.searchKeywords|json_encode|raw }}"
+            {% endif %}
+
+            {% if dcDataDTO.locationName is not empty %}
+                data-dfp-targeting-location="{{ dcDataDTO.locationName }}"
+            {% endif %}
+
+            {% if dcDataDTO.categories is not empty %}
+                data-dfp-targeting-categories="{{ dcDataDTO.categories|json_encode|raw }}"
+            {% endif %}
+
+            {% if dcDataDTO.slug is not empty %}
+                data-dfp-targeting-slug="{{ dcDataDTO.slug|json_encode|raw }}"
+            {% endif %}
+        {% endif %}
+    ></span>
+{% endif %}

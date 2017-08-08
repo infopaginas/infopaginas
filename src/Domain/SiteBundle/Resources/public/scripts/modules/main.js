@@ -487,28 +487,37 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 //ad
     var searchFloatBottom = $( '#search-float-bottom' );
     var hideBannerButton  = $( '#ad-close' );
+    var searchResultBlock = $( '#searchResults' );
 
     hideBannerButton.on( 'click', function() {
         $( this ).parent().remove();
         showMap.removeClass( 'floating-offset' );
+        searchResultBlock.removeClass( 'float-ad-spacing' );
     });
 
     if ( searchFloatBottom.length ) {
         var googleTagBlock = searchFloatBottom.find( 'div:nth-child(2)' );
 
-        if ( googleTagBlock.is(':visible') ) {
+        if ( googleTagBlock.is( ':visible' ) ) {
             hideBannerButton.removeClass( 'hidden' );
+            searchResultBlock.addClass( 'float-ad-spacing' );
         } else {
             hideBannerButton.addClass( 'hidden' );
+            searchResultBlock.removeClass( 'float-ad-spacing' );
         }
 
         googletag.pubads().addEventListener( 'slotRenderEnded', function( event ) {
-            if (googleTagBlock.length && event.slot.getSlotElementId() == googleTagBlock.attr( 'id' )) {
-
-                if ( event.isEmpty ) {
-                    hideBannerButton.addClass( 'hidden' );
+            if ( googleTagBlock.length && event.slot.getSlotElementId() == googleTagBlock.attr( 'id' ) ) {
+                if ( $( '#search-float-bottom' ).length ) {
+                    if ( event.isEmpty ) {
+                        hideBannerButton.addClass( 'hidden' );
+                        searchResultBlock.removeClass( 'float-ad-spacing' );
+                    } else {
+                        hideBannerButton.removeClass( 'hidden' );
+                        searchResultBlock.addClass( 'float-ad-spacing' );
+                    }
                 } else {
-                    hideBannerButton.removeClass( 'hidden' );
+                    googletag.destroySlots( [event.slot] );
                 }
             }
         });

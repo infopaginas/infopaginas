@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @Annotation
  * @Target({"CLASS", "ANNOTATION"})
  */
-class BusinessProfileExtraSearch extends NotBlank
+class ServiceAreaType extends NotBlank
 {
     public function getTargets()
     {

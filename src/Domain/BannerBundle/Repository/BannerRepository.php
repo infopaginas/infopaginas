@@ -23,24 +23,15 @@ class BannerRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @return QueryBuilder
+     * @param array $codes
+     *
+     * @return array
      */
-    protected function getBannerByTypeQueryBuilder()
+    public function getBannersByTypeCodes(array $codes)
     {
         return $this->getBannerQueryBuilder()
-            ->join('b.type', 'bt');
-    }
-
-    /**
-     * @param int $code
-     *
-     * @return Banner[]
-     */
-    public function getBannerByTypeCode(int $code)
-    {
-        return $this->getBannerByTypeQueryBuilder()
-            ->andWhere('bt.code = :code')
-            ->setParameter('code', $code)
+            ->andWhere('b.code IN (:codes)')
+            ->setParameter('codes', $codes)
             ->getQuery()
             ->getResult();
     }

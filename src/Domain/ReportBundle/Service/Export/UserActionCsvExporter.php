@@ -30,7 +30,7 @@ class UserActionCsvExporter extends CsvPostponedExporterModel
      */
     protected function setData($parameters = [])
     {
-        $dataIterator = $this->userActionReportManager->getUserActionReportExportDataIterator();
+        $dataIterator = $this->userActionReportManager->getUserActionReportExportDataIterator($parameters);
         $headers = UserActionReportManager::getUserActionReportMapping();
 
         $this->initProperties();
@@ -74,6 +74,8 @@ class UserActionCsvExporter extends CsvPostponedExporterModel
                 $row[] = implode(',', $value);
             } elseif ($key == UserActionReportManager::MONGO_DB_FIELD_ACTION) {
                 $row[] = $this->translator->trans($eventsMapping[$value], [], 'AdminReportBundle');
+            } elseif ($key == UserActionReportManager::MONGO_DB_FIELD_ENTITY_NAME and !$value) {
+                $row[] = $this->translator->trans('user_action_report.no_associated_entity', [], 'AdminReportBundle');
             } else {
                 $row[] = $value;
             }

@@ -33,6 +33,7 @@ class SearchDTO extends AbstractDTO
     public $adsPerPage;
 
     protected $category;
+    protected $categoryFilter;
     protected $catalogLocality;
     protected $neighborhood;
 
@@ -76,6 +77,26 @@ class SearchDTO extends AbstractDTO
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * @param int $categoryFilter
+     *
+     * @return SearchDTO
+     */
+    public function setCategoryFilter($categoryFilter)
+    {
+        $this->categoryFilter = $categoryFilter;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCategoryFilter()
+    {
+        return $this->categoryFilter;
     }
 
     public function setCatalogLocality($subcategory)

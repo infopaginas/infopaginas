@@ -34,6 +34,7 @@ use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
+use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
 
 /**
  * BusinessProfile
@@ -42,6 +43,7 @@ use Domain\SiteBundle\Validator\Constraints as DomainAssert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
+ * @ServiceAreaTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -643,7 +645,7 @@ class BusinessProfile implements
      * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
      * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "business_profile.service_areas_type")
      */
-    protected $serviceAreasType = 'area';
+    protected $serviceAreasType;
 
     /**
      * @var string
@@ -741,6 +743,12 @@ class BusinessProfile implements
      * Store business search status, not a part of DB table. calculated during the search
      */
     protected $isAd;
+
+    /** @var int
+     *
+     * Current business position at page
+     */
+    protected $displayedPosition;
 
     /**
      * Related to WORKING_HOURS_ASSOCIATED_FIELD
@@ -911,6 +919,7 @@ class BusinessProfile implements
         $this->isUpdated = true;
         $this->hasImages = false;
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
+        $this->serviceAreasType  = self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE;
 
         $this->uid = uniqid('', true);
     }
@@ -2557,6 +2566,26 @@ class BusinessProfile implements
     public function setIsAd($isAd)
     {
         $this->isAd = $isAd;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayedPosition()
+    {
+        return $this->displayedPosition;
+    }
+
+    /**
+     * @param int $displayedPosition
+     *
+     * @return BusinessProfile
+     */
+    public function setDisplayedPosition($displayedPosition)
+    {
+        $this->displayedPosition = $displayedPosition;
 
         return $this;
     }

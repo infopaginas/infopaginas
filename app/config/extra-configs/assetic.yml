@@ -43,6 +43,11 @@ assetic:
                 - '@DomainSiteBundle/Resources/public/scripts/modules/homepage.js'
             filters:
                 - jsqueeze
+        require_ads_handler_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/ads.js'
+            filters:
+                - jsqueeze
         require_business_profile_js:
             inputs:
                 - '@DomainBusinessBundle/Resources/public/scripts/modules/businessProfile.js'

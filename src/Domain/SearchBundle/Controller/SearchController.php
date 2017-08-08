@@ -97,8 +97,8 @@ class SearchController extends Controller
             $locationMarkers  = $this->getBusinessProfileManager()->getDefaultLocationMarkers();
         }
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
@@ -117,7 +117,7 @@ class SearchController extends Controller
                 'search'            => $searchDTO,
                 'results'           => $searchResultsDTO,
                 'seoData'           => $seoData,
-                'bannerFactory'     => $bannerFactory,
+                'banners'           => $banners,
                 'dcDataDTO'         => $dcDataDTO,
                 'searchData'        => $searchData,
                 'pageRouter'        => $pageRouter,
@@ -245,8 +245,8 @@ class SearchController extends Controller
             $schema           = null;
         }
 
-        $bannerFactory  = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_COMPARE_PAGE_BOTTOM,
                 TypeInterface::CODE_COMPARE_PAGE_TOP,
@@ -263,7 +263,7 @@ class SearchController extends Controller
                 'search'            => $searchDTO,
                 'results'           => $searchResultsDTO,
                 'seoData'           => $seoData,
-                'bannerFactory'     => $bannerFactory,
+                'banners'           => $banners,
                 'searchData'        => $searchData,
                 'pageRouter'        => $pageRouter,
                 'schemaJsonLD'      => $schema,
@@ -332,8 +332,8 @@ class SearchController extends Controller
 
         $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData($locationName, $seoCategories);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
@@ -343,7 +343,7 @@ class SearchController extends Controller
         $data = [
             'search'        => $searchDTO,
             'results'       => $searchResultsDTO,
-            'bannerFactory' => $bannerFactory,
+            'banners'       => $banners,
         ];
 
         $html = $this->renderView(
@@ -442,7 +442,6 @@ class SearchController extends Controller
             $seoLocationName = $locality->getName();
 
             if ($category) {
-                $request->attributes->set('category', $category->getName());
                 $request->attributes->set('q', $category->getName());
                 $showCatalog = false;
 
@@ -475,8 +474,8 @@ class SearchController extends Controller
 
         $locale = ucwords($request->getLocale());
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_SEARCH_PAGE_BOTTOM,
                 TypeInterface::CODE_SEARCH_PAGE_TOP,
@@ -540,8 +539,9 @@ class SearchController extends Controller
             true
         );
 
-        // hardcode for catalog
-        $pageRouter = 'domain_search_index';
+        $pageRouter = 'domain_search_catalog';
+        $searchData['localitySlug'] = $localitySlug;
+        $searchData['categorySlug'] = $categorySlug;
 
         return $this->render(
             ':redesign:catalog.html.twig',
@@ -549,7 +549,7 @@ class SearchController extends Controller
                 'search'             => $searchDTO,
                 'results'            => $searchResultsDTO,
                 'seoData'            => $seoData,
-                'bannerFactory'      => $bannerFactory,
+                'banners'            => $banners,
                 'dcDataDTO'          => $dcDataDTO,
                 'searchData'         => $searchData,
                 'pageRouter'         => $pageRouter,

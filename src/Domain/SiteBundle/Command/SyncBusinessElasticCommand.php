@@ -46,6 +46,8 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
         $lockHandler = new LockHandler(self::ELASTIC_SYNC_LOCK);
 
         if (!$lockHandler->lock()) {
+            $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');
+
             return $output->writeln('Command is locked by another process');
         }
 

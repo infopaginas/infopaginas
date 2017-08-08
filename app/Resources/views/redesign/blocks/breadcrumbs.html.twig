@@ -21,9 +21,9 @@
                         {{ category.name|truncate(breadcrumb_max_length) }}
                     </button>
                 </a>
+
+                {% block searchFilters %}{% endblock %}
             {% endif %}
         {% endif %}
-
-        <!-- breadcrumb -->
     </div><!-- toolbar__nav -->
 </div><!-- toolbar -->
