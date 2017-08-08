@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Visitor
  *
  * @ORM\Table(name="visitor")
- * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\VisitorRepository")
+ * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\ViewAndImpressionReportRepository")
  */
-class Visitor
+class ViewAndImpressionReport
 {
     /**
      * @var int

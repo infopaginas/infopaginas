@@ -111,13 +111,14 @@ class SearchManager extends Manager
 
         if ($results) {
             $pagesCount   = ceil($totalResults/$searchParams->limit);
+            $categories = $this->categoriesManager->getCategoriesByProfiles($results);
+            $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
         } else {
             $totalResults  = 0;
             $pagesCount    = 0;
+            $categories    = [];
+            $neighborhoods = [];
         }
-
-        $categories    = [];
-        $neighborhoods = [];
 
         $response = SearchDataUtil::buildResponceDTO(
             $results,
@@ -198,10 +199,10 @@ class SearchManager extends Manager
         $searchDTO  = SearchDataUtil::buildRequestDTO($query, $location, $page, $limit);
         $searchDTO  = $this->setSearchAdsParams($searchDTO);
 
-        $category = SearchDataUtil::getCategoryFromRequest($request);
+        $categoryFilter = SearchDataUtil::getCategoryFromRequest($request);
 
-        if ($category) {
-            $searchDTO->setCategory($category);
+        if ($categoryFilter) {
+            $searchDTO->setCategoryFilter($categoryFilter);
         }
 
         $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);
@@ -270,6 +271,12 @@ class SearchManager extends Manager
 
         if ($locality) {
             $searchDTO->setCatalogLocality($locality);
+        }
+
+        $categoryFilter = SearchDataUtil::getCategoryFromRequest($request);
+
+        if ($categoryFilter) {
+            $searchDTO->setCategoryFilter($categoryFilter);
         }
 
         $neighborhood = SearchDataUtil::getNeighborhoodFromRequest($request);

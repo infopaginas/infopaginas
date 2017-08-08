@@ -6,7 +6,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\ReportBundle\Entity\CategoryReport;
 use Domain\ReportBundle\Entity\SubscriptionReport;
 use Domain\ReportBundle\Entity\UserActionReport;
-use Domain\ReportBundle\Entity\Visitor;
+use Domain\ReportBundle\Entity\ViewAndImpressionReport;
 use Domain\ReportBundle\Model\ReportInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -60,7 +60,7 @@ class Exporter
                 }
 
                 break;
-            case Visitor::class:
+            case ViewAndImpressionReport::class:
                 switch ($format) {
                     case ReportInterface::FORMAT_PDF:
                         $response = $this->getBusinessOverviewPDFExporter()->getResponse($parameters);

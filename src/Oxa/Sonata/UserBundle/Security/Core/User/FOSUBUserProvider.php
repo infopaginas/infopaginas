@@ -70,6 +70,11 @@ class FOSUBUserProvider extends BaseClass
     {
         $email = $response->getEmail();
 
+        if (!$email) {
+            // see https://developers.facebook.com/docs/facebook-login/permissions#reference-email
+            throw new AccountNotLinkedException();
+        }
+
         $user = $this->userManager->findUserBy([
             'email' => $email
         ]);

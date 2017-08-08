@@ -51,6 +51,9 @@ define(
                 sort: 'div.sort-bar .sort__options.sort',
                 filter: 'div.sort-bar .sort__options.filter',
                 filterPanel: '#searchResults div.results'
+            },
+            mapMarker: {
+                zIndex: 10000
             }
         };
 
@@ -168,14 +171,21 @@ define(
             },
             map: this.map,
             title: markerData.name,
-            labelContent: "",
-            labelInBackground: false,
+            zIndex: self.html.mapMarker.zIndex--,
             labelAnchor: new google.maps.Point(3, 30),
             labelClass: "labels" // the CSS class for the label
         });
 
         if (markerData.id === 0) {
             marker.setIcon(userMarker);
+        }
+
+        // see https://codepen.io/Khrystyna/pen/xRVOMP
+        if ( markerData.labelNumber ) {
+            marker.setLabel({
+                text: markerData.labelNumber,
+                fontWeight: 'bold'
+            });
         }
 
         var infoWindow = new google.maps.InfoWindow({
