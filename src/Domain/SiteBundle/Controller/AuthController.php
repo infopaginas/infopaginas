@@ -2,11 +2,13 @@
 
 namespace Domain\SiteBundle\Controller;
 
+use Domain\BusinessBundle\Form\Handler\BusinessFormHandlerInterface;
 use Domain\SiteBundle\Form\Handler\RegistrationFormHandler;
 use Domain\SiteBundle\Form\Handler\ResetPasswordFormHandler;
 use Domain\SiteBundle\Form\Handler\ResetPasswordRequestFormHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -93,6 +95,37 @@ class AuthController extends Controller
         $message = $translator->trans(self::ERROR_VALIDATION_FAILURE);
 
         return $this->getFailureResponse($message, $formHandler->getErrors());
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function welcomeAction(Request $request)
+    {
+        $adminRoles = [
+            'ROLE_ADMINISTRATOR',
+            'ROLE_CONTENT_MANAGER',
+            'ROLE_SALES_MANAGER',
+        ];
+
+        if ($this->isGranted($adminRoles)) {
+            $redirect = $this->redirectToRoute('sonata_admin_dashboard');
+        } else {
+            $session = $request->getSession();
+
+            if ($session) {
+                $session->getFlashBag()->add(
+                    BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_FLASH_GROUP,
+                    $this->getTranslator()->trans(BusinessFormHandlerInterface::MESSAGE_BUSINESS_PROFILE_WELCOME)
+                );
+            }
+
+            $redirect = $this->redirectToRoute('domain_site_user_profile');
+        }
+
+        return $redirect;
     }
 
     /**
