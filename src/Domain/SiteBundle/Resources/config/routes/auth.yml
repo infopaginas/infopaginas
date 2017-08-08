@@ -15,3 +15,7 @@ domain_site_auth_reset_password:
     defaults: { _controller: DomainSiteBundle:Auth:resetPassword }
     options:
         expose: true
+
+domain_site_auth_welcome:
+    path:     /welcome
+    defaults: { _controller: DomainSiteBundle:Auth:welcome }
