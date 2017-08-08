@@ -106,7 +106,6 @@ class OxaAdmin extends BaseAdmin
     protected $datagridValues = array(
         '_page'       => 1,
         '_per_page'   => 25,
-        '_sort_by' => 'position',
     );
 
     /**
