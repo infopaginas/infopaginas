@@ -30,7 +30,6 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             $config->setValue($item['value']);
             $config->setFormat($item['format']);
             $config->setDescription($item['description']);
-            $config->setPosition($key);
 
             if (!empty($item['hidden'])) {
                 $config->setIsActive(false);

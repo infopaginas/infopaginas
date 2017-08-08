@@ -491,7 +491,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ], [
                         'edit' => 'inline',
                         'inline' => 'table',
-                        'sortable' => 'position',
                         'link_parameters' => [
                             'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
@@ -1254,7 +1253,6 @@ class BusinessProfileAdmin extends OxaAdmin
         $collection
             ->add('show')
             ->add('restore')
-            ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }
 

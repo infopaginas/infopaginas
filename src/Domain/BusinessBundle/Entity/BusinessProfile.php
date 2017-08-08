@@ -437,7 +437,7 @@ class BusinessProfile implements
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true,
      *     )
-     * @ORM\OrderBy({"position" = "ASC"})
+     * @ORM\OrderBy({"id" = "ASC"})
      * @Assert\Valid
      */
     protected $images;
@@ -465,12 +465,6 @@ class BusinessProfile implements
      * @ORM\JoinColumn(name="background_id", referencedColumnName="id", nullable=true)
      */
     protected $background;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
 
     /**
      * @var ArrayCollection
@@ -1600,30 +1594,6 @@ class BusinessProfile implements
     public function getImages()
     {
         return $this->images;
-    }
-
-    /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return BusinessProfile
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
     }
 
     /**

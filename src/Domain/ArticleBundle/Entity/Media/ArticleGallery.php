@@ -77,12 +77,6 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
      * )
      */
     protected $translations;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
     
     /**
      * @return int
@@ -154,23 +148,5 @@ class ArticleGallery implements DefaultEntityInterface, TranslatableInterface
     public function setTranslations(ArrayCollection $translations)
     {
         $this->translations = $translations;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
-     * @param mixed $position
-     * @return ArticleGallery
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-        return $this;
     }
 }

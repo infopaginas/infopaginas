@@ -54,12 +54,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     protected $description;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
-
-    /**
      * @var string - Is Primary
      *
      * @ORM\Column(name="is_primary", type="boolean", options={"default" : 0})
@@ -227,30 +221,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     public function getIsPrimary()
     {
         return $this->isPrimary;
-    }
-
-    /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return BusinessGallery
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
     }
 
     /**

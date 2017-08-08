@@ -135,7 +135,6 @@ class TaskAdmin extends OxaAdmin
             [
                 'edit' => 'inline',
                 'inline' => 'table',
-                'sortable' => 'position',
             ]
         );
     }
