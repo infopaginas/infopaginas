@@ -11,6 +11,17 @@ use Sonata\AdminBundle\Show\ShowMapper;
 class LandingPageShortCutSearchAdmin extends OxaAdmin
 {
     /**
+     * Default values to the datagrid.
+     *
+     * @var array
+     */
+    protected $datagridValues = [
+        '_page'     => 1,
+        '_per_page' => 25,
+        '_sort_by'  => 'position',
+    ];
+
+    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
