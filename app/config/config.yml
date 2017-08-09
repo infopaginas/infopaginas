@@ -200,6 +200,8 @@ ivory_google_map:
         adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"
 
 hwi_oauth:
+    http_client:
+        timeout: 10
     connect:
         account_connector: oxa.user.oauth_provider
         confirmation: false
