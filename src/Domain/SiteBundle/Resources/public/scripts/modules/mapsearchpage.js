@@ -172,12 +172,14 @@ define(
             map: this.map,
             title: markerData.name,
             zIndex: self.html.mapMarker.zIndex--,
-            labelAnchor: new google.maps.Point(3, 30),
             labelClass: "labels" // the CSS class for the label
         });
 
-        if (markerData.id === 0) {
-            marker.setIcon(userMarker);
+        if ( markerData.id === 0 ) {
+            marker.setIcon({
+                url: userMarker,
+                scaledSize: new google.maps.Size( 39, 39 )
+            });
         }
 
         // see https://codepen.io/Khrystyna/pen/xRVOMP
