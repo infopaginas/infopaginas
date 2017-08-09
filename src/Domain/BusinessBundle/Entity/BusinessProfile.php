@@ -2488,15 +2488,17 @@ class BusinessProfile implements
     }
 
     /**
-     * @return boolean
+     * @return string
      */
     public function getCitySlug()
     {
-        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+        $catalogLocality = $this->getCatalogLocality();
 
-        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
-
-        return $citySlug;
+        if ($catalogLocality) {
+            return $catalogLocality->getSlug();
+        } else {
+            return '';
+        }
     }
 
     /** getting distance

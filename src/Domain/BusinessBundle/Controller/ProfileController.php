@@ -149,7 +149,7 @@ class ProfileController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $catalogLocalitySlug = $businessProfile->getCatalogLocality()->getSlug();
+        $catalogLocalitySlug = $businessProfile->getCitySlug();
 
         if ($catalogLocalitySlug != $citySlug or $slug != $businessProfile->getSlug()) {
             return $this->redirectToRoute(

@@ -107,7 +107,7 @@ class SitemapSubscriber implements EventSubscriberInterface
             $loc = $this->urlGenerator->generate(
                 'domain_business_profile_view',
                 [
-                    'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
+                    'citySlug' => $businessProfile->getCitySlug(),
                     'slug'     => $businessProfile->getSlug(),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
@@ -128,7 +128,7 @@ class SitemapSubscriber implements EventSubscriberInterface
                     $url = $this->urlGenerator->generate(
                         'domain_business_profile_view',
                         [
-                            'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
+                            'citySlug' => $businessProfile->getCitySlug(),
                             'slug'     => $businessProfile->getSlug(),
                         ],
                         UrlGeneratorInterface::ABSOLUTE_URL
@@ -296,7 +296,7 @@ class SitemapSubscriber implements EventSubscriberInterface
         $loc = $this->urlGenerator->generate(
             'domain_search_catalog',
             [
-                'localitySlug'  => $catalogLocalitySlug,
+                'localitySlug' => $catalogLocalitySlug,
                 'categorySlug' => $categorySlug,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -313,7 +313,7 @@ class SitemapSubscriber implements EventSubscriberInterface
                 $url = $this->urlGenerator->generate(
                     'domain_search_catalog',
                     [
-                        'localitySlug'  => $catalogLocalitySlug,
+                        'localitySlug' => $catalogLocalitySlug,
                         'categorySlug' => $categorySlug,
                     ],
                     UrlGeneratorInterface::ABSOLUTE_URL

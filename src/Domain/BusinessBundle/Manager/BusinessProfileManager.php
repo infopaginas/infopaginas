@@ -198,8 +198,8 @@ class BusinessProfileManager extends Manager
                 'profileUrl'    => $this->container->get('router')->generate(
                     'domain_business_profile_view',
                     [
-                        'slug'          => $profile->getSlug(),
-                        'citySlug'      => $profile->getCatalogLocality()->getSlug(),
+                        'slug'      => $profile->getSlug(),
+                        'citySlug'  => $profile->getCitySlug(),
                     ]
                 ),
             ];
@@ -1490,7 +1490,7 @@ class BusinessProfileManager extends Manager
         $url = $this->container->get('router')->generate(
             'domain_business_profile_view',
             [
-                'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
+                'citySlug' => $businessProfile->getCitySlug(),
                 'slug'     => $businessProfile->getSlug(),
             ],
             true
