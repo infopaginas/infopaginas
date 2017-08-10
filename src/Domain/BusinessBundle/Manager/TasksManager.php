@@ -274,15 +274,6 @@ class TasksManager
     }
 
     /**
-     * @param Task $task
-     * @return mixed|string
-     */
-    private function getTaskLocale(Task $task)
-    {
-        return empty($task->getLocale()) ? LocaleHelper::DEFAULT_LOCALE : $task->getLocale();
-    }
-
-    /**
      * Save task entity (call $em->persist() & $em->flush())
      *
      * @param Task $task
