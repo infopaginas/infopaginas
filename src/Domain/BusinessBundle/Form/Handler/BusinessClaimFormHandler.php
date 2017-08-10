@@ -32,7 +32,8 @@ class BusinessClaimFormHandler extends BaseFormHandler
     /** @var TasksManager $tasksManager */
     private $tasksManager;
 
-    public function __construct(FormInterface $form, Request $request, ContainerInterface $container) {
+    public function __construct(FormInterface $form, Request $request, ContainerInterface $container)
+    {
         $this->form               = $form;
         $this->request            = $request;
         $this->container          = $container;

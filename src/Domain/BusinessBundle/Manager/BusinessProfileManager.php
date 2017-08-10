@@ -3514,7 +3514,7 @@ class BusinessProfileManager extends Manager
 
         $this->em->flush();
 
-       return $updated;
+        return $updated;
     }
 
     /**

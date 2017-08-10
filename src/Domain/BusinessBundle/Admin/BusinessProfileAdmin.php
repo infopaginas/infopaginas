@@ -456,7 +456,8 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
                 ->with('Gallery')
                     ->add(
-                        'logo', 'sonata_type_model_list',
+                        'logo',
+                        'sonata_type_model_list',
                         [
                             'required' => false,
                         ],
@@ -710,6 +711,8 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        $showWorkingHoursCol = 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig';
+
         $showMapper
             ->tab('Profile', ['class' => 'col-md-12',])
                 ->with('Translatable')
@@ -733,7 +736,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('email')
                     ->add('slug')
                     ->add('collectionWorkingHours', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig',
+                        'template' => $showWorkingHoursCol,
                     ])
                     ->add('phones', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
@@ -904,6 +907,8 @@ class BusinessProfileAdmin extends OxaAdmin
             ;
 
             if ($this->getSubject()->getDcOrderId()) {
+                $showReportExportButtons = 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig';
+
                 $showMapper
                     ->tab('Ad Usage Report')
                         ->with('Ad Usage Report')
@@ -919,7 +924,7 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                             ])
                             ->add('adUsageExport', null, [
-                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                                'template' => $showReportExportButtons,
                             ])
                         ->end()
                     ->end()

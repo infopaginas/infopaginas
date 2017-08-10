@@ -251,7 +251,7 @@ class MigrationLogDataFileCommand extends ContainerAwareCommand
      */
     protected function getLogType()
     {
-        $filename = basename ($this->path);
+        $filename = basename($this->path);
 
         if (strpos($filename, self::FILE_TYPE_VIEW)) {
             $type = self::FILE_TYPE_VIEW;

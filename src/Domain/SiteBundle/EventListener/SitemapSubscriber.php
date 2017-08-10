@@ -290,7 +290,8 @@ class SitemapSubscriber implements EventSubscriberInterface
         return $priority;
     }
 
-    protected function addCatalogUrl($catalogLocalitySlug = null, $categorySlug = null) {
+    protected function addCatalogUrl($catalogLocalitySlug = null, $categorySlug = null)
+    {
         $this->context->setHost($this->defaultHost);
 
         $loc = $this->urlGenerator->generate(

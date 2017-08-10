@@ -136,7 +136,12 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            $message = $this->container->get('translator')->trans('You can upload the following file types', [], 'messages');
+            $message = $this->container->get('translator')->trans(
+                'You can upload the following file types',
+                [],
+                'messages'
+            );
+
             throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
@@ -151,7 +156,9 @@ class VideoManager
             'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));;
+
+        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
+
         if (!$uploadedSize) {
             $message = $this->container->get('translator')
                 ->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
