@@ -543,9 +543,6 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
       }
 
       searchFloatBottom.remove();
-      if ( hasMap ) {
-        triggerMapRequestedIfVisible();
-      }
     } else {
       var mapStateSize = 'device';
     }
@@ -634,6 +631,8 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     });
 
     if ( hasMap ) {
+        triggerMapRequestedIfVisible();
+
         $( window ).scroll(function() {
             triggerMapRequestedIfVisible();
         });
