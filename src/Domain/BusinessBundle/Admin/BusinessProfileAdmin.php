@@ -8,13 +8,12 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
-use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -52,9 +51,9 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
     /**
-     * @var array
+     * @var string
      */
-    protected $translations = [];
+    protected $nameDefaultLocale = '';
 
     /**
      * @var bool
@@ -207,16 +206,20 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getSubject();
 
-        $businessProfile->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
+        $businessProfile->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
         $subscriptionPlan = $businessProfile->getSubscription() ?
             $businessProfile->getSubscription()->getSubscriptionPlan() : new SubscriptionPlan();
 
+        $formMapper->tab('Profile')->end();
+
+        foreach (LocaleHelper::getLocaleList() as $key => $value) {
+            $formMapper->tab('Profile')->with($value, ['class' => 'col-md-6',])->end()->end();
+        }
+
         // define group zoning
         $formMapper
             ->tab('Profile', ['class' => 'col-md-12',])
-                ->with('English', ['class' => 'col-md-6',])->end()
-                ->with('Spanish', ['class' => 'col-md-6',])->end()
                 ->with('Main', ['class' => 'col-md-12',])->end()
                 ->with('Social Networks', ['class' => 'col-md-12',])->end()
                 ->with('Address', ['class' => 'col-md-4',])->end()
@@ -327,23 +330,16 @@ class BusinessProfileAdmin extends OxaAdmin
             $milesOfMyBusinessFieldOptions['required'] = false;
         }
 
-        $formMapper
-            ->tab('Profile')
-            ->with('English')
-        ;
+        foreach (LocaleHelper::getLocaleList() as $key => $value) {
+            $formMapper
+                ->tab('Profile')
+                ->with($value)
+            ;
 
-        $this->addTranslationBlock($formMapper, $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
+            $this->addTranslationBlock($formMapper, $businessProfile, $key);
 
-        $formMapper->end()->end();
-
-        $formMapper
-            ->tab('Profile')
-            ->with('Spanish')
-        ;
-
-        $this->addTranslationBlock($formMapper, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
-
-        $formMapper->end()->end();
+            $formMapper->end()->end();
+        }
 
         $formMapper
             ->tab('Profile')
@@ -1051,12 +1047,20 @@ class BusinessProfileAdmin extends OxaAdmin
             }
         }
 
-        $fieldNameEn = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_EN;
-        $fieldNameEs = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_ES;
-
+        $isEmptyName = true;
         $formData = $this->getRequest()->request->all()[$this->getUniqid()];
 
-        if (!trim($formData[$fieldNameEn]) and !trim($formData[$fieldNameEs])) {
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
+
+            if (trim($formData[$fieldName])) {
+                $isEmptyName = false;
+                break;
+            }
+
+        }
+
+        if ($isEmptyName) {
             $errorElement->with('name')
                 ->addViolation($this->getTranslator()->trans(
                     'form.name.required',
@@ -1140,7 +1144,9 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function prePersist($entity)
     {
-        $this->preSave($entity);
+        $entity = $this->preSave($entity);
+        // workaround for spanish slug
+        $this->handleEntityPrePersist($entity);
     }
 
     /**
@@ -1157,13 +1163,8 @@ class BusinessProfileAdmin extends OxaAdmin
     public function postPersist($entity)
     {
         parent::postPersist($entity);
-        // workaround for translation callback
-        $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
-        $entity = $this->handleEntityPostPersist($entity);
-
         // workaround for spanish slug
-        $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
-        $this->handleTranslationPostUpdate($entity);
+        $this->handleEntityPostPersist($entity);
     }
 
     /**
@@ -1172,17 +1173,6 @@ class BusinessProfileAdmin extends OxaAdmin
     public function postUpdate($entity)
     {
         parent::postUpdate($entity);
-        // workaround for translation callback
-        $this->handleTranslationPostUpdate($entity);
-    }
-
-    /**
-     * @param BusinessProfile $entity
-     */
-    private function preSave($entity)
-    {
-        $entity = $this->handleTranslationBlock($entity);
-        $this->handleSeoBlockUpdate($entity);
     }
 
     /**
@@ -1190,57 +1180,25 @@ class BusinessProfileAdmin extends OxaAdmin
      *
      * @return BusinessProfile
      */
-    private function handleSeoBlockUpdate(BusinessProfile $entity)
+    private function preSave($entity)
     {
-        /** @var ContainerInterface $container */
-        $container    = $this->getConfigurationPool()->getContainer();
-
-        $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $this->handleTranslationSet(
-            $entity,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
-            [
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_ES => $seoTitleEs,
-            ]
-        );
-
-        $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
-        $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $this->handleTranslationSet(
-            $entity,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
-            [
-                $seoDescKeyEn => $seoDescriptionEn,
-                $seoDescKeyEs => $seoDescriptionEs,
-            ]
-        );
+        $entity = $this->handleTranslationBlock($entity);
+        $entity = $this->handleSeoBlockUpdate($entity);
 
         return $entity;
+    }
+
+    /**
+     * @param BusinessProfile $business
+     *
+     * @return BusinessProfile
+     */
+    private function handleSeoBlockUpdate(BusinessProfile $business)
+    {
+        /** @var ContainerInterface $container */
+        $container = $this->getConfigurationPool()->getContainer();
+
+        return LocaleHelper::handleSeoBlockUpdate($business, $container);
     }
 
     /**
@@ -1345,12 +1303,14 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     private function addTranslationBlock(FormMapper $formMapper, BusinessProfile $businessProfile, $locale)
     {
+        $localePostfix = LocaleHelper::getLangPostfix($locale);
+
         $formMapper
-            ->add('name' . $locale, TextType::class, [
+            ->add('name' . $localePostfix, TextType::class, [
                 'label'    => 'Name',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, $locale),
                 'constraints' => [
                     new Length(
                         [
@@ -1359,11 +1319,11 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('slogan' . $locale, TextType::class, [
+            ->add('slogan' . $localePostfix, TextType::class, [
                 'label'    => 'Slogan',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, $locale),
                 'constraints' => [
                     new Length(
                         [
@@ -1372,7 +1332,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('description' . $locale, CKEditorType::class, [
+            ->add('description' . $localePostfix, CKEditorType::class, [
                 'label'    => 'Description',
                 'required' => false,
                 'mapped'   => false,
@@ -1383,7 +1343,10 @@ class BusinessProfileAdmin extends OxaAdmin
                 'attr' => [
                     'class' => 'text-editor',
                 ],
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+                    $locale
+                ),
                 'constraints' => [
                     new Length(
                         [
@@ -1392,7 +1355,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('product' . $locale, TextareaType::class, [
+            ->add('product' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
                     'class' => 'vertical-resize',
@@ -1400,7 +1363,10 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label'    => 'Products',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT,
+                    $locale
+                ),
                 'constraints' => [
                     new Length(
                         [
@@ -1409,7 +1375,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('brands' . $locale, TextareaType::class, [
+            ->add('brands' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
                     'class' => 'vertical-resize',
@@ -1417,7 +1383,7 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label'    => 'Brands',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS, $locale),
                 'constraints' => [
                     new Length(
                         [
@@ -1426,7 +1392,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('workingHours' . $locale, TextareaType::class, [
+            ->add('workingHours' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
                     'class' => 'vertical-resize',
@@ -1434,7 +1400,10 @@ class BusinessProfileAdmin extends OxaAdmin
                 'label'    => 'Working hours',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
+                    $locale
+                ),
                 'constraints' => [
                     new Length(
                         [
@@ -1456,208 +1425,47 @@ class BusinessProfileAdmin extends OxaAdmin
         $fields = BusinessProfile::getTranslatableFields();
 
         foreach ($fields as $field) {
-            $this->handleTranslationSet($entity, $field, $this->getRequest()->request->all()[$this->getUniqid()]);
+            LocaleHelper::handleTranslations($entity, $field, $this->getRequest()->request->all()[$this->getUniqid()]);
         }
 
         return $entity;
     }
 
     /**
-     * @param BusinessProfile   $entity
-     * @param string            $property
-     * @param array             $data
+     * @param BusinessProfile   $business
      *
-     * @return BusinessProfile
+     * @return BusinessProfile   $business
      */
-    private function handleTranslationSet(BusinessProfile $entity, $property, $data)
+    protected function handleEntityPrePersist(BusinessProfile $business)
     {
-        $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
-        $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
+        $this->nameDefaultLocale = $business->getTranslation(
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
+            LocaleHelper::DEFAULT_LOCALE
+        );
 
-        $dataEn = false;
-        $dataEs = false;
+        $nameSlugLocale = $business->getTranslation(
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
+            LocaleHelper::SLUG_LOCALE
+        );
 
-        if (!empty($data[$propertyEn])) {
-            $dataEn = trim($data[$propertyEn]);
-        }
+        $business->setName($nameSlugLocale);
 
-        if (!empty($data[$propertyEs])) {
-            $dataEs = trim($data[$propertyEs]);
-        }
-
-        if (property_exists($entity, $property)) {
-            if ($dataEs) {
-                if ($entity->getId() and $dataEn) {
-                    $entity->{'set' . $property}($dataEn);
-                } else {
-                    $entity->{'set' . $property}($dataEs);
-                }
-
-                if (property_exists($entity, $propertyEs)) {
-                    $entity->{'set' . $propertyEs}($dataEs);
-                }
-
-                $this->addBusinessTranslation($entity, $property, $dataEs, BusinessProfile::TRANSLATION_LANG_ES);
-            } elseif ($dataEn) {
-                if (!$entity->{'get' . $property}()) {
-                    $entity->{'set' . $property}($dataEn);
-                }
-            }
-
-            if ($dataEn) {
-                $this->addBusinessTranslation($entity, $property, $dataEn, BusinessProfile::TRANSLATION_LANG_EN);
-
-                if (property_exists($entity, $propertyEn)) {
-                    $entity->{'set' . $propertyEn}($dataEn);
-                }
-            } else {
-                $this->prepareTranslationDelete(BusinessProfile::TRANSLATION_LANG_EN, $property);
-            }
-
-            if (!$dataEs) {
-                $this->prepareTranslationDelete(BusinessProfile::TRANSLATION_LANG_ES, $property);
-            }
-        }
-
-        return $entity;
+        return $business;
     }
 
     /**
-     * @param BusinessProfile   $entity
-     * @param string            $property
-     * @param array             $data
-     * @param string            $locale
+     * @param BusinessProfile   $business
      *
-     * @return BusinessProfile
+     * @return BusinessProfile   $business
      */
-    private function addBusinessTranslation(BusinessProfile $entity, $property, $data, $locale)
-    {
-        if ($entity->getId()) {
-            $translation = $entity->getTranslationItem(
-                $property,
-                mb_strtolower($locale)
-            );
-
-            if ($translation) {
-                $translation->setContent($data);
-            } else {
-                $translation = new BusinessProfileTranslation(
-                    mb_strtolower($locale),
-                    $property,
-                    $data
-                );
-
-                $entity->addTranslation($translation);
-            }
-        } else {
-            $translation = new BusinessProfileTranslation(
-                mb_strtolower($locale),
-                $property,
-                $data
-            );
-
-            $entity->addTranslation($translation);
-        }
-
-        $this->translations[$property . $locale] = [
-            'locale'  => $locale,
-            'field'   => $property,
-            'content' => $data,
-        ];
-
-        return $entity;
-    }
-
-    /**
-     * @param string    $locale
-     * @param string    $field
-     */
-    protected function prepareTranslationDelete($locale, $field)
-    {
-        $this->translations[$field . $locale] = [
-            'locale'  => $locale,
-            'field'   => $field,
-            'content' => null,
-        ];
-    }
-
-    /**
-     * @param BusinessProfile   $entity
-     */
-    protected function handleTranslationPostUpdate(BusinessProfile $entity)
+    protected function handleEntityPostPersist(BusinessProfile $business)
     {
         $em = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
 
-        foreach ($this->translations as $translation) {
-            $newTranslation = $entity->getTranslationItem(
-                $translation['field'],
-                mb_strtolower($translation['locale'])
-            );
-
-            if (!$translation['content']) {
-                if (!$this->checkFieldTranslation($translation['field'])) {
-                    $entity->{'set' . $translation['field']}(null);
-                }
-
-                if (property_exists($entity, $translation['field'] . $translation['locale'])) {
-                    $entity->{'set' . $translation['field'] . $translation['locale']}(null);
-                }
-
-                if ($newTranslation) {
-                    $em->remove($newTranslation);
-                }
-            } elseif ($newTranslation) {
-                $newTranslation->setContent($translation['content']);
-            } else {
-                $translation = new BusinessProfileTranslation(
-                    mb_strtolower($translation['locale']),
-                    $translation['field'],
-                    $translation['content']
-                );
-
-                $entity->addTranslation($translation);
-                $em->persist($newTranslation);
-            }
-        }
-
-        $em->flush();
-    }
-
-    /**
-     * @param BusinessProfile   $entity
-     *
-     * @return BusinessProfile   $entity
-     */
-    protected function handleEntityPostPersist(BusinessProfile $entity)
-    {
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
-
-        foreach ($this->translations as $translation) {
-            if (strtolower($translation['locale']) == BusinessProfile::DEFAULT_LOCALE) {
-                if (property_exists($entity, $translation['field'])) {
-                    $entity->{'set' . ucfirst($translation['field'])}($translation['content']);
-                }
-            }
-        }
+        $business->setName($this->nameDefaultLocale);
 
         $em->flush();
 
-        return $entity;
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return bool
-     */
-    protected function checkFieldTranslation($field)
-    {
-        if (empty($this->translations[$field . BusinessProfile::TRANSLATION_LANG_EN]['content']) and
-            empty($this->translations[$field . BusinessProfile::TRANSLATION_LANG_ES]['content'])
-        ) {
-            return false;
-        }
-
-        return true;
+        return $business;
     }
 }

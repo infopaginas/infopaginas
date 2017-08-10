@@ -3,9 +3,7 @@
 namespace Domain\SiteBundle\Command;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
-use Domain\BusinessBundle\Entity\Category;
-use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -55,143 +53,14 @@ class BusinessSeoDescriptionFixCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param BusinessProfile $entity
+     * @param BusinessProfile $business
      *
      * @return BusinessProfile
      */
-    private function handleSeoBlockUpdate($entity)
+    private function handleSeoBlockUpdate($business)
     {
-        $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
-            $entity,
-            $this->getContainer(),
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
+        $container = $this->getContainer();
 
-        $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
-            $entity,
-            $this->getContainer(),
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
-            $entity,
-            $this->getContainer(),
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
-            $entity,
-            $this->getContainer(),
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $this->handleTranslations(
-            $entity,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
-            [
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_ES => $seoTitleEs,
-            ]
-        );
-
-        $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
-        $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $this->handleTranslations(
-            $entity,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
-            [
-                $seoDescKeyEn => $seoDescriptionEn,
-                $seoDescKeyEs => $seoDescriptionEs,
-            ]
-        );
-
-        return $entity;
-    }
-
-    /**
-     * @param BusinessProfile $entity
-     * @param string          $property
-     * @param string|null     $data
-     *
-     * @return BusinessProfile
-     */
-    private function handleTranslations($entity, $property, $data)
-    {
-        $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
-        $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $dataEn = false;
-        $dataEs = false;
-
-        if (!empty($data[$propertyEn])) {
-            $dataEn = trim($data[$propertyEn]);
-        }
-
-        if (!empty($data[$propertyEs])) {
-            $dataEs = trim($data[$propertyEs]);
-        }
-
-        if (property_exists($entity, $property)) {
-            if ($dataEs) {
-                if ($entity->{'get' . $property}() and $dataEn) {
-                    $entity->{'set' . $property}($dataEn);
-                } else {
-                    $entity->{'set' . $property}($dataEs);
-                }
-
-                if (property_exists($entity, $propertyEs)) {
-                    $entity->{'set' . $propertyEs}($dataEs);
-                }
-
-                $this->addBusinessTranslation($entity, $property, $dataEs, BusinessProfile::TRANSLATION_LANG_ES);
-            } elseif ($dataEn) {
-                if (!$entity->{'get' . $property}()) {
-                    $entity->{'set' . $property}($dataEn);
-                }
-            }
-
-            if ($dataEn) {
-                $this->addBusinessTranslation($entity, $property, $dataEn, BusinessProfile::TRANSLATION_LANG_EN);
-
-                if (property_exists($entity, $propertyEn)) {
-                    $entity->{'set' . $propertyEn}($dataEn);
-                }
-            }
-        }
-
-        return $entity;
-    }
-
-    /**
-     * @param BusinessProfile $entity
-     * @param string          $property
-     * @param string|null     $data
-     * @param string          $locale
-     *
-     * @return BusinessProfile
-     */
-    private function addBusinessTranslation($entity, $property, $data, $locale)
-    {
-        $translation = $entity->getTranslationItem(
-            $property,
-            mb_strtolower($locale)
-        );
-
-        if ($translation) {
-            $translation->setContent($data);
-        } else {
-            $translation = new BusinessProfileTranslation(
-                mb_strtolower($locale),
-                $property,
-                $data
-            );
-
-            $this->em->persist($translation);
-        }
-
-        $entity->addTranslation($translation);
-
-        return $entity;
+        return LocaleHelper::handleSeoBlockUpdate($business, $container);
     }
 }

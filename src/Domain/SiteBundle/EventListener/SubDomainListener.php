@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\EventListener;
 
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -75,7 +76,7 @@ class SubDomainListener implements EventSubscriberInterface
         if (!$baseHost) {
             $baseHost = $host;
 
-            $locale = 'es';
+            $locale = LocaleHelper::LOCALE_ES;
             $languages[$locale]['active'] = true;
         }
 

@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -81,7 +82,7 @@ class ProfileController extends Controller
         $locale = $request->getLocale();
 
         if (!$locale) {
-            $locale = BusinessProfile::DEFAULT_LOCALE;
+            $locale = LocaleHelper::DEFAULT_LOCALE;
         }
 
         /** @var BusinessProfile $businessProfile */
@@ -104,6 +105,7 @@ class ProfileController extends Controller
             'photoTypeConstant'        => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
             'backgroundTypeConstant'   => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
             'mediaContextTypes'        => $this->getMediaContextTypes(),
+            'localeBlocks'             => LocaleHelper::getLocaleList(),
         ]);
     }
 

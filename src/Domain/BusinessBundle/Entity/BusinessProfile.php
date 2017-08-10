@@ -472,7 +472,8 @@ class BusinessProfile implements
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
      *     mappedBy="object",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
      * )
      */
     protected $translations;

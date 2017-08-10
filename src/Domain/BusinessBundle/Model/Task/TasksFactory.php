@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Model\Task;
 use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Task;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 
 /**
  * Class AbstractTask
@@ -30,7 +31,7 @@ abstract class TasksFactory extends Task
         $task->setBusinessProfile($businessProfile);
         $task->setBusinessProfileUID($businessProfile->getUid());
 
-        if ($businessProfile->getLocale() !== BusinessProfile::DEFAULT_LOCALE) {
+        if ($businessProfile->getLocale() !== LocaleHelper::DEFAULT_LOCALE) {
             $task->setLocale($businessProfile->getLocale());
         }
 

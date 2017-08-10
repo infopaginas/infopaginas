@@ -7,11 +7,10 @@ use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
-use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\TasksManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
-use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Entity\User;
 use Oxa\ManagerArchitectureBundle\Form\Handler\BaseFormHandler;
 use Oxa\Sonata\MediaBundle\Entity\Media;
@@ -105,7 +104,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->form->handleRequest($this->request);
 
             $this->businessProfileNew = $this->form->getData();
-            $this->businessProfileNew->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
+            $this->businessProfileNew->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
             $this->handleMediaUpdate();
             $this->handleCategoriesUpdate();
@@ -118,7 +117,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
                 $this->handleBusinessOwner();
                 $this->handleTranslationBlock();
                 $this->handleSeoBlockUpdate();
-                $this->setSearchParams();
 
                 $this->onSuccess();
                 return true;
@@ -135,10 +133,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
                 $this->businessProfileNew->setUser($this->currentUser);
             }
 
-            $this->businessProfileManager->saveProfile(
-                $this->businessProfileNew,
-                strtolower(BusinessProfile::TRANSLATION_LANG_ES)
-            );
+            $this->businessProfileManager->saveProfile($this->businessProfileNew);
             $message = self::MESSAGE_BUSINESS_PROFILE_CREATED;
 
             $this->tasksManager->createNewProfileConfirmationRequest($this->businessProfileNew);
@@ -263,54 +258,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         $fields = BusinessProfile::getTranslatableFields();
 
         foreach ($fields as $field) {
-            $this->handleTranslationSet($field, $this->requestParams);
-        }
-
-        return $this->businessProfileNew;
-    }
-
-    private function handleTranslationSet($property, $data)
-    {
-        $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
-        $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $dataEn = false;
-        $dataEs = false;
-
-        if (!empty($data[$propertyEn])) {
-            $dataEn = trim($data[$propertyEn]);
-        }
-
-        if (!empty($data[$propertyEs])) {
-            $dataEs = trim($data[$propertyEs]);
-        }
-
-        if (property_exists($this->businessProfileNew, $property)) {
-            if ($dataEs) {
-                if ($this->businessProfileOld and $this->businessProfileOld->{'get' . $property}() and $dataEn) {
-                    $this->businessProfileNew->{'set' . $property}($dataEn);
-                } else {
-                    $this->businessProfileNew->{'set' . $property}($dataEs);
-                }
-
-                if (property_exists($this->businessProfileNew, $propertyEs)) {
-                    $this->businessProfileNew->{'set' . $propertyEs}($dataEs);
-                }
-
-                $this->addBusinessTranslation($property, $dataEs, BusinessProfile::TRANSLATION_LANG_ES);
-            } elseif ($dataEn) {
-                if (!$this->businessProfileNew->{'get' . $property}()) {
-                    $this->businessProfileNew->{'set' . $property}($dataEn);
-                }
-            }
-
-            if ($dataEn) {
-                $this->addBusinessTranslation($property, $dataEn, BusinessProfile::TRANSLATION_LANG_EN);
-
-                if (property_exists($this->businessProfileNew, $propertyEn)) {
-                    $this->businessProfileNew->{'set' . $propertyEn}($dataEn);
-                }
-            }
+            LocaleHelper::handleTranslations($this->businessProfileNew, $field, $this->requestParams);
         }
 
         return $this->businessProfileNew;
@@ -318,50 +266,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
 
     private function handleSeoBlockUpdate()
     {
-        $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
-            $this->businessProfileNew,
-            $this->container,
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
-            $this->businessProfileNew,
-            $this->container,
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
-            $this->businessProfileNew,
-            $this->container,
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
-            $this->businessProfileNew,
-            $this->container,
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $this->handleTranslationSet(
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
-            [
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_ES => $seoTitleEs,
-            ]
-        );
-
-        $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
-        $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $this->handleTranslationSet(
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
-            [
-                $seoDescKeyEn => $seoDescriptionEn,
-                $seoDescKeyEs => $seoDescriptionEs,
-            ]
-        );
-
-        return $this->businessProfileNew;
+        return LocaleHelper::handleSeoBlockUpdate($this->businessProfileNew, $this->container);
     }
 
     /**
@@ -376,8 +281,9 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
 
         //check fields length
         foreach ($fields as $field) {
-            $this->checkFieldLocaleLength($post, $field, BusinessProfile::TRANSLATION_LANG_EN);
-            $this->checkFieldLocaleLength($post, $field, BusinessProfile::TRANSLATION_LANG_ES);
+            foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+                $this->checkFieldLocaleLength($post, $field, $locale);
+            }
         }
     }
 
@@ -445,7 +351,7 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
     private function checkFieldLocaleLength($post, $field, $locale)
     {
         $maxLength = $this->getFieldMaxLength($field);
-        $fieldName = $field . $locale;
+        $fieldName = $field . LocaleHelper::getLangPostfix($locale);
 
         if (!empty($post[$fieldName]) and mb_strlen($post[$fieldName]) > $maxLength) {
             $formError = new FormError(
@@ -467,44 +373,23 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
      */
     private function checkTranslationBlockNameBlank($post)
     {
-        $fieldNameEn = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_EN;
-        $fieldNameES = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_ES;
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
 
-        if ((!empty($post[$fieldNameEn]) and
-            trim($post[$fieldNameEn])) or
-            (!empty($post[$fieldNameES]) and
-            trim($post[$fieldNameES]))
-        ) {
-            return true;
+            if (!empty($post[$fieldName]) and trim($post[$fieldName])) {
+                return true;
+            }
         }
 
         $formError = new FormError($this->translator->trans('business_profile.names_blank'));
 
-        $this->form->get($fieldNameEn)->addError($formError);
-        $this->form->get($fieldNameES)->addError($formError);
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
 
-        return false;
-    }
-
-    private function setSearchParams()
-    {
-        $data = [
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,
-        ];
-
-        foreach ($data as $field) {
-            $valueEn = $this->businessProfileNew->{'get' . $field . BusinessProfile::TRANSLATION_LANG_EN}();
-            $valueEs = $this->businessProfileNew->{'get' . $field . BusinessProfile::TRANSLATION_LANG_ES}();
-
-            if ($valueEn and !$valueEs) {
-                $this->businessProfileNew->{'set' . $field . BusinessProfile::TRANSLATION_LANG_ES}($valueEn);
-            } elseif (!$valueEn and $valueEs) {
-                $this->businessProfileNew->{'set' . $field . BusinessProfile::TRANSLATION_LANG_EN}($valueEs);
-            }
+            $this->form->get($fieldName)->addError($formError);
         }
 
-        return $this->businessProfileNew;
+        return false;
     }
 
     private function cloneBusinessGallery(BusinessProfile $businessProfile)
@@ -520,47 +405,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         }
 
         return $data;
-    }
-
-    /**
-     * @param string $property
-     * @param string $data
-     * @param string $locale
-     *
-     * @return bool
-     */
-    private function addBusinessTranslation($property, $data, $locale)
-    {
-        if ($this->businessProfileOld) {
-            $translation = $this->businessProfileOld->getTranslationItem(
-                $property,
-                mb_strtolower($locale)
-            );
-
-            if ($translation) {
-                $translationNew = clone $translation;
-
-                $translationNew->setContent($data);
-            } else {
-                $translationNew = new BusinessProfileTranslation(
-                    mb_strtolower($locale),
-                    $property,
-                    $data
-                );
-            }
-
-            $this->businessProfileNew->addTranslation($translationNew);
-        } else {
-            $translationNew = new BusinessProfileTranslation(
-                mb_strtolower($locale),
-                $property,
-                $data
-            );
-
-            $this->businessProfileNew->addTranslation($translationNew);
-        }
-
-        return $this->businessProfileNew;
     }
 
     /**
