@@ -2946,6 +2946,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_NAME,
             self::BUSINESS_PROFILE_FIELD_NAME_EN,
             self::BUSINESS_PROFILE_FIELD_NAME_ES,
+            self::BUSINESS_PROFILE_FIELD_SLOGAN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
