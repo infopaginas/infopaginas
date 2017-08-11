@@ -84,9 +84,9 @@ class UsersManager
      * @param string $email
      * @return User | null
      */
-    public function getUserByEmail(string $email)
+    public function findUserByEmail(string $email)
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        $user = $this->getFOSUsersManager()->findUserByEmail($email);
 
         return $user;
     }

@@ -1600,7 +1600,7 @@ $thumb-width-mb: 60px;
 #empty-map-placeholder {
   position: absolute;
   width: 60%;
-  z-index: 9999;
+  z-index: 1;
   left: 20%;
   top: 39%;
 
@@ -2262,15 +2262,6 @@ $thumb-width-mb: 60px;
       background: $grey--light;
       color: $orange;
     }
-  }
-}
-
-.slider__item {
-  position: relative;
-
-  img {
-    width: 100%;
-    height: auto;
   }
 }
 
