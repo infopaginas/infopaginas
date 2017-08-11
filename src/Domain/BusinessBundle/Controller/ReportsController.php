@@ -73,13 +73,8 @@ class ReportsController extends Controller
      */
     public function overviewAction(Request $request)
     {
-        $params = $this->prepareReportParameters($request->request->all());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
-
-        $this->checkBusinessProfileAccess($businessProfile);
-
-        $data = $this->prepareOverviewResponse($params);
+        $params = $this->getExportParams($request);
+        $data   = $this->prepareOverviewResponse($params);
 
         return new JsonResponse($data);
     }
@@ -104,15 +99,8 @@ class ReportsController extends Controller
      */
     public function adUsageAction(Request $request)
     {
-        $params = $this->prepareReportParameters($request->request->all());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
-
-        $this->checkBusinessProfileAccess($businessProfile);
-
-        $params['businessProfile'] = $businessProfile;
-
-        $data = $this->prepareAdUsageResponse($params);
+        $params = $this->getExportParams($request);
+        $data   = $this->prepareAdUsageResponse($params);
 
         return new JsonResponse($data);
     }
@@ -142,13 +130,8 @@ class ReportsController extends Controller
      */
     public function keywordsAction(Request $request)
     {
-        $params = $this->prepareReportParameters($request->request->all());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
-
-        $this->checkBusinessProfileAccess($businessProfile);
-
-        $data = $this->prepareKeywordsResponse($params);
+        $params = $this->getExportParams($request);
+        $data   = $this->prepareKeywordsResponse($params);
 
         return new JsonResponse($data);
     }
@@ -192,13 +175,7 @@ class ReportsController extends Controller
      */
     public function excelExportAction(Request $request)
     {
-        $params = $this->prepareReportParameters($request->query->all());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
-
-        $this->checkBusinessProfileAccess($businessProfile);
-
-        $params['businessProfile'] = $businessProfile;
+        $params = $this->getExportParams($request);
 
         return $this->getExcelExporterService()->getResponse($params);
     }
@@ -210,13 +187,7 @@ class ReportsController extends Controller
      */
     public function excelAdminExportAction(Request $request)
     {
-        $params = $this->prepareReportParameters($request->query->all());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
-
-        $params['businessProfile'] = $businessProfile;
-
-        $this->userActionExportLog($businessProfile);
+        $params = $this->getAdminExportParams($request);
 
         return $this->getExcelExporterService()->getResponse($params);
     }
@@ -228,13 +199,7 @@ class ReportsController extends Controller
      */
     public function pdfExportAction(Request $request)
     {
-        $params = $this->prepareReportParameters($request->query->all());
-
-        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
-
-        $this->checkBusinessProfileAccess($businessProfile);
-
-        $params['businessProfile'] = $businessProfile;
+        $params = $this->getExportParams($request);
 
         return $this->getPdfExporterService()->getResponse($params);
     }
@@ -246,6 +211,42 @@ class ReportsController extends Controller
      */
     public function pdfAdminExportAction(Request $request)
     {
+        $params = $this->getAdminExportParams($request);
+
+        return $this->getPdfExporterService()->getResponse($params);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function getExportParams(Request $request)
+    {
+        if ($request->getMethod() == Request::METHOD_POST) {
+            $data = $request->request->all();
+        } else {
+            $data = $request->query->all();
+        }
+
+        $params = $this->prepareReportParameters($data);
+
+        $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
+
+        $this->checkBusinessProfileAccess($businessProfile);
+
+        $params['businessProfile'] = $businessProfile;
+
+        return $params;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function getAdminExportParams(Request $request)
+    {
         $params = $this->prepareReportParameters($request->query->all());
 
         $businessProfile = $this->getBusinessProfileManager()->find($params['businessProfileId']);
@@ -254,7 +255,7 @@ class ReportsController extends Controller
 
         $this->userActionExportLog($businessProfile);
 
-        return $this->getPdfExporterService()->getResponse($params);
+        return $params;
     }
 
     /**

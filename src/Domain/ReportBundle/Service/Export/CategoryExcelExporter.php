@@ -39,15 +39,8 @@ class CategoryExcelExporter extends ExcelExporterModel
         $filename = $this->categoryReportManager->generateReportName(self::FORMAT);
 
         $title = $this->translator->trans('export.title.category_report', [], 'AdminReportBundle');
-        $title = $this->getSafeTitle($title);
 
-        $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-        $this->phpExcelObject = $this->setData($params);
-
-        $this->phpExcelObject->getProperties()->setTitle($title);
-        $this->phpExcelObject->getActiveSheet()->setTitle($title);
-
-        return $this->sendResponse($filename);
+        return $this->sendDataResponse($params, $title, $filename);
     }
 
     /**

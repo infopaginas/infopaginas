@@ -176,23 +176,14 @@ class VideoManager
         return $video;
     }
 
-    public function uploadRemoteFile(string $url, array $data = [])
+    /**
+     * @param string $url
+     *
+     * @return VideoMedia
+     */
+    public function uploadRemoteFile(string $url)
     {
-        $headers = SiteHelper::checkUrlExistence($url);
-
-        $fileData = [
-            'name'      => $this->generateFilenameForUrl($url),
-            'ext'       => $this->getExtensionByMime($headers['content_type']),
-            'type'      => $headers['content_type'],
-            'path'      => $url,
-        ];
-
-        if ($fileData['ext'] == null || !isset($headers['content_type'])) {
-            $message = $this->container->get('translator')->trans('the link to the video is invalid', [], 'messages');
-            throw new \InvalidArgumentException(sprintf($message));
-        }
-
-        $uploadedFileData = $this->uploadLocalFileData($fileData);
+        $uploadedFileData = $this->getUploadedFromRemoteFileData($url);
 
         return $this->videoMediaManager->save($uploadedFileData);
     }
@@ -205,6 +196,20 @@ class VideoManager
      */
     public function addVideoFromRemoteFile(VideoMedia $video, $url)
     {
+        $uploadedFileData = $this->getUploadedFromRemoteFileData($url);
+
+        $video = $this->addVideoProperties($video, $uploadedFileData);
+
+        return $video;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return array
+     */
+    protected function getUploadedFromRemoteFileData($url)
+    {
         $headers = SiteHelper::checkUrlExistence($url);
 
         $fileData = [
@@ -219,11 +224,7 @@ class VideoManager
             throw new \InvalidArgumentException(sprintf($message));
         }
 
-        $uploadedFileData = $this->uploadLocalFileData($fileData);
-
-        $video = $this->addVideoProperties($video, $uploadedFileData);
-
-        return $video;
+        return $this->uploadLocalFileData($fileData);
     }
 
     /**

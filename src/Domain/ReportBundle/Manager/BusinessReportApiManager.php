@@ -147,9 +147,9 @@ class BusinessReportApiManager
                     $result['data'][$key]['date'] = $data['date'];
                 }
             }
-        }
 
-        $result['data'] = array_values($result['data']);
+            $result['data'] = array_values($result['data']);
+        }
 
         return $result;
     }
