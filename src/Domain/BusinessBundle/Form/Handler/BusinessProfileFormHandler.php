@@ -392,21 +392,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         return false;
     }
 
-    private function cloneBusinessGallery(BusinessProfile $businessProfile)
-    {
-        $data = [];
-
-        // track only required property that should be added to task view
-        foreach ($businessProfile->getImages() as $gallery) {
-            $data[$gallery->getId()] = [
-                'type'        => $gallery->getType(),
-                'description' => $gallery->getDescription(),
-            ];
-        }
-
-        return $data;
-    }
-
     /**
      * @return array
      */
