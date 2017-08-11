@@ -45,7 +45,7 @@ class FOSUBUserProvider extends BaseClass
         $setterId = $setter . 'Id';
         $setterToken = $setter . 'AccessToken';
 
-        $previousUser = $this->userManager->findUserBy(['email' => $email]);
+        $previousUser = $this->userManager->findUserByEmail($email);
 
         //we "disconnect" previously connected users
         if ($previousUser !== null) {
@@ -75,9 +75,7 @@ class FOSUBUserProvider extends BaseClass
             throw new AccountNotLinkedException();
         }
 
-        $user = $this->userManager->findUserBy([
-            'email' => $email
-        ]);
+        $user = $this->userManager->findUserByEmail($email);
 
         //when the user is registrating
         if ($user === null) {
@@ -112,10 +110,6 @@ class FOSUBUserProvider extends BaseClass
         }
 
         //if user exists - go with the HWIOAuth way
-        $user = $this->userManager->findUserBy([
-            'email' => $email,
-        ]);
-
         if (null === $user || null === $email) {
             throw new AccountNotLinkedException(sprintf("User '%s' not found.", $email));
         }
