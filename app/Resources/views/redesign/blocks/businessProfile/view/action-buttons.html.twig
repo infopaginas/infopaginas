@@ -1,0 +1,28 @@
+{% if item.actionUrl %}
+    <a class="button button--small button--opentable redirect-event link-pointer" data-href="{{ item.actionUrl }}" data-id="{{ item.id }}" data-type="webActionButton">
+        {% if item.actionUrlType in BUSINESS_PROFILE.ACTION_TYPE %}
+            {% set path = 'redesign/img/icons/' ~ item.actionUrlType ~ '.svg' %}
+
+            <img src="{{ absolute_url(asset(path)) }}" alt="{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}">
+        {% endif %}
+        <span>{{ item.actionUrlTypes[item.actionUrlType]|trans|purify }}</span>
+    </a>
+{% endif %}
+{% if not item.getHideAddress() %}
+    <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+        <i class="fa fa-location-arrow"></i>
+        <span>{% trans %}Directions{% endtrans %}</span>
+    </a>
+{% endif %}
+{% if item.getPhones()|length > 0 %}
+    <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
+        <i class="fa fa-phone"></i>
+        <span>{% trans %}Call{% endtrans %}</span>
+    </a>
+{% endif %}
+{% if item.getWebsite() %}
+    <a class="button button--small button--featured redirect-event link-pointer" data-href="{{ item.getWebsiteLink() }}" data-id="{{ item.id }}" data-type="webButton">
+        <i class="fa fa-external-link"></i>
+        <span>{% trans %}Web{% endtrans %}</span>
+    </a>
+{% endif %}

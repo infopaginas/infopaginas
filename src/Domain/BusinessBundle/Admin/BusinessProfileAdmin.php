@@ -37,6 +37,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -354,8 +355,20 @@ class BusinessProfileAdmin extends OxaAdmin
                         'btn_add' => false,
                         'query' => $query,
                     ])
-                    ->add('website')
+                    ->add('website', UrlType::class, [
+                        'required' => false,
+                    ])
                     ->add('email', EmailType::class, [
+                        'required' => false,
+                    ])
+                    ->add('actionUrlType', ChoiceType::class, [
+                        'choices'  => BusinessProfile::getActionUrlTypes(),
+                        'multiple' => false,
+                        'expanded' => true,
+                        'required' => true,
+                        'translation_domain' => 'AdminDomainBusinessBundle',
+                    ])
+                    ->add('actionUrl', UrlType::class, [
                         'required' => false,
                     ])
                     ->add('slug', null, ['read_only' => true, 'required' => false])
@@ -387,12 +400,24 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ->end()
                 ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
+                    ->add('twitterURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('facebookURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('googleURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('youtubeURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('instagramURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('tripAdvisorURL', UrlType::class, [
+                        'required' => false,
+                    ])
                 ->end()
             ->end()
         ;

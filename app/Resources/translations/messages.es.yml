@@ -439,6 +439,8 @@ user.reset_password_request.email.not_found: El usuario {-email-} no existe
 business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
 business_profile.seoTitle.search: categories en locality
 business_profile.seoTitle.catalog: Catálogo en locality
+business_profile.action_type.order: Ordena&nbsp;Ya
+business_profile.action_type.book: Reservar
 
 #admin
 action_copy: Copy
