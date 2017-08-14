@@ -358,9 +358,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('website', UrlType::class, [
                         'required' => false,
                     ])
-                    ->add('email', EmailType::class, [
-                        'required' => false,
-                    ])
                     ->add('actionUrlType', ChoiceType::class, [
                         'choices'  => BusinessProfile::getActionUrlTypes(),
                         'multiple' => false,
@@ -369,6 +366,9 @@ class BusinessProfileAdmin extends OxaAdmin
                         'translation_domain' => 'AdminDomainBusinessBundle',
                     ])
                     ->add('actionUrl', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('email', EmailType::class, [
                         'required' => false,
                     ])
                     ->add('slug', null, ['read_only' => true, 'required' => false])
@@ -759,6 +759,8 @@ class BusinessProfileAdmin extends OxaAdmin
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                     ])
                     ->add('website')
+                    ->add('actionUrlType')
+                    ->add('actionUrl')
                     ->add('email')
                     ->add('slug')
                     ->add('collectionWorkingHours', null, [

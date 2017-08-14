@@ -284,7 +284,7 @@ class BusinessProfile implements
     /**
      * @var string
      *
-     * @ORM\Column(name="action_url_type", type="string", options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
+     * @ORM\Column(name="action_url_type", type="string", length=10, options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
      * @Assert\Choice(callback = "getActionUrlTypesAssert", multiple = false)
      */
     protected $actionUrlType;
