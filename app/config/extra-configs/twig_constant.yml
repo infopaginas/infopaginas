@@ -41,6 +41,7 @@ twig:
             ATH_MOVIL:  'ath_movil'
             ONLINE:     'online'
             DEBIT:      'debit'
+            ATH:        'ath'
 
 #       const types of ChangeSetCalculator class
         CHANGE_SET_TYPE:
@@ -112,6 +113,7 @@ twig:
             MAPPING:
                 ACTION: 'action'
                 INFO:   'data'
+                ENTITY_NAME: 'entity_name'
             DATA:
                 URL:  'url'
                 TYPE: 'type'

@@ -179,7 +179,15 @@ class VideoMedia implements PostponeRemoveInterface
      */
     public function __toString()
     {
-        return $this->getName() ?: (string)$this->getId();
+        if ($this->getTitle()) {
+            $name = $this->getTitle();
+        } elseif ($this->getName()) {
+            $name = $this->getName();
+        } else {
+            $name = $this->getId();
+        }
+
+        return (string) $name;
     }
 
     /**

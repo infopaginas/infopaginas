@@ -32,10 +32,10 @@ export.title.ad_usage_report: Ad Usage Report Data
 
 user_action_report:
   action:
-    view_show_page: Vist show page
-    view_list_page: Vist list page
-    view_create_page: Vist create page
-    view_update_page: Vist edit page
+    view_show_page: Visit show page
+    view_list_page: Visit list page
+    view_create_page: Visit create page
+    view_update_page: Visit edit page
 
     create: Create item
     update: Update item
@@ -54,8 +54,10 @@ user_action_report:
     user_id: User ID
     datetime: Date
     entity: Entity
+    entity_name: Name
     action: Action
     data: Data
+  no_associated_entity: No associated entity
 
 flash_export_report_requested: Report is being generated. To see its status please go to reports page
 flash_export_report_request_error: Error the report could not be sent, please reload the page and try again.

@@ -22,7 +22,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.4.0'
+    app_version: '1.5.0'
     locale: en
     locales: [en, es]
     locale_data:
@@ -180,6 +180,7 @@ sonata_classification:
 swiftmailer:
     transport: "%mailer_transport%"
     host:      "%mailer_host%"
+    port:      "%mailer_port%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
@@ -199,6 +200,8 @@ ivory_google_map:
         adapter: "Geocoder\HttpAdapter\CurlHttpAdapter"
 
 hwi_oauth:
+    http_client:
+        timeout: 10
     connect:
         account_connector: oxa.user.oauth_provider
         confirmation: false
@@ -218,8 +221,8 @@ hwi_oauth:
                 email:          email
         google:
             type:                google
-            client_id:           584296512785-clg06us2ajt6b0s38u41r0nlr9h4mbs6.apps.googleusercontent.com
-            client_secret:       5J_TAMDieaCliwy4HVvI9Wfk
+            client_id:           '257125561113-k1b051ctf2uvgii4um1v5intdj7habeg.apps.googleusercontent.com'
+            client_secret:       '5BFK_k2oVD7Uh-Gn85LrHYcC'
             scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
 
 fos_js_routing:
@@ -329,10 +332,3 @@ elastic_search:
 mongo_db:
     host: '%mongodb.host%'
     db:   '%mongodb.db%'
-monolog:
-    channels: [cron]
-    handlers:
-        cron:
-          type: stream
-          path: "%kernel.logs_dir%/cron.log"
-          channels: [cron]

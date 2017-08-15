@@ -48,7 +48,7 @@ class ConstraintEmailUniqueValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if ($value) {
-            $user = $this->usersManager->getUserByEmail($value);
+            $user = $this->usersManager->findUserByEmail($value);
 
             if ($user) {
                 $this->context

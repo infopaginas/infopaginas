@@ -26,47 +26,13 @@ interface TypeInterface
 
     const SIZE_300_250 = '300x250';
     const SIZE_320_50  = '320x50';
-    const SIZE_AUTO_SEARCH = '320x50, 468x60';
     const SIZE_AUTO_STATIC = '320x50, 728x90';
 
-    const MEDIA_FORMAT_HOME         = 'home';
-    const MEDIA_FORMAT_BUSINESS     = 'business';
-    const MEDIA_FORMAT_ARTICLE      = 'article';
-    const MEDIA_FORMAT_VIDEO        = 'video';
-    const MEDIA_FORMAT_SEARCH       = 'search';
-    const MEDIA_FORMAT_COMPARE      = 'compare';
-    const MEDIA_FORMAT_STATIC       = 'static';
-    const MEDIA_FORMAT_PORTAL       = 'portal';
-    const MEDIA_FORMAT_FLOAT        = 'float';
+    const SIZE_DATA_300_250 = [300, 250];
+    const SIZE_DATA_320_50  = [320, 50];
+    const SIZE_DATA_728_90  = [728, 90];
 
-    /**
-     * @return integer
-     */
-    public function getCode();
-
-    /**
-     * @param int $code
-     * @return TypeInterface
-     */
-    public function setCode(int $code);
-
-    /**
-     * @return array - Media sizes
-     */
-    public static function getCodeSizes() : array;
-
-    /**
-     * @return array - Exists media format names
-     */
-    public static function getMediaFormats() : array;
-
-    /**
-     * @return string
-     */
-    public function getSize() : string;
-
-    /**
-     * @return string
-     */
-    public function getMediaFormat() : string;
+    const BANNER_TYPE_DEFAULT           = 'default';
+    const BANNER_TYPE_RESIZABLE         = 'resizable';
+    const BANNER_TYPE_RESIZABLE_BLOCK   = 'resizableBlock';
 }

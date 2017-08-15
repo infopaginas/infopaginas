@@ -5,6 +5,7 @@ namespace Domain\SiteBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedirectController extends Controller
 {
@@ -12,6 +13,7 @@ class RedirectController extends Controller
     const REDIRECT_PREFIX_CATALOG  = 'business';
     const LOCALE_EN = 'en';
     const LOCALE_ES = 'es';
+    const MIN_URL_PART = 3;
 
     /**
      * @param Request $request
@@ -37,24 +39,36 @@ class RedirectController extends Controller
             $locale = self::LOCALE_ES;
         }
 
-        switch ($pathParts[0]) {
-            case self::REDIRECT_PREFIX_BUSINESS:
-                // business page redirect
-                $data = $this->getBusinessRedirectData($pathParts);
-                break;
-            case self::REDIRECT_PREFIX_CATALOG:
-                // catalog redirect
-                $data = $this->getCatalogRedirectData($pathParts);
-                break;
-            default:
-                // redirect to search page
-                $data = $this->getDefaultRedirectData($pathParts);
-                break;
+        if (count($pathParts) > self::MIN_URL_PART) {
+            switch ($pathParts[0]) {
+                case self::REDIRECT_PREFIX_BUSINESS:
+                    // business page redirect
+                    $data = $this->getBusinessRedirectData($pathParts);
+                    break;
+                case self::REDIRECT_PREFIX_CATALOG:
+                    // catalog redirect
+                    $data = $this->getCatalogRedirectData($pathParts);
+                    break;
+                default:
+                    // redirect to search page
+                    $data = $this->getDefaultRedirectData($pathParts);
+                    break;
+            }
+
+            $redirectUrl = $this->getRedirectUrl($data, $locale, $currentLocale);
+
+            return $this->redirect($redirectUrl, 301);
+        } else {
+            throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
         }
+    }
 
-        $redirectUrl = $this->getRedirectUrl($data, $locale, $currentLocale);
-
-        return $this->redirect($redirectUrl, 301);
+    /**
+     * @return Response
+     */
+    public function consultAction()
+    {
+        throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
     }
 
     /**

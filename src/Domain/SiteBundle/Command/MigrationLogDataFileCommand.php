@@ -135,7 +135,9 @@ class MigrationLogDataFileCommand extends ContainerAwareCommand
 
                 } else {
                     $this->addViewDataToMongo($logData, $currentDate);
-                    $logData = [];
+                    $logData = [
+                        $uid => 1,
+                    ];
                     $currentDate = $date;
                 }
             }
@@ -233,7 +235,9 @@ class MigrationLogDataFileCommand extends ContainerAwareCommand
 
                 } else {
                     $this->addViewDataToMongo($logData, $currentDate);
-                    $logData = [];
+                    $logData = [
+                        $uid => $count,
+                    ];
                     $currentDate = $date;
                 }
             }

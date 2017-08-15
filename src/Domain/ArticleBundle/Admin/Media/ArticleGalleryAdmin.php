@@ -4,7 +4,6 @@ namespace Domain\ArticleBundle\Admin\Media;
 
 use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
-use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -94,11 +93,6 @@ class ArticleGalleryAdmin extends OxaAdmin
                 'placeholder'   => 'Create an image description as ' .
                     'if you were describing the image to someone who cannot see it',
             ]])
-            ->add('position', 'hidden', [
-                'attr' => [
-                    'hidden' => true,
-                ]
-            ])
         ;
     }
 

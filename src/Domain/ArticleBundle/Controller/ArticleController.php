@@ -28,8 +28,8 @@ class ArticleController extends Controller
         $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -43,7 +43,7 @@ class ArticleController extends Controller
             'results'           => $articlesResultDTO,
             'seoData'           => $seoData,
             'schemaJsonLD'      => $schema,
-            'bannerFactory'     => $bannerFactory,
+            'banners'           => $banners,
             'dcDataDTO'         => $dcDataDTO,
         ];
 
@@ -69,8 +69,8 @@ class ArticleController extends Controller
 
         $schema = $articleManager->buildArticlesSchema([$article]);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -84,7 +84,7 @@ class ArticleController extends Controller
             'seoData'        => $article,
             'articleGallery' => $articleGallery,
             'schemaJsonLD'   => $schema,
-            'bannerFactory'  => $bannerFactory,
+            'banners'        => $banners,
             'dcDataDTO'      => $dcDataDTO,
         ];
 
@@ -111,8 +111,8 @@ class ArticleController extends Controller
 
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -127,7 +127,7 @@ class ArticleController extends Controller
             'seoData'           => $seoData,
             'articleCategory'   => $category,
             'schemaJsonLD'      => $schema,
-            'bannerFactory'     => $bannerFactory,
+            'banners'           => $banners,
             'dcDataDTO'         => $dcDataDTO,
         ];
 

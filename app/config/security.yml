@@ -56,7 +56,7 @@ security:
                     google:             "/login/check-google"
                 login_path:        /
                 failure_path:      /
-                default_target_path: /
+                default_target_path: '/auth/welcome'
                 oauth_user_provider:
                     service: oxa.user.oauth_provider
             form_login:

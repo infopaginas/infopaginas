@@ -33,6 +33,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     const PAYMENT_METHOD_TYPE_ATH_MOVIL = 'ath_movil';
     const PAYMENT_METHOD_TYPE_ONLINE    = 'online';
     const PAYMENT_METHOD_TYPE_DEBIT     = 'debit';
+    const PAYMENT_METHOD_TYPE_ATH       = 'ath';
 
     const PAYMENT_METHOD_FIELD_NAME = 'name';
 
@@ -270,6 +271,11 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
                 'nameEn' => 'Debit Card',
                 'nameEs' => 'Debito',
                 'type' => self::PAYMENT_METHOD_TYPE_DEBIT,
+            ],
+            self::PAYMENT_METHOD_TYPE_ATH => [
+                'nameEn' => 'ATH',
+                'nameEs' => 'ATH',
+                'type' => self::PAYMENT_METHOD_TYPE_ATH,
             ],
         ];
     }

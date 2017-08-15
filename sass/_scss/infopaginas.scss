@@ -1600,7 +1600,7 @@ $thumb-width-mb: 60px;
 #empty-map-placeholder {
   position: absolute;
   width: 60%;
-  z-index: 9999;
+  z-index: 1;
   left: 20%;
   top: 39%;
 
@@ -2246,7 +2246,8 @@ $thumb-width-mb: 60px;
   }
 
   a {
-    background: $grey--light;
+    background: $blue;
+    color: $white;
     border-radius: $button-radius;
     display: inline-block;
     padding: 5px 20px;
@@ -2258,18 +2259,9 @@ $thumb-width-mb: 60px;
     }
 
     &:hover {
-      background: $blue;
-      color: $white;
+      background: $grey--light;
+      color: $orange;
     }
-  }
-}
-
-.slider__item {
-  position: relative;
-
-  img {
-    width: 100%;
-    height: auto;
   }
 }
 
@@ -5576,7 +5568,13 @@ input[type='radio'], input[type='checkbox'] {
     }
   }
 
-  padding-bottom: 50px;
+  @media only screen and (max-width: 804px) {
+    &.float-ad-spacing {
+      padding-bottom: 95px;
+    }
+
+    padding-bottom: 0;
+  }
 }
 
 .vjs-social-share {

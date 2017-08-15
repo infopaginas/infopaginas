@@ -70,12 +70,6 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
     protected $description;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
-
-    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
@@ -220,29 +214,6 @@ class Config implements DefaultEntityInterface, ConfigInterface, TranslatableInt
         return $this->description;
     }
 
-    /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return Config
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
     /**
      * Constructor
      */

@@ -106,7 +106,6 @@ class OxaAdmin extends BaseAdmin
     protected $datagridValues = array(
         '_page'       => 1,
         '_per_page'   => 25,
-        '_sort_by' => 'position',
     );
 
     /**
@@ -330,8 +329,9 @@ class OxaAdmin extends BaseAdmin
     public function generateUserLogData($action, $entity = null)
     {
         $data = [
-            'entity' => $this->getClassnameLabel(),
-            'type'   => $action,
+            'entity'        => $this->getClassnameLabel(),
+            'entityName'    => (string) $entity,
+            'type'          => $action,
         ];
 
         if ($entity and $entity->getId()) {
