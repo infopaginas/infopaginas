@@ -63,6 +63,9 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
+    const ACTION_URL_TYPE_ORDER = 'order';
+    const ACTION_URL_TYPE_BOOK  = 'book';
+
     const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
     const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
@@ -264,10 +267,27 @@ class BusinessProfile implements
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=1000, nullable=true)
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @Assert\Url()
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $website;
+
+    /**
+     * @var string - action url
+     *
+     * @ORM\Column(name="action_url", type="string", length=1000, nullable=true)
+     * @Assert\Url()
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     */
+    protected $actionUrl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="action_url_type", type="string", length=10, options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
+     * @Assert\Choice(callback = "getActionUrlTypesAssert", multiple = false)
+     */
+    protected $actionUrlType;
 
     /**
      * @var string - Email address
@@ -577,7 +597,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $twitterURL;
 
@@ -585,7 +605,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $facebookURL;
 
@@ -593,7 +613,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="google_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $googleURL;
 
@@ -601,7 +621,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $youtubeURL;
 
@@ -609,7 +629,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL
      * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $instagramURL;
 
@@ -617,7 +637,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL
      * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $tripAdvisorURL;
 
@@ -2584,6 +2604,65 @@ class BusinessProfile implements
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionUrlTypesAssert()
+    {
+        return array_keys(self::getActionUrlTypes());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionUrlTypes()
+    {
+        return [
+            self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
+            self::ACTION_URL_TYPE_BOOK  => 'business_profile.action_type.book',
+        ];
+    }
+
+    /**
+     * @param string $actionUrl
+     *
+     * @return BusinessProfile
+     */
+    public function setActionUrl($actionUrl)
+    {
+        $this->actionUrl = $actionUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionUrl()
+    {
+        return $this->actionUrl;
+    }
+
+    /**
+     * @param string $actionUrlType
+     *
+     * @return BusinessProfile
+     */
+    public function setActionUrlType($actionUrlType)
+    {
+        $this->actionUrlType = $actionUrlType;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionUrlType()
+    {
+        return $this->actionUrlType;
     }
 
     /**

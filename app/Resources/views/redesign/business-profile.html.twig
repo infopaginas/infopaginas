@@ -42,68 +42,10 @@
                         <p>&nbsp;{{ businessProfile.getSlogan() }}</p>
                     {% endif %}
                     <div class="header-actions">
-                        {% if not businessProfile.getHideAddress() %}
-                            <a class="get-dir button button--small button--featured link-pointer profile-page" data-id="{{ businessProfile.getId() }}" data-latlng="{{ businessProfile.getLatLng() }}">
-                                <i class="fa fa-location-arrow"></i>
-                                <span>{% trans %}Directions{% endtrans %}</span>
-                            </a>
-                        {% endif %}
-                        {% if businessProfile.getPhones()|length > 0 %}
-                            <a href="tel:{{ businessProfile.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call profile-page" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">
-                                <i class="fa fa-phone"></i>
-                                <span>{% trans %}Call{% endtrans %}</span>
-                            </a>
-                        {% endif %}
-                        {% if businessProfile.getWebsite() %}
-                            <a class="button button--small button--featured redirect-event link-pointer profile-page" data-href="{{ businessProfile.getWebsiteLink() }}" data-id="{{ businessProfile.id }}" data-type="webButton">
-                                <i class="fa fa-external-link"></i>
-                                <span>{% trans %}Web{% endtrans %}</span>
-                            </a>
-                        {% endif %}
-                    </div><!-- header-actions -->
+                        {% include ':redesign/blocks/businessProfile/view:action-buttons.html.twig' with {item: businessProfile} %}
+                    </div>
 
-                    {% set socialLinksExists = businessProfile.getFacebookURL()
-                        or businessProfile.getGoogleURL()
-                        or businessProfile.getTwitterURL()
-                        or businessProfile.getYoutubeURL()
-                        or businessProfile.getInstagramURL()
-                        or businessProfile.getTripAdvisorURL()
-                    %}
-
-                    {% if socialLinksExists %}
-                        <div class="share">
-                            {% if businessProfile.getFacebookURL() %}
-                                <div class="share__item facebook">
-                                    <a data-href="{{ businessProfile.getFacebookURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
-                                </div><!-- share__item -->
-                            {% endif %}
-                            {% if businessProfile.getTwitterURL() %}
-                                <div class="share__item twitter">
-                                    <a data-href="{{ businessProfile.getTwitterURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
-                                </div><!-- share__item -->
-                            {% endif %}
-                            {% if businessProfile.getGoogleURL() %}
-                                <div class="share__item google-plus">
-                                    <a data-href="{{ businessProfile.getGoogleURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
-                                </div><!-- share__item -->
-                            {% endif %}
-                            {% if businessProfile.getYoutubeURL() %}
-                                <div class="share__item youtube">
-                                    <a data-href="{{ businessProfile.getYoutubeURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
-                                </div><!-- share__item -->
-                            {% endif %}
-                            {% if businessProfile.getInstagramURL() %}
-                                <div class="share__item instagram">
-                                    <a data-href="{{ businessProfile.getInstagramURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-instagram"></i></a>
-                                </div><!-- share__item -->
-                            {% endif %}
-                            {% if businessProfile.getTripAdvisorURL() %}
-                                <div class="share__item instagram">
-                                    <a data-href="{{ businessProfile.getTripAdvisorURL() }}" class="redirect-event" data-id="{{ businessProfile.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-tripadvisor"></i></a>
-                                </div><!-- share__item -->
-                            {% endif %}
-                        </div>
-                    {% endif %}
+                    {% include ':redesign/blocks/businessProfile/view:social-buttons.html.twig' with {item: businessProfile} %}
                 </header>
             </div><!-- container -->
 

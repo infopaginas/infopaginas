@@ -33,6 +33,12 @@ twig:
         WORKING_HOURS_ASSOCIATED_FIELD: 'collectionWorkingHours'
         BUSINESS_PROFILE_FIELD_PANORAMA_ID: 'panoramaId'
 
+#        const of BusinessProfile class
+        BUSINESS_PROFILE:
+            ACTION_TYPE:
+                ORDER: 'order'
+                BOOK:  'book'
+
 #        const of PaymentMethod class
         PAYMENT_METHOD_TYPE:
             CASH:       'cash'

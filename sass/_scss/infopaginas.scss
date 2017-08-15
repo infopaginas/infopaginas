@@ -2144,10 +2144,6 @@ $thumb-width-mb: 60px;
     padding: 0;
     text-align: center;
 
-    &.profile-page {
-      width: 33%;
-    }
-
     i {
       font-size: 1.7em;
       height: .5em;
@@ -2166,13 +2162,13 @@ $thumb-width-mb: 60px;
 
   .button--opentable {
     background: $red;
-    line-height: 55px;
+    line-height: 27px;
 
     img {
       display: block;
       position: relative;
-      top: 1.6em;
-      width: 25px;
+      top: 0.7em;
+      width: 33px;
     }
   }
 
