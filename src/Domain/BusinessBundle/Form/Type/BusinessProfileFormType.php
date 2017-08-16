@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -95,6 +96,13 @@ class BusinessProfileFormType extends AbstractType
                 'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
+            ])
+            ->add(BusinessProfilePhoneTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
+                'mapped'   => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'hidden',
+                ],
             ])
             ->add('collectionWorkingHours', CollectionType::class, [
                 'allow_add'    => true,

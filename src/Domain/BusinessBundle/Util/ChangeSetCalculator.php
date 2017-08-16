@@ -177,7 +177,7 @@ class ChangeSetCalculator
         foreach ($entities as $entity) {
             $data[] = [
                 'id'    => $entity->getId(),
-                'value' => (string)$entity,
+                'value' => method_exists($entity, 'getJsonData') ? $entity->getJsonData() : (string)$entity,
             ];
         }
 

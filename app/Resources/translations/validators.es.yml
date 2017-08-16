@@ -19,3 +19,6 @@ business_profile:
   service_areas_type: Usted debe elegir un área de servicio válido
   locality:
       not_empty: Debe elegir una Localidad válida
+
+business_profile_phone.not_unique_main: Error: no puede haber más de un teléfono principal
+business_profile_phone.no_main: Error al menos un teléfono debe estar marcado como "principal"

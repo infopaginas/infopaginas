@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
@@ -77,6 +78,10 @@ class BusinessProfileExtension extends \Twig_Extension
             'get_business_profile_image_property_changes' => new \Twig_Function_Method(
                 $this,
                 'getTaskImagePropertyChangeSetRow'
+            ),
+            'get_business_profile_phone_icon' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileIcon'
             ),
             'get_business_profile_media_changes' => new \Twig_Function_Method($this, 'getMediaChangeSet'),
             'get_business_profile_images_changes' => new \Twig_Function_Method($this, 'getImagesChangeSet'),
@@ -301,6 +306,23 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         return $data;
+    }
+
+    /**
+     * @param BusinessProfilePhone $phone
+     *
+     * @return string
+     */
+    public function getBusinessProfileIcon($phone)
+    {
+        $phoneIcons = BusinessProfilePhone::getTypeIcons();
+        $type = $phone->getType();
+
+        if (!array_key_exists($type, $phoneIcons)) {
+            $type = BusinessProfilePhone::PHONE_TYPE_SECONDARY;
+        }
+
+        return $phoneIcons[$type];
     }
 
     public function sortTranslationSet($value)

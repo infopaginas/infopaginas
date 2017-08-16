@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\ConfigBundle\Model\ConfigInterface;
@@ -398,6 +399,16 @@ class BusinessProfileAdmin extends OxaAdmin
                             'inline' => 'table',
                         ]
                     )
+                    ->add(BusinessProfilePhoneTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
+                        'label_attr' => [
+                            'hidden' => true,
+                        ],
+                        'mapped'   => false,
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'hidden',
+                        ],
+                    ])
                 ->end()
                 ->with('Social Networks')
                     ->add('twitterURL', UrlType::class, [

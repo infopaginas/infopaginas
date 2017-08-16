@@ -29,6 +29,53 @@ $( document ).ready( function() {
         }
     });
 
+    $( 'div[ id $= "' + formId + '_phones" ]' ).on( 'sonata.add_element', function( event ) {
+        handleBusinessProfilePhoneTypeChange();
+    });
+
+    $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_phones_" ]', function() {
+        if ( $( this ).prop( 'checked' ) ) {
+            handleBusinessProfilePhoneTypeChange();
+        }
+    });
+
+    $( document ).on( 'submit', 'form', function( e ) {
+        if ( handleBusinessProfilePhoneTypeChange() ) {
+            $( 'html, body' ).animate({
+                scrollTop: $( 'div[ id $= "' + formId + '_phones" ]' ).first().offset().top
+            }, 2000);
+
+            return false;
+        }
+    });
+
+    function handleBusinessProfilePhoneTypeChange() {
+        var mainCheckBoxes = $( 'input[ id *= "_phones_"][type = "radio"][value = "main"]' );
+        var errorBlock = $( '#' + formId + '_phoneCollection' );
+        var hasMainPhone = false;
+        var errors = [];
+
+        $.each( mainCheckBoxes, function( index, checkbox ) {
+            if ( $( checkbox ).prop('checked') ) {
+                if ( hasMainPhone ) {
+                    errors.push( errorList.phones.not_unique );
+
+                    return false;
+                }
+
+                hasMainPhone = true;
+            }
+        });
+
+        if ( !hasMainPhone ) {
+            errors.push( errorList.phones.no_main );
+        }
+
+        handlePhoneValidationError( errorBlock, errors );
+
+        return errors.length;
+    }
+
     function handleServiceAreaTypeChange( elem ) {
         var isMainBlock = checkServiceAreaTypeBlockMain( elem );
         var serviceAreaType = $( elem ).val();
@@ -347,6 +394,26 @@ $( document ).ready( function() {
 
             errorHtml += '</ul></div>';
 
+            input.after( errorHtml );
+        }
+    }
+
+    function handlePhoneValidationError( input, errors ) {
+        var parent = input.parent();
+
+        parent.find( '.sonata-ba-field-error-messages' ).remove();
+        parent.removeClass( 'has-error' );
+
+        if ( errors.length ) {
+            var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
+
+            $.each(errors, function( index, value ) {
+                errorHtml += '<li><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + value + '</li>';
+            });
+
+            errorHtml += '</ul></div>';
+
+            parent.addClass( 'has-error' );
             input.after( errorHtml );
         }
     }
