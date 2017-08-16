@@ -39,6 +39,13 @@ twig:
                 ORDER: 'order'
                 BOOK:  'book'
 
+#        const of BusinessProfilePhone class
+        BUSINESS_PROFILE_PHONE:
+            TYPE:
+                MAIN:       'main'
+                FAX:        'fax'
+                SECONDARY:  'secondary'
+
 #        const of PaymentMethod class
         PAYMENT_METHOD_TYPE:
             CASH:       'cash'

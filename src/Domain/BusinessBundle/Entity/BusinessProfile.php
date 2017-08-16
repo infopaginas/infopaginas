@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
 
 /**
  * BusinessProfile
@@ -44,6 +45,7 @@ use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTy
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  * @ServiceAreaTypeValidator()
+ * @BusinessProfilePhoneTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -701,6 +703,7 @@ class BusinessProfile implements
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
+     * @ORM\OrderBy({"priority" = "ASC", "id" = "ASC"})
      */
     protected $phones;
 
@@ -2145,11 +2148,28 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getPhones()
     {
         return $this->phones;
+    }
+
+    /**
+     * @return BusinessProfilePhone|null
+     */
+    public function getMainPhone()
+    {
+        $mainPhone = null;
+
+        foreach ($this->getPhones() as $phone) {
+            if ($phone->getType() == BusinessProfilePhone::PHONE_TYPE_MAIN) {
+                $mainPhone = $phone;
+                break;
+            }
+        }
+
+        return $mainPhone;
     }
 
     /**

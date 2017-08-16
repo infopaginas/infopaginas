@@ -499,6 +499,11 @@ business.working.hours.closed_now: Now closed
 business.working.hours.closed: Closed
 business.working.hours.edit_note: First select a day (or group of days) and then opening and closing time for those days
 
+#business profile phone
+business_profile_phone.type.main: Main
+business_profile_phone.type.secondary: Secondary
+business_profile_phone.type.fax: Fax
+
 MON: Mon
 TUE: Tue
 WED: Wed

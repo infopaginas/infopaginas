@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class BusinessProfilePhoneAdmin extends OxaAdmin
@@ -32,6 +33,7 @@ class BusinessProfilePhoneAdmin extends OxaAdmin
         $listMapper
             ->add('id')
             ->add('phone')
+            ->add('type')
         ;
 
         $this->addGridActions($listMapper);
@@ -43,6 +45,13 @@ class BusinessProfilePhoneAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
+            ->add('type', ChoiceType::class, [
+                'choices'  => BusinessProfilePhone::getTypes(),
+                'multiple' => false,
+                'expanded' => true,
+                'required' => true,
+                'translation_domain' => 'AdminDomainBusinessBundle',
+            ])
             ->add('phone', null, [
                 'constraints' => [
                     new Regex([

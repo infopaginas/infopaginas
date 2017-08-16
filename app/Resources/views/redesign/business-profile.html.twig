@@ -70,15 +70,15 @@
                                     </div><!-- highlights__item -->
                                 {% endif %}
 
-                                {% if businessProfile.getPhones()|length > 0 %}
+                                {% if not businessProfile.phones.empty %}
                                     <div class="highlights__item">
                                         <h3>{% trans %}Phone{% endtrans %}</h3>
                                         <ul>
-                                            {% for phone in businessProfile.getPhones() %}
-                                                <li>
-                                                    <i class="fa fa-phone"></i>
-                                                    <a href="tel:{{ phone.getPhone() }}" class="hide-desktop phone-call" data-id="{{ businessProfile.getId() }}" data-type="callMobButton">{{ phone.getPhone() }}</a>
-                                                    <span class="hide-mobile">{{ phone.getPhone() }}</span>
+                                            {% for phone in businessProfile.phones %}
+                                                <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                                                    <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
+                                                    <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton">{{ phone.phone }}</a>
+                                                    <span class="hide-mobile">{{ phone.phone }}</span>
                                                 </li>
                                             {% endfor %}
                                         </ul>
