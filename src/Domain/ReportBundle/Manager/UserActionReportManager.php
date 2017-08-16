@@ -21,6 +21,7 @@ class UserActionReportManager extends BaseReportManager
     const MONGO_DB_FIELD_ENTITY        = 'entity';
     const MONGO_DB_FIELD_ENTITY_SEARCH = 'entity_search';
     const MONGO_DB_FIELD_ENTITY_NAME   = 'entity_name';
+    const MONGO_DB_FIELD_ENTITY_NAME_SEARCH = 'entity_name_search';
     const MONGO_DB_FIELD_ACTION        = 'action';
     const MONGO_DB_FIELD_DATA          = 'data';
 
@@ -210,8 +211,9 @@ class UserActionReportManager extends BaseReportManager
             self::MONGO_DB_FIELD_USER_ID        => $userId,
             self::MONGO_DB_FIELD_DATE_TIME      => $date,
             self::MONGO_DB_FIELD_ENTITY         => $data['entity'],
-            self::MONGO_DB_FIELD_ENTITY_SEARCH  => mb_strtolower($data['entity']),
+            self::MONGO_DB_FIELD_ENTITY_SEARCH  => AdminHelper::convertAccentedString($data['entity']),
             self::MONGO_DB_FIELD_ENTITY_NAME    => $data['entityName'],
+            self::MONGO_DB_FIELD_ENTITY_NAME_SEARCH => AdminHelper::convertAccentedString($data['entityName']),
             self::MONGO_DB_FIELD_ACTION         => $action,
             self::MONGO_DB_FIELD_DATA           => $data,
         ];
@@ -227,7 +229,8 @@ class UserActionReportManager extends BaseReportManager
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME, [
             self::MONGO_DB_FIELD_USER_ID    => MongoDbManager::INDEX_TYPE_ASC,
             self::MONGO_DB_FIELD_ACTION     => MongoDbManager::INDEX_TYPE_ASC,
-            self::MONGO_DB_FIELD_ENTITY     => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_ENTITY_SEARCH      => MongoDbManager::INDEX_TYPE_ASC,
+            self::MONGO_DB_FIELD_ENTITY_NAME_SEARCH => MongoDbManager::INDEX_TYPE_ASC,
             self::MONGO_DB_FIELD_DATE_TIME  => MongoDbManager::INDEX_TYPE_DESC,
         ]);
 
@@ -341,9 +344,15 @@ class UserActionReportManager extends BaseReportManager
         }
 
         if (!empty($params['entity']['value'])) {
-            $entitySearch = mb_strtolower($params['entity']['value']);
+            $entitySearch = AdminHelper::convertAccentedString($params['entity']['value']);
 
             $query[self::MONGO_DB_FIELD_ENTITY_SEARCH] = $this->mongoDbManager->typeRegularExpression($entitySearch);
+        }
+
+        if (!empty($params['entityName']['value'])) {
+            $entityName = AdminHelper::convertAccentedString($params['entityName']['value']);
+
+            $query[self::MONGO_DB_FIELD_ENTITY_NAME_SEARCH] = $this->mongoDbManager->typeRegularExpression($entityName);
         }
 
         $datetime = [];
