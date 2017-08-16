@@ -38,11 +38,11 @@ class CaseInsensitiveStringFilter extends StringFilter
         );
 
         if ($data['type'] == ChoiceType::TYPE_EQUAL) {
-            $queryBuilder->setParameter($parameterName, $this->convertSearchValue($data['value']));
+            $queryBuilder->setParameter($parameterName, AdminHelper::convertAccentedString($data['value']));
         } else {
             $queryBuilder->setParameter(
                 $parameterName,
-                sprintf($this->getOption('format'), $this->convertSearchValue($data['value']))
+                sprintf($this->getOption('format'), AdminHelper::convertAccentedString($data['value']))
             );
         }
     }
@@ -56,22 +56,6 @@ class CaseInsensitiveStringFilter extends StringFilter
         );
 
         return isset($choices[$type]) ? $choices[$type] : false;
-    }
-
-    /**
-     * @param $value string
-     *
-     * @return string
-     */
-    private function convertSearchValue($value)
-    {
-        $string = mb_strtolower($value);
-
-        $accentedChars = AdminHelper::getAccentedChars();
-
-        $string = str_replace(array_keys($accentedChars), array_values($accentedChars), $string);
-
-        return $string;
     }
 
     /**
