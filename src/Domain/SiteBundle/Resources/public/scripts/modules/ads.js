@@ -96,7 +96,7 @@ define(['jquery'], function ( $ ) {
             }
 
             if ( slugTargeting ) {
-                googletag.pubads().setTargeting( 'categories', slugTargeting );
+                googletag.pubads().setTargeting( 'slug', slugTargeting );
             }
 
             googletag.pubads().collapseEmptyDivs( true );
