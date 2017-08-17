@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "infopaginas-168020",
+  "private_key_id": "bf111c71cb803ad350c28088118493409c52c444",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQiUrpk58Zm9uI\nPvs3U91/yOGIILmkHbhwAcM0168t6d7kTyH2cQFGuF/XG7/rZjTOwr5T3pFQdVpc\nkUGlOjaSJR0mnfncKsSAQJI1t2kFPjlm/00Ifppuvn+V04kTLWnWkxsehyFpADki\nUaJfzHkMqRorxg5uPs5eTPMRUrKbS0bi6o6phYiF/eNTNqml1+UHN+7ayWXo4D+r\nTBxpXLD9sEZvjUllwSkDO5HK7C6QeibpyC0u82+a7mwyTM6LxPzc8dO1BRGvgy48\n4JPRuqtlaI33N9jfUbIdd4WVlSwkirnFhGMv1BESTCzm6dOMhUpQWZ/bLtbzJ4nF\nCnWazmlbAgMBAAECggEATX/4mz4Fjtrhh40Ah9tfIjJhvtmKpHd3KAk/ps/Rhtq3\nv1m5YYE13DaBR8xEUxO05HJzkW/RyXkTj/tbzjAIP+ATKVrklPI//PoCXHxBR3WM\nl76hvlpuwmGBwQjQlJP4FYquNXY68G7ozNxR4BB5nD7sPwBoNIia4WjvnKyDPDrd\nJcahKr8DVDELdHlj2trG85dsW8MbrQKmYAwhpKRWV5bKZNKnj9gXU14hOPgeqp4F\nhgSmI0LDyseEqyyKVRXb0hLUFn7GOqNCT21Sk3nK7+Xz45TjecNAqyh7Ctrh0QTA\nVb3boVMhwe0K7tvEFxBl7mUeXdHFFw+8Ye0BetSZ4QKBgQD+FJC46ud9G8V5mmlq\nx1XCBfjZAdvCdf8B3H8/xLNJFGD0RImqyfMhkEKxTzHABMZvZXLyAtx7LbG413+7\nheVT2tmFjUdOGLYB/P1OIJYh9DesVVGB5QIRxpVQ73zIamcntihYIB2iVIfRKw5a\nowps5kLlUd7J2ZfSx4eLoeSspQKBgQDSHKMrSabaEJSounl+Dql4U8tB3/9CqhmV\n5tKP3VCfKBw3xOFvPe0mUHtJxL4tbzCKh8y3Pf2SHScDH8KMN0WwaJFolh29mqdd\nv34C9hbju5kGMZg71QhA9eDWT602/o7ZohEQ6fiTbwh1gdoDCSIaAtdR3EMdBoHY\nsPp9lkzd/wKBgCRNo/AIAFNr6GdbnLxZBvPWDpxTG6dJXMpTSws9e7BxbPj54gG5\nITgmeKEFA8K/6+p2wFm79uzStpYGlIWiuAWnO3VNnmaWOUtHbpn/JfRsBJhnCGJa\n6lTH3wXVcirgqSSPbmxJCnLrSQyl7kMdEJxGukAx1ndY08yWHdPhqd7RAoGAZx4u\n5nvLK5Kfov+ByOAhRDC7vKTWfj1FOVCDXp/bhYEF+Ejj6tiVnww4tcedHmdHh3WG\nfxgpbqBoGRxpOq+VwDJRyuaByiAwq83jZkioizPysht8/0BaQKdrpUKNXEQqj5z+\nizKJELKZkDIecQb2eZWTX1Weiow7BcI17ZTqPLkCgYEAvZfRJ3lhdYPUPSqBXsJN\ntF2iNp+bPNEb5Ngt7eS23/LWgXGcVeO606J/Cc/smswSKlugMwRmgCTeaY8llDzh\ni5iNS5+DbdCvk5krgY+FaNDdgQbbjwxgd1DtxOdKY4wu+9Up1k8mj+N2lNgOVFEl\nW6w/XiQaDomHJWamRdYfEnY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "infopaginas-double-click-repor@infopaginas-168020.iam.gserviceaccount.com",
+  "client_id": "114950606378878090202",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/infopaginas-double-click-repor%40infopaginas-168020.iam.gserviceaccount.com"
+}
