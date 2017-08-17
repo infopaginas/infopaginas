@@ -428,9 +428,9 @@ define(
             var mapBounds = map.getBounds();
             var mapCenter = map.getCenter();
 
-            data.tllt = mapBounds.f.b;
+            data.tllt = mapBounds.f.f;
             data.tllg = mapBounds.b.b;
-            data.brlt = mapBounds.f.f;
+            data.brlt = mapBounds.f.b;
             data.brlg = mapBounds.b.f;
             data.clt  = mapCenter.lat;
             data.clg  = mapCenter.lng;

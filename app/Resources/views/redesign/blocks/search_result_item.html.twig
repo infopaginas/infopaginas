@@ -73,23 +73,26 @@
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Show on Map{% endtrans %}
             </a>
-            {% if item.getPhones() | length > 0 %}
-                <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
+            {% if not item.phones.empty %}
+                <a href="tel:{{ item.mainPhone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>
                 <div class="dropdown dropdown-call hide-mobile">
-                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <i class="fa fa-phone"></i>
-                    {% trans %}Call{% endtrans %}
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
-                  {% for phone in item.getPhones() %}
-                    <li>{{ phone.phone }}</li>
-                    <li role="separator" class="divider"></li>
-                  {% endfor %}
-                  </ul>   
+                    <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.id }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="fa fa-phone"></i>
+                        {% trans %}Call{% endtrans %}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
+                        {% for phone in item.phones %}
+                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                                <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
+                                {{ phone.phone }}
+                            </li>
+                            <li role="separator" class="divider"></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             {% endif %}
         </div><!-- item__primary-actions -->

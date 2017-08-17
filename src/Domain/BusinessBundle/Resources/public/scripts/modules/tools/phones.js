@@ -1,15 +1,17 @@
-define(['jquery', 'bootstrap'], function( $, bootstrap ) {
+define(['jquery', 'bootstrap', 'select2'], function( $, bootstrap, select2 ) {
     'use strict';
 
     var phones = function() {
         this.html = {
             containerListId: '#phone-fields-list',
             addLinkId: '#add-another-phone',
-            removeLinkClass: '.remove-phone'
+            removeLinkClass: '.remove-phone',
+            type: '.business-phone-type'
         };
 
         this.handleAdd();
         this.handleRemove();
+        this.handleSelect();
     };
 
     phones.prototype.handleAdd = function() {
@@ -50,6 +52,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
 
             phonesList.data('length', phonesCount);
 
+            that.handleSelect();
             event.preventDefault();
         });
     };
@@ -63,6 +66,10 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
             
             event.preventDefault();
         });
+    };
+
+    phones.prototype.handleSelect = function() {
+        $( this.html.type ).select2();
     };
 
     //auto-init

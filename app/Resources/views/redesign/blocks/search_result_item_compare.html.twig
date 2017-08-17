@@ -64,15 +64,15 @@
                 </div>
             {% endif %}
 
-            {% if item.getPhones()|length > 0 %}
+            {% if not item.phones.empty %}
                 <div class="highlights__item highlights__item_phone-row highlights__item_fixed-height highlights__item--phone">
                     <h3>{% trans %}Phone{% endtrans %}</h3>
                     <ul>
-                        {% for phone in item.getPhones() %}
-                            <li>
-                                <i class="fa fa-phone"></i>
-                                <a href="tel:{{ phone.getPhone() }}" class="hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">{{ phone.getPhone() }}</a>
-                                <span class="hide-mobile">{{ phone.getPhone() }}</span>
+                        {% for phone in item.phones %}
+                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                                <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
+                                <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">{{ phone.phone }}</a>
+                                <span class="hide-mobile">{{ phone.phone }}</span>
                             </li>
                         {% endfor %}
                     </ul>
@@ -114,38 +114,7 @@
 
             {% if socialLinksExists %}
                 <div class="highlights__item highlights__item--checklist highlights__item_share-row highlights__item_fixed-height">
-                    <div class="share">
-                        {% if item.getFacebookURL() %}
-                            <div class="share__item facebook">
-                                <a data-href="{{ item.getFacebookURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="facebookVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-facebook"></i></a>
-                            </div><!-- share__item -->
-                        {% endif %}
-                        {% if item.getTwitterURL() %}
-                            <div class="share__item twitter">
-                                <a data-href="{{ item.getTwitterURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="twitterVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-twitter"></i></a>
-                            </div><!-- share__item -->
-                        {% endif %}
-                        {% if item.getGoogleURL() %}
-                            <div class="share__item google-plus">
-                                <a data-href="{{ item.getGoogleURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="googleVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-google-plus"></i></a>
-                            </div><!-- share__item -->
-                        {% endif %}
-                        {% if item.getYoutubeURL() %}
-                            <div class="share__item youtube">
-                                <a data-href="{{ item.getYoutubeURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="youtubeVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-youtube"></i></a>
-                            </div><!-- share__item -->
-                        {% endif %}
-                        {% if item.getInstagramURL() %}
-                            <div class="share__item instagram">
-                                <a data-href="{{ item.getInstagramURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="instagramVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-instagram"></i></a>
-                            </div><!-- share__item -->
-                        {% endif %}
-                        {% if item.getTripAdvisorURL() %}
-                            <div class="share__item instagram">
-                                <a data-href="{{ item.getTripAdvisorURL() }}" class="redirect-event" data-id="{{ item.id }}" data-type="tripAdvisorVisit" title="{% trans %}Visit business profile on...{% endtrans %}"><i class="fa fa-tripadvisor"></i></a>
-                            </div><!-- share__item -->
-                        {% endif %}
-                    </div>
+                    {% include ':redesign/blocks/businessProfile/view:social-buttons.html.twig' %}
                 </div>
             {% else %}
             <div class="highlights__item highlights__item--checklist highlights__item_share-row highlights__item_fixed-height"></div>
@@ -156,25 +125,8 @@
     <div class="comparison__row comparison__actions no-flex">
         <section class="actions-section">
             <div class="header-actions">
-                {% if not item.getHideAddress() %}
-                    <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
-                        <i class="fa fa-location-arrow"></i>
-                        <span>{% trans %}Directions{% endtrans %}</span>
-                    </a>
-                {% endif %}
-                {% if item.getPhones()|length > 0 %}
-                    <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
-                        <i class="fa fa-phone"></i>
-                        <span>{% trans %}Call{% endtrans %}</span>
-                    </a>
-                {% endif %}
-                {% if item.getWebsite() %}
-                    <a class="button button--small button--featured redirect-event link-pointer" data-href="{{ item.getWebsiteLink() }}" data-id="{{ item.id }}" data-type="webButton">
-                        <i class="fa fa-external-link"></i>
-                        <span>{% trans %}Web{% endtrans %}</span>
-                    </a>
-                {% endif %}
-            </div><!-- header-actions -->
+                {% include ':redesign/blocks/businessProfile/view:action-buttons.html.twig' %}
+            </div>
         </section>
     </div><!-- comparison-row -->
     <button class="button--remove remove-compare-item"><i class="fa fa-remove"></i></button>
