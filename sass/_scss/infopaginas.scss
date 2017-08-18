@@ -2160,8 +2160,10 @@ $thumb-width-mb: 60px;
       top: .9em;
     }
 
-    &:hover {
-      background: $blue--dark;
+    @media only screen and (min-width: 805px) {
+      &:hover {
+        background: $blue--dark;
+      }
     }
 
     &:visited {
