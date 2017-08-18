@@ -34,9 +34,7 @@ $( document ).ready( function() {
     });
 
     $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_phones_" ]', function() {
-        if ( $( this ).prop( 'checked' ) ) {
-            handleBusinessProfilePhoneTypeChange();
-        }
+        handleBusinessProfilePhoneTypeChange();
     });
 
     $( document ).on( 'submit', 'form', function( e ) {
@@ -50,24 +48,33 @@ $( document ).ready( function() {
     });
 
     function handleBusinessProfilePhoneTypeChange() {
-        var mainCheckBoxes = $( 'input[ id *= "_phones_"][type = "radio"][value = "main"]' );
+        var mainCheckBoxes = $( 'input[id *= "_phones_"][type = "radio"][value = "main"]' );
         var errorBlock = $( '#' + formId + '_phoneCollection' );
         var hasMainPhone = false;
         var errors = [];
+        var phoneCount = 0;
 
-        $.each( mainCheckBoxes, function( index, checkbox ) {
-            if ( $( checkbox ).prop('checked') ) {
-                if ( hasMainPhone ) {
-                    errors.push( errorList.phones.not_unique );
+        $.each( mainCheckBoxes, function( index, item ) {
+            var checkbox        = $( item );
+            var deletedCheckbox = checkbox.parents( 'tr' ).first().find( 'input[id *= "__delete" ]' );
 
-                    return false;
+            if ( !deletedCheckbox.prop( 'checked' ) ) {
+                if ( checkbox.prop( 'checked' ) ) {
+
+                    if ( hasMainPhone ) {
+                        errors.push( errorList.phones.not_unique );
+
+                        return false;
+                    }
+
+                    hasMainPhone = true;
                 }
 
-                hasMainPhone = true;
+                phoneCount++;
             }
         });
 
-        if ( !hasMainPhone ) {
+        if ( !hasMainPhone && phoneCount ) {
             errors.push( errorList.phones.no_main );
         }
 
