@@ -937,6 +937,7 @@ class BusinessProfile implements
         $this->hasImages = false;
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
         $this->serviceAreasType  = self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE;
+        $this->actionUrlType     = self::ACTION_URL_TYPE_ORDER;
 
         $this->uid = uniqid('', true);
     }
