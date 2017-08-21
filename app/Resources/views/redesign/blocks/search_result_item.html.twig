@@ -74,7 +74,7 @@
                 {% trans %}Show on Map{% endtrans %}
             </a>
             {% if not item.phones.empty %}
-                <a href="tel:{{ item.mainPhone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
+                <a href="tel:{{ item.mainPhone.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>

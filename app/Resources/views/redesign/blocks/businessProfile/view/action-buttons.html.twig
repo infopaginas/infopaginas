@@ -15,7 +15,7 @@
     </a>
 {% endif %}
 {% if item.mainPhone %}
-    <a href="tel:{{ item.mainPhone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
+    <a href="tel:{{ item.mainPhone.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
         <i class="fa fa-phone"></i>
         <span>{% trans %}Call{% endtrans %}</span>
     </a>
