@@ -18,20 +18,21 @@ class CategoryManager extends Manager
     const AUTO_SUGGEST_SEPARATOR = ' ';
 
     /**
-     * @param array $profileList
+     * @param array     $profileList
+     * @param string    $locale
      *
      * @return array
      */
-    public function getCategoriesByProfiles(array $profileList)
+    public function getCategoriesByProfiles(array $profileList, $locale = BusinessProfile::DEFAULT_LOCALE)
     {
-        return $this->getRepository()->getCategoryByBusinessesIds(
-            array_map(
-                function ($item) {
-                    return $item->getId();
-                },
-                $profileList
-            )
+        $businessIds = array_map(
+            function ($item) {
+                return $item->getId();
+            },
+            $profileList
         );
+
+        return $this->getRepository()->getCategoryByBusinessesIds($businessIds, $locale);
     }
 
     /**
@@ -61,12 +62,12 @@ class CategoryManager extends Manager
     }
 
     /**
-     * @param Locality $locality
-     * @param string|bool $locale
+     * @param Locality  $locality
+     * @param string    $locale
      *
      * @return Category[]
      */
-    public function getAvailableCategoriesWithContent($locality, $locale = false)
+    public function getAvailableCategoriesWithContent($locality, $locale = BusinessProfile::DEFAULT_LOCALE)
     {
         return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }

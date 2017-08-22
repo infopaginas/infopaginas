@@ -120,7 +120,7 @@ class VideosController extends Controller
     {
         $paramsDTO = $this->geVideoListQueryParamsDTO($request);
 
-        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
+        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO, $request->getLocale());
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(

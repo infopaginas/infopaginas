@@ -133,11 +133,13 @@ class LocalityManager extends Manager
     }
 
     /**
+     * @param string $locale
+     *
      * @return Locality[]
      */
-    public function getCatalogLocalitiesWithContent()
+    public function getCatalogLocalitiesWithContent($locale = BusinessProfile::DEFAULT_LOCALE)
     {
-        $catalogLocalitiesWithContent = $this->getRepository()->getCatalogLocalitiesWithContent();
+        $catalogLocalitiesWithContent = $this->getRepository()->getCatalogLocalitiesWithContent($locale);
 
         return $catalogLocalitiesWithContent;
     }

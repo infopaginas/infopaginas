@@ -177,7 +177,12 @@ class PostponeExportReportManager
      */
     public function getPublicUrl($path, $filename)
     {
-        $url = $this->filesystem->getAdapter()->getUrl($path . $filename);
+        $url = sprintf(
+            '%s/%s%s',
+            $this->getCdnPath(),
+            $path,
+            $filename
+        );
 
         return $url;
     }
@@ -188,5 +193,19 @@ class PostponeExportReportManager
     protected function getExportTempPath()
     {
         return $this->container->get('kernel')->getRootDir() . $this->container->getParameter('export_report_path');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCdnPath()
+    {
+        $path = sprintf(
+            '%s/%s',
+            $this->container->getParameter('amazon_aws_base_host'),
+            $this->container->getParameter('amazon_aws_report_directory')
+        );
+
+        return $path;
     }
 }

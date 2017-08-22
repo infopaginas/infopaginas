@@ -14,7 +14,7 @@
     <div class="main__container main__container--centered">
         <div class="main">
             {% if businessProfile.getBackground() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS")  %}
-                <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});">
+                <div class="container profile-header__container" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'normal' %});">
                     <div class="shadow-background" style="margin: 0 auto; background-image:url({% path businessProfile.getBackground(), 'reference' %});"></div>
             {% else %}
                 <div class="container profile-header__container profile-header--no-image {% for category in businessProfile.categories %}category-{{ category.slug }} {% endfor %}">
@@ -129,7 +129,7 @@
                                     {% for paymentMethod in businessProfile.paymentMethods %}
                                         <li>
                                             {% if paymentMethod.type in PAYMENT_METHOD_TYPE %}
-                                                {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.png' %}
+                                                {% set path = 'redesign/img/payment/' ~ paymentMethod.type ~ '.svg' %}
 
                                                 <img src="{{ absolute_url(asset(path)) }}" alt="{{ paymentMethod.getName }}">
                                             {% endif %}

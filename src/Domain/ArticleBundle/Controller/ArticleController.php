@@ -25,7 +25,7 @@ class ArticleController extends Controller
         $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
-        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $request->getLocale());
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
@@ -107,7 +107,7 @@ class ArticleController extends Controller
         $articleManager = $this->getArticlesManager();
         $paramsDTO = $this->getArticleListQueryParamsDTO($request);
 
-        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $categorySlug);
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $request->getLocale(), $categorySlug);
 
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 

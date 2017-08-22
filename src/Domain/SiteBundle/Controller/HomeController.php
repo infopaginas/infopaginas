@@ -29,10 +29,7 @@ class HomeController extends Controller
         $locale         = $request->getLocale();
 
         $articleManager = $this->get('domain_article.manager.article');
-        $videoManager   = $this->get('domain_business.video');
-
-        $articles       = $articleManager->fetchHomepageArticles();
-        $videos         = $videoManager->fetchHomepageVideos();
+        $articles       = $articleManager->fetchHomepageArticles($locale);
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
@@ -55,7 +52,6 @@ class HomeController extends Controller
             [
                 'banners'       => $banners,
                 'articles'      => $articles,
-                'videos'        => $videos,
                 'locale'        => $locale,
                 'schemaJsonLD'  => $schema,
                 'hideHeaderSearch' => true,

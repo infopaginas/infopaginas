@@ -51,14 +51,13 @@ class SearchManager extends Manager
 
     /**
      * @param SearchDTO $searchParams
-     * @param string    $locale
      * @param bool      $ignoreFilters
      *
      * @return SearchResultsDTO
      */
-    public function search(SearchDTO $searchParams, string $locale, $ignoreFilters = false) : SearchResultsDTO
+    public function search(SearchDTO $searchParams, $ignoreFilters = false) : SearchResultsDTO
     {
-        $search = $this->businessProfileManager->search($searchParams, $locale);
+        $search = $this->businessProfileManager->search($searchParams);
         $results = $search['data'];
         $totalResults = $search['total'];
 
@@ -111,7 +110,7 @@ class SearchManager extends Manager
 
         if ($results) {
             $pagesCount   = ceil($totalResults/$searchParams->limit);
-            $categories = $this->categoriesManager->getCategoriesByProfiles($results);
+            $categories = $this->categoriesManager->getCategoriesByProfiles($results, $searchParams->getLocale());
             $neighborhoods = $this->localityManager->getLocalityNeighborhoods($searchParams->locationValue->locality);
         } else {
             $totalResults  = 0;
@@ -221,6 +220,11 @@ class SearchManager extends Manager
             $searchDTO->setIsRandomized($isRandomized);
         }
 
+
+        if ($request->getLocale()) {
+            $searchDTO->setLocale($request->getLocale());
+        }
+
         return $searchDTO;
     }
 
@@ -289,6 +293,10 @@ class SearchManager extends Manager
 
         if ($orderBy) {
             $searchDTO->setOrderBy($orderBy);
+        }
+
+        if ($request->getLocale()) {
+            $searchDTO->setLocale($request->getLocale());
         }
 
         return $searchDTO;

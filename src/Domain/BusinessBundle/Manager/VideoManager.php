@@ -53,11 +53,13 @@ class VideoManager
 
     /**
      * @param AbstractDTO $paramsDTO
+     * @param string $locale
+     *
      * @return ReviewsResultsDTO
      */
-    public function getVideosResultDTO(AbstractDTO $paramsDTO)
+    public function getVideosResultDTO(AbstractDTO $paramsDTO, $locale = BusinessProfile::DEFAULT_LOCALE)
     {
-        $results = $this->getRepository()->getBusinessProfilesByVideosUpdate($paramsDTO);
+        $results = $this->getRepository()->getBusinessProfilesByVideosUpdate($paramsDTO, $locale);
 
         $totalResults = $this->getRepository()->countBusinessProfilesByVideosUpdate();
 

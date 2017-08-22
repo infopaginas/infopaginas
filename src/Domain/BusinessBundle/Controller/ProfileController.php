@@ -166,8 +166,8 @@ class ProfileController extends Controller
 
         $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
 
-        $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile);
-        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile);
+        $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $request->getLocale());
+        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile, $request->getLocale());
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();

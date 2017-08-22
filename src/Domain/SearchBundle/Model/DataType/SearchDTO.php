@@ -2,6 +2,7 @@
 
 namespace Domain\SearchBundle\Model\DataType;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
@@ -43,6 +44,11 @@ class SearchDTO extends AbstractDTO
      * @var bool $isRandomized
      */
     protected $isRandomized;
+
+    /**
+     * @var string $locale
+     */
+    public $locale = BusinessProfile::DEFAULT_LOCALE;
 
     /**
      * @param string $query
@@ -131,6 +137,19 @@ class SearchDTO extends AbstractDTO
     public function getOrderBy()
     {
         return $this->orderBy;
+    }
+
+    /**
+     * @param string $locale
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    public function getLocale()
+    {
+        return $this->locale;
     }
 
     /**

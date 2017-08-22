@@ -4,7 +4,9 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
 /**
@@ -160,9 +162,11 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * @param string $locale
+     *
      * @return Locality[]
      */
-    public function getCatalogLocalitiesWithContent()
+    public function getCatalogLocalitiesWithContent($locale = BusinessProfile::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.catalogItems', 'ci', 'WITH', 'ci.category IS NULL')
@@ -170,7 +174,13 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('l.name')
         ;
 
-        return $qb->getQuery()->getResult();
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**
