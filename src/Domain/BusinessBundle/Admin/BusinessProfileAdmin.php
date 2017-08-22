@@ -179,7 +179,9 @@ class BusinessProfileAdmin extends OxaAdmin
                 'sort_field_mapping'=> ['fieldName' => 'name'],
                 'sort_parent_association_mappings' => [['fieldName' => 'catalogLocality']]
             ])
-            ->add('phones')
+            ->add('phones', null, [
+                'template' => 'OxaSonataAdminBundle:ListFields:list_orm_one_to_many.html.twig',
+            ])
             ->add('hasImages')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
