@@ -38,17 +38,12 @@ class BusinessProfilePhoneType extends AbstractType
             ->add('phone', TextType::class, [
                 'attr'  => [
                     'class' => 'form-control',
-                    'placeholder' => '(787) 594-7273',
                 ],
                 'constraints' => [
-                    new Length([
-                        'max' => 10
-                    ]),
                     new Regex([
-                        'pattern' => '/^[0-9-]*$/',
+                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
                         'message' => 'business_profile.phone.digit_dash',
                     ]),
-                    new NotBlank(),
                 ]
             ])
         ;

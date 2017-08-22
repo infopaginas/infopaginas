@@ -56,7 +56,7 @@ class UserProfileType extends AbstractType
             ->add('phone', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '(787) 594-7273',
+                    'placeholder' => '787-594-7273',
                 ],
                 'label' => 'Phone Number',
                 'required' => false,

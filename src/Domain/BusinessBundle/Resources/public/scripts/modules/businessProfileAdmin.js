@@ -31,6 +31,7 @@ $( document ).ready( function() {
 
     $( 'div[ id $= "' + formId + '_phones" ]' ).on( 'sonata.add_element', function( event ) {
         handleBusinessProfilePhoneTypeChange();
+        applyPhoneMask();
     });
 
     $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_phones_" ]', function() {
@@ -46,6 +47,17 @@ $( document ).ready( function() {
             return false;
         }
     });
+
+    applyPhoneMask();
+
+    function applyPhoneMask() {
+        var phones = $( 'input[ id $= "_phone" ]' );
+
+        phones.mask( '999-999-9999' );
+        phones.bind( 'paste', function () {
+            $( this ).val( '' );
+        });
+    }
 
     function handleBusinessProfilePhoneTypeChange() {
         var mainCheckBoxes = $( 'input[id *= "_phones_"][type = "radio"][value = "main"]' );

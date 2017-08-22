@@ -1423,7 +1423,7 @@ $thumb-width-mb: 60px;
     display: flex;
     flex-direction: column;
     margin-top: 0;
-    max-width: 130px;
+    max-width: 150px;
     width: 100%;
 
     .button,
@@ -5451,7 +5451,9 @@ input[type='radio'], input[type='checkbox'] {
     border: 2px solid #2a305b;
     border-radius: 2px;
     li {
-      text-align: center;
+      text-align: left;
+      margin-left: 10px;
+
       a {
         color: #132249;
       }
