@@ -68,6 +68,7 @@ class ProfileController extends Controller
         return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm' => $businessProfileForm->createView(),
             'mediaContextTypes'   => $this->getMediaContextTypes(),
+            'localeBlocks'        => LocaleHelper::getLocaleList(),
         ]);
     }
 
