@@ -113,7 +113,7 @@ class MediaDTOAssembler implements DTOAssemblerInterface
      */
     protected function unpackCollectionIds(array $collectionItems) : array
     {
-        $ids = array_map(function($item) {
+        $ids = array_map(function ($item) {
             return $item->getId();
         }, $collectionItems);
 

@@ -15,6 +15,7 @@ use Domain\BusinessBundle\Entity\Review\BusinessReview;
 use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\Task\TasksFactory;
 use Domain\SiteBundle\Mailer\Mailer;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Domain\BusinessBundle\Util\ChangeSetCalculator;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -76,7 +77,7 @@ class TasksManager
      *
      * @access public
      * @param BusinessProfile $businessProfile
-     * @param Collection      $oldCategories
+     *
      * @return array
      */
     public function createNewProfileConfirmationRequest(BusinessProfile $businessProfile) : array
@@ -270,15 +271,6 @@ class TasksManager
             $task->setRejectReason(Task::REJECT_REASON_BUSINESS_ALREADY_CLAIMED);
             $this->reject($task);
         }
-    }
-
-    /**
-     * @param Task $task
-     * @return mixed|string
-     */
-    private function getTaskLocale(Task $task)
-    {
-        return empty($task->getLocale()) ? BusinessProfile::DEFAULT_LOCALE : $task->getLocale();
     }
 
     /**

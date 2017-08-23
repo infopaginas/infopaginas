@@ -52,12 +52,17 @@ class AddressManager extends DefaultManager
      */
     public function getClosestLocalityByCoord($lat, $lon)
     {
+        $container = $this->getContainer();
+
         $request = new Request();
         $request->query->set('clt', $lat);
         $request->query->set('clg', $lon);
-        $searchManager = $this->getContainer()->get('domain_search.manager.search');
-        $searchDTO = $searchManager->getLocalitySearchDTO($request);
-        $closestLocality = $this->getContainer()->get('domain_business.manager.business_profile')->searchClosestLocalityInElastic($searchDTO);
+
+        $searchManager  = $container->get('domain_search.manager.search');
+        $searchDTO      = $searchManager->getLocalitySearchDTO($request);
+
+        $businessManager = $container->get('domain_business.manager.business_profile');
+        $closestLocality = $businessManager->searchClosestLocalityInElastic($searchDTO);
 
         return $closestLocality;
     }

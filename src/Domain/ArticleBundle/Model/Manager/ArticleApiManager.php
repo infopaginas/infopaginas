@@ -6,9 +6,9 @@ use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
 use Domain\ArticleBundle\Entity\Translation\ArticleTranslation;
 use Domain\ArticleBundle\Entity\Translation\Media\ArticleGalleryTranslation;
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\BusinessGalleryManager;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -77,8 +77,8 @@ class ArticleApiManager
         $this->seoTitleMaxLength = $seoSettings['title_max_length'];
         $this->seoDescriptionMaxLength = $seoSettings['description_max_length'];
 
-        $this->localeEng = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $this->localeEsp = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $this->localeEng = LocaleHelper::LOCALE_EN;
+        $this->localeEsp = LocaleHelper::LOCALE_ES;
     }
 
     /**
@@ -294,7 +294,7 @@ class ArticleApiManager
         $articleGalleryImage->setMedia($galleryImage);
         $translation->setContent($galleryItem->photoText);
         $translation->setField(ArticleGallery::TRANSLATION_FIELD_DESCRIPTION);
-        $translation->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
+        $translation->setLocale(LocaleHelper::LOCALE_ES);
         $translation->setObject($articleGalleryImage);
 
         $this->em->persist($translation);

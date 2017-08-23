@@ -7,7 +7,7 @@
             </button>
         </a>
 
-        <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.catalogLocality.slug, 'slug': businessProfile.slug})) }}" title="{{ businessProfile.name }}">
+        <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.citySlug, 'slug': businessProfile.slug})) }}" title="{{ businessProfile.name }}">
             <button id="breadcrumb_location" type="button" class="button button--action button--location">
                 <span>{{ businessProfile.name|truncate(breadcrumb_max_length) }}</span>
             </button>

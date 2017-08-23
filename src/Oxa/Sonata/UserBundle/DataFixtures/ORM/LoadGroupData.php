@@ -5,6 +5,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\UserBundle\Entity\Group;
 use Oxa\Sonata\UserBundle\Entity\GroupTranslation;
 use Oxa\Sonata\UserBundle\Entity\User;
@@ -25,7 +26,7 @@ class LoadGroupData extends AbstractFixture implements ContainerAwareInterface, 
     {
         $trans = $this->container->get('translator');
         $domain = 'OxaUserGroupDataFixtures';
-        $locale = 'en';
+        $locale = LocaleHelper::DEFAULT_LOCALE;
 
         $groupLabelParts = [
             Group::CODE_ADMINISTRATOR    => 'administrator',
