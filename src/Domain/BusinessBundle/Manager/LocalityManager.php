@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\LocalityPseudo;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
 class LocalityManager extends Manager
@@ -137,7 +138,7 @@ class LocalityManager extends Manager
      *
      * @return Locality[]
      */
-    public function getCatalogLocalitiesWithContent($locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getCatalogLocalitiesWithContent($locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $catalogLocalitiesWithContent = $this->getRepository()->getCatalogLocalitiesWithContent($locale);
 
@@ -165,8 +166,8 @@ class LocalityManager extends Manager
      */
     public function buildLocalityElasticData(Locality $locality)
     {
-        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = LocaleHelper::LOCALE_EN;
+        $esLocale   = LocaleHelper::LOCALE_ES;
 
         $localityEn = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, $enLocale);
         $localityEs = $locality->getTranslation(Locality::LOCALITY_FIELD_NAME, $esLocale);

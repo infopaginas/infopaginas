@@ -28,6 +28,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     use PersonalTranslatable;
 
     const CATEGORY_FIELD_NAME = 'name';
+    const CATEGORY_LOCALE_PROPERTY = 'searchText';
 
     const CATEGORY_UNDEFINED_CODE = '54016';
     const CATEGORY_UNDEFINED_SLUG = 'unclassified';

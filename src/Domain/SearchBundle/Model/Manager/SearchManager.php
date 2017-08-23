@@ -4,6 +4,7 @@ namespace Domain\SearchBundle\Model\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
@@ -222,7 +223,8 @@ class SearchManager extends Manager
 
 
         if ($request->getLocale()) {
-            $searchDTO->setLocale($request->getLocale());
+            $locale = LocaleHelper::getLocale($request->getLocale());
+            $searchDTO->setLocale($locale);
         }
 
         return $searchDTO;
@@ -296,7 +298,8 @@ class SearchManager extends Manager
         }
 
         if ($request->getLocale()) {
-            $searchDTO->setLocale($request->getLocale());
+            $locale = LocaleHelper::getLocale($request->getLocale());
+            $searchDTO->setLocale($locale);
         }
 
         return $searchDTO;

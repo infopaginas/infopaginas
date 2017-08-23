@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -553,17 +554,13 @@ class BusinessProfileExtension extends \Twig_Extension
     {
         $categoriesData = [];
 
-        if ($locale == strtolower(BusinessProfile::TRANSLATION_LANG_EN)) {
-            $currentLocale = BusinessProfile::TRANSLATION_LANG_EN;
-        } else {
-            $currentLocale = BusinessProfile::TRANSLATION_LANG_ES;
-        }
-
         if ($businessProfile) {
+            $localePostfix = LocaleHelper::getLangPostfix($locale);
+
             foreach ($businessProfile->getCategories() as $category) {
                 $categoriesData[$category->getId()] = [
                     'id'    => $category->getId(),
-                    'name'  => $category->{'getSearchText' . $currentLocale}(),
+                    'name'  => $category->{'getSearchText' . $localePostfix}(),
                 ];
             }
         }

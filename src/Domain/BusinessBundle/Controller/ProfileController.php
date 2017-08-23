@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Domain\BusinessBundle\Entity\BusinessProfile;
@@ -67,6 +68,7 @@ class ProfileController extends Controller
         return $this->render(':redesign:business-profile-edit.html.twig', [
             'businessProfileForm' => $businessProfileForm->createView(),
             'mediaContextTypes'   => $this->getMediaContextTypes(),
+            'localeBlocks'        => LocaleHelper::getLocaleList(),
         ]);
     }
 
@@ -78,11 +80,7 @@ class ProfileController extends Controller
      */
     public function editAction(Request $request, int $id)
     {
-        $locale = $request->getLocale();
-
-        if (!$locale) {
-            $locale = BusinessProfile::DEFAULT_LOCALE;
-        }
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getBusinessProfilesManager()->find($id, $locale);
@@ -104,6 +102,7 @@ class ProfileController extends Controller
             'photoTypeConstant'        => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
             'backgroundTypeConstant'   => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
             'mediaContextTypes'        => $this->getMediaContextTypes(),
+            'localeBlocks'             => LocaleHelper::getLocaleList(),
         ]);
     }
 
@@ -149,7 +148,7 @@ class ProfileController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $catalogLocalitySlug = $businessProfile->getCatalogLocality()->getSlug();
+        $catalogLocalitySlug = $businessProfile->getCitySlug();
 
         if ($catalogLocalitySlug != $citySlug or $slug != $businessProfile->getSlug()) {
             return $this->redirectToRoute(
@@ -164,10 +163,14 @@ class ProfileController extends Controller
 
         $this->getBusinessOverviewReportManager()->registerBusinessView([$businessProfile]);
 
-        $dcDataDTO       = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
+        $dcDataDTO = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
+        $locale    = LocaleHelper::getLocale($request->getLocale());
 
-        $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $request->getLocale());
-        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages($businessProfile, $request->getLocale());
+        $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $locale);
+        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages(
+            $businessProfile,
+            $locale
+        );
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
@@ -264,7 +267,8 @@ class ProfileController extends Controller
     public function localityListAction(Request $request, $businessProfileId = null)
     {
         $areas  = $request->request->get('areas', []);
-        $locale = $request->request->get('currentLocale', $request->getLocale());
+        $locale = LocaleHelper::getLocale($request->getLocale());
+        $currentLocale = $request->request->get('currentLocale', $locale);
 
         if (!$areas) {
             return new JsonResponse(['data' => []]);
@@ -272,7 +276,7 @@ class ProfileController extends Controller
 
         $businessProfilesManager = $this->getBusinessProfilesManager();
 
-        $localities = $businessProfilesManager->getAreaLocalities($businessProfileId, $areas, $locale);
+        $localities = $businessProfilesManager->getAreaLocalities($businessProfileId, $areas, $currentLocale);
 
         return new JsonResponse(['data' => $localities]);
     }
@@ -286,7 +290,8 @@ class ProfileController extends Controller
     public function neighborhoodListAction(Request $request, $businessProfileId = null)
     {
         $localities = $request->request->get('localities', []);
-        $locale     = $request->request->get('currentLocale', $request->getLocale());
+        $locale     = LocaleHelper::getLocale($request->getLocale());
+        $currentLocale = $request->request->get('currentLocale', $locale);
 
         if (!$localities) {
             return new JsonResponse(['data' => []]);
@@ -294,7 +299,11 @@ class ProfileController extends Controller
 
         $businessProfilesManager = $this->getBusinessProfilesManager();
 
-        $neighborhoods = $businessProfilesManager->getLocalitiesNeighborhoods($businessProfileId, $localities, $locale);
+        $neighborhoods = $businessProfilesManager->getLocalitiesNeighborhoods(
+            $businessProfileId,
+            $localities,
+            $currentLocale
+        );
 
         return new JsonResponse(['data' => $neighborhoods]);
     }
@@ -307,11 +316,12 @@ class ProfileController extends Controller
     public function categoryAutocompleteAction(Request $request)
     {
         $query = $request->query->get('q', '');
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
         $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
             $query,
-            $request->getLocale()
+            $locale
         );
 
         return new JsonResponse($results);

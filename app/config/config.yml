@@ -61,9 +61,6 @@ parameters:
         description_category_separator: ', '
         description_category_cut: '...'
         default_article_author: 'Infopáginas Media'
-    image_back_up_path: '/../web/imageBackUp/'
-    video_back_up_path: '/../web/imageBackUp/video/'
-    youtube_back_up_path: '/../web/imageBackUp/youtube/'
     video_download_path: '/../web/uploads/videos/'
     export_report_path: '/../web/uploads/export/'
     breadcrumb_max_length: 38

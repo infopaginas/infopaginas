@@ -12,6 +12,7 @@ use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Form\Handler\FileUploadFormHandler;
@@ -119,8 +120,9 @@ class VideosController extends Controller
     public function indexAction(Request $request)
     {
         $paramsDTO = $this->geVideoListQueryParamsDTO($request);
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO, $request->getLocale());
+        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO, $locale);
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(

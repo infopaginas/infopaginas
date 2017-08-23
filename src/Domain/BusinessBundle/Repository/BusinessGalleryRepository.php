@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
@@ -44,7 +45,7 @@ class BusinessGalleryRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return array
      */
-    public function findBusinessProfilePhotoImages(BusinessProfile $businessProfile, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function findBusinessProfilePhotoImages(BusinessProfile $businessProfile, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('bg');
 

@@ -76,7 +76,10 @@ class ArticleGalleryAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->add('media', 'sonata_type_model_list', $property,
+            ->add(
+                'media',
+                'sonata_type_model_list',
+                $property,
                 [
                     'link_parameters' => [
                         'required' => true,
@@ -84,7 +87,8 @@ class ArticleGalleryAdmin extends OxaAdmin
                         'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         'allow_switch_context' => false,
                     ]
-                ])
+                ]
+            )
             ->add('description', null, ['attr' => [
                 'rows'          => 2,
                 'cols'          => 100,

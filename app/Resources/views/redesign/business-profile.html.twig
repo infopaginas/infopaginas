@@ -248,7 +248,7 @@
                                 <h2 class="section__title">{% trans %}Business categories{% endtrans %}</h2>
                                 <div class="tagcloud">
                                     {% for item in businessProfile.categories %}
-                                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.catalogLocality.getSlug(), 'categorySlug': item.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a>
+                                        <a href="{{ absolute_url(path('domain_search_catalog', {'localitySlug': businessProfile.citySlug, 'categorySlug': item.getSlug() })) }}" class="tag" title="{% trans %}Go to...{% endtrans %}">{{ item.name }}</a>
                                     {% endfor %}
                                 </div>
                             </div><!-- sidebar__section -->

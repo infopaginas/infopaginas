@@ -10,6 +10,7 @@ use Domain\SiteBundle\Form\Type\LoginType;
 use Domain\SiteBundle\Form\Type\ResetPasswordRequestType;
 use Domain\SiteBundle\Form\Type\ResetPasswordType;
 use Domain\SiteBundle\Utils\Helpers\GoogleAnalyticsHelper;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Domain\BannerBundle\Model\TypeInterface;
@@ -26,7 +27,7 @@ class HomeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $locale         = $request->getLocale();
+        $locale         = LocaleHelper::getLocale($request->getLocale());
 
         $articleManager = $this->get('domain_article.manager.article');
         $articles       = $articleManager->fetchHomepageArticles($locale);
@@ -69,9 +70,10 @@ class HomeController extends Controller
     {
         $type  = $request->get('type', LandingPageShortCutManager::SHORT_CUT_ITEMS_LANDING);
         $title = $request->get('title', '');
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $shortCutManager = $this->get('domain_business.manager.landing_page_short_cut_manager');
-        $shortCutItems   = $shortCutManager->getLandingPageShortCutItems($request->getLocale());
+        $shortCutItems   = $shortCutManager->getLandingPageShortCutItems($locale);
 
         return $this->render(
             ':redesign/blocks:popular_menu_items.html.twig',

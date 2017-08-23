@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
@@ -23,7 +24,7 @@ class CategoryManager extends Manager
      *
      * @return array
      */
-    public function getCategoriesByProfiles(array $profileList, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getCategoriesByProfiles(array $profileList, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $businessIds = array_map(
             function ($item) {
@@ -67,7 +68,7 @@ class CategoryManager extends Manager
      *
      * @return Category[]
      */
-    public function getAvailableCategoriesWithContent($locality, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getAvailableCategoriesWithContent($locality, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }
@@ -83,8 +84,8 @@ class CategoryManager extends Manager
             return false;
         }
 
-        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = LocaleHelper::LOCALE_EN;
+        $esLocale   = LocaleHelper::LOCALE_ES;
 
         $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
         $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);

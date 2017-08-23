@@ -4,6 +4,7 @@ namespace Domain\SearchBundle\Model\DataType;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
@@ -48,7 +49,7 @@ class SearchDTO extends AbstractDTO
     /**
      * @var string $locale
      */
-    public $locale = BusinessProfile::DEFAULT_LOCALE;
+    public $locale = LocaleHelper::DEFAULT_LOCALE;
 
     /**
      * @param string $query

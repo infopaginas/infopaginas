@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Command;
 
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -14,7 +15,7 @@ class GenerateEngSitemapCommand extends ContainerAwareCommand
     const BASE_DIRECTORY = '/../web/';
     const ENG_SITEMAP_DIRECTORY = 'sitemapEn/';
 
-    protected $locale = 'en';
+    protected $locale = LocaleHelper::LOCALE_EN;
 
     protected function configure()
     {

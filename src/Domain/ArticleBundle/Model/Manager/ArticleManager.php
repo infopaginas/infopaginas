@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -35,7 +36,7 @@ class ArticleManager extends Manager
      *
      * @return Article[]
      */
-    public function fetchHomepageArticles($locale = BusinessProfile::DEFAULT_LOCALE)
+    public function fetchHomepageArticles($locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT, $locale);
 
@@ -96,7 +97,7 @@ class ArticleManager extends Manager
      *
      * @return ReviewsResultsDTO
      */
-    public function getArticlesResultDTO(AbstractDTO $paramsDTO, $locale = BusinessProfile::DEFAULT_LOCALE, string $categorySlug = '')
+    public function getArticlesResultDTO(AbstractDTO $paramsDTO, $locale = LocaleHelper::DEFAULT_LOCALE, string $categorySlug = '')
     {
         $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $categorySlug, $locale);
 

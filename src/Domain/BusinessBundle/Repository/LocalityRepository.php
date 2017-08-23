@@ -6,6 +6,7 @@ use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
@@ -166,7 +167,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return Locality[]
      */
-    public function getCatalogLocalitiesWithContent($locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getCatalogLocalitiesWithContent($locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.catalogItems', 'ci', 'WITH', 'ci.category IS NULL')

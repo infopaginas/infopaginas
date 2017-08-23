@@ -7,6 +7,7 @@ use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 
 class CategoryRepository extends EntityRepository
@@ -27,7 +28,7 @@ class CategoryRepository extends EntityRepository
      * @param Locality  $locality
      * @param string    $locale
      */
-    public function getAvailableCategoriesWithContent($locality, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getAvailableCategoriesWithContent($locality, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->getAvailableCategoriesQb();
 

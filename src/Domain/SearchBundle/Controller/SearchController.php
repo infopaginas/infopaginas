@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -163,11 +164,12 @@ class SearchController extends Controller
     public function autocompleteAction(Request $request)
     {
         $searchData = $this->getSearchDataByRequest($request);
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
         $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
             $searchData['q'],
-            $request->getLocale(),
+            $locale,
             CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
         );
 
@@ -183,7 +185,7 @@ class SearchController extends Controller
      */
     public function autocompleteLocalityAction(Request $request)
     {
-        $locale = $request->getLocale();
+        $locale = LocaleHelper::getLocale($request->getLocale());
         $term   = $request->get('term', '');
 
         $localityManager = $this->get('domain_business.manager.locality');
@@ -405,7 +407,7 @@ class SearchController extends Controller
     public function catalogAction(Request $request, $localitySlug = '', $categorySlug = '')
     {
         $searchManager = $this->get('domain_search.manager.search');
-        $locale = $request->getLocale();
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $category   = null;
         $showResults = false;

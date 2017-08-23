@@ -66,7 +66,9 @@ class LocalityAdmin extends OxaAdmin
             ->add('area', null, [
                 'required' => true,
             ])
-            ->add('pseudos', 'sonata_type_collection',
+            ->add(
+                'pseudos',
+                'sonata_type_collection',
                 [
                     'by_reference'  => false,
                     'required'      => false,

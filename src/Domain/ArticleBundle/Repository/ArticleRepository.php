@@ -5,6 +5,7 @@ namespace Domain\ArticleBundle\Repository;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
@@ -61,7 +62,7 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return Article[]
      */
-    public function getArticlesForHomepage(int $limit, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getArticlesForHomepage(int $limit, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->getArticlesForHomepageQueryBuilder()->setMaxResults($limit);
 
@@ -87,7 +88,7 @@ class ArticleRepository extends \Doctrine\ORM\EntityRepository
      * @param AbstractDTO $paramsDTO
      * @return array
      */
-    public function findPaginatedPublishedArticles(AbstractDTO $paramsDTO, string $categorySlug, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function findPaginatedPublishedArticles(AbstractDTO $paramsDTO, string $categorySlug, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $limit  = $paramsDTO->limit;
         $offset = ($paramsDTO->page - 1) * $limit;

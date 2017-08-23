@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
@@ -67,7 +68,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return array
      */
-    public function findBusinessProfilesByIdsArray($ids, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function findBusinessProfilesByIdsArray($ids, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('bp')
             ->where('bp.id IN (:ids)')
@@ -190,7 +191,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    public function getBusinessProfilesByVideosUpdate($searchParams, $locale = BusinessProfile::DEFAULT_LOCALE)
+    public function getBusinessProfilesByVideosUpdate($searchParams, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $limit  = $searchParams->limit;
         $offset = ($searchParams->page - 1) * $limit;
