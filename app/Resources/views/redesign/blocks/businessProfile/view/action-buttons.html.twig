@@ -14,8 +14,13 @@
         <span>{% trans %}Directions{% endtrans %}</span>
     </a>
 {% endif %}
-{% if item.mainPhone %}
-    <a href="tel:{{ item.mainPhone.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
+{% if not item.phones.empty %}
+    {% if item.mainPhone %}
+        {% set phoneToCall = item.mainPhone.phone %}
+    {% else %}
+        {% set phoneToCall = item.phones.first.phone %}
+    {% endif %}
+    <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
         <i class="fa fa-phone"></i>
         <span>{% trans %}Call{% endtrans %}</span>
     </a>

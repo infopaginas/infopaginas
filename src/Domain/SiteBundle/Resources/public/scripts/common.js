@@ -49,6 +49,9 @@ requirejs.config({
         'iframetracker' : {
             deps: ['jquery']
         },
+        'maskedInput' : {
+            deps: ['jquery']
+        },
         'highcharts' : {
             deps: ['jquery']
         },
@@ -81,6 +84,7 @@ requirejs.config({
         'lightbox'      : 'domainsite/scripts/vendors/simple-lightbox.min',
         'select2'       : 'domainsite/scripts/vendors/select2.min',
         'iframetracker' : 'domainsite/scripts/vendors/jquery.iframetracker',
+        'maskedInput'   : 'domainsite/scripts/vendors/jquery.maskedinput.min',
         'highcharts'    : 'domainsite/scripts/vendors/highcharts',
 
         'business/modules' : 'domainbusiness/scripts/modules',
