@@ -586,8 +586,8 @@ class ChangeSetCalculator
             $valueNew = $entityNew->getTranslationItem($field, $locale);
             $valueOld = $entityOld->getTranslationItem($field, $locale);
 
-            $contentNew = $valueNew ? $valueNew->getContent() : null;
-            $contentOld = $valueOld ? $valueOld->getContent() : null;
+            $contentNew = $valueNew ? $valueNew->getContent() : '';
+            $contentOld = $valueOld ? $valueOld->getContent() : '';
 
             if ($contentNew != $contentOld) {
                 $changeSetEntries[] = self::buildChangeSetEntryObject(
