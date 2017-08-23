@@ -39,7 +39,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.catalogLocality.slug, 'slug': businessProfile.slug})) }}" target="_blank">
+                    <a href="{{ absolute_url(path('domain_business_profile_view', {'citySlug': businessProfile.citySlug, 'slug': businessProfile.slug})) }}" target="_blank">
                         <i class="fa fa-eye"></i>
                         {% trans %}View profile{% endtrans %}
                     </a>

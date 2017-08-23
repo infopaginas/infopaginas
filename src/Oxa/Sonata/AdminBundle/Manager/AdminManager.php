@@ -106,10 +106,10 @@ class AdminManager extends DefaultManager
     /**
      * Restore objects
      *
-     * @param $entityArray array
-     * @param AdminInterface $admin
+     * @param array             $entityArray
+     * @param AdminInterface    $admin
      */
-    public function restoreEntities(array $entityArray = [], $admin)
+    public function restoreEntities(array $entityArray, $admin)
     {
         foreach ($entityArray as $entity) {
             /** @var $entity PostponeRemoveInterface */
@@ -237,11 +237,11 @@ class AdminManager extends DefaultManager
     /**
      * Delete records softly
      *
-     * @param array $entityArray
-     * @param AdminInterface $admin
+     * @param array             $entityArray
+     * @param AdminInterface    $admin
      * @throws \Exception
      */
-    public function removeEntities(array $entityArray = [], $admin)
+    public function removeEntities(array $entityArray, $admin)
     {
         foreach ($entityArray as $entity) {
             $existDependentFields = $this->checkExistDependentEntity($entity);

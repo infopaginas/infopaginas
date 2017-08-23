@@ -84,8 +84,9 @@
         </ul>
     </div>
 
-    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'English', 'langPostfix': 'En'} %}
-    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'Spanish', 'langPostfix': 'Es'} %}
+    {% for locale, name in localeBlocks %}
+        {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': name, 'langPostfix': locale|capitalize} %}
+    {% endfor %}
 </div>
 
 <h3 class="language-title">{% trans %}Common for english and spanish{% endtrans %}</h3>

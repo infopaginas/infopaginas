@@ -9,17 +9,17 @@ define(
         this.events = {
             ".category-select change"       : "selectCategory",
             ".neighborhood-select change"   : "selectCategory",
-            ".order-by-select change"       : "selectCategory",
-            ".view-phone select2:opening"      : "viewProfile"
+            ".order-by-select change"       : "selectCategory"
         };
+
         this.$ = function( selector ) {
             return $( options.selector ).find( selector );
-        }
+        };
 
         this.init( options );
         this.bindEvents();
         return this;
-    }
+    };
 
     searchpage.prototype = new view;
 
@@ -31,19 +31,13 @@ define(
         $.extend( this.options, options );
 
         new select();
-    }
+    };
 
     searchpage.prototype.selectCategory = function ( e ) {
-        var route = $(e.currentTarget).find('option:selected').data('route');
+        var route = $( e.currentTarget ).find( 'option:selected' ).data( 'route' );
 
         window.location = route;
-    }
-
-    searchpage.prototype.viewProfile = function (e) {
-        var id = $(e.currentTarget).data('business');
-
-        $.get(Routing.generate('domain_business_register_view', {id: id}));
-    }
+    };
 
     return searchpage;
 });

@@ -579,7 +579,7 @@ class Media extends BaseMedia implements OxaMediaInterface, DefaultEntityInterfa
     {
         $maxSize = self::getMediaMaxSizeByContext($this->getContext());
 
-        if($maxSize < $this->getSize()) {
+        if ($maxSize < $this->getSize()) {
             $context->buildViolation('media.max_size')
                 ->setParameter('{{ limit }}', $maxSize / self::BYTES_IN_MEGABYTE)
                 ->atPath('binaryContent')

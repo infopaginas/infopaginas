@@ -6,7 +6,7 @@
     <div class="item__content clearfix" data-item-content>
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
-                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}">
+                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}">
                     <img width="80" src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}">
                 </a>
                 <div class="att-icons">
@@ -21,7 +21,7 @@
         </div>
 
         <div class="item__summary {% if hasSubscription(item, 'CODE_PREMIUM_PLUS') == false or item.getLogo() == null %}item__summary-no-logo{% endif %}">
-            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
                 <div class="item__header header-align-stars">
                     {% set workingHoursData = get_business_profile_open_status(item) %}
                     {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
@@ -74,7 +74,7 @@
                 {% trans %}Show on Map{% endtrans %}
             </a>
             {% if not item.phones.empty %}
-                <a href="tel:{{ item.mainPhone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
+                <a href="tel:{{ item.mainPhone.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>

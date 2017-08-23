@@ -494,7 +494,8 @@ class BusinessProfile implements
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
      *     mappedBy="object",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
      * )
      */
     protected $translations;
@@ -2529,15 +2530,17 @@ class BusinessProfile implements
     }
 
     /**
-     * @return boolean
+     * @return string
      */
     public function getCitySlug()
     {
-        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+        $catalogLocality = $this->getCatalogLocality();
 
-        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
-
-        return $citySlug;
+        if ($catalogLocality) {
+            return $catalogLocality->getSlug();
+        } else {
+            return '';
+        }
     }
 
     /** getting distance
@@ -3043,6 +3046,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_NAME,
             self::BUSINESS_PROFILE_FIELD_NAME_EN,
             self::BUSINESS_PROFILE_FIELD_NAME_ES,
+            self::BUSINESS_PROFILE_FIELD_SLOGAN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,

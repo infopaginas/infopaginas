@@ -4,6 +4,7 @@ namespace Domain\PageBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\PageBundle\Entity\Translation\PageTranslation;
 use Domain\PageBundle\Model\PageInterface;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -70,7 +71,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $body;
 
     /**
-     * @var string - Using this checkbox a User may define whether to show a page.
+     * @var bool - Using this checkbox a User may define whether to show a page.
      *
      * @ORM\Column(name="is_published", type="boolean", options={"default" : 0})
      */
@@ -83,17 +84,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @ORM\Column(name="slug", type="string")
      */
     protected $slug;
-
-    /**
-     * @var Template
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\PageBundle\Entity\Template",
-     *     inversedBy="pages",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
-     */
-    protected $template;
 
     /**
      * @var ArrayCollection
@@ -139,7 +129,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      */
     public function __construct()
     {
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -263,35 +253,11 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     }
 
     /**
-     * Set template
-     *
-     * @param \Domain\PageBundle\Entity\Template $template
-     *
-     * @return Page
-     */
-    public function setTemplate(\Domain\PageBundle\Entity\Template $template = null)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * Get template
-     *
-     * @return \Domain\PageBundle\Entity\Template
-     */
-    public function getTemplate()
-    {
-        return $this->template;
-    }
-
-    /**
      * Remove translation
      *
-     * @param \Domain\BannerBundle\Entity\Translation\BannerTranslation $translation
+     * @param PageTranslation $translation
      */
-    public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
+    public function removeTranslation(PageTranslation $translation)
     {
         $this->translations->removeElement($translation);
     }

@@ -39,7 +39,7 @@ class ReviewsController extends Controller
     {
         $businessProfileId = (int)$request->get('businessProfileId');
 
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId, $request->getLocale());
 
         if (!$businessProfile) {
             throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);

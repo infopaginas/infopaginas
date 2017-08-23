@@ -59,7 +59,9 @@ class PageAdmin extends OxaAdmin
         $formMapper
             ->with('General')
                 ->add('title')
-                ->add('background', 'sonata_type_model_list',
+                ->add(
+                    'background',
+                    'sonata_type_model_list',
                     [
                         'required' => false,
                     ],
@@ -67,8 +69,9 @@ class PageAdmin extends OxaAdmin
                         'link_parameters' => [
                             'context'  => OxaMediaInterface::CONTEXT_PAGE_BACKGROUND,
                             'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                        ]
-                    ])
+                        ],
+                    ]
+                )
             ->end()
             ->with('Status')
                 ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
