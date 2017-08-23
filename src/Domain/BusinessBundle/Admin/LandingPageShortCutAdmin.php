@@ -63,7 +63,9 @@ class LandingPageShortCutAdmin extends OxaAdmin
                     ->add('isActive')
                 ->end()
                 ->with('Searches')
-                ->add('searchItems', 'sonata_type_collection',
+                ->add(
+                    'searchItems',
+                    'sonata_type_collection',
                     [
                         'by_reference'  => false,
                         'required'      => true,

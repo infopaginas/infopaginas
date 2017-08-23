@@ -399,7 +399,8 @@ class OxaAdmin extends BaseAdmin
             case UserActionModel::TYPE_ACTION_VIEW_LIST_PAGE:
             case UserActionModel::TYPE_ACTION_EXPORT:
                 $url = $this->generateUrl(
-                    self::SONATA_URL_TYPE_LIST, $this->getRequest()->query->all(),
+                    self::SONATA_URL_TYPE_LIST,
+                    $this->getRequest()->query->all(),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
                 break;

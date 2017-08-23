@@ -2,7 +2,6 @@
 
 namespace Domain\BusinessBundle\Model\Task;
 
-use Domain\BusinessBundle\DBAL\Types\TaskType;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Task;
 
@@ -29,10 +28,6 @@ abstract class TasksFactory extends Task
         $task->setType($type);
         $task->setBusinessProfile($businessProfile);
         $task->setBusinessProfileUID($businessProfile->getUid());
-
-        if ($businessProfile->getLocale() !== BusinessProfile::DEFAULT_LOCALE) {
-            $task->setLocale($businessProfile->getLocale());
-        }
 
         if ($businessReview !== null) {
             $task->setReview($businessReview);

@@ -6,6 +6,7 @@ use Domain\ReportBundle\Model\ExporterInterface;
 use Liuggio\ExcelBundle\Factory;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ExcelExporterModel
@@ -228,6 +229,26 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->setHeaderFontStyle('C', 5);
         $this->setHeaderFontStyle('C', 6);
         $this->setHeaderFontStyle('C', 7);
+    }
+
+    /**
+     * @param array $params
+     * @param string $title
+     * @param string $filename
+     *
+     * @return Response
+     */
+    protected function sendDataResponse($params, $title, $filename)
+    {
+        $title = $this->getSafeTitle($title);
+
+        $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
+        $this->phpExcelObject = $this->setData($params);
+
+        $this->phpExcelObject->getProperties()->setTitle($title);
+        $this->phpExcelObject->getActiveSheet()->setTitle($title);
+
+        return $this->sendResponse($filename);
     }
 
     /**

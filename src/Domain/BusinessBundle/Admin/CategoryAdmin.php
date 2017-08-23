@@ -4,12 +4,14 @@ namespace Domain\BusinessBundle\Admin;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CategoryAdmin extends OxaAdmin
 {
@@ -83,29 +85,24 @@ class CategoryAdmin extends OxaAdmin
      */
     private function preSave($entity)
     {
-        $textEn = '';
-        $textEs = '';
+        if ($entity->getName()) {
+            $accessor = PropertyAccess::createPropertyAccessor();
 
-        if ($entity->getLocale() == 'en') {
-            $textEn = $entity->getName();
+            $currentLocalePostfix  = LocaleHelper::getLangPostfix($entity->getLocale());
+            $currentPropertyLocale = Category::CATEGORY_LOCALE_PROPERTY . $currentLocalePostfix;
 
-            if (!$entity->getSearchTextEs()) {
-                $textEs = $entity->getName();
+            if (property_exists($entity, $currentPropertyLocale)) {
+                $accessor->setValue($entity, $currentPropertyLocale, $entity->getName());
             }
-        } else {
-            $textEs = $entity->getName();
 
-            if (!$entity->getSearchTextEn()) {
-                $textEn = $entity->getName();
+            foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+                $localePostfix  = LocaleHelper::getLangPostfix($locale);
+                $propertyLocale = Category::CATEGORY_LOCALE_PROPERTY . $localePostfix;
+
+                if (property_exists($entity, $propertyLocale) and !$accessor->getValue($entity, $propertyLocale)) {
+                    $accessor->setValue($entity, $propertyLocale, $entity->getName());
+                }
             }
-        }
-
-        if ($textEn) {
-            $entity->setSearchTextEn($textEn);
-        }
-
-        if ($textEs) {
-            $entity->setSearchTextEs($textEs);
         }
     }
 
