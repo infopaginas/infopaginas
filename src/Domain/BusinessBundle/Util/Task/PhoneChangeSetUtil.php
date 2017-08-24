@@ -56,6 +56,7 @@ class PhoneChangeSetUtil
 
                 $phone->setPhone($data->value);
                 $phone->setType($data->type);
+                $phone->setPriority(BusinessProfilePhone::getPriorityByType($data->type));
 
                 $collection->add($phone);
             }
