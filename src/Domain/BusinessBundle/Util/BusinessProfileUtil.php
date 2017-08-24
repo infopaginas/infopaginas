@@ -7,6 +7,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class BusinessProfileUtil
 {
+    const SEO_CLASS_PREFIX_SEARCH     = 'search';
+    const SEO_CLASS_PREFIX_SEARCH_MAP = 'search-map';
+
+    const SEO_CLASS_PREFIX_COMPARE      = 'compare';
+    const SEO_CLASS_PREFIX_COMPARE_MAP  = 'compare-map';
+
+    const SEO_CLASS_PREFIX_CATALOG = 'catalog';
+    const SEO_CLASS_PREFIX_PROFILE = 'profile';
+    const SEO_CLASS_PREFIX_VIDEO   = 'video';
+
+    const SEO_CLASS_BUSINESS_NAME = 'business-name';
+
     /**
      * @param array $searchResults
      *
@@ -157,5 +169,27 @@ class BusinessProfileUtil
         $seoDescription = mb_substr($seoDescription, 0, $descriptionMaxLength);
 
         return $seoDescription;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return array
+     */
+    public static function getSeoTags($type)
+    {
+        return [
+            'name' => self::getBusinessProfileNameSeoClass($type),
+        ];
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public static function getBusinessProfileNameSeoClass($type)
+    {
+        return sprintf('%s-%s', $type, self::SEO_CLASS_BUSINESS_NAME);
     }
 }

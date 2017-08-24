@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Form\Handler\BusinessClaimFormHandler;
 use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -205,6 +206,7 @@ class ProfileController extends Controller
         return $this->render(':redesign:business-profile.html.twig', [
             'businessProfile' => $businessProfile,
             'seoData'         => $businessProfile,
+            'seoTags'         => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_PROFILE),
             'photos'          => $photos,
             'advertisements'  => $advertisements,
             'lastReview'      => $lastReview,

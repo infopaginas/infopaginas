@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\VideoManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -135,6 +136,7 @@ class VideosController extends Controller
         $params = [
             'results' => $videoResultDTO,
             'seoData' => $seoData,
+            'seoTags' => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_VIDEO),
             'banners' => $banners,
         ];
 
