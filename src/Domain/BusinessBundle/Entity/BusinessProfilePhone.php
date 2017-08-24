@@ -15,7 +15,7 @@ use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumbe
  */
 class BusinessProfilePhone
 {
-    const REGEX_PHONE_PATTERN = '/^\d([-]*\d){0,10}$/';
+    const REGEX_PHONE_PATTERN = '/^\d{3}-\d{3}-\d{4}$/';
     const MAX_PHONE_LENGTH = 15;
 
     const PHONE_TYPE_MAIN       = 'main';

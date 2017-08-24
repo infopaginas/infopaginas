@@ -312,6 +312,23 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return IterableResult
      */
+    public function getAllBusinessProfilesIterator()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb
+            ->select('bp')
+            ->from('DomainBusinessBundle:BusinessProfile', 'bp')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
+    }
+
+    /**
+     * @return IterableResult
+     */
     public function getUpdatedBusinessProfilesIterator()
     {
         $qb = $this->createQueryBuilder('bp')
