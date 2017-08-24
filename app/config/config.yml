@@ -44,7 +44,7 @@ parameters:
             image: 'header-logo.png'
             width: '221'
             height: '42'
-    google_map_api_key: "AIzaSyCa69y_exLVd53HZO5yrMhDeVqMoC7Cuvc"
+    google_map_api_key: "AIzaSyD-1F1-Wr4GLyP5Pk2-IH4DAd_jW0w4xqU"
     google_map_default_center: '18.446344, -66.07558'
     google_map_default_center_name: 'San Juan'
     google_map_default_zoom: 8
@@ -64,8 +64,8 @@ parameters:
     video_download_path: '/../web/uploads/videos/'
     export_report_path: '/../web/uploads/export/'
     breadcrumb_max_length: 38
-    google_youtube_api_client_key: '1038987589554-5beh6k655b6nma7ltrd9sv17avbobjkp.apps.googleusercontent.com'
-    google_youtube_secret_key: 'MqwCsstQtzNrT_WTgWW5Styc'
+    google_youtube_api_client_key:  '257125561113-k1b051ctf2uvgii4um1v5intdj7habeg.apps.googleusercontent.com'
+    google_youtube_secret_key:      '5BFK_k2oVD7Uh-Gn85LrHYcC'
     google_youtube_privacy: '%google_youtube_video_privacy%'
     google_youtube_channel_id: '%google_youtube_user_channel_id%'
     google_badge_partner_id: '6032772200'
