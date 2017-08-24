@@ -37,7 +37,7 @@
                             <img src="{% path businessProfile.getLogo(), 'preview' %}" alt="{{ businessProfile.getName() }}">
                         </div>
                     {% endif %}
-                    <h1 id="businessProfileName" data-business-profile-id="{{ businessProfile.id }}">&nbsp;{{ businessProfile.getName() }}</h1>
+                    <h1 id="businessProfileName" data-business-profile-id="{{ businessProfile.id }}" class="{{ seoTags.name }}">{{ businessProfile.getName() }}</h1>
                     {% if (hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") and businessProfile.getSlogan()) %}
                         <p>&nbsp;{{ businessProfile.getSlogan() }}</p>
                     {% endif %}

@@ -31,7 +31,9 @@
     </div><!-- comparison-row -->
 
     <div class="comparison__row comparison__description">
-        <h1><a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.displayedPosition }}. {{ item.name }}</a></h1>
+        <h2>
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.displayedPosition }}. <span class="{{ seoTags.name }}-full">{{ item.name }}</span></a>
+        </h2>
         <p>
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                {{ item.slogan }}

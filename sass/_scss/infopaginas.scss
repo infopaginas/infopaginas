@@ -2933,8 +2933,12 @@ a.tag {
     padding-top: 20px;
   }
 
-  h1 {
+  h2 {
     font-size: 16px;
+    font-weight: 300 !important;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0.67em 0;
   }
 
   h3 {

@@ -8,7 +8,7 @@
                         <img class="news__img" src="{% path item.getLogo(), 'normal' %}" alt="{{ item.name() }}">
                     </div>
                 {% endif %}
-                <h3 class="news__title">{{ item.getName() }}</h3>
+                <h3 class="news__title {{ seoTags.name }}">{{ item.getName() }}</h3>
                 {% if item.getDescription() %}
                     <p>{{ cut_body_extension(item.getDescription()) }}</p>
                 {% endif %}

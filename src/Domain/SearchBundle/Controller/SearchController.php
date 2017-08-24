@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
@@ -46,6 +47,7 @@ class SearchController extends Controller
         $closestLocality = '';
         $disableFilters = false;
         $seoCategories = [];
+        $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_SEARCH;
         $allowRedirect = !filter_var($request->get('redirected', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($searchDTO) {
@@ -53,6 +55,7 @@ class SearchController extends Controller
                 $disableFilters = true;
 
                 $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
+                $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_SEARCH_MAP;
             } else {
                 $category = $this->getCategoryManager()->getCategoryByCustomSlug(
                     SlugUtil::convertSlug($searchDTO->query)
@@ -116,6 +119,7 @@ class SearchController extends Controller
                 'search'            => $searchDTO,
                 'results'           => $searchResultsDTO,
                 'seoData'           => $seoData,
+                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
                 'banners'           => $banners,
                 'dcDataDTO'         => $dcDataDTO,
                 'searchData'        => $searchData,
@@ -210,10 +214,12 @@ class SearchController extends Controller
         $locationName = false;
         $closestLocality = '';
         $seoCategories = [];
+        $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE;
 
         if ($searchDTO) {
             if ($searchDTO->checkSearchInMap()) {
                 $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
+                $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE_MAP;
             }
 
             $searchResultsDTO   = $searchManager->search($searchDTO);
@@ -261,6 +267,7 @@ class SearchController extends Controller
                 'search'            => $searchDTO,
                 'results'           => $searchResultsDTO,
                 'seoData'           => $seoData,
+                'seoTags'           => BusinessProfileUtil::getSeoTags($seoType),
                 'banners'           => $banners,
                 'searchData'        => $searchData,
                 'pageRouter'        => $pageRouter,
@@ -288,6 +295,7 @@ class SearchController extends Controller
 
         $locationName  = '';
         $seoCategories = [];
+        $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_SEARCH_MAP;
 
         if ($searchDTO) {
             $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
@@ -338,6 +346,7 @@ class SearchController extends Controller
 
         $data = [
             'search'        => $searchDTO,
+            'seoTags'       => BusinessProfileUtil::getSeoTags($seoType),
             'results'       => $searchResultsDTO,
             'banners'       => $banners,
         ];
@@ -416,6 +425,7 @@ class SearchController extends Controller
 
         $seoLocationName  = null;
         $seoCategories = [];
+        $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_CATALOG;
 
         $categories = [];
         $localities = [];
@@ -544,6 +554,7 @@ class SearchController extends Controller
                 'search'             => $searchDTO,
                 'results'            => $searchResultsDTO,
                 'seoData'            => $seoData,
+                'seoTags'            => BusinessProfileUtil::getSeoTags($seoType),
                 'banners'            => $banners,
                 'dcDataDTO'          => $dcDataDTO,
                 'searchData'         => $searchData,
