@@ -433,16 +433,18 @@ class VideoManager
         }
     }
 
+    /**
+     * @param VideoMedia $media
+     *
+     * @return string
+     */
     public function getPublicUrl(VideoMedia $media)
     {
-        $expires = new \DateTime();
-        $expires->modify('+ ' . self::LINK_LIFE_TIME . ' seconds');
-
-        $url = $this->filesystem->getAdapter()->getUrl(
-            $media->getFilepath() . $media->getFilename(),
-            [
-                'expires' => $expires->getTimestamp(),
-            ]
+        $url = sprintf(
+            '%s/%s%s',
+            $this->getCdnPath(),
+            $media->getFilepath(),
+            $media->getFilename()
         );
 
         return $url;
@@ -466,5 +468,19 @@ class VideoManager
         $date = new \DateTime();
         $domain .= '-' . $date->format('YmdHis');
         return $domain;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCdnPath()
+    {
+        $path = sprintf(
+            '%s/%s',
+            $this->container->getParameter('amazon_aws_base_host'),
+            $this->container->getParameter('amazon_aws_video_directory')
+        );
+
+        return $path;
     }
 }

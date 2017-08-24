@@ -33,6 +33,22 @@ class LocaleHelper
     }
 
     /**
+     * @param string $locale
+     *
+     * @return string
+     */
+    public static function getLocale($locale)
+    {
+        if (array_key_exists($locale, self::getLocaleList())) {
+            $currentLocale = $locale;
+        } else {
+            $currentLocale = self::DEFAULT_LOCALE;
+        }
+
+        return $currentLocale;
+    }
+
+    /**
      * @return array
      */
     public static function getLocaleList()

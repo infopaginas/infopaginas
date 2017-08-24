@@ -2,6 +2,7 @@
 
 namespace Domain\SiteBundle\Controller;
 
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ class RedirectController extends Controller
         $pathParts = explode('/', $uri);
 
         $locale = self::LOCALE_EN;
-        $currentLocale = $request->getLocale();
+        $currentLocale = LocaleHelper::getLocale($request->getLocale());
 
         if (strpos($uri, '/' . self::LOCALE_ES . '/') !== false) {
             $locale = self::LOCALE_ES;

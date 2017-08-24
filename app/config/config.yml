@@ -290,14 +290,14 @@ knp_gaufrette:
                 bucket_name:    %amazon_aws_bucket_name%
                 options:
                     create:     true
-                    directory:  'video/%sonata_media.cdn.folder%'
+                    directory:  '%amazon_aws_video_directory%'
         report_storage:
             aws_s3:
                 service_id:     aws.s3
                 bucket_name:    %amazon_aws_bucket_name%
                 options:
                     create:     true
-                    directory:  'report/%sonata_media.cdn.folder%'
+                    directory:  '%amazon_aws_report_directory%'
     filesystems:
         ipgn:
             adapter:    video_storage

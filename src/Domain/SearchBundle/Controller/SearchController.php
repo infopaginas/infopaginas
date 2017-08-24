@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -40,8 +41,6 @@ class SearchController extends Controller
 
         $searchData = $this->getSearchDataByRequest($request);
 
-        $locale = ucwords($request->getLocale());
-
         $schema       = false;
         $locationName = false;
         $closestLocality = '';
@@ -66,7 +65,7 @@ class SearchController extends Controller
                 }
             }
 
-            $searchResultsDTO = $searchManager->search($searchDTO, $locale, $disableFilters);
+            $searchResultsDTO = $searchManager->search($searchDTO, $disableFilters);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
             $this->getBusinessProfileManager()
@@ -165,11 +164,12 @@ class SearchController extends Controller
     public function autocompleteAction(Request $request)
     {
         $searchData = $this->getSearchDataByRequest($request);
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $businessProfileManager = $this->get('domain_business.manager.business_profile');
         $results = $businessProfileManager->searchCategoryAutosuggestByPhrase(
             $searchData['q'],
-            $request->getLocale(),
+            $locale,
             CategoryManager::AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT
         );
 
@@ -185,7 +185,7 @@ class SearchController extends Controller
      */
     public function autocompleteLocalityAction(Request $request)
     {
-        $locale = $request->getLocale();
+        $locale = LocaleHelper::getLocale($request->getLocale());
         $term   = $request->get('term', '');
 
         $localityManager = $this->get('domain_business.manager.locality');
@@ -207,8 +207,6 @@ class SearchController extends Controller
 
         $searchData = $this->getSearchDataByRequest($request);
 
-        $locale = ucwords($request->getLocale());
-
         $locationName = false;
         $closestLocality = '';
         $seoCategories = [];
@@ -218,7 +216,7 @@ class SearchController extends Controller
                 $closestLocality = $this->getBusinessProfileManager()->searchClosestLocalityInElastic($searchDTO);
             }
 
-            $searchResultsDTO   = $searchManager->search($searchDTO, $locale);
+            $searchResultsDTO   = $searchManager->search($searchDTO);
 
             $this->getBusinessProfileManager()
                 ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
@@ -288,8 +286,6 @@ class SearchController extends Controller
 
         $searchData = $this->getSearchDataByRequest($request);
 
-        $locale = ucwords($request->getLocale());
-
         $locationName  = '';
         $seoCategories = [];
 
@@ -303,7 +299,7 @@ class SearchController extends Controller
                 $searchDTO->locationValue->locality = $closestLocality;
             }
 
-            $searchResultsDTO = $searchManager->search($searchDTO, $locale, true);
+            $searchResultsDTO = $searchManager->search($searchDTO, true);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
             $this->getBusinessProfileManager()
@@ -411,6 +407,7 @@ class SearchController extends Controller
     public function catalogAction(Request $request, $localitySlug = '', $categorySlug = '')
     {
         $searchManager = $this->get('domain_search.manager.search');
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         $category   = null;
         $showResults = false;
@@ -421,8 +418,7 @@ class SearchController extends Controller
         $seoCategories = [];
 
         $categories = [];
-
-        $localities = $this->getLocalityManager()->getCatalogLocalitiesWithContent();
+        $localities = [];
 
         $locality = $searchManager->searchCatalogLocality($localitySlug);
 
@@ -430,9 +426,6 @@ class SearchController extends Controller
         $request->attributes->set('q', $localitySlug);
 
         if ($locality) {
-            $categories = $this->getCategoryManager()
-                ->getAvailableCategoriesWithContent($locality, $request->getLocale());
-
             $request->attributes->set('catalogLocality', $locality->getName());
             $request->attributes->set('geo', $locality->getName());
             $request->attributes->set('q', $locality->getName());
@@ -447,7 +440,11 @@ class SearchController extends Controller
 
                 $showResults = true;
                 $seoCategories[] = $category->getName();
+            } else {
+                $categories = $this->getCategoryManager()->getAvailableCategoriesWithContent($locality, $locale);
             }
+        } else {
+            $localities = $this->getLocalityManager()->getCatalogLocalitiesWithContent($locale);
         }
 
         $slugs = [
@@ -456,7 +453,7 @@ class SearchController extends Controller
         ];
 
         $entities = [
-            'locality'  => $locality,
+            'locality' => $locality,
             'category' => $category,
         ];
 
@@ -471,8 +468,6 @@ class SearchController extends Controller
         $locationMarkers  = null;
 
         $searchData = $this->getSearchDataByRequest($request);
-
-        $locale = ucwords($request->getLocale());
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(

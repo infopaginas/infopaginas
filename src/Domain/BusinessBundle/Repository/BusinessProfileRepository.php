@@ -10,6 +10,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use FOS\UserBundle\Model\UserInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -61,16 +63,25 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $ids
+     * @param array     $ids
+     * @param string    $locale
+     *
      * @return array
      */
-    public function findBusinessProfilesByIdsArray($ids)
+    public function findBusinessProfilesByIdsArray($ids, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
-        $queryBuilder = $this->createQueryBuilder('bp')
+        $qb = $this->createQueryBuilder('bp')
             ->where('bp.id IN (:ids)')
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', $ids)
+        ;
 
-        return $queryBuilder->getQuery()->getResult();
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**
@@ -180,7 +191,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    public function getBusinessProfilesByVideosUpdate($searchParams)
+    public function getBusinessProfilesByVideosUpdate($searchParams, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $limit  = $searchParams->limit;
         $offset = ($searchParams->page - 1) * $limit;
@@ -190,7 +201,13 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
 
         $this->addLimitOffsetQueryBuilder($queryBuilder, $limit, $offset);
 
-        return $queryBuilder->getQuery()->getResult();
+        $query = $queryBuilder->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     public function countBusinessProfilesByVideosUpdate()
