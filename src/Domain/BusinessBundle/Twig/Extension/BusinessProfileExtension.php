@@ -3,12 +3,14 @@
 namespace Domain\BusinessBundle\Twig\Extension;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -78,14 +80,16 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'getTaskImagePropertyChangeSetRow'
             ),
+            'get_business_profile_phone_icon' => new \Twig_Function_Method(
+                $this,
+                'getBusinessProfileIcon'
+            ),
             'get_business_profile_media_changes' => new \Twig_Function_Method($this, 'getMediaChangeSet'),
             'get_business_profile_images_changes' => new \Twig_Function_Method($this, 'getImagesChangeSet'),
             'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
             'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
-            'get_business_profile_images' => new \Twig_Function_Method($this, 'getBusinessProfileImages'),
-            'get_business_profile_ads' => new \Twig_Function_Method($this, 'getBusinessProfileAds'),
             'render_task_media_link' => new \Twig_Function_Method(
                 $this,
                 'renderTaskMediaLink',
@@ -301,6 +305,23 @@ class BusinessProfileExtension extends \Twig_Extension
         }
 
         return $data;
+    }
+
+    /**
+     * @param BusinessProfilePhone $phone
+     *
+     * @return string
+     */
+    public function getBusinessProfileIcon($phone)
+    {
+        $phoneIcons = BusinessProfilePhone::getTypeIcons();
+        $type = $phone->getType();
+
+        if (!array_key_exists($type, $phoneIcons)) {
+            $type = BusinessProfilePhone::PHONE_TYPE_SECONDARY;
+        }
+
+        return $phoneIcons[$type];
     }
 
     public function sortTranslationSet($value)
@@ -523,20 +544,6 @@ class BusinessProfileExtension extends \Twig_Extension
         return false;
     }
 
-    public function getBusinessProfileImages(BusinessProfile $businessProfile)
-    {
-        $photos = $this->getBusinessProfileManager()->getBusinessProfilePhotoImages($businessProfile);
-
-        return $photos;
-    }
-
-    public function getBusinessProfileAds(BusinessProfile $businessProfile)
-    {
-        $advertisements = $this->getBusinessProfileManager()->getBusinessProfileAdvertisementImages($businessProfile);
-
-        return $advertisements;
-    }
-
     /**
      * @param BusinessProfile|null  $businessProfile
      * @param string                $locale
@@ -547,17 +554,13 @@ class BusinessProfileExtension extends \Twig_Extension
     {
         $categoriesData = [];
 
-        if ($locale == strtolower(BusinessProfile::TRANSLATION_LANG_EN)) {
-            $currentLocale = BusinessProfile::TRANSLATION_LANG_EN;
-        } else {
-            $currentLocale = BusinessProfile::TRANSLATION_LANG_ES;
-        }
-
         if ($businessProfile) {
+            $localePostfix = LocaleHelper::getLangPostfix($locale);
+
             foreach ($businessProfile->getCategories() as $category) {
                 $categoriesData[$category->getId()] = [
                     'id'    => $category->getId(),
-                    'name'  => $category->{'getSearchText' . $currentLocale}(),
+                    'name'  => $category->{'getSearchText' . $localePostfix}(),
                 ];
             }
         }

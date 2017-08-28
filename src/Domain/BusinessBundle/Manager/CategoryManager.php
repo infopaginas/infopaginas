@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
@@ -18,20 +19,21 @@ class CategoryManager extends Manager
     const AUTO_SUGGEST_SEPARATOR = ' ';
 
     /**
-     * @param array $profileList
+     * @param array     $profileList
+     * @param string    $locale
      *
      * @return array
      */
-    public function getCategoriesByProfiles(array $profileList)
+    public function getCategoriesByProfiles(array $profileList, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
-        return $this->getRepository()->getCategoryByBusinessesIds(
-            array_map(
-                function ($item) {
-                    return $item->getId();
-                },
-                $profileList
-            )
+        $businessIds = array_map(
+            function ($item) {
+                return $item->getId();
+            },
+            $profileList
         );
+
+        return $this->getRepository()->getCategoryByBusinessesIds($businessIds, $locale);
     }
 
     /**
@@ -61,12 +63,12 @@ class CategoryManager extends Manager
     }
 
     /**
-     * @param Locality $locality
-     * @param string|bool $locale
+     * @param Locality  $locality
+     * @param string    $locale
      *
      * @return Category[]
      */
-    public function getAvailableCategoriesWithContent($locality, $locale = false)
+    public function getAvailableCategoriesWithContent($locality, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }
@@ -82,8 +84,8 @@ class CategoryManager extends Manager
             return false;
         }
 
-        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = LocaleHelper::LOCALE_EN;
+        $esLocale   = LocaleHelper::LOCALE_ES;
 
         $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
         $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);

@@ -14,6 +14,8 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -95,6 +97,13 @@ class BusinessProfileFormType extends AbstractType
                 'entry_type'   => BusinessProfilePhoneType::class,
                 'label' => 'Phone number',
                 'required' => false,
+            ])
+            ->add(BusinessProfilePhoneTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
+                'mapped'   => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'hidden',
+                ],
             ])
             ->add('collectionWorkingHours', CollectionType::class, [
                 'allow_add'    => true,
@@ -370,8 +379,9 @@ class BusinessProfileFormType extends AbstractType
                     $this->setupFreePlanFormFields($businessProfile, $event->getForm());
             }
 
-            $this->addTranslationBlock($event->getForm(), $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
-            $this->addTranslationBlock($event->getForm(), $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
+            foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+                $this->addTranslationBlock($event->getForm(), $businessProfile, $locale);
+            }
         });
     }
 
@@ -536,8 +546,9 @@ class BusinessProfileFormType extends AbstractType
             ])
         ;
 
-        $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
-        $this->addSloganTranslationBlock($form, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $this->addSloganTranslationBlock($form, $businessProfile, $locale);
+        }
     }
 
     /**
@@ -590,18 +601,20 @@ class BusinessProfileFormType extends AbstractType
      */
     private function addTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
     {
+        $localePostfix = LocaleHelper::getLangPostfix($locale);
+
         $form
-            ->add('name' . $locale, TextType::class, [
+            ->add('name' . $localePostfix, TextType::class, [
                 'label'    => 'Name',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('name', strtolower($locale)),
+                'data'     => $businessProfile->getTranslation('name', $locale),
             ])
-            ->add('description' . $locale, CKEditorType::class, [
+            ->add('description' . $localePostfix, CKEditorType::class, [
                 'label'    => 'Description',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('description', strtolower($locale)),
+                'data'     => $businessProfile->getTranslation('description', $locale),
                 'config_name' => 'extended_text',
                 'config'      => [
                     'width'  => '100%',
@@ -610,32 +623,32 @@ class BusinessProfileFormType extends AbstractType
                     'class' => 'text-editor',
                 ],
             ])
-            ->add('product' . $locale, TextareaType::class, [
+            ->add('product' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
                 ],
                 'label'    => 'Products',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('product', strtolower($locale)),
+                'data'     => $businessProfile->getTranslation('product', $locale),
             ])
-            ->add('brands' . $locale, TextareaType::class, [
+            ->add('brands' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
                 ],
                 'label'    => 'Brands',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('brands', strtolower($locale)),
+                'data'     => $businessProfile->getTranslation('brands', $locale),
             ])
-            ->add('workingHours' . $locale, TextareaType::class, [
+            ->add('workingHours' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
                 ],
                 'label'    => 'Working hours',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('workingHours', strtolower($locale)),
+                'data'     => $businessProfile->getTranslation('workingHours', $locale),
             ])
         ;
     }
@@ -647,11 +660,13 @@ class BusinessProfileFormType extends AbstractType
      */
     private function addSloganTranslationBlock(FormInterface $form, BusinessProfile $businessProfile, $locale)
     {
-        $form->add('slogan' . $locale, TextType::class, [
+        $localePostfix = LocaleHelper::getLangPostfix($locale);
+
+        $form->add('slogan' . $localePostfix, TextType::class, [
             'label' => 'Slogan',
             'required' => false,
             'mapped'   => false,
-            'data'     => $businessProfile->getTranslation('slogan', strtolower($locale)),
+            'data'     => $businessProfile->getTranslation('slogan', $locale),
         ]);
     }
 

@@ -1,8 +1,11 @@
 {% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
 
 {% macro phone_prototype(phoneField) %}
-    <div class="form__row vertical__row">
-        <div class="form__field field--website">
+    <div class="multi-field">
+        <div class="form__field field--multi-select select-phone-type">
+            {{ form_widget(phoneField.type ) }}
+        </div>
+        <div class="form__field field-phone-value">
             {{ form_label(phoneField.phone) }}
             {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
         </div>
@@ -81,8 +84,9 @@
         </ul>
     </div>
 
-    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'English', 'langPostfix': 'En'} %}
-    {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': 'Spanish', 'langPostfix': 'Es'} %}
+    {% for locale, name in localeBlocks %}
+        {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': name, 'langPostfix': locale|capitalize} %}
+    {% endfor %}
 </div>
 
 <h3 class="language-title">{% trans %}Common for english and spanish{% endtrans %}</h3>
@@ -144,17 +148,12 @@
                  data-length="{{ businessProfileForm.phones|length }}"
                  data-prototype="{{ _self.phone_prototype(businessProfileForm.phones.vars.prototype)|e }}">
                 {% for phoneField in businessProfileForm.phones %}
-                    <div class="form__row vertical__row">
-                        <div class="form__field field--website">
-                            {{ form_label(phoneField.phone) }}
-                            {{ form_widget(phoneField.phone, {'attr': {'placeholder': ''}} ) }}
-                        </div>
-                        <button class="button button--small remove-phone">
-                            <i class="fa fa-minus-square"></i>
-                            {% trans %}Remove phone{% endtrans %}
-                        </button>
-                    </div>
+                    {{ _self.phone_prototype(phoneField) }}
                 {% endfor %}
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ form_widget(businessProfileForm.phoneCollection) }}
             </div>
 
             <div class="form__row vertical__row">

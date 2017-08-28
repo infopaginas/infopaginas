@@ -2,6 +2,9 @@
 
 namespace Domain\SiteBundle\Utils\Helpers;
 
+use Doctrine\ORM\Query;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+
 class SiteHelper
 {
     const CURL_TIMEOUT = 10;
@@ -55,5 +58,27 @@ class SiteHelper
         curl_close($handle);
 
         return $info;
+    }
+
+    /**
+     * @param Query     $query
+     * @param string    $locale
+     *
+     * @return Query
+     */
+    public static function setLocaleQueryHint($query, $locale)
+    {
+        $query->setHint(
+            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+        );
+
+        // Force the locale
+        $query->setHint(
+            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+            $locale
+        );
+
+        return $query;
     }
 }

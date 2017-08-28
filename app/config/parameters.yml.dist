@@ -36,8 +36,13 @@ parameters:
     amazon_aws_region:      us-east-1
     amazon_aws_base_url:    infopaginas-dev.s3-website-us-east-1.amazonaws.com
 
+    # cdn host
+    amazon_aws_base_host: 'https://s3.amazonaws.com/%amazon_aws_bucket_name%'
+    amazon_aws_video_directory: 'video/%sonata_media.cdn.folder%'
+    amazon_aws_report_directory: 'report/%sonata_media.cdn.folder%'
+
     # Sonata media files path storage
-    sonata_media.cdn.host:   'https://s3.amazonaws.com/%amazon_aws_bucket_name%/uploads/media/%sonata_media.cdn.folder%'
+    sonata_media.cdn.host:   '%amazon_aws_base_host%/uploads/media/%sonata_media.cdn.folder%'
     sonata_media.cdn.folder: infopaginas
 
     # elastic search settings

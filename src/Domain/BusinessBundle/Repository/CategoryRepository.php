@@ -5,7 +5,10 @@ namespace Domain\BusinessBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 
 class CategoryRepository extends EntityRepository
 {
@@ -22,10 +25,10 @@ class CategoryRepository extends EntityRepository
     }
 
     /**
-     * @param Locality $locality
-     * @param string|bool $locale
+     * @param Locality  $locality
+     * @param string    $locale
      */
-    public function getAvailableCategoriesWithContent($locality, $locale = false)
+    public function getAvailableCategoriesWithContent($locality, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->getAvailableCategoriesQb();
 
@@ -34,13 +37,16 @@ class CategoryRepository extends EntityRepository
             ->andWhere('ci.hasContent = TRUE')
             ->andWhere('ci.locality = :locality')
             ->setParameter('locality', $locality)
+            ->orderBy('c.searchText' . ucfirst($locale))
         ;
 
+        $query = $qb->getQuery();
+
         if ($locale) {
-            $qb->orderBy('c.searchText' . ucfirst($locale));
+            SiteHelper::setLocaleQueryHint($query, $locale);
         }
 
-        return $qb->getQuery()->getResult();
+        return $query->getResult();
     }
 
     /**
@@ -95,22 +101,27 @@ class CategoryRepository extends EntityRepository
     }
 
     /**
-     * @param array $businessIdList
+     * @param array     $businessIdList
+     * @param string    $locale
      *
      * @return Category[]
      */
-    public function getCategoryByBusinessesIds(array $businessIdList)
+    public function getCategoryByBusinessesIds(array $businessIdList, $locale)
     {
-        $queryBuilder = $this->getCategoryQueryBuilder()
+        $qb = $this->getCategoryQueryBuilder()
             ->join('c.businessProfiles', 'bp')
             ->where('bp.id in (:ids)')
             ->setParameter('ids', $businessIdList)
             ->orderBy('c.name')
         ;
 
-        $results = $queryBuilder->getQuery()->getResult();
+        $query = $qb->getQuery();
 
-        return $results;
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**

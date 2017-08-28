@@ -29,24 +29,17 @@ class SubscriptionExcelExporter extends ExcelExporterModel
     }
 
     /**
-     * @param array $parameters
+     * @param array $params
      * @return Response
      * @throws \PHPExcel_Exception
      */
-    public function getResponse($parameters = [])
+    public function getResponse($params = [])
     {
         $filename = $this->subscriptionReportManager->generateReportName(self::FORMAT);
 
         $title = $this->translator->trans('export.title.subscription_report', [], 'AdminReportBundle');
-        $title = $this->getSafeTitle($title);
 
-        $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-        $this->phpExcelObject = $this->setData($parameters);
-
-        $this->phpExcelObject->getProperties()->setTitle($title);
-        $this->phpExcelObject->getActiveSheet()->setTitle($title);
-
-        return $this->sendResponse($filename);
+        return $this->sendDataResponse($params, $title, $filename);
     }
 
     /**

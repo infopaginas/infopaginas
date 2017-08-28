@@ -1,15 +1,19 @@
-define(['jquery', 'bootstrap'], function( $, bootstrap ) {
+define(['jquery', 'bootstrap', 'select2', 'maskedInput'], function( $, bootstrap, select2, mask ) {
     'use strict';
 
     var phones = function() {
         this.html = {
             containerListId: '#phone-fields-list',
             addLinkId: '#add-another-phone',
-            removeLinkClass: '.remove-phone'
+            removeLinkClass: '.remove-phone',
+            type: '.business-phone-type',
+            phoneInputs: 'input[ id $= "_phone" ]'
         };
 
         this.handleAdd();
         this.handleRemove();
+        this.handleSelect();
+        this.addMaskEvent();
     };
 
     phones.prototype.handleAdd = function() {
@@ -50,6 +54,8 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
 
             phonesList.data('length', phonesCount);
 
+            that.handleSelect();
+            that.addMaskEvent();
             event.preventDefault();
         });
     };
@@ -62,6 +68,19 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
             block.remove();
             
             event.preventDefault();
+        });
+    };
+
+    phones.prototype.handleSelect = function() {
+        $( this.html.type ).select2();
+    };
+
+    phones.prototype.addMaskEvent = function() {
+        var phones = $( this.html.phoneInputs );
+
+        phones.mask( '999-999-9999' );
+        phones.bind( 'paste', function () {
+            $( this ).val( '' );
         });
     };
 

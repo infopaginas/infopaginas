@@ -85,6 +85,12 @@ class UserActionReportAdmin extends ReportAdmin
                     'mapped'    => false,
                 ],
             ])
+            ->add('entityName', 'doctrine_orm_string', [
+                'show_filter' => !empty($this->datagridValues['entityName']['value']) ?: null,
+                'field_options' => [
+                    'mapped'    => false,
+                ],
+            ])
             ->add('action', 'doctrine_orm_choice', [
                 'show_filter' => !empty($this->datagridValues['action']['value']) ?: null,
                 'field_options' => [

@@ -1,7 +1,7 @@
 <div class="results__item results__item--{% if (hasSubscription(item, 'CODE_PREMIUM_PLUS')) %}ad{% else %}normal{% endif %}">
     <div class="item__content clearfix">
         <div class="item__summary">
-            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
                 <div class="item__header">
                     {% set workingHoursData = get_business_profile_open_status(item) %}
                     {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="item__info">
-                    <h2>{{ item.displayedPosition }}. {{ item.name }}</h2>
+                    <h2>{{ item.displayedPosition }}. <span class="{{ seoTags.name }}-short">{{ item.name }}</span></h2>
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
                     {% endif %}

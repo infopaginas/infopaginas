@@ -136,7 +136,12 @@ class VideoManager
     {
         // Check if the file's mime type is in the list of allowed mime types.
         if (!in_array($data['type'], self::$allowedMimeTypes)) {
-            $message = $this->container->get('translator')->trans('You can upload the following file types', [], 'messages');
+            $message = $this->container->get('translator')->trans(
+                'You can upload the following file types',
+                [],
+                'messages'
+            );
+
             throw new \InvalidArgumentException(sprintf($message, $data['type']));
         }
 
@@ -151,7 +156,9 @@ class VideoManager
             'contentType'   => $data['type'],
             'ACL'           => 'public-read',
         ]);
-        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));;
+
+        $uploadedSize = $adapter->write($path . $filename, file_get_contents($data['path']));
+
         if (!$uploadedSize) {
             $message = $this->container->get('translator')
                 ->trans('File %s is not uploaded. Please contact administrator', [], 'messages');
@@ -169,23 +176,14 @@ class VideoManager
         return $video;
     }
 
-    public function uploadRemoteFile(string $url, array $data = [])
+    /**
+     * @param string $url
+     *
+     * @return VideoMedia
+     */
+    public function uploadRemoteFile(string $url)
     {
-        $headers = SiteHelper::checkUrlExistence($url);
-
-        $fileData = [
-            'name'      => $this->generateFilenameForUrl($url),
-            'ext'       => $this->getExtensionByMime($headers['content_type']),
-            'type'      => $headers['content_type'],
-            'path'      => $url,
-        ];
-
-        if ($fileData['ext'] == null || !isset($headers['content_type'])) {
-            $message = $this->container->get('translator')->trans('the link to the video is invalid', [], 'messages');
-            throw new \InvalidArgumentException(sprintf($message));
-        }
-
-        $uploadedFileData = $this->uploadLocalFileData($fileData);
+        $uploadedFileData = $this->getUploadedFromRemoteFileData($url);
 
         return $this->videoMediaManager->save($uploadedFileData);
     }
@@ -198,6 +196,20 @@ class VideoManager
      */
     public function addVideoFromRemoteFile(VideoMedia $video, $url)
     {
+        $uploadedFileData = $this->getUploadedFromRemoteFileData($url);
+
+        $video = $this->addVideoProperties($video, $uploadedFileData);
+
+        return $video;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return array
+     */
+    protected function getUploadedFromRemoteFileData($url)
+    {
         $headers = SiteHelper::checkUrlExistence($url);
 
         $fileData = [
@@ -212,11 +224,7 @@ class VideoManager
             throw new \InvalidArgumentException(sprintf($message));
         }
 
-        $uploadedFileData = $this->uploadLocalFileData($fileData);
-
-        $video = $this->addVideoProperties($video, $uploadedFileData);
-
-        return $video;
+        return $this->uploadLocalFileData($fileData);
     }
 
     /**
@@ -425,16 +433,18 @@ class VideoManager
         }
     }
 
+    /**
+     * @param VideoMedia $media
+     *
+     * @return string
+     */
     public function getPublicUrl(VideoMedia $media)
     {
-        $expires = new \DateTime();
-        $expires->modify('+ ' . self::LINK_LIFE_TIME . ' seconds');
-
-        $url = $this->filesystem->getAdapter()->getUrl(
-            $media->getFilepath() . $media->getFilename(),
-            [
-                'expires' => $expires->getTimestamp(),
-            ]
+        $url = sprintf(
+            '%s/%s%s',
+            $this->getCdnPath(),
+            $media->getFilepath(),
+            $media->getFilename()
         );
 
         return $url;
@@ -458,5 +468,19 @@ class VideoManager
         $date = new \DateTime();
         $domain .= '-' . $date->format('YmdHis');
         return $domain;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCdnPath()
+    {
+        $path = sprintf(
+            '%s/%s',
+            $this->container->getParameter('amazon_aws_base_host'),
+            $this->container->getParameter('amazon_aws_video_directory')
+        );
+
+        return $path;
     }
 }

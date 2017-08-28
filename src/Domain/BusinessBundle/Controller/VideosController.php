@@ -9,9 +9,11 @@ use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\VideoManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Form\Handler\FileUploadFormHandler;
@@ -119,8 +121,9 @@ class VideosController extends Controller
     public function indexAction(Request $request)
     {
         $paramsDTO = $this->geVideoListQueryParamsDTO($request);
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
+        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO, $locale);
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
@@ -135,6 +138,7 @@ class VideosController extends Controller
         $params = [
             'results' => $videoResultDTO,
             'seoData' => $seoData,
+            'seoTags' => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_VIDEO),
             'banners' => $banners,
         ];
 

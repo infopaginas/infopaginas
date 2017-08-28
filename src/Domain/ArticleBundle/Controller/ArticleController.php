@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,9 +24,10 @@ class ArticleController extends Controller
     public function indexAction(Request $request)
     {
         $articleManager = $this->getArticlesManager();
-        $paramsDTO = $this->getArticleListQueryParamsDTO($request);
+        $paramsDTO      = $this->getArticleListQueryParamsDTO($request);
+        $locale         = LocaleHelper::getLocale($request->getLocale());
 
-        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $locale);
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
@@ -105,9 +107,10 @@ class ArticleController extends Controller
         }
 
         $articleManager = $this->getArticlesManager();
-        $paramsDTO = $this->getArticleListQueryParamsDTO($request);
+        $paramsDTO      = $this->getArticleListQueryParamsDTO($request);
+        $locale         = LocaleHelper::getLocale($request->getLocale());
 
-        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $categorySlug);
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $locale, $categorySlug);
 
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 

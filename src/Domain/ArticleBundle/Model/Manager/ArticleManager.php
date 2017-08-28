@@ -3,9 +3,11 @@
 namespace Domain\ArticleBundle\Model\Manager;
 
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,11 +32,13 @@ class ArticleManager extends Manager
     }
 
     /**
+     * @param string $locale
+     *
      * @return Article[]
      */
-    public function fetchHomepageArticles()
+    public function fetchHomepageArticles($locale = LocaleHelper::DEFAULT_LOCALE)
     {
-        $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT);
+        $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT, $locale);
 
         return $homepageArticles;
     }
@@ -88,12 +92,14 @@ class ArticleManager extends Manager
 
     /**
      * @param AbstractDTO $paramsDTO
+     * @param string $locale
      * @param string $categorySlug
+     *
      * @return ReviewsResultsDTO
      */
-    public function getArticlesResultDTO(AbstractDTO $paramsDTO, string $categorySlug = '')
+    public function getArticlesResultDTO(AbstractDTO $paramsDTO, $locale = LocaleHelper::DEFAULT_LOCALE, string $categorySlug = '')
     {
-        $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $categorySlug);
+        $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $categorySlug, $locale);
 
         $totalResults = count($this->getRepository()->getPublishedArticles($categorySlug));
 

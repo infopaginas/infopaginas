@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,8 +39,9 @@ class ReviewsController extends Controller
     public function listAction(Request $request)
     {
         $businessProfileId = (int)$request->get('businessProfileId');
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId, $locale);
 
         if (!$businessProfile) {
             throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);

@@ -20,3 +20,10 @@ timeStart: Time Start
 timeEnd: Time End
 openAllTime: Open All Time
 day: Day
+business_profile.action_type.order: Order
+business_profile.action_type.book: Book
+business_profile_phone:
+  type:
+    main: Main
+    secondary: Secondary
+    fax: Fax

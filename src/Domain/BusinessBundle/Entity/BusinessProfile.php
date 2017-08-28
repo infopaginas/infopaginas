@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
 
 /**
  * BusinessProfile
@@ -44,6 +45,7 @@ use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTy
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  * @ServiceAreaTypeValidator()
+ * @BusinessProfilePhoneTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -62,6 +64,9 @@ class BusinessProfile implements
 
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
+
+    const ACTION_URL_TYPE_ORDER = 'order';
+    const ACTION_URL_TYPE_BOOK  = 'book';
 
     const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
@@ -264,10 +269,27 @@ class BusinessProfile implements
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=1000, nullable=true)
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @Assert\Url()
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $website;
+
+    /**
+     * @var string - action url
+     *
+     * @ORM\Column(name="action_url", type="string", length=1000, nullable=true)
+     * @Assert\Url()
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     */
+    protected $actionUrl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="action_url_type", type="string", length=10, options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
+     * @Assert\Choice(callback = "getActionUrlTypesAssert", multiple = false)
+     */
+    protected $actionUrlType;
 
     /**
      * @var string - Email address
@@ -472,7 +494,8 @@ class BusinessProfile implements
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
      *     mappedBy="object",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
      * )
      */
     protected $translations;
@@ -577,7 +600,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $twitterURL;
 
@@ -585,7 +608,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $facebookURL;
 
@@ -593,7 +616,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="google_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $googleURL;
 
@@ -601,7 +624,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $youtubeURL;
 
@@ -609,7 +632,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL
      * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $instagramURL;
 
@@ -617,7 +640,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL
      * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $tripAdvisorURL;
 
@@ -681,6 +704,7 @@ class BusinessProfile implements
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
+     * @ORM\OrderBy({"priority" = "ASC", "id" = "ASC"})
      */
     protected $phones;
 
@@ -914,6 +938,7 @@ class BusinessProfile implements
         $this->hasImages = false;
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
         $this->serviceAreasType  = self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE;
+        $this->actionUrlType     = self::ACTION_URL_TYPE_ORDER;
 
         $this->uid = uniqid('', true);
     }
@@ -2125,11 +2150,28 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getPhones()
     {
         return $this->phones;
+    }
+
+    /**
+     * @return BusinessProfilePhone|null
+     */
+    public function getMainPhone()
+    {
+        $mainPhone = null;
+
+        foreach ($this->getPhones() as $phone) {
+            if ($phone->getType() == BusinessProfilePhone::PHONE_TYPE_MAIN) {
+                $mainPhone = $phone;
+                break;
+            }
+        }
+
+        return $mainPhone;
     }
 
     /**
@@ -2488,15 +2530,17 @@ class BusinessProfile implements
     }
 
     /**
-     * @return boolean
+     * @return string
      */
     public function getCitySlug()
     {
-        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+        $catalogLocality = $this->getCatalogLocality();
 
-        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
-
-        return $citySlug;
+        if ($catalogLocality) {
+            return $catalogLocality->getSlug();
+        } else {
+            return '';
+        }
     }
 
     /** getting distance
@@ -2584,6 +2628,65 @@ class BusinessProfile implements
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionUrlTypesAssert()
+    {
+        return array_keys(self::getActionUrlTypes());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionUrlTypes()
+    {
+        return [
+            self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
+            self::ACTION_URL_TYPE_BOOK  => 'business_profile.action_type.book',
+        ];
+    }
+
+    /**
+     * @param string $actionUrl
+     *
+     * @return BusinessProfile
+     */
+    public function setActionUrl($actionUrl)
+    {
+        $this->actionUrl = $actionUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionUrl()
+    {
+        return $this->actionUrl;
+    }
+
+    /**
+     * @param string $actionUrlType
+     *
+     * @return BusinessProfile
+     */
+    public function setActionUrlType($actionUrlType)
+    {
+        $this->actionUrlType = $actionUrlType;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionUrlType()
+    {
+        return $this->actionUrlType;
     }
 
     /**
@@ -2943,6 +3046,7 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_NAME,
             self::BUSINESS_PROFILE_FIELD_NAME_EN,
             self::BUSINESS_PROFILE_FIELD_NAME_ES,
+            self::BUSINESS_PROFILE_FIELD_SLOGAN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,

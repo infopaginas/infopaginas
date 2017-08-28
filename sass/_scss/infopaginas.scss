@@ -1423,7 +1423,7 @@ $thumb-width-mb: 60px;
     display: flex;
     flex-direction: column;
     margin-top: 0;
-    max-width: 130px;
+    max-width: 150px;
     width: 100%;
 
     .button,
@@ -2022,9 +2022,18 @@ $thumb-width-mb: 60px;
 }
 
 .highlights__item {
-  .fa-envelope,
-  .fa-phone {
+  .fa-envelope, .fa-phone, .fa-fax {
     padding-right: 3px;
+  }
+
+  li {
+    &.main-phone {
+      font-weight: bold;
+    }
+
+    i.fa {
+      width: 20px;
+    }
   }
 }
 
@@ -2144,10 +2153,6 @@ $thumb-width-mb: 60px;
     padding: 0;
     text-align: center;
 
-    &.profile-page {
-      width: 33%;
-    }
-
     i {
       font-size: 1.7em;
       height: .5em;
@@ -2155,8 +2160,10 @@ $thumb-width-mb: 60px;
       top: .9em;
     }
 
-    &:hover {
-      background: $blue--dark;
+    @media only screen and (min-width: 805px) {
+      &:hover {
+        background: $blue--dark;
+      }
     }
 
     &:visited {
@@ -2166,13 +2173,13 @@ $thumb-width-mb: 60px;
 
   .button--opentable {
     background: $red;
-    line-height: 55px;
+    line-height: 27px;
 
     img {
       display: block;
       position: relative;
-      top: 1.6em;
-      width: 25px;
+      top: 0.7em;
+      width: 33px;
     }
   }
 
@@ -2926,8 +2933,12 @@ a.tag {
     padding-top: 20px;
   }
 
-  h1 {
+  h2 {
     font-size: 16px;
+    font-weight: 300 !important;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0.67em 0;
   }
 
   h3 {
@@ -3845,6 +3856,14 @@ a.button--login {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 10px;
+
+  button.remove-phone {
+    margin: 0 0 0 10px;
+
+    @media only screen and (max-width: 804px) {
+      margin: 10px 0 0 0;
+    }
+  }
 }
 
 .row--passwords, .row--name {
@@ -4217,7 +4236,7 @@ li.active {
     position: absolute;
     top: calc(50% - 20px);
     width: 40px;
-    z-index: 10;
+    z-index: 1;
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     display: none !important;
@@ -5340,7 +5359,7 @@ input[type='radio'], input[type='checkbox'] {
   img {
     display: block;
     text-align: center;
-    margin: 0 auto;
+    margin: 5px auto;
     width: 50px;
   }
 
@@ -5432,13 +5451,23 @@ input[type='radio'], input[type='checkbox'] {
     display: block;
     list-style: none;
     margin: 0;
-    padding: 0 20px;
+    padding: 0 0;
     border: 2px solid #2a305b;
     border-radius: 2px;
     li {
-      text-align: center;
+      text-align: left;
+      margin-left: 10px;
+
       a {
         color: #132249;
+      }
+
+      &.main-phone {
+        font-weight: bold;
+      }
+
+      i.fa {
+        width: 20px;
       }
     }
   }
@@ -5667,12 +5696,12 @@ a.link-pointer {
       margin-top: 5px;
     }
   }
-  .form__row .form__field.select-weekday-user {
+  .form__row .form__field.select-weekday-user, .form__field.select-phone-type {
     margin-right: 0;
   }
 }
 
-.select-weekday-user {
+.select-weekday-user, .select-phone-type {
   margin-bottom: 10px;
 
   .select2-selection__arrow {
@@ -5681,7 +5710,7 @@ a.link-pointer {
 }
 
 @media only screen and (min-width: 1200px) {
-  .select-weekday-user {
+  .select-weekday-user, .select-phone-type {
     width: 15%;
   }
 }
@@ -5695,6 +5724,12 @@ a.link-pointer {
 @media only screen and (max-width: 804px) and (orientation: portrait) {
   .select-weekday-user {
     width: 20%;
+  }
+}
+
+@media only screen and (max-width: 804px) {
+  .select-phone-type {
+    width: 100%;
   }
 }
 

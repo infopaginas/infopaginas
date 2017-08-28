@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Repository;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 
 /**
@@ -13,40 +15,54 @@ class BusinessGalleryRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
      * @param BusinessProfile $businessProfile
+     * @param string $locale
+     *
      * @return array
      */
-    public function findBusinessProfileAdvertisementImages(BusinessProfile $businessProfile)
+    public function findBusinessProfileAdvertisementImages(BusinessProfile $businessProfile, $locale)
     {
         $qb = $this->createQueryBuilder('bg');
 
-        $advertisements = $qb->where('bg.businessProfile = :businessProfile')
+        $qb->where('bg.businessProfile = :businessProfile')
             ->andWhere('bg.type = :businessProfileAdvertisementImageType')
             ->andWhere('bg.isActive = true')
             ->setParameter('businessProfile', $businessProfile)
             ->setParameter('businessProfileAdvertisementImageType', OxaMediaInterface::CONTEXT_BANNER)
-            ->getQuery()
-            ->getResult();
+        ;
 
-        return $advertisements;
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**
      * @param BusinessProfile $businessProfile
+     * @param string $locale
+     *
      * @return array
      */
-    public function findBusinessProfilePhotoImages(BusinessProfile $businessProfile)
+    public function findBusinessProfilePhotoImages(BusinessProfile $businessProfile, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('bg');
 
-        $images = $qb->where('bg.businessProfile = :businessProfile')
+        $qb->where('bg.businessProfile = :businessProfile')
             ->andWhere('bg.type = :businessProfilePhotoImageType')
             ->andWhere('bg.isActive = true')
             ->setParameter('businessProfile', $businessProfile)
             ->setParameter('businessProfilePhotoImageType', OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES)
-            ->getQuery()
-            ->getResult();
+        ;
 
-        return $images;
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**

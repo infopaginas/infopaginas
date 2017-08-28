@@ -37,6 +37,7 @@ use Domain\ReportBundle\Manager\BaseReportManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Model\UserInterface;
 use Gedmo\Translatable\TranslatableListener;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
@@ -198,8 +199,8 @@ class BusinessProfileManager extends Manager
                 'profileUrl'    => $this->container->get('router')->generate(
                     'domain_business_profile_view',
                     [
-                        'slug'          => $profile->getSlug(),
-                        'citySlug'      => $profile->getCatalogLocality()->getSlug(),
+                        'slug'      => $profile->getSlug(),
+                        'citySlug'  => $profile->getCitySlug(),
                     ]
                 ),
             ];
@@ -268,15 +269,12 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $searchParams
-     * @param string $locale
      *
      * @return array
      */
-    public function search(SearchDTO $searchParams, string $locale)
+    public function search(SearchDTO $searchParams)
     {
-        $searchResultsData = $this->searchBusinessInElastic($searchParams, $locale);
-
-        return $searchResultsData;
+        return $this->searchBusinessInElastic($searchParams);
     }
 
     /**
@@ -309,7 +307,7 @@ class BusinessProfileManager extends Manager
      *
      * @return null|object
      */
-    public function find(int $id, string $locale = 'en')
+    public function find(int $id, string $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $business = $this->getRepository()->find($id);
 
@@ -365,21 +363,29 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
-     * @param string $locale
      */
-    public function saveProfile(BusinessProfile $businessProfile, string $locale = 'en')
+    public function saveProfile(BusinessProfile $businessProfile)
     {
-        if (!$businessProfile->getId()) {
-            $businessProfile->setIsActive(false);
-        }
+        $businessProfile->setIsActive(false);
 
-        foreach ($businessProfile->getImages() as $gallery) {
-            $businessProfile->removeImage($gallery);
-            $gallery->setBusinessProfile($businessProfile);
-            $this->getEntityManager()->persist($gallery);
-            $businessProfile->addImage($gallery);
-        }
+        // workaround for spanish slug
+        $nameDefaultLocale = $businessProfile->getTranslation(
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
+            LocaleHelper::DEFAULT_LOCALE
+        );
+
+        $nameSlugLocale = $businessProfile->getTranslation(
+            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
+            LocaleHelper::SLUG_LOCALE
+        );
+
+        $businessProfile->setName($nameSlugLocale);
+
         $this->commit($businessProfile);
+
+        $businessProfile->setName($nameDefaultLocale);
+
+        $this->em->flush();
     }
 
     /**
@@ -592,28 +598,25 @@ class BusinessProfileManager extends Manager
                         $dataNew = json_decode($change->getNewValue());
                         $dataOld = json_decode($change->getOldValue());
 
-                        if ($dataNew) {
-                            if ($dataNew->id) {
-                                $translation = $this->em->getRepository(BusinessProfileTranslation::class)
-                                    ->find($dataNew->id);
-                            } else {
+                        if ($dataNew and $dataNew->field and $dataNew->locale and $dataNew->value) {
+                            $translation = $businessProfile->getTranslationItem($dataNew->field, $dataNew->locale);
+
+                            if (!$translation) {
                                 $translation = new BusinessProfileTranslation();
 
                                 $businessProfile->addTranslation($translation);
-
-                                $this->em->persist($translation);
                             }
 
                             $translation->setField($dataNew->field);
                             $translation->setLocale($dataNew->locale);
                             $translation->setContent($dataNew->value);
 
-                            $translation->setObject($businessProfile);
-                        } elseif ($dataOld and $dataOld->id) {
-                            $translation = $this->em->getRepository(BusinessProfileTranslation::class)
-                                ->find($dataOld->id);
+                        } elseif ($dataOld and $dataOld->field and $dataOld->locale) {
+                            $translation = $businessProfile->getTranslationItem($dataOld->field, $dataOld->locale);
 
-                            $this->em->remove($translation);
+                            if ($translation) {
+                                $businessProfile->removeTranslation($translation);
+                            }
                         }
                     }
                     break;
@@ -758,15 +761,16 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @param string $locale
      * @return array
      */
-    public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile)
+    public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
 
         if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
             $advertisements = $this->getBusinessGalleryRepository()
-                ->findBusinessProfileAdvertisementImages($businessProfile);
+                ->findBusinessProfileAdvertisementImages($businessProfile, $locale);
 
             return $advertisements;
         }
@@ -776,14 +780,16 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param BusinessProfile $businessProfile
+     * @param string $locale
+     *
      * @return array
      */
-    public function getBusinessProfilePhotoImages(BusinessProfile $businessProfile)
+    public function getBusinessProfilePhotoImages(BusinessProfile $businessProfile, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
 
         if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
-            $photos = $this->getBusinessGalleryRepository()->findBusinessProfilePhotoImages($businessProfile);
+            $photos = $this->getBusinessGalleryRepository()->findBusinessProfilePhotoImages($businessProfile, $locale);
             return $photos;
         }
 
@@ -1490,7 +1496,7 @@ class BusinessProfileManager extends Manager
         $url = $this->container->get('router')->generate(
             'domain_business_profile_view',
             [
-                'citySlug' => $businessProfile->getCatalogLocality()->getSlug(),
+                'citySlug' => $businessProfile->getCitySlug(),
                 'slug'     => $businessProfile->getSlug(),
             ],
             true
@@ -1671,18 +1677,17 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param $searchParams SearchDTO
-     * @param $locale       string
      *
      * @return array
      */
-    protected function searchBusinessInElastic(SearchDTO $searchParams, $locale)
+    protected function searchBusinessInElastic(SearchDTO $searchParams)
     {
         //randomize feature works only for relevance sorting ("Best match")
         $randomize   = $searchParams->randomizeAllowed();
         $coordinates = $searchParams->getCurrentCoordinates();
 
         if ($searchParams->checkAdsAllowed()) {
-            $searchAdQuery   = $this->getElasticSearchQueryAd($searchParams, $locale);
+            $searchAdQuery   = $this->getElasticSearchQueryAd($searchParams);
             $responseAd      = $this->searchBusinessAdElastic($searchAdQuery);
             $searchAd        = $this->getBusinessAdDataFromElasticResponse($responseAd);
             $searchResultAds = $this->setBusinessDynamicValues($searchAd, $coordinates, true);
@@ -1693,7 +1698,7 @@ class BusinessProfileManager extends Manager
             $searchResultAds = [];
         }
 
-        $searchQuery = $this->getElasticSearchQuery($searchParams, $locale, $excludeIds);
+        $searchQuery = $this->getElasticSearchQuery($searchParams, $excludeIds);
 
         $response = $this->searchBusinessElastic($searchQuery);
 
@@ -2302,14 +2307,13 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $params
-     * @param string $locale
      * @param array $excludeIds
      *
      * @return array
      */
-    protected function getElasticSearchQuery(SearchDTO $params, $locale, $excludeIds = [])
+    protected function getElasticSearchQuery(SearchDTO $params, $excludeIds = [])
     {
-        $businessSearchQuery = $this->getElasticBusinessSearchQuery($params, $locale);
+        $businessSearchQuery = $this->getElasticBusinessSearchQuery($params);
 
         $filters    = $this->getElasticCommonFilters($params);
         $sort       = $this->getElasticSortQuery($params);
@@ -2355,13 +2359,12 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param $params SearchDTO
-     * @param $locale string
      *
      * @return array
      */
-    protected function getElasticSearchQueryAd(SearchDTO $params, $locale)
+    protected function getElasticSearchQueryAd(SearchDTO $params)
     {
-        $businessSearchQuery = $this->getElasticBusinessSearchQuery($params, $locale);
+        $businessSearchQuery = $this->getElasticBusinessSearchQuery($params);
 
         $filters    = $this->getElasticCommonFilters($params);
         $sort       = $this->getElasticRandomSortQuery();
@@ -2538,13 +2541,12 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param SearchDTO $params
-     * @param string    $locale
      *
      * @return array
      */
-    protected function getElasticBusinessSearchQuery(SearchDTO $params, $locale)
+    protected function getElasticBusinessSearchQuery(SearchDTO $params)
     {
-        $fields = $this->getBusinessSearchFields($locale);
+        $fields = $this->getBusinessSearchFields($params->getLocale());
 
         $query = [
             'bool' => [
@@ -2944,8 +2946,8 @@ class BusinessProfileManager extends Manager
             return false;
         }
 
-        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = LocaleHelper::LOCALE_EN;
+        $esLocale   = LocaleHelper::LOCALE_ES;
         $categories = [
             $enLocale => [],
             $esLocale => [],
@@ -3069,8 +3071,8 @@ class BusinessProfileManager extends Manager
      */
     public function buildBusinessProfileChildElasticData($extraSearch, $data)
     {
-        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = LocaleHelper::LOCALE_EN;
+        $esLocale   = LocaleHelper::LOCALE_ES;
         $categories = [
             $enLocale => [],
             $esLocale => [],
@@ -3508,7 +3510,7 @@ class BusinessProfileManager extends Manager
 
         $this->em->flush();
 
-       return $updated;
+        return $updated;
     }
 
     /**

@@ -30,8 +30,8 @@ class PhoneChangeSetUtil
     ) : ArrayCollection {
         $collection = new ArrayCollection();
 
-        $phones = json_decode($change->getNewValue());
-        $dataOld      = json_decode($change->getOldValue());
+        $phones  = json_decode($change->getNewValue());
+        $dataOld = json_decode($change->getOldValue());
 
         if ($dataOld) {
             foreach ($dataOld as $key => $itemOld) {
@@ -43,15 +43,20 @@ class PhoneChangeSetUtil
 
         if ($phones) {
             foreach ($phones as $item) {
+                $data = json_decode($item->value);
+
                 if (!$item->id) {
                     $phone = new BusinessProfilePhone();
-                    $phone->setPhone($item->value);
                     $phone->setBusinessProfile($businessProfile);
+
                     $entityManager->persist($phone);
                 } else {
                     $phone = $entityManager->getRepository(BusinessProfilePhone::class)->find($item->id);
-                    $phone->setPhone($item->value);
                 }
+
+                $phone->setPhone($data->value);
+                $phone->setType($data->type);
+                $phone->setPriority(BusinessProfilePhone::getPriorityByType($data->type));
 
                 $collection->add($phone);
             }

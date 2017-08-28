@@ -2,7 +2,9 @@
 
 namespace Domain\BusinessBundle\Form\Type;
 
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,20 +26,24 @@ class BusinessProfilePhoneType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('type', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'business-phone-type',
+                ],
+                'choices'  => BusinessProfilePhone::getTypes(),
+                'multiple' => false,
+                'required' => true,
+                'choice_translation_domain' => true,
+            ])
             ->add('phone', TextType::class, [
                 'attr'  => [
                     'class' => 'form-control',
-                    'placeholder' => '(787) 594-7273',
                 ],
                 'constraints' => [
-                    new Length([
-                        'max' => 10
-                    ]),
                     new Regex([
-                        'pattern' => '/^[0-9-]*$/',
+                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
                         'message' => 'business_profile.phone.digit_dash',
                     ]),
-                    new NotBlank(),
                 ]
             ])
         ;

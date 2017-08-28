@@ -13,7 +13,8 @@ class SecurityListener
      * @param AuthorizationChecker    $security
      * @param UserActionReportManager $userActionReportManager
      */
-    public function __construct(AuthorizationChecker $security, UserActionReportManager $userActionReportManager) {
+    public function __construct(AuthorizationChecker $security, UserActionReportManager $userActionReportManager)
+    {
         $this->security = $security;
         $this->userActionReportManager = $userActionReportManager;
     }
