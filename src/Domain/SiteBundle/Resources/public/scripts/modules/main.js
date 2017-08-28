@@ -401,17 +401,21 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
                 if ($this.is('.modal--opened')) {
                     $this.removeClass('modal--opened');
                     $('body').removeClass('body--no-scroll');
+                    $('.main__container').removeClass('container__no-scroll');
                 } else {
                     $this.addClass('modal--opened');
                     $('body').addClass('body--no-scroll');
+                    $('.main__container').addClass('container__no-scroll');
                 }
                 if (settings.show) {
                     $this.addClass('modal--opened');
                     $('body').addClass('body--no-scroll');
+                    $('.main__container').addClass('container__no-scroll');
                 }
                 if (settings.close) {
                     $this.removeClass('modal--opened');
                     $('body').removeClass('body--no-scroll');
+                    $('.main__container').removeClass('container__no-scroll');
                 }
             });
         };
@@ -461,10 +465,13 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
                 cats.removeClass( 'categories--opened' );
                 $.Velocity.RunSequence(closeCats, { mobileHA: true });
                 $( 'body' ).removeClass( 'body--no-scroll' );
+                $( 'body' ).removeClass( 'body--no-scroll' );
+                $( '.main__container' ).removeClass( 'body--no-scroll' );
             } else {
                 cats.addClass( 'categories--opened' );
                 $.Velocity.RunSequence(openCats, { mobileHA: true });
                 $( 'body' ).addClass( 'body--no-scroll' );
+                $( '.main__container' ).addClass( 'body--no-scroll' );
             }
         });
     };

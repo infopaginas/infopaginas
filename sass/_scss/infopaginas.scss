@@ -1050,7 +1050,7 @@ select {
 .main__container--centered {
 
   @media only screen and (min-width: 805px) {
-    margin: 00 auto;
+    margin: 0 auto;
     max-width: 2000px;
     width: 100%;
   }
@@ -3286,7 +3286,6 @@ a.tag {
   align-items: center;
   display: flex;
   height: 100%;
-  height: 100vh;
   justify-content: center;
   left: 0;
   opacity: 1;
@@ -3299,13 +3298,16 @@ a.tag {
   transition-timing-function: ease-out;
 }
 
+.container__no-scroll {
+  overflow-y: hidden;
+  position: fixed;
+}
+
 .modal__outside {
   background: transparentize($black, .2);
   position: fixed;
   height: 100%;
-  height: 100vh;
   width: 100%;
-  width: 100vw;
   z-index: 100;
   display: none;
   top: 0;
@@ -3318,7 +3320,7 @@ a.tag {
   border-radius: 6px;
   box-shadow: 0 8px 20px transparentize($black, .5);
   min-height: 300px;
-  max-height: 90vh;
+  max-height: 90%;
   overflow-y: auto;
   padding: 20px;
   padding-bottom: 40px;
