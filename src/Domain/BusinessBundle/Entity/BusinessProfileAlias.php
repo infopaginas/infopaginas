@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * BusinessProfileKeyword
+ * BusinessProfileAlias
  *
  * @ORM\Table(name="business_profile_alias")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileAliasRepository")

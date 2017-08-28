@@ -300,7 +300,7 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return BusinessProfile|null
      */
-    public function findByAlias($slug)
+    public function findByAlias(string $slug)
     {
         $query = $this->getQueryBuilder()
             ->distinct()
