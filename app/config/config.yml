@@ -131,7 +131,8 @@ twig:
         ads_stat_date_format:      'd.m.Y'
         task_date_format:          'd M, Y, H:i:s A'
         working_hours_date_format: 'g:i A'
-        google_tag_manager_id:     'GTM-WDMMDNV'
+#        google_tag_manager_id:     'GTM-WDMMDNV'
+        google_tag_manager_id:     'GTM-TWPMVZ'
         default_country:           'pr'
 
 #       validation patterns
