@@ -723,6 +723,19 @@ class BusinessProfile implements
     protected $keywords;
 
     /**
+     * @var BusinessProfileAlias[] - Business Profile Aliases
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileAlias",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     */
+    protected $aliases;
+
+    /**
      * @ORM\Column(name="uid", type="string")
      */
     protected $uid;
@@ -931,6 +944,7 @@ class BusinessProfile implements
         $this->collectionWorkingHours   = new ArrayCollection();
         $this->extraSearches            = new ArrayCollection();
         $this->keywords                 = new ArrayCollection();
+        $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
 
         $this->isClosed  = false;
@@ -2449,6 +2463,42 @@ class BusinessProfile implements
     public function getKeywords()
     {
         return $this->keywords;
+    }
+
+    /**
+     * Add alias
+     *
+     * @param BusinessProfileAlias $alias
+     *
+     * @return BusinessProfile
+     */
+    public function addAlias(BusinessProfileAlias $alias)
+    {
+        $this->aliases[] = $alias;
+
+        if ($alias) {
+            $alias->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove alias
+     *
+     * @param BusinessProfileAlias $alias
+     */
+    public function removeAlias(BusinessProfileAlias $alias)
+    {
+        $this->aliases->removeElement($alias);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 
     /**

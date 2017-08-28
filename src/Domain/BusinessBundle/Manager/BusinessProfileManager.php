@@ -348,6 +348,19 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param string $slug
+     * @return null|object
+     */
+    public function findByAlias(string $slug)
+    {
+        $slug = SlugUtil::convertSlug($slug);
+
+        $businessProfile = $this->getRepository()->findByAlias($slug);
+
+        return $businessProfile;
+    }
+
+    /**
      * @return BusinessProfile
      */
     public function createProfile() : BusinessProfile
