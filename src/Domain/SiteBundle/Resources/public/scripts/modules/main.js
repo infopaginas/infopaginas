@@ -465,13 +465,12 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
                 cats.removeClass( 'categories--opened' );
                 $.Velocity.RunSequence(closeCats, { mobileHA: true });
                 $( 'body' ).removeClass( 'body--no-scroll' );
-                $( 'body' ).removeClass( 'body--no-scroll' );
-                $( '.main__container' ).removeClass( 'body--no-scroll' );
+                $( '.main__container' ).removeClass( 'container__no-scroll' );
             } else {
                 cats.addClass( 'categories--opened' );
                 $.Velocity.RunSequence(openCats, { mobileHA: true });
                 $( 'body' ).addClass( 'body--no-scroll' );
-                $( '.main__container' ).addClass( 'body--no-scroll' );
+                $( '.main__container' ).addClass( 'container__no-scroll' );
             }
         });
     };

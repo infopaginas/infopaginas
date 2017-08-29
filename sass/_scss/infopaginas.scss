@@ -3345,7 +3345,6 @@ a.tag {
 }
 
 .modal--opened {
-  display: block;
   display: flex;
   opacity: 1;
   top: 0;
@@ -3357,6 +3356,11 @@ a.tag {
 
   .modal__content {
     top: 0;
+
+    @media only screen and (max-width: 804px) {
+      overflow: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }
 
