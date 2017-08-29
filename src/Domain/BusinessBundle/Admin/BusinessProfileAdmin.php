@@ -231,6 +231,8 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->with('Map', ['class' => 'col-md-8',])->end()
                 ->with('Categories', ['class' => 'col-md-6',])->end()
             ->end()
+            ->tab('Legacy URLs')
+            ->end()
         ;
 
         if ($businessProfile->getId() and
@@ -742,6 +744,25 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                 ;
             }
+
+            $formMapper
+                ->tab('Legacy URLs')
+                    ->add(
+                        'aliases',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                        ]
+                    )
+                    ->end()
+                ->end()
+            ;
         }
     }
 
