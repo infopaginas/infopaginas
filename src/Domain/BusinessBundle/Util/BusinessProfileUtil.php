@@ -3,7 +3,9 @@
 namespace Domain\BusinessBundle\Util;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class BusinessProfileUtil
 {
@@ -98,18 +100,15 @@ class BusinessProfileUtil
                 BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
                 strtolower($locale)
             );
-            $workingHours = $businessProfile->getTranslation(
-                BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
-                $locale
-            );
         } else {
             $name = $businessProfile->getName();
             $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
-            $workingHours = $businessProfile->getWorkingHours();
             $locale = $businessProfile->getLocale();
         }
 
         $translator = $container->get('translator');
+
+        $workingHours = self::getWorkingHoursAsText($businessProfile, $locale, $translator);
 
         $seoDescription = $translator->trans(
             'business_profile.seoDescription.main',
@@ -121,7 +120,7 @@ class BusinessProfileUtil
             strtolower($locale)
         );
 
-        if ($businessProfile->getWorkingHours() and mb_strlen($seoDescription) < $descriptionMaxLength) {
+        if ($workingHours and mb_strlen($seoDescription) < $descriptionMaxLength) {
 
 
             $seoDescription .= ' ' . $translator->trans(
@@ -191,5 +190,53 @@ class BusinessProfileUtil
     public static function getBusinessProfileNameSeoClass($type)
     {
         return sprintf('%s-%s', $type, self::SEO_CLASS_BUSINESS_NAME);
+    }
+
+    /**
+     * @param BusinessProfile       $businessProfile
+     * @param string                $locale
+     * @param TranslatorInterface   $translator
+     *
+     * @return string
+     */
+    public static function getWorkingHoursAsText(BusinessProfile $businessProfile, $locale, $translator)
+    {
+        $workingHours = $businessProfile->getWorkingHoursJsonAsObject();
+        $locale = LocaleHelper::getLocale($locale);
+        $dayText = [];
+
+        $openAllTimeText = $translator->trans(
+            'business.working.hours.open_all_time',
+            [],
+            'messages',
+            $locale
+        );
+
+        foreach ($workingHours as $day => $workingHour) {
+            if ($workingHour) {
+                $text = $translator->trans($day) . ' ';
+                $hoursText = [];
+
+                foreach ($workingHour as $item) {
+                    $hours = '';
+
+                    if (!$item->openAllTime) {
+                        $hours .= $item->timeStart . '-' . $item->timeEnd;
+                    } else {
+                        $hours .= $openAllTimeText;
+                    }
+
+                    if (!empty($item->comment->$locale)) {
+                        $hours .= ' - ' . $item->comment->$locale;
+                    }
+
+                    $hoursText[] = $hours;
+                }
+
+                $dayText[] = $text . implode(', ', $hoursText);
+            }
+        }
+
+        return implode('; ', $dayText);
     }
 }

@@ -17,29 +17,46 @@
 {% endmacro %}
 
 {% macro working_hours_prototype(workingHoursField) %}
-    <div class="multi-field">
-        <div class="form__field field--multi-select select-weekday-user">
-            {{ form_widget(workingHoursField.day, {'attr': {'style': 'width: 100%'}}) }}
-        </div><!-- form-field -->
-        <div class="form__field field-hour-select hours-user">
-            {{ form_label(workingHoursField.timeStart) }}
-            {{ form_widget(workingHoursField.timeStart, {'attr': {'style': 'width: 6.5em'}}) }}
-        </div><!-- form-field -->
-        <div class="field-middle-text">to</div>
-        <div class="form__field field-hour-select hours-user">
-            {{ form_label(workingHoursField.timeEnd) }}
-            {{ form_widget(workingHoursField.timeEnd, {'attr': {'style': 'width: 6.5em'}}) }}
-        </div><!-- form-field -->
+    <div>
+        <div class="multi-field">
+            <div class="form__field field--multi-select select-weekday-user">
+                {{ form_widget(workingHoursField.days, {'attr': {'style': 'width: 100%'}}) }}
+            </div><!-- form-field -->
+            <div class="form__field field-hour-select hours-user">
+                {{ form_label(workingHoursField.timeStart) }}
+                {{ form_widget(workingHoursField.timeStart, {'attr': {'style': 'width: 6.5em'}}) }}
+            </div><!-- form-field -->
+            <div class="field-middle-text">to</div>
+            <div class="form__field field-hour-select hours-user">
+                {{ form_label(workingHoursField.timeEnd) }}
+                {{ form_widget(workingHoursField.timeEnd, {'attr': {'style': 'width: 6.5em'}}) }}
+            </div><!-- form-field -->
 
-        <div class="form__field field--website field-active-time">
-            {{ form_label(workingHoursField.openAllTime) }}
-            {{ form_widget(workingHoursField.openAllTime) }}
-        </div>        
-    </div><!-- multifield -->
-    <button class="button button--small remove-working-hours">
-        <i class="fa fa-minus-square"></i>
-        {% trans %}Remove{% endtrans %}
-    </button>
+            <div class="form__field field--website field-active-time">
+                {{ form_label(workingHoursField.openAllTime) }}
+                {{ form_widget(workingHoursField.openAllTime) }}
+            </div>
+        </div><!-- multifield -->
+
+        <div class="form__row vertical__row">
+            <div class="form__field field--working-hours-comment">
+                {{ form_label(workingHoursField.commentEn) }}
+                {{ form_widget(workingHoursField.commentEn) }}
+            </div>
+        </div>
+
+        <div class="form__row vertical__row">
+            <div class="form__field field--working-hours-comment">
+                {{ form_label(workingHoursField.commentEs) }}
+                {{ form_widget(workingHoursField.commentEs) }}
+            </div>
+        </div>
+
+        <button class="button button--small remove-working-hours">
+            <i class="fa fa-minus-square"></i>
+            {% trans %}Remove{% endtrans %}
+        </button>
+    </div>
 {% endmacro %}
 
 <div class="form-column__container clearfix">

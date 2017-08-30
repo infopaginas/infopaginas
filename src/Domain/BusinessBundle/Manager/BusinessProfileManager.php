@@ -1447,8 +1447,6 @@ class BusinessProfileManager extends Manager
                     }
                 }
             }
-        } elseif ($businessProfile->getWorkingHours()) {
-            $schemaItem['openingHours'] = $businessProfile->getWorkingHours();
         }
 
         return $schemaItem;

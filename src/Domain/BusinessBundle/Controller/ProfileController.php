@@ -230,6 +230,7 @@ class ProfileController extends Controller
             'markers'         => $locationMarkers,
             'showClaimButton' => $showClaimBlock,
             'claimBusinessForm' => $claimBusinessForm,
+            'locale'          => $locale,
         ]);
     }
 

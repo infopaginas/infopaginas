@@ -215,6 +215,7 @@ class SearchController extends Controller
         $closestLocality = '';
         $seoCategories = [];
         $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE;
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         if ($searchDTO) {
             if ($searchDTO->checkSearchInMap()) {
@@ -276,6 +277,7 @@ class SearchController extends Controller
                 'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'locale'            => $locale,
             ]
         );
     }

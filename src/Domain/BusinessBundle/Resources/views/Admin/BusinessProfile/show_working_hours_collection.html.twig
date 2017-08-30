@@ -7,9 +7,17 @@
                 <li>
                     {{ item.day }}:
                     {% if item.openAllTime %}
-                        Open all time
+                        Open all time;
                     {% else %}
-                        {{ item.timeStart|date(working_hours_date_format) }} - {{ item.timeEnd|date(working_hours_date_format) }}
+                        {{ item.timeStart|date(working_hours_date_format) }} - {{ item.timeEnd|date(working_hours_date_format) }};
+                    {% endif %}
+
+                    {% if item.commentEn %}
+                        Comment En: {{ item.commentEn }};
+                    {% endif %}
+
+                    {% if item.commentEs %}
+                        Comment Es: {{ item.commentEs }};
                     {% endif %}
                 </li>
             {% endfor %}

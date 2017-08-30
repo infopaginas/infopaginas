@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Model;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class DayOfWeekModel
@@ -35,8 +37,6 @@ class DayOfWeekModel
     public static function getDayOfWeekMapping()
     {
         return [
-            self::CODE_WEEKDAY   => 'Weekday',
-            self::CODE_WEEKEND   => 'Weekend',
             self::CODE_MONDAY    => 'Monday',
             self::CODE_TUESDAY   => 'Tuesday',
             self::CODE_WEDNESDAY => 'Wednesday',
@@ -171,7 +171,7 @@ class DayOfWeekModel
     {
         $check = true;
 
-        $dailyHours = self::getWorkingHoursWeekList($workingHours);
+        $dailyHours = self::getWorkingHoursWeekValidationList($workingHours);
 
         foreach ($dailyHours as $dailyHoursSet) {
             $check = self::validateDayWorkingHours($dailyHoursSet);
@@ -252,17 +252,15 @@ class DayOfWeekModel
      */
     public static function checkWorkingHourOverlap($workingHour, $checkWorkingHour)
     {
-        $defaultDate = DatesUtil::getToday();
-
         $timeEnd      = $workingHour->getTimeEnd();
         $checkTimeEnd = $checkWorkingHour->getTimeEnd();
 
-        if ($timeEnd == $defaultDate) {
+        if ($timeEnd and $timeEnd <= $workingHour->getTimeStart()) {
             $timeEnd = clone $timeEnd;
             $timeEnd->modify('+1 day');
         }
 
-        if ($checkTimeEnd == $defaultDate) {
+        if ($checkTimeEnd and $checkTimeEnd <= $checkWorkingHour->getTimeStart()) {
             $checkTimeEnd = clone $checkTimeEnd;
             $checkTimeEnd->modify('+1 day');
         }
@@ -306,26 +304,17 @@ class DayOfWeekModel
             $now->modify($time);
 
             $dayOfWeek = strtoupper(date('D'));
-            $daysKey = '';
 
-            foreach ($workingHours as $dayItems => $items) {
-                $days = explode(',', $dayItems);
+            $data = [
+                'status' => true,
+                'open'   => false,
+                'hours'  => false,
+            ];
 
-                if (in_array($dayOfWeek, $days)) {
-                    $daysKey = $dayItems;
-                }
-            }
-
-            if ($daysKey and !empty($workingHours->{$daysKey})) {
-                $data = [
-                    'status' => true,
-                    'open'   => false,
-                    'hours'  => false,
-                ];
-
+            if (!empty($workingHours->$dayOfWeek)) {
                 $defaultDate = self::getDefaultDateTime();
 
-                foreach ($workingHours->{$daysKey} as $workingHour) {
+                foreach ($workingHours->$dayOfWeek as $workingHour) {
                     $startDate = clone $defaultDate;
                     $startDate->modify($workingHour->timeStart);
 
@@ -371,13 +360,8 @@ class DayOfWeekModel
 
         if (!$workingHours->isEmpty()) {
             $dailyHours = self::getWorkingHoursWeekList($workingHours);
-
-            // merge weekday and weekend to real days
-            $dailyHours = self::mergeCustomDayToReal($dailyHours, self::CODE_WEEKDAY);
-            $dailyHours = self::mergeCustomDayToReal($dailyHours, self::CODE_WEEKEND);
             $dailyHours = self::sortDailyWorkingHours($dailyHours);
             $dailyHours = self::orderDailyWorkingDayByDay($dailyHours);
-            $dailyHours = self::mergeSimilarWorkingDays($dailyHours);
         }
 
         return $dailyHours;
@@ -458,10 +442,23 @@ class DayOfWeekModel
             $timeEnd = DatesUtil::getToday();
         }
 
+        $comments = [];
+
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $property = BusinessProfileWorkingHour::FIELD_PREFIX_COMMENT . LocaleHelper::getLangPostfix($locale);
+
+            if (property_exists($workingHours, $property)) {
+                $comments[$locale] = $accessor->getValue($workingHours, $property);
+            }
+        }
+
         return [
             'timeStart'   => $timeStart->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
             'timeEnd'     => $timeEnd->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
             'openAllTime' => $workingHours->getOpenAllTime(),
+            'comment'     => $comments,
         ];
     }
 
@@ -476,8 +473,48 @@ class DayOfWeekModel
 
         foreach (self::getAllDaysOfWeek() as $day) {
             foreach ($workingHours as $workingHour) {
-                if ($workingHour->getDay() == $day) {
-                    $dailyHours[$day][] = $workingHour;
+                foreach ($workingHour->getDays() as $currentDay) {
+                    if ($currentDay == $day) {
+                        $dailyHours[$day][] = $workingHour;
+                    }
+                }
+            }
+        }
+
+        return $dailyHours;
+    }
+
+    /**
+     * @param BusinessProfileWorkingHour[] $workingHours
+     *
+     * @return array
+     */
+    public static function getWorkingHoursWeekValidationList($workingHours)
+    {
+        $dailyHours = [];
+        $nextDayHours = [];
+
+        foreach (self::getAllDaysOfWeek() as $day) {
+            foreach ($nextDayHours as $nextDayHour) {
+                $dailyHours[$day][] = $nextDayHour;
+            }
+
+            $nextDayHours = [];
+
+            foreach ($workingHours as $workingHour) {
+                foreach ($workingHour->getDays() as $currentDay) {
+                    if ($currentDay == $day) {
+                        $dailyHours[$day][] = $workingHour;
+
+                        if (!$workingHour->getOpenAllTime() and
+                            $workingHour->getTimeStart() >= $workingHour->getTimeEnd()
+                        ) {
+                            $nextDayWorkingHour = clone $workingHour;
+
+                            $nextDayWorkingHour->setTimeStart(DatesUtil::getToday());
+                            $nextDayHours[] = $nextDayWorkingHour;
+                        }
+                    }
                 }
             }
         }

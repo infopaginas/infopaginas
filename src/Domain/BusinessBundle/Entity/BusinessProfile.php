@@ -36,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessProfileWorkingHourTypeValidator;
 
 /**
  * BusinessProfile
@@ -46,6 +47,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as Busi
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  * @ServiceAreaTypeValidator()
  * @BusinessProfilePhoneTypeValidator()
+ * @BusinessProfileWorkingHourTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -72,7 +74,6 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
     const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
     const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 1024;
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH = 255;
     const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
 
     const BUSINESS_STATUS_ACTIVE   = 'active';
@@ -102,7 +103,6 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
     const BUSINESS_PROFILE_FIELD_PRODUCT        = 'product';
     const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
     const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID    = 'panoramaId';
 
@@ -376,19 +376,8 @@ class BusinessProfile implements
     protected $product;
 
     /**
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
-     * @var string - Operational Hours
-     *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="working_hours", type="text", nullable=true)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     */
-    protected $workingHours;
-
-    /**
      * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
+     * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
      * @var string Brands - Brands, Business works with
      *
      * @Gedmo\Translatable(fallback=true)
@@ -790,7 +779,8 @@ class BusinessProfile implements
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
-     *     )
+     * )
+     * @Assert\Valid
      */
     protected $collectionWorkingHours;
 
@@ -1235,30 +1225,6 @@ class BusinessProfile implements
     public function getProduct()
     {
         return $this->product;
-    }
-
-    /**
-     * Set workingHours
-     *
-     * @param string $workingHours
-     *
-     * @return BusinessProfile
-     */
-    public function setWorkingHours($workingHours)
-    {
-        $this->workingHours = $workingHours;
-
-        return $this;
-    }
-
-    /**
-     * Get workingHours
-     *
-     * @return string
-     */
-    public function getWorkingHours()
-    {
-        return $this->workingHours;
     }
 
     /**
@@ -3067,7 +3033,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
         ];
     }
@@ -3105,7 +3070,6 @@ class BusinessProfile implements
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
 
             self::BUSINESS_PROFILE_FIELD_WEBSITE,
             self::BUSINESS_PROFILE_FIELD_EMAIL,

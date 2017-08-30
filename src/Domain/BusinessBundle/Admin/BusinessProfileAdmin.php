@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -387,6 +388,16 @@ class BusinessProfileAdmin extends OxaAdmin
                             'inline' => 'table',
                         ]
                     )
+                    ->add(BusinessProfileWorkingHourTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
+                        'label_attr' => [
+                            'hidden' => true,
+                        ],
+                        'mapped'   => false,
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'hidden',
+                        ],
+                    ])
                     ->add(
                         'phones',
                         'sonata_type_collection',
@@ -783,9 +794,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('product')
                     ->add('brands')
-                    ->add('workingHours', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig',
-                    ])
                 ->end()
                 ->with('Main')
                     ->add('id')
@@ -1137,41 +1145,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ->end()
             ;
         }
-
-        if (!$object->getCollectionWorkingHours()->isEmpty()) {
-            if (!DayOfWeekModel::validateWorkingHoursTime($object->getCollectionWorkingHours())) {
-                $errorElement->with('collectionWorkingHours')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.collectionWorkingHours.duration',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-            }
-
-            if (!DayOfWeekModel::validateWorkingHoursOverlap($object->getCollectionWorkingHours())) {
-                $errorElement->with('collectionWorkingHours')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.collectionWorkingHours.overlap',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-            }
-
-            if (!DayOfWeekModel::validateWorkingHoursTimeBlank($object->getCollectionWorkingHours())) {
-                $errorElement->with('collectionWorkingHours')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.collectionWorkingHours.blank',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-            }
-        }
     }
 
     /**
@@ -1455,26 +1428,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     new Length(
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH,
-                        ]
-                    )
-                ],
-            ])
-            ->add('workingHours' . $localePostfix, TextareaType::class, [
-                'attr' => [
-                    'rows' => 3,
-                    'class' => 'vertical-resize',
-                ],
-                'label'    => 'Working hours',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(
-                    BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
-                    $locale
-                ),
-                'constraints' => [
-                    new Length(
-                        [
-                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH,
                         ]
                     )
                 ],

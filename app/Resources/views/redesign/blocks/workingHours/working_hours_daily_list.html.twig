@@ -9,23 +9,25 @@
         <h3>{% trans %}Business hours{% endtrans %}</h3>
         <ul>
             {% for day, workingHours in workingHoursCollection %}
-                {% set dayList = day|split(',') %}
 
                 <li>
-                    <span class="hour__day">
-                        {% for day in dayList %}
-                            {{ day|trans }}{% if loop.index0 < dayList|length - 1 %},{% endif %}
-                        {% endfor %}
-                    </span>
+                    <span class="hour__day">{{ day|trans }}</span>
                     {% if workingHours|length > 0 %}
                         {% for workingHour in workingHours %}
-                            <span class="hour__hours">
-                                {% if workingHour.openAllTime %}
-                                    {% trans %}business.working.hours.open_all_time{% endtrans %}
-                                {% else %}
-                                    {{ workingHour.timeStart|date(working_hours_date_format) }} - {{ workingHour.timeEnd|date(working_hours_date_format) }};
-                                {% endif %}
-                            </span>
+                            <ul>
+                                <li>
+                                    <span class="hour__hours">
+                                        {% if workingHour.openAllTime %}
+                                            {% trans %}business.working.hours.open_all_time{% endtrans %}
+                                        {% else %}
+                                            {{ workingHour.timeStart|date(working_hours_date_format) }} - {{ workingHour.timeEnd|date(working_hours_date_format) }}
+                                        {% endif %}
+                                    </span>
+                                    {% if attribute(workingHour.comment, locale) is defined and attribute(workingHour.comment, locale) %}
+                                        &mdash; <span class="working-hour-comment">{{ attribute(workingHour.comment, locale) }}</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
                         {% endfor %}
                     {% else %}
                         <span class="hour__hours">
@@ -34,15 +36,6 @@
                     {% endif %}
                 </li>
             {% endfor %}
-        </ul>
-    </div><!-- highlights__item -->
-{% elseif businessProfile.getWorkingHours() %}
-    <div class="highlights__item highlights__item--hours">
-        <h3>{% trans %}Business hours{% endtrans %}</h3>
-        <ul>
-            <li>
-                {{ businessProfile.getWorkingHours() }}
-            </li>
         </ul>
     </div><!-- highlights__item -->
 {% elseif isCompare %}
