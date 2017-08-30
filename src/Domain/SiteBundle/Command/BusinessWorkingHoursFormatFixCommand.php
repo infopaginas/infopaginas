@@ -74,7 +74,7 @@ class BusinessWorkingHoursFormatFixCommand extends ContainerAwareCommand
                 $this->em->clear();
             }
 
-            $i ++;
+            $i++;
         }
 
         $this->em->flush();
@@ -110,6 +110,13 @@ class BusinessWorkingHoursFormatFixCommand extends ContainerAwareCommand
         }
     }
 
+    /**
+     * Convert virtual days (weekend and weekday) to real one
+     *
+     * @param string $day
+     *
+     * @return array
+     */
     protected function getRealDays($day)
     {
         switch ($day) {
@@ -129,5 +136,4 @@ class BusinessWorkingHoursFormatFixCommand extends ContainerAwareCommand
 
         return $dayList;
     }
-
 }
