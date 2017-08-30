@@ -4,12 +4,14 @@ namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * BusinessProfileAlias
  *
  * @ORM\Table(name="business_profile_alias")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileAliasRepository")
+ * @UniqueEntity("slug")
  */
 class BusinessProfileAlias
 {
