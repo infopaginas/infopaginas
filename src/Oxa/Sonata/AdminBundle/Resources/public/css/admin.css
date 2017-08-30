@@ -150,6 +150,10 @@ td[class*="_keywords-valueEn"], td[class*="_keywords-valueEs"] {
     width: 45%;
 }
 
+td[class*="_collectionWorkingHours-days"] {
+    width: 30%;
+}
+
 table.business-review-table {
     width: 100%;
 }

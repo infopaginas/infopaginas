@@ -110,7 +110,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->handleCategoriesUpdate();
 
             $this->checkTranslationBlock($this->requestParams);
-            $this->checkCollectionWorkingHoursBlock($this->businessProfileNew->getCollectionWorkingHours());
 
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
@@ -288,26 +287,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
     }
 
     /**
-     * @param ArrayCollection $workingHours
-     */
-    private function checkCollectionWorkingHoursBlock($workingHours)
-    {
-        if (!$workingHours->isEmpty()) {
-            if (!DayOfWeekModel::validateWorkingHoursTime($workingHours)) {
-                $formError = new FormError($this->translator->trans('form.collectionWorkingHours.duration'));
-
-                $this->form->get('collectionWorkingHoursError')->addError($formError);
-            }
-
-            if (!DayOfWeekModel::validateWorkingHoursOverlap($workingHours)) {
-                $formError = new FormError($this->translator->trans('form.collectionWorkingHours.overlap'));
-
-                $this->form->get('collectionWorkingHoursError')->addError($formError);
-            }
-        }
-    }
-
-    /**
      * @param string $field
      *
      * @return int
@@ -326,9 +305,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
                 break;
             case BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS:
                 $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH;
-                break;
-            case BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS:
-                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH;
                 break;
             case BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN:
                 $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH;

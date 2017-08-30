@@ -14,6 +14,7 @@ use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
@@ -112,7 +113,7 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Working Hours',
                 'required' => false,
             ])
-            ->add('collectionWorkingHoursError', TextType::class, [
+            ->add(BusinessProfileWorkingHourTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
@@ -640,15 +641,6 @@ class BusinessProfileFormType extends AbstractType
                 'required' => false,
                 'mapped'   => false,
                 'data'     => $businessProfile->getTranslation('brands', $locale),
-            ])
-            ->add('workingHours' . $localePostfix, TextareaType::class, [
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'label'    => 'Working hours',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('workingHours', $locale),
             ])
         ;
     }
