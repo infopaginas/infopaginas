@@ -1,0 +1,7 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.video and object.video.poster %}
+        {% thumbnail attribute(object.video, 'poster' ), 'normal' with {'width': 500, 'class': 'video-poster'} %}
+    {% endif %}
+{% endblock %}

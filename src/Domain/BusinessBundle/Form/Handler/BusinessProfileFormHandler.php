@@ -273,9 +273,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
      */
     private function checkTranslationBlock($post)
     {
-        //check name not blank
-        $this->checkTranslationBlockNameBlank($post);
-
         $fields = BusinessProfile::getTranslatableFields();
 
         //check fields length
@@ -340,32 +337,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         }
 
         return true;
-    }
-
-    /**
-     * @param array $post
-     *
-     * @return bool
-     */
-    private function checkTranslationBlockNameBlank($post)
-    {
-        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
-            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
-
-            if (!empty($post[$fieldName]) and trim($post[$fieldName])) {
-                return true;
-            }
-        }
-
-        $formError = new FormError($this->translator->trans('business_profile.names_blank'));
-
-        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
-            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
-
-            $this->form->get($fieldName)->addError($formError);
-        }
-
-        return false;
     }
 
     /**

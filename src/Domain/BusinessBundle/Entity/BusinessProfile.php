@@ -96,8 +96,6 @@ class BusinessProfile implements
 
     // translatable fields
     const BUSINESS_PROFILE_FIELD_NAME           = 'name';
-    const BUSINESS_PROFILE_FIELD_NAME_EN        = 'nameEn';
-    const BUSINESS_PROFILE_FIELD_NAME_ES        = 'nameEs';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION    = 'description';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_EN = 'descriptionEn';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
@@ -172,6 +170,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
     const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
+    const KEYWORD_DELIMITER = ',';
+
     /**
      * @var int
      *
@@ -186,9 +186,9 @@ class BusinessProfile implements
      * Field related to class constant BUSINESS_PROFILE_FIELD_NAME
      * @var string - Business name
      *
-     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -913,6 +913,13 @@ class BusinessProfile implements
      * @ORM\Column(name="panorama_id", type="string", nullable=true, length=255)
      */
     protected $panoramaId;
+
+    /**
+     * @var string - keyword
+     *
+     * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
+     */
+    private $keywordText;
 
     /**
      * Constructor
@@ -3029,7 +3036,6 @@ class BusinessProfile implements
     public static function getTranslatableFields()
     {
         return [
-            self::BUSINESS_PROFILE_FIELD_NAME,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
@@ -3059,8 +3065,6 @@ class BusinessProfile implements
         return [
             // translatable field
             self::BUSINESS_PROFILE_FIELD_NAME,
-            self::BUSINESS_PROFILE_FIELD_NAME_EN,
-            self::BUSINESS_PROFILE_FIELD_NAME_ES,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
@@ -3244,5 +3248,25 @@ class BusinessProfile implements
         return [
             self::FORMAT_CSV => self::FORMAT_CSV,
         ];
+    }
+
+    /**
+     * @param string $keywordText
+     *
+     * @return BusinessProfile
+     */
+    public function setKeywordText($keywordText)
+    {
+        $this->keywordText = $keywordText;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeywordText()
+    {
+        return $this->keywordText;
     }
 }

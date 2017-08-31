@@ -51,10 +51,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     {
         $businessProfile = $this->getBusinessProfileManager()->find((int)$params['businessProfileId']);
 
-        $businessProfileName = $businessProfile->getTranslation(
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-            $this->getContainer()->getParameter('locale')
-        );
+        $businessProfileName = $businessProfile->getName();
 
         $result = [
             'dates' => [],

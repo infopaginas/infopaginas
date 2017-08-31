@@ -101,6 +101,15 @@
         </ul>
     </div>
 
+    <div class="form__section">
+        <div class="form__row">
+            <div class="form__field field--name">
+                {{ custom_form_label.widget(businessProfileForm.name) }}
+                {{ form_widget(businessProfileForm.name) }}
+            </div>
+        </div>
+    </div>
+
     {% for locale, name in localeBlocks %}
         {% include ':redesign/blocks/businessProfile/subTabs/profile/language:translation.html.twig' with {'blockTitle': name, 'langPostfix': locale|capitalize} %}
     {% endfor %}

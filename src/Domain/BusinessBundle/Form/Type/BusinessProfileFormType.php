@@ -84,6 +84,10 @@ class BusinessProfileFormType extends AbstractType
         }
 
         $builder
+            ->add('name', TextType::class, [
+                'label'    => 'Name',
+                'required' => true,
+            ])
             ->add('website', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -605,12 +609,6 @@ class BusinessProfileFormType extends AbstractType
         $localePostfix = LocaleHelper::getLangPostfix($locale);
 
         $form
-            ->add('name' . $localePostfix, TextType::class, [
-                'label'    => 'Name',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('name', $locale),
-            ])
             ->add('description' . $localePostfix, CKEditorType::class, [
                 'label'    => 'Description',
                 'required' => false,

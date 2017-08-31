@@ -4,17 +4,6 @@
     <h3 class="language-title">{{ blockTitle|trans }}</h3>
 
     <div class="form__section">
-        <h2>{% trans %}General{% endtrans %}</h2>
-
-        <div class="form__row">
-            <div class="form__field field--name">
-                {{ custom_form_label.widget(businessProfileForm['name' ~ langPostfix]) }}
-                {{ form_widget(businessProfileForm['name' ~ langPostfix]) }}
-            </div>
-        </div>
-    </div>
-
-    <div class="form__section">
         <h2>{% trans %}Business Description{% endtrans %}</h2>
 
         {% if businessProfileForm['slogan' ~ langPostfix] is defined %}
