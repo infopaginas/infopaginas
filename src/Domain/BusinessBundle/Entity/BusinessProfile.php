@@ -641,7 +641,6 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank()
      */
     protected $country;
 
@@ -3086,7 +3085,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_CROSS_STREET,
             self::BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_STATE,
             self::BUSINESS_PROFILE_FIELD_CITY,
             self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
@@ -3114,7 +3112,6 @@ class BusinessProfile implements
     {
         return [
             self::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY,
-            self::BUSINESS_PROFILE_FIELD_COUNTRY,
         ];
     }
 

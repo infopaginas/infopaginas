@@ -559,6 +559,7 @@ class BusinessProfileAdmin extends OxaAdmin
                             'attr' => [
                                 'class' => 'selectize-control',
                             ],
+                            'required' => false,
                         ])
                     ->end()
                 ->end()
@@ -877,7 +878,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $showMapper
             ->tab('Main')
                 ->with('Keywords')
-                    ->add('keywordText')
+                    ->add('keywordText', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_keywords.html.twig',
+                    ])
                 ->end()
             ->end()
         ;

@@ -10,7 +10,6 @@ use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\CategoryRepository;
-use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
@@ -192,27 +191,6 @@ class BusinessProfileFormType extends AbstractType
                 'constraints' => [
                     new Type('float'),
                 ],
-            ])
-            ->add('country', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control',
-                    'placeholder' => 'Select country',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Address\Country',
-                'label' => 'Country',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'query_builder' => function (CountryRepository $repository) {
-                    return $repository->getAvailableCountriesQb();
-                }
-            ])
-            ->add('state', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label' => 'State',
-                'required' => false,
             ])
             ->add('catalogLocality', EntityType::class, [
                 'attr' => [
