@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Util;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -51,13 +53,8 @@ class BusinessProfileUtil
         $businessProfileMaxLength = $seoSettings['business_name_length'];
         $brandMaxLength = $seoSettings['brand_length'];
 
-        if ($locale) {
-            $businessProfileName = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
-        } else {
-            $businessProfileName = $businessProfile->getName();
-            $locale = $businessProfile->getLocale();
-        }
+        $businessProfileName = $businessProfile->getName();
+        $locale = LocaleHelper::getLocale($locale);
 
         $translator = $container->get('translator');
 
@@ -92,19 +89,12 @@ class BusinessProfileUtil
 
         $descriptionMaxLength = $seoSettings['description_max_length'];
 
-        if ($locale) {
-            $name = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
-
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
-                BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-                strtolower($locale)
-            );
-        } else {
-            $name = $businessProfile->getName();
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
-            $locale = $businessProfile->getLocale();
-        }
+        $name = $businessProfile->getName();
+        $locale = LocaleHelper::getLocale($locale);
+        $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
+            Locality::LOCALITY_FIELD_NAME,
+            $locale
+        );
 
         $translator = $container->get('translator');
 
@@ -117,7 +107,7 @@ class BusinessProfileUtil
                 'location' => $catalogLocalityName,
             ],
             'messages',
-            strtolower($locale)
+            $locale
         );
 
         if ($workingHours and mb_strlen($seoDescription) < $descriptionMaxLength) {
@@ -129,7 +119,7 @@ class BusinessProfileUtil
                     'hours' => $workingHours,
                 ],
                 'messages',
-                strtolower($locale)
+                $locale
             );
         }
 
@@ -142,7 +132,7 @@ class BusinessProfileUtil
                     'link' => $businessProfile->getWebsiteLink(),
                 ],
                 'messages',
-                strtolower($locale)
+                $locale
             );
 
             $hasLink = true;
@@ -161,7 +151,7 @@ class BusinessProfileUtil
                     'phone' => $businessProfile->getPhones()->first()->getPhone(),
                 ],
                 'messages',
-                strtolower($locale)
+                $locale
             );
         }
 
@@ -201,7 +191,8 @@ class BusinessProfileUtil
      */
     public static function getWorkingHoursAsText(BusinessProfile $businessProfile, $locale, $translator)
     {
-        $workingHours = $businessProfile->getWorkingHoursJsonAsObject();
+        $workingHours = json_decode(DayOfWeekModel::getBusinessProfileWorkingHoursJson($businessProfile));
+
         $locale = LocaleHelper::getLocale($locale);
         $dayText = [];
 

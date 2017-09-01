@@ -376,8 +376,42 @@ $( document ).ready( function() {
         }
     });
 
-    $( document ).on( 'input', keywordSelectors, function() {
-        var value = $( this ).val();
+    addCheckAllButton();
+
+    $( document ).on( 'click', 'button.checkAll', function( e ) {
+        e.preventDefault();
+
+        $( this ).parent().find( 'input[ type = "checkbox" ]').each(function() {
+            if ( !$( this ).prop( 'checked' ) ) {
+                $( this ).iCheck( 'toggle' );
+            }
+        });
+    });
+
+    applySelectizePlugin();
+
+    function applySelectizePlugin() {
+        var elements = $( 'input.selectize-control:not(.selectized)' );
+
+        elements.removeClass( 'form-control' );
+
+        elements.selectize({
+            plugins: [
+                'restore_on_backspace',
+                'remove_button'
+            ],
+            persist: false,
+            create: true,
+            createFilter: keywordValidator
+        });
+    }
+
+    function addCheckAllButton() {
+        $( '#sonata-ba-field-container-' + formId + '_paymentMethods' ).append( '<button class="btn btn-primary checkAll">Check All</button>' );
+    }
+
+    function keywordValidator() {
+        var value = this.lastQuery;
         var errors = [];
 
         if ( !value ) {
@@ -398,11 +432,15 @@ $( document ).ready( function() {
             errors.push( errorList.keyword.oneWord );
         }
 
-        handleKeywordValidationError( $( this ), errors );
-    });
+        handleKeywordValidationError( errors );
 
-    function handleKeywordValidationError( input, errors ) {
-        input.closest( 'td' ).find( '.sonata-ba-field-error-messages').remove();
+        return !errors.length;
+    }
+
+    function handleKeywordValidationError( errors ) {
+        var parent = $( '#sonata-ba-field-container-' + formId + '_keywordText' );
+
+        parent.find( '.sonata-ba-field-error-messages').remove();
 
         if ( errors.length ) {
             var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
@@ -413,7 +451,7 @@ $( document ).ready( function() {
 
             errorHtml += '</ul></div>';
 
-            input.after( errorHtml );
+            parent.append( errorHtml );
         }
     }
 

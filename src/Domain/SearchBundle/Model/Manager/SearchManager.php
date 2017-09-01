@@ -152,8 +152,8 @@ class SearchManager extends Manager
                 'id'  => $businessProfile->getId(),
                 'uid' => $businessProfile->getUid(),
                 'name' => [
-                    'en' => $businessProfile->getNameEn(),
-                    'es' => $businessProfile->getNameEs(),
+                    'en' => $businessProfile->getName(),
+                    'es' => $businessProfile->getName(),
                 ],
                 'location' => [
                     'lat' => $businessProfile->getLatitude(),

@@ -75,9 +75,8 @@ class PageAdmin extends OxaAdmin
             ->end()
             ->with('Status')
                 ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
-                ->add('updatedUser', 'sonata_type_model', [
+                ->add('updatedUser', TextType::class, [
                     'required' => false,
-                    'btn_add' => false,
                     'disabled' => true,
                 ])
                 ->add('url', TextType::class, [
