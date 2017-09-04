@@ -1179,7 +1179,7 @@ class BusinessProfileManager extends Manager
                 $customAddress = $businessProfile->getCustomAddress();
 
                 if (!$customAddress) {
-                    $country = $businessProfile->getCountry();
+                    $country = $this->getDefaultProfileCountry();
 
                     $schemaItem['address'] = [
                         '@type'           => 'PostalAddress',
