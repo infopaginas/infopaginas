@@ -877,4 +877,21 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             triggerMapRequested();
         }
     }
+
+    // working hours folding
+    var workingHoursBlock = $( '.highlights__item--hours' );
+    var workingHoursTitle = workingHoursBlock.find( 'h3' );
+
+    workingHoursTitle.on( 'click', function () {
+        var dayList = workingHoursBlock.find( 'ul' ).first();
+        if ( dayList.hasClass( 'hide-children' ) ) {
+            dayList.removeClass( 'hide-children' );
+            workingHoursTitle.removeClass( 'arrow-down' );
+            workingHoursTitle.addClass( 'arrow-up' );
+        } else {
+            dayList.addClass( 'hide-children' );
+            workingHoursTitle.removeClass( 'arrow-up' );
+            workingHoursTitle.addClass( 'arrow-down' );
+        }
+    });
 });

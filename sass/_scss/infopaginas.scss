@@ -2040,11 +2040,6 @@ $thumb-width-mb: 60px;
 .hour__day {
   font-weight: 700;
 }
-.working-hour-comment {
-  color: #7F7F7F;
-  font-family: Roboto, Arial, sans-serif;
-  font-style: italic;
-}
 
 .highlights {
   
@@ -5900,4 +5895,37 @@ span.no-js-warning-message {
   color: rgba(255, 255, 255, 1);
   text-align: center;
   z-index: 9999999;
+}
+
+.highlights__item--hours {
+  h3 {
+    cursor: pointer;
+
+    &.arrow-down {
+      &::after {
+        content: '\25bc';
+        padding-left: 0.5em;
+      }
+    }
+
+    &.arrow-up {
+      &::after {
+        content: '\25b2';
+        padding-left: 0.5em;
+      }
+    }
+  }
+
+  ul {
+    &.hide-children > li:not(.currentDay) {
+      display: none;
+    }
+
+    .working-hour-comment {
+      color: #7F7F7F;
+      font-family: Roboto, Arial, sans-serif;
+      font-style: italic;
+      display: block;
+    }
+  }
 }

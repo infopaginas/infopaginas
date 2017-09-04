@@ -298,12 +298,7 @@ class DayOfWeekModel
         ];
 
         if ($workingHours) {
-            $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
-
-            $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
-            $now->modify($time);
-
-            $dayOfWeek = strtoupper(date('D'));
+            $dayOfWeek = self::getCurrentDayOfWeek();
 
             $data = [
                 'status' => true,
@@ -311,36 +306,12 @@ class DayOfWeekModel
                 'hours'  => false,
             ];
 
-            if (!empty($workingHours->$dayOfWeek)) {
-                $defaultDate = self::getDefaultDateTime();
+            $data = self::getOpenNowStatusForDay($workingHours, $dayOfWeek, $data);
 
-                foreach ($workingHours->$dayOfWeek as $workingHour) {
-                    $startDate = clone $defaultDate;
-                    $startDate->modify($workingHour->timeStart);
-
-                    $endDate   = clone $defaultDate;
-                    $endDate->modify($workingHour->timeEnd);
-
-                    if ($endDate == $defaultDate) {
-                        $timeEnd = clone $endDate;
-                        $timeEnd->modify('+1 day');
-                    } else {
-                        $timeEnd = $endDate;
-                    }
-
-                    if (($now < $timeEnd and $now >= $startDate) or $workingHour->openAllTime) {
-                        $workingHour->timeStart = $startDate;
-                        $workingHour->timeEnd   = $endDate;
-
-                        $data = [
-                            'status' => true,
-                            'open'   => true,
-                            'hours'  => $workingHour,
-                        ];
-
-                        break;
-                    }
-                }
+            if (!$data['open']) {
+                // check previous day
+                $previousDay = self::getPreviousDay($dayOfWeek);
+                $data = self::getOpenNowStatusForDay($workingHours, $previousDay, $data, true);
             }
         }
 
@@ -397,6 +368,71 @@ class DayOfWeekModel
         }
 
         return $dailyHours;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return \stdClass
+     */
+    public static function getBusinessProfileWorkingHoursListFEView($businessProfile)
+    {
+        $dailyHours  = [];
+        $currentDay  = self::getCurrentDayOfWeek();
+        $previousDay = self::getPreviousDay($currentDay);
+        $showPreviousDay = false;
+
+        $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+        $now  = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+        $now->modify($time);
+
+        $workingHours = $businessProfile->getWorkingHoursJsonAsObject();
+
+        if ($workingHours) {
+            $defaultDate = self::getDefaultDateTime();
+
+            foreach ($workingHours as $key => $items) {
+                $status = false;
+
+                foreach ($items as $hourKey => $workingHour) {
+                    $startDate = clone $defaultDate;
+                    $startDate->modify($workingHour->timeStart);
+                    $workingHour->timeStart = $startDate;
+
+                    $endDate   = clone $defaultDate;
+                    $endDate->modify($workingHour->timeEnd);
+                    $workingHour->timeEnd = $endDate;
+
+                    $dailyHours[$key]['items'][$hourKey] = $workingHour;
+
+                    if (!$status and $key == $previousDay and $endDate <= $startDate) {
+                        $startDate->modify('-1 day');
+
+                        if ($now < $endDate and $now >= $startDate) {
+                            $status = true;
+                            $showPreviousDay = true;
+                        }
+                    }
+                }
+
+                if ($key == $currentDay) {
+                    $status = true;
+                }
+
+                $dailyHours[$key]['status'] = $status;
+            }
+        }
+
+        // sort by days
+        if ($showPreviousDay) {
+            $sortDay = $previousDay;
+        } else {
+            $sortDay = $currentDay;
+        }
+
+        $workingHoursOrder = self::getWorkingHoursDayOrder($sortDay);
+
+        return self::orderArrayByKeys($dailyHours, $workingHoursOrder);
     }
 
     /**
@@ -690,5 +726,128 @@ class DayOfWeekModel
     public static function getDefaultDateTime()
     {
         return new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCurrentDayOfWeek()
+    {
+        return strtoupper(date('D'));
+    }
+
+    /**
+     * @param string $day
+     *
+     * @return string
+     */
+    public static function getPreviousDay($day)
+    {
+        $days = self::getDaysOfWeek();
+
+        $dayNumber = array_search($day, $days);
+
+        if ($dayNumber) {
+            $previousDay = $days[$dayNumber - 1];
+        } else {
+            $previousDay = end($days);
+        }
+
+        return $previousDay;
+    }
+
+    /**
+     * @param \stdClass $workingHours
+     * @param string $dayOfWeek
+     * @param array $data
+     * @param bool $isPrevious
+     *
+     * @return array
+     */
+    public static function getOpenNowStatusForDay($workingHours, $dayOfWeek, $data, $isPrevious = false)
+    {
+        if (!empty($workingHours->$dayOfWeek)) {
+            $defaultDate = self::getDefaultDateTime();
+            $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+
+            $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+            $now->modify($time);
+
+            foreach ($workingHours->$dayOfWeek as $workingHour) {
+                $startDate = clone $defaultDate;
+                $startDate->modify($workingHour->timeStart);
+
+                $endDate   = clone $defaultDate;
+                $endDate->modify($workingHour->timeEnd);
+
+                if ($isPrevious) {
+                    $startDate->modify('-1 day');
+                    $endDate->modify('-1 day');
+                }
+
+                if ($endDate <= $startDate) {
+                    $timeEnd = clone $endDate;
+                    $timeEnd->modify('+1 day');
+                } else {
+                    $timeEnd = $endDate;
+                }
+
+                if (($now < $timeEnd and $now >= $startDate) or ($workingHour->openAllTime and !$isPrevious)) {
+                    $workingHour->timeStart = $startDate;
+                    $workingHour->timeEnd   = $endDate;
+
+                    $data = [
+                        'status' => true,
+                        'open'   => true,
+                        'hours'  => $workingHour,
+                    ];
+
+                    break;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $firstDay
+     *
+     * @return array
+     */
+    public static function getWorkingHoursDayOrder($firstDay)
+    {
+        $days = self::getDaysOfWeek();
+        $movedDays = [];
+
+        foreach ($days as $key => $day) {
+            if ($day != $firstDay) {
+                $movedDays[] = $day;
+                unset($days[$key]);
+            } else {
+                break;
+            }
+        }
+
+        return array_merge($days, $movedDays);
+    }
+
+    /**
+     * @param array $sort
+     * @param array $order
+     *
+     * @return array
+     */
+    public static function orderArrayByKeys($sort, $order)
+    {
+        $result = [];
+
+        foreach ($order as $key) {
+            if (!empty($sort[$key])) {
+                $result[$key] = $sort[$key];
+            }
+        }
+
+        return $result;
     }
 }
