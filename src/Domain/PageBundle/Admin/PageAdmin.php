@@ -143,7 +143,7 @@ class PageAdmin extends OxaAdmin
                     ])
                     ->add('slug', null, [
                         'read_only' => true,
-                        'required'  => false
+                        'required'  => false,
                     ])
                 ->end()
             ;
