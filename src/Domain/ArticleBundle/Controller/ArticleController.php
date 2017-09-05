@@ -39,11 +39,12 @@ class ArticleController extends Controller
         );
 
         $dcDataDTO = $articleManager->getAllArticleDoubleClickData();
-        $seoData   = $articleManager->getArticleListSeoData();
+        $pageData   = $articleManager->getArticleListSeoData();
 
         $params = [
             'results'           => $articlesResultDTO,
-            'seoData'           => $seoData,
+            'page'              => $pageData['page'],
+            'seoData'           => $pageData['seoData'],
             'schemaJsonLD'      => $schema,
             'banners'           => $banners,
             'dcDataDTO'         => $dcDataDTO,
@@ -123,11 +124,12 @@ class ArticleController extends Controller
         );
 
         $dcDataDTO = $articleManager->getArticleCategoryListDoubleClickData($category);
-        $seoData   = $articleManager->getArticleListSeoData($category->getName());
+        $pageData   = $articleManager->getArticleListSeoData($category->getName());
 
         $params = [
             'results'           => $articlesResultDTO,
-            'seoData'           => $seoData,
+            'page'              => $pageData['page'],
+            'seoData'           => $pageData['seoData'],
             'articleCategory'   => $category,
             'schemaJsonLD'      => $schema,
             'banners'           => $banners,

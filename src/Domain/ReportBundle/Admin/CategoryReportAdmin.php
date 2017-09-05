@@ -62,7 +62,26 @@ class CategoryReportAdmin extends ReportAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions());
+        $datagridMapper
+            ->add('date', 'doctrine_orm_datetime_range', AdminHelper::getReportDateTypeOptions())
+            ->add('locality', 'doctrine_orm_model', [
+                'show_filter' => !empty($this->datagridValues['locality']['value']) ?: null,
+                'field_options' => [
+                    'mapped'    => false,
+                    'property'  => 'name',
+                    'class' => 'Domain\BusinessBundle\Entity\Locality',
+                ],
+            ])
+            ->add('type', 'doctrine_orm_choice', [
+                'show_filter' => !empty($this->datagridValues['type']['value']) ?: null,
+                'field_options' => [
+                    'mapped'    => false,
+                    'choices' => CategoryReportManager::getCategoryPageType(),
+                    'choice_translation_domain' => 'AdminReportBundle',
+                ],
+                'field_type' => 'choice'
+            ])
+        ;
     }
 
     /**

@@ -33,9 +33,11 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
+use Domain\PageBundle\Entity\Page;
 use Domain\ReportBundle\Manager\BaseReportManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Model\UserInterface;
@@ -1584,6 +1586,44 @@ class BusinessProfileManager extends Manager
             'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
             'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
         ];
+
+        return $seoData;
+    }
+
+    /**
+     * @param Locality $locality
+     * @param string   $category
+     *
+     * @return array
+     */
+    public function getBusinessProfileCatalogSeoData($locality = null, $category = '')
+    {
+        $pageManager = $this->container->get('domain_page.manager.page');
+
+        if ($locality) {
+            $data['[locality]'] = $locality->getName();
+            if ($category) {
+                $data['[category]'] = $category;
+                $pageCode = Page::CODE_CATALOG_LOCALITY_CATEGORY;
+            } else {
+                $pageCode = Page::CODE_CATALOG_LOCALITY;
+
+                $categoryReportManager = $this->container->get('domain_report.manager.category_report_manager');
+                $popularCategoryIds = $categoryReportManager->getPopularCategoryData($locality->getId());
+                $popularCategories  = $this->categoryManager->getAvailableCategoriesByIds($popularCategoryIds);
+
+                foreach ($popularCategories as $key => $popularCategory) {
+                    $placeholderKey = Page::getPopularCategoryKey($key + 1);
+                    $data[$placeholderKey] = $popularCategory->getName();
+                }
+            }
+        } else {
+            $pageCode = Page::CODE_CATALOG;
+            $data = [];
+        }
+
+        $page    = $pageManager->getPageByCode($pageCode);
+        $seoData = $pageManager->getPageSeoData($page, $data);
 
         return $seoData;
     }

@@ -18,6 +18,9 @@
                     <section class="article-body">
                         {{ page.body()|purify }}
                     </section>
+                    <section class="article-description">
+                        {{ page.description }}
+                    </section>
                 </article>
 
                 {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.STATIC_BOTTOM } %}
