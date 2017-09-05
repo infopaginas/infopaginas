@@ -17,7 +17,7 @@ use Domain\SiteBundle\Mailer\Mailer;
 
 class ArticleApiManager
 {
-    const API_ARTICLE_LIST_URL = 'http://infopaginasmedia.com/rest/api/articles';
+    const API_ARTICLE_LIST_URL = 'https://jh1tnzjeh7.execute-api.us-east-1.amazonaws.com/prod';
     const ALLOWED_TYPE_URL = 'infopaginas';
     const DEFAULT_API_ERROR = 'Unknown error';
 
@@ -197,78 +197,78 @@ class ArticleApiManager
                 'code' => Category::CATEGORY_ARTICLE_CODE,
             ]
         );
-        foreach ($data as $item) {
-            if ($this->validateArticleFromApi($item)) {
-                if ($itemCounter >= $this->numberOfItemToUpdate and !$this->updateAll) {
-                    break;
-                }
 
-                $itemCounter++;
-
-                $articles = $this->em->getRepository(Article::class)->findBy(
-                    [
-                        'externalId' => $item->id,
-                    ]
-                );
-
-                $article = current($articles);
-
-                if ($article) {
-                    $date = null;
-                    $dateUpdated = null;
-
-                    if (!empty($item->date)
-                        and strtotime($item->date)
-                        and !empty($item->date_updated)
-                        and strtotime($item->date_updated)
-                    ) {
-                        $date = new \DateTime($item->date);
-                        $dateUpdated = new \DateTime($item->date_updated);
+        if (!empty($data->articles)) {
+            foreach ($data->articles as $item) {
+                if ($this->validateArticleFromApi($item)) {
+                    if ($itemCounter >= $this->numberOfItemToUpdate and !$this->updateAll) {
+                        break;
                     }
 
-                    if ($date and $dateUpdated and ($dateUpdated > $article->getApiUpdatedDate())) {
-                        $article->setApiUpdatedDate($dateUpdated);
-                        $article->setApiCreatedDAte($date);
-                        $article->setActivationDate($date);
+                    $itemCounter++;
+
+                    $articles = $this->em->getRepository(Article::class)->findBy(
+                        [
+                            'externalId' => $item->id,
+                        ]
+                    );
+
+                    $article = current($articles);
+
+                    if ($article) {
+                        $date = null;
+                        $dateUpdated = null;
+
+                        if (!empty($item->date) and strtotime($item->date)) {
+                            $date = new \DateTime($item->date);
+
+                            // external API bug see https://jira.oxagile.com/browse/INFT-1642#comment-268275
+                            $dateUpdated = clone $date;
+                        }
+
+                        if ($date and $dateUpdated and ($dateUpdated > $article->getApiUpdatedDate())) {
+                            $article->setApiUpdatedDate($dateUpdated);
+                            $article->setApiCreatedDAte($date);
+                            $article->setActivationDate($date);
+                        } else {
+                            continue;
+                        }
+
+                        foreach ($article->getImages() as $image) {
+                            $article->removeImage($image);
+                        }
+
                     } else {
-                        continue;
+                        $article = $this->createArticle($item);
                     }
 
-                    foreach ($article->getImages() as $image) {
-                        $article->removeImage($image);
-                    }
+                    $mediaUrl = $this->prepareMediaUrl($item->header_image);
+                    $gallery = json_decode($item->main_gallery);
+                    $media = $this->galleryManager->uploadArticleImageFromRemoteFile($mediaUrl);
 
-                } else {
-                    $article = $this->createArticle($item);
-                }
+                    if ($media) {
+                        $article->setCategory($defaultCategory);
+                        $this->em->persist($article);
+                        $article->setImage($media);
+                        $this->handleTranslatableFields($item, $article);
+                        if ($gallery) {
+                            foreach ($gallery as $galleryItem) {
 
-                $mediaUrl = $this->prepareMediaUrl($item->header);
-                $gallery = json_decode($item->gallery);
-                $media = $this->galleryManager->uploadArticleImageFromRemoteFile($mediaUrl);
-
-                if ($media) {
-                    $article->setCategory($defaultCategory);
-                    $this->em->persist($article);
-                    $article->setImage($media);
-                    $this->handleTranslatableFields($item, $article);
-                    if ($gallery) {
-                        foreach ($gallery as $galleryItem) {
-
-                            if ($galleryItem->photoIMG && $item->header != $galleryItem->photoIMG) {
-                                $articleGalleryUrl = $this->prepareMediaUrl($galleryItem->photoIMG);
-                                $galleryImage = $this->galleryManager->uploadArticleImageFromRemoteFile(
-                                    $articleGalleryUrl,
-                                    OxaMediaInterface::CONTEXT_ARTICLE_IMAGES
-                                );
-                                if ($galleryImage) {
-                                    $article->addImage($this->createArticleGalleryImage($galleryImage, $galleryItem));
+                                if ($galleryItem->photoIMG && $item->header_image != $galleryItem->photoIMG) {
+                                    $articleGalleryUrl = $this->prepareMediaUrl($galleryItem->photoIMG);
+                                    $galleryImage = $this->galleryManager->uploadArticleImageFromRemoteFile(
+                                        $articleGalleryUrl,
+                                        OxaMediaInterface::CONTEXT_ARTICLE_IMAGES
+                                    );
+                                    if ($galleryImage) {
+                                        $article->addImage($this->createArticleGalleryImage($galleryImage, $galleryItem));
+                                    }
                                 }
                             }
                         }
+
+                        $this->em->flush();
                     }
-
-
-                    $this->em->flush();
                 }
             }
         }
@@ -313,7 +313,7 @@ class ArticleApiManager
     {
         if ((!empty($article->title_esp) or !empty($article->title_eng)) and
             (!empty($article->text_esp) or !empty($article->text_eng)) and
-            $article->header and $article->type_url == self::ALLOWED_TYPE_URL and !empty($article->id)
+            $article->header_image and $article->type_url == self::ALLOWED_TYPE_URL and !empty($article->id)
         ) {
             return true;
         }
@@ -341,11 +341,7 @@ class ArticleApiManager
             $date = new \DateTime();
         }
 
-        if (!empty($data->date_updated) and strtotime($data->date_updated)) {
-            $dateUpdated = new \DateTime($data->date_updated);
-        } else {
-            $dateUpdated = new \DateTime();
-        }
+        $dateUpdated = clone $date;
 
         $article->setApiUpdatedDAte($dateUpdated);
         $article->setApiCreatedDAte($date);
@@ -457,8 +453,8 @@ class ArticleApiManager
             $article->setSeoDescription($seoDescriptionEsp);
         }
 
-        if (!empty($item->author_name)) {
-            $authorName = $this->prepareTextData($item->author_name, Article::ARTICLE_AUTHOR_MAX_LENGTH);
+        if (!empty($item->user_name)) {
+            $authorName = $this->prepareTextData($item->user_name, Article::ARTICLE_AUTHOR_MAX_LENGTH);
 
             $article->setAuthorName($authorName);
         } else {
