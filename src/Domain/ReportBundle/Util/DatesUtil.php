@@ -23,6 +23,7 @@ class DatesUtil
     const RANGE_LAST_WEEK = 'last_week';
     const RANGE_THIS_MONTH = 'this_month';
     const RANGE_LAST_MONTH = 'last_month';
+    const RANGE_LAST_30_DAYS = 'last_30_days';
     const RANGE_CUSTOM = 'custom';
 
     const RANGE_YESTERDAY = 'yesterday';
@@ -75,6 +76,11 @@ class DatesUtil
             case self::RANGE_THIS_MONTH:
                 $start = new \DateTime('first day of this month');
                 $end = new \DateTime('last day of this month');
+                break;
+            case self::RANGE_LAST_30_DAYS:
+                $end = new \DateTime();
+                $start = clone $end;
+                $start->modify('-30 days');
                 break;
             case self::RANGE_LAST_MONTH:
                 $start = new \DateTime('first day of last month');

@@ -48,7 +48,16 @@ class DefaultController extends Controller
      */
     private function renderPageByCode($code)
     {
-        $page = $this->get('domain_page.manager.page')->getPageByCode($code);
+        $pageManager = $this->get('domain_page.manager.page');
+        $page = $pageManager->getPageByCode($code);
+
+        if ($page->getRedirectUrl()) {
+            $redirectUrl = filter_var($page->getRedirectUrl(), FILTER_VALIDATE_URL);
+
+            if ($redirectUrl) {
+                return $this->redirect($redirectUrl);
+            }
+        }
 
         $bannerManager  = $this->get('domain_banner.manager.banner');
         $banners        = $bannerManager->getBanners(
@@ -60,7 +69,7 @@ class DefaultController extends Controller
 
         $params = [
             'page'      => $page,
-            'seoData'   => $page,
+            'seoData'   => $pageManager->getPageSeoData($page),
             'banners'   => $banners,
         ];
 
