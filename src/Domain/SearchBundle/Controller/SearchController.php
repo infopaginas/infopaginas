@@ -72,8 +72,6 @@ class SearchController extends Controller
             $searchResultsDTO = $searchManager->search($searchDTO, $disableFilters);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
             $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
@@ -234,9 +232,6 @@ class SearchController extends Controller
 
             $searchResultsDTO   = $searchManager->search($searchDTO);
 
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
-
             $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
@@ -321,8 +316,6 @@ class SearchController extends Controller
             $searchResultsDTO = $searchManager->search($searchDTO, true);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
-            $this->getBusinessProfileManager()
-                ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
             $this->getKeywordsReportManager()
                 ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
@@ -519,9 +512,6 @@ class SearchController extends Controller
                         'page'         => 1,
                     ]);
                 }
-
-                $this->getBusinessProfileManager()
-                    ->trackBusinessProfilesCollectionImpressions($searchResultsDTO->resultSet);
 
                 $this->getKeywordsReportManager()
                     ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
