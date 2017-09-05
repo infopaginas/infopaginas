@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/14/16
- * Time: 12:02 PM
- */
 declare(strict_types=1);
 
 namespace Oxa\Sonata\AdminBundle\Manager;
@@ -112,10 +106,10 @@ class AdminManager extends DefaultManager
     /**
      * Restore objects
      *
-     * @param $entityArray array
-     * @param AdminInterface $admin
+     * @param array             $entityArray
+     * @param AdminInterface    $admin
      */
-    public function restoreEntities(array $entityArray = [], $admin)
+    public function restoreEntities(array $entityArray, $admin)
     {
         foreach ($entityArray as $entity) {
             /** @var $entity PostponeRemoveInterface */
@@ -243,11 +237,11 @@ class AdminManager extends DefaultManager
     /**
      * Delete records softly
      *
-     * @param array $entityArray
-     * @param AdminInterface $admin
+     * @param array             $entityArray
+     * @param AdminInterface    $admin
      * @throws \Exception
      */
-    public function removeEntities(array $entityArray = [], $admin)
+    public function removeEntities(array $entityArray, $admin)
     {
         foreach ($entityArray as $entity) {
             $existDependentFields = $this->checkExistDependentEntity($entity);

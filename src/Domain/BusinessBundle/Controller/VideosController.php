@@ -9,9 +9,11 @@ use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Manager\VideoManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
+use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\BusinessBundle\Util\Traits\VideoUploadTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Form\Handler\FileUploadFormHandler;
@@ -23,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -44,6 +47,11 @@ class VideosController extends Controller
 
     const FILE_NOT_PROVIDED_MESSAGE = 'Videofile is not provided.';
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function localFileUploadAction(Request $request)
     {
         $business = $this->getBusinessProfileFromRequestData($request);
@@ -113,11 +121,12 @@ class VideosController extends Controller
     public function indexAction(Request $request)
     {
         $paramsDTO = $this->geVideoListQueryParamsDTO($request);
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO);
+        $videoResultDTO = $this->getVideoManager()->getVideosResultDTO($paramsDTO, $locale);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_VIDEO_PAGE_RIGHT,
                 TypeInterface::CODE_VIDEO_PAGE_BOTTOM,
@@ -127,9 +136,10 @@ class VideosController extends Controller
         $seoData = $this->getVideoManager()->getVideosSeoData($this->container);
 
         $params = [
-            'results'       => $videoResultDTO,
-            'seoData'       => $seoData,
-            'bannerFactory' => $bannerFactory,
+            'results' => $videoResultDTO,
+            'seoData' => $seoData,
+            'seoTags' => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_VIDEO),
+            'banners' => $banners,
         ];
 
         return $this->render(':redesign:video-list.html.twig', $params);

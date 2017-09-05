@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 29.06.16
- * Time: 10:44
- */
 
 namespace Oxa\Sonata\UserBundle\Manager;
 
@@ -90,9 +84,9 @@ class UsersManager
      * @param string $email
      * @return User | null
      */
-    public function getUserByEmail(string $email)
+    public function findUserByEmail(string $email)
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        $user = $this->getFOSUsersManager()->findUserByEmail($email);
 
         return $user;
     }

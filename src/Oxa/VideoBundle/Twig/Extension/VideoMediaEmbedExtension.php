@@ -2,8 +2,8 @@
 
 namespace Oxa\VideoBundle\Twig\Extension;
 
-use Gaufrette\Filesystem;
 use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\VideoBundle\Manager\VideoManager;
 
 /**
  * Class VideoMediaEmbedExtension
@@ -14,14 +14,14 @@ class VideoMediaEmbedExtension extends \Twig_Extension
     const DEFAULT_VIDEO_WIDTH  = 640;
     const DEFAULT_VIDEO_HEIGHT = 480;
 
-    private $filesystem;
+    private $videoManager;
 
     /**
-     * @param Filesystem $filesystem
+     * @param VideoManager $videoManager
      */
-    public function __construct(Filesystem $filesystem)
+    public function __construct(VideoManager $videoManager)
     {
-        $this->filesystem = $filesystem;
+        $this->videoManager = $videoManager;
     }
 
     /**
@@ -71,15 +71,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
             $dimensions['width'] = self::DEFAULT_VIDEO_WIDTH;
         }
 
-        $expires = new \DateTime();
-        $expires->modify('+ 600 seconds');
-
-        $url = $this->filesystem->getAdapter()->getUrl(
-            $media->getFilepath() . $media->getFilename(),
-            [
-                'expires' => $expires->getTimestamp(),
-            ]
-        );
+        $url = $this->videoManager->getPublicUrl($media);
 
         $html = $env->render(
             ':redesign/blocks/video:video_embed.html.twig',
@@ -101,7 +93,7 @@ class VideoMediaEmbedExtension extends \Twig_Extension
      */
     public function renderAdminVideoPreview(\Twig_Environment $env, VideoMedia $media)
     {
-        $url = $this->filesystem->getAdapter()->getUrl($media->getFilepath() . $media->getFilename());
+        $url = $this->videoManager->getPublicUrl($media);
 
         $html = $env->render(
             ':redesign/blocks/video:video_admin_embed.html.twig',

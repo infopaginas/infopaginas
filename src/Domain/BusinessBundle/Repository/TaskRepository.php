@@ -98,6 +98,9 @@ class TaskRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @return Task[]
+     */
     public function getRejectedTaskIteratorWithContentScheduledForDeletion()
     {
         $qb = $this->createQueryBuilder('t')

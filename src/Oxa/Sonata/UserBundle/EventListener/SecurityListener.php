@@ -13,17 +13,22 @@ class SecurityListener
      * @param AuthorizationChecker    $security
      * @param UserActionReportManager $userActionReportManager
      */
-    public function __construct(AuthorizationChecker $security, UserActionReportManager $userActionReportManager) {
+    public function __construct(AuthorizationChecker $security, UserActionReportManager $userActionReportManager)
+    {
         $this->security = $security;
         $this->userActionReportManager = $userActionReportManager;
     }
 
+    /**
+     * @param InteractiveLoginEvent $event
+     */
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
         if ($this->security->isGranted('ROLE_SALES_MANAGER') or $this->security->isGranted('ROLE_ADMIN')) {
             $this->userActionReportManager->registerUserAction(UserActionModel::TYPE_ACTION_LOGIN, [
-                'entity' => UserActionModel::ENTITY_TYPE_AUTH,
-                'type'   => UserActionModel::TYPE_ACTION_LOGIN,
+                'entity'        => UserActionModel::ENTITY_TYPE_AUTH,
+                'entityName'    => '',
+                'type'          => UserActionModel::TYPE_ACTION_LOGIN,
             ]);
         }
     }

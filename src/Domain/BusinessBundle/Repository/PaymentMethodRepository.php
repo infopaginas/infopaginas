@@ -2,6 +2,8 @@
 
 namespace Domain\BusinessBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * PaymentMethodRepository
  *
@@ -10,6 +12,9 @@ namespace Domain\BusinessBundle\Repository;
  */
 class PaymentMethodRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailablePaymentMethodsQb()
     {
         $qb = $this->createQueryBuilder('pm');

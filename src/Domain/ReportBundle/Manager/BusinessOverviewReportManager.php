@@ -6,6 +6,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
 use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
@@ -41,14 +42,16 @@ class BusinessOverviewReportManager extends BaseReportManager
         $this->mongoDbManager         = $mongoDbManager;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getBusinessOverviewReportData(array $params = [])
     {
         $businessProfile = $this->getBusinessProfileManager()->find((int)$params['businessProfileId']);
 
-        $businessProfileName = $businessProfile->getTranslation(
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-            $this->getContainer()->getParameter('locale')
-        );
+        $businessProfileName = $businessProfile->getName();
 
         $result = [
             'dates' => [],
@@ -98,6 +101,13 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $result;
     }
 
+    /**
+     * @param array     $dates
+     * @param mixed     $rawResult
+     * @param string    $dateFormat
+     *
+     * @return array
+     */
     protected function prepareBusinessOverviewReportStats($dates, $rawResult, $dateFormat) : array
     {
         $stats = [];
@@ -149,6 +159,9 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $stats;
     }
 
+    /**
+     * @param BusinessProfile[] $businessProfiles
+     */
     public function registerBusinessView(array $businessProfiles)
     {
         $this->registerBusinessEvent(
@@ -157,6 +170,9 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param BusinessProfile[] $businessProfiles
+     */
     public function registerBusinessImpression(array $businessProfiles)
     {
         $this->registerBusinessEvent(
@@ -165,6 +181,12 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param int $businessProfileId
+     * @param string $type
+     *
+     * @return bool
+     */
     public function registerBusinessInteraction($businessProfileId, $type)
     {
         if ($businessProfileId and $type) {
@@ -184,7 +206,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @param array $businessProfiles
      *
      * @return bool
@@ -218,6 +240,13 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $filename;
     }
 
+    /**
+     * @param int       $businessId
+     * @param string    $action
+     * @param MongoDB\BSON\UTCDateTime $date
+     *
+     * @return array
+     */
     protected function buildSingleBusinessInteraction($businessId, $action, $date)
     {
         $data = [
@@ -229,6 +258,12 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param array $businessProfileIds
+     * @param string $action
+     *
+     * @return array
+     */
     protected function buildBusinessInteractions($businessProfileIds, $action)
     {
         $data = [];
@@ -243,6 +278,9 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $data;
     }
 
+    /**
+     * @param array $data
+     */
     protected function insertBusinessInteractions($data)
     {
         $this->mongoDbManager->insertMany(
@@ -251,6 +289,11 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
     public function getBusinessInteractionData($params)
     {
         $cursor = $this->mongoDbManager->find(
@@ -267,6 +310,9 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $cursor;
     }
 
+    /**
+     * @param ReportDatesRangeVO $period
+     */
     public function aggregateBusinessInteractions($period)
     {
         $this->mongoDbManager->createIndex(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, [
@@ -323,6 +369,8 @@ class BusinessOverviewReportManager extends BaseReportManager
                 $this->mongoDbManager->insertMany(self::MONGO_DB_COLLECTION_NAME_AGGREGATE, $insert);
                 $insert = [];
             }
+
+            $i++;
         }
 
         if ($insert) {
@@ -331,7 +379,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveRawBusinessInteractions($date)
     {
@@ -344,7 +392,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param $date \Datetime
+     * @param \Datetime $date
      */
     public function archiveAggregatedBusinessInteractions($date)
     {
@@ -356,16 +404,32 @@ class BusinessOverviewReportManager extends BaseReportManager
         );
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getThisYearSearchParams($params)
     {
         return $this->getYearSearchParam($params, DatesUtil::RANGE_THIS_YEAR);
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public function getThisLastSearchParams($params)
     {
         return $this->getYearSearchParam($params, DatesUtil::RANGE_LAST_YEAR);
     }
 
+    /**
+     * @param array     $params
+     * @param string    $range
+     *
+     * @return array
+     */
     protected function getYearSearchParam($params, $range)
     {
         $dates = DatesUtil::getDateRangeValueObjectFromRangeType($range);
@@ -378,6 +442,9 @@ class BusinessOverviewReportManager extends BaseReportManager
         return $params;
     }
 
+    /**
+     * @return BusinessProfileManager
+     */
     protected function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;

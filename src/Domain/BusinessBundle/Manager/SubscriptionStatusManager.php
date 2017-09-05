@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Subscription;
+use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -99,6 +100,11 @@ class SubscriptionStatusManager
         return false;
     }
 
+    /**
+     * @param Subscription $subscription
+     * @param string $status
+     * @param \Doctrine\ORM\UnitOfWork $uow
+     */
     protected function updateSubscriptionStatus(Subscription $subscription, $status, \Doctrine\ORM\UnitOfWork $uow)
     {
         $uow->propertyChanged(
@@ -157,13 +163,10 @@ class SubscriptionStatusManager
      */
     public function setFreeSubscription(EntityManager $em)
     {
-        $businessProfiles = $em
-            ->getRepository('DomainBusinessBundle:BusinessProfile')
-            ->getBusinessWithoutActiveSubscription();
+        $businessProfiles = $em->getRepository(BusinessProfile::class)->getBusinessWithoutActiveSubscription();
 
         foreach ($businessProfiles as $businessProfile) {
-            $freeSubscriptionPlan = $em
-                ->getRepository('DomainBusinessBundle:SubscriptionPlan')
+            $freeSubscriptionPlan = $em->getRepository(SubscriptionPlan::class)
                 ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
 
             $startDate = new \DateTime();
@@ -215,8 +218,7 @@ class SubscriptionStatusManager
      */
     public function setBusinessProfileFreeSubscription(BusinessProfile $businessProfile, EntityManager $em)
     {
-        $freeSubscriptionPlan = $em
-            ->getRepository('DomainBusinessBundle:SubscriptionPlan')
+        $freeSubscriptionPlan = $em->getRepository(SubscriptionPlan::class)
             ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
 
         $startDate = new \DateTime();
@@ -247,8 +249,7 @@ class SubscriptionStatusManager
         $subscriptions = $this->getBusinessActualSubscriptions($entity);
 
         if (!$subscriptions) {
-            $freeSubscriptionPlan = $em
-                ->getRepository('DomainBusinessBundle:SubscriptionPlan')
+            $freeSubscriptionPlan = $em->getRepository(SubscriptionPlan::class)
                 ->findOneBy(['code' => SubscriptionPlanInterface::CODE_FREE]);
 
             $startDate = new \DateTime();

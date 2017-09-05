@@ -11,6 +11,7 @@ business_profile:
     digit_dash: Solamente los dígitos y el tablero están permitidos
   images:
     invalid_url: Error: URL de la imagen no válida.
+    invalid_size: La imagen es mayor que {{ limit }} MB
   video:
     invalid_url: Error: la dirección URL del vídeo no es válido.
   category:
@@ -18,3 +19,11 @@ business_profile:
   service_areas_type: Usted debe elegir un área de servicio válido
   locality:
       not_empty: Debe elegir una Localidad válida
+
+business_profile_phone.not_unique_main: Error: no puede haber más de un teléfono principal
+business_profile_phone.no_main: Error al menos un teléfono debe estar marcado como "principal"
+
+form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
+form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
+form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
+form.collectionWorkingHours.invalid: Hay conflictos en el calendario, por favor revise sus entradas.

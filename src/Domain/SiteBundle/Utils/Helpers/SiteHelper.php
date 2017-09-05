@@ -2,6 +2,9 @@
 
 namespace Domain\SiteBundle\Utils\Helpers;
 
+use Doctrine\ORM\Query;
+use Domain\BusinessBundle\Entity\BusinessProfile;
+
 class SiteHelper
 {
     const CURL_TIMEOUT = 10;
@@ -30,6 +33,8 @@ class SiteHelper
 
     /**
      * @param string $url
+     *
+     * @return mixed
      */
     public static function checkUrlExistence(string $url)
     {
@@ -55,8 +60,25 @@ class SiteHelper
         return $info;
     }
 
-    public static function generateBusinessSubfolder($businessId)
+    /**
+     * @param Query     $query
+     * @param string    $locale
+     *
+     * @return Query
+     */
+    public static function setLocaleQueryHint($query, $locale)
     {
-        return substr($businessId, -1) . DIRECTORY_SEPARATOR . $businessId;
+        $query->setHint(
+            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+        );
+
+        // Force the locale
+        $query->setHint(
+            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+            $locale
+        );
+
+        return $query;
     }
 }

@@ -2,14 +2,10 @@
 
 namespace Domain\BannerBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
+use Domain\BannerBundle\Model\TypeModel;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
-use Oxa\Sonata\MediaBundle\Entity\Media;
-use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
-use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,12 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="banner")
  * @ORM\Entity(repositoryClass="Domain\BannerBundle\Repository\BannerRepository")
- * @Gedmo\TranslationEntity(class="Domain\BannerBundle\Entity\Translation\BannerTranslation")
  */
-class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableEntityInterface
+class Banner implements DefaultEntityInterface
 {
     use DefaultEntityTrait;
-    use PersonalTranslatable;
 
     /**
      * @var int
@@ -37,7 +31,6 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     /**
      * @var string - Banner title
      *
-     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
      */
@@ -46,58 +39,45 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     /**
      * @var string - Banner description
      *
-     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="text", length=100)
      * @Assert\NotBlank()
      */
     protected $description;
 
     /**
-     * @var string - Using this checkbox a User may define whether the banner is used for advertising Businesses
-     * or for other purposes (Google AdSense, custom ad, etc)
+     * @var string - Placement
      *
-     * @ORM\Column(name="allowed_for_businesses", type="boolean", options={"default" : 1})
+     * @ORM\Column(name="placement", type="string", length=100, options={"default" : ""})
      */
-    protected $allowedForBusinesses = true;
+    protected $placement;
 
     /**
-     * @var Template - Banner Template, If a User selects template,
-     * all entered data of “Type”, “Size” and “Body” fields are overwritten by template data.
+     * @var string - Comment
      *
-     * @ORM\ManyToOne(targetEntity="Domain\BannerBundle\Entity\Template",
-     *     inversedBy="banners",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\Column(name="comment", type="text", length=1000, options={"default" : ""})
      */
-    protected $template;
+    protected $comment;
 
     /**
-     * @var Type - Banner type
-     * @ORM\ManyToOne(targetEntity="Domain\BannerBundle\Entity\Type",
-     *     inversedBy="banners",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
-     */
-    protected $type;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
-
-    /**
-     * @var ArrayCollection
+     * @var integer
      *
-     * @ORM\OneToMany(
-     *     targetEntity="Domain\BannerBundle\Entity\Translation\BannerTranslation",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove"}
-     * )
+     * @ORM\Column(name="code", type="integer", options={"default" : 0})
      */
-    protected $translations;
+    protected $code;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="html_id", type="string", length=100, options={"default" : 0})
+     */
+    protected $htmlId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="slot_id", type="string", length=100, options={"default" : 0})
+     */
+    protected $slotId;
 
     /**
      * @var string - Using this checkbox a Admin may define whether to show a banner block.
@@ -121,15 +101,12 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      */
     public function __construct()
     {
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->isPublished  = false;
     }
 
-    public function getMarkCopyPropertyName()
-    {
-        return 'title';
-    }
-
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getTitle() ?: '';
@@ -140,7 +117,7 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
      */
     public function getSize()
     {
-        return $this->getType()->getSize();
+        return TypeModel::getSizeByCode($this->getCode());
     }
 
     /**
@@ -192,109 +169,103 @@ class Banner implements DefaultEntityInterface, TranslatableInterface, CopyableE
     }
 
     /**
-     * Set allowedForBusinesses
-     *
-     * @param boolean $allowedForBusinesses
+     * @param string $placement
      *
      * @return Banner
      */
-    public function setAllowedForBusinesses($allowedForBusinesses)
+    public function setPlacement($placement)
     {
-        $this->allowedForBusinesses = $allowedForBusinesses;
+        $this->placement = $placement;
 
         return $this;
     }
 
     /**
-     * Get allowedForBusinesses
-     *
-     * @return boolean
+     * @return string
      */
-    public function getAllowedForBusinesses()
+    public function getPlacement()
     {
-        return $this->allowedForBusinesses;
+        return $this->placement;
     }
 
     /**
-     * Set position
-     *
-     * @param integer $position
+     * @param string $comment
      *
      * @return Banner
      */
-    public function setPosition($position)
+    public function setComment($comment)
     {
-        $this->position = $position;
+        $this->comment = $comment;
 
         return $this;
     }
 
     /**
-     * Get position
-     *
-     * @return integer
+     * @return string
      */
-    public function getPosition()
+    public function getComment()
     {
-        return $this->position;
+        return $this->comment;
     }
 
     /**
-     * Set template
-     *
-     * @param \Domain\BannerBundle\Entity\Template $template
+     * @param int $code
      *
      * @return Banner
      */
-    public function setTemplate(\Domain\BannerBundle\Entity\Template $template = null)
+    public function setCode($code)
     {
-        $this->template = $template;
+        $this->code = $code;
 
         return $this;
     }
 
     /**
-     * Get template
-     *
-     * @return \Domain\BannerBundle\Entity\Template
+     * @return int
      */
-    public function getTemplate()
+    public function getCode()
     {
-        return $this->template;
+        return $this->code;
     }
 
     /**
-     * Set type
-     *
-     * @param \Domain\BannerBundle\Entity\Type $type
+     * @param string $htmlId
      *
      * @return Banner
      */
-    public function setType(\Domain\BannerBundle\Entity\Type $type = null)
+    public function setHtmlId($htmlId)
     {
-        $this->type = $type;
+        $this->htmlId = $htmlId;
 
         return $this;
     }
 
     /**
-     * Get type
-     *
-     * @return \Domain\BannerBundle\Entity\Type
+     * @return string
      */
-    public function getType()
+    public function getHtmlId()
     {
-        return $this->type;
+        return $this->htmlId;
     }
 
     /**
-     * Remove translation
+     * @param string $slotId
      *
-     * @param \Domain\BannerBundle\Entity\Translation\BannerTranslation $translation
+     * @return Banner
      */
-    public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
+    public function setSlotId($slotId)
     {
-        $this->translations->removeElement($translation);
+        $this->slotId = $slotId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlotId()
+    {
+        return $this->slotId;
     }
 
     /**

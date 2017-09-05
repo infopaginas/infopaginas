@@ -177,6 +177,11 @@ class AdminHelper
         ];
     }
 
+    /**
+     * Used to set report options
+     *
+     * @return array
+     */
     public static function getReportDateTypeOptions()
     {
         return [
@@ -202,7 +207,6 @@ class AdminHelper
     public static function getFormImageFileConstrain()
     {
         return [
-            'maxSize' => self::MAX_IMAGE_FILESIZE,
             'mimeTypes' => [
                 "image/png",
                 "image/jpeg",
@@ -232,17 +236,59 @@ class AdminHelper
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getAccentedChars()
     {
         return [
             'á' => 'a',
+            'à' => 'a',
+            'â' => 'a',
+            'ã' => 'a',
+            'ä' => 'a',
+            'å' => 'a',
             'é' => 'e',
+            'è' => 'e',
+            'ê' => 'e',
+            'ë' => 'e',
             'í' => 'i',
+            'ì' => 'i',
+            'î' => 'i',
+            'ï' => 'i',
             'ñ' => 'n',
             'ó' => 'o',
+            'ò' => 'o',
+            'ô' => 'o',
+            'õ' => 'o',
+            'ö' => 'o',
             'ú' => 'u',
+            'ù' => 'u',
             'ü' => 'u',
+            'û' => 'u',
+            'ý' => 'y',
+            'ÿ' => 'y',
+            'ç' => 'c',
+            'ß' => 'ss',
+            'æ' => 'ae',
+            'œ' => 'oe',
         ];
+    }
+
+    /**
+     * @param $value string
+     *
+     * @return string
+     */
+    public static function convertAccentedString($value)
+    {
+        $string = mb_strtolower($value);
+
+        $accentedChars = self::getAccentedChars();
+
+        $string = str_replace(array_keys($accentedChars), array_values($accentedChars), $string);
+
+        return $string;
     }
 
     /**

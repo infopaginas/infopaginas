@@ -5,6 +5,8 @@ namespace Domain\BusinessBundle\Model;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class DayOfWeekModel
@@ -29,11 +31,12 @@ class DayOfWeekModel
     const SCHEMA_ORG_OPEN_TIME_FORMAT = 'H:i';
     const FORM_DEFAULT_FORMAT = 'h:i a';
 
+    /**
+     * @return array
+     */
     public static function getDayOfWeekMapping()
     {
         return [
-            self::CODE_WEEKDAY   => 'Weekday',
-            self::CODE_WEEKEND   => 'Weekend',
             self::CODE_MONDAY    => 'Monday',
             self::CODE_TUESDAY   => 'Tuesday',
             self::CODE_WEDNESDAY => 'Wednesday',
@@ -62,6 +65,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getDaysOfWeek()
     {
         return [
@@ -75,6 +81,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getDaysOfWeekStartWithSunday()
     {
         return [
@@ -88,6 +97,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getAllDaysOfWeek()
     {
         return [
@@ -103,6 +115,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getWeekday()
     {
         return [
@@ -114,6 +129,9 @@ class DayOfWeekModel
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getWeekend()
     {
         return [
@@ -153,7 +171,7 @@ class DayOfWeekModel
     {
         $check = true;
 
-        $dailyHours = self::getWorkingHoursWeekList($workingHours);
+        $dailyHours = self::getWorkingHoursWeekValidationList($workingHours);
 
         foreach ($dailyHours as $dailyHoursSet) {
             $check = self::validateDayWorkingHours($dailyHoursSet);
@@ -234,17 +252,15 @@ class DayOfWeekModel
      */
     public static function checkWorkingHourOverlap($workingHour, $checkWorkingHour)
     {
-        $defaultDate = DatesUtil::getToday();
-
         $timeEnd      = $workingHour->getTimeEnd();
         $checkTimeEnd = $checkWorkingHour->getTimeEnd();
 
-        if ($timeEnd == $defaultDate) {
+        if ($timeEnd and $timeEnd <= $workingHour->getTimeStart()) {
             $timeEnd = clone $timeEnd;
             $timeEnd->modify('+1 day');
         }
 
-        if ($checkTimeEnd == $defaultDate) {
+        if ($checkTimeEnd and $checkTimeEnd <= $checkWorkingHour->getTimeStart()) {
             $checkTimeEnd = clone $checkTimeEnd;
             $checkTimeEnd->modify('+1 day');
         }
@@ -282,64 +298,31 @@ class DayOfWeekModel
         ];
 
         if ($workingHours) {
-            $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+            $dayOfWeek = self::getCurrentDayOfWeek();
 
-            $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
-            $now->modify($time);
+            $data = [
+                'status' => true,
+                'open'   => false,
+                'hours'  => false,
+            ];
 
-            $dayOfWeek = strtoupper(date('D'));
-            $daysKey = '';
+            $data = self::getOpenNowStatusForDay($workingHours, $dayOfWeek, $data);
 
-            foreach ($workingHours as $dayItems => $items) {
-                $days = explode(',', $dayItems);
-
-                if (in_array($dayOfWeek, $days)) {
-                    $daysKey = $dayItems;
-                }
-            }
-
-            if ($daysKey and !empty($workingHours->{$daysKey})) {
-                $data = [
-                    'status' => true,
-                    'open'   => false,
-                    'hours'  => false,
-                ];
-
-                $defaultDate = self::getDefaultDateTime();
-
-                foreach ($workingHours->{$daysKey} as $workingHour) {
-                    $startDate = clone $defaultDate;
-                    $startDate->modify($workingHour->timeStart);
-
-                    $endDate   = clone $defaultDate;
-                    $endDate->modify($workingHour->timeEnd);
-
-                    if ($endDate == $defaultDate) {
-                        $timeEnd = clone $endDate;
-                        $timeEnd->modify('+1 day');
-                    } else {
-                        $timeEnd = $endDate;
-                    }
-
-                    if (($now < $timeEnd and $now >= $startDate) or $workingHour->openAllTime) {
-                        $workingHour->timeStart = $startDate;
-                        $workingHour->timeEnd   = $endDate;
-
-                        $data = [
-                            'status' => true,
-                            'open'   => true,
-                            'hours'  => $workingHour,
-                        ];
-
-                        break;
-                    }
-                }
+            if (!$data['open']) {
+                // check previous day
+                $previousDay = self::getPreviousDay($dayOfWeek);
+                $data = self::getOpenNowStatusForDay($workingHours, $previousDay, $data, true);
             }
         }
 
         return $data;
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return array
+     */
     public static function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
     {
         $workingHours = $businessProfile->getCollectionWorkingHours();
@@ -348,13 +331,8 @@ class DayOfWeekModel
 
         if (!$workingHours->isEmpty()) {
             $dailyHours = self::getWorkingHoursWeekList($workingHours);
-
-            // merge weekday and weekend to real days
-            $dailyHours = self::mergeCustomDayToReal($dailyHours, self::CODE_WEEKDAY);
-            $dailyHours = self::mergeCustomDayToReal($dailyHours, self::CODE_WEEKEND);
             $dailyHours = self::sortDailyWorkingHours($dailyHours);
             $dailyHours = self::orderDailyWorkingDayByDay($dailyHours);
-            $dailyHours = self::mergeSimilarWorkingDays($dailyHours);
         }
 
         return $dailyHours;
@@ -390,6 +368,71 @@ class DayOfWeekModel
         }
 
         return $dailyHours;
+    }
+
+    /**
+     * @param BusinessProfile $businessProfile
+     *
+     * @return \stdClass
+     */
+    public static function getBusinessProfileWorkingHoursListFEView($businessProfile)
+    {
+        $dailyHours  = [];
+        $currentDay  = self::getCurrentDayOfWeek();
+        $previousDay = self::getPreviousDay($currentDay);
+        $showPreviousDay = false;
+
+        $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+        $now  = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+        $now->modify($time);
+
+        $workingHours = $businessProfile->getWorkingHoursJsonAsObject();
+
+        if ($workingHours) {
+            $defaultDate = self::getDefaultDateTime();
+
+            foreach ($workingHours as $key => $items) {
+                $status = false;
+
+                foreach ($items as $hourKey => $workingHour) {
+                    $startDate = clone $defaultDate;
+                    $startDate->modify($workingHour->timeStart);
+                    $workingHour->timeStart = $startDate;
+
+                    $endDate   = clone $defaultDate;
+                    $endDate->modify($workingHour->timeEnd);
+                    $workingHour->timeEnd = $endDate;
+
+                    $dailyHours[$key]['items'][$hourKey] = $workingHour;
+
+                    if (!$status and $key == $previousDay and $endDate <= $startDate) {
+                        $startDate->modify('-1 day');
+
+                        if ($now < $endDate and $now >= $startDate) {
+                            $status = true;
+                            $showPreviousDay = true;
+                        }
+                    }
+                }
+
+                if ($key == $currentDay) {
+                    $status = true;
+                }
+
+                $dailyHours[$key]['status'] = $status;
+            }
+        }
+
+        // sort by days
+        if ($showPreviousDay) {
+            $sortDay = $previousDay;
+        } else {
+            $sortDay = $currentDay;
+        }
+
+        $workingHoursOrder = self::getWorkingHoursDayOrder($sortDay);
+
+        return self::orderArrayByKeys($dailyHours, $workingHoursOrder);
     }
 
     /**
@@ -435,21 +478,41 @@ class DayOfWeekModel
             $timeEnd = DatesUtil::getToday();
         }
 
+        $comments = [];
+
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $property = BusinessProfileWorkingHour::FIELD_PREFIX_COMMENT . LocaleHelper::getLangPostfix($locale);
+
+            if (property_exists($workingHours, $property)) {
+                $comments[$locale] = $accessor->getValue($workingHours, $property);
+            }
+        }
+
         return [
             'timeStart'   => $timeStart->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
             'timeEnd'     => $timeEnd->format(self::SCHEMA_ORG_OPEN_TIME_FORMAT),
             'openAllTime' => $workingHours->getOpenAllTime(),
+            'comment'     => $comments,
         ];
     }
 
+    /**
+     * @param BusinessProfileWorkingHour[] $workingHours
+     *
+     * @return array
+     */
     public static function getWorkingHoursWeekList($workingHours)
     {
         $dailyHours = [];
 
         foreach (self::getAllDaysOfWeek() as $day) {
             foreach ($workingHours as $workingHour) {
-                if ($workingHour->getDay() == $day) {
-                    $dailyHours[$day][] = $workingHour;
+                foreach ($workingHour->getDays() as $currentDay) {
+                    if ($currentDay == $day) {
+                        $dailyHours[$day][] = $workingHour;
+                    }
                 }
             }
         }
@@ -457,6 +520,50 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
+    /**
+     * @param BusinessProfileWorkingHour[] $workingHours
+     *
+     * @return array
+     */
+    public static function getWorkingHoursWeekValidationList($workingHours)
+    {
+        $dailyHours = [];
+        $nextDayHours = [];
+
+        foreach (self::getAllDaysOfWeek() as $day) {
+            foreach ($nextDayHours as $nextDayHour) {
+                $dailyHours[$day][] = $nextDayHour;
+            }
+
+            $nextDayHours = [];
+
+            foreach ($workingHours as $workingHour) {
+                foreach ($workingHour->getDays() as $currentDay) {
+                    if ($currentDay == $day) {
+                        $dailyHours[$day][] = $workingHour;
+
+                        if (!$workingHour->getOpenAllTime() and
+                            $workingHour->getTimeStart() >= $workingHour->getTimeEnd()
+                        ) {
+                            $nextDayWorkingHour = clone $workingHour;
+
+                            $nextDayWorkingHour->setTimeStart(DatesUtil::getToday());
+                            $nextDayHours[] = $nextDayWorkingHour;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $dailyHours;
+    }
+
+    /**
+     * @param array $dailyHours
+     * @param string $dayCode
+     *
+     * @return array
+     */
     public static function mergeCustomDayToReal($dailyHours, $dayCode)
     {
         if (!empty($dailyHours[$dayCode])) {
@@ -487,6 +594,11 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
+    /**
+     * @param array $dailyHours
+     *
+     * @return array
+     */
     public static function sortDailyWorkingHours($dailyHours)
     {
         foreach ($dailyHours as $key => $hours) {
@@ -499,6 +611,11 @@ class DayOfWeekModel
         return $dailyHours;
     }
 
+    /**
+     * @param array $dailyHours
+     *
+     * @return array
+     */
     public static function orderDailyWorkingDayByDay($dailyHours)
     {
         $ordered = [];
@@ -514,6 +631,11 @@ class DayOfWeekModel
         return $ordered;
     }
 
+    /**
+     * @param array $dailyHours
+     *
+     * @return array
+     */
     public static function mergeSimilarWorkingDays($dailyHours)
     {
         $data = [];
@@ -604,5 +726,128 @@ class DayOfWeekModel
     public static function getDefaultDateTime()
     {
         return new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCurrentDayOfWeek()
+    {
+        return strtoupper(date('D'));
+    }
+
+    /**
+     * @param string $day
+     *
+     * @return string
+     */
+    public static function getPreviousDay($day)
+    {
+        $days = self::getDaysOfWeek();
+
+        $dayNumber = array_search($day, $days);
+
+        if ($dayNumber) {
+            $previousDay = $days[$dayNumber - 1];
+        } else {
+            $previousDay = end($days);
+        }
+
+        return $previousDay;
+    }
+
+    /**
+     * @param \stdClass $workingHours
+     * @param string $dayOfWeek
+     * @param array $data
+     * @param bool $isPrevious
+     *
+     * @return array
+     */
+    public static function getOpenNowStatusForDay($workingHours, $dayOfWeek, $data, $isPrevious = false)
+    {
+        if (!empty($workingHours->$dayOfWeek)) {
+            $defaultDate = self::getDefaultDateTime();
+            $time = date(BusinessProfileWorkingHour::DEFAULT_TASK_TIME_FORMAT);
+
+            $now = new \DateTime(BusinessProfileWorkingHour::DEFAULT_DATE);
+            $now->modify($time);
+
+            foreach ($workingHours->$dayOfWeek as $workingHour) {
+                $startDate = clone $defaultDate;
+                $startDate->modify($workingHour->timeStart);
+
+                $endDate   = clone $defaultDate;
+                $endDate->modify($workingHour->timeEnd);
+
+                if ($isPrevious) {
+                    $startDate->modify('-1 day');
+                    $endDate->modify('-1 day');
+                }
+
+                if ($endDate <= $startDate) {
+                    $timeEnd = clone $endDate;
+                    $timeEnd->modify('+1 day');
+                } else {
+                    $timeEnd = $endDate;
+                }
+
+                if (($now < $timeEnd and $now >= $startDate) or ($workingHour->openAllTime and !$isPrevious)) {
+                    $workingHour->timeStart = $startDate;
+                    $workingHour->timeEnd   = $endDate;
+
+                    $data = [
+                        'status' => true,
+                        'open'   => true,
+                        'hours'  => $workingHour,
+                    ];
+
+                    break;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $firstDay
+     *
+     * @return array
+     */
+    public static function getWorkingHoursDayOrder($firstDay)
+    {
+        $days = self::getDaysOfWeek();
+        $movedDays = [];
+
+        foreach ($days as $key => $day) {
+            if ($day != $firstDay) {
+                $movedDays[] = $day;
+                unset($days[$key]);
+            } else {
+                break;
+            }
+        }
+
+        return array_merge($days, $movedDays);
+    }
+
+    /**
+     * @param array $sort
+     * @param array $order
+     *
+     * @return array
+     */
+    public static function orderArrayByKeys($sort, $order)
+    {
+        $result = [];
+
+        foreach ($order as $key) {
+            if (!empty($sort[$key])) {
+                $result[$key] = $sort[$key];
+            }
+        }
+
+        return $result;
     }
 }

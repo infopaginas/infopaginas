@@ -10,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AreaAdmin extends OxaAdmin
 {
@@ -60,9 +61,8 @@ class AreaAdmin extends OxaAdmin
                 'required' => false,
                 'disabled' => true
             ])
-            ->add('updatedUser', 'sonata_type_model', [
+            ->add('updatedUser', TextType::class, [
                 'required' => false,
-                'btn_add' => false,
                 'disabled' => true,
             ])
         ;
@@ -76,7 +76,6 @@ class AreaAdmin extends OxaAdmin
         $showMapper
             ->add('id')
             ->add('name')
-            ->add('businessProfiles')
             ->add('updatedAt')
             ->add('updatedUser')
         ;

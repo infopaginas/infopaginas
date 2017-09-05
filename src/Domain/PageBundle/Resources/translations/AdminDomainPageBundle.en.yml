@@ -1,0 +1,16 @@
+page:
+  help_message:
+    default:
+      title: This value will be used for H1 tag
+      description: This value will be used for "copy" field
+      seoTitle: This value will be used for SEO Title meta tag (total 60 char). "| Infopaginas" will be added automatically
+      seoDescription: This value will be used for SEO desription meta tag (total 160 char)
+    article_category_list:
+      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically
+      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
+    catalog_locality:
+      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically
+      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}
+    catalog_locality_category:
+      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically
+      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.

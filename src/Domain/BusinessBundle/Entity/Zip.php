@@ -3,6 +3,7 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Util\ZipFormatterUtil;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -35,7 +36,7 @@ class Zip
     protected $zipCode;
 
     /**
-     * @var Domain\BusinessBundle\Entity\Neighborhood
+     * @var \Domain\BusinessBundle\Entity\Neighborhood
      *
      * @ORM\ManyToOne(
      *      targetEntity="Domain\BusinessBundle\Entity\Neighborhood",
@@ -71,7 +72,7 @@ class Zip
      */
     public function setZipCode($zipCode)
     {
-        $this->zipCode = $zipCode;
+        $this->zipCode = ZipFormatterUtil::getFormattedZip($zipCode);
 
         return $this;
     }

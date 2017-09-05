@@ -33,6 +33,10 @@ class HeadingConvertCommand extends ContainerAwareCommand
         );
     }
 
+    /**
+     * @param InputInterface    $input
+     * @param OutputInterface   $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');

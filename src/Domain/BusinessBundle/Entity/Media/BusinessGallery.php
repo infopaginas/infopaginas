@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/21/16
- * Time: 4:57 PM
- */
 
 namespace Domain\BusinessBundle\Entity\Media;
 
@@ -58,12 +52,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      * @Assert\NotBlank()
      */
     protected $description;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
 
     /**
      * @var string - Is Primary
@@ -122,6 +110,9 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getId() ? sprintf('%s: %s', $this->getId(), $this->getBusinessProfile()->__toString()) : '';
@@ -233,30 +224,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     }
 
     /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return BusinessGallery
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
      * Remove translation
      *
      * @param \Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation
@@ -276,6 +243,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
 
     /**
      * @param mixed $type
+     *
      * @return BusinessGallery
      */
     public function setType($type)
@@ -289,6 +257,12 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
         $this->id = null;
     }
 
+    /**
+     * @param mixed $data
+     * @param Media $media
+     *
+     * @return BusinessGallery
+     */
     public static function createFromChangeSet($data, Media $media)
     {
         $gallery = new BusinessGallery();

@@ -60,8 +60,6 @@ sonata_admin:
                 icon: <i class="fa fa-star"></i>
                 items:
                     - domain_banner.admin.banner
-                    - domain_banner.admin.type
-                    - domain_banner.admin.template
             sonata.admin.group.media:
                 label: Media
                 icon: <i class="fa fa-picture-o"></i>
@@ -80,7 +78,7 @@ sonata_admin:
                     - domain_report.admin.subscription_report
                     - domain_report.admin.category_report
                     - domain_report.admin.views_and_visitors_report
-#                    - domain_report.admin.user_action_report
+                    - domain_report.admin.user_action_report
                     - domain_report.admin.export_report
         blocks:
             -

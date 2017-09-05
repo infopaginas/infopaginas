@@ -179,7 +179,15 @@ class VideoMedia implements PostponeRemoveInterface
      */
     public function __toString()
     {
-        return $this->getName() ?: (string)$this->getId();
+        if ($this->getTitle()) {
+            $name = $this->getTitle();
+        } elseif ($this->getName()) {
+            $name = $this->getName();
+        } else {
+            $name = $this->getId();
+        }
+
+        return (string) $name;
     }
 
     /**
@@ -536,6 +544,9 @@ class VideoMedia implements PostponeRemoveInterface
         return $this->poster;
     }
 
+    /**
+     * @return string
+     */
     public function getYoutubeTitle()
     {
         $title = '';
@@ -554,6 +565,9 @@ class VideoMedia implements PostponeRemoveInterface
         return $title;
     }
 
+    /**
+     * @return string
+     */
     public function getYoutubeDescription()
     {
         $title = '';

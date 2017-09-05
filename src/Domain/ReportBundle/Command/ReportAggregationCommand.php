@@ -5,6 +5,7 @@ namespace Domain\ReportBundle\Command;
 use Domain\ReportBundle\Manager\BusinessOverviewReportManager;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -60,14 +61,16 @@ class ReportAggregationCommand extends ContainerAwareCommand
         $output->writeln('Process overview report');
         $this->getBusinessOverviewReportManager()->aggregateBusinessInteractions($period);
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process overview report');
+
         $output->writeln('Process keyword report');
         $this->getKeywordsReportManager()->aggregateBusinessKeywords($period);
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process keyword report');
+
         $output->writeln('Process category report');
         $this->getCategoryReportManager()->aggregateBusinessCategories($period);
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_IN_PROGRESS, 'execute:Process category report');
-        $output->writeln('done');
 
+        $output->writeln('done');
         $logger->addInfo($logger::MONGO_AGGREGATE, $logger::STATUS_END, 'execute:stop');
     }
 
@@ -95,6 +98,11 @@ class ReportAggregationCommand extends ContainerAwareCommand
         return $this->getContainer()->get('domain_report.manager.category_report_manager');
     }
 
+    /**
+     * @param InputInterface $input
+     *
+     * @return ReportDatesRangeVO
+     */
     protected function getAggregationPeriod(InputInterface $input)
     {
         if ($input->getOption('period')) {

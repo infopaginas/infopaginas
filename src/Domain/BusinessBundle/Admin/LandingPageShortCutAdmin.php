@@ -63,7 +63,9 @@ class LandingPageShortCutAdmin extends OxaAdmin
                     ->add('isActive')
                 ->end()
                 ->with('Searches')
-                ->add('searchItems', 'sonata_type_collection',
+                ->add(
+                    'searchItems',
+                    'sonata_type_collection',
                     [
                         'by_reference'  => false,
                         'required'      => true,
@@ -93,6 +95,10 @@ class LandingPageShortCutAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param string $name
+     * @param string $template
+     */
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:LandingPageShortCut/edit.html.twig';

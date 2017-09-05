@@ -11,6 +11,7 @@ class BusinessOverviewModel implements ReportInterface
     const TYPE_CODE_MAP_SHOW_BUTTON        = 'mapShowButton';
     const TYPE_CODE_MAP_MARKER_BUTTON      = 'mapMarkerButton';
     const TYPE_CODE_WEB_BUTTON             = 'webButton';
+    const TYPE_CODE_WEB_ACTION_BUTTON      = 'webActionButton';
     const TYPE_CODE_CALL_MOB_BUTTON        = 'callMobButton';
     const TYPE_CODE_CALL_DESK_BUTTON       = 'callDeskButton';
     const TYPE_CODE_ADD_COMPARE_BUTTON     = 'addCompareButton';
@@ -37,6 +38,7 @@ class BusinessOverviewModel implements ReportInterface
         self::TYPE_CODE_MAP_SHOW_BUTTON       => 'interaction_report.button.show_map',
         self::TYPE_CODE_MAP_MARKER_BUTTON     => 'interaction_report.button.marker_map',
         self::TYPE_CODE_WEB_BUTTON            => 'interaction_report.button.web',
+        self::TYPE_CODE_WEB_ACTION_BUTTON     => 'interaction_report.button.web_action',
         self::TYPE_CODE_CALL_MOB_BUTTON       => 'interaction_report.button.call_mob',
         self::TYPE_CODE_CALL_DESK_BUTTON      => 'interaction_report.button.call_desk',
         self::TYPE_CODE_ADD_COMPARE_BUTTON    => 'interaction_report.button.add_compare',
@@ -54,6 +56,9 @@ class BusinessOverviewModel implements ReportInterface
         self::TYPE_CODE_EMAIL_CLICK           => 'interaction_report.email.click',
     ];
 
+    /**
+     * @return array
+     */
     public static function getExportFormats()
     {
         return [
@@ -62,6 +67,9 @@ class BusinessOverviewModel implements ReportInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTypes()
     {
         return [
@@ -71,6 +79,7 @@ class BusinessOverviewModel implements ReportInterface
             self::TYPE_CODE_MAP_SHOW_BUTTON,
             self::TYPE_CODE_MAP_MARKER_BUTTON,
             self::TYPE_CODE_WEB_BUTTON,
+            self::TYPE_CODE_WEB_ACTION_BUTTON,
             self::TYPE_CODE_CALL_MOB_BUTTON,
             self::TYPE_CODE_CALL_DESK_BUTTON,
             self::TYPE_CODE_ADD_COMPARE_BUTTON,

@@ -2,15 +2,13 @@
 
 namespace Domain\BannerBundle\Admin;
 
+use Domain\BannerBundle\Entity\Banner;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
 
 class BannerAdmin extends OxaAdmin
 {
@@ -19,20 +17,10 @@ class BannerAdmin extends OxaAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $choiceOptions = [
-            'choices' => [
-                1 => 'label_yes',
-                2 => 'label_no',
-            ],
-            'translation_domain' => $this->getTranslationDomain()
-        ];
-
         $datagridMapper
             ->add('id')
             ->add('title')
             ->add('description')
-            ->add('type')
-            ->add('template')
             ->add('isPublished')
             ->add('updatedAt', 'doctrine_orm_datetime_range', $this->defaultDatagridDateTypeOptions)
             ->add('updatedUser')
@@ -48,9 +36,7 @@ class BannerAdmin extends OxaAdmin
             ->add('id')
             ->addIdentifier('title')
             ->add('description')
-            ->add('type')
             ->add('size')
-            ->add('template')
             ->add('isPublished')
             ->add('updatedAt')
             ->add('updatedUser')
@@ -66,29 +52,36 @@ class BannerAdmin extends OxaAdmin
     {
         // define group zoning
         $formMapper
-            ->with('General', array('class' => 'col-md-6'))->end()
-            ->with('Type', array('class' => 'col-md-6'))->end()
-            ->with('Template', array('class' => 'col-md-6'))->end()
+            ->with('General', ['class' => 'col-md-6',])->end()
+            ->with('Comments', ['class' => 'col-md-6',])->end()
+            ->with('Data', ['class' => 'col-md-6',])->end()
             ->end()
         ;
 
         $formMapper
             ->with('General')
                 ->add('title')
-                ->add('description')
+                ->add('description', null, [
+                    'attr' => [
+                        'class' => 'vertical-resize',
+                    ],
+                ])
+            ->end()
+            ->with('Comments')
+                ->add('placement', null, [
+                    'disabled' => true,
+                ])
+                ->add('comment', null, [
+                    'disabled' => true,
+                    'attr' => [
+                        'class' => 'vertical-resize',
+                    ],
+                ])
+            ->end()
+            ->with('Data')
+                ->add('htmlId')
+                ->add('slotId')
                 ->add('isPublished')
-            ->end()
-            ->with('Type')
-                ->add('type', 'sonata_type_model_list', [
-                    'required' => false,
-                    'btn_add' => false,
-                ])
-            ->end()
-            ->with('Template')
-                ->add('template', 'sonata_type_model_list', [
-                    'required' => false,
-                    'btn_add' => false,
-                ])
             ->end()
         ;
     }
@@ -102,8 +95,11 @@ class BannerAdmin extends OxaAdmin
             ->add('id')
             ->add('title')
             ->add('description')
-            ->add('type')
             ->add('size')
+            ->add('placement')
+            ->add('comment')
+            ->add('htmlId')
+            ->add('slotId')
             ->add('isPublished')
             ->add('updatedAt')
             ->add('updatedUser')
@@ -111,16 +107,19 @@ class BannerAdmin extends OxaAdmin
     }
 
     /**
-     * @param ErrorElement $errorElement
-     * @param mixed $object
+     * @param string        $name
+     * @param Banner|null   $banner
+     *
+     * @return bool
      */
-    public function validate(ErrorElement $errorElement, $object)
+    public function isGranted($name, $banner = null)
     {
-        $errorElement
-            ->with('type')
-                ->assertNotBlank()
-                ->assertNotNull()
-            ->end()
-        ;
+        $deniedActions = $this->getDeniedAllButViewAndEditActions();
+
+        if (in_array($name, $deniedActions)) {
+            return false;
+        }
+
+        return parent::isGranted($name, $banner);
     }
 }

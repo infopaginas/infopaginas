@@ -25,6 +25,9 @@ class BusinessProfileTranslation extends AbstractPersonalTranslation
      */
     protected $object;
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $data = [

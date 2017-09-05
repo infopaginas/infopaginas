@@ -4,7 +4,6 @@ namespace Domain\ArticleBundle\Admin\Media;
 
 use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Entity\Media\ArticleGallery;
-use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -77,7 +76,10 @@ class ArticleGalleryAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->add('media', 'sonata_type_model_list', $property,
+            ->add(
+                'media',
+                'sonata_type_model_list',
+                $property,
                 [
                     'link_parameters' => [
                         'required' => true,
@@ -85,7 +87,8 @@ class ArticleGalleryAdmin extends OxaAdmin
                         'provider' => OxaMediaInterface::PROVIDER_IMAGE,
                         'allow_switch_context' => false,
                     ]
-                ])
+                ]
+            )
             ->add('description', null, ['attr' => [
                 'rows'          => 2,
                 'cols'          => 100,
@@ -94,11 +97,6 @@ class ArticleGalleryAdmin extends OxaAdmin
                 'placeholder'   => 'Create an image description as ' .
                     'if you were describing the image to someone who cannot see it',
             ]])
-            ->add('position', 'hidden', [
-                'attr' => [
-                    'hidden' => true,
-                ]
-            ])
         ;
     }
 

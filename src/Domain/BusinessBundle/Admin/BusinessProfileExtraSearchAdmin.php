@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileExtraSearch;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -14,6 +15,51 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BusinessProfileExtraSearchAdmin extends OxaAdmin
 {
+    /**
+     * @return BusinessProfileExtraSearch
+     */
+    public function getNewInstance()
+    {
+        /* @var BusinessProfileExtraSearch $extraSearch */
+        $extraSearch = parent::getNewInstance();
+        $container = $this->getConfigurationPool()->getContainer();
+
+        $businessId = $this->getRequest()->get('objectId', false);
+
+        if ($businessId) {
+            $business = $container
+                ->get('doctrine.orm.entity_manager')
+                ->getRepository(BusinessProfile::class)
+                ->find($businessId)
+            ;
+
+            if ($business) {
+                $categories     = $business->getCategories();
+                $areas          = $business->getAreas();
+                $localities     = $business->getLocalities();
+                $serviceType    = $business->getServiceAreasType();
+                $miles          = $business->getMilesOfMyBusiness();
+
+                foreach ($categories as $category) {
+                    $extraSearch->addCategory($category);
+                }
+
+                foreach ($areas as $area) {
+                    $extraSearch->addArea($area);
+                }
+
+                foreach ($localities as $locality) {
+                    $extraSearch->addLocality($locality);
+                }
+
+                $extraSearch->setServiceAreasType($serviceType);
+                $extraSearch->setMilesOfMyBusiness($miles);
+            }
+        }
+
+        return $extraSearch;
+    }
+
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -40,12 +86,13 @@ class BusinessProfileExtraSearchAdmin extends OxaAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('categories', null, [
+            ->add('categories', 'sonata_type_model_autocomplete', [
+                'property' => [
+                    'name',
+                    'searchTextEs',
+                ],
                 'multiple' => true,
                 'required' => true,
-                'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
-                    return $rep->getAvailableCategoriesQb();
-                },
             ])
             ->add('areas', null, [
                 'multiple' => true,

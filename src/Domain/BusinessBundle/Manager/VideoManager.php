@@ -5,6 +5,7 @@ namespace Domain\BusinessBundle\Manager;
 use Doctrine\ORM\EntityManager;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -21,6 +22,9 @@ class VideoManager
 
     private $repository;
 
+    /**
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         $this->em = $entityManager;
@@ -50,11 +54,13 @@ class VideoManager
 
     /**
      * @param AbstractDTO $paramsDTO
+     * @param string $locale
+     *
      * @return ReviewsResultsDTO
      */
-    public function getVideosResultDTO(AbstractDTO $paramsDTO)
+    public function getVideosResultDTO(AbstractDTO $paramsDTO, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
-        $results = $this->getRepository()->getBusinessProfilesByVideosUpdate($paramsDTO);
+        $results = $this->getRepository()->getBusinessProfilesByVideosUpdate($paramsDTO, $locale);
 
         $totalResults = $this->getRepository()->countBusinessProfilesByVideosUpdate();
 
@@ -63,6 +69,11 @@ class VideoManager
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
 
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return array
+     */
     public function getVideosSeoData(ContainerInterface $container)
     {
         $translator  = $container->get('translator');

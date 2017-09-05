@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 28.06.16
- * Time: 18:10
- */
 
 namespace Domain\SiteBundle\Form\Type;
 
@@ -62,7 +56,7 @@ class UserProfileType extends AbstractType
             ->add('phone', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => '(787) 594-7273',
+                    'placeholder' => '787-594-7273',
                 ],
                 'label' => 'Phone Number',
                 'required' => false,

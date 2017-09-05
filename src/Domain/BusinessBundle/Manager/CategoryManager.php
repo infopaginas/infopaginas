@@ -4,8 +4,10 @@ namespace Domain\BusinessBundle\Manager;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ElasticSearchBundle\Manager\ElasticSearchManager;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 
@@ -16,23 +18,29 @@ class CategoryManager extends Manager
     const AUTO_SUGGEST_MAX_CATEGORY_MAIN_COUNT = 10;
     const AUTO_SUGGEST_SEPARATOR = ' ';
 
-    public function searchAutosuggestByName(string $name, string $locale)
+    /**
+     * @param array     $profileList
+     * @param string    $locale
+     *
+     * @return array
+     */
+    public function getCategoriesByProfiles(array $profileList, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
-        return $this->getRepository()->searchAutosuggest($name, $locale);
-    }
-
-    public function getCategoriesByProfiles(array $profileList)
-    {
-        return $this->getRepository()->getCategoryByBusinessesIds(
-            array_map(
-                function ($item) {
-                    return $item->getId();
-                },
-                $profileList
-            )
+        $businessIds = array_map(
+            function ($item) {
+                return $item->getId();
+            },
+            $profileList
         );
+
+        return $this->getRepository()->getCategoryByBusinessesIds($businessIds, $locale);
     }
 
+    /**
+     * @param string $categorySlug
+     *
+     * @return Category|null
+     */
     public function getCategoryBySlug($categorySlug)
     {
         $customSlug = SlugUtil::convertSlug($categorySlug);
@@ -54,19 +62,30 @@ class CategoryManager extends Manager
         return $category;
     }
 
-    public function getAvailableCategoriesWithContent($locality, $locale = false)
+    /**
+     * @param Locality  $locality
+     * @param string    $locale
+     *
+     * @return Category[]
+     */
+    public function getAvailableCategoriesWithContent($locality, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         return $this->getRepository()->getAvailableCategoriesWithContent($locality, $locale);
     }
 
+    /**
+     * @param Category $category
+     *
+     * @return array
+     */
     public function buildCategoryElasticData(Category $category)
     {
         if (!$category->getIsActive()) {
             return false;
         }
 
-        $enLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_EN);
-        $esLocale   = strtolower(BusinessProfile::TRANSLATION_LANG_ES);
+        $enLocale   = LocaleHelper::LOCALE_EN;
+        $esLocale   = LocaleHelper::LOCALE_ES;
 
         $categoryEn = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $enLocale);
         $categoryEs = $category->getTranslation(Category::CATEGORY_FIELD_NAME, $esLocale);
@@ -80,6 +99,11 @@ class CategoryManager extends Manager
         return $data;
     }
 
+    /**
+     * @param bool $sourceEnabled
+     *
+     * @return array
+     */
     public function getCategoryElasticSearchMapping($sourceEnabled = true)
     {
         $properties = $this->getCategoryElasticSearchIndexParams();
@@ -110,6 +134,9 @@ class CategoryManager extends Manager
         return $data;
     }
 
+    /**
+     * @return array
+     */
     protected function getCategoryElasticSearchIndexParams()
     {
         $params = [
@@ -177,6 +204,11 @@ class CategoryManager extends Manager
         return $searchQuery;
     }
 
+    /**
+     * @param array $response
+     *
+     * @return array
+     */
     public function getCategoryFromElasticResponse($response)
     {
         $data  = [];
@@ -194,7 +226,7 @@ class CategoryManager extends Manager
                 $dataIds[] = $item['_id'];
             }
 
-            $dataRaw = $this->getRepository()->getAvailableCategoriesByIds($dataIds);
+            $dataRaw = $this->getAvailableCategoriesByIds($dataIds);
 
             foreach ($dataIds as $id) {
                 $item = $this->searchCategoryByIdsInArray($dataRaw, $id);
@@ -211,6 +243,22 @@ class CategoryManager extends Manager
         ];
     }
 
+    /**
+     * @param array $categoryIds
+     *
+     * @return Category[]
+     */
+    public function getAvailableCategoriesByIds($categoryIds)
+    {
+        return $this->getRepository()->getAvailableCategoriesByIds($categoryIds);
+    }
+
+    /**
+     * @param array $data
+     * @param int $id
+     *
+     * @return array
+     */
     protected function searchCategoryByIdsInArray($data, $id)
     {
         foreach ($data as $item) {

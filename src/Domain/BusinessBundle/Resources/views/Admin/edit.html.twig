@@ -1,5 +1,10 @@
 {% extends 'OxaSonataAdminBundle:CRUD:edit.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/oxasonataadmin/css/lib/selectize.css') }}">
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     <script>
@@ -13,6 +18,10 @@
                 'maxLength': '{{ 'business_profile.keywords.max_length'|trans({'{{ limit }}': KEYWORD_VALIDATION.MAX_LENGTH}, 'validators') }}',
                 'notBlank': '{{ 'business_profile.keywords.not_blank'|trans({}, 'validators') }}',
                 'oneWord': '{{ 'business_profile.keywords.one_word'|trans({}, 'validators') }}'
+            },
+            'phones': {
+                'not_unique': '{{ 'business_profile_phone.not_unique_main'|trans({}, 'validators') }}',
+                'no_main': '{{ 'business_profile_phone.no_main'|trans({}, 'validators') }}'
             }
         };
         var validators = {
@@ -24,7 +33,7 @@
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/businessProfileAdmin.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/domainbusiness/scripts/modules/reportsAdmin.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/highcharts.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/jquery.maskedinput.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/modules/sonataCollectionRemove.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/domainsite/scripts/vendors/min/selectize-min.js')}}"></script>
 {% endblock %}

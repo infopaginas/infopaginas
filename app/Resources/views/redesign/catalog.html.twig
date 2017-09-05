@@ -1,7 +1,11 @@
 {% extends "redesign/layout/base.html.twig" %}
 
 {% block breadcrumbs %}
-    {% include ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory} %}
+    {% embed ':redesign/blocks:breadcrumbs.html.twig' with {'catalogLocality': currentLocality, 'category': currentCategory} %}
+        {% block searchFilters %}
+            {% include ':redesign/blocks:search-filters.html.twig' %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
 
 {% block bodyClass %}results-list{% endblock %}
@@ -9,7 +13,7 @@
 {% block body %}
     <div class="main__container">
         <section class="main" id="searchResults">
-            <div class="results">
+            <div class="results {% if showResults %}active__toggle{% endif %}">
                 {% if catalogLevelItems and showCatalog %}
                     <div class="catalog-list clearfix">
                         {% for key, list in catalogLevelItems %}
@@ -68,7 +72,9 @@
                 <span>{% trans %}List view{% endtrans %}</span>
             </button>
 
-            <div id="map" class="map"></div>
+            <div id="map" class="map">
+                {% include ':redesign/blocks/googleMap:google_map_placeholder.html.twig' %}
+            </div>
             <span id="map-markers" hidden data-google-markers="{{ markers }}"></span>
         </section><!-- results-map -->
 

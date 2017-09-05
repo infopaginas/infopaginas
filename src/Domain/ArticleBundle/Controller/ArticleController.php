@@ -5,11 +5,14 @@ namespace Domain\ArticleBundle\Controller;
 use Domain\ArticleBundle\Entity\Article;
 use Domain\ArticleBundle\Model\Manager\ArticleManager;
 use Domain\BannerBundle\Model\TypeInterface;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ArticleController extends Controller
@@ -21,13 +24,14 @@ class ArticleController extends Controller
     public function indexAction(Request $request)
     {
         $articleManager = $this->getArticlesManager();
-        $paramsDTO = $this->getArticleListQueryParamsDTO($request);
+        $paramsDTO      = $this->getArticleListQueryParamsDTO($request);
+        $locale         = LocaleHelper::getLocale($request->getLocale());
 
-        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO);
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $locale);
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -35,13 +39,14 @@ class ArticleController extends Controller
         );
 
         $dcDataDTO = $articleManager->getAllArticleDoubleClickData();
-        $seoData   = $articleManager->getArticleListSeoData();
+        $pageData   = $articleManager->getArticleListSeoData();
 
         $params = [
             'results'           => $articlesResultDTO,
-            'seoData'           => $seoData,
+            'page'              => $pageData['page'],
+            'seoData'           => $pageData['seoData'],
             'schemaJsonLD'      => $schema,
-            'bannerFactory'     => $bannerFactory,
+            'banners'           => $banners,
             'dcDataDTO'         => $dcDataDTO,
         ];
 
@@ -51,7 +56,6 @@ class ArticleController extends Controller
     /**
      * @param string $slug
      * @return \Symfony\Component\HttpFoundation\Response
-     * @var $article Article
      */
     public function viewAction(string $slug)
     {
@@ -68,8 +72,8 @@ class ArticleController extends Controller
 
         $schema = $articleManager->buildArticlesSchema([$article]);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -83,7 +87,7 @@ class ArticleController extends Controller
             'seoData'        => $article,
             'articleGallery' => $articleGallery,
             'schemaJsonLD'   => $schema,
-            'bannerFactory'  => $bannerFactory,
+            'banners'        => $banners,
             'dcDataDTO'      => $dcDataDTO,
         ];
 
@@ -104,14 +108,15 @@ class ArticleController extends Controller
         }
 
         $articleManager = $this->getArticlesManager();
-        $paramsDTO = $this->getArticleListQueryParamsDTO($request);
+        $paramsDTO      = $this->getArticleListQueryParamsDTO($request);
+        $locale         = LocaleHelper::getLocale($request->getLocale());
 
-        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $categorySlug);
+        $articlesResultDTO = $articleManager->getArticlesResultDTO($paramsDTO, $locale, $categorySlug);
 
         $schema = $articleManager->buildArticlesSchema($articlesResultDTO->resultSet);
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_ARTICLE_PAGE_RIGHT,
                 TypeInterface::CODE_ARTICLE_PAGE_BOTTOM,
@@ -119,14 +124,15 @@ class ArticleController extends Controller
         );
 
         $dcDataDTO = $articleManager->getArticleCategoryListDoubleClickData($category);
-        $seoData   = $articleManager->getArticleListSeoData($category->getName());
+        $pageData   = $articleManager->getArticleListSeoData($category->getName());
 
         $params = [
             'results'           => $articlesResultDTO,
-            'seoData'           => $seoData,
+            'page'              => $pageData['page'],
+            'seoData'           => $pageData['seoData'],
             'articleCategory'   => $category,
             'schemaJsonLD'      => $schema,
-            'bannerFactory'     => $bannerFactory,
+            'banners'           => $banners,
             'dcDataDTO'         => $dcDataDTO,
         ];
 
@@ -161,6 +167,11 @@ class ArticleController extends Controller
         return $this->get('domain_business.manager.category');
     }
 
+    /**
+     * @param Category $category
+     *
+     * @return RedirectResponse
+     */
     private function handlePermanentRedirect($category)
     {
         return $this->redirectToRoute(

@@ -38,18 +38,29 @@ class DoubleClickDataSynchCommand extends ContainerAwareCommand
         ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $period = $this->getSynchronizationPeriod($input);
+
         $logger = $this->getContainer()->get('domain_site.cron.logger');
-        $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_START, 'execute:start, period: '.$period);
+        $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_START, 'execute:start, period: ' . $period);
+
         $output->writeln('Synchronize doubleClick orders..');
         $this->getDFPManager()->synchronizeOrderReport($period);
         $output->writeln('.. done!');
-        $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_END, 'execute:start, period: '.$period);
 
+        $logger->addInfo($logger::DOUBLE_CLICK_SYNC, $logger::STATUS_END, 'execute:start, period: ' . $period);
     }
 
+    /**
+     * @param InputInterface  $input
+     *
+     * @return string
+     */
     protected function getSynchronizationPeriod(InputInterface $input)
     {
         if ($input->getOption('period')) {

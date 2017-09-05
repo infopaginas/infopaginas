@@ -68,6 +68,9 @@ class LandingPageShortCut implements DefaultEntityInterface
         $this->useAllLocation = false;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getLocality() ? $this->getLocality()->getName() : (string)$this->getId();

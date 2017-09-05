@@ -2,3 +2,5 @@ services:
     domain_page.manager.page:
         class: Domain\PageBundle\Model\Manager\PageManager
         arguments: ['@doctrine.orm.entity_manager']
+        calls:
+            - [ setSeoParams, [ '%seo_custom_settings%' ] ]

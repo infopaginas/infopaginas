@@ -59,11 +59,6 @@ class Task implements DefaultEntityInterface, TaskInterface
     protected $closureReason;
 
     /**
-     * @ORM\Column(name="locale", type="string", length=20, nullable=true)
-     */
-    protected $locale;
-
-    /**
      * @ORM\Column(name="business_profile_uid", type="string")
      */
     protected $businessProfileUID;
@@ -134,7 +129,8 @@ class Task implements DefaultEntityInterface, TaskInterface
     }
 
     /**
-     * @param mixed $type
+     * @param string $type
+     *
      * @return Task
      */
     public function setType($type)
@@ -144,7 +140,7 @@ class Task implements DefaultEntityInterface, TaskInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getStatus()
     {
@@ -212,24 +208,6 @@ class Task implements DefaultEntityInterface, TaskInterface
     public function setChangeSet($changeSet)
     {
         $this->changeSet = $changeSet;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
-     * @param mixed $locale
-     * @return Task
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
         return $this;
     }
 

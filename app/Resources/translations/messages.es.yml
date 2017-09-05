@@ -366,7 +366,7 @@ Go to watch...: Ir a ver...
 Sort: Ordenar
 View: Ver
 
-business_profile.seoTitle: name en location | company
+business_profile.seoTitle: name | company
 business_profile.seoDescription.main: name en location
 business_profile.seoDescription.open: esta abierto hours.
 business_profile.seoDescription.link: Para más información visite link
@@ -405,6 +405,9 @@ Video status error: Error: fallo de la conversión, vuelve a cargar el vídeo co
 business_profile.names_blank: El campo de nombre debe ser llenado para al menos un idioma
 business_profile.image_count_limit: Error: se han añadido demasiadas imágenes. Máximo conteo de archivos =
 business_profile.size_limit: El video es más grande que 128 MB
+business_profile.video.size_limit: El video es más grande que 128 MB
+business_profile.image.size_limit: La imagen es más grande que 10 MB
+business_profile.background.size_limit: La imagen es más grande que 1 MB
 business_profile.url.empty: Error: el campo URL no debe estar vacío.
 business_profile.video_count_limit: Solo se puede subir un vídeo a la vez
 business_profile.max_length: Por favor, use max {{ limit }} símbolos
@@ -430,8 +433,14 @@ Successfully updated password: Contraseña actualizada correctamente
 Validation failure: Error de validación
 business_profile.message.created: El perfil de negocio se creó correctamente (los cambios se aplicarán después de la confirmación del administrador)
 business_profile.message.updated: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.closed: El perfil de la empresa se actualizó correctamente (los cambios se aplicarán después de la confirmación del administrador)
+business_profile.message.welcome: Bienvenido
 user.reset_password_request.email.not_found: El usuario {-email-} no existe
 business_profile.seoDescription.search: Encuentra el mejor {-categories-} en {-locality-}
+business_profile.seoTitle.search: categories en locality
+business_profile.seoTitle.catalog: Catálogo en locality
+business_profile.action_type.order: Ordena&nbsp;Ya
+business_profile.action_type.book: Reservar
 
 #admin
 action_copy: Copy
@@ -445,6 +454,7 @@ interaction_report.button.direction: Direcciones
 interaction_report.button.show_map: Mostrar en el Mapa
 interaction_report.button.marker_map: Marcador en el Mapa
 interaction_report.button.web: Web
+interaction_report.button.web: Acción Web
 interaction_report.button.call_mob: Llamar (mob)
 interaction_report.button.call_desk: Llamada (escritorio)
 interaction_report.button.add_compare: Añadir a Comparar
@@ -488,6 +498,11 @@ business.working.hours.open_until: Abierto hasta {-TIME-}
 business.working.hours.closed_now: Ahora cerrado
 business.working.hours.closed: Cerrado
 business.working.hours.edit_note: Primero seleccione un día (o grupo de días) y luego el horario de apertura y cierre de esos días
+
+#business profile phone
+business_profile_phone.type.main: Principal
+business_profile_phone.type.secondary: Secundario
+business_profile_phone.type.fax: Fax
 
 MON: Lun
 TUE: Mar
@@ -559,3 +574,10 @@ business_profile.video.description.required: Este campo es requerido
 business_profile.panorama.title: Se trata de un panorama 360, arrastre la imagen para mirar alrededor
 
 search_results.count.total: Hemos encontrado {-count-} resultados
+google_map.empty_block.message: Por favor espere, cargando...
+
+no_js.warning.message: La funcionalidad Javascript de tu navegador está desactivada. Por favor, enciéndala para que pueda experimentar todas las capacidades de este sitio.
+
+working_hours.label.comment_en: Comentario Eng
+working_hours.label.comment_es: Comentario Esp
+working_hours.placeholder.days: Por favor, elija los días

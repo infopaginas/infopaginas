@@ -14,7 +14,9 @@ class CutBodyExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return ['cut_body_extension' => new \Twig_Function_Method($this, 'cutBody')];
+        return [
+            'cut_body_extension' => new \Twig_Function_Method($this, 'cutBody'),
+        ];
     }
 
     /**

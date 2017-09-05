@@ -5,14 +5,14 @@ namespace Domain\BusinessBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Domain\BusinessBundle\Validator\Constraints\BusinessProfileExtraSearch as BusinessProfileExtraSearchValidator;
+use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
 
 /**
  * BusinessProfileExtraSearch
  *
  * @ORM\Table(name="business_profile_extra_search")
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileExtraSearchRepository")
- * @BusinessProfileExtraSearchValidator()
+ * @ServiceAreaTypeValidator()
  */
 class BusinessProfileExtraSearch
 {
@@ -59,7 +59,7 @@ class BusinessProfileExtraSearch
      * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
      * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "business_profile.service_areas_type")
      */
-    protected $serviceAreasType = 'area';
+    protected $serviceAreasType;
 
     /**
      * @var string
@@ -102,6 +102,7 @@ class BusinessProfileExtraSearch
         $this->areas      = new ArrayCollection();
 
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
+        $this->serviceAreasType  = self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE;
     }
 
     /**
@@ -317,6 +318,9 @@ class BusinessProfileExtraSearch
         return $this->areas;
     }
 
+    /**
+     * @return array
+     */
     public static function getServiceAreasTypes()
     {
         return [

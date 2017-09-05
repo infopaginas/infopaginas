@@ -4,10 +4,17 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 
 class CategoryRepository extends EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailableCategoriesQb()
     {
         $qb = $this->createQueryBuilder('c')
@@ -17,7 +24,11 @@ class CategoryRepository extends EntityRepository
         return $qb;
     }
 
-    public function getAvailableCategoriesWithContent($locality, $locale = false)
+    /**
+     * @param Locality  $locality
+     * @param string    $locale
+     */
+    public function getAvailableCategoriesWithContent($locality, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->getAvailableCategoriesQb();
 
@@ -26,13 +37,16 @@ class CategoryRepository extends EntityRepository
             ->andWhere('ci.hasContent = TRUE')
             ->andWhere('ci.locality = :locality')
             ->setParameter('locality', $locality)
+            ->orderBy('c.searchText' . ucfirst($locale))
         ;
 
+        $query = $qb->getQuery();
+
         if ($locale) {
-            $qb->orderBy('c.searchText' . ucfirst($locale));
+            SiteHelper::setLocaleQueryHint($query, $locale);
         }
 
-        return $qb->getQuery()->getResult();
+        return $query->getResult();
     }
 
     /**
@@ -49,6 +63,9 @@ class CategoryRepository extends EntityRepository
         return $iterateCategories;
     }
 
+    /**
+     * @return Category[]
+     */
     public function getAvailableCategories()
     {
         $qb = $this->getAvailableCategoriesQb();
@@ -56,6 +73,11 @@ class CategoryRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param array $ids
+     *
+     * @return Category[]
+     */
     public function getAvailableCategoriesByIds($ids)
     {
         $qb = $this->getAvailableCategoriesQb()
@@ -66,6 +88,9 @@ class CategoryRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @return QueryBuilder
+     */
     protected function getCategoryQueryBuilder()
     {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder()
@@ -75,18 +100,28 @@ class CategoryRepository extends EntityRepository
         return $queryBuilder;
     }
 
-    public function getCategoryByBusinessesIds(array $businessIdList)
+    /**
+     * @param array     $businessIdList
+     * @param string    $locale
+     *
+     * @return Category[]
+     */
+    public function getCategoryByBusinessesIds(array $businessIdList, $locale)
     {
-        $queryBuilder = $this->getCategoryQueryBuilder()
+        $qb = $this->getCategoryQueryBuilder()
             ->join('c.businessProfiles', 'bp')
             ->where('bp.id in (:ids)')
             ->setParameter('ids', $businessIdList)
             ->orderBy('c.name')
         ;
 
-        $results = $queryBuilder->getQuery()->getResult();
+        $query = $qb->getQuery();
 
-        return $results;
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**
@@ -104,6 +139,12 @@ class CategoryRepository extends EntityRepository
         ;
     }
 
+    /**
+     * @param string $categorySlug
+     * @param string|bool $customSlug
+     *
+     * @return Category|null
+     */
     public function getCategoryBySlug($categorySlug, $customSlug = false)
     {
         $query = $this->getAvailableCategoriesQb()
@@ -124,6 +165,11 @@ class CategoryRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @param string $customSlug
+     *
+     * @return Category|null
+     */
     public function getCategoryByCustomSlug($customSlug)
     {
         $query = $this->getAvailableCategoriesQb()
@@ -135,6 +181,11 @@ class CategoryRepository extends EntityRepository
         return $query->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @param array $categoriesSlugs
+     *
+     * @return Category[]
+     */
     public function getCategoriesBySlugs($categoriesSlugs)
     {
         $query = $this->getAvailableCategoriesQb()

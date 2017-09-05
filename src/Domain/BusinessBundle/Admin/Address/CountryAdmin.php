@@ -71,6 +71,7 @@ class CountryAdmin extends OxaAdmin
     /**
      * @param string $name
      * @param null $object
+     *
      * @return bool
      */
     public function isGranted($name, $object = null)

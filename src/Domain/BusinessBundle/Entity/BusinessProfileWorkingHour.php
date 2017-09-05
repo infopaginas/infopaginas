@@ -3,6 +3,8 @@
 namespace Domain\BusinessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,6 +17,8 @@ class BusinessProfileWorkingHour
 {
     const DEFAULT_TASK_TIME_FORMAT = 'g:i A';
     const DEFAULT_DATE = '1970-01-01';
+
+    const FIELD_PREFIX_COMMENT = 'comment';
 
     /**
      * @var int
@@ -30,7 +34,6 @@ class BusinessProfileWorkingHour
      *
      * @ORM\Column(name="time_start", type="time", nullable=true)
      * @Assert\Time()
-     * @Assert\NotBlank()
      */
     private $timeStart;
 
@@ -39,7 +42,6 @@ class BusinessProfileWorkingHour
      *
      * @ORM\Column(name="time_end", type="time", nullable=true)
      * @Assert\Time()
-     * @Assert\NotBlank()
      */
     private $timeEnd;
 
@@ -62,19 +64,43 @@ class BusinessProfileWorkingHour
 
     /**
      * @ORM\Column(name="day", type="string", nullable=true, length=15)
-     * @Assert\NotBlank()
-     * @Assert\Length(max=15)
      */
     protected $day;
+
+    /**
+     * @ORM\Column(name="days", type="json_array", nullable=true)
+     * @Assert\Count(min = 1)
+     */
+    protected $days;
+
+    /**
+     * @var string - comment eng
+     *
+     * @ORM\Column(name="comment_en", type="string", length=80, nullable=true)
+     * @Assert\Length(max="80")
+     */
+    private $commentEn;
+
+    /**
+     * @var string - comment esp
+     *
+     * @ORM\Column(name="comment_es", type="string", length=80, nullable=true)
+     * @Assert\Length(max="80")
+     */
+    private $commentEs;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->isOpenAllTime = false;
+        $this->openAllTime = false;
+        $this->day = DayOfWeekModel::CODE_MONDAY;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $data = [
@@ -83,6 +109,29 @@ class BusinessProfileWorkingHour
             'timeEnd'     => $this->getTimeEnd(),
             'openAllTime' => $this->getOpenAllTime(),
         ];
+
+        return json_encode($data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsonData()
+    {
+        $data = [
+            'days'        => $this->getDays(),
+            'timeStart'   => $this->getTimeStart(),
+            'timeEnd'     => $this->getTimeEnd(),
+            'openAllTime' => $this->getOpenAllTime(),
+        ];
+
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $property = self::FIELD_PREFIX_COMMENT . LocaleHelper::getLangPostfix($locale);
+
+            if (property_exists($this, $property)) {
+                $data[$property] = $this->{'get' . ucfirst($property)}();
+            }
+        }
 
         return json_encode($data);
     }
@@ -212,5 +261,65 @@ class BusinessProfileWorkingHour
     public function getBusinessProfile()
     {
         return $this->businessProfile;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDays()
+    {
+        return $this->days;
+    }
+
+    /**
+     * @param mixed $days
+     *
+     * @return BusinessProfileWorkingHour
+     */
+    public function setDays($days)
+    {
+        $this->days = $days;
+
+        return $this;
+    }
+
+    /**
+     * @param string $commentEn
+     *
+     * @return BusinessProfileWorkingHour
+     */
+    public function setCommentEn($commentEn)
+    {
+        $this->commentEn = $commentEn;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommentEn()
+    {
+        return $this->commentEn;
+    }
+
+    /**
+     * @param string $commentEs
+     *
+     * @return BusinessProfileWorkingHour
+     */
+    public function setCommentEs($commentEs)
+    {
+        $this->commentEs = $commentEs;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommentEs()
+    {
+        return $this->commentEs;
     }
 }

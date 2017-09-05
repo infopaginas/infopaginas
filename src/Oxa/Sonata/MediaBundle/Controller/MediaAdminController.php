@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/23/16
- * Time: 7:06 PM
- */
 
 namespace Oxa\Sonata\MediaBundle\Controller;
 

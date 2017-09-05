@@ -12,6 +12,7 @@ use Domain\BusinessBundle\Entity\Task;
 use Domain\BusinessBundle\Model\DatetimePeriodStatusInterface;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
+use Domain\BusinessBundle\Util\ZipFormatterUtil;
 use Domain\ReportBundle\Model\PostponeExportInterface;
 use Domain\ReportBundle\Model\ReportInterface;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
@@ -33,6 +34,9 @@ use Oxa\GeolocationBundle\Utils\Traits\LocationTrait;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
+use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessProfileWorkingHourTypeValidator;
 
 /**
  * BusinessProfile
@@ -41,6 +45,9 @@ use Domain\SiteBundle\Validator\Constraints as DomainAssert;
  * @ORM\Entity(repositoryClass="Domain\BusinessBundle\Repository\BusinessProfileRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
+ * @ServiceAreaTypeValidator()
+ * @BusinessProfilePhoneTypeValidator()
+ * @BusinessProfileWorkingHourTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -60,11 +67,13 @@ class BusinessProfile implements
     const SERVICE_AREAS_AREA_CHOICE_VALUE = 'area';
     const SERVICE_AREAS_LOCALITY_CHOICE_VALUE = 'locality';
 
+    const ACTION_URL_TYPE_ORDER = 'order';
+    const ACTION_URL_TYPE_BOOK  = 'book';
+
     const BUSINESS_PROFILE_FIELD_NAME_LENGTH          = 255;
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
     const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
     const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 1024;
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH = 255;
     const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
 
     const BUSINESS_STATUS_ACTIVE   = 'active';
@@ -87,14 +96,11 @@ class BusinessProfile implements
 
     // translatable fields
     const BUSINESS_PROFILE_FIELD_NAME           = 'name';
-    const BUSINESS_PROFILE_FIELD_NAME_EN        = 'nameEn';
-    const BUSINESS_PROFILE_FIELD_NAME_ES        = 'nameEs';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION    = 'description';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_EN = 'descriptionEn';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
     const BUSINESS_PROFILE_FIELD_PRODUCT        = 'product';
     const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
     const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID    = 'panoramaId';
 
@@ -164,6 +170,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
     const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
+    const KEYWORD_DELIMITER = ',';
+
     /**
      * @var int
      *
@@ -178,9 +186,9 @@ class BusinessProfile implements
      * Field related to class constant BUSINESS_PROFILE_FIELD_NAME
      * @var string - Business name
      *
-     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -261,10 +269,27 @@ class BusinessProfile implements
      * @var string - Website
      *
      * @ORM\Column(name="website", type="string", length=1000, nullable=true)
-     * @DomainAssert\ConstraintUrlExpanded()
+     * @Assert\Url()
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
      */
     protected $website;
+
+    /**
+     * @var string - action url
+     *
+     * @ORM\Column(name="action_url", type="string", length=1000, nullable=true)
+     * @Assert\Url()
+     * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
+     */
+    protected $actionUrl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="action_url_type", type="string", length=10, options={"default": BusinessProfile::ACTION_URL_TYPE_ORDER})
+     * @Assert\Choice(callback = "getActionUrlTypesAssert", multiple = false)
+     */
+    protected $actionUrlType;
 
     /**
      * @var string - Email address
@@ -351,19 +376,8 @@ class BusinessProfile implements
     protected $product;
 
     /**
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
-     * @var string - Operational Hours
-     *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="working_hours", type="text", nullable=true)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     */
-    protected $workingHours;
-
-    /**
      * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
+     * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
      * @var string Brands - Brands, Business works with
      *
      * @Gedmo\Translatable(fallback=true)
@@ -434,7 +448,7 @@ class BusinessProfile implements
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true,
      *     )
-     * @ORM\OrderBy({"position" = "ASC"})
+     * @ORM\OrderBy({"id" = "ASC"})
      * @Assert\Valid
      */
     protected $images;
@@ -464,18 +478,13 @@ class BusinessProfile implements
     protected $background;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=false)
-     */
-    protected $position;
-
-    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
      *     targetEntity="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation",
      *     mappedBy="object",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true,
      * )
      */
     protected $translations;
@@ -580,7 +589,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="twitter_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $twitterURL;
 
@@ -588,7 +597,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="facebook_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $facebookURL;
 
@@ -596,7 +605,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="google_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $googleURL;
 
@@ -604,7 +613,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_URL_MAX_LENGTH
      * @ORM\Column(name="youtube_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $youtubeURL;
 
@@ -612,7 +621,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_FIELD_INSTAGRAM_URL
      * @ORM\Column(name="instagram_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $instagramURL;
 
@@ -620,7 +629,7 @@ class BusinessProfile implements
      * Related to BUSINESS_PROFILE_FIELD_TRIP_ADVISOR_URL
      * @ORM\Column(name="trip_advisor_url", type="string", nullable=true, length=1000)
      * @Assert\Length(max=1000, maxMessage="business_profile.max_length")
-     * @DomainAssert\ConstraintUrlExpanded(groups={"default"})
+     * @Assert\Url()
      */
     protected $tripAdvisorURL;
 
@@ -632,7 +641,6 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank()
      */
     protected $country;
 
@@ -642,7 +650,7 @@ class BusinessProfile implements
      * @ORM\Column(name="service_areas_type", type="string", options={"default": "area"})
      * @Assert\Choice(choices = {"area","locality"}, multiple = false, message = "business_profile.service_areas_type")
      */
-    protected $serviceAreasType = 'area';
+    protected $serviceAreasType;
 
     /**
      * @var string
@@ -684,6 +692,7 @@ class BusinessProfile implements
      *     orphanRemoval=true
      *     )
      * @Assert\Valid
+     * @ORM\OrderBy({"priority" = "ASC", "id" = "ASC"})
      */
     protected $phones;
 
@@ -700,6 +709,19 @@ class BusinessProfile implements
      * @Assert\Count(max="5", maxMessage = "business_profile.keywords.max_count")
      */
     protected $keywords;
+
+    /**
+     * @var BusinessProfileAlias[] - Business Profile Aliases
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileAlias",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     */
+    protected $aliases;
 
     /**
      * @ORM\Column(name="uid", type="string")
@@ -741,6 +763,12 @@ class BusinessProfile implements
      */
     protected $isAd;
 
+    /** @var int
+     *
+     * Current business position at page
+     */
+    protected $displayedPosition;
+
     /**
      * Related to WORKING_HOURS_ASSOCIATED_FIELD
      * @var BusinessProfileWorkingHour[] - Business Profile working hours
@@ -750,7 +778,8 @@ class BusinessProfile implements
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
-     *     )
+     * )
+     * @Assert\Valid
      */
     protected $collectionWorkingHours;
 
@@ -800,21 +829,33 @@ class BusinessProfile implements
         return $this;
     }
 
+    /**
+     * @param string $locale
+     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
     }
 
+    /**
+     * @return string
+     */
     public function getLocale()
     {
         return $this->locale;
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
@@ -873,30 +914,41 @@ class BusinessProfile implements
     protected $panoramaId;
 
     /**
+     * @var string - keyword
+     *
+     * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
+     */
+    private $keywordText;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->coupons = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->subscriptions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->localities = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->neighborhoods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->paymentMethods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->businessReviews = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phones = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->collectionWorkingHours = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->extraSearches = new ArrayCollection();
-        $this->keywords      = new ArrayCollection();
+        $this->coupons                  = new ArrayCollection();
+        $this->subscriptions            = new ArrayCollection();
+        $this->categories               = new ArrayCollection();
+        $this->areas                    = new ArrayCollection();
+        $this->localities               = new ArrayCollection();
+        $this->neighborhoods            = new ArrayCollection();
+        $this->tags                     = new ArrayCollection();
+        $this->paymentMethods           = new ArrayCollection();
+        $this->businessReviews          = new ArrayCollection();
+        $this->images                   = new ArrayCollection();
+        $this->translations             = new ArrayCollection();
+        $this->phones                   = new ArrayCollection();
+        $this->collectionWorkingHours   = new ArrayCollection();
+        $this->extraSearches            = new ArrayCollection();
+        $this->keywords                 = new ArrayCollection();
+        $this->aliases                  = new ArrayCollection();
+        $this->tasks                    = new ArrayCollection();
 
         $this->isClosed  = false;
         $this->isUpdated = true;
         $this->hasImages = false;
         $this->milesOfMyBusiness = self::DEFAULT_MILES_FROM_MY_BUSINESS;
+        $this->serviceAreasType  = self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE;
+        $this->actionUrlType     = self::ACTION_URL_TYPE_ORDER;
 
         $this->uid = uniqid('', true);
     }
@@ -1179,30 +1231,6 @@ class BusinessProfile implements
     public function getProduct()
     {
         return $this->product;
-    }
-
-    /**
-     * Set workingHours
-     *
-     * @param string $workingHours
-     *
-     * @return BusinessProfile
-     */
-    public function setWorkingHours($workingHours)
-    {
-        $this->workingHours = $workingHours;
-
-        return $this;
-    }
-
-    /**
-     * Get workingHours
-     *
-     * @return string
-     */
-    public function getWorkingHours()
-    {
-        return $this->workingHours;
     }
 
     /**
@@ -1580,30 +1608,6 @@ class BusinessProfile implements
     }
 
     /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return BusinessProfile
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position
-     *
-     * @return integer
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
      * Remove translation
      *
      * @param \Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation $translation
@@ -1670,7 +1674,7 @@ class BusinessProfile implements
      */
     public function setZipCode($zipCode)
     {
-        $this->zipCode = $zipCode;
+        $this->zipCode = ZipFormatterUtil::getFormattedZip($zipCode);
 
         return $this;
     }
@@ -2132,11 +2136,28 @@ class BusinessProfile implements
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getPhones()
     {
         return $this->phones;
+    }
+
+    /**
+     * @return BusinessProfilePhone|null
+     */
+    public function getMainPhone()
+    {
+        $mainPhone = null;
+
+        foreach ($this->getPhones() as $phone) {
+            if ($phone->getType() == BusinessProfilePhone::PHONE_TYPE_MAIN) {
+                $mainPhone = $phone;
+                break;
+            }
+        }
+
+        return $mainPhone;
     }
 
     /**
@@ -2417,6 +2438,42 @@ class BusinessProfile implements
     }
 
     /**
+     * Add alias
+     *
+     * @param BusinessProfileAlias $alias
+     *
+     * @return BusinessProfile
+     */
+    public function addAlias(BusinessProfileAlias $alias)
+    {
+        $this->aliases[] = $alias;
+
+        if ($alias) {
+            $alias->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove alias
+     *
+     * @param BusinessProfileAlias $alias
+     */
+    public function removeAlias(BusinessProfileAlias $alias)
+    {
+        $this->aliases->removeElement($alias);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
+
+    /**
      * Set discount
      *
      * @param string $discount
@@ -2495,15 +2552,17 @@ class BusinessProfile implements
     }
 
     /**
-     * @return boolean
+     * @return string
      */
     public function getCitySlug()
     {
-        // todo - replace with Gedmo\Sluggable\Util\Urlizer
+        $catalogLocality = $this->getCatalogLocality();
 
-        $citySlug = str_replace(' ', '-', preg_replace('/[^a-z\d ]/i', '', strtolower($this->getCity())));
-
-        return $citySlug;
+        if ($catalogLocality) {
+            return $catalogLocality->getSlug();
+        } else {
+            return '';
+        }
     }
 
     /** getting distance
@@ -2519,7 +2578,7 @@ class BusinessProfile implements
      * Setting distance
      *
      * @param float $distance
-     * @return this
+     * @return BusinessProfile
      */
     public function setDistance(float $distance)
     {
@@ -2543,6 +2602,26 @@ class BusinessProfile implements
     public function setIsAd($isAd)
     {
         $this->isAd = $isAd;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayedPosition()
+    {
+        return $this->displayedPosition;
+    }
+
+    /**
+     * @param int $displayedPosition
+     *
+     * @return BusinessProfile
+     */
+    public function setDisplayedPosition($displayedPosition)
+    {
+        $this->displayedPosition = $displayedPosition;
 
         return $this;
     }
@@ -2571,6 +2650,65 @@ class BusinessProfile implements
             self::SERVICE_AREAS_AREA_CHOICE_VALUE       => 'Distance',
             self::SERVICE_AREAS_LOCALITY_CHOICE_VALUE   => 'Locality'
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionUrlTypesAssert()
+    {
+        return array_keys(self::getActionUrlTypes());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getActionUrlTypes()
+    {
+        return [
+            self::ACTION_URL_TYPE_ORDER => 'business_profile.action_type.order',
+            self::ACTION_URL_TYPE_BOOK  => 'business_profile.action_type.book',
+        ];
+    }
+
+    /**
+     * @param string $actionUrl
+     *
+     * @return BusinessProfile
+     */
+    public function setActionUrl($actionUrl)
+    {
+        $this->actionUrl = $actionUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionUrl()
+    {
+        return $this->actionUrl;
+    }
+
+    /**
+     * @param string $actionUrlType
+     *
+     * @return BusinessProfile
+     */
+    public function setActionUrlType($actionUrlType)
+    {
+        $this->actionUrlType = $actionUrlType;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionUrlType()
+    {
+        return $this->actionUrlType;
     }
 
     /**
@@ -2897,15 +3035,17 @@ class BusinessProfile implements
     public static function getTranslatableFields()
     {
         return [
-            self::BUSINESS_PROFILE_FIELD_NAME,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
         ];
     }
 
+    /**
+     * get list of boolean fields
+     * @return array
+     */
     public static function getCommonBooleanFields()
     {
         return [
@@ -2915,13 +3055,16 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * get list of common task fields
+     * @return array
+     */
     public static function getTaskCommonFields()
     {
         return [
             // translatable field
             self::BUSINESS_PROFILE_FIELD_NAME,
-            self::BUSINESS_PROFILE_FIELD_NAME_EN,
-            self::BUSINESS_PROFILE_FIELD_NAME_ES,
+            self::BUSINESS_PROFILE_FIELD_SLOGAN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_ES,
@@ -2930,7 +3073,6 @@ class BusinessProfile implements
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
 
             self::BUSINESS_PROFILE_FIELD_WEBSITE,
             self::BUSINESS_PROFILE_FIELD_EMAIL,
@@ -2943,7 +3085,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_CROSS_STREET,
             self::BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_STATE,
             self::BUSINESS_PROFILE_FIELD_CITY,
             self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
@@ -2964,14 +3105,19 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskManyToOneRelations()
     {
         return [
             self::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY,
-            self::BUSINESS_PROFILE_FIELD_COUNTRY,
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskOneToManyRelations()
     {
         return [
@@ -2980,6 +3126,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskManyToManyRelations()
     {
         return [
@@ -2991,6 +3140,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskMediaManyToOneRelations()
     {
         return [
@@ -3000,6 +3152,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskMediaOneToManyRelations()
     {
         return [
@@ -3007,6 +3162,9 @@ class BusinessProfile implements
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getTaskSeoBlock()
     {
         return [
@@ -3087,5 +3245,25 @@ class BusinessProfile implements
         return [
             self::FORMAT_CSV => self::FORMAT_CSV,
         ];
+    }
+
+    /**
+     * @param string $keywordText
+     *
+     * @return BusinessProfile
+     */
+    public function setKeywordText($keywordText)
+    {
+        $this->keywordText = $keywordText;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeywordText()
+    {
+        return $this->keywordText;
     }
 }

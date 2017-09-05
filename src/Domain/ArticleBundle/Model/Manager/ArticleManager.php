@@ -2,11 +2,13 @@
 
 namespace Domain\ArticleBundle\Model\Manager;
 
-use Doctrine\ORM\EntityManager;
 use Domain\ArticleBundle\Entity\Article;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Domain\PageBundle\Entity\Page;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 use Oxa\ManagerArchitectureBundle\Model\Manager\Manager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,13 +32,23 @@ class ArticleManager extends Manager
         $this->em = $container->get('doctrine.orm.entity_manager');
     }
 
-    public function fetchHomepageArticles()
+    /**
+     * @param string $locale
+     *
+     * @return Article[]
+     */
+    public function fetchHomepageArticles($locale = LocaleHelper::DEFAULT_LOCALE)
     {
-        $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT);
+        $homepageArticles = $this->getRepository()->getArticlesForHomepage(self::HOMEPAGE_ARTICLES_LIMIT, $locale);
 
         return $homepageArticles;
     }
 
+    /**
+     * @param Article $article
+     *
+     * @return DCDataDTO
+     */
     public function getArticleDoubleClickData(Article $article) : DCDataDTO
     {
         return new DCDataDTO(
@@ -49,6 +61,9 @@ class ArticleManager extends Manager
         );
     }
 
+    /**
+     * @return DCDataDTO
+     */
     public function getAllArticleDoubleClickData() : DCDataDTO
     {
         return new DCDataDTO(
@@ -59,6 +74,11 @@ class ArticleManager extends Manager
         );
     }
 
+    /**
+     * @param Category $category
+     *
+     * @return DCDataDTO
+     */
     public function getArticleCategoryListDoubleClickData(Category $category) : DCDataDTO
     {
         return new DCDataDTO(
@@ -73,12 +93,14 @@ class ArticleManager extends Manager
 
     /**
      * @param AbstractDTO $paramsDTO
+     * @param string $locale
      * @param string $categorySlug
+     *
      * @return ReviewsResultsDTO
      */
-    public function getArticlesResultDTO(AbstractDTO $paramsDTO, string $categorySlug = '')
+    public function getArticlesResultDTO(AbstractDTO $paramsDTO, $locale = LocaleHelper::DEFAULT_LOCALE, string $categorySlug = '')
     {
-        $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $categorySlug);
+        $results = $this->getRepository()->findPaginatedPublishedArticles($paramsDTO, $categorySlug, $locale);
 
         $totalResults = count($this->getRepository()->getPublishedArticles($categorySlug));
 
@@ -87,6 +109,11 @@ class ArticleManager extends Manager
         return new ReviewsResultsDTO($results, $totalResults, $paramsDTO->page, $pagesCount);
     }
 
+    /**
+     * @param string $slug
+     *
+     * @return Article|null
+     */
     public function getArticleBySlug($slug)
     {
         return $this->getRepository()->findOneBy(['slug' => $slug]);
@@ -174,6 +201,9 @@ class ArticleManager extends Manager
         return $url;
     }
 
+    /**
+     * @return array
+     */
     private function getPublisherLogo()
     {
         $request = $this->container->get('request');
@@ -191,30 +221,31 @@ class ArticleManager extends Manager
         return $logo;
     }
 
-    public function getArticleListSeoData($category = null)
+    /**
+     * @param string $category
+     *
+     * @return array
+     */
+    public function getArticleListSeoData($category = '')
     {
-        $translator  = $this->container->get('translator');
-        $seoSettings = $this->container->getParameter('seo_custom_settings');
-
-        $companyName          = $seoSettings['company_name'];
-        $titleMaxLength       = $seoSettings['title_max_length'];
-        $descriptionMaxLength = $seoSettings['description_max_length'];
-
-        $seoTitle = $translator->trans('Articles');
+        $pageManager = $this->container->get('domain_page.manager.page');
 
         if ($category) {
-            $seoTitle = $seoTitle . ' - ' . $category;
+            $pageCode = Page::CODE_ARTICLE_CATEGORY_LIST;
+            $data = [
+                '[category]' => $category,
+            ];
+        } else {
+            $pageCode = Page::CODE_ARTICLE_LIST;
+            $data = [];
         }
 
-        $seoDescription = $seoTitle;
+        $page    = $pageManager->getPageByCode($pageCode);
+        $seoData = $pageManager->getPageSeoData($page, $data);
 
-        $seoTitle = $seoTitle . ' | ' . $companyName;
-
-        $seoData = [
-            'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
-            'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
+        return [
+            'seoData' => $seoData,
+            'page'    => $page,
         ];
-
-        return $seoData;
     }
 }

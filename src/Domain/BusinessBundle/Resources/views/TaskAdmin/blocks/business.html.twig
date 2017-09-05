@@ -69,10 +69,6 @@
             <td>{{ business.getDescription() }}</td>
         </tr>
         <tr class="sonata-ba-view-container">
-            <td>{{ admin.trans('Working Hours') }}</td>
-            <td>{{ business.getWorkingHours() }}</td>
-        </tr>
-        <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Products') }}</td>
             <td>{{ business.getProduct() }}</td>
         </tr>
@@ -112,7 +108,7 @@
         <tr class="sonata-ba-view-container">
             <td>{{ admin.trans('Profile') }}</td>
             <td>
-                <a target="_blank" href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.catalogLocality.slug, slug: business.slug })) }}">
+                <a target="_blank" href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : business.citySlug, slug: business.slug })) }}">
                     {{ admin.trans('View') }}
                 </a>
             </td>

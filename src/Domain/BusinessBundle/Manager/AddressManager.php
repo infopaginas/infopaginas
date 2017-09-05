@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alex
- * Date: 5/14/16
- * Time: 12:02 PM
- */
 
 namespace Domain\BusinessBundle\Manager;
 
+use Domain\BusinessBundle\Entity\Address\Country;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Ivory\GoogleMap\Exception\Exception;
 use Oxa\Sonata\AdminBundle\Model\Manager\DefaultManager;
@@ -49,13 +44,25 @@ class AddressManager extends DefaultManager
         return $response->getResults();
     }
 
-    public function getClosestLocalityByCoord($lat, $lon){
+    /**
+     * @param float $lat
+     * @param float $lon
+     *
+     * @return int
+     */
+    public function getClosestLocalityByCoord($lat, $lon)
+    {
+        $container = $this->getContainer();
+
         $request = new Request();
         $request->query->set('clt', $lat);
         $request->query->set('clg', $lon);
-        $searchManager = $this->getContainer()->get('domain_search.manager.search');
-        $searchDTO = $searchManager->getLocalitySearchDTO($request);
-        $closestLocality = $this->getContainer()->get('domain_business.manager.business_profile')->searchClosestLocalityInElastic($searchDTO);
+
+        $searchManager  = $container->get('domain_search.manager.search');
+        $searchDTO      = $searchManager->getLocalitySearchDTO($request);
+
+        $businessManager = $container->get('domain_business.manager.business_profile');
+        $closestLocality = $businessManager->searchClosestLocalityInElastic($searchDTO);
 
         return $closestLocality;
     }
@@ -86,8 +93,7 @@ class AddressManager extends DefaultManager
         $object = current($googleAddress->getAddressComponents('country'));
 
         if ($object) {
-            $country = $this->getEntityManager()
-                ->getRepository('DomainBusinessBundle:Address\Country')
+            $country = $this->getEntityManager()->getRepository(Country::class)
                 ->findOneBy(['shortName' => $object->getShortName()]);
 
             $businessProfile->setCountry($country);
@@ -216,9 +222,7 @@ class AddressManager extends DefaultManager
                 $response['error'] = 'Invalid address. Please, be more specific';
             } else {
                 // check if we get address from allowed country list
-                $countries = $this->getEntityManager()
-                    ->getRepository('DomainBusinessBundle:Address\Country')
-                    ->getCountriesShortNames();
+                $countries = $this->getEntityManager()->getRepository(Country::class)->getCountriesShortNames();
 
                 $country = current($result->getAddressComponents('country'));
                 if (!array_key_exists($country->getShortName(), $countries)) {

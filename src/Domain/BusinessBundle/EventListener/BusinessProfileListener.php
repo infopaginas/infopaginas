@@ -9,11 +9,13 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Oxa\VideoBundle\Entity\VideoMedia;
 
 class BusinessProfileListener implements EventSubscriber
 {
+    /** @var BusinessProfileManager $businessProfileManager */
     private $businessProfileManager;
 
     /** @var $businessUpdated array */
@@ -24,6 +26,9 @@ class BusinessProfileListener implements EventSubscriber
         $this->businessProfileManager = $businessProfileManager;
     }
 
+    /**
+     * @return array
+     */
     public function getSubscribedEvents()
     {
         return [
@@ -32,9 +37,11 @@ class BusinessProfileListener implements EventSubscriber
         ];
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function preRemove(LifecycleEventArgs $args)
     {
-        $em = $args->getEntityManager();
         $entity = $args->getEntity();
 
         if ($entity instanceof BusinessProfile) {

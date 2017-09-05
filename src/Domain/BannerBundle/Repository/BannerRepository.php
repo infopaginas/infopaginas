@@ -2,6 +2,9 @@
 
 namespace Domain\BannerBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+use Domain\BannerBundle\Entity\Banner;
+
 /**
  * BannerRepository
  *
@@ -10,23 +13,25 @@ namespace Domain\BannerBundle\Repository;
  */
 class BannerRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     protected function getBannerQueryBuilder()
     {
         return $this->createQueryBuilder('b')
             ->where('b.isActive = true');
     }
 
-    protected function getBannerByTypeQueryBuilder()
+    /**
+     * @param array $codes
+     *
+     * @return array
+     */
+    public function getBannersByTypeCodes(array $codes)
     {
         return $this->getBannerQueryBuilder()
-            ->join('b.type', 'bt');
-    }
-
-    public function getBannerByTypeCode(int $code)
-    {
-        return $this->getBannerByTypeQueryBuilder()
-            ->andWhere('bt.code = :code')
-            ->setParameter('code', $code)
+            ->andWhere('b.code IN (:codes)')
+            ->setParameter('codes', $codes)
             ->getQuery()
             ->getResult();
     }

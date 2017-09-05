@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
@@ -65,7 +66,9 @@ class LocalityAdmin extends OxaAdmin
             ->add('area', null, [
                 'required' => true,
             ])
-            ->add('pseudos', 'sonata_type_collection',
+            ->add(
+                'pseudos',
+                'sonata_type_collection',
                 [
                     'by_reference'  => false,
                     'required'      => false,
@@ -101,6 +104,9 @@ class LocalityAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param Locality $entity
+     */
     public function preRemove($entity)
     {
         $this->replaceBusinessCatalogLocality($entity);
@@ -109,6 +115,7 @@ class LocalityAdmin extends OxaAdmin
     /**
      * @param string $name
      * @param null $object
+     *
      * @return bool
      */
     public function isGranted($name, $object = null)
@@ -133,7 +140,7 @@ class LocalityAdmin extends OxaAdmin
 
         $em = $container->get('doctrine.orm.entity_manager');
 
-        $defaultLocality = $em->getRepository('DomainBusinessBundle:Locality')
+        $defaultLocality = $em->getRepository(Locality::class)
             ->getLocalityBySlug(Locality::DEFAULT_CATALOG_LOCALITY_SLUG);
 
         if ($defaultLocality) {
@@ -149,6 +156,11 @@ class LocalityAdmin extends OxaAdmin
         }
     }
 
+    /**
+     * @param ArrayCollection $businesses
+     * @param Locality $defaultLocality
+     * @param Locality $entity
+     */
     protected function updateBusinessProfiles($businesses, $defaultLocality, $entity)
     {
         foreach ($businesses as $businessProfile) {

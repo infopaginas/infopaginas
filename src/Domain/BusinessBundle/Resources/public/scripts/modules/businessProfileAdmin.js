@@ -29,6 +29,72 @@ $( document ).ready( function() {
         }
     });
 
+    $( 'div[ id $= "' + formId + '_phones" ]' ).on( 'sonata.add_element', function( event ) {
+        handleBusinessProfilePhoneTypeChange();
+        applyPhoneMask();
+    });
+
+    $( document ).on( 'ifChecked ifUnchecked', 'input[ id *= "_phones_" ]', function() {
+        handleBusinessProfilePhoneTypeChange();
+    });
+
+    $( document ).on( 'submit', 'form', function( e ) {
+        if ( handleBusinessProfilePhoneTypeChange() ) {
+            $( 'html, body' ).animate({
+                scrollTop: $( 'div[ id $= "' + formId + '_phones" ]' ).first().offset().top
+            }, 2000);
+
+            return false;
+        }
+    });
+
+    applyPhoneMask();
+
+    function applyPhoneMask() {
+        var phones = $( 'input[ id $= "_phone" ]' );
+
+        phones.mask( '999-999-9999' );
+        phones.bind( 'paste', function () {
+            $( this ).val( '' );
+        });
+    }
+
+    function handleBusinessProfilePhoneTypeChange() {
+        var mainCheckBoxes = $( 'input[id *= "_phones_"][type = "radio"][value = "main"]' );
+        var errorBlock = $( '#' + formId + '_phoneCollection' );
+        var hasMainPhone = false;
+        var errors = [];
+        var phoneCount = 0;
+
+        $.each( mainCheckBoxes, function( index, item ) {
+            var checkbox        = $( item );
+            var deletedCheckbox = checkbox.parents( 'tr' ).first().find( 'input[id *= "__delete" ]' );
+
+            if ( !deletedCheckbox.prop( 'checked' ) ) {
+                if ( checkbox.prop( 'checked' ) ) {
+
+                    if ( hasMainPhone ) {
+                        errors.push( errorList.phones.not_unique );
+
+                        return false;
+                    }
+
+                    hasMainPhone = true;
+                }
+
+                phoneCount++;
+            }
+        });
+
+        if ( !hasMainPhone && phoneCount ) {
+            errors.push( errorList.phones.no_main );
+        }
+
+        handlePhoneValidationError( errorBlock, errors );
+
+        return errors.length;
+    }
+
     function handleServiceAreaTypeChange( elem ) {
         var isMainBlock = checkServiceAreaTypeBlockMain( elem );
         var serviceAreaType = $( elem ).val();
@@ -310,8 +376,42 @@ $( document ).ready( function() {
         }
     });
 
-    $( document ).on( 'input', keywordSelectors, function() {
-        var value = $( this ).val();
+    addCheckAllButton();
+
+    $( document ).on( 'click', 'button.checkAll', function( e ) {
+        e.preventDefault();
+
+        $( this ).parent().find( 'input[ type = "checkbox" ]').each(function() {
+            if ( !$( this ).prop( 'checked' ) ) {
+                $( this ).iCheck( 'toggle' );
+            }
+        });
+    });
+
+    applySelectizePlugin();
+
+    function applySelectizePlugin() {
+        var elements = $( 'input.selectize-control:not(.selectized)' );
+
+        elements.removeClass( 'form-control' );
+
+        elements.selectize({
+            plugins: [
+                'restore_on_backspace',
+                'remove_button'
+            ],
+            persist: false,
+            create: true,
+            createFilter: keywordValidator
+        });
+    }
+
+    function addCheckAllButton() {
+        $( '#sonata-ba-field-container-' + formId + '_paymentMethods' ).append( '<button class="btn btn-primary checkAll">Check All</button>' );
+    }
+
+    function keywordValidator() {
+        var value = this.lastQuery;
         var errors = [];
 
         if ( !value ) {
@@ -332,11 +432,15 @@ $( document ).ready( function() {
             errors.push( errorList.keyword.oneWord );
         }
 
-        handleKeywordValidationError( $( this ), errors );
-    });
+        handleKeywordValidationError( errors );
 
-    function handleKeywordValidationError( input, errors ) {
-        input.closest( 'td' ).find( '.sonata-ba-field-error-messages').remove();
+        return !errors.length;
+    }
+
+    function handleKeywordValidationError( errors ) {
+        var parent = $( '#sonata-ba-field-container-' + formId + '_keywordText' );
+
+        parent.find( '.sonata-ba-field-error-messages').remove();
 
         if ( errors.length ) {
             var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
@@ -347,6 +451,26 @@ $( document ).ready( function() {
 
             errorHtml += '</ul></div>';
 
+            parent.append( errorHtml );
+        }
+    }
+
+    function handlePhoneValidationError( input, errors ) {
+        var parent = input.parent();
+
+        parent.find( '.sonata-ba-field-error-messages' ).remove();
+        parent.removeClass( 'has-error' );
+
+        if ( errors.length ) {
+            var errorHtml = '<div class="help-inline sonata-ba-field-error-messages"><ul class="list-unstyled">';
+
+            $.each(errors, function( index, value ) {
+                errorHtml += '<li><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + value + '</li>';
+            });
+
+            errorHtml += '</ul></div>';
+
+            parent.addClass( 'has-error' );
             input.after( errorHtml );
         }
     }

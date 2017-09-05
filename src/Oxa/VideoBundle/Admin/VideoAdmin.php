@@ -78,6 +78,9 @@ class VideoAdmin extends OxaAdmin
                     ),
                     new NotBlank(),
                 ],
+                'attr' => [
+                    'class' => 'vertical-resize',
+                ],
             ])
         ;
 
@@ -226,9 +229,9 @@ class VideoAdmin extends OxaAdmin
         $request = Request::createFromGlobals();
         $files   = current($request->files->all());
 
-        if ($files) {
+        if (!empty($files['videoFile'])) {
             $entity = $container->get('oxa.manager.video')->addVideoLocalFile($entity, current($files));
-        } elseif (!isset($files['videoFile']) || (isset($files['videoFile']) && $files['videoFile'] == null)) {
+        } else {
             $form = $this->getForm();
 
             if ($form->has('videoUrl') && $form->get('videoUrl')->getData()) {

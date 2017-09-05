@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 12.08.16
- * Time: 11:24
- */
 
 namespace Domain\BusinessBundle\Form\Handler;
 
@@ -57,9 +51,12 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
         $this->tokenStorage           = $tokenStorage;
     }
 
+    /**
+     * @return bool
+     */
     public function process()
     {
-        if ($this->request->getMethod() == 'POST') {
+        if ($this->request->getMethod() == Request::METHOD_POST) {
             $this->form->handleRequest($this->request);
 
             /** @var BusinessReview $review */
@@ -74,6 +71,10 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
         return false;
     }
 
+    /**
+     * @param BusinessReview $review
+     * @throws \Exception
+     */
     private function onSuccess(BusinessReview $review)
     {
         $businessProfileId = $this->getRequest()->request->get('businessProfileId', false);
@@ -99,26 +100,41 @@ class ReviewFormHandler extends BaseFormHandler implements FormHandlerInterface
         $this->getTasksManager()->createBusinessReviewConfirmationRequest($review);
     }
 
+    /**
+     * @return Request
+     */
     private function getRequest() : Request
     {
         return $this->request;
     }
 
+    /**
+     * @return BusinessProfileManager
+     */
     private function getBusinessProfileManager() : BusinessProfileManager
     {
         return $this->businessProfileManager;
     }
 
+    /**
+     * @return BusinessReviewManager
+     */
     private function getBusinessReviewManager() : BusinessReviewManager
     {
         return $this->manager;
     }
 
+    /**
+     * @return TasksManager
+     */
     private function getTasksManager() : TasksManager
     {
         return $this->tasksManager;
     }
 
+    /**
+     * @return mixed
+     */
     private function getCurrentUser()
     {
         return $this->tokenStorage->getToken()->getUser();

@@ -8,13 +8,15 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
-use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
@@ -37,6 +39,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -51,8 +54,9 @@ class BusinessProfileAdmin extends OxaAdmin
     const DATE_PICKER_FORMAT = 'yyyy-MM-dd';
     const DATE_PICKER_REPORT_FORMAT = 'YYYY-MM-DD';
 
-    protected $translations = [];
-
+    /**
+     * @var bool
+     */
     public $copyAvailable = true;
 
     /**
@@ -66,17 +70,25 @@ class BusinessProfileAdmin extends OxaAdmin
     public function getNewInstance()
     {
         $instance = parent::getNewInstance();
+        $container = $this->getConfigurationPool()->getContainer();
 
         if ($this->getRequest()->getMethod() == Request::METHOD_GET) {
             $parentId = $this->getRequest()->get('id', null);
 
             if ($parentId) {
-                $container = $this->getConfigurationPool()->getContainer();
                 $parent    = $container->get('doctrine')->getRepository(BusinessProfile::class)->find($parentId);
 
                 if ($parent) {
                     $instance = $this->cloneParentEntity($parent);
                 }
+            }
+        }
+
+        if (!$instance->getCountry()) {
+            $country = $container->get('domain_business.manager.business_profile')->getDefaultProfileCountry();
+
+            if ($country) {
+                $instance->setCountry($country);
             }
         }
 
@@ -118,8 +130,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 'show_filter' => true,
             ])
             ->add('city')
-            ->add('state')
-            ->add('country')
             ->add('catalogLocality')
             ->add(
                 'user',
@@ -156,14 +166,14 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('id')
             ->addIdentifier('name')
             ->add('city')
-            ->add('state')
-            ->add('country')
             ->add('catalogLocality', null, [
                 'sortable' => true,
                 'sort_field_mapping'=> ['fieldName' => 'name'],
                 'sort_parent_association_mappings' => [['fieldName' => 'catalogLocality']]
             ])
-            ->add('phones')
+            ->add('phones', null, [
+                'template' => 'OxaSonataAdminBundle:ListFields:list_orm_one_to_many.html.twig',
+            ])
             ->add('hasImages')
             ->add('subscriptionPlan', null, [
                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/list_subscription.html.twig'
@@ -193,58 +203,229 @@ class BusinessProfileAdmin extends OxaAdmin
         /** @var BusinessProfile $businessProfile */
         $businessProfile = $this->getSubject();
 
-        $businessProfile->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
+        $businessProfile->setLocale(LocaleHelper::DEFAULT_LOCALE);
 
-        $subscriptionPlan = $businessProfile->getSubscription() ?
-            $businessProfile->getSubscription()->getSubscriptionPlan() : new SubscriptionPlan();
+        $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
 
-        // define group zoning
+        // define tabs
         $formMapper
-            ->tab('Profile', ['class' => 'col-md-12',])
-                ->with('English', ['class' => 'col-md-6',])->end()
-                ->with('Spanish', ['class' => 'col-md-6',])->end()
-                ->with('Main', ['class' => 'col-md-12',])->end()
-                ->with('Address', ['class' => 'col-md-4',])->end()
-                ->with('Map', ['class' => 'col-md-8',])->end()
-                ->with('Categories', ['class' => 'col-md-6',])->end()
+            ->tab('Main')->end()
+            ->tab('Media')->end()
+            ->tab('Others')->end()
+            ->tab('Legacy URLs')->end()
+        ;
+
+        // define block
+        $formMapper
+            ->tab('Main')
+                ->with('Subscription')->end()
+                ->with('Common')->end()
             ->end()
         ;
 
-        if ($businessProfile->getId() and
-            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
-        ) {
-            $formMapper->tab('Profile')->with('SuperVM')->end()->end();
-        }
-
-        if ($businessProfile->getId() and $subscriptionPlan->getCode() > SubscriptionPlanInterface::CODE_FREE) {
-            $formMapper->tab('Profile')->with('Keywords')->end()->end();
+        // form translatable block
+        foreach (LocaleHelper::getLocaleList() as $key => $value) {
+            $formMapper->tab('Main')->with($value, ['class' => 'col-md-6',])->end()->end();
         }
 
         $formMapper
-            ->tab('Profile', ['class' => 'col-md-12',])
-                ->with('Social Networks', ['class' => 'col-md-6',])->end()
+            ->tab('Main')
+                ->with('Main')->end()
+                ->with('Payments method')->end()
+                ->with('Addresses', ['class' => 'col-md-6',])->end()
+                ->with('Map', ['class' => 'col-md-6',])->end()
+                ->with('Category')->end()
+            ->end()
+            ->tab('Media')
+                ->with('Social Networks')->end()
                 ->with('Gallery')->end()
+                ->with('Panorama')->end()
+            ->end()
+            ->tab('Others')
+                ->with('Coupons')->end()
+                ->with('Discount')->end()
+                ->with('DoubleClick')->end()
+            ->end()
+                ->tab('Legacy URLs')
+                    ->with('Slugs')->end()
             ->end()
         ;
 
-        if ($businessProfile->getId() and
-            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
-        ) {
-            $formMapper->tab('Profile')->with('Video')->end()->end();
+
+        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $formMapper->tab('Main')->with('SuperVM')->end()->end();
+            $formMapper->tab('Media')->with('Video')->end()->end();
         }
 
+        if ($businessProfile->getId() and $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper->tab('Main')->with('Keywords')->end()->end();
+        }
+
+        // Main tab
+        // Subscription Block
         $formMapper
-            ->tab('Profile')
-                ->with('Status', array('class' => 'col-md-6'))->end()
-                ->with('Subscriptions')->end()
-                ->with('Coupons', array('class' => 'col-md-6'))->end()
-                ->with('Discount', array('class' => 'col-md-6'))->end()
-            ->end()
-            ->tab('Reviews', array('class' => 'col-md-6'))
-                ->with('User Reviews')->end()
+            ->tab('Main')
+                ->with('Subscription')
+                    ->add(
+                        'subscriptions',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => true,
+                            'type_options' => [
+                                'delete'         => true,
+                                'delete_options' => [
+                                    'type'         => 'checkbox',
+                                    'type_options' => [
+                                        'mapped'   => false,
+                                        'required' => false,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'inline'        => 'table',
+                            'allow_delete'  => false,
+                        ]
+                    )
+                    ->add('isActive')
+                ->end()
             ->end()
         ;
 
+        $formMapper
+            ->tab('Main')
+                ->with('Common')
+                    ->add('name')
+                ->end()
+            ->end()
+        ;
+
+        // Translatable Block
+        foreach (LocaleHelper::getLocaleList() as $key => $value) {
+            $formMapper
+                ->tab('Main')
+                ->with($value)
+            ;
+
+            $this->addTranslationBlock($formMapper, $businessProfile, $key);
+
+            $formMapper->end()->end();
+        }
+
+        // Main Block
+        $formMapper
+            ->tab('Main')
+                ->with('Main')
+                    ->add('website', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('actionUrlType', ChoiceType::class, [
+                        'choices'  => BusinessProfile::getActionUrlTypes(),
+                        'multiple' => false,
+                        'expanded' => true,
+                        'required' => true,
+                        'translation_domain' => 'AdminDomainBusinessBundle',
+                    ])
+                    ->add('actionUrl', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('email', EmailType::class, [
+                        'required' => false,
+                    ])
+                    ->add('slug', null, [
+                        'read_only' => true,
+                        'required'  => false,
+                    ])
+                    ->add(
+                        'collectionWorkingHours',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                        ]
+                    )
+                    ->add(BusinessProfileWorkingHourTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
+                        'label_attr' => [
+                            'hidden' => true,
+                        ],
+                        'mapped'   => false,
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'hidden',
+                        ],
+                    ])
+                    ->add(
+                        'phones',
+                        'sonata_type_collection',
+                        [
+                            'by_reference' => false,
+                            'required' => false,
+                        ],
+                        [
+                            'edit' => 'inline',
+                            'delete_empty' => false,
+                            'inline' => 'table',
+                        ]
+                    )
+                    ->add(BusinessProfilePhoneTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
+                        'label_attr' => [
+                            'hidden' => true,
+                        ],
+                        'mapped'   => false,
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'hidden',
+                        ],
+                    ])
+                ->end()
+            ->end()
+        ;
+
+        // Payment Method Block
+        $formMapper
+            ->tab('Main')
+                ->with('Payments method')
+                    ->add('paymentMethods', null, [
+                        'multiple' => true,
+                        'expanded' => true,
+                    ])
+                ->end()
+            ->end()
+        ;
+
+        // Addresses Block
+        $formMapper
+            ->tab('Main')
+                ->with('Addresses')
+                    ->add('city', null, [
+                        'required' => true,
+                    ])
+                    ->add('catalogLocality', 'sonata_type_model_list', [
+                        'required'      => true,
+                        'btn_delete'    => false,
+                        'btn_add'       => false,
+                    ])
+                    ->add('zipCode', null, [
+                        'required' => true
+                    ])
+                    ->add('streetAddress', null, [
+                        'required' => true,
+                    ])
+                    ->add('customAddress')
+                    ->add('hideAddress')
+                    ->add('hideMap')
+                ->end()
+            ->end()
+        ;
+
+        // Map Block
         $oxaConfig = $this->getConfigurationPool()->getContainer()->get('oxa_config');
 
         if ($this->getSubject()->getLatitude() && $this->getSubject()->getLongitude()) {
@@ -255,15 +436,23 @@ class BusinessProfileAdmin extends OxaAdmin
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
         }
 
-        $em = $this->modelManager->getEntityManager(User::class);
-
-        $query = $em->createQueryBuilder('u')
-            ->select('u')
-            ->from(User::class, 'u')
-            ->andWhere('u.role != :consumerRole')
-            ->setParameter('consumerRole', Group::CODE_CONSUMER)
+        $formMapper
+            ->tab('Main')
+                ->with('Map')
+                ->add('useMapAddress', null, [
+                    'label' => $this->trans('form.label_useMapAddress', [], $this->getTranslationDomain())
+                ])
+                ->add('latitude')
+                ->add('longitude')
+                ->add('googleAddress', 'google_map', [
+                    'latitude'  => $latitude,
+                    'longitude' => $longitude,
+                ])
+                ->end()
+            ->end()
         ;
 
+        // Category Block
         $milesOfMyBusinessFieldOptions = [
             'required' => true,
         ];
@@ -314,120 +503,15 @@ class BusinessProfileAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->tab('Profile')
-            ->with('English')
-        ;
-
-        $this->addTranslationBlock($formMapper, $businessProfile, BusinessProfile::TRANSLATION_LANG_EN);
-
-        $formMapper->end()->end();
-
-        $formMapper
-            ->tab('Profile')
-            ->with('Spanish')
-        ;
-
-        $this->addTranslationBlock($formMapper, $businessProfile, BusinessProfile::TRANSLATION_LANG_ES);
-
-        $formMapper->end()->end();
-
-        $formMapper
-            ->tab('Profile')
-                ->with('Main')
-                    ->add('user', 'sonata_type_model', [
-                        'required' => false,
-                        'btn_delete' => false,
-                        'btn_add' => false,
-                        'query' => $query,
-                    ])
-                    ->add('website')
-                    ->add('email', EmailType::class, [
-                        'required' => false,
-                    ])
-                    ->add('slug', null, ['read_only' => true, 'required' => false])
-                    ->add(
-                        'collectionWorkingHours',
-                        'sonata_type_collection',
-                        [
-                            'by_reference' => false,
-                            'required' => false,
+            ->tab('Main')
+                ->with('Category')
+                    ->add('categories', 'sonata_type_model_autocomplete', [
+                        'property' => [
+                            'name',
+                            'searchTextEs',
                         ],
-                        [
-                            'edit' => 'inline',
-                            'delete_empty' => false,
-                            'inline' => 'table',
-                        ]
-                    )
-                    ->add(
-                        'phones',
-                        'sonata_type_collection',
-                        [
-                            'by_reference' => false,
-                            'required' => false,
-                        ],
-                        [
-                            'edit' => 'inline',
-                            'delete_empty' => false,
-                            'inline' => 'table',
-                        ]
-                    )
-                ->end()
-            ->end()
-        ;
-
-        $formMapper
-            ->tab('Profile')
-                ->with('Address')
-                    ->add('country', 'sonata_type_model_list', [
-                        'required' => true,
-                        'btn_delete' => false,
-                        'btn_add' => false,
-                    ])
-                    ->add('state')
-                    ->add('city', null, [
-                        'required' => true
-                    ])
-                    ->add('catalogLocality', 'sonata_type_model_list', [
-                        'required' => true,
-                        'btn_delete' => false,
-                        'btn_add' => false,
-                    ])
-                    ->add('zipCode', null, [
-                        'required' => true
-                    ])
-                    ->add('streetAddress', null, [
-                        'required' => true
-                    ])
-                    ->add('customAddress')
-                    ->add('hideAddress')
-                    ->add('hideMap')
-                ->end()
-                ->with('Map')
-                    ->add('useMapAddress', null, [
-                        'label' => $this->trans('form.label_useMapAddress', [], $this->getTranslationDomain())
-                    ])
-                    ->add('latitude')
-                    ->add('longitude')
-                    ->add('googleAddress', 'google_map', [
-                        'latitude' => $latitude,
-                        'longitude' => $longitude,
-                    ])
-                ->end()
-                ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
-                ->end()
-                ->with('Categories')
-                    ->add('categories', null, [
                         'multiple' => true,
                         'required' => true,
-                        'query_builder' => function (\Domain\BusinessBundle\Repository\CategoryRepository $rep) {
-                            return $rep->getAvailableCategoriesQb();
-                        },
                     ])
                     ->add('serviceAreasType', ChoiceType::class, [
                         'choices' => BusinessProfile::getServiceAreasTypes(),
@@ -439,14 +523,100 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('areas', null, $areasFieldOptions)
                     ->add('localities', null, $localitiesFieldOptions)
                     ->add('neighborhoods', null, $neighborhoodsFieldOptions)
-                    ->add('paymentMethods', null, [
-                        'multiple' => true,
-                        'expanded' => true,
+                ->end()
+            ->end()
+        ;
+
+        // Super VM Block
+        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+            $formMapper
+                ->tab('Main')
+                    ->with('SuperVM')
+                        ->add(
+                            'extraSearches',
+                            'sonata_type_collection',
+                            [
+                                'by_reference'  => false,
+                                'required'      => false,
+                            ],
+                            [
+                                'edit'          => 'inline',
+                                'delete_empty'  => false,
+                                'inline'        => 'table',
+                            ]
+                        )
+                    ->end()
+                ->end()
+            ;
+        }
+
+        // Keyword Block
+        if ($businessProfile->getId() and $subscriptionPlanCode > SubscriptionPlanInterface::CODE_FREE) {
+            $formMapper
+                ->tab('Main')
+                    ->with('Keywords')
+                        ->add('keywordText', TextType::class, [
+                            'attr' => [
+                                'class' => 'selectize-control',
+                            ],
+                            'required' => false,
+                        ])
+                    ->end()
+                ->end()
+            ;
+        }
+
+        // Media tab
+        // Social Networks Block
+        $formMapper
+            ->tab('Media')
+                ->with('Social Networks')
+                    ->add('twitterURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('facebookURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('googleURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('youtubeURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('instagramURL', UrlType::class, [
+                        'required' => false,
+                    ])
+                    ->add('tripAdvisorURL', UrlType::class, [
+                        'required' => false,
                     ])
                 ->end()
+            ->end()
+        ;
+
+        // Gallery Block
+        $formMapper
+            ->tab('Media')
                 ->with('Gallery')
                     ->add(
-                        'logo', 'sonata_type_model_list',
+                        'images',
+                        'sonata_type_collection',
+                        [
+                            'by_reference' => false,
+                            'required'     => false,
+                            'mapped'       => true,
+                        ],
+                        [
+                            'edit'      => 'inline',
+                            'inline'    => 'table',
+                            'link_parameters' => [
+                                'context'   => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
+                                'provider'  => OxaMediaInterface::PROVIDER_IMAGE,
+                            ]
+                        ]
+                    )
+                    ->add(
+                        'logo',
+                        'sonata_type_model_list',
                         [
                             'required' => false,
                         ],
@@ -467,35 +637,97 @@ class BusinessProfileAdmin extends OxaAdmin
                             'link_parameters' => [
                                 'context'  => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_BACKGROUND,
                                 'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                            ]
+                            ],
                         ]
                     )
-                    ->add('images', 'sonata_type_collection', [
-                        'by_reference' => false,
-                        'required' => false,
-                        'mapped' => true,
-                    ], [
-                        'edit' => 'inline',
-                        'inline' => 'table',
-                        'sortable' => 'position',
-                        'link_parameters' => [
-                            'context' => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
-                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                        ]
-                    ])
+                ->end()
+            ->end()
+        ;
+
+        // Panorama Block
+        $formMapper
+            ->tab('Media')
+                ->with('Panorama')
                     ->add('panoramaId')
                 ->end()
             ->end()
         ;
 
-        if ($businessProfile->getId() and
-            $subscriptionPlan->getCode() >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM
-        ) {
+        // Video Block
+        if ($businessProfile->getId() and $subscriptionPlanCode >= SubscriptionPlanInterface::CODE_PREMIUM_PLATINUM) {
+
             $formMapper
-                ->tab('Profile')
-                    ->with('SuperVM')
+                ->tab('Media')
+                    ->with('Video')
+                        ->add('video', 'sonata_type_model_list', [
+                            'required' => false,
+                        ])
+                    ->end()
+                ->end()
+            ;
+        }
+
+        // Others Tab
+        // Coupons Block
+        $formMapper
+            ->tab('Others')
+                ->with('Coupons')
+                    ->add(
+                        'coupons',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                            'type_options' => [
+                                'delete'         => true,
+                                'delete_options' => [
+                                    'type'         => 'checkbox',
+                                    'type_options' => [
+                                        'mapped'   => false,
+                                        'required' => false,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'inline'        => 'table',
+                            'allow_delete'  => false,
+                        ]
+                    )
+                ->end()
+            ->end()
+        ;
+
+        // Discount Block
+        $formMapper
+            ->tab('Others')
+                ->with('Discount')
+                    ->add('discount', null, [
+                        'required' => false,
+                    ])
+                ->end()
+            ->end()
+        ;
+
+        // DoubleClick Block
+        $formMapper
+            ->tab('Others')
+                ->with('DoubleClick')
+                    ->add('dcOrderId', null, [
+                        'label' => 'DC Order Id for Ad Usage Report',
+                    ])
+                ->end()
+            ->end()
+        ;
+
+        // Legacy URLs Tab
+        if ($this->getSubject()->getId()) {
+            $formMapper
+                ->tab('Legacy URLs')
+                    ->with('Slugs')
                         ->add(
-                            'extraSearches',
+                            'aliases',
                             'sonata_type_collection',
                             [
                                 'by_reference'  => false,
@@ -510,189 +742,6 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->end()
                 ->end()
             ;
-
-            $formMapper
-                ->tab('Profile')
-                    ->with('Video')
-                        ->add('video', 'sonata_type_model_list', [
-                            'required' => false,
-                        ])
-                    ->end()
-                ->end()
-            ;
-        }
-
-        if ($businessProfile->getId() and $subscriptionPlan->getCode() > SubscriptionPlanInterface::CODE_FREE) {
-            $formMapper
-                ->tab('Profile')
-                ->with('Keywords')
-                    ->add(
-                        'keywords',
-                        'sonata_type_collection',
-                        [
-                            'by_reference'  => false,
-                            'required'      => false,
-                        ],
-                        [
-                            'edit'          => 'inline',
-                            'delete_empty'  => false,
-                            'inline'        => 'table',
-                        ]
-                    )
-                    ->end()
-                ->end()
-            ;
-        }
-
-        $formMapper
-            ->tab('Profile')
-                ->with('Status')
-                    ->add('isActive')
-                    ->add('isDeleted', null, [
-                        'label' => 'Scheduled for deletion',
-                        'required' => false,
-                        'disabled' => true,
-                    ])
-                    ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
-                    ->add('updatedUser', 'sonata_type_model', [
-                        'required' => false,
-                        'btn_add' => false,
-                        'disabled' => true,
-                    ])
-                    ->add('createdAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
-                    ->add('createdUser', 'sonata_type_model', [
-                        'required' => false,
-                        'btn_add' => false,
-                        'disabled' => true,
-                    ])
-                ->end()
-                ->with('Subscriptions')
-                    ->add('subscriptions', 'sonata_type_collection', [
-                        'by_reference' => false,
-                        'required' => true,
-                        'type_options' => [
-                            'delete' => true,
-                            'delete_options' => [
-                                'type' => 'checkbox',
-                                'type_options' => ['mapped' => false, 'required' => false]
-                            ]]
-                    ], [
-                        'edit' => 'inline',
-                        'inline' => 'table',
-                        'allow_delete' => false,
-                    ])
-                ->end()
-                ->with('Coupons')
-                    ->add('coupons', 'sonata_type_collection', [
-                        'by_reference' => false,
-                        'required' => false,
-                        'type_options' => [
-                            'delete' => true,
-                            'delete_options' => [
-                                'type' => 'checkbox',
-                                'type_options' => ['mapped' => false, 'required' => false]
-                            ]]
-                    ], [
-                        'edit' => 'inline',
-                        'inline' => 'table',
-                        'allow_delete' => false,
-                    ])
-                ->end()
-                ->with('Discount')
-                    ->add('discount', 'ckeditor', [
-                        'required' => false,
-                    ])
-                ->end()
-                ->with('DoubleClick')
-                    ->add(
-                        'dcOrderId',
-                        null,
-                        [
-                            'label' => 'DC Order Id for Ad Usage Report',
-                        ]
-                    )
-                ->end()
-            ->end()
-            ->tab('Reviews')
-                ->with('User Reviews')
-                    ->add('businessReviews', 'sonata_type_collection', [
-                        'by_reference' => false,
-                        'mapped' => true,
-                        'btn_add' => false,
-                        'disabled' => true,
-                        'type_options' => [
-                            'delete' => false,
-                        ]
-                    ], [
-                        'edit' => 'inline',
-                        'inline' => 'table',
-                        'allow_delete' => false,
-                    ])
-                ->end()
-            ->end()
-        ;
-
-        if ($this->getSubject()->getId()) {
-            $formMapper
-                ->tab('Interactions Report')
-                    ->with('Interactions Report')
-                        ->add('interactionDateStart', 'sonata_type_date_picker', [
-                            'mapped'    => false,
-                            'required'  => false,
-                            'format'    => self::DATE_PICKER_FORMAT,
-                            'data'      => DatesUtil::getThisWeekStart(),
-                        ])
-                        ->add('interactionDateEnd', 'sonata_type_date_picker', [
-                            'mapped'    => false,
-                            'required'  => false,
-                            'format'    => self::DATE_PICKER_FORMAT,
-                            'data'      => DatesUtil::getThisWeekEnd(),
-                        ])
-                    ->end()
-                ->end()
-                ->tab('Keywords Report')
-                    ->with('Keywords Report')
-                        ->add('keywordDateStart', 'sonata_type_date_picker', [
-                            'mapped'    => false,
-                            'required'  => false,
-                            'format'    => self::DATE_PICKER_FORMAT,
-                            'data'      => DatesUtil::getThisWeekStart(),
-                        ])
-                        ->add('keywordDateEnd', 'sonata_type_date_picker', [
-                            'mapped'    => false,
-                            'required'  => false,
-                            'format'    => self::DATE_PICKER_FORMAT,
-                            'data'      => DatesUtil::getThisWeekEnd(),
-                        ])
-                        ->add('keywordLimit', ChoiceType::class, [
-                            'mapped'    => false,
-                            'choices'   => KeywordsReportManager::KEYWORDS_PER_PAGE_COUNT,
-                            'data'      => KeywordsReportManager::DEFAULT_KEYWORDS_COUNT,
-                        ])
-                    ->end()
-                ->end()
-            ;
-
-            if ($this->getSubject()->getDcOrderId()) {
-                $formMapper
-                    ->tab('Ad Usage Report')
-                        ->with('Ad Usage Report')
-                            ->add('adUsageDateStart', 'sonata_type_date_picker', [
-                                'mapped'    => false,
-                                'required'  => false,
-                                'format'    => self::DATE_PICKER_FORMAT,
-                                'data'      => DatesUtil::getThisWeekStart(),
-                            ])
-                            ->add('adUsageDateEnd', 'sonata_type_date_picker', [
-                                'mapped'    => false,
-                                'required'  => false,
-                                'format'    => self::DATE_PICKER_FORMAT,
-                                'data'      => DatesUtil::getThisWeekEnd(),
-                            ])
-                        ->end()
-                    ->end()
-                ;
-            }
         }
     }
 
@@ -701,8 +750,31 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        // define tabs
         $showMapper
-            ->tab('Profile', ['class' => 'col-md-12',])
+            ->tab('Main')->end()
+            ->tab('Media')->end()
+            ->tab('Others')->end()
+            ->tab('Legacy URLs')->end()
+            ->tab('Reviews')->end()
+        ;
+
+        // Main tab
+        // Subscription Block
+        $showMapper
+            ->tab('Main')
+                ->with('Subscription')
+                    ->add('subscriptions', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                    ->add('isActive')
+                ->end()
+            ->end()
+        ;
+
+        // Translatable Block
+        $showMapper
+            ->tab('Main')
                 ->with('Translatable')
                     ->add('name')
                     ->add('slogan')
@@ -711,30 +783,50 @@ class BusinessProfileAdmin extends OxaAdmin
                     ])
                     ->add('product')
                     ->add('brands')
-                    ->add('workingHours', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours.html.twig',
-                    ])
                 ->end()
+            ->end()
+        ;
+
+        // Main Block
+        $showWorkingHoursCol = 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig';
+
+        $showMapper
+            ->tab('Main')
                 ->with('Main')
                     ->add('id')
                     ->add('user', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                     ])
                     ->add('website')
+                    ->add('actionUrlType')
+                    ->add('actionUrl')
                     ->add('email')
                     ->add('slug')
                     ->add('collectionWorkingHours', null, [
-                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig',
+                        'template' => $showWorkingHoursCol,
                     ])
                     ->add('phones', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
                     ])
                 ->end()
-                ->with('Address')
-                    ->add('country', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
+            ->end()
+        ;
+
+        // Payment Method Block
+        $showMapper
+            ->tab('Main')
+                ->with('Payments method')
+                    ->add('paymentMethods', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
                     ])
-                    ->add('state')
+                ->end()
+            ->end()
+        ;
+
+        // Addresses Block
+        $showMapper
+            ->tab('Main')
+                ->with('Addresses')
                     ->add('catalogLocality', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                     ])
@@ -746,14 +838,12 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('latitude')
                     ->add('longitude')
                 ->end()
-                ->with('Social Networks')
-                    ->add('twitterURL')
-                    ->add('facebookURL')
-                    ->add('googleURL')
-                    ->add('youtubeURL')
-                    ->add('instagramURL')
-                    ->add('tripAdvisorURL')
-                ->end()
+            ->end()
+        ;
+
+        // Category Block
+        $showMapper
+            ->tab('Main')
                 ->with('Categories')
                     ->add('categories', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
@@ -769,69 +859,134 @@ class BusinessProfileAdmin extends OxaAdmin
                     ->add('neighborhoods', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
                     ])
-                    ->add('paymentMethods', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_many.html.twig',
-                    ])
                 ->end()
+            ->end()
+        ;
+
+        // Super VM Block
+        $showMapper
+            ->tab('Main')
                 ->with('SuperVM')
                     ->add('extraSearches', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
                     ])
                 ->end()
+            ->end()
+        ;
+
+        // Keyword Block
+        $showMapper
+            ->tab('Main')
                 ->with('Keywords')
-                    ->add('keywords', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ->add('keywordText', null, [
+                        'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_keywords.html.twig',
                     ])
                 ->end()
+            ->end()
+        ;
+
+        // Media tab
+        // Social Networks Block
+        $showMapper
+            ->tab('Media')
+                ->with('Social Networks')
+                    ->add('twitterURL')
+                    ->add('facebookURL')
+                    ->add('googleURL')
+                    ->add('youtubeURL')
+                    ->add('instagramURL')
+                    ->add('tripAdvisorURL')
+                ->end()
+            ->end()
+        ;
+
+        // Gallery Block
+        $showMapper
+            ->tab('Media')
                 ->with('Gallery')
+                    ->add('images', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_one_to_many.html.twig',
+                    ])
                     ->add('logo', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
                     ])
                     ->add('background', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
                     ])
-                    ->add('images', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_one_to_many.html.twig',
-                    ])
+                ->end()
+            ->end()
+        ;
+
+        // Panorama Block
+        $showMapper
+            ->tab('Media')
+                ->with('Gallery')
                     ->add('panoramaId', null, [
                         'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_panorama.html.twig',
                     ])
                 ->end()
-                ->with('Subscription')
-                    ->add('subscription')
-                    ->add('subscriptions', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+            ->end()
+        ;
+
+        // Video Block
+        $showMapper
+            ->tab('Media')
+                ->with('Video')
+                    ->add('video.posterImage', null, [
+                        'template' => 'OxaVideoBundle:Admin:show_business_video_image.html.twig'
+                    ])
+                    ->add('video.reference', null, [
+                        'template' => 'OxaVideoBundle:Admin:show_business_video_reference.html.twig',
                     ])
                 ->end()
-                ->with('Status')
-                    ->add('isActive')
-                    ->add('registrationDate')
-                    ->add('isDeleted', null, [
-                        'label' => 'Scheduled for deletion',
-                    ])
-                    ->add('updatedAt')
-                    ->add('updatedUser', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
-                    ])
-                    ->add('createdAt')
-                    ->add('createdUser', null, [
-                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
-                    ])
-                ->end()
-                ->with('Coupons', ['class' => 'col-md-6',])
+            ->end()
+        ;
+
+        // Others Tab
+        // Coupons Block
+        $showMapper
+            ->tab('Others')
+                ->with('Coupons')
                     ->add('coupons', null, [
                         'template' => 'OxaSonataAdminBundle:ShowFields:show_coupon_orm_one_to_many.html.twig',
                     ])
                 ->end()
-                ->with('Discount', ['class' => 'col-md-6',])
+            ->end()
+        ;
+
+        // Discount Block
+        $showMapper
+            ->tab('Others')
+                ->with('Discount')
                     ->add('discount')
                 ->end()
+            ->end()
+        ;
+
+        // DoubleClick Block
+        $showMapper
+            ->tab('Others')
                 ->with('DoubleClick')
                     ->add('dcOrderId', null, [
                         'label' => 'DC Order Id for Ad Usage Report',
                     ])
                 ->end()
             ->end()
+        ;
+
+        // Legacy URLs Tab
+        $showMapper
+            ->tab('Legacy URLs')
+                ->with('Slugs')
+                    ->add('aliases', null, [
+                        'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_one_to_many.html.twig',
+                    ])
+                ->end()
+            ->end()
+        ;
+
+        // Review Tab
+        $showMapper
             ->tab('Reviews')
                 ->with('User Reviews')
                     ->add('reviewPagination', null, [
@@ -846,6 +1001,7 @@ class BusinessProfileAdmin extends OxaAdmin
             ->end()
         ;
 
+        // Report tabs
         if ($this->getSubject()->getId()) {
             $dateRange = DatesUtil::getDateRangeValueObjectFromRangeType(DatesUtil::RANGE_THIS_WEEK);
 
@@ -895,6 +1051,8 @@ class BusinessProfileAdmin extends OxaAdmin
             ;
 
             if ($this->getSubject()->getDcOrderId()) {
+                $showReportExportButtons = 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig';
+
                 $showMapper
                     ->tab('Ad Usage Report')
                         ->with('Ad Usage Report')
@@ -910,7 +1068,7 @@ class BusinessProfileAdmin extends OxaAdmin
                                 'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_data.html.twig',
                             ])
                             ->add('adUsageExport', null, [
-                                'template' => 'DomainBusinessBundle:Admin:BusinessProfile/report_export_buttons.html.twig',
+                                'template' => $showReportExportButtons,
                             ])
                         ->end()
                     ->end()
@@ -919,6 +1077,10 @@ class BusinessProfileAdmin extends OxaAdmin
         }
     }
 
+    /**
+     * @param string $name
+     * @param string $template
+     */
     public function setTemplate($name, $template)
     {
         $this->templates['edit'] = 'DomainBusinessBundle:Admin:edit.html.twig';
@@ -973,8 +1135,6 @@ class BusinessProfileAdmin extends OxaAdmin
             }
         } else {
             $errorElement
-                ->with('country')
-                ->end()
                 ->with('streetAddress')
                 ->end()
                 ->with('city')
@@ -1033,57 +1193,6 @@ class BusinessProfileAdmin extends OxaAdmin
                 ;
             }
         }
-
-        $fieldNameEn = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_EN;
-        $fieldNameEs = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $formData = $this->getRequest()->request->all()[$this->getUniqid()];
-
-        if (!trim($formData[$fieldNameEn]) and !trim($formData[$fieldNameEs])) {
-            $errorElement->with('name')
-                ->addViolation($this->getTranslator()->trans(
-                    'form.name.required',
-                    [],
-                    $this->getTranslationDomain()
-                ))
-                ->end()
-            ;
-        }
-
-        if (!$object->getCollectionWorkingHours()->isEmpty()) {
-            if (!DayOfWeekModel::validateWorkingHoursTime($object->getCollectionWorkingHours())) {
-                $errorElement->with('collectionWorkingHours')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.collectionWorkingHours.duration',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-            }
-
-            if (!DayOfWeekModel::validateWorkingHoursOverlap($object->getCollectionWorkingHours())) {
-                $errorElement->with('collectionWorkingHours')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.collectionWorkingHours.overlap',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-            }
-
-            if (!DayOfWeekModel::validateWorkingHoursTimeBlank($object->getCollectionWorkingHours())) {
-                $errorElement->with('collectionWorkingHours')
-                    ->addViolation($this->getTranslator()->trans(
-                        'form.collectionWorkingHours.blank',
-                        [],
-                        $this->getTranslationDomain()
-                    ))
-                    ->end()
-                ;
-            }
-        }
     }
 
     /**
@@ -1123,7 +1232,7 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     public function prePersist($entity)
     {
-        $this->preSave($entity);
+        $entity = $this->preSave($entity);
     }
 
     /**
@@ -1136,94 +1245,28 @@ class BusinessProfileAdmin extends OxaAdmin
 
     /**
      * @param BusinessProfile $entity
-     */
-    public function postPersist($entity)
-    {
-        parent::postPersist($entity);
-        // workaround for translation callback
-        $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_EN));
-        $entity = $this->handleEntityPostPersist($entity);
-
-        // workaround for spanish slug
-        $entity->setLocale(strtolower(BusinessProfile::TRANSLATION_LANG_ES));
-        $this->handleTranslationPostUpdate($entity);
-    }
-
-    /**
-     * @param BusinessProfile $entity
-     */
-    public function postUpdate($entity)
-    {
-        parent::postUpdate($entity);
-        // workaround for translation callback
-        $this->handleTranslationPostUpdate($entity);
-    }
-
-    /**
-     * @param BusinessProfile $entity
+     *
+     * @return BusinessProfile
      */
     private function preSave($entity)
     {
         $entity = $this->handleTranslationBlock($entity);
-        $this->handleSeoBlockUpdate($entity);
+        $entity = $this->handleSeoBlockUpdate($entity);
+
+        return $entity;
     }
 
     /**
-     * @param BusinessProfile $entity
+     * @param BusinessProfile $business
      *
      * @return BusinessProfile
      */
-    private function handleSeoBlockUpdate(BusinessProfile $entity)
+    private function handleSeoBlockUpdate(BusinessProfile $business)
     {
         /** @var ContainerInterface $container */
-        $container    = $this->getConfigurationPool()->getContainer();
+        $container = $this->getConfigurationPool()->getContainer();
 
-        $seoTitleEn = BusinessProfileUtil::seoTitleBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoTitleEs = BusinessProfileUtil::seoTitleBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $seoDescriptionEn = BusinessProfileUtil::seoDescriptionBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_EN
-        );
-
-        $seoDescriptionEs = BusinessProfileUtil::seoDescriptionBuilder(
-            $entity,
-            $container,
-            BusinessProfile::TRANSLATION_LANG_ES
-        );
-
-        $this->handleTranslationSet(
-            $entity,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE,
-            [
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_EN => $seoTitleEn,
-                BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_TITLE . BusinessProfile::TRANSLATION_LANG_ES => $seoTitleEs,
-            ]
-        );
-
-        $seoDescKeyEn = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_EN;
-        $seoDescKeyEs = BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $this->handleTranslationSet(
-            $entity,
-            BusinessProfile::BUSINESS_PROFILE_FIELD_SEO_DESCRIPTION,
-            [
-                $seoDescKeyEn => $seoDescriptionEn,
-                $seoDescKeyEs => $seoDescriptionEs,
-            ]
-        );
-
-        return $entity;
+        return LocaleHelper::handleSeoBlockUpdate($business, $container);
     }
 
     /**
@@ -1236,7 +1279,6 @@ class BusinessProfileAdmin extends OxaAdmin
         $collection
             ->add('show')
             ->add('restore')
-            ->add('move', $this->getRouterIdParameter().'/move/{position}')
         ;
     }
 
@@ -1248,10 +1290,13 @@ class BusinessProfileAdmin extends OxaAdmin
         return BusinessProfile::getExportFormats();
     }
 
+    /**
+     * @return array
+     */
     public function getExportFields()
     {
         $exportFields['ID']         = 'id';
-        $exportFields['Name']       = 'nameEn';
+        $exportFields['Name']       = 'name';
         $exportFields['Slug']       = 'slug';
         $exportFields['hasVideo']   = 'hasVideo';
         $exportFields['hasMedia']   = 'hasMedia';
@@ -1326,25 +1371,14 @@ class BusinessProfileAdmin extends OxaAdmin
      */
     private function addTranslationBlock(FormMapper $formMapper, BusinessProfile $businessProfile, $locale)
     {
+        $localePostfix = LocaleHelper::getLangPostfix($locale);
+
         $formMapper
-            ->add('name' . $locale, TextType::class, [
-                'label'    => 'Name',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale)),
-                'constraints' => [
-                    new Length(
-                        [
-                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_NAME_LENGTH,
-                        ]
-                    )
-                ],
-            ])
-            ->add('slogan' . $locale, TextType::class, [
+            ->add('slogan' . $localePostfix, TextType::class, [
                 'label'    => 'Slogan',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN, $locale),
                 'constraints' => [
                     new Length(
                         [
@@ -1353,7 +1387,7 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('description' . $locale, CKEditorType::class, [
+            ->add('description' . $localePostfix, CKEditorType::class, [
                 'label'    => 'Description',
                 'required' => false,
                 'mapped'   => false,
@@ -1364,7 +1398,10 @@ class BusinessProfileAdmin extends OxaAdmin
                 'attr' => [
                     'class' => 'text-editor',
                 ],
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_DESCRIPTION,
+                    $locale
+                ),
                 'constraints' => [
                     new Length(
                         [
@@ -1373,14 +1410,18 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('product' . $locale, TextareaType::class, [
+            ->add('product' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Products',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(
+                    BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT,
+                    $locale
+                ),
                 'constraints' => [
                     new Length(
                         [
@@ -1389,34 +1430,19 @@ class BusinessProfileAdmin extends OxaAdmin
                     )
                 ],
             ])
-            ->add('brands' . $locale, TextareaType::class, [
+            ->add('brands' . $localePostfix, TextareaType::class, [
                 'attr' => [
                     'rows' => 3,
+                    'class' => 'vertical-resize',
                 ],
                 'label'    => 'Brands',
                 'required' => false,
                 'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS, strtolower($locale)),
+                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS, $locale),
                 'constraints' => [
                     new Length(
                         [
                             'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH,
-                        ]
-                    )
-                ],
-            ])
-            ->add('workingHours' . $locale, TextareaType::class, [
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'label'    => 'Working hours',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS, strtolower($locale)),
-                'constraints' => [
-                    new Length(
-                        [
-                            'max' => BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH,
                         ]
                     )
                 ],
@@ -1434,208 +1460,9 @@ class BusinessProfileAdmin extends OxaAdmin
         $fields = BusinessProfile::getTranslatableFields();
 
         foreach ($fields as $field) {
-            $this->handleTranslationSet($entity, $field, $this->getRequest()->request->all()[$this->getUniqid()]);
+            LocaleHelper::handleTranslations($entity, $field, $this->getRequest()->request->all()[$this->getUniqid()]);
         }
 
         return $entity;
-    }
-
-    /**
-     * @param BusinessProfile   $entity
-     * @param string            $property
-     * @param array             $data
-     *
-     * @return BusinessProfile
-     */
-    private function handleTranslationSet(BusinessProfile $entity, $property, $data)
-    {
-        $propertyEn = $property . BusinessProfile::TRANSLATION_LANG_EN;
-        $propertyEs = $property . BusinessProfile::TRANSLATION_LANG_ES;
-
-        $dataEn = false;
-        $dataEs = false;
-
-        if (!empty($data[$propertyEn])) {
-            $dataEn = trim($data[$propertyEn]);
-        }
-
-        if (!empty($data[$propertyEs])) {
-            $dataEs = trim($data[$propertyEs]);
-        }
-
-        if (property_exists($entity, $property)) {
-            if ($dataEs) {
-                if ($entity->getId() and $dataEn) {
-                    $entity->{'set' . $property}($dataEn);
-                } else {
-                    $entity->{'set' . $property}($dataEs);
-                }
-
-                if (property_exists($entity, $propertyEs)) {
-                    $entity->{'set' . $propertyEs}($dataEs);
-                }
-
-                $this->addBusinessTranslation($entity, $property, $dataEs, BusinessProfile::TRANSLATION_LANG_ES);
-            } elseif ($dataEn) {
-                if (!$entity->{'get' . $property}()) {
-                    $entity->{'set' . $property}($dataEn);
-                }
-            }
-
-            if ($dataEn) {
-                $this->addBusinessTranslation($entity, $property, $dataEn, BusinessProfile::TRANSLATION_LANG_EN);
-
-                if (property_exists($entity, $propertyEn)) {
-                    $entity->{'set' . $propertyEn}($dataEn);
-                }
-            } else {
-                $this->prepareTranslationDelete(BusinessProfile::TRANSLATION_LANG_EN, $property);
-            }
-
-            if (!$dataEs) {
-                $this->prepareTranslationDelete(BusinessProfile::TRANSLATION_LANG_ES, $property);
-            }
-        }
-
-        return $entity;
-    }
-
-    /**
-     * @param BusinessProfile   $entity
-     * @param string            $property
-     * @param array             $data
-     * @param string            $locale
-     *
-     * @return BusinessProfile
-     */
-    private function addBusinessTranslation(BusinessProfile $entity, $property, $data, $locale)
-    {
-        if ($entity->getId()) {
-            $translation = $entity->getTranslationItem(
-                $property,
-                mb_strtolower($locale)
-            );
-
-            if ($translation) {
-                $translation->setContent($data);
-            } else {
-                $translation = new BusinessProfileTranslation(
-                    mb_strtolower($locale),
-                    $property,
-                    $data
-                );
-
-                $entity->addTranslation($translation);
-            }
-        } else {
-            $translation = new BusinessProfileTranslation(
-                mb_strtolower($locale),
-                $property,
-                $data
-            );
-
-            $entity->addTranslation($translation);
-        }
-
-        $this->translations[$property . $locale] = [
-            'locale'  => $locale,
-            'field'   => $property,
-            'content' => $data,
-        ];
-
-        return $entity;
-    }
-
-    /**
-     * @param string    $locale
-     * @param string    $field
-     */
-    protected function prepareTranslationDelete($locale, $field)
-    {
-        $this->translations[$field . $locale] = [
-            'locale'  => $locale,
-            'field'   => $field,
-            'content' => null,
-        ];
-    }
-
-    /**
-     * @param BusinessProfile   $entity
-     */
-    protected function handleTranslationPostUpdate(BusinessProfile $entity)
-    {
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
-
-        foreach ($this->translations as $translation) {
-            $newTranslation = $entity->getTranslationItem(
-                $translation['field'],
-                mb_strtolower($translation['locale'])
-            );
-
-            if (!$translation['content']) {
-                if (!$this->checkFieldTranslation($translation['field'])) {
-                    $entity->{'set' . $translation['field']}(null);
-                }
-
-                if (property_exists($entity, $translation['field'] . $translation['locale'])) {
-                    $entity->{'set' . $translation['field'] . $translation['locale']}(null);
-                }
-
-                if ($newTranslation) {
-                    $em->remove($newTranslation);
-                }
-            } elseif ($newTranslation) {
-                $newTranslation->setContent($translation['content']);
-            } else {
-                $translation = new BusinessProfileTranslation(
-                    mb_strtolower($translation['locale']),
-                    $translation['field'],
-                    $translation['content']
-                );
-
-                $entity->addTranslation($translation);
-                $em->persist($newTranslation);
-            }
-        }
-
-        $em->flush();
-    }
-
-    /**
-     * @param BusinessProfile   $entity
-     *
-     * @return BusinessProfile   $entity
-     */
-    protected function handleEntityPostPersist(BusinessProfile $entity)
-    {
-        $em = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
-
-        foreach ($this->translations as $translation) {
-            if (strtolower($translation['locale']) == BusinessProfile::DEFAULT_LOCALE) {
-                if (property_exists($entity, $translation['field'])) {
-                    $entity->{'set' . ucfirst($translation['field'])}($translation['content']);
-                }
-            }
-        }
-
-        $em->flush();
-
-        return $entity;
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return bool
-     */
-    protected function checkFieldTranslation($field)
-    {
-        if (empty($this->translations[$field . BusinessProfile::TRANSLATION_LANG_EN]['content']) and
-            empty($this->translations[$field . BusinessProfile::TRANSLATION_LANG_ES]['content'])
-        ) {
-            return false;
-        }
-
-        return true;
     }
 }

@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Model\DataType\ReviewsListQueryParamsDTO;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
 use Domain\SearchBundle\Util\SearchDataUtil;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,13 +33,15 @@ class ReviewsController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function listAction(Request $request)
     {
         $businessProfileId = (int)$request->get('businessProfileId');
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
-        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId);
+        $businessProfile = $this->getBusinessProfileManager()->find($businessProfileId, $locale);
 
         if (!$businessProfile) {
             throw new NotFoundHttpException(self::BUSINESS_NOT_FOUND_MESSAGE);
@@ -54,8 +57,8 @@ class ReviewsController extends Controller
             $businessProfile
         );
 
-        $bannerFactory = $this->get('domain_banner.factory.banner');
-        $bannerFactory->prepareBanners(
+        $bannerManager  = $this->get('domain_banner.manager.banner');
+        $banners        = $bannerManager->getBanners(
             [
                 TypeInterface::CODE_BUSINESS_PAGE_RIGHT,
                 TypeInterface::CODE_BUSINESS_PAGE_BOTTOM,
@@ -66,12 +69,13 @@ class ReviewsController extends Controller
             'businessProfile'  => $businessProfile,
             'reviewsResultDTO' => $reviewsResultDTO,
             'schemaJsonLD'     => $schema,
-            'bannerFactory'    => $bannerFactory,
+            'banners'          => $banners,
         ]);
     }
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function saveAction(Request $request) : JsonResponse

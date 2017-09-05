@@ -11,6 +11,7 @@ class ElasticSearchManager
 
     const AUTO_SUGGEST_BUSINESS_MIN_WORD_LENGTH_ANALYZED = 2;
     const AUTO_SUGGEST_BUSINESS_MAX_WORD_LENGTH_ANALYZED = 40;
+    const MILES_IN_METER = 0.000621371;
 
     // max = 8 as elastic original precision
     const ROTATION_RANK_PRECISION = 1;
@@ -97,6 +98,11 @@ class ElasticSearchManager
         return $status;
     }
 
+    /**
+     * @param array $mappings
+     *
+     * @return array
+     */
     public function createIndex($mappings)
     {
         $params = [
@@ -152,6 +158,12 @@ class ElasticSearchManager
         return $response;
     }
 
+    /**
+     * @param int $id
+     * @param string|bool $documentType
+     *
+     * @return array
+     */
     public function deleteItem($id, $documentType = false)
     {
         if (!$documentType) {
@@ -169,6 +181,9 @@ class ElasticSearchManager
         return $response;
     }
 
+    /**
+     * @return array
+     */
     public function deleteIndex()
     {
         $params = [

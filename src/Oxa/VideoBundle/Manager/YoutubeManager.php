@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
 use Oxa\VideoBundle\Entity\VideoMedia;
+use Oxa\ConfigBundle\Entity\Config as SystemConfig;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -314,7 +315,7 @@ class YoutubeManager
             $check = $this->checkYoutubeAccount();
 
             if ($check['error'] === false and $check['status']) {
-                $config = $this->em->getRepository('OxaConfigBundle:Config')->findOneBy(
+                $config = $this->em->getRepository(SystemConfig::class)->findOneBy(
                     [
                         'key' => ConfigInterface::YOUTUBE_ACCESS_TOKEN,
                     ]
@@ -380,6 +381,9 @@ class YoutubeManager
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function getYoutubeErrors()
     {
         return [

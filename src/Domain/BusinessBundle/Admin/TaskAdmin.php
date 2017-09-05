@@ -2,6 +2,7 @@
 
 namespace Domain\BusinessBundle\Admin;
 
+use Domain\BusinessBundle\Entity\Task;
 use Domain\ReportBundle\Model\UserActionModel;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Domain\BusinessBundle\DBAL\Types\TaskStatusType;
@@ -34,6 +35,9 @@ class TaskAdmin extends OxaAdmin
         '_sort_order' => 'DESC',
     );
 
+    /**
+     * @param Task $task
+     */
     public function postUpdate($task)
     {
         $reviewer = $this->getConfigurationPool()->getContainer()->get('security.token_storage')->getToken()->getUser();
@@ -59,6 +63,9 @@ class TaskAdmin extends OxaAdmin
         }
     }
 
+    /**
+     * @param TasksManager $tasksManager
+     */
     public function setTasksManager(TasksManager $tasksManager)
     {
         $this->tasksManager = $tasksManager;
@@ -105,7 +112,11 @@ class TaskAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper->add('rejectReason');
+        $formMapper->add('rejectReason', null, [
+            'attr' => [
+                'class' => 'vertical-resize',
+            ],
+        ]);
 
         $formMapper->add(
             'businessProfile.businessReviews',
@@ -124,7 +135,6 @@ class TaskAdmin extends OxaAdmin
             [
                 'edit' => 'inline',
                 'inline' => 'table',
-                'sortable' => 'position',
             ]
         );
     }
@@ -144,6 +154,9 @@ class TaskAdmin extends OxaAdmin
         ;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('remove');

@@ -34,6 +34,10 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
         $this->setDescription('Synchronize business with elastic search');
     }
 
+    /**
+     * @param InputInterface    $input
+     * @param OutputInterface   $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('domain_site.cron.logger');
@@ -42,6 +46,8 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
         $lockHandler = new LockHandler(self::ELASTIC_SYNC_LOCK);
 
         if (!$lockHandler->lock()) {
+            $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');
+
             return $output->writeln('Command is locked by another process');
         }
 

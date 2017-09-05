@@ -90,15 +90,8 @@ class BusinessReportExcelExporter extends ExcelExporterModel
             ->getBusinessOverviewReportName($businessProfile->getSlug(), self::FORMAT);
 
         $title = mb_substr($businessProfile->getName(), 0, self::TITLE_MAX_LENGTH);
-        $title = $this->getSafeTitle($title);
 
-        $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
-        $this->phpExcelObject = $this->setData($params);
-
-        $this->phpExcelObject->getProperties()->setTitle($title);
-        $this->phpExcelObject->getActiveSheet()->setTitle($title);
-
-        return $this->sendResponse($filename);
+        return $this->sendDataResponse($params, $title, $filename);
     }
 
     /**
@@ -161,6 +154,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         return $this->phpExcelObject;
     }
 
+    /**
+     * @param array $total
+     */
     protected function generateTotalTable($total)
     {
         $this->activeSheet->setCellValue('E6', 'Total Profile Impressions');
@@ -178,6 +174,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->setHeaderFontStyle('F', 7);
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     */
     protected function generateBusinessInfoTable(BusinessProfile $businessProfile)
     {
         $this->activeSheet->setCellValue('E2', 'Name');
@@ -195,6 +194,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->setHeaderFontStyle('F', 3);
     }
 
+    /**
+     * @param array $interactionCurrentData
+     */
     protected function generateCurrentOverviewTable($interactionCurrentData)
     {
         $row = $this->currentOverviewInitRow;
@@ -238,6 +240,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $interactionData
+     */
     protected function generateInteractionTable($interactionData)
     {
         $row = $this->interactionInitRow;
@@ -302,37 +307,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         $this->setRowSizeStyle($row);
     }
 
-    protected function generatePreviousOverviewTable($interactionPreviousData)
-    {
-        $row = $this->previousOverviewInitRow;
-        $col = $this->previousOverviewInitCol;
-
-        $this->activeSheet->setCellValue($col . $row, 'Previous Month Impressions');
-        $this->setFontStyle($col, $row);
-        $this->setBorderStyle($col, $row);
-        $col++;
-
-        $this->activeSheet->setCellValue($col . $row, 'Previous Month Views');
-        $this->setFontStyle($col, $row);
-        $this->setBorderStyle($col, $row);
-        $row++;
-
-        foreach ($interactionPreviousData['results'] as $overview) {
-            $col = $this->previousOverviewInitCol;
-            $this->activeSheet->setCellValue($col . $row, $overview[BusinessOverviewModel::TYPE_CODE_IMPRESSION]);
-
-            $this->setColumnSizeStyle($col);
-            $this->setBorderStyle($col, $row);
-
-            $col++;
-            $this->activeSheet->setCellValue($col . $row, $overview[BusinessOverviewModel::TYPE_CODE_VIEW]);
-
-            $this->setColumnSizeStyle($col);
-            $this->setBorderStyle($col, $row);
-            $row++;
-        }
-    }
-
+    /**
+     * @param array $keywordsData
+     */
     protected function generateKeywordsTable($keywordsData)
     {
         $row = $this->keywordsTableInitRow;
@@ -365,6 +342,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $params
+     */
     protected function generateYearTable($params)
     {
         $row = $params['initRow'];
@@ -412,6 +392,9 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
     }
 
+    /**
+     * @param array $adUsageData
+     */
     protected function generateAdUsageTable($adUsageData)
     {
         $row = $this->adUsageInitRow;
@@ -496,25 +479,5 @@ class BusinessReportExcelExporter extends ExcelExporterModel
         }
 
         $this->setRowSizeStyle($row);
-    }
-
-    protected function getExcelService()
-    {
-        return $this->phpExcel;
-    }
-
-    protected function getAdUsageReportManager() : AdUsageReportManager
-    {
-        return $this->adUsageReportManager;
-    }
-
-    protected function getKeywordsReportManager() : KeywordsReportManager
-    {
-        return $this->keywordsReportManager;
-    }
-
-    protected function getBusinessOverviewReportManager() : BusinessOverviewReportManager
-    {
-        return $this->businessOverviewReportManager;
     }
 }

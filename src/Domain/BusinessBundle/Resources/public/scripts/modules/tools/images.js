@@ -33,7 +33,11 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         this.spinnerContainerId = 'images-spin-container';
 
         //10Mb (per specification)
-        this.maxAllowedFileSize = 10000000;
+        this.maxAllowedFileSize = 10485760;
+
+        //1Mb
+        this.maxAllowedBackgroundFileSize = 1048576;
+        this.imageContextBackground = 'business_profile_background';
 
         //max business profile images count - 25
         this.maxAllowedFilesCount = 25;
@@ -54,11 +58,20 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
     //max allowed filesize: 10mb
     images.prototype.checkMaxAllowedFileSize = function( files ) {
-        for( var i in files ) {
+        var fileContextValue = $( this.html.fileContextSelect ).val();
+        var errorMessage;
+
+        if ( fileContextValue == this.imageContextBackground ) {
+            errorMessage = 'error-background-size-limit';
+        } else {
+            errorMessage = 'error-size-limit';
+        }
+
+        for ( var i in files ) {
             var file = files[i];
 
-            if( file.size > this.maxAllowedFileSize ) {
-                var error = $( this.html.uploadImageInputId ).data( 'error-size-limit' );
+            if ( file.size && !(this.checkCommonFileSize( file.size, fileContextValue )) ) {
+                var error = $( this.html.uploadImageInputId ).data( errorMessage );
 
                 this.imageErrorHandler( error );
                 return false;
@@ -66,6 +79,16 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
         }
 
         return true;
+    };
+
+    images.prototype.checkCommonFileSize = function( size, context ) {
+        if ( (context != this.imageContextBackground && size < this.maxAllowedFileSize) ||
+            (context == this.imageContextBackground && size < this.maxAllowedBackgroundFileSize)
+        ) {
+            return true;
+        }
+
+        return false;
     };
 
     //max allowed files count: 10

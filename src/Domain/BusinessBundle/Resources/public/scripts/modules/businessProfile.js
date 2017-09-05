@@ -163,9 +163,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         $( this.html.fields.zipInputId ).val( zip );
     };
 
-    businessProfile.prototype.updateLatLngFields = function(latLng) {
-        $( this.html.fields.latitudeInputId ).val( latLng.lat() );
-        $( this.html.fields.longitudeInputId ).val( latLng.lng() );
+    businessProfile.prototype.updateLatLngFields = function(lat, lng) {
+        $( this.html.fields.latitudeInputId ).val( lat );
+        $( this.html.fields.longitudeInputId ).val( lng );
     };
 
     businessProfile.prototype.onMarkerPositionChange = function(event) {
@@ -186,16 +186,16 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             'location': latlng
         }, function(results) {
             that.updateAddress(results[0].address_components);
-            that.updateLatLngFields(latlng);
+            that.updateLatLngFields( latlng.lat(), latlng.lng() );
             that.updateFieldSelectionFocus();
         });
     };
 
-    businessProfile.prototype.getGoogleMapObject = function(latlng)
+    businessProfile.prototype.getGoogleMapObject = function(lat, lng)
     {
         var mapOptions = {
             zoom: 15,
-            center: new google.maps.LatLng(latlng.lat(), latlng.lng()),
+            center: new google.maps.LatLng(lat, lng),
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
@@ -206,27 +206,29 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
     businessProfile.prototype.initGoogleMap = function() {
         var address = this.getBusinessAddress();
-
         var that = this;
 
-        this.getLatLngByAddress(address, function(latlng) {
-            var map = that.getGoogleMapObject(latlng);
+        var lat = parseFloat( $( that.html.fields.latitudeInputId ).val() );
+        var lng = parseFloat( $( that.html.fields.longitudeInputId ).val() );
+        var map = that.getGoogleMapObject( lat, lng );
 
-            google.maps.event.trigger(map, 'resize');
+        google.maps.event.trigger( map, 'resize' );
 
-            var marker = new google.maps.Marker({
-                position: latlng,
-                map: map,
-                title: address,
-                draggable: true
-            });
-
-            // change address value when marker is dragged
-            marker.addListener('dragend', $.proxy(that.onMarkerPositionChange, that));
-
-            that.updateLatLngFields(latlng);
-            that.updateFieldSelectionFocus();
+        var marker = new google.maps.Marker({
+            position: {
+                lat: lat,
+                lng: lng
+            },
+            map: map,
+            title: address,
+            draggable: true
         });
+
+        // change address value when marker is dragged
+        marker.addListener( 'dragend', $.proxy( that.onMarkerPositionChange, that ) );
+
+        that.updateLatLngFields( lat, lng );
+        that.updateFieldSelectionFocus();
     };
 
     businessProfile.prototype.handleGeocodeSearch = function() {

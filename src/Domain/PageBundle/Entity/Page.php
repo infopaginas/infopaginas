@@ -4,7 +4,9 @@ namespace Domain\PageBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Domain\PageBundle\Entity\Translation\PageTranslation;
 use Domain\PageBundle\Model\PageInterface;
+use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Traits\SeoTrait;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\DefaultEntityTrait;
@@ -28,6 +30,12 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     use PersonalTranslatable;
     use SeoTrait;
 
+    const POPULAR_CATEGORY_COUNT = 3;
+    const POPULAR_CATEGORY_PAGE  = 1;
+    const POPULAR_CATEGORY_STAT_PERIOD      = DatesUtil::RANGE_LAST_30_DAYS;
+    const POPULAR_CATEGORY_AGGREGATE_PERIOD = DatesUtil::RANGE_TODAY;
+    const POPULAR_CATEGORY_PREFIX = 'popular_category_';
+
     /**
      * @var int
      *
@@ -40,9 +48,19 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     /**
      * @var string - Page title
      *
+     * @ORM\Column(name="name", type="string", length=100, nullable=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(max=100)
+     */
+    protected $name;
+
+    /**
+     * @var string - Page title (seo "H1" tag)
+     *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="title", type="string", length=100)
      * @Assert\NotBlank()
+     * @Assert\Length(max=100)
      */
     protected $title;
 
@@ -54,10 +72,11 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $code;
 
     /**
-     * @var string - Page description
+     * @var string - Page description (seo "copy" block)
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="description", type="string", length=100, nullable=true)
+     * @Assert\Length(max=100)
      */
     protected $description;
 
@@ -70,7 +89,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $body;
 
     /**
-     * @var string - Using this checkbox a User may define whether to show a page.
+     * @var bool - Using this checkbox a User may define whether to show a page.
      *
      * @ORM\Column(name="is_published", type="boolean", options={"default" : 0})
      */
@@ -83,17 +102,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @ORM\Column(name="slug", type="string")
      */
     protected $slug;
-
-    /**
-     * @var Template
-     *
-     * @ORM\ManyToOne(targetEntity="Domain\PageBundle\Entity\Template",
-     *     inversedBy="pages",
-     *     cascade={"persist"}
-     *     )
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
-     */
-    protected $template;
 
     /**
      * @var ArrayCollection
@@ -117,6 +125,15 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $background;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="redirect_url", type="string", nullable=true, length=1000)
+     * @Assert\Length(max=1000)
+     * @Assert\Url()
+     */
+    protected $redirectUrl;
+
+    /**
      * Get id
      *
      * @return int
@@ -126,9 +143,12 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return $this->getTitle() ?: '';
+        return $this->getName() ?: '';
     }
 
     /**
@@ -136,7 +156,27 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      */
     public function __construct()
     {
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->translations = new ArrayCollection();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Page
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -260,35 +300,11 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     }
 
     /**
-     * Set template
-     *
-     * @param \Domain\PageBundle\Entity\Template $template
-     *
-     * @return Page
-     */
-    public function setTemplate(\Domain\PageBundle\Entity\Template $template = null)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * Get template
-     *
-     * @return \Domain\PageBundle\Entity\Template
-     */
-    public function getTemplate()
-    {
-        return $this->template;
-    }
-
-    /**
      * Remove translation
      *
-     * @param \Domain\BannerBundle\Entity\Translation\BannerTranslation $translation
+     * @param PageTranslation $translation
      */
-    public function removeTranslation(\Domain\BannerBundle\Entity\Translation\BannerTranslation $translation)
+    public function removeTranslation(PageTranslation $translation)
     {
         $this->translations->removeElement($translation);
     }
@@ -339,5 +355,126 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function getBackground()
     {
         return $this->background;
+    }
+
+    /**
+     * @param string $redirectUrl
+     *
+     * @return Page
+     */
+    public function setRedirectUrl($redirectUrl)
+    {
+        $this->redirectUrl = $redirectUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectUrl()
+    {
+        return $this->redirectUrl;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStaticPage()
+    {
+        return [
+            PageInterface::CODE_CONTACT_US,
+            PageInterface::CODE_PRIVACY_STATEMENT,
+            PageInterface::CODE_TERMS_OF_USE,
+            PageInterface::CODE_ADVERTISE,
+        ];
+    }
+
+    /**
+     * @param int $code
+     *
+     * @return array
+     */
+    public static function getPageSeoHintByCode($code)
+    {
+        switch ($code) {
+            case PageInterface::CODE_ARTICLE_CATEGORY_LIST:
+            case PageInterface::CODE_CATALOG_LOCALITY:
+            case PageInterface::CODE_CATALOG_LOCALITY_CATEGORY:
+                $validCode = $code;
+                break;
+            default:
+                $validCode = PageInterface::CODE_DEFAULT;
+                break;
+        }
+
+        return self::getPageSeoHint()[$validCode];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPageSeoHint()
+    {
+        return [
+            PageInterface::CODE_DEFAULT => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.default.seoTitle',
+                'seoDescription'    => 'page.help_message.default.seoDescription',
+                'placeholders'      => [],
+            ],
+            PageInterface::CODE_ARTICLE_CATEGORY_LIST => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.article_category_list.seoTitle',
+                'seoDescription'    => 'page.help_message.article_category_list.seoDescription',
+                'placeholders'      => [
+                    '[category]',
+                ],
+            ],
+            PageInterface::CODE_CATALOG_LOCALITY => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.catalog_locality.seoTitle',
+                'seoDescription'    => 'page.help_message.catalog_locality.seoDescription',
+                'placeholders'      => self::getPopularCategoryPlaceholders(),
+            ],
+            PageInterface::CODE_CATALOG_LOCALITY_CATEGORY => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.catalog_locality_category.seoTitle',
+                'seoDescription'    => 'page.help_message.catalog_locality_category.seoDescription',
+                'placeholders'      => [
+                    '[locality]',
+                    '[category]',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPopularCategoryPlaceholders()
+    {
+        $placeholders = [];
+        $placeholders[] = '[locality]';
+
+        for ($i = 1; $i <= self::POPULAR_CATEGORY_COUNT; $i++) {
+            $placeholders[] = self::getPopularCategoryKey($i);
+        }
+
+        return $placeholders;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    public static function getPopularCategoryKey($id)
+    {
+        return sprintf('[%s%s]', self::POPULAR_CATEGORY_PREFIX, $id);
     }
 }

@@ -771,7 +771,7 @@ class LoadLocalitiesData extends AbstractFixture implements ContainerAwareInterf
         ];
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {

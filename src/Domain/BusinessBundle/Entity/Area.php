@@ -95,6 +95,9 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
@@ -111,6 +114,9 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
         $this->extraSearches    = new ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -190,7 +196,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      * Add Locality
      *
      * @param  Locality $locality
-     * @return this
+     * @return Area
      */
     public function addLocality(Locality $locality)
     {
@@ -213,7 +219,7 @@ class Area implements DefaultEntityInterface, CopyableEntityInterface, Translata
      * Add Locality
      *
      * @param  Locality $locality
-     * @return this
+     * @return Area
      */
     public function removeLocality(Locality $locality)
     {

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 28.06.16
- * Time: 18:12
- */
 
 namespace Domain\SiteBundle\Form\Handler;
 

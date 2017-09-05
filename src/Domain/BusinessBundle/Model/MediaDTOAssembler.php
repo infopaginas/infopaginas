@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 30.08.16
- * Time: 14:07
- */
 
 namespace Domain\BusinessBundle\Model;
 
@@ -119,7 +113,7 @@ class MediaDTOAssembler implements DTOAssemblerInterface
      */
     protected function unpackCollectionIds(array $collectionItems) : array
     {
-        $ids = array_map(function($item) {
+        $ids = array_map(function ($item) {
             return $item->getId();
         }, $collectionItems);
 

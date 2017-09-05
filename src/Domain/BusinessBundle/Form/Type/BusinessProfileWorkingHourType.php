@@ -26,13 +26,14 @@ class BusinessProfileWorkingHourType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('day', ChoiceType::class, [
+            ->add('days', ChoiceType::class, [
                 'choices' => DayOfWeekModel::getDayOfWeekMapping(),
                 'label' => 'Working Hours',
                 'attr' => [
-                    'class' => 'working-hours-day',
+                    'class' => 'form-control selectize-control select-multiple working-hours-day',
+                    'placeholder' => 'working_hours.placeholder.days',
                 ],
-                'multiple' => false,
+                'multiple' => true,
                 'required' => true,
                 'choice_translation_domain' => true,
             ])
@@ -42,6 +43,14 @@ class BusinessProfileWorkingHourType extends AbstractType
                 'attr' => [
                     'class' => 'working-hours-open-all-time',
                 ],
+            ])
+            ->add('commentEn', TextType::class, [
+                'required' => false,
+                'label' => 'working_hours.label.comment_en',
+            ])
+            ->add('commentEs', TextType::class, [
+                'required' => false,
+                'label' => 'working_hours.label.comment_es',
             ])
         ;
 
@@ -61,7 +70,6 @@ class BusinessProfileWorkingHourType extends AbstractType
             $form
                 ->add('timeStart', TextType::class, [
                     'label' => 'Time Start',
-                    'required' => true,
                     'data' => DayOfWeekModel::getFormFormattedTime($timeStart),
                     'attr' => [
                         'class' => 'working-hours-time-start',
@@ -70,7 +78,6 @@ class BusinessProfileWorkingHourType extends AbstractType
                 ])
                 ->add('timeEnd', TextType::class, [
                     'label' => 'Time End',
-                    'required' => true,
                     'data' => DayOfWeekModel::getFormFormattedTime($timeEnd),
                     'attr' => [
                         'class' => 'working-hours-time-start',

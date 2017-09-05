@@ -4,7 +4,10 @@ namespace Domain\BusinessBundle\Repository;
 
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\QueryBuilder;
+use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Locality;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\GeolocationBundle\Utils\GeolocationUtils;
 
 /**
@@ -15,6 +18,9 @@ use Oxa\GeolocationBundle\Utils\GeolocationUtils;
  */
 class LocalityRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return QueryBuilder
+     */
     public function getAvailableLocalitiesQb()
     {
         $qb = $this->createQueryBuilder('l')
@@ -23,6 +29,9 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    /**
+     * @return Locality[]
+     */
     public function getAvailableLocalities()
     {
         $qb = $this->getAvailableLocalitiesQb()
@@ -33,6 +42,12 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
+    /**
+     * @param string $localityName
+     * @param string $locale
+     *
+     * @return Locality|null
+     */
     public function getLocalityByNameAndLocale(string $localityName, string $locale)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -40,7 +55,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->from('DomainBusinessBundle:Locality', 'l')
             ->leftJoin('l.translations', 't')
             ->where('lower(l.name) =:name OR (lower(t.content) = :name AND t.locale = :locale)')
-            ->setParameter('name', strtolower($localityName))
+            ->setParameter('name', mb_strtolower($localityName))
             ->setParameter('locale', $locale)
             ->setMaxResults(1)
             ->getQuery()
@@ -49,6 +64,11 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $query;
     }
 
+    /**
+     * @param string $localityName
+     *
+     * @return Locality|null
+     */
     public function getLocalityByName($localityName)
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -56,7 +76,7 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->from('DomainBusinessBundle:Locality', 'l')
             ->leftJoin('l.translations', 't')
             ->where('lower(l.name) = :name OR (lower(t.content) = :name)')
-            ->setParameter('name', strtolower($localityName))
+            ->setParameter('name', mb_strtolower($localityName))
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
@@ -65,6 +85,12 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $query;
     }
 
+    /**
+     * @param string $localitySlug
+     * @param string|bool $customSlug
+     *
+     * @return Locality|null
+     */
     public function getLocalityBySlug($localitySlug, $customSlug = false)
     {
         $query = $this->getAvailableLocalitiesQb()
@@ -97,11 +123,17 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $iterateResult;
     }
 
+    /**
+     * @param string $name
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
     public function getLocalitiesByNameAndLocality($name, $locale)
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.translations', 'lt')
-            ->setParameter('name', '%' . strtolower($name) . '%')
+            ->setParameter('name', '%' . mb_strtolower($name) . '%')
             ->setParameter('locale', $locale)
         ;
 
@@ -130,7 +162,12 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
         return $iterateLocalities;
     }
 
-    public function getCatalogLocalitiesWithContent()
+    /**
+     * @param string $locale
+     *
+     * @return Locality[]
+     */
+    public function getCatalogLocalitiesWithContent($locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('l')
             ->leftJoin('l.catalogItems', 'ci', 'WITH', 'ci.category IS NULL')
@@ -138,7 +175,13 @@ class LocalityRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('l.name')
         ;
 
-        return $qb->getQuery()->getResult();
+        $query = $qb->getQuery();
+
+        if ($locale) {
+            SiteHelper::setLocaleQueryHint($query, $locale);
+        }
+
+        return $query->getResult();
     }
 
     /**

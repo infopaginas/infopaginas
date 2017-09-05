@@ -1,21 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alexander Polevoy <xedinaska@gmail.com>
- * Date: 13.07.16
- * Time: 20:50
- */
 
 namespace Domain\BusinessBundle\Form\Type;
 
-use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
-use Sonata\MediaBundle\Form\Type\MediaType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -37,20 +26,24 @@ class BusinessProfilePhoneType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('type', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'business-phone-type',
+                ],
+                'choices'  => BusinessProfilePhone::getTypes(),
+                'multiple' => false,
+                'required' => true,
+                'choice_translation_domain' => true,
+            ])
             ->add('phone', TextType::class, [
                 'attr'  => [
                     'class' => 'form-control',
-                    'placeholder' => '(787) 594-7273',
                 ],
                 'constraints' => [
-                    new Length([
-                        'max' => 10
-                    ]),
                     new Regex([
-                        'pattern' => '/^[0-9-]*$/',
+                        'pattern' => BusinessProfilePhone::REGEX_PHONE_PATTERN,
                         'message' => 'business_profile.phone.digit_dash',
                     ]),
-                    new NotBlank(),
                 ]
             ])
         ;

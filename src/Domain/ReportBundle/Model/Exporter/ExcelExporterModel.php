@@ -6,6 +6,7 @@ use Domain\ReportBundle\Model\ExporterInterface;
 use Liuggio\ExcelBundle\Factory;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ExcelExporterModel
@@ -52,6 +53,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->translator = $service;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setFontStyle($col, $row)
     {
         $this->activeSheet
@@ -60,6 +65,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setTextAlignmentStyle($col, $row)
     {
         $this->activeSheet
@@ -69,6 +78,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setBorderStyle($col, $row)
     {
         $this->activeSheet
@@ -77,6 +90,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     */
     protected function setColumnSizeStyle($col)
     {
         $this->activeSheet
@@ -85,6 +101,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param int $row
+     */
     protected function setRowSizeStyle($row)
     {
         $this->activeSheet
@@ -93,6 +112,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @param string $col
+     * @param int $row
+     */
     protected function setHeaderFontStyle($col, $row)
     {
         $this->activeSheet
@@ -101,6 +124,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ;
     }
 
+    /**
+     * @return array
+     */
     protected function getBorderStyle()
     {
         return [
@@ -112,6 +138,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getFontStyle()
     {
         return [
@@ -121,6 +150,9 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getHeaderFontStyle()
     {
         return [
@@ -135,6 +167,10 @@ abstract class ExcelExporterModel implements ExporterInterface
         ];
     }
 
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     */
     protected function generateCommonHeader($startDate, $endDate)
     {
         $this->activeSheet->setCellValue(
@@ -193,6 +229,26 @@ abstract class ExcelExporterModel implements ExporterInterface
         $this->setHeaderFontStyle('C', 5);
         $this->setHeaderFontStyle('C', 6);
         $this->setHeaderFontStyle('C', 7);
+    }
+
+    /**
+     * @param array $params
+     * @param string $title
+     * @param string $filename
+     *
+     * @return Response
+     */
+    protected function sendDataResponse($params, $title, $filename)
+    {
+        $title = $this->getSafeTitle($title);
+
+        $this->phpExcelObject = $this->phpExcel->createPHPExcelObject();
+        $this->phpExcelObject = $this->setData($params);
+
+        $this->phpExcelObject->getProperties()->setTitle($title);
+        $this->phpExcelObject->getActiveSheet()->setTitle($title);
+
+        return $this->sendResponse($filename);
     }
 
     /**

@@ -46,6 +46,11 @@ class LoadCategoryData extends AbstractFixture implements ContainerAwareInterfac
         }
     }
 
+    /**
+     * @param array $category
+     *
+     * @return Category
+     */
     private function createCategory($category)
     {
         $object = new Category();

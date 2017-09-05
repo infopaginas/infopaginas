@@ -6,7 +6,7 @@
     <div class="item__content clearfix" data-item-content>
         <div class="item__img">
             {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.getLogo()) %}
-                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}">
+                <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}">
                     <img width="80" src="{% path item.getLogo(), 'preview' %}" alt="{{ item.name }}">
                 </a>
                 <div class="att-icons">
@@ -21,7 +21,7 @@
         </div>
 
         <div class="item__summary {% if hasSubscription(item, 'CODE_PREMIUM_PLUS') == false or item.getLogo() == null %}item__summary-no-logo{% endif %}">
-            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.catalogLocality.slug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
+            <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to information page{% endtrans %}" class="phantom-link">
                 <div class="item__header header-align-stars">
                     {% set workingHoursData = get_business_profile_open_status(item) %}
                     {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="item__info">
-                    <h2>{% if item.isAd %} <i class="fa fa-star"></i> {% endif %}{{ item.name }}</h2>
+                    <h2>{% if item.isAd %} <i class="fa fa-star"></i> {% endif %} {{ item.displayedPosition }}. <span class="{{ seoTags.name }}">{{ item.name }}</span></h2>
                     {% if (hasSubscription(item, "CODE_PREMIUM_PLUS") and item.slogan) %}
                         <p>{{ item.slogan }}</p>
                     {% endif %}
@@ -65,31 +65,39 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions">
-            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+            <a class="get-dir button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>
-            <a class="button button--small button--featured hide-mobile link-pointer" id="show-on-map-{{ item.id }}">
+            <a class="button button--small button--featured hide-mobile link-pointer {% if item.isAd %}svm-showmap{% endif %}" id="show-on-map-{{ item.id }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Show on Map{% endtrans %}
             </a>
-            {% if item.getPhones() | length > 0 %}
-                <a href="tel:{{ item.phones|first.phone }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.getId() }}" data-type="callMobButton">
+            {% if not item.phones.empty %}
+                {% if item.mainPhone %}
+                    {% set phoneToCall = item.mainPhone.phone %}
+                {% else %}
+                    {% set phoneToCall = item.phones.first.phone %}
+                {% endif %}
+                <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call {% if item.isAd %}svm-callmobile{% endif %}" data-id="{{ item.id }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>
                 <div class="dropdown dropdown-call hide-mobile">
-                  <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.getId() }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <i class="fa fa-phone"></i>
-                    {% trans %}Call{% endtrans %}
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
-                  {% for phone in item.getPhones() %}
-                    <li>{{ phone.phone }}</li>
-                    <li role="separator" class="divider"></li>
-                  {% endfor %}
-                  </ul>   
+                    <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer {% if item.isAd %}svm-calldesktop{% endif %}" type="button" id="dropdownMenuCall" data-id="{{ item.id }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="fa fa-phone"></i>
+                        {% trans %}Call{% endtrans %}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
+                        {% for phone in item.phones %}
+                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                                <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
+                                {{ phone.phone }}
+                            </li>
+                            <li role="separator" class="divider"></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             {% endif %}
         </div><!-- item__primary-actions -->

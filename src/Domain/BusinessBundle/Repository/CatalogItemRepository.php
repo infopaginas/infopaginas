@@ -35,6 +35,12 @@ class CatalogItemRepository extends \Doctrine\ORM\EntityRepository
         return $countCatalogItemContent;
     }
 
+    /**
+     * @param Locality $locality
+     * @param Category|null $category
+     *
+     * @return array
+     */
     public function checkCatalogItemHasContent($locality, $category = null)
     {
         $qb = $this->_em->createQueryBuilder()

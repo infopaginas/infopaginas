@@ -49,6 +49,9 @@ class BusinessReportApiManager
         $this->keywordsReportManager = $container->get('domain_report.manager.keywords_report_manager');
     }
 
+    /**
+     * @return array
+     */
     protected function getValidParams()
     {
         return [
@@ -59,6 +62,9 @@ class BusinessReportApiManager
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getResponse($error)
     {
         return [
@@ -67,6 +73,11 @@ class BusinessReportApiManager
         ];
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function prepareReportParameters(array $params)
     {
         $error  = '';
@@ -136,9 +147,9 @@ class BusinessReportApiManager
                     $result['data'][$key]['date'] = $data['date'];
                 }
             }
-        }
 
-        $result['data'] = array_values($result['data']);
+            $result['data'] = array_values($result['data']);
+        }
 
         return $result;
     }

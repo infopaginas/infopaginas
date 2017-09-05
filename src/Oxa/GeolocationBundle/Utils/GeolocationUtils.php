@@ -33,6 +33,9 @@ class GeolocationUtils
         return true;
     }
 
+    /**
+     * @return array
+     */
     protected static function getContentTypes()
     {
         return array(
@@ -71,6 +74,9 @@ class GeolocationUtils
         return false;
     }
 
+    /**
+     * @return string
+     */
     protected static function buildGeoCodeURL($lat, $lng)
     {
         return self::GEO_CODE_URL_BASE . $lat . ',' . $lng;

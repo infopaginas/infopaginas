@@ -3,15 +3,43 @@
 namespace Domain\BusinessBundle\Util;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Locality;
+use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class BusinessProfileUtil
 {
+    const SEO_CLASS_PREFIX_SEARCH     = 'search';
+    const SEO_CLASS_PREFIX_SEARCH_MAP = 'search-map';
+
+    const SEO_CLASS_PREFIX_COMPARE      = 'compare';
+    const SEO_CLASS_PREFIX_COMPARE_MAP  = 'compare-map';
+
+    const SEO_CLASS_PREFIX_CATALOG = 'catalog';
+    const SEO_CLASS_PREFIX_PROFILE = 'profile';
+    const SEO_CLASS_PREFIX_VIDEO   = 'video';
+
+    const SEO_CLASS_BUSINESS_NAME = 'business-name';
+
+    /**
+     * @param array $searchResults
+     *
+     * @return array
+     */
     public static function extractBusinessProfiles(array $searchResults)
     {
         return array_column($searchResults, 'id');
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param ContainerInterface $container
+     * @param string|bool $locale
+     *
+     * @return string
+     */
     public static function seoTitleBuilder(
         BusinessProfile $businessProfile,
         ContainerInterface $container,
@@ -23,18 +51,10 @@ class BusinessProfileUtil
         $titleMaxLength = $seoSettings['title_max_length'];
 
         $businessProfileMaxLength = $seoSettings['business_name_length'];
-        $localityMaxLength = $seoSettings['locality_length'];
         $brandMaxLength = $seoSettings['brand_length'];
 
-        if ($locale) {
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation('name', strtolower($locale));
-            $businessProfileName = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
-        } else {
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
-            $businessProfileName = $businessProfile->getName();
-            $locale = $businessProfile->getLocale();
-        }
+        $businessProfileName = $businessProfile->getName();
+        $locale = LocaleHelper::getLocale($locale);
 
         $translator = $container->get('translator');
 
@@ -42,7 +62,6 @@ class BusinessProfileUtil
             'business_profile.seoTitle',
             [
                 'name'     => mb_substr($businessProfileName, 0, $businessProfileMaxLength),
-                'location' => mb_substr($catalogLocalityName, 0, $localityMaxLength),
                 'company'  => mb_substr($companyName, 0, $brandMaxLength),
             ],
             'messages',
@@ -54,6 +73,13 @@ class BusinessProfileUtil
         return $seoTitle;
     }
 
+    /**
+     * @param BusinessProfile $businessProfile
+     * @param ContainerInterface $container
+     * @param string|bool $locale
+     *
+     * @return string
+     */
     public static function seoDescriptionBuilder(
         BusinessProfile $businessProfile,
         ContainerInterface $container,
@@ -63,26 +89,16 @@ class BusinessProfileUtil
 
         $descriptionMaxLength = $seoSettings['description_max_length'];
 
-        if ($locale) {
-            $name = $businessProfile
-                ->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_NAME, strtolower($locale));
-
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
-                BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-                strtolower($locale)
-            );
-            $workingHours = $businessProfile->getTranslation(
-                BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
-                $locale
-            );
-        } else {
-            $name = $businessProfile->getName();
-            $catalogLocalityName = $businessProfile->getCatalogLocality()->getName();
-            $workingHours = $businessProfile->getWorkingHours();
-            $locale = $businessProfile->getLocale();
-        }
+        $name = $businessProfile->getName();
+        $locale = LocaleHelper::getLocale($locale);
+        $catalogLocalityName = $businessProfile->getCatalogLocality()->getTranslation(
+            Locality::LOCALITY_FIELD_NAME,
+            $locale
+        );
 
         $translator = $container->get('translator');
+
+        $workingHours = self::getWorkingHoursAsText($businessProfile, $locale, $translator);
 
         $seoDescription = $translator->trans(
             'business_profile.seoDescription.main',
@@ -91,10 +107,10 @@ class BusinessProfileUtil
                 'location' => $catalogLocalityName,
             ],
             'messages',
-            strtolower($locale)
+            $locale
         );
 
-        if ($businessProfile->getWorkingHours() and mb_strlen($seoDescription) < $descriptionMaxLength) {
+        if ($workingHours and mb_strlen($seoDescription) < $descriptionMaxLength) {
 
 
             $seoDescription .= ' ' . $translator->trans(
@@ -103,7 +119,7 @@ class BusinessProfileUtil
                     'hours' => $workingHours,
                 ],
                 'messages',
-                strtolower($locale)
+                $locale
             );
         }
 
@@ -116,7 +132,7 @@ class BusinessProfileUtil
                     'link' => $businessProfile->getWebsiteLink(),
                 ],
                 'messages',
-                strtolower($locale)
+                $locale
             );
 
             $hasLink = true;
@@ -135,12 +151,83 @@ class BusinessProfileUtil
                     'phone' => $businessProfile->getPhones()->first()->getPhone(),
                 ],
                 'messages',
-                strtolower($locale)
+                $locale
             );
         }
 
         $seoDescription = mb_substr($seoDescription, 0, $descriptionMaxLength);
 
         return $seoDescription;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return array
+     */
+    public static function getSeoTags($type)
+    {
+        return [
+            'name' => self::getBusinessProfileNameSeoClass($type),
+        ];
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public static function getBusinessProfileNameSeoClass($type)
+    {
+        return sprintf('%s-%s', $type, self::SEO_CLASS_BUSINESS_NAME);
+    }
+
+    /**
+     * @param BusinessProfile       $businessProfile
+     * @param string                $locale
+     * @param TranslatorInterface   $translator
+     *
+     * @return string
+     */
+    public static function getWorkingHoursAsText(BusinessProfile $businessProfile, $locale, $translator)
+    {
+        $workingHours = json_decode(DayOfWeekModel::getBusinessProfileWorkingHoursJson($businessProfile));
+
+        $locale = LocaleHelper::getLocale($locale);
+        $dayText = [];
+
+        $openAllTimeText = $translator->trans(
+            'business.working.hours.open_all_time',
+            [],
+            'messages',
+            $locale
+        );
+
+        foreach ($workingHours as $day => $workingHour) {
+            if ($workingHour) {
+                $text = $translator->trans($day) . ' ';
+                $hoursText = [];
+
+                foreach ($workingHour as $item) {
+                    $hours = '';
+
+                    if (!$item->openAllTime) {
+                        $hours .= $item->timeStart . '-' . $item->timeEnd;
+                    } else {
+                        $hours .= $openAllTimeText;
+                    }
+
+                    if (!empty($item->comment->$locale)) {
+                        $hours .= ' - ' . $item->comment->$locale;
+                    }
+
+                    $hoursText[] = $hours;
+                }
+
+                $dayText[] = $text . implode(', ', $hoursText);
+            }
+        }
+
+        return implode('; ', $dayText);
     }
 }

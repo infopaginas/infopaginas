@@ -48,7 +48,7 @@ define(
                         $( 'a[href="#' + tabId + '"]' ).click();
                     }
                 } else {
-                    this.errorHandler.enableFieldsHighlight( { 'nameEn': [response.message] } );
+                    this.errorHandler.enableFieldsHighlight( { 'name': [response.message] } );
                 }
             }
         };
@@ -67,7 +67,7 @@ define(
                 var message = errorThrown;
             }
 
-            this.errorHandler.enableFieldsHighlight( { 'nameEn': [message] } );
+            this.errorHandler.enableFieldsHighlight( { 'name': [message] } );
         };
 
         //ajax request

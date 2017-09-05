@@ -150,6 +150,10 @@ td[class*="_keywords-valueEn"], td[class*="_keywords-valueEs"] {
     width: 45%;
 }
 
+td[class*="_collectionWorkingHours-days"] {
+    width: 30%;
+}
+
 table.business-review-table {
     width: 100%;
 }
@@ -164,4 +168,24 @@ table.business-review-table {
 img.video-poster {
     max-width: 100%;
     height: auto;
+}
+
+span.orm-pop-up-status {
+    padding-left: 20px;
+}
+
+span.orm-pop-up-status img {
+    height: 30px;
+}
+
+textarea.vertical-resize {
+    resize: vertical;
+}
+
+textarea[id *= "_description"] {
+    resize: vertical;
+}
+
+.export-report-button-group button {
+    margin: 10px;
 }

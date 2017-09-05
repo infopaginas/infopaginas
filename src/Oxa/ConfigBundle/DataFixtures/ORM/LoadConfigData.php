@@ -19,7 +19,7 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
     protected $container;
 
     /**
-     * {@inheritDoc}
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
@@ -30,7 +30,6 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
             $config->setValue($item['value']);
             $config->setFormat($item['format']);
             $config->setDescription($item['description']);
-            $config->setPosition($key);
 
             if (!empty($item['hidden'])) {
                 $config->setIsActive(false);
@@ -42,6 +41,9 @@ class LoadConfigData extends AbstractFixture implements ContainerAwareInterface,
         $manager->flush();
     }
 
+    /**
+     * @return array
+     */
     private function getData()
     {
         return [

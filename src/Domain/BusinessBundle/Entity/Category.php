@@ -28,6 +28,7 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
     use PersonalTranslatable;
 
     const CATEGORY_FIELD_NAME = 'name';
+    const CATEGORY_LOCALE_PROPERTY = 'searchText';
 
     const CATEGORY_UNDEFINED_CODE = '54016';
     const CATEGORY_UNDEFINED_SLUG = 'unclassified';
@@ -200,11 +201,17 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         $this->isUpdated = true;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return $this->getName() ?: '';
+        return $this->getSearchTextEn() . ' / ' . $this->getSearchTextEs();
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -569,6 +576,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public static function getDefaultCategories()
     {
         return [
@@ -577,6 +587,9 @@ class Category implements DefaultEntityInterface, CopyableEntityInterface, Trans
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getSystemCategorySlugs()
     {
         return [

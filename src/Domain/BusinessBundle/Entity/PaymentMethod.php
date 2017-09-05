@@ -33,6 +33,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     const PAYMENT_METHOD_TYPE_ATH_MOVIL = 'ath_movil';
     const PAYMENT_METHOD_TYPE_ONLINE    = 'online';
     const PAYMENT_METHOD_TYPE_DEBIT     = 'debit';
+    const PAYMENT_METHOD_TYPE_ATH       = 'ath';
 
     const PAYMENT_METHOD_FIELD_NAME = 'name';
 
@@ -96,15 +97,21 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
      */
     public function __construct()
     {
-        $this->businessProfiles = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->businessProfiles = new ArrayCollection();
+        $this->translations     = new ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?: '';
     }
 
+    /**
+     * @return string
+     */
     public function getMarkCopyPropertyName()
     {
         return 'name';
@@ -204,6 +211,9 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
         return $this->type;
     }
 
+    /**
+     * @return array
+     */
     public static function getTranslatableFields()
     {
         return [
@@ -211,6 +221,9 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getRequiredPaymentMethods()
     {
         return [
@@ -258,6 +271,11 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
                 'nameEn' => 'Debit Card',
                 'nameEs' => 'Debito',
                 'type' => self::PAYMENT_METHOD_TYPE_DEBIT,
+            ],
+            self::PAYMENT_METHOD_TYPE_ATH => [
+                'nameEn' => 'ATH',
+                'nameEs' => 'ATH',
+                'type' => self::PAYMENT_METHOD_TYPE_ATH,
             ],
         ];
     }

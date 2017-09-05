@@ -6,17 +6,34 @@ use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
 
 class DCDataDTO extends AbstractDTO
 {
+    /**
+     * @var array $searchKeywords
+     */
     public $searchKeywords;
+
+    /**
+     * @var string $locationName
+     */
     public $locationName;
+
+    /**
+     * @var array $categories
+     */
     public $categories;
+
+    /**
+     * @var string|null $slug
+     */
     public $slug;
 
-    public function __construct(
-        array $searchKeywords = array(),
-        string $locationName = '',
-        $categories = array(),
-        $slug = null
-    ) {
+    /**
+     * @param array         $searchKeywords
+     * @param string        $locationName
+     * @param array         $categories
+     * @param string|null   $slug
+     */
+    public function __construct(array $searchKeywords = [], string $locationName = '', $categories = [], $slug = null)
+    {
         $this->searchKeywords  = $searchKeywords;
         $this->locationName    = $locationName;
         $this->categories      = $categories;

@@ -10,6 +10,7 @@ use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Neighborhood;
 use Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -177,7 +178,7 @@ class ChangeSetCalculator
         foreach ($entities as $entity) {
             $data[] = [
                 'id'    => $entity->getId(),
-                'value' => (string)$entity,
+                'value' => method_exists($entity, 'getJsonData') ? $entity->getJsonData() : (string)$entity,
             ];
         }
 
@@ -577,27 +578,22 @@ class ChangeSetCalculator
         return $changeSetEntries;
     }
 
-    public static function getLocales()
-    {
-        return [
-            strtolower(BusinessProfile::TRANSLATION_LANG_EN),
-            strtolower(BusinessProfile::TRANSLATION_LANG_ES),
-        ];
-    }
-
     public static function getTranslatableLocaleChangeSetEntries($entityNew, $entityOld, $field)
     {
         $changeSetEntries = [];
 
-        foreach (self::getLocales() as $locale) {
-            $valueNew = (string)$entityNew->getTranslationItem($field, $locale);
-            $valueOld = (string)$entityOld->getTranslationItem($field, $locale);
+        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+            $valueNew = $entityNew->getTranslationItem($field, $locale);
+            $valueOld = $entityOld->getTranslationItem($field, $locale);
 
-            if ($valueNew != $valueOld) {
+            $contentNew = $valueNew ? $valueNew->getContent() : '';
+            $contentOld = $valueOld ? $valueOld->getContent() : '';
+
+            if ($contentNew != $contentOld) {
                 $changeSetEntries[] = self::buildChangeSetEntryObject(
                     $field,
-                    $valueOld,
-                    $valueNew,
+                    (string) $valueOld,
+                    (string) $valueNew,
                     self::CHANGE_TRANSLATION,
                     BusinessProfileTranslation::class
                 );

@@ -106,7 +106,6 @@ class OxaAdmin extends BaseAdmin
     protected $datagridValues = array(
         '_page'       => 1,
         '_per_page'   => 25,
-        '_sort_by' => 'position',
     );
 
     /**
@@ -201,6 +200,9 @@ class OxaAdmin extends BaseAdmin
         }
     }
 
+    /**
+     * @return array
+     */
     public function getFilterParameters()
     {
         $parameters = parent::getFilterParameters();
@@ -247,6 +249,9 @@ class OxaAdmin extends BaseAdmin
         return $actions;
     }
 
+    /**
+     * @return array
+     */
     protected function getDeleteDeniedAction()
     {
         return [
@@ -254,6 +259,9 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getAllowViewOnlyAction()
     {
         return [
@@ -263,6 +271,9 @@ class OxaAdmin extends BaseAdmin
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getDeniedAllButViewAndEditActions()
     {
         return [
@@ -318,8 +329,9 @@ class OxaAdmin extends BaseAdmin
     public function generateUserLogData($action, $entity = null)
     {
         $data = [
-            'entity' => $this->getClassnameLabel(),
-            'type'   => $action,
+            'entity'        => $this->getClassnameLabel(),
+            'entityName'    => (string) $entity,
+            'type'          => $action,
         ];
 
         if ($entity and $entity->getId()) {
@@ -387,7 +399,8 @@ class OxaAdmin extends BaseAdmin
             case UserActionModel::TYPE_ACTION_VIEW_LIST_PAGE:
             case UserActionModel::TYPE_ACTION_EXPORT:
                 $url = $this->generateUrl(
-                    self::SONATA_URL_TYPE_LIST, $this->getRequest()->query->all(),
+                    self::SONATA_URL_TYPE_LIST,
+                    $this->getRequest()->query->all(),
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
                 break;

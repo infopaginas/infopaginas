@@ -22,6 +22,10 @@ class VideoPosterRegenerateCommand extends ContainerAwareCommand
         );
     }
 
+    /**
+     * @param InputInterface    $input
+     * @param OutputInterface   $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');

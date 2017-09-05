@@ -3,6 +3,7 @@
 namespace Domain\PageBundle\Admin;
 
 use Domain\PageBundle\Entity\Page;
+use Domain\PageBundle\Model\PageInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Sonata\AdminBundle\Admin\Admin;
@@ -23,7 +24,7 @@ class PageAdmin extends OxaAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('title', null, [
+            ->add('name', null, [
                 'show_filter' => true,
             ])
             ->add('updatedUser')
@@ -36,7 +37,7 @@ class PageAdmin extends OxaAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('title')
+            ->addIdentifier('name')
             ->add('updatedAt')
             ->add('updatedUser')
         ;
@@ -49,48 +50,119 @@ class PageAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /* @var Page $page*/
+        $page       = $this->getSubject();
+        $pageCode   = $page->getCode();
+
+        if (!$pageCode) {
+            $pageCode = PageInterface::CODE_DEFAULT;
+        }
+
+        $helpMessage = Page::getPageSeoHintByCode($pageCode);
+
         // define group zoning
         $formMapper
-            ->with('General', array('class' => 'col-md-6'))->end()
-            ->with('Status', array('class' => 'col-md-6'))->end()
-            ->with('Body', array('class' => 'col-md-12'))->end()
+            ->with('General', ['class' => 'col-md-6'])->end()
+            ->with('Status', ['class' => 'col-md-6'])->end()
         ;
+
+        if (in_array($pageCode, Page::getStaticPage())) {
+            $formMapper->with('Body')->end();
+        }
+
+        $formMapper->with('Seo')->end();
 
         $formMapper
             ->with('General')
-                ->add('title')
-                ->add('background', 'sonata_type_model_list',
-                    [
-                        'required' => false,
-                    ],
-                    [
-                        'link_parameters' => [
-                            'context'  => OxaMediaInterface::CONTEXT_PAGE_BACKGROUND,
-                            'provider' => OxaMediaInterface::PROVIDER_IMAGE,
-                        ]
-                    ])
+                ->add('title', null, [
+                    'help' => $this->getHelpMessage('title', $helpMessage),
+                ])
+                ->add('description', null, [
+                    'help' => $this->getHelpMessage('description', $helpMessage),
+                ])
             ->end()
+        ;
+
+        if (in_array($pageCode, Page::getStaticPage())) {
+            $formMapper
+                ->with('General')
+                    ->add('redirectUrl')
+                ->end()
+            ;
+        }
+
+        if ($pageCode == PageInterface::CODE_LANDING) {
+            $formMapper
+                ->with('General')
+                    ->add(
+                        'background',
+                        'sonata_type_model_list',
+                        [
+                            'required' => false,
+                        ],
+                        [
+                            'link_parameters' => [
+                                'context'  => OxaMediaInterface::CONTEXT_PAGE_BACKGROUND,
+                                'provider' => OxaMediaInterface::PROVIDER_IMAGE,
+                            ],
+                        ]
+                    )
+                ->end()
+            ;
+        }
+
+        $formMapper
             ->with('Status')
-                ->add('updatedAt', 'sonata_type_datetime_picker', ['required' => false, 'disabled' => true])
-                ->add('updatedUser', 'sonata_type_model', [
+                ->add('name', null, [
                     'required' => false,
-                    'btn_add' => false,
                     'disabled' => true,
                 ])
-                ->add('url', TextType::class, [
-                    'mapped' => false,
-                    'read_only' => true,
+                ->add('updatedAt', 'sonata_type_datetime_picker', [
                     'required' => false,
-                    'data' => sprintf(
-                        '%s/%s',
-                        $this->getRequest()->getHost(),
-                        $this->getSubject()->getSlug()
-                    )
+                    'disabled' => true,
                 ])
-                ->add('slug', null, ['read_only' => true, 'required' => false])
+                ->add('updatedUser', TextType::class, [
+                    'required' => false,
+                    'disabled' => true,
+                ])
             ->end()
-            ->with('Body')
-                ->add('body', 'ckeditor')
+        ;
+
+        if (in_array($pageCode, Page::getStaticPage())) {
+            $formMapper
+                ->with('Status')
+                    ->add('url', TextType::class, [
+                        'mapped' => false,
+                        'read_only' => true,
+                        'required' => false,
+                        'data' => sprintf(
+                            '%s/%s',
+                            $this->getRequest()->getHost(),
+                            $this->getSubject()->getSlug()
+                        )
+                    ])
+                    ->add('slug', null, [
+                        'read_only' => true,
+                        'required'  => false,
+                    ])
+                ->end()
+            ;
+
+            $formMapper
+                ->with('Body')
+                    ->add('body', 'ckeditor')
+                ->end()
+            ;
+        }
+
+        $formMapper
+            ->with('Seo')
+                ->add('seoTitle', null, [
+                    'help' => $this->getHelpMessage('seoTitle', $helpMessage),
+                ])
+                ->add('seoDescription', null, [
+                    'help' => $this->getHelpMessage('seoDescription', $helpMessage),
+                ])
             ->end()
         ;
     }
@@ -100,13 +172,42 @@ class PageAdmin extends OxaAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        /* @var Page $page*/
+        $page       = $this->getSubject();
+        $pageCode   = $page->getCode();
+
         $showMapper
             ->add('id')
+            ->add('name')
             ->add('title')
-            ->add('body', null, array('template' => 'DomainPageBundle:Admin:show__body.html.twig'))
+            ->add('description')
+        ;
+
+        if (in_array($pageCode, Page::getStaticPage())) {
+            $showMapper
+                ->add('body', null, [
+                    'template' => 'DomainPageBundle:Admin:show__body.html.twig',
+                ])
+                ->add('slug')
+            ;
+        }
+
+        if ($pageCode == PageInterface::CODE_LANDING) {
+            $showMapper
+                ->add('background', null, [
+                    'template' => 'OxaSonataAdminBundle:ShowFields:show_image_orm_many_to_one.html.twig',
+                ])
+            ;
+        }
+
+        $showMapper
+            ->add('seoTitle')
+            ->add('seoDescription')
+        ;
+
+        $showMapper
             ->add('updatedAt')
             ->add('updatedUser')
-            ->add('slug')
         ;
     }
 
@@ -124,34 +225,19 @@ class PageAdmin extends OxaAdmin
         ;
     }
 
-    public function prePersist($entity)
-    {
-        $this->preSave($entity);
-    }
-
-    public function preUpdate($entity)
-    {
-        /** @var Page $entity */
-        $this->preSave($entity);
-    }
-
-    private function preSave($entity)
-    {
-        $entity = $this->setSeoDate($entity);
-    }
-
     /**
-     * @param Page $entity
+     * @param string $field
+     * @param array  $helpMessage
      *
-     * @return Page
+     * @return string
      */
-    private function setSeoDate($entity)
+    protected function getHelpMessage($field, $helpMessage)
     {
-        /** @var ContainerInterface $container */
-        $container = $this->getConfigurationPool()->getContainer();
-
-        $entity = $container->get('domain_page.manager.page')->setPageSeoData($entity, $container);
-
-        return $entity;
+        return $this->trans(
+            $helpMessage[$field],
+            [
+                '{placeholders}' => implode(', ', $helpMessage['placeholders'])
+            ]
+        );
     }
 }
