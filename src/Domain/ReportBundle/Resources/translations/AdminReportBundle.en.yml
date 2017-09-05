@@ -61,3 +61,8 @@ user_action_report:
 
 flash_export_report_requested: Report is being generated. To see its status please go to reports page
 flash_export_report_request_error: Error the report could not be sent, please reload the page and try again.
+
+category_report:
+  page_type:
+    business: Business
+    catalog:  Catalog

@@ -65,11 +65,11 @@
     </div><!-- item__content -->
     <div class="item__actions">
         <div class="item__primary-actions">
-            <a class="get-dir button button--small button--featured link-pointer" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
+            <a class="get-dir button button--small button--featured link-pointer {% if item.isAd %}svm-getdir{% endif %}" data-id="{{ item.getId() }}" data-latlng="{{ item.getLatLng() }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Directions{% endtrans %}
             </a>
-            <a class="button button--small button--featured hide-mobile link-pointer" id="show-on-map-{{ item.id }}">
+            <a class="button button--small button--featured hide-mobile link-pointer {% if item.isAd %}svm-showmap{% endif %}" id="show-on-map-{{ item.id }}">
                 <i class="fa fa-location-arrow"></i>
                 {% trans %}Show on Map{% endtrans %}
             </a>
@@ -79,12 +79,12 @@
                 {% else %}
                     {% set phoneToCall = item.phones.first.phone %}
                 {% endif %}
-                <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">
+                <a href="tel:{{ phoneToCall }}" class="button button--small button--featured hide-desktop phone-call {% if item.isAd %}svm-callmobile{% endif %}" data-id="{{ item.id }}" data-type="callMobButton">
                     <i class="fa fa-phone"></i>
                     {% trans %}Call{% endtrans %}
                 </a>
                 <div class="dropdown dropdown-call hide-mobile">
-                    <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer" type="button" id="dropdownMenuCall" data-id="{{ item.id }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <button class="btn btn-default dropdown-toggle dropdown-call-button phone-call link-pointer {% if item.isAd %}svm-calldesktop{% endif %}" type="button" id="dropdownMenuCall" data-id="{{ item.id }}" data-type="callDeskButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <i class="fa fa-phone"></i>
                         {% trans %}Call{% endtrans %}
                         <span class="caret"></span>

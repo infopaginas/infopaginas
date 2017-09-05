@@ -3,29 +3,31 @@
 {% endif %}
 
 {% set workingHoursCollection = get_business_profile_working_hours_list(businessProfile) %}
+{% set firstDay = true %}
 
 {% if workingHoursCollection %}
     <div class="highlights__item highlights__item--hours {% if isCompare %}highlights__item_hours-row highlights__item_fixed-height{% endif %}">
-        <h3>{% trans %}Business hours{% endtrans %}</h3>
-        <ul>
+        <h3 class="arrow-down">{% trans %}Business hours{% endtrans %}</h3>
+        <ul class="hide-children">
             {% for day, workingHours in workingHoursCollection %}
-                {% set dayList = day|split(',') %}
-
-                <li>
-                    <span class="hour__day">
-                        {% for day in dayList %}
-                            {{ day|trans }}{% if loop.index0 < dayList|length - 1 %},{% endif %}
-                        {% endfor %}
-                    </span>
-                    {% if workingHours|length > 0 %}
-                        {% for workingHour in workingHours %}
-                            <span class="hour__hours">
-                                {% if workingHour.openAllTime %}
-                                    {% trans %}business.working.hours.open_all_time{% endtrans %}
-                                {% else %}
-                                    {{ workingHour.timeStart|date(working_hours_date_format) }} - {{ workingHour.timeEnd|date(working_hours_date_format) }};
-                                {% endif %}
-                            </span>
+                <li {% if workingHours.status is defined and workingHours.status and firstDay %}class="currentDay" {% set firstDay = false %}{% endif %}>
+                    <span class="hour__day">{{ day|trans }}</span>
+                    {% if workingHours.items is defined and workingHours.items|length > 0 %}
+                        {% for workingHour in workingHours.items %}
+                            <ul>
+                                <li>
+                                    <span class="hour__hours">
+                                        {% if workingHour.openAllTime %}
+                                            {% trans %}business.working.hours.open_all_time{% endtrans %}
+                                        {% else %}
+                                            {{ workingHour.timeStart|date(working_hours_date_format) }} - {{ workingHour.timeEnd|date(working_hours_date_format) }}
+                                        {% endif %}
+                                    </span>
+                                    {% if attribute(workingHour.comment, locale) is defined and attribute(workingHour.comment, locale) %}
+                                        <span class="working-hour-comment">{{ attribute(workingHour.comment, locale) }}</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
                         {% endfor %}
                     {% else %}
                         <span class="hour__hours">
@@ -34,15 +36,6 @@
                     {% endif %}
                 </li>
             {% endfor %}
-        </ul>
-    </div><!-- highlights__item -->
-{% elseif businessProfile.getWorkingHours() %}
-    <div class="highlights__item highlights__item--hours">
-        <h3>{% trans %}Business hours{% endtrans %}</h3>
-        <ul>
-            <li>
-                {{ businessProfile.getWorkingHours() }}
-            </li>
         </ul>
     </div><!-- highlights__item -->
 {% elseif isCompare %}

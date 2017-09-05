@@ -25,6 +25,9 @@ class CategoryAdmin extends OxaAdmin
             ->add('name', null, [
                 'show_filter' => true,
             ])
+            ->add('searchTextEs', null, [
+                'label' => 'Name Esp',
+            ])
         ;
     }
 

@@ -22,3 +22,8 @@ business_profile:
 
 business_profile_phone.not_unique_main: Error: no puede haber más de un teléfono principal
 business_profile_phone.no_main: Error al menos un teléfono debe estar marcado como "principal"
+
+form.collectionWorkingHours.overlap: Las horas de trabajo no deben superponerse
+form.collectionWorkingHours.duration: Inicio de tiempo debe ser más que tiempo final
+form.collectionWorkingHours.blank: El tiempo no debe estar en blanco
+form.collectionWorkingHours.invalid: Hay conflictos en el calendario, por favor revise sus entradas.

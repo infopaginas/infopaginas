@@ -14,6 +14,7 @@ trait SeoTrait
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="seo_title", type="string", length=255, nullable=true)
+     * @Assert\Length(max=60)
      */
     protected $seoTitle;
 
@@ -22,6 +23,7 @@ trait SeoTrait
      *
      * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="seo_description", type="string", length=255, nullable=true)
+     * @Assert\Length(max=160)
      */
     protected $seoDescription;
 

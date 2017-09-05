@@ -10,10 +10,10 @@ use Domain\BusinessBundle\Entity\SubscriptionPlan;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\BusinessBundle\Repository\AreaRepository;
 use Domain\BusinessBundle\Repository\CategoryRepository;
-use Domain\BusinessBundle\Repository\CountryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\BusinessBundle\Repository\NeighborhoodRepository;
 use Domain\BusinessBundle\Repository\PaymentMethodRepository;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneTypeValidator;
 use Domain\SiteBundle\Validator\Constraints\ConstraintUrlExpanded;
@@ -83,6 +83,10 @@ class BusinessProfileFormType extends AbstractType
         }
 
         $builder
+            ->add('name', TextType::class, [
+                'label'    => 'Name',
+                'required' => true,
+            ])
             ->add('website', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -112,7 +116,7 @@ class BusinessProfileFormType extends AbstractType
                 'label' => 'Working Hours',
                 'required' => false,
             ])
-            ->add('collectionWorkingHoursError', TextType::class, [
+            ->add(BusinessProfileWorkingHourTypeValidator::ERROR_BLOCK_PATH, TextType::class, [
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
@@ -187,27 +191,6 @@ class BusinessProfileFormType extends AbstractType
                 'constraints' => [
                     new Type('float'),
                 ],
-            ])
-            ->add('country', EntityType::class, [
-                'attr' => [
-                    'class' => 'form-control selectize-control',
-                    'placeholder' => 'Select country',
-                ],
-                'class' => 'Domain\BusinessBundle\Entity\Address\Country',
-                'label' => 'Country',
-                'label_attr' => [
-                    'class' => 'title-label'
-                ],
-                'query_builder' => function (CountryRepository $repository) {
-                    return $repository->getAvailableCountriesQb();
-                }
-            ])
-            ->add('state', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'label' => 'State',
-                'required' => false,
             ])
             ->add('catalogLocality', EntityType::class, [
                 'attr' => [
@@ -604,12 +587,6 @@ class BusinessProfileFormType extends AbstractType
         $localePostfix = LocaleHelper::getLangPostfix($locale);
 
         $form
-            ->add('name' . $localePostfix, TextType::class, [
-                'label'    => 'Name',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('name', $locale),
-            ])
             ->add('description' . $localePostfix, CKEditorType::class, [
                 'label'    => 'Description',
                 'required' => false,
@@ -640,15 +617,6 @@ class BusinessProfileFormType extends AbstractType
                 'required' => false,
                 'mapped'   => false,
                 'data'     => $businessProfile->getTranslation('brands', $locale),
-            ])
-            ->add('workingHours' . $localePostfix, TextareaType::class, [
-                'attr' => [
-                    'rows' => 3,
-                ],
-                'label'    => 'Working hours',
-                'required' => false,
-                'mapped'   => false,
-                'data'     => $businessProfile->getTranslation('workingHours', $locale),
             ])
         ;
     }

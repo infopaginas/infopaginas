@@ -30,13 +30,13 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                     var $field;
                     var fieldId = this.getFormFieldId( prefix, field );
 
-                    if (field == 'phones') {
+                    if ( field == 'phones' || field == 'collectionWorkingHours' ) {
 
                         for (var phoneField in errors[field]) {
-                            var phoneFieldId = fieldId + '_' + phoneField;
+                            var phoneFieldBaseId = fieldId + '_' + phoneField;
 
                             for (var phoneFieldItem in errors[field][phoneField]) {
-                                phoneFieldId = phoneFieldId + '_' + phoneFieldItem;
+                                var phoneFieldId = phoneFieldBaseId + '_' + phoneFieldItem;
 
                                 $field = $( phoneFieldId );
 
@@ -48,9 +48,7 @@ define(['jquery', 'bootstrap'], function( $, bootstrap ) {
                                     this.invisibleErrosExists = true;
                                 }
 
-                                for( var key in errors[field][phoneField] ) {
-                                    $field.after( "<span data-error-message class='error'>" + errors[field][phoneField][phoneFieldItem] + "</span>" );
-                                }
+                                $field.after( "<span data-error-message class='error'>" + errors[field][phoneField][phoneFieldItem] + "</span>" );
                             }
                         }
                     } else {

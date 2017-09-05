@@ -36,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Domain\SiteBundle\Validator\Constraints as DomainAssert;
 use Domain\BusinessBundle\Validator\Constraints\ServiceAreaType as ServiceAreaTypeValidator;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as BusinessProfilePhoneTypeValidator;
+use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessProfileWorkingHourTypeValidator;
 
 /**
  * BusinessProfile
@@ -46,6 +47,7 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfilePhoneType as Busi
  * @Gedmo\TranslationEntity(class="Domain\BusinessBundle\Entity\Translation\BusinessProfileTranslation")
  * @ServiceAreaTypeValidator()
  * @BusinessProfilePhoneTypeValidator()
+ * @BusinessProfileWorkingHourTypeValidator()
  */
 class BusinessProfile implements
     DefaultEntityInterface,
@@ -72,7 +74,6 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_LENGTH   = 10000;
     const BUSINESS_PROFILE_FIELD_PRODUCT_LENGTH       = 10000;
     const BUSINESS_PROFILE_FIELD_BRANDS_LENGTH        = 1024;
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH = 255;
     const BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH        = 255;
 
     const BUSINESS_STATUS_ACTIVE   = 'active';
@@ -95,14 +96,11 @@ class BusinessProfile implements
 
     // translatable fields
     const BUSINESS_PROFILE_FIELD_NAME           = 'name';
-    const BUSINESS_PROFILE_FIELD_NAME_EN        = 'nameEn';
-    const BUSINESS_PROFILE_FIELD_NAME_ES        = 'nameEs';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION    = 'description';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_EN = 'descriptionEn';
     const BUSINESS_PROFILE_FIELD_DESCRIPTION_ES = 'descriptionEs';
     const BUSINESS_PROFILE_FIELD_PRODUCT        = 'product';
     const BUSINESS_PROFILE_FIELD_BRANDS         = 'brands';
-    const BUSINESS_PROFILE_FIELD_WORKING_HOURS  = 'workingHours';
     const BUSINESS_PROFILE_FIELD_SLOGAN         = 'slogan';
     const BUSINESS_PROFILE_FIELD_PANORAMA_ID    = 'panoramaId';
 
@@ -172,6 +170,8 @@ class BusinessProfile implements
     const BUSINESS_PROFILE_FIELD_SUBSCRIPTIONS    = 'subscriptions';
     const BUSINESS_PROFILE_FIELD_UPDATED_AT       = 'updatedAt';
 
+    const KEYWORD_DELIMITER = ',';
+
     /**
      * @var int
      *
@@ -186,9 +186,9 @@ class BusinessProfile implements
      * Field related to class constant BUSINESS_PROFILE_FIELD_NAME
      * @var string - Business name
      *
-     * @Gedmo\Translatable(fallback=true)
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\Length(max=255, maxMessage="business_profile.max_length")
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -376,19 +376,8 @@ class BusinessProfile implements
     protected $product;
 
     /**
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
-     * @var string - Operational Hours
-     *
-     * @Gedmo\Translatable(fallback=true)
-     * @ORM\Column(name="working_hours", type="text", nullable=true)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     */
-    protected $workingHours;
-
-    /**
      * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS
-     * Field related to class constant BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH
+     * Field related to class constant BUSINESS_PROFILE_FIELD_BRANDS_LENGTH
      * @var string Brands - Brands, Business works with
      *
      * @Gedmo\Translatable(fallback=true)
@@ -652,7 +641,6 @@ class BusinessProfile implements
      *     cascade={"persist"}
      *     )
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank()
      */
     protected $country;
 
@@ -723,6 +711,19 @@ class BusinessProfile implements
     protected $keywords;
 
     /**
+     * @var BusinessProfileAlias[] - Business Profile Aliases
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\BusinessBundle\Entity\BusinessProfileAlias",
+     *     mappedBy="businessProfile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     * @Assert\Valid
+     */
+    protected $aliases;
+
+    /**
      * @ORM\Column(name="uid", type="string")
      */
     protected $uid;
@@ -777,7 +778,8 @@ class BusinessProfile implements
      *     mappedBy="businessProfile",
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true
-     *     )
+     * )
+     * @Assert\Valid
      */
     protected $collectionWorkingHours;
 
@@ -912,6 +914,13 @@ class BusinessProfile implements
     protected $panoramaId;
 
     /**
+     * @var string - keyword
+     *
+     * @ORM\Column(name="keyword_text", type="text", length=1000, nullable=true)
+     */
+    private $keywordText;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -931,6 +940,7 @@ class BusinessProfile implements
         $this->collectionWorkingHours   = new ArrayCollection();
         $this->extraSearches            = new ArrayCollection();
         $this->keywords                 = new ArrayCollection();
+        $this->aliases                  = new ArrayCollection();
         $this->tasks                    = new ArrayCollection();
 
         $this->isClosed  = false;
@@ -1221,30 +1231,6 @@ class BusinessProfile implements
     public function getProduct()
     {
         return $this->product;
-    }
-
-    /**
-     * Set workingHours
-     *
-     * @param string $workingHours
-     *
-     * @return BusinessProfile
-     */
-    public function setWorkingHours($workingHours)
-    {
-        $this->workingHours = $workingHours;
-
-        return $this;
-    }
-
-    /**
-     * Get workingHours
-     *
-     * @return string
-     */
-    public function getWorkingHours()
-    {
-        return $this->workingHours;
     }
 
     /**
@@ -2452,6 +2438,42 @@ class BusinessProfile implements
     }
 
     /**
+     * Add alias
+     *
+     * @param BusinessProfileAlias $alias
+     *
+     * @return BusinessProfile
+     */
+    public function addAlias(BusinessProfileAlias $alias)
+    {
+        $this->aliases[] = $alias;
+
+        if ($alias) {
+            $alias->setBusinessProfile($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove alias
+     *
+     * @param BusinessProfileAlias $alias
+     */
+    public function removeAlias(BusinessProfileAlias $alias)
+    {
+        $this->aliases->removeElement($alias);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
+
+    /**
      * Set discount
      *
      * @param string $discount
@@ -3013,11 +3035,9 @@ class BusinessProfile implements
     public static function getTranslatableFields()
     {
         return [
-            self::BUSINESS_PROFILE_FIELD_NAME,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
         ];
     }
@@ -3044,8 +3064,6 @@ class BusinessProfile implements
         return [
             // translatable field
             self::BUSINESS_PROFILE_FIELD_NAME,
-            self::BUSINESS_PROFILE_FIELD_NAME_EN,
-            self::BUSINESS_PROFILE_FIELD_NAME_ES,
             self::BUSINESS_PROFILE_FIELD_SLOGAN,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION,
             self::BUSINESS_PROFILE_FIELD_DESCRIPTION_EN,
@@ -3055,7 +3073,6 @@ class BusinessProfile implements
 
             self::BUSINESS_PROFILE_FIELD_PRODUCT,
             self::BUSINESS_PROFILE_FIELD_BRANDS,
-            self::BUSINESS_PROFILE_FIELD_WORKING_HOURS,
 
             self::BUSINESS_PROFILE_FIELD_WEBSITE,
             self::BUSINESS_PROFILE_FIELD_EMAIL,
@@ -3068,7 +3085,6 @@ class BusinessProfile implements
             self::BUSINESS_PROFILE_FIELD_EXTENDED_ADDRESS,
             self::BUSINESS_PROFILE_FIELD_CROSS_STREET,
             self::BUSINESS_PROFILE_FIELD_GOOGLE_ADDRESS,
-            self::BUSINESS_PROFILE_FIELD_STATE,
             self::BUSINESS_PROFILE_FIELD_CITY,
             self::BUSINESS_PROFILE_FIELD_ZIP_CODE,
             self::BUSINESS_PROFILE_FIELD_CUSTOM_ADDRESS,
@@ -3096,7 +3112,6 @@ class BusinessProfile implements
     {
         return [
             self::BUSINESS_PROFILE_FIELD_CATALOG_LOCALITY,
-            self::BUSINESS_PROFILE_FIELD_COUNTRY,
         ];
     }
 
@@ -3230,5 +3245,25 @@ class BusinessProfile implements
         return [
             self::FORMAT_CSV => self::FORMAT_CSV,
         ];
+    }
+
+    /**
+     * @param string $keywordText
+     *
+     * @return BusinessProfile
+     */
+    public function setKeywordText($keywordText)
+    {
+        $this->keywordText = $keywordText;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeywordText()
+    {
+        return $this->keywordText;
     }
 }

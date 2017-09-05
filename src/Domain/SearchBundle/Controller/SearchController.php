@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Manager\CategoryManager;
 use Domain\BusinessBundle\Manager\LocalityManager;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
+use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -159,6 +160,14 @@ class SearchController extends Controller
     }
 
     /**
+     * @return CategoryReportManager
+     */
+    protected function getCategoryReportManager() : CategoryReportManager
+    {
+        return $this->get('domain_report.manager.category_report_manager');
+    }
+
+    /**
      * Source endpoint for jQuery UI Autocomplete plugin in search widget
      *
      * @param Request $request
@@ -215,6 +224,7 @@ class SearchController extends Controller
         $closestLocality = '';
         $seoCategories = [];
         $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE;
+        $locale = LocaleHelper::getLocale($request->getLocale());
 
         if ($searchDTO) {
             if ($searchDTO->checkSearchInMap()) {
@@ -276,6 +286,7 @@ class SearchController extends Controller
                 'noFollowDistance'  => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
+                'locale'            => $locale,
             ]
         );
     }
@@ -423,8 +434,8 @@ class SearchController extends Controller
         $showCatalog = true;
         $allowRedirect = !filter_var($request->get('redirected', false), FILTER_VALIDATE_BOOLEAN);
 
-        $seoLocationName  = null;
-        $seoCategories = [];
+        $seoLocation = null;
+        $seoCategory = '';
         $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_CATALOG;
 
         $categories = [];
@@ -442,14 +453,14 @@ class SearchController extends Controller
 
             $category = $searchManager->searchCatalogCategory($categorySlug);
 
-            $seoLocationName = $locality->getName();
+            $seoLocation = $locality;
 
             if ($category) {
                 $request->attributes->set('q', $category->getName());
                 $showCatalog = false;
 
                 $showResults = true;
-                $seoCategories[] = $category->getName();
+                $seoCategory = $category->getName();
             } else {
                 $categories = $this->getCategoryManager()->getAvailableCategoriesWithContent($locality, $locale);
             }
@@ -458,7 +469,7 @@ class SearchController extends Controller
         }
 
         $slugs = [
-            'locality'  => $localitySlug,
+            'locality' => $localitySlug,
             'category' => $categorySlug,
         ];
 
@@ -521,6 +532,7 @@ class SearchController extends Controller
                     ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
                 $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
+                $this->getCategoryReportManager()->registerCatalogVisit($category, $locality);
             }
         }
 
@@ -538,11 +550,7 @@ class SearchController extends Controller
 
         $catalogLevelItems = $searchManager->sortCatalogItems($localities, $categories);
 
-        $seoData = $this->getBusinessProfileManager()->getBusinessProfileSearchSeoData(
-            $seoLocationName,
-            $seoCategories,
-            true
-        );
+        $seoData = $this->getBusinessProfileManager()->getBusinessProfileCatalogSeoData($seoLocation, $seoCategory);
 
         $pageRouter = 'domain_search_catalog';
         $searchData['localitySlug'] = $localitySlug;

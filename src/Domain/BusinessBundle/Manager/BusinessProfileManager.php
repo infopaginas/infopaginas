@@ -33,9 +33,11 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
+use Domain\PageBundle\Entity\Page;
 use Domain\ReportBundle\Manager\BaseReportManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use FOS\UserBundle\Model\UserInterface;
@@ -348,6 +350,19 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param string $slug
+     * @return null|object
+     */
+    public function findByAlias(string $slug)
+    {
+        $slug = SlugUtil::convertSlug($slug);
+
+        $businessProfile = $this->getRepository()->findByAlias($slug);
+
+        return $businessProfile;
+    }
+
+    /**
      * @return BusinessProfile
      */
     public function createProfile() : BusinessProfile
@@ -368,24 +383,7 @@ class BusinessProfileManager extends Manager
     {
         $businessProfile->setIsActive(false);
 
-        // workaround for spanish slug
-        $nameDefaultLocale = $businessProfile->getTranslation(
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-            LocaleHelper::DEFAULT_LOCALE
-        );
-
-        $nameSlugLocale = $businessProfile->getTranslation(
-            BusinessProfile::BUSINESS_PROFILE_FIELD_NAME,
-            LocaleHelper::SLUG_LOCALE
-        );
-
-        $businessProfile->setName($nameSlugLocale);
-
         $this->commit($businessProfile);
-
-        $businessProfile->setName($nameDefaultLocale);
-
-        $this->em->flush();
     }
 
     /**
@@ -1184,7 +1182,7 @@ class BusinessProfileManager extends Manager
                 $customAddress = $businessProfile->getCustomAddress();
 
                 if (!$customAddress) {
-                    $country = $businessProfile->getCountry();
+                    $country = $this->getDefaultProfileCountry();
 
                     $schemaItem['address'] = [
                         '@type'           => 'PostalAddress',
@@ -1435,8 +1433,6 @@ class BusinessProfileManager extends Manager
                     }
                 }
             }
-        } elseif ($businessProfile->getWorkingHours()) {
-            $schemaItem['openingHours'] = $businessProfile->getWorkingHours();
         }
 
         return $schemaItem;
@@ -1591,6 +1587,44 @@ class BusinessProfileManager extends Manager
             'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
             'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
         ];
+
+        return $seoData;
+    }
+
+    /**
+     * @param Locality $locality
+     * @param string   $category
+     *
+     * @return array
+     */
+    public function getBusinessProfileCatalogSeoData($locality = null, $category = '')
+    {
+        $pageManager = $this->container->get('domain_page.manager.page');
+
+        if ($locality) {
+            $data['[locality]'] = $locality->getName();
+            if ($category) {
+                $data['[category]'] = $category;
+                $pageCode = Page::CODE_CATALOG_LOCALITY_CATEGORY;
+            } else {
+                $pageCode = Page::CODE_CATALOG_LOCALITY;
+
+                $categoryReportManager = $this->container->get('domain_report.manager.category_report_manager');
+                $popularCategoryIds = $categoryReportManager->getPopularCategoryData($locality->getId());
+                $popularCategories  = $this->categoryManager->getAvailableCategoriesByIds($popularCategoryIds);
+
+                foreach ($popularCategories as $key => $popularCategory) {
+                    $placeholderKey = Page::getPopularCategoryKey($key + 1);
+                    $data[$placeholderKey] = $popularCategory->getName();
+                }
+            }
+        } else {
+            $pageCode = Page::CODE_CATALOG;
+            $data = [];
+        }
+
+        $page    = $pageManager->getPageByCode($pageCode);
+        $seoData = $pageManager->getPageSeoData($page, $data);
 
         return $seoData;
     }
@@ -2981,8 +3015,7 @@ class BusinessProfileManager extends Manager
             $localityIds[] = $businessProfile->getCatalogLocality()->getId();
         }
 
-        $businessProfileNameEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getNameEn());
-        $businessProfileNameEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getNameEs());
+        $businessProfileName = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getName());
         $businessProfileDescEn = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEn());
         $businessProfileDescEs = SearchDataUtil::sanitizeElasticSearchQueryString($businessProfile->getDescriptionEs());
 
@@ -2993,8 +3026,8 @@ class BusinessProfileManager extends Manager
             $businessProfile->getTranslation(BusinessProfile::BUSINESS_PROFILE_FIELD_PRODUCT, $esLocale)
         );
 
-        $autoSuggest[$enLocale][] = $businessProfileNameEn;
-        $autoSuggest[$esLocale][] = $businessProfileNameEs;
+        $autoSuggest[$enLocale][] = $businessProfileName;
+        $autoSuggest[$esLocale][] = $businessProfileName;
 
         if ($businessProfile->getMilesOfMyBusiness()) {
             $milesOfMyBusiness = $businessProfile->getMilesOfMyBusiness();
@@ -3002,22 +3035,21 @@ class BusinessProfileManager extends Manager
             $milesOfMyBusiness = BusinessProfile::DEFAULT_MILES_FROM_MY_BUSINESS;
         }
 
-        $keywords = [
-            $enLocale => [],
-            $esLocale => [],
-        ];
+        $keywords = [];
 
-        if ($businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE) {
-            foreach ($businessProfile->getKeywords() as $keyword) {
-                $keywords[$enLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword->getValueEn());
-                $keywords[$esLocale][] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword->getValueEs());
+        if ($businessProfile->getSubscriptionPlanCode() > SubscriptionPlanInterface::CODE_FREE and
+            $businessProfile->getKeywordText()
+        ) {
+            $keywordsData = explode(BusinessProfile::KEYWORD_DELIMITER, $businessProfile->getKeywordText());
+
+            foreach ($keywordsData as $keyword) {
+                $keywords[] = SearchDataUtil::sanitizeElasticSearchQueryString($keyword);
             }
         }
 
         $data = [
             'id'                   => $businessProfile->getId(),
-            'name_en'              => $businessProfileNameEn,
-            'name_es'              => $businessProfileNameEs,
+            'name'                 => $businessProfileName,
             'description_en'       => $businessProfileDescEn,
             'description_es'       => $businessProfileDescEs,
             'products_en'          => $businessProfileProdEn,
@@ -3025,8 +3057,7 @@ class BusinessProfileManager extends Manager
             'miles_of_my_business' => $milesOfMyBusiness,
             'categories_en'        => $categories[$enLocale],
             'categories_es'        => $categories[$esLocale],
-            'keywords_en'          => $keywords[$enLocale],
-            'keywords_es'          => $keywords[$esLocale],
+            'keywords'             => $keywords,
             'auto_suggest_en'      => $autoSuggest[$enLocale],
             'auto_suggest_es'      => $autoSuggest[$esLocale],
             'location'             => [
@@ -3051,10 +3082,10 @@ class BusinessProfileManager extends Manager
     public function getBusinessSearchFields($locale)
     {
         return [
-            'name_' . strtolower($locale) . '^4',
-            'name_' . strtolower($locale) . '.folded^4',
-            'keywords_' . strtolower($locale) . '^5',
-            'keywords_' . strtolower($locale) . '.folded^5',
+            'name^4',
+            'name.folded^4',
+            'keywords^5',
+            'keywords.folded^5',
             'categories_en^5',
             'categories_en.folded^5',
             'categories_es^5',
@@ -3158,18 +3189,7 @@ class BusinessProfileManager extends Manager
                     ],
                 ],
             ],
-            'name_en' => [
-                'type' => 'string',
-                'analyzer' => 'autocomplete',
-                'search_analyzer' => 'autocomplete_search',
-                'fields' => [
-                    'folded' => [
-                        'type' => 'string',
-                        'analyzer' => 'folding',
-                    ],
-                ],
-            ],
-            'name_es' => [
+            'name' => [
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
@@ -3246,18 +3266,7 @@ class BusinessProfileManager extends Manager
                     ],
                 ],
             ],
-            'keywords_en' => [
-                'type' => 'string',
-                'analyzer' => 'autocomplete',
-                'search_analyzer' => 'autocomplete_search',
-                'fields' => [
-                    'folded' => [
-                        'type' => 'string',
-                        'analyzer' => 'folding',
-                    ],
-                ],
-            ],
-            'keywords_es' => [
+            'keywords' => [
                 'type' => 'string',
                 'analyzer' => 'autocomplete',
                 'search_analyzer' => 'autocomplete_search',
