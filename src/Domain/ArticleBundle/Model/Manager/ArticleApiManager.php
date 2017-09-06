@@ -158,7 +158,7 @@ class ArticleApiManager
         if ($response) {
             $result = json_decode($response);
 
-            if ($result and empty($result->error)) {
+            if ($result and empty($result->error) and is_object($result)) {
                 return $result;
             } else {
                 if ($result and !empty($result->error)) {
@@ -219,11 +219,13 @@ class ArticleApiManager
                         $date = null;
                         $dateUpdated = null;
 
-                        if (!empty($item->date) and strtotime($item->date)) {
-                            $date = new \DateTime($item->date);
-
-                            // external API bug see https://jira.oxagile.com/browse/INFT-1642#comment-268275
-                            $dateUpdated = clone $date;
+                        if (!empty($item->date_published)
+                            and strtotime($item->date_published)
+                            and !empty($item->date_update)
+                            and strtotime($item->date_update)
+                        ) {
+                            $date        = new \DateTime($item->date_published);
+                            $dateUpdated = new \DateTime($item->date_update);
                         }
 
                         if ($date and $dateUpdated and ($dateUpdated > $article->getApiUpdatedDate())) {
@@ -335,13 +337,17 @@ class ArticleApiManager
         $article->setIsPublished(true);
         $article->setIsOnHomepage(true);
 
-        if (!empty($data->date) and strtotime($data->date)) {
-            $date = new \DateTime($data->date);
+        if (!empty($data->date_published) and strtotime($data->date_published)) {
+            $date = new \DateTime($data->date_published);
         } else {
             $date = new \DateTime();
         }
 
-        $dateUpdated = clone $date;
+        if (!empty($data->date_update) and strtotime($data->date_update)) {
+            $dateUpdated = new \DateTime($data->date_update);
+        } else {
+            $dateUpdated = new \DateTime();
+        }
 
         $article->setApiUpdatedDAte($dateUpdated);
         $article->setApiCreatedDAte($date);
