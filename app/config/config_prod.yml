@@ -38,7 +38,7 @@ google:
         trackers:
             default:
                 name: MyJavaScriptCompatibleVariableNameWithNoSpaces
-                accountId: UA-10361727-2
+                accountId: '%google_analytics_id%'
                 domain: infopaginas.com
                 setSiteSpeedSampleRate: 5
                 allowAnchor: true
@@ -61,13 +61,9 @@ happyr_google_site_authenticator:
 happyr_google_analytics:
     http_client: 'httplug.client'
     http_message_factory: 'httplug.message_factory'
-    tracking_id: UA-10361727-2
+    tracking_id: '%google_analytics_id%'
     fetching:
         client_service: 'google.client.google_analytics'
         view_id: 20865077
         cache_service: 'cache.provider.my_file_system'
         cache_lifetime: 3600
-
-twig:
-    globals:
-        google_tag_manager_id:    'GTM-TWPMVZ'

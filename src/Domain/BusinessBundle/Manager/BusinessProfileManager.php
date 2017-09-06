@@ -873,25 +873,6 @@ class BusinessProfileManager extends Manager
     }
 
     /**
-     * @param array $businessProfiles
-     */
-    public function trackBusinessProfilesCollectionImpressions(array $businessProfiles)
-    {
-        /** @var BusinessProfile $businessProfile */
-        foreach ($businessProfiles as $businessProfile) {
-            $impression = new Impression();
-            $impression->setSku($businessProfile->getSlug());
-            $impression->setTitle($businessProfile->getName());
-            $impression->setAction('detail');
-            $impression->setBrand($businessProfile->getBrands());
-            $impression->setCategory($businessProfile->getCategories()->first());
-            $impression->setList('Search Results');
-
-            $this->getGoogleAnalytics()->addImpression($impression);
-        }
-    }
-
-    /**
      * @param BusinessProfile $businessProfile
      *
      * @return bool
