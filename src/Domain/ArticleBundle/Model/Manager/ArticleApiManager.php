@@ -255,7 +255,6 @@ class ArticleApiManager
                         $this->handleTranslatableFields($item, $article);
                         if ($gallery) {
                             foreach ($gallery as $galleryItem) {
-
                                 if ($galleryItem->photoIMG && $item->header_image != $galleryItem->photoIMG) {
                                     $articleGalleryUrl = $this->prepareMediaUrl($galleryItem->photoIMG);
                                     $galleryImage = $this->galleryManager->uploadArticleImageFromRemoteFile(
