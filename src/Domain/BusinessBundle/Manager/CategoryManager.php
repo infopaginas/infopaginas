@@ -226,15 +226,7 @@ class CategoryManager extends Manager
                 $dataIds[] = $item['_id'];
             }
 
-            $dataRaw = $this->getAvailableCategoriesByIds($dataIds);
-
-            foreach ($dataIds as $id) {
-                $item = $this->searchCategoryByIdsInArray($dataRaw, $id);
-
-                if ($item) {
-                    $data[] = $item;
-                }
-            }
+            $data = $this->getAvailableCategoriesByIds($dataIds);
         }
 
         return [
@@ -250,7 +242,18 @@ class CategoryManager extends Manager
      */
     public function getAvailableCategoriesByIds($categoryIds)
     {
-        return $this->getRepository()->getAvailableCategoriesByIds($categoryIds);
+        $categories = $this->getRepository()->getAvailableCategoriesByIds($categoryIds);
+        $data = [];
+
+        foreach ($categoryIds as $id) {
+            $item = $this->searchCategoryByIdsInArray($categories, $id);
+
+            if ($item) {
+                $data[] = $item;
+            }
+        }
+
+        return $data;
     }
 
     /**
