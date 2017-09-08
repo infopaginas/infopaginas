@@ -307,6 +307,7 @@ class CategoryReportManager extends BaseReportManager
                 [
                     '$sort'  => [
                         self::MONGO_DB_FIELD_COUNT => MongoDbManager::INDEX_TYPE_DESC,
+                        '_id' => MongoDbManager::INDEX_TYPE_ASC,
                     ],
                 ],
                 [
