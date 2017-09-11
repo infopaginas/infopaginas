@@ -31,6 +31,14 @@ services:
         calls:
             - [ setTemplate, ['list', 'DomainReportBundle:Admin:UserActionReport\list.html.twig']]
 
+    domain_report.admin.feedback_report:
+        class: Domain\ReportBundle\Admin\FeedbackReportAdmin
+        arguments: [~, Domain\ReportBundle\Entity\UserActionReport, DomainReportBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Feedback}
+        calls:
+            - [ setTemplate, ['list', 'DomainReportBundle:Admin:FeedbackReport\list.html.twig']]
+
     domain_report.admin.export_report:
         class: Domain\ReportBundle\Admin\ExportReportAdmin
         arguments: [~, Domain\ReportBundle\Entity\ExportReport, DomainReportBundle:CRUDPostponeExport]

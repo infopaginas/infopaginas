@@ -143,6 +143,12 @@ assetic:
             output: 'assetic/js/modules/tools/registration.min.js'
             filters:
                 - jsqueeze
+        require_feedback_js:
+            inputs:
+                - '@DomainSiteBundle/Resources/public/scripts/modules/tools/feedback.js'
+            output: 'assetic/js/modules/tools/feedback.min.js'
+            filters:
+                - jsqueeze
         abstract_view_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/abstract/view.js'

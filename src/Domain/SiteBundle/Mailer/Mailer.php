@@ -12,6 +12,7 @@ use Oxa\ConfigBundle\Service\Config;
 use Oxa\Sonata\UserBundle\Entity\User;
 use \Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class Mailer
@@ -19,6 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Mailer
 {
+    const CONTENT_TYPE_HTML = 'text/html';
     const REGISTRATION_MAIL_SUBJECT   = 'New account created!';
     const RESET_PASSWORD_MAIL_SUBJECT = 'Reset password';
 
@@ -32,6 +34,11 @@ class Mailer
     private $router;
 
     /**
+     * @var EngineInterface $templateEngine
+     */
+    protected $templateEngine;
+
+    /**
      * Mailer constructor.
      * @param \Swift_Mailer $mailer
      * @param Config $configService
@@ -42,6 +49,14 @@ class Mailer
         $this->mailer        = $mailer;
         $this->configService = $configService;
         $this->router        = $router;
+    }
+
+    /**
+     * @param EngineInterface $service
+     */
+    public function setTemplateEngine(EngineInterface $service)
+    {
+        $this->templateEngine = $service;
     }
 
     /**
@@ -274,6 +289,24 @@ class Mailer
 
         if ($emails) {
             $this->send($emails, $subject, $message, $contentType);
+        }
+    }
+
+    /**
+     * @param array $data
+     */
+    public function sendFeedbackEmailMessage($data)
+    {
+        $email   = $this->getConfigService()->getValue(ConfigInterface::FEEDBACK_EMAIL_ADDRESS);
+        $subject = $this->getConfigService()->getValue(ConfigInterface::FEEDBACK_EMAIL_SUBJECT);
+
+        if ($email and $subject) {
+            $message = $this->templateEngine->render(
+                'OxaConfigBundle:Fixtures:mail_feedback.html.twig',
+                $data
+            );
+
+            $this->send($email, $subject, $message, self::CONTENT_TYPE_HTML);
         }
     }
 
