@@ -131,7 +131,6 @@ twig:
                 URL:  'url'
                 TYPE: 'type'
 
-
         FEEDBACK_SUBJECT:
             MAPPING:
                 TYPE:  'subject_type'
