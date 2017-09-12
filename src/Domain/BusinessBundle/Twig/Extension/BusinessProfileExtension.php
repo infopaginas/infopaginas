@@ -506,7 +506,7 @@ class BusinessProfileExtension extends \Twig_Extension
 
     public function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
     {
-        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListView($businessProfile);
+        $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListFEView($businessProfile);
 
         return $workingHourData;
     }

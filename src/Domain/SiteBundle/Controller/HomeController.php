@@ -47,6 +47,7 @@ class HomeController extends Controller
         $schema = $articleManager->buildArticlesSchema($articles);
 
         $landingPage = $this->get('domain_page.manager.page')->getPageByCode(PageInterface::CODE_LANDING);
+        $seoData     = $this->get('domain_page.manager.page')->getPageSeoData($landingPage);
 
         return $this->render(
             ':redesign:homepage.html.twig',
@@ -57,6 +58,8 @@ class HomeController extends Controller
                 'schemaJsonLD'  => $schema,
                 'hideHeaderSearch' => true,
                 'landingPage'   => $landingPage,
+                'seoData'       => $seoData,
+                'page'          => $landingPage,
             ]
         );
     }

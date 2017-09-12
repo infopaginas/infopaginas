@@ -104,6 +104,12 @@ services:
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Keywords}
 
+    domain_business.admin.business_profile_alias:
+        class: Domain\BusinessBundle\Admin\BusinessProfileAliasAdmin
+        arguments: [~, Domain\BusinessBundle\Entity\BusinessProfileAlias, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Profile Aliases}
+
     domain_business.admin.neighborhood_zip:
         class: Domain\BusinessBundle\Admin\NeighborhoodZipAdmin
         arguments: [~, Domain\BusinessBundle\Entity\Zip, OxaSonataAdminBundle:CRUD]

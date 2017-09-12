@@ -577,3 +577,7 @@ search_results.count.total: Hemos encontrado {-count-} resultados
 google_map.empty_block.message: Por favor espere, cargando...
 
 no_js.warning.message: La funcionalidad Javascript de tu navegador está desactivada. Por favor, enciéndala para que pueda experimentar todas las capacidades de este sitio.
+
+working_hours.label.comment_en: Comentario Eng
+working_hours.label.comment_es: Comentario Esp
+working_hours.placeholder.days: Por favor, elija los días

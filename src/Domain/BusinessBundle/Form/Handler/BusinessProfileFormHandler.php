@@ -110,7 +110,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
             $this->handleCategoriesUpdate();
 
             $this->checkTranslationBlock($this->requestParams);
-            $this->checkCollectionWorkingHoursBlock($this->businessProfileNew->getCollectionWorkingHours());
 
             if ($this->form->isValid()) {
                 //create new user entry for not-logged users
@@ -274,35 +273,12 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
      */
     private function checkTranslationBlock($post)
     {
-        //check name not blank
-        $this->checkTranslationBlockNameBlank($post);
-
         $fields = BusinessProfile::getTranslatableFields();
 
         //check fields length
         foreach ($fields as $field) {
             foreach (LocaleHelper::getLocaleList() as $locale => $name) {
                 $this->checkFieldLocaleLength($post, $field, $locale);
-            }
-        }
-    }
-
-    /**
-     * @param ArrayCollection $workingHours
-     */
-    private function checkCollectionWorkingHoursBlock($workingHours)
-    {
-        if (!$workingHours->isEmpty()) {
-            if (!DayOfWeekModel::validateWorkingHoursTime($workingHours)) {
-                $formError = new FormError($this->translator->trans('form.collectionWorkingHours.duration'));
-
-                $this->form->get('collectionWorkingHoursError')->addError($formError);
-            }
-
-            if (!DayOfWeekModel::validateWorkingHoursOverlap($workingHours)) {
-                $formError = new FormError($this->translator->trans('form.collectionWorkingHours.overlap'));
-
-                $this->form->get('collectionWorkingHoursError')->addError($formError);
             }
         }
     }
@@ -326,9 +302,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
                 break;
             case BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS:
                 $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_BRANDS_LENGTH;
-                break;
-            case BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS:
-                $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_WORKING_HOURS_LENGTH;
                 break;
             case BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN:
                 $maxLength = BusinessProfile::BUSINESS_PROFILE_FIELD_SLOGAN_LENGTH;
@@ -364,32 +337,6 @@ class BusinessProfileFormHandler extends BaseFormHandler implements BusinessForm
         }
 
         return true;
-    }
-
-    /**
-     * @param array $post
-     *
-     * @return bool
-     */
-    private function checkTranslationBlockNameBlank($post)
-    {
-        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
-            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
-
-            if (!empty($post[$fieldName]) and trim($post[$fieldName])) {
-                return true;
-            }
-        }
-
-        $formError = new FormError($this->translator->trans('business_profile.names_blank'));
-
-        foreach (LocaleHelper::getLocaleList() as $locale => $name) {
-            $fieldName = BusinessProfile::BUSINESS_PROFILE_FIELD_NAME . LocaleHelper::getLangPostfix($locale);
-
-            $this->form->get($fieldName)->addError($formError);
-        }
-
-        return false;
     }
 
     /**

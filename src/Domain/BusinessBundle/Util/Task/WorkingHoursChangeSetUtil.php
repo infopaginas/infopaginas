@@ -8,6 +8,8 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfilePhone;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
 use Domain\BusinessBundle\Entity\ChangeSetEntry;
+use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class WorkingHoursChangeSetUtil
 {
@@ -50,8 +52,18 @@ class WorkingHoursChangeSetUtil
                     $workingHour = $entityManager->getRepository(BusinessProfileWorkingHour::class)->find($item->id);
                 }
 
-                $workingHour->setDay($data->day);
+                $workingHour->setDays($data->days);
                 $workingHour->setOpenAllTime($data->openAllTime);
+
+                $accessor = PropertyAccess::createPropertyAccessor();
+
+                foreach (LocaleHelper::getLocaleList() as $locale => $name) {
+                    $property = BusinessProfileWorkingHour::FIELD_PREFIX_COMMENT . LocaleHelper::getLangPostfix($locale);
+
+                    if (property_exists($workingHour, $property) and !empty($data->$property)) {
+                        $accessor->setValue($workingHour, $property, $data->$property);
+                    }
+                }
 
                 if (!empty($data->timeStart->date)) {
                     $workingHour->setTimeStart($data->timeStart->date);

@@ -30,10 +30,11 @@ class BusinessProfileWorkingHourAdmin extends OxaAdmin
     {
         $listMapper
             ->add('id')
-            ->add('day')
-            ->add('from')
-            ->add('to')
-            ->add('isOpen')
+            ->add('timeStart')
+            ->add('timeEnd')
+            ->add('openAllTime')
+            ->add('commentEn')
+            ->add('commentEs')
         ;
 
         $this->addGridActions($listMapper);
@@ -55,9 +56,9 @@ class BusinessProfileWorkingHourAdmin extends OxaAdmin
         }
 
         $formMapper
-            ->add('day', ChoiceType::class, [
+            ->add('days', ChoiceType::class, [
                 'choices' => DayOfWeekModel::getDayOfWeekMapping(),
-                'multiple' => false,
+                'multiple' => true,
                 'required' => true,
             ])
             ->add('timeStart', TextType::class, [
@@ -79,6 +80,8 @@ class BusinessProfileWorkingHourAdmin extends OxaAdmin
                 ],
             ])
             ->add('openAllTime')
+            ->add('commentEn')
+            ->add('commentEs')
         ;
     }
 
@@ -89,10 +92,11 @@ class BusinessProfileWorkingHourAdmin extends OxaAdmin
     {
         $showMapper
             ->add('id')
-            ->add('day')
             ->add('timeStart')
             ->add('timeEnd')
             ->add('openAllTime')
+            ->add('commentEn')
+            ->add('commentEs')
         ;
     }
 }

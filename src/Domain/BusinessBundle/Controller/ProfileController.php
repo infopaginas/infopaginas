@@ -144,7 +144,20 @@ class ProfileController extends Controller
         $businessProfile = $this->getBusinessProfilesManager()->findBySlug($slug);
 
         if (!$businessProfile) {
-            throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
+            $businessProfileAlias = $this->getBusinessProfilesManager()->findByAlias($slug);
+
+            if ($businessProfileAlias) {
+                return $this->redirectToRoute(
+                    'domain_business_profile_view',
+                    [
+                        'citySlug' => $businessProfileAlias->getCitySlug(),
+                        'slug'     => $businessProfileAlias->getSlug(),
+                    ],
+                    301
+                );
+            } else {
+                throw new \Symfony\Component\HttpKernel\Exception\GoneHttpException();
+            }
         } elseif (!$businessProfile->getIsActive()) {
             throw $this->createNotFoundException();
         }
@@ -217,6 +230,7 @@ class ProfileController extends Controller
             'markers'         => $locationMarkers,
             'showClaimButton' => $showClaimBlock,
             'claimBusinessForm' => $claimBusinessForm,
+            'locale'          => $locale,
         ]);
     }
 

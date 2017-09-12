@@ -296,6 +296,24 @@ class BusinessProfileRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * @param string $slug
+     *
+     * @return BusinessProfile|null
+     */
+    public function findByAlias(string $slug)
+    {
+        $query = $this->getQueryBuilder()
+            ->distinct()
+            ->join('bp.aliases', 'bpa')
+            ->where('bpa.slug = :alias')
+            ->setParameter('alias', $slug)
+            ->setMaxResults(1)
+        ;
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
      * @return IterableResult
      */
     public function getActiveBusinessProfilesIterator()

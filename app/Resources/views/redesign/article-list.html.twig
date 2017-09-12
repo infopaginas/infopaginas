@@ -13,9 +13,14 @@
                 {% if results %}
                     {% embed ':redesign/blocks:homepage_article_list.html.twig' with {'articles': results.resultSet} %}
                         {% block titleTag %}
-                            <h1 class="section__title">{% trans %}Articles{% endtrans %}</h1>
+                            <h1 class="section__title">{{ page.title }}</h1>
                         {% endblock %}
                     {% endembed %}
+
+                    <section class="article-description">
+                        {{ page.description }}
+                    </section>
+
                     {% include ':redesign/layout/widgets:pagination.html.twig' with { 'page' : results.page, 'pageCount' : results.pageCount } %}
                 {% endif %}
 

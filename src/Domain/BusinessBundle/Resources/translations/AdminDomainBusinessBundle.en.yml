@@ -16,10 +16,12 @@ task.media.change.title: Title
 task.media.change.description: Description
 form.collectionWorkingHours.overlap: Working Hours should not overlap
 form.collectionWorkingHours.duration: Time start should not be more than time end
+form.collectionWorkingHours.invalid: There are conflicts in the timetable, please review your entires.
 timeStart: Time Start
 timeEnd: Time End
 openAllTime: Open All Time
 day: Day
+days: Days
 business_profile.action_type.order: Order
 business_profile.action_type.book: Book
 business_profile_phone:

@@ -12,6 +12,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\ConstraintViolation;
 
 class SubscriptionAdmin extends OxaAdmin
@@ -87,7 +88,6 @@ class SubscriptionAdmin extends OxaAdmin
 
         $systemUserOptions = [
             'required' => false,
-            'btn_add' => false,
             'disabled' => true,
         ];
 
@@ -103,9 +103,9 @@ class SubscriptionAdmin extends OxaAdmin
             ->end()
             ->with('Status')
                 ->add('createdAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)
-                ->add('createdUser', 'sonata_type_model', $systemUserOptions)
+                ->add('createdUser', TextType::class, $systemUserOptions)
                 ->add('updatedAt', 'sonata_type_datetime_picker', $systemDatetimeOptions)
-                ->add('updatedUser', 'sonata_type_model', $systemUserOptions)
+                ->add('updatedUser', TextType::class, $systemUserOptions)
             ->end()
         ;
 

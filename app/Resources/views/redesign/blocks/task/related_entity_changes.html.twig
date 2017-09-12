@@ -2,7 +2,13 @@
 
 {% for key, properties in data %}
     {% for name, value in properties %}
-        {{ name|trans }}: {{ value }}<br/>
+        {{ name|trans }}:
+        {% if value is iterable %}
+            {{ value|join(', ') }}
+        {% else %}
+            {{ value }}
+        {% endif %}
+        <br/>
     {% endfor %}
     <br/>
 {% endfor %}

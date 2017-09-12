@@ -1,0 +1,7 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field %}
+    {% if object.video and object.video.poster %}
+        {{ render_video_admin_embed(object.video) }}
+    {% endif %}
+{% endblock %}

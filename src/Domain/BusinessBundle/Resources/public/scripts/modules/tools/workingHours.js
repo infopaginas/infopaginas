@@ -1,4 +1,4 @@
-define(['jquery', 'select2', 'bootstrap', 'moment', 'dateTimePicker'], function( $, select2, bootstrap ) {
+define(['jquery', 'selectize', 'bootstrap', 'moment', 'dateTimePicker'], function( $, selectize, bootstrap ) {
     'use strict';
 
     var workingHours = function() {
@@ -6,7 +6,7 @@ define(['jquery', 'select2', 'bootstrap', 'moment', 'dateTimePicker'], function(
             containerListId: '#working-hours-fields-list',
             addLinkId: '#add-another-working-hours',
             removeLinkClass: '.remove-working-hours',
-            day: '.working-hours-day',
+            days: 'select.working-hours-day:not(.selectized)',
             timeStart: '.working-hours-time-start',
             timeEnd: '.working-hours-time-end',
             openAllTime: 'input.working-hours-open-all-time'
@@ -76,15 +76,18 @@ define(['jquery', 'select2', 'bootstrap', 'moment', 'dateTimePicker'], function(
         var that = this;
 
         $( document ).on( 'click', that.html.removeLinkClass, function(event) {
-            $( this ).prev().remove();
-            $( this ).remove();
+            $( this ).parent().remove();
             
             event.preventDefault();
         });
     };
 
     workingHours.prototype.handleSelect = function() {
-        $( this.html.day ).select2();
+        $( this.html.days ).selectize({
+            plugins: ['remove_button'],
+            delimiter: ',',
+            persist: true
+        });
     };
 
     workingHours.prototype.handleNewInput = function() {

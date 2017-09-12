@@ -6,6 +6,7 @@ use Domain\ArticleBundle\Entity\Article;
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\DataType\ReviewsResultsDTO;
+use Domain\PageBundle\Entity\Page;
 use Domain\SearchBundle\Model\DataType\DCDataDTO;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ManagerArchitectureBundle\Model\DataType\AbstractDTO;
@@ -227,28 +228,24 @@ class ArticleManager extends Manager
      */
     public function getArticleListSeoData($category = '')
     {
-        $translator  = $this->container->get('translator');
-        $seoSettings = $this->container->getParameter('seo_custom_settings');
-
-        $companyName          = $seoSettings['company_name'];
-        $titleMaxLength       = $seoSettings['title_max_length'];
-        $descriptionMaxLength = $seoSettings['description_max_length'];
-
-        $seoTitle = $translator->trans('Articles');
+        $pageManager = $this->container->get('domain_page.manager.page');
 
         if ($category) {
-            $seoTitle = $seoTitle . ' - ' . $category;
+            $pageCode = Page::CODE_ARTICLE_CATEGORY_LIST;
+            $data = [
+                '[category]' => $category,
+            ];
+        } else {
+            $pageCode = Page::CODE_ARTICLE_LIST;
+            $data = [];
         }
 
-        $seoDescription = $seoTitle;
+        $page    = $pageManager->getPageByCode($pageCode);
+        $seoData = $pageManager->getPageSeoData($page, $data);
 
-        $seoTitle = $seoTitle . ' | ' . $companyName;
-
-        $seoData = [
-            'seoTitle' => mb_substr($seoTitle, 0, $titleMaxLength),
-            'seoDescription' => mb_substr($seoDescription, 0, $descriptionMaxLength),
+        return [
+            'seoData' => $seoData,
+            'page'    => $page,
         ];
-
-        return $seoData;
     }
 }
