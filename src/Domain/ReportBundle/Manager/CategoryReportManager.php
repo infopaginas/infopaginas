@@ -2,12 +2,12 @@
 
 namespace Domain\ReportBundle\Manager;
 
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Repository\CategoryRepository;
 use Domain\BusinessBundle\Repository\LocalityRepository;
 use Domain\PageBundle\Entity\Page;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Model\DataType\ReportDatesRangeVO;
 use Domain\ReportBundle\Util\DatesUtil;
 use Oxa\MongoDbBundle\Manager\MongoDbManager;
@@ -146,44 +146,50 @@ class CategoryReportManager extends BaseReportManager
     }
 
     /**
-     * @param BusinessProfile $businessProfile
+     * @param string $type
+     * @param array  $data
+     *
+     * @return bool
      */
-    public function registerBusinessVisit(BusinessProfile $businessProfile)
+    public function registerCategoryEvent($type, $data)
     {
-        $data = $this->buildBusinessCategories($businessProfile);
+        foreach ($data as $items) {
+            $this->saveCategoryEvent($type, $items);
+        }
 
-        $this->insertBusinessCategories($data);
+        return true;
     }
 
     /**
-     * @param Category $category
-     * @param Locality $locality
+     * @param string $type
+     * @param array  $items
      */
-    public function registerCatalogVisit($category, $locality)
+    public function saveCategoryEvent($type, $items)
     {
-        $data = $this->buildCatalogCategories($category, $locality);
+        foreach ($items as $localityId => $categoryIds) {
+            $data = $this->buildCatalogCategories($type, $categoryIds, $localityId);
 
-        $this->insertBusinessCategories($data);
+            $this->insertBusinessCategories($data);
+        }
     }
 
     /**
-     * @param BusinessProfile $businessProfile
+     * @param string $type
+     * @param array  $categoryIds
+     * @param int    $localityId
      *
      * @return array
      */
-    protected function buildBusinessCategories(BusinessProfile $businessProfile)
+    protected function buildCatalogCategories($type, $categoryIds, $localityId)
     {
         $data = [];
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
-        $catalogLocality = $businessProfile->getCatalogLocality();
-        $localityId      = $catalogLocality ? $catalogLocality->getId() : 0;
-
-        foreach ($businessProfile->getCategories() as $category) {
+        foreach ($categoryIds as $categoryId) {
             $data[] = $this->buildSingleBusinessCategory(
-                $category->getId(),
+                $categoryId,
                 $localityId,
-                self::CATEGORY_TYPE_BUSINESS,
+                $type,
                 $date
             );
         }
@@ -192,24 +198,19 @@ class CategoryReportManager extends BaseReportManager
     }
 
     /**
-     * @param Category $category
-     * @param Locality $locality
+     * @param string $type
      *
-     * @return array
+     * @return string
      */
-    protected function buildCatalogCategories($category, $locality)
+    protected function getMongoCategoryType($type)
     {
-        $data = [];
-        $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
+        if ($type == BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS) {
+            $mongoType = self::CATEGORY_TYPE_BUSINESS;
+        } else {
+            $mongoType = self::CATEGORY_TYPE_CATALOG;
+        }
 
-        $data[] = $this->buildSingleBusinessCategory(
-            $category->getId(),
-            $locality->getId(),
-            self::CATEGORY_TYPE_CATALOG,
-            $date
-        );
-
-        return $data;
+        return $mongoType;
     }
 
     /**
@@ -243,8 +244,8 @@ class CategoryReportManager extends BaseReportManager
     protected function buildSingleBusinessCategory($categoryId, $localityId, $type, $date)
     {
         $data = [
-            self::MONGO_DB_FIELD_CATEGORY_ID => $categoryId,
-            self::MONGO_DB_FIELD_LOCALITY_ID => $localityId,
+            self::MONGO_DB_FIELD_CATEGORY_ID => (int)$categoryId,
+            self::MONGO_DB_FIELD_LOCALITY_ID => (int)$localityId,
             self::MONGO_DB_FIELD_PAGE_TYPE   => $type,
             self::MONGO_DB_FIELD_DATE_TIME   => $date,
         ];

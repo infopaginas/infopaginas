@@ -11,6 +11,7 @@ use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Manager\KeywordsReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -48,6 +49,7 @@ class SearchController extends Controller
         $closestLocality = '';
         $disableFilters = false;
         $seoCategories = [];
+        $trackingParams = [];
         $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_SEARCH;
         $allowRedirect = !filter_var($request->get('redirected', false), FILTER_VALIDATE_BOOLEAN);
 
@@ -72,9 +74,6 @@ class SearchController extends Controller
             $searchResultsDTO = $searchManager->search($searchDTO, $disableFilters);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
-            $this->getKeywordsReportManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
-
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
             $locationMarkers = $this->getBusinessProfileManager()
@@ -91,7 +90,12 @@ class SearchController extends Controller
                 $seoCategories[] = $searchDTO->query;
             }
 
-            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingKeywordsParamsData(
+                $searchData['q'],
+                $searchResultsDTO->resultSet,
+                $trackingParams
+            );
         } else {
             $searchResultsDTO = null;
             $dcDataDTO        = null;
@@ -130,6 +134,7 @@ class SearchController extends Controller
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
                 'disableFilters'    => $disableFilters,
+                'trackingParams'    => $trackingParams,
             ]
         );
     }
@@ -221,6 +226,7 @@ class SearchController extends Controller
         $locationName = false;
         $closestLocality = '';
         $seoCategories = [];
+        $trackingParams = [];
         $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_COMPARE;
         $locale = LocaleHelper::getLocale($request->getLocale());
 
@@ -231,9 +237,6 @@ class SearchController extends Controller
             }
 
             $searchResultsDTO   = $searchManager->search($searchDTO);
-
-            $this->getKeywordsReportManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
 
             $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
@@ -248,7 +251,12 @@ class SearchController extends Controller
                 $seoCategories[] = $searchDTO->query;
             }
 
-            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingKeywordsParamsData(
+                $searchData['q'],
+                $searchResultsDTO->resultSet,
+                $trackingParams
+            );
         } else {
             $searchResultsDTO = null;
             $schema           = null;
@@ -282,6 +290,7 @@ class SearchController extends Controller
                 'searchRelevance'   => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'    => SearchDataUtil::ORDER_BY_DISTANCE,
                 'locale'            => $locale,
+                'trackingParams'    => $trackingParams,
             ]
         );
     }
@@ -301,6 +310,7 @@ class SearchController extends Controller
 
         $locationName  = '';
         $seoCategories = [];
+        $trackingParams = [];
         $seoType = BusinessProfileUtil::SEO_CLASS_PREFIX_SEARCH_MAP;
 
         if ($searchDTO) {
@@ -316,9 +326,6 @@ class SearchController extends Controller
             $searchResultsDTO = $searchManager->search($searchDTO, true);
             $dcDataDTO        = $searchManager->getDoubleClickData($searchDTO);
 
-            $this->getKeywordsReportManager()
-                ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
-
             $locationMarkers = $this->getBusinessProfileManager()
                 ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
@@ -331,7 +338,12 @@ class SearchController extends Controller
                 $seoCategories[] = $searchDTO->query;
             }
 
-            $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
+            $trackingParams = BusinessProfileUtil::getTrackingKeywordsParamsData(
+                $searchData['q'],
+                $searchResultsDTO->resultSet,
+                $trackingParams
+            );
         } else {
             $searchResultsDTO = null;
             $dcDataDTO        = null;
@@ -374,6 +386,7 @@ class SearchController extends Controller
                 'location'  => $locationName,
                 'staticSearchUrl'  => $staticSearchUrl,
                 'staticCompareUrl' => $staticCompareUrl,
+                'trackingParams'   => $trackingParams,
             ]
         );
     }
@@ -433,6 +446,7 @@ class SearchController extends Controller
 
         $categories = [];
         $localities = [];
+        $trackingParams = [];
 
         $locality = $searchManager->searchCatalogLocality($localitySlug);
 
@@ -513,16 +527,23 @@ class SearchController extends Controller
                     ]);
                 }
 
-                $this->getKeywordsReportManager()
-                    ->saveProfilesDataSuggestedBySearchQuery($searchData['q'], $searchResultsDTO->resultSet);
-
                 $schema = $this->getBusinessProfileManager()->buildBusinessProfilesSchema($searchResultsDTO->resultSet);
 
                 $locationMarkers = $this->getBusinessProfileManager()
                     ->getLocationMarkersFromProfileData($searchResultsDTO->resultSet);
 
-                $this->getBusinessOverviewReportManager()->registerBusinessImpression($searchResultsDTO->resultSet);
-                $this->getCategoryReportManager()->registerCatalogVisit($category, $locality);
+                $trackingParams = BusinessProfileUtil::getTrackingImpressionParamsData($searchResultsDTO->resultSet);
+                $trackingParams = BusinessProfileUtil::getTrackingKeywordsParamsData(
+                    $searchData['q'],
+                    $searchResultsDTO->resultSet,
+                    $trackingParams
+                );
+                $trackingParams = BusinessProfileUtil::getTrackingCategoriesParamsData(
+                    BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG,
+                    [$category],
+                    [$locality],
+                    $trackingParams
+                );
             }
         }
 
@@ -568,6 +589,7 @@ class SearchController extends Controller
                 'noFollowDistance'   => SearchDataUtil::ORDER_BY_DISTANCE  != SearchDataUtil::DEFAULT_ORDER_BY_VALUE,
                 'searchRelevance'    => SearchDataUtil::ORDER_BY_RELEVANCE,
                 'searchDistance'     => SearchDataUtil::ORDER_BY_DISTANCE,
+                'trackingParams'     => $trackingParams,
             ]
         );
     }
