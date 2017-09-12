@@ -67,14 +67,28 @@ class KeywordsReportManager
     }
 
     /**
-     * @param string $search
-     * @param BusinessProfile[] $businessProfiles
+     * @param array $data
+     *
+     * @return bool
      */
-    public function saveProfilesDataSuggestedBySearchQuery($search, $businessProfiles)
+    public function registerBusinessKeywordEvent($data)
+    {
+        foreach ($data as $search => $businessIds) {
+            $this->saveProfilesDataSuggestedBySearchQuery($search, $businessIds);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $search
+     * @param array  $businessIds
+     */
+    public function saveProfilesDataSuggestedBySearchQuery($search, $businessIds)
     {
         $keywords = mb_strtolower($search);
 
-        $data = $this->buildBusinessKeywords($businessProfiles, $keywords);
+        $data = $this->buildBusinessKeywords($keywords, $businessIds);
 
         $this->insertBusinessKeywords($data);
     }
@@ -151,7 +165,7 @@ class KeywordsReportManager
     protected function buildSingleBusinessKeyword($businessId, $keyword, $date)
     {
         $data = [
-            self::MONGO_DB_FIELD_BUSINESS_ID => $businessId,
+            self::MONGO_DB_FIELD_BUSINESS_ID => (int)$businessId,
             self::MONGO_DB_FIELD_KEYWORD     => $keyword,
             self::MONGO_DB_FIELD_DATE_TIME   => $date,
         ];
@@ -160,18 +174,18 @@ class KeywordsReportManager
     }
 
     /**
-     * @param BusinessProfile[] $businessProfiles
      * @param string $keywords
+     * @param array  $businessIds
      *
      * @return array
      */
-    protected function buildBusinessKeywords($businessProfiles, $keywords)
+    protected function buildBusinessKeywords($keywords, $businessIds)
     {
         $data = [];
         $date = $this->mongoDbManager->typeUTCDateTime(new \DateTime());
 
-        foreach ($businessProfiles as $businessProfile) {
-            $data[] = $this->buildSingleBusinessKeyword($businessProfile->getId(), $keywords, $date);
+        foreach ($businessIds as $businessId) {
+            $data[] = $this->buildSingleBusinessKeyword($businessId, $keywords, $date);
         }
 
         $data[] = $this->buildSingleBusinessKeyword(0, $keywords, $date);

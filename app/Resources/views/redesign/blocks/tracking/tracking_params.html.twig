@@ -1,0 +1,3 @@
+{% if trackingParams is defined and trackingParams %}
+    <span id="trackingParams" data-track-params="{{ trackingParams|json_encode() }}" hidden></span>
+{% endif %}

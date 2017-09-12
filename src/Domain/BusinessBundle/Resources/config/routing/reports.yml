@@ -26,6 +26,12 @@ domain_business_reports_interactions_track:
      options:
         expose: true
 
+domain_business_reports_event_track:
+     path:     /track/event
+     defaults: { _controller: DomainBusinessBundle:Reports:eventTrack }
+     options:
+        expose: true
+
 domain_business_reports_excel_export:
      path:     /export/excel
      defaults: { _controller: DomainBusinessBundle:Reports:excelExport }

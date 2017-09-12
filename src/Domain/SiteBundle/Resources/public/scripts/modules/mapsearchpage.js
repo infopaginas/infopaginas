@@ -1,6 +1,6 @@
 define(
-    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapSpin', 'tools/reportTracker', 'bootstrap', 'select2', 'tools/starRating'],
-    function ( $, view, _, directions, select, MapSpin, ReportTracker ) {
+    ['jquery',  'abstract/view', 'underscore', 'tools/directions', 'tools/select', 'tools/mapSpin', 'bootstrap', 'select2', 'tools/starRating'],
+    function ( $, view, _, directions, select, MapSpin ) {
     'use strict';
 
     const userMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
@@ -64,8 +64,6 @@ define(
         };
 
         this.searchAjaxRequest = null;
-
-        this.reportTracker = new ReportTracker;
 
         this.init();
         this.bindFilterEvents();
@@ -202,7 +200,7 @@ define(
             infoWindow.open( self.map, marker );
 
             if (!self.mapMarkerTriggered) {
-                self.reportTracker.trackEvent( 'mapMarkerButton', markerData.id );
+                $( document ).trigger( 'trackingInteractions', ['mapMarkerButton', markerData.id] );
             }
 
             self.mapMarkerTriggered = false;
@@ -213,7 +211,7 @@ define(
                 $( document ).trigger( 'disableAutoSearchInMap' );
                 self.map.setCenter( marker.getPosition() );
 
-                self.reportTracker.trackEvent( 'mapShowButton', markerData.id );
+                $( document ).trigger( 'trackingInteractions', ['mapShowButton', markerData.id] );
                 self.mapMarkerTriggered = true;
 
                 google.maps.event.trigger( marker, 'click' );
@@ -375,6 +373,10 @@ define(
 
         $( this.html.links.compareListView ).attr( 'href', response.staticCompareUrl );
         $( this.html.forms.searchLocationInput ).val( response.location );
+
+        if ( response.trackingParams && !$.isEmptyObject(response.trackingParams) ) {
+            $( document ).trigger( 'trackingMapResult', response.trackingParams );
+        }
 
         $( document ).trigger( 'searchRequestReady' );
     };

@@ -6,6 +6,9 @@ class BusinessOverviewModel implements ReportInterface
 {
     const TYPE_CODE_IMPRESSION = 'impressions';
     const TYPE_CODE_VIEW       = 'views';
+    const TYPE_CODE_KEYWORD    = 'keyword';
+    const TYPE_CODE_CATEGORY_BUSINESS   = 'category_business';
+    const TYPE_CODE_CATEGORY_CATALOG    = 'category_catalog';
 
     const TYPE_CODE_DIRECTION_BUTTON       = 'directionButton';
     const TYPE_CODE_MAP_SHOW_BUTTON        = 'mapShowButton';
@@ -64,6 +67,17 @@ class BusinessOverviewModel implements ReportInterface
         return [
             self::CODE_PDF_BUSINESS_OVERVIEW_REPORT   => self::FORMAT_PDF,
             self::CODE_EXCEL_BUSINESS_OVERVIEW_REPORT => self::FORMAT_EXCEL,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getBusinessEventTypes()
+    {
+        return [
+            self::TYPE_CODE_IMPRESSION,
+            self::TYPE_CODE_VIEW,
         ];
     }
 
