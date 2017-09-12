@@ -102,6 +102,7 @@ sonata_media:
             region:         '%amazon_aws_region%' # change if not using US Standard region
             directory:      'uploads/media/%sonata_media.cdn.folder%'
             acl:            public
+            cache_control:  max-age=5184000 # 60 days
 
     providers:
         image:
