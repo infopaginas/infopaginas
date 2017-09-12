@@ -581,3 +581,22 @@ no_js.warning.message: La funcionalidad Javascript de tu navegador está desacti
 working_hours.label.comment_en: Comentario Eng
 working_hours.label.comment_es: Comentario Esp
 working_hours.placeholder.days: Por favor, elija los días
+
+contact:
+  form:
+    title: Contáctenos
+    submit_button: Enviar
+    user_full_name: Nombre completo
+    business_name: Nombre del Negocio
+    phone: Número de teléfono
+    email: E-mail
+    message: Mensaje
+    subject: Tema
+    subject_type:
+      bug: Encontré un error en la página.
+      ads: Quiero anunciarme en infopáginas.com
+      create_business: Quiero crear un perfil de negocio.
+      other: Otro
+    validation_failure: Error de validación.
+    send_success: Su mensaje fue enviado.
+    instant_email: E-mail instantáneo

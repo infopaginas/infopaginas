@@ -35,4 +35,6 @@ interface ConfigInterface
     const SEARCH_ADS_MAX_PAGE               = 'SEARCH_ADS_MAX_PAGE';
     const SEARCH_ADS_PER_PAGE               = 'SEARCH_ADS_PER_PAGE';
     const MAIL_REPORT_EXPORT_PROCESSED      = 'MAIL_REPORT_EXPORT_PROCESSED';
+    const FEEDBACK_EMAIL_ADDRESS            = 'FEEDBACK_EMAIL_ADDRESS';
+    const FEEDBACK_EMAIL_SUBJECT            = 'FEEDBACK_EMAIL_SUBJECT';
 }

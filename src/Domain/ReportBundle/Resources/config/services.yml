@@ -119,6 +119,12 @@ services:
             - '@security.token_storage'
             - '@mongodb.manager'
 
+    domain_report.manager.feedback_report_manager:
+        class: Domain\ReportBundle\Manager\FeedbackReportManager
+        arguments:
+            - '@mongodb.manager'
+            - '@domain_site.mailer'
+
     domain_report.manager.postpone_export_report:
         class: Domain\ReportBundle\Manager\PostponeExportReportManager
         arguments:

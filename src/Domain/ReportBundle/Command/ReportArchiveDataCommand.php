@@ -70,6 +70,11 @@ class ReportArchiveDataCommand extends ContainerAwareCommand
         $userActionReportManager->archiveUserActions($aggregatedDataArchivingDate);
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process user action report');
 
+        $output->writeln('Process feedback report');
+        $feedbackReportManager = $container->get('domain_report.manager.feedback_report_manager');
+        $feedbackReportManager->archiveFeedbackActions($aggregatedDataArchivingDate);
+        $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_IN_PROGRESS, 'execute:Process feedback report');
+
         $output->writeln('done');
         $logger->addInfo($logger::MONGO_ARCHIVE, $logger::STATUS_END, 'execute:stop');
     }

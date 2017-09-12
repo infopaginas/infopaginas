@@ -1,8 +1,8 @@
 define(
     [
         'jquery', 'bootstrap', 'tools/search', 'tools/geolocation', 'tools/searchMenu', 'tools/resetPassword',
-        'tools/login', 'tools/registration', 'profile-redesign', 'main-redesign'
-    ], function ( $, bootstrap, Search, Geolocation, SearchMenu, ResetPassword ) {
+        'tools/feedback', 'tools/login', 'tools/registration', 'profile-redesign', 'main-redesign'
+    ], function ( $, bootstrap, Search, Geolocation, SearchMenu, ResetPassword, Feedback ) {
     'use strict';
 
     var homepage = function ( options ) {
@@ -59,6 +59,7 @@ define(
 
         var search = new Search( searchOptions );
         this.resetPassword = new ResetPassword();
+        this.feedback      = new Feedback();
     };
 
     return homepage;

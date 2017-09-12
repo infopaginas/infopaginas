@@ -104,6 +104,7 @@ requirejs.config({
         'tools/searchMenu': '/assetic/js/modules/tools/searchMenu.min',
         'tools/login': '/assetic/js/modules/tools/login.min',
         'tools/registration': '/assetic/js/modules/tools/registration.min',
+        'tools/feedback': '/assetic/js/modules/tools/feedback.min',
         'abstract/view': '/assetic/js/abstract/view.min',
         'tools/spin': '/assetic/js/modules/tools/spin.min',
         'tools/directions': '/assetic/js/modules/tools/directions.min',
