@@ -76,11 +76,11 @@ class FeedbackReportManager extends BaseReportManager
         $nextPage = $lastPage;
         $previousPage = 1;
 
-        if ($currentPage + 1 < $lastPage) {
+        if (($currentPage + 1) < $lastPage) {
             $nextPage = $currentPage + 1;
         }
 
-        if ($currentPage - 1 > 1) {
+        if (($currentPage - 1) > 1) {
             $previousPage = $currentPage - 1;
         }
 
@@ -146,7 +146,7 @@ class FeedbackReportManager extends BaseReportManager
     }
 
     /**
-     * @param array  $data
+     * @param array $data
      *
      * @return array
      */

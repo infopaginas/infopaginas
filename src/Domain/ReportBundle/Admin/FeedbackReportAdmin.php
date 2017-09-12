@@ -47,16 +47,6 @@ class FeedbackReportAdmin extends ReportAdmin
     }
 
     /**
-     * Default values to the datagrid.
-     *
-     * @var array
-     */
-    protected $datagridValues = array(
-        '_page'     => 1,
-        '_per_page' => 15,
-    );
-
-    /**
      * @param DatagridMapper $datagridMapper
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
