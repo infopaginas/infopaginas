@@ -48,11 +48,6 @@ class MediaAdmin extends BaseMediaAdmin
                 'required' => false,
                 'constraints' => new Url()
             ])
-            ->add('isDeleted', null, [
-                'label' => 'Scheduled for deletion',
-                'required' => false,
-                'disabled' => true,
-            ])
         ;
     }
 

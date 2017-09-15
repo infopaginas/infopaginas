@@ -188,10 +188,6 @@ class ProfileController extends Controller
         $locale    = LocaleHelper::getLocale($request->getLocale());
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $locale);
-        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages(
-            $businessProfile,
-            $locale
-        );
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
@@ -226,7 +222,6 @@ class ProfileController extends Controller
             'seoData'         => $businessProfile,
             'seoTags'         => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_PROFILE),
             'photos'          => $photos,
-            'advertisements'  => $advertisements,
             'lastReview'      => $lastReview,
             'reviewForm'      => $reviewForm->createView(),
             'banners'         => $banners,

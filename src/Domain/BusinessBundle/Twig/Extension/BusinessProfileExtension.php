@@ -12,6 +12,7 @@ use Domain\BusinessBundle\Util\Task\ImagesChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\NormalizerUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use JMS\Serializer\SerializerBuilder;
+use Oxa\Sonata\MediaBundle\Entity\Media;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -86,7 +87,6 @@ class BusinessProfileExtension extends \Twig_Extension
             ),
             'get_business_profile_media_changes' => new \Twig_Function_Method($this, 'getMediaChangeSet'),
             'get_business_profile_images_changes' => new \Twig_Function_Method($this, 'getImagesChangeSet'),
-            'prepare_image_diff' => new \Twig_Function_Method($this, 'prepareImageDiff'),
             'normalize_task_changeaction_label' => new \Twig_Function_Method($this, 'normalizeTaskChangeActionLabel'),
             'normalize_task_fieldname_label' => new \Twig_Function_Method($this, 'normalizeTaskFieldNameLabel'),
             'video_section_allowed_for_business' => new \Twig_Function_Method($this, 'videoSectionAllowedForBusiness'),
@@ -147,7 +147,20 @@ class BusinessProfileExtension extends \Twig_Extension
                 $this,
                 'getBusinessProfileCategoriesJson'
             ),
+            'get_business_gallery_media' => new \Twig_Function_Method(
+                $this,
+                'getBusinessGalleryMedia'
+            ),
         ];
+    }
+
+    /**
+     * @param int $id
+     * @return Media|null
+     */
+    public function getBusinessGalleryMedia($id)
+    {
+        return $this->getBusinessProfileManager()->getBusinessGalleryMediaById($id);
     }
 
     /**
@@ -509,11 +522,6 @@ class BusinessProfileExtension extends \Twig_Extension
         $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListFEView($businessProfile);
 
         return $workingHourData;
-    }
-
-    public function prepareImageDiff($diff)
-    {
-        return ImagesChangeSetUtil::prepareImageDiff($diff);
     }
 
     public function normalizeTaskChangeActionLabel(string $action)

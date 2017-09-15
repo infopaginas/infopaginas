@@ -54,13 +54,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     protected $description;
 
     /**
-     * @var string - Is Primary
-     *
-     * @ORM\Column(name="is_primary", type="boolean", options={"default" : 0})
-     */
-    protected $isPrimary = false;
-
-    /**
      * @var BusinessProfile
      * @ORM\ManyToOne(targetEntity="Domain\BusinessBundle\Entity\BusinessProfile",
      *     cascade={"persist"},
@@ -77,7 +70,7 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="media_id", referencedColumnName="id", nullable=false)
-     * @Assert\valid()
+     * @Assert\Valid()
      * @Assert\NotBlank()
      */
     protected $media;
@@ -99,6 +92,11 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
      * @ORM\Column(name="type", type="string", length=255, nullable=true)
      */
     protected $type;
+
+    /**
+     * @ORM\Column(name="position", type="integer", nullable=true)
+     */
+    protected $position;
 
     /**
      * Get id
@@ -200,30 +198,6 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
     }
 
     /**
-     * Set isPrimary
-     *
-     * @param boolean $isPrimary
-     *
-     * @return BusinessGallery
-     */
-    public function setIsPrimary($isPrimary)
-    {
-        $this->isPrimary = $isPrimary;
-
-        return $this;
-    }
-
-    /**
-     * Get isPrimary
-     *
-     * @return boolean
-     */
-    public function getIsPrimary()
-    {
-        return $this->isPrimary;
-    }
-
-    /**
      * Remove translation
      *
      * @param \Domain\BusinessBundle\Entity\Translation\Media\BusinessGalleryTranslation $translation
@@ -268,9 +242,32 @@ class BusinessGallery implements DefaultEntityInterface, TranslatableInterface
         $gallery = new BusinessGallery();
         $gallery->setDescription($data->description);
         $gallery->setType($data->type);
-        $gallery->setIsPrimary($data->isPrimary);
         $gallery->setMedia($media);
 
         return $gallery;
+    }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return LandingPageShortCutSearch
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 }

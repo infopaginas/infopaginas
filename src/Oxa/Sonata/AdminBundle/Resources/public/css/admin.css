@@ -189,3 +189,80 @@ textarea[id *= "_description"] {
 .export-report-button-group button {
     margin: 10px;
 }
+
+div.gallery-media-block {
+    display: inline-flex;
+}
+
+div.gallery-media-block .media-preview-block {
+    width: 50%;
+    height: 100px;
+    position: relative;
+}
+
+div.gallery-media-block .media-preview-block img {
+    max-width: 100%;
+    max-height: 100px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+div.gallery-media-block .media-name-block {
+    width: 50%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.gallery-media-block .media-name-block span {
+    overflow: auto;
+    margin: 20px;
+}
+
+div.media-data-block {
+    width: 100%;
+    display: inline-flex;
+}
+
+div.media-data-block div.form-group {
+    width: 50%;
+}
+
+div.media_gallery-remove-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+}
+
+div.sonata-ba-field-standard-natural div.ui-sortable div.sonata-collection-row:hover {
+    cursor: move;
+}
+
+div.single-media-preview-block {
+    display: inline-block;
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+}
+
+div.single-media-preview-block img {
+    max-width: 100%;
+    max-height: 100px;
+}
+
+/* dropzone */
+.media-upload-block div.dropzone {
+    border: 2px dotted #0B85A1;
+    color :#92AAB0;
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px 10px 10px 10px;
+    margin-bottom: 10px;
+}

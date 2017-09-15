@@ -25,7 +25,6 @@ class ChangeSetSerializerUtil
             'media'       => $businessGallery->getMedia()->getId(),
             'name'        => $businessGallery->getMedia()->getName(),
             'description' => $businessGallery->getDescription(),
-            'isPrimary'   => $businessGallery->getIsPrimary(),
             'type'        => $businessGallery->getType(),
         ];
 

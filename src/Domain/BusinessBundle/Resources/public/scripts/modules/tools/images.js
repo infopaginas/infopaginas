@@ -10,7 +10,6 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             },
             imageContainerClassname:     'image-wrap',
             imageEditFormClassname:      'image-edit-form',
-            isPrimaryCheckboxClassname:  'is-primary',
             galleryContainerId:          'gallery',
             imageRowClassName:           'image-row',
             removeImageClassname:        'remove-image-link',
@@ -49,7 +48,6 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
 
         this.handleFileUploadInput();
         this.handleClickOnImages();
-        this.handleClickOnIsPrimaryCheckbox();
         this.handleClickOnRemoveLink();
         this.handleRemoteImageUpload();
         this.handleImageTypeChange();
@@ -306,16 +304,6 @@ define(['jquery', 'bootstrap', 'tools/spin', 'tools/select'], function( $, boots
             var imageId = $self.data( 'id' );
 
             $(document).find( '#images-form-' + imageId ).show();
-        } );
-    };
-
-    //only 1 image can be "primary" - remove is_primary from another
-    images.prototype.handleClickOnIsPrimaryCheckbox = function() {
-        var that = this;
-
-        $(document).on( 'click', '.' + this.html.isPrimaryCheckboxClassname, function() {
-            var $isPrimaryCheckboxes = $( '.' + that.html.isPrimaryCheckboxClassname ).not( this );
-            $isPrimaryCheckboxes.removeAttr( 'checked' );
         } );
     };
 

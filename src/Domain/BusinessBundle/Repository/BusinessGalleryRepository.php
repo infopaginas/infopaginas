@@ -19,32 +19,6 @@ class BusinessGalleryRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return array
      */
-    public function findBusinessProfileAdvertisementImages(BusinessProfile $businessProfile, $locale)
-    {
-        $qb = $this->createQueryBuilder('bg');
-
-        $qb->where('bg.businessProfile = :businessProfile')
-            ->andWhere('bg.type = :businessProfileAdvertisementImageType')
-            ->andWhere('bg.isActive = true')
-            ->setParameter('businessProfile', $businessProfile)
-            ->setParameter('businessProfileAdvertisementImageType', OxaMediaInterface::CONTEXT_BANNER)
-        ;
-
-        $query = $qb->getQuery();
-
-        if ($locale) {
-            SiteHelper::setLocaleQueryHint($query, $locale);
-        }
-
-        return $query->getResult();
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param string $locale
-     *
-     * @return array
-     */
     public function findBusinessProfilePhotoImages(BusinessProfile $businessProfile, $locale = LocaleHelper::DEFAULT_LOCALE)
     {
         $qb = $this->createQueryBuilder('bg');
@@ -54,6 +28,7 @@ class BusinessGalleryRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('bg.isActive = true')
             ->setParameter('businessProfile', $businessProfile)
             ->setParameter('businessProfilePhotoImageType', OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES)
+            ->orderBy('bg.position', 'ASC')
         ;
 
         $query = $qb->getQuery();
