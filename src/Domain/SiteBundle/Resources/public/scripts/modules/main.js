@@ -367,9 +367,13 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             persist: true
         });
 
-        var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality, #domain_page_bundle_feedback_form_type_subject');
+        var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');
 
         singleSelects.select2();
+
+        $( '#domain_page_bundle_feedback_form_type_subject' ).select2({
+            minimumResultsForSearch: -1
+        });
 
         $('#select-from, #select-to').selectize({
             maxItems: 1

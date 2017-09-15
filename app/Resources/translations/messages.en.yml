@@ -596,7 +596,7 @@ contact:
       bug: I found a bug
       ads: I want an ad on your site
       create_business: I want to create a business
-      other: other
+      other: Others
     validation_failure: Validation failure
     send_success: Your message has been sent successfully.
     instant_email: Instant e-mail

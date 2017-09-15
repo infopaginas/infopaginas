@@ -66,7 +66,9 @@ class FeedbackFormType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new Email(),
+                    new Email([
+                        'strict' => true,
+                    ]),
                     new Length([
                         'max' => FeedbackReportManager::MAX_LENGTH_EMAIL,
                     ]),
