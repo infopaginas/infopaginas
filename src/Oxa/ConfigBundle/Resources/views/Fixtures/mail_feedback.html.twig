@@ -5,6 +5,7 @@
     <li>Phone number: {{ phone }}</li>
     <li>Email: {{ email }}</li>
     <li>Subject: {{ subject }}</li>
-    <li>UserId: {% if userId %}<a href="{{ absolute_url(path('admin_sonata_user_user_show', {'id': userId})) }}">{{ userId }}</a>{% endif %}</li>
+    <li>Message: {{ message }}</li>
+    <li>UserId: {% if userId %}<a href="{{ absolute_url(path('admin_sonata_user_user_show', {'id': userId})) }}">{{ userId }}</a>{% else %}unlogged user{% endif %}</li>
     <li>Locale: {{ locale }}</li>
 </ul>
