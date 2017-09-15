@@ -600,3 +600,8 @@ contact:
     validation_failure: Error de validación.
     send_success: Su mensaje fue enviado.
     instant_email: E-mail instantáneo
+
+business_profile.phone.tooltip:
+    main: Principal
+    fax: Fax
+    secondary: Adicional
