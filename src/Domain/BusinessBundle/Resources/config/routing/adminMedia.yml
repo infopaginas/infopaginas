@@ -1,0 +1,13 @@
+domain_business_admin_images_upload:
+    path:     /upload
+    defaults: { _controller: DomainBusinessBundle:Images:adminUpload }
+    options:
+        expose: true
+
+domain_business_admin_images_preview:
+    path:     /preview/{id}
+    defaults: { _controller: DomainBusinessBundle:Images:adminGetMediaLink }
+    requirements:
+            id: \d+
+    options:
+        expose: true

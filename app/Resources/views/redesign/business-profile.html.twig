@@ -158,16 +158,11 @@
                             </section>
                         {% endif %}
 
-                        {% if (advertisements|length > 0 or photos|length > 0) and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
+                        {% if photos|length > 0 and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
                                         <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
-                                    </div>
-                                {% endfor %}
-                                {% for ad in advertisements %}
-                                    <div class="slider__item">
-                                        <img src="{% path ad.getMedia(), 'normal' %}" alt="{% if ad.description %}{{ ad.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
                                     </div>
                                 {% endfor %}
                             </section>

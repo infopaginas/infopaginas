@@ -8,12 +8,14 @@ use Domain\BusinessBundle\Form\Type\BusinessProfileFormType;
 use Domain\BusinessBundle\Manager\BusinessGalleryManager;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Util\Traits\JsonResponseBuilderTrait;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 use Oxa\Sonata\MediaBundle\Entity\Media;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -25,6 +27,11 @@ class ImagesController extends Controller
     use JsonResponseBuilderTrait;
 
     const BUSINESS_PROFILE_ID_PARAMNAME = 'businessProfileId';
+
+    const ADMIN_MEDIA_UPLOAD_NO_FILE  = 'media_upload_error_message.no_file';
+    const ADMIN_MEDIA_UPLOAD_MAX_SIZE = 'media_upload_error_message.max_size';
+    const ADMIN_MEDIA_UPLOAD_INVALID_EXTENSION = 'media_upload_error_message.invalid_extension';
+    const ADMIN_MEDIA_PREVIEW_NO_FILE = 'media_preview_error_message.not_found';
 
     /**
      * @param Request $request
@@ -53,6 +60,73 @@ class ImagesController extends Controller
             'logo'       => $imagesForm['logo']->createView(),
             'background' => $imagesForm['background']->createView(),
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function adminGetMediaLinkAction(Request $request, $id)
+    {
+        if ($id) {
+            $media = $this->getBusinessProfilesManager()->getBusinessGalleryMediaById($id);
+
+            if ($media) {
+                $url = $this->getBusinessProfilesManager()->getMediaPublicUrl($media, 'preview');
+
+                return new JsonResponse([
+                    'success' => true,
+                    'data' => [
+                        'url'  => $url,
+                    ],
+                ]);
+            }
+        }
+
+        return $this->getFailureResponse(self::ADMIN_MEDIA_PREVIEW_NO_FILE);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function adminUploadAction(Request $request)
+    {
+        if (!$this->isGranted(['ROLE_ADMINISTRATOR', 'ROLE_CONTENT_MANAGER'])) {
+            $this->throwBusinessNotFoundException();
+        }
+
+        $file = $request->files->get('file', null);
+        $error = '';
+
+        if (!$file) {
+            $error = self::ADMIN_MEDIA_UPLOAD_NO_FILE;
+        } elseif (!$file->getSize() > Media::IMAGE_MAX_SIZE) {
+            $error = self::ADMIN_MEDIA_UPLOAD_MAX_SIZE;
+        } elseif (!in_array($file->getMimeType(), AdminHelper::getFormImageFileConstrain()['mimeTypes'])) {
+            $error = self::ADMIN_MEDIA_UPLOAD_INVALID_EXTENSION;
+        } else {
+            $media = $this->getBusinessGalleryManager()->createNewAdminMediaEntryFromUploadedFile(
+                $file,
+                OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES
+            );
+
+            $url = $this->getBusinessProfilesManager()->getMediaPublicUrl($media, 'preview');
+
+            return new JsonResponse([
+                'success' => true,
+                'data' => [
+                    'url'  => $url,
+                    'id'   => $media->getId(),
+                    'name' => $media->getName(),
+                ],
+            ]);
+        }
+
+        return $this->getFailureResponse($error);
     }
 
     /**

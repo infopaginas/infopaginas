@@ -16,7 +16,6 @@ interface OxaMediaInterface
     const CONTEXT_BUSINESS_PROFILE_LOGO         = 'business_profile_logo';
     const CONTEXT_BUSINESS_PROFILE_BACKGROUND   = 'business_profile_background';
     const CONTEXT_COUPON                        = 'coupon';
-    const CONTEXT_BANNER                        = 'banner';
     const CONTEXT_ARTICLE                       = 'article';
     const CONTEXT_PAGE_BACKGROUND               = 'page_background';
     const CONTEXT_ARTICLE_IMAGES                = 'article_images';

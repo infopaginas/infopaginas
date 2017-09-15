@@ -219,6 +219,22 @@ class AdminHelper
     /**
      * @return array
      */
+    public static function getFormImageFileAccept()
+    {
+        return [
+            'jpg',
+            'png',
+            'gif',
+            'image/jpeg',
+            'image/pjpeg',
+            'image/png',
+            'image/gif',
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public static function getFormVideoFileConstrain()
     {
         return [

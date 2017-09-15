@@ -1,0 +1,7 @@
+media_upload_error_message:
+ no_file: File upload error
+ max_size: File max size reached
+ invalid_extension: Invalid extension
+
+media_preview_error_message:
+ not_found: Not found
