@@ -247,7 +247,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     protected function buildSingleBusinessInteraction($businessId, $action, $date)
     {
         $data = [
-            self::MONGO_DB_FIELD_BUSINESS_ID => $businessId,
+            self::MONGO_DB_FIELD_BUSINESS_ID => (int) $businessId,
             self::MONGO_DB_FIELD_ACTION      => $action,
             self::MONGO_DB_FIELD_DATE_TIME   => $date,
         ];
