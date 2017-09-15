@@ -37,9 +37,9 @@ class GenerateEngSitemapCommand extends ContainerAwareCommand
         $path = $this->getBasePath();
         $engSiteMapPath = $path . self::ENG_SITEMAP_DIRECTORY;
 
-        // remove old dir and create new one
-        shell_exec('rm -rf ' . $engSiteMapPath);
-        shell_exec('mkdir ' . $engSiteMapPath);
+        // remove old sitemap and create directory if not exist
+        shell_exec('rm -rf ' . $engSiteMapPath . 'sitemap.*');
+        shell_exec('mkdir -p ' . $engSiteMapPath);
 
         /*
          * copy default sitemap files (spanish)
@@ -61,23 +61,13 @@ class GenerateEngSitemapCommand extends ContainerAwareCommand
         $engHost = $this->locale . '.' . $host;
 
         /*
-         * Search value "host" and replace all occurrences with "$engHost/sitemapEn" in "sitemap.xml" file.
-         * "sitemapEn" is added because urls should point to correct files (not to default one)
-         * Save result to same file.
-         */
-        shell_exec(
-            'cd ' . $engSiteMapPath .
-            ' && sed -i "s/' . $host . '/' . $engHost . '\/' . self::ENG_SITEMAP_DIRECTORY . 'g" sitemap.xml'
-        );
-
-        /*
-         * For all files in folder that matches pattern "sitemap.*.xml",
+         * For all files in folder that matches pattern "sitemap.*",
          * search value "host" and replace all occurrences with "$engHost".
          * Save result to same files.
          */
         shell_exec(
             'cd ' . $engSiteMapPath .
-            ' && for file in sitemap.*.xml; do sed -i "s/' . $host . '/' . $engHost . '/g" "${file}";done'
+            ' && for file in sitemap.*; do sed -i "s/' . $host . '/' . $engHost . '/g" "${file}";done'
         );
 
         /*
