@@ -208,8 +208,19 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         var address = this.getBusinessAddress();
         var that = this;
 
-        var lat = parseFloat( $( that.html.fields.latitudeInputId ).val() );
-        var lng = parseFloat( $( that.html.fields.longitudeInputId ).val() );
+        // convert decimal delimiter
+        // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
+        var lat = parseFloat( $( that.html.fields.latitudeInputId ).val().replace( ',', '.' ) );
+        var lng = parseFloat( $( that.html.fields.longitudeInputId ).val().replace( ',', '.' ) );
+
+        if ( !lat ) {
+            lat = MAP_LAT;
+        }
+
+        if ( !lng ) {
+            lng = MAP_LNG;
+        }
+
         var map = that.getGoogleMapObject( lat, lng );
 
         google.maps.event.trigger( map, 'resize' );
