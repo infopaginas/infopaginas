@@ -19,6 +19,7 @@
 *.php~
 /components
 /web/sitemap.*
+/web/sitemapEn/sitemap.*
 /composer.lock
 
 # OS generated files #
