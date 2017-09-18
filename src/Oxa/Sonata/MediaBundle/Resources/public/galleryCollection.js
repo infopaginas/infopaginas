@@ -16,11 +16,13 @@ $( document ).ready( function() {
         }
     };
 
+    var imageUploadQueue = [];
+
     var validExtensions = [
         'png',
         'jpeg',
         'jpg',
-        'gif',
+        'gif'
     ];
 
     var errorBlock = $( '#' + formId + '_images_dropzone-error' );
@@ -161,6 +163,8 @@ $( document ).ready( function() {
                     addDropZoneError( response.message );
                     row.parentRow.remove();
                 }
+
+                $( document ).trigger( 'uploadAdminImage' );
             }
         });
     }
@@ -202,9 +206,22 @@ $( document ).ready( function() {
 
             fd.append( 'file', files[i] );
 
-            sendFileToServer( fd, galleryRow );
+            imageUploadQueue.push({
+                data: fd,
+                row: galleryRow
+            });
         }
+
+        $( document ).trigger( 'uploadAdminImage' );
     }
+
+    $( document ).on( 'uploadAdminImage', function( event, type, id ) {
+        var image = imageUploadQueue.shift();
+
+        if ( image ) {
+            sendFileToServer( image.data, image.row );
+        }
+    });
 
     function validateUploadedFiles( files ) {
         var rowCount = $( 'div[ id $= "' + formId + '_images" ]' )
