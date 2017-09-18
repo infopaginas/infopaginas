@@ -55,6 +55,7 @@ security:
             - ROLE_DOMAIN_REPORT_ADMIN_CATEGORY_REPORT__ALL
             - ROLE_DOMAIN_REPORT_ADMIN_OVERVIEW_REPORT__ALL
             - ROLE_DOMAIN_ARTICLE_ADMIN_ARTICLE_HAS_MEDIA__ALL
+            - ROLE_DOMAIN_BUSINESS_ADMIN_CATEGORY__VIEW
 
         # PROJECT ROLE
         # has limit access to admin panel
