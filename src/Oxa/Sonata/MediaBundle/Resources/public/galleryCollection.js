@@ -340,8 +340,11 @@ $( document ).ready( function() {
 
         $.each( items, function( index, item ) {
             var media      = $( item );
-            var mediaBlock = media.parents( '.sonata-ba-field-list-natural .field-container' );
+            var mediaBlockRow = media.parents( '.sonata-ba-field-list-natural' );
+            var mediaBlock = mediaBlockRow.find( '.field-container' );
             var html = '<div class="single-media-preview-block"><img></div>';
+
+            mediaBlockRow.addClass( 'row' );
             mediaBlock.prepend( html );
 
             var mediaId = media.val();
