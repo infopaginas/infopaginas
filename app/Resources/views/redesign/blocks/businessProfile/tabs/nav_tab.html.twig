@@ -27,12 +27,6 @@
                     {% block reportSubTab %}{% endblock %}
                 </li>
                 <li>
-                    <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.getId() })) }}" target="_blank">
-                        <i class="fa fa-star"></i>
-                        {% trans %}Reviews{% endtrans %}
-                    </a>
-                </li>
-                <li>
                     <a href="#" data-change-modal-id="closeBusinessProfileModal">
                         <i class="fa fa-remove"></i>
                         {% trans %}Close profile{% endtrans %}

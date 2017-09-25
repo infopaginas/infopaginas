@@ -38,6 +38,9 @@ class ReviewsController extends Controller
      */
     public function listAction(Request $request)
     {
+        // see https://jira.oxagile.com/browse/INFT-2093
+        throw $this->createNotFoundException();
+
         $businessProfileId = (int)$request->get('businessProfileId');
         $locale = LocaleHelper::getLocale($request->getLocale());
 

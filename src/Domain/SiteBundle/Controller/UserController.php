@@ -38,13 +38,11 @@ class UserController extends Controller
         $usersManager = $this->getUsersManager();
 
         $userBusinessProfiles = $usersManager->getUserBusinessProfiles($user);
-        $userReviews = $usersManager->getUserReviews($user);
 
         return $this->render(':redesign:user-profile.html.twig', [
             'profileForm'          => $profileForm->createView(),
             'passwordUpdateForm'   => $passwordUpdateForm->createView(),
             'userBusinessProfiles' => $userBusinessProfiles,
-            'userReviews'          => $userReviews,
         ]);
     }
 

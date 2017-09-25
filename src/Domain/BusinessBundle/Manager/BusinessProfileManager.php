@@ -191,12 +191,10 @@ class BusinessProfileManager extends Manager
                 'id'            => $profile->getId(),
                 'name'          => $profile->getName(),
                 'address'       => $profile->getShortAddress(),
-                'reviewsCount'  => $profile->getBusinessReviewsCount(),
                 'logo'          => $logoPath,
                 'background'    => $backgndPath,
                 'latitude'      => $profile->getLatitude(),
                 'longitude'     => $profile->getLongitude(),
-                'rating'        => $this->calculateReviewsAvgRatingForBusinessProfile($profile),
                 'labelNumber'   => (string) $profile->getDisplayedPosition(),
                 'profileUrl'    => $this->container->get('router')->generate(
                     'domain_business_profile_view',
@@ -1181,16 +1179,6 @@ class BusinessProfileManager extends Manager
                 $schemaItem['telephone'][] = $phone->getPhone();
             }
 
-            if (!$businessProfile->getBusinessReviews()->isEmpty()) {
-                $schemaItem['aggregateRating'] = [
-                    '@type'       => 'AggregateRating',
-                    'worstRating' => BusinessReview::RATING_MIN_VALUE,
-                    'bestRating'  => BusinessReview::RATING_MAX_VALUE,
-                    'ratingValue' => $businessProfile->getBusinessReviewsAvgMark(),
-                    'ratingCount' => $businessProfile->getBusinessReviewsCount(),
-                ];
-            }
-
             if ($showAll) {
                 $description = $businessProfile->getDescription();
                 if ($description) {
@@ -1208,12 +1196,6 @@ class BusinessProfileManager extends Manager
 
                 foreach ($photos as $photo) {
                     $schemaItem['image'][] = $this->getMediaPublicUrl($photo->getMedia(), 'preview');
-                }
-
-                $lastReview = $this->getLastReviewForBusinessProfile($businessProfile);
-
-                if ($lastReview) {
-                    $schemaItem['review'] = $this->buildReviewItem($lastReview);
                 }
             }
 

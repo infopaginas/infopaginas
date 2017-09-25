@@ -24,13 +24,6 @@
                     <div class="item__header container">
                         {% set workingHoursData = get_business_profile_open_status(businessProfile) %}
                         {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
-                        <div class="rank">
-                            <div class="rank-ta rank-ta--5"></div>
-                            <a data-show-modal-id="{% if (app.user) %}writeReviewModal{% else %}loginModal{% endif %}">
-                                {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(businessProfile) %}
-                                {% include ':widgets:rating.html.twig' with { 'ratingValue': reviewsAvgRating } %}
-                            </a>
-                        </div>
                     </div><!-- item__header -->
                     {% if businessProfile.getLogo() and hasSubscription(businessProfile, "CODE_PREMIUM_PLUS") %}
                         <div class="avatar">
@@ -208,17 +201,6 @@
                             </section>
                         {% endif %}
 
-                        {% if lastReview is not null %}
-                            <section class="last__review">
-                                <h3>{% trans %}Last review{% endtrans %}</h3>
-                                {% include ':redesign/blocks:review-item.html.twig' with {'review': lastReview} %}
-
-                                <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: businessProfile.getId()})) }}">
-                                    {% trans %}View more reviews{% endtrans %}
-                                </a>
-                            </section>
-                        {% endif %}
-
                         {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.BUSINESS_PAGE_BOTTOM } %}
 
                         {% if not businessProfile.hideMap %}
@@ -270,10 +252,6 @@
 
         </div><!-- main -->
     </div><!-- main__container -->
-
-    <div class="card-item">
-        {% include ':redesign/blocks/modals:write_review.html.twig' with { 'reviewForm': reviewForm } %}
-    </div>
 {% endblock %}
 
 {% block scripts %}
