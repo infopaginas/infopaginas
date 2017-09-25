@@ -581,6 +581,7 @@ no_js.warning.message: Your browser's Javascript functionality is turned off. Pl
 working_hours.label.comment_en: Comment Eng
 working_hours.label.comment_es: Comment Esp
 working_hours.placeholder.days: Please choose days
+working_hours.placeholder.today: Today
 
 contact:
   form:
