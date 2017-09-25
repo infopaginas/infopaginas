@@ -274,3 +274,9 @@ div.single-media-preview-block img {
     padding: 10px 10px 10px 10px;
     margin-bottom: 10px;
 }
+
+.header-form-buttons button {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 8px;
+}
