@@ -2037,10 +2037,6 @@ $thumb-width-mb: 60px;
   }
 }
 
-.hour__day {
-  font-weight: 700;
-}
-
 .highlights {
   
   .highlights__item--address ul {
@@ -5920,9 +5916,32 @@ span.no-js-warning-message {
     }
   }
 
-  ul {
-    &.hide-children > li:not(.currentDay) {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .col-day {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+
+  .col-data {
+    flex: 0 0 75%;
+    max-width: 75%;
+    position: relative;
+    width: 100%;
+  }
+
+  div {
+    &.hide-children > div.day:not([data-day]) {
       display: none;
+    }
+
+    div.day[data-day] {
+      .hour__day, .hour__hours {
+        font-weight: 700;
+      }
     }
 
     .working-hour-comment {
