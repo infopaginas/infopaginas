@@ -72,34 +72,6 @@
                         </div><!-- form section -->
 
                         <div class="form__section">
-                            <h2>{% trans %}Reviews{% endtrans %}</h2>
-
-                            {% if userReviews|length > 0 %}
-                                {% set reviewsPerColumn = ((userReviews|length) / 2)|round %}
-
-                                {% for row in userReviews|batch(reviewsPerColumn) %}
-                                    <div class="col-xs-6 form-col">
-                                        {% for review in row %}
-                                            <div class="col-xs-12">
-                                                <span>
-                                                    <a href="{{ absolute_url(path('domain_business_reviews_list', { businessProfileId: review.business.id })) }}">
-                                                        {{ review.business.name }}
-                                                    </a>
-                                                </span>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <div class="form__row">
-                                    <div class="empty-message">
-                                        <p>{% trans %}No reviews found.{% endtrans %}</p>
-                                    </div><!-- empty-message -->
-                                </div><!-- form__row -->
-                            {% endif %}
-                        </div><!-- form section -->
-
-                        <div class="form__section">
                             <h2>{% trans %}My Business Profiles{% endtrans %}</h2>
 
                             {% if userBusinessProfiles|length > 0 %}
