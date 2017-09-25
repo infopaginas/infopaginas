@@ -71,7 +71,7 @@
                     <h3>{% trans %}Phone{% endtrans %}</h3>
                     <ul>
                         {% for phone in item.phones %}
-                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                 <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
                                 <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ item.id }}" data-type="callMobButton">{{ phone.phone }}</a>
                                 <span class="hide-mobile">{{ phone.phone }}</span>

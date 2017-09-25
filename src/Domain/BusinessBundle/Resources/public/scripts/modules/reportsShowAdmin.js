@@ -26,12 +26,12 @@ $( document ).ready( function() {
             print:              '[data-export-type = "print"]'
         },
         tabs: {
-            'interactionTab':   'a[href="#tab_' + uniqueId + '_3"]',
-            'keywordTab':       'a[href="#tab_' + uniqueId + '_4"]',
-            'adUsageTab':       'a[href="#tab_' + uniqueId + '_5"]',
-            interactionTabId:   '#tab_' + uniqueId + '_3',
-            keywordTabId:       '#tab_' + uniqueId + '_4',
-            adUsageTabId:       '#tab_' + uniqueId + '_5'
+            'interactionTab':   'a[href="#tab_' + uniqueId + '_6"]',
+            'keywordTab':       'a[href="#tab_' + uniqueId + '_7"]',
+            'adUsageTab':       'a[href="#tab_' + uniqueId + '_8"]',
+            interactionTabId:   '#tab_' + uniqueId + '_6',
+            keywordTabId:       '#tab_' + uniqueId + '_7',
+            adUsageTabId:       '#tab_' + uniqueId + '_8'
         }
     };
 

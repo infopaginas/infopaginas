@@ -448,7 +448,7 @@ class BusinessProfile implements
      *     cascade={"persist", "remove"},
      *     orphanRemoval=true,
      *     )
-     * @ORM\OrderBy({"id" = "ASC"})
+     * @ORM\OrderBy({"position" = "ASC"})
      * @Assert\Valid
      */
     protected $images;

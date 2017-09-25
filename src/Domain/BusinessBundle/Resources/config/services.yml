@@ -89,6 +89,12 @@ services:
         calls:
             - [ setConfig, [ '@oxa_config' ] ]
 
+    domain_business.form.type.media_preview:
+        class: Domain\BusinessBundle\Form\Type\MediaPreviewType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: form.type, alias: media_preview }
+
     domain_business.form.type.business_profile:
         class: Domain\BusinessBundle\Form\Type\BusinessProfileFormType
         arguments: [null]

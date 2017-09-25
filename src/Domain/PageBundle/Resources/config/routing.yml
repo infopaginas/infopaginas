@@ -20,3 +20,9 @@ domain_page_view_features:
         _controller: FrameworkBundle:Redirect:redirect
         route: domain_page_view_advertise
         permanent: true
+
+domain_page_feedback:
+    path:     /send/feedback
+    defaults: { _controller: DomainPageBundle:Default:sendFeedback }
+    options:
+        expose: true

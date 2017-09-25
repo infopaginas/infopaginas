@@ -581,3 +581,27 @@ no_js.warning.message: Your browser's Javascript functionality is turned off. Pl
 working_hours.label.comment_en: Comment Eng
 working_hours.label.comment_es: Comment Esp
 working_hours.placeholder.days: Please choose days
+
+contact:
+  form:
+    title: Contact Us
+    submit_button: Send
+    user_full_name: Full Name
+    business_name: Business Name
+    phone: Phone number
+    email: E-mail
+    message: Message
+    subject: Subject
+    subject_type:
+      bug: I found a bug
+      ads: I want an ad on your site
+      create_business: I want to create a business
+      other: Others
+    validation_failure: Validation failure
+    send_success: Your message has been sent successfully.
+    instant_email: Instant e-mail
+
+business_profile.phone.tooltip:
+  main: Main
+  fax: Fax
+  secondary: Additional

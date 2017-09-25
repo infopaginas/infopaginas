@@ -130,3 +130,9 @@ twig:
             DATA:
                 URL:  'url'
                 TYPE: 'type'
+
+        FEEDBACK_SUBJECT:
+            MAPPING:
+                TYPE:  'subject_type'
+                LOCALE: 'locale'
+                USER:   'user_id'

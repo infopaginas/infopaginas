@@ -14,7 +14,7 @@ $( document ).ready( function() {
             goToPage: '#' + uniqueId + '_reviewPaginationGo'
         },
         tabs: {
-            'reviewTab':   'a[href="#tab_' + uniqueId + '_2"]'
+            'reviewTab':   'a[href="#tab_' + uniqueId + '_5"]'
         },
         urls: {
             businessReview: Routing.generate( 'domain_business_admin_business_reviews_data' )

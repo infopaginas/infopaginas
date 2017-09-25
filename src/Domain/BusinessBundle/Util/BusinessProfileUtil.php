@@ -3,8 +3,10 @@
 namespace Domain\BusinessBundle\Util;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
+use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -28,9 +30,13 @@ class BusinessProfileUtil
      *
      * @return array
      */
-    public static function extractBusinessProfiles(array $searchResults)
+    public static function extractEntitiesId(array $searchResults)
     {
-        return array_column($searchResults, 'id');
+        $ids = array_map(function($entity) {
+            return $entity->getId();
+        }, $searchResults);
+
+        return $ids;
     }
 
     /**
@@ -229,5 +235,100 @@ class BusinessProfileUtil
         }
 
         return implode('; ', $dayText);
+    }
+
+    /**
+     * @param BusinessProfile[] $businesses
+     * @param array             $trackingParams
+     *
+     * @return array
+     */
+    public static function getTrackingVisitParamsData($businesses, $trackingParams = [])
+    {
+        $trackingParams = self::getTrackingParamsData(
+            BusinessOverviewModel::TYPE_CODE_VIEW,
+            $businesses,
+            $trackingParams
+        );
+
+        return $trackingParams;
+    }
+
+    /**
+     * @param BusinessProfile[] $businesses
+     * @param array             $trackingParams
+     *
+     * @return array
+     */
+    public static function getTrackingImpressionParamsData($businesses, $trackingParams = [])
+    {
+        $trackingParams = self::getTrackingParamsData(
+            BusinessOverviewModel::TYPE_CODE_IMPRESSION,
+            $businesses,
+            $trackingParams
+        );
+
+        return $trackingParams;
+    }
+
+    /**
+     * @param string            $search
+     * @param BusinessProfile[] $businesses
+     * @param array             $trackingParams
+     *
+     * @return array
+     */
+    public static function getTrackingKeywordsParamsData($search, $businesses, $trackingParams = [])
+    {
+        $keywords = mb_strtolower($search);
+
+        if ($keywords and $businesses) {
+            $trackingParams[BusinessOverviewModel::TYPE_CODE_KEYWORD] = self::getTrackingParamsData(
+                $keywords,
+                $businesses
+            );
+        }
+
+        return $trackingParams;
+    }
+
+    /**
+     * @param string     $type
+     * @param Category[] $categories
+     * @param Locality[] $localities
+     * @param array      $trackingParams
+     *
+     * @return array
+     */
+    public static function getTrackingCategoriesParamsData($type, $categories, $localities, $trackingParams = [])
+    {
+        if ($categories and $localities and $type) {
+            $trackingParams[$type] = [];
+
+            foreach ($localities as $locality) {
+                $trackingParams[$type][] = self::getTrackingParamsData(
+                    $locality->getId(),
+                    $categories
+                );
+            }
+        }
+
+        return $trackingParams;
+    }
+
+    /**
+     * @param string $action
+     * @param array  $entities
+     * @param array  $trackingParams
+     *
+     * @return array
+     */
+    public static function getTrackingParamsData($action, $entities, $trackingParams = [])
+    {
+        if ($entities) {
+            $trackingParams[$action] = BusinessProfileUtil::extractEntitiesId($entities);
+        }
+
+        return $trackingParams;
     }
 }

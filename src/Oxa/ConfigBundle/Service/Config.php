@@ -4,6 +4,7 @@ namespace Oxa\ConfigBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 use Oxa\ConfigBundle\Entity\Config as SystemConfig;
+use Oxa\ConfigBundle\Model\ConfigInterface;
 
 class Config
 {
@@ -51,5 +52,16 @@ class Config
             return $setting->getValue();
         }
         return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getInstantEmail()
+    {
+        $email = $this->getValue(ConfigInterface::FEEDBACK_EMAIL_ADDRESS);
+        $title = $this->getValue(ConfigInterface::FEEDBACK_EMAIL_SUBJECT);
+
+        return sprintf('mailto:%s?subject=%s', $email, $title);
     }
 }

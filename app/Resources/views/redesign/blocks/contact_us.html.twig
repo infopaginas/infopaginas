@@ -1,0 +1,62 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+<section class="page-section">
+    <form id="feedbackForm" class="form feedback-form" action="{{ absolute_url(path('domain_page_feedback')) }}" method="post">
+        <h3 class="language-title">{{ 'contact.form.title'|trans }}</h3>
+        <span class="feedback-message"></span>
+        <div class="form__section">
+            <div class="form-column__container clearfix">
+                <div class="form__column">
+                    <div class="form__row">
+                        <div class="form__field field--fullname">
+                            {{ custom_form_label.widget(contactForm.fullName) }}
+                            {{ form_widget(contactForm.fullName) }}
+                        </div>
+                    </div>
+
+                    <div class="form__row">
+                        <div class="form__field field--businessname">
+                            {{ custom_form_label.widget(contactForm.businessName) }}
+                            {{ form_widget(contactForm.businessName) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form__column">
+                    <div class="form__row">
+                        <div class="form__field field--phone">
+                            {{ custom_form_label.widget(contactForm.phone) }}
+                            {{ form_widget(contactForm.phone) }}
+                        </div>
+                    </div>
+
+                    <div class="form__row">
+                        <div class="form__field field--email">
+                            {{ custom_form_label.widget(contactForm.email) }}
+                            {{ form_widget(contactForm.email) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form__section">
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(contactForm.subject) }}
+                {{ form_widget(contactForm.subject) }}
+            </div>
+
+            <div class="form__row">
+                <div class="form__field field--message">
+                    {{ custom_form_label.widget(contactForm.message) }}
+                    {{ form_widget(contactForm.message) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form__actions">
+            {{ form_rest(contactForm) }}
+            <a href="{{ instantEmail }}" class="button button--text">{{ 'contact.form.instant_email'|trans }}</a>
+            <button type="submit" id="feedbackButton" class="button button--action">{{ 'contact.form.submit_button'|trans }}</button>
+        </div>
+    </form>
+</section>

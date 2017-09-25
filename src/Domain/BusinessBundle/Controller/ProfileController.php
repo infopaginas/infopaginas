@@ -9,6 +9,7 @@ use Domain\BusinessBundle\Form\Type\BusinessClaimRequestType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Util\BusinessProfileUtil;
 use Domain\ReportBundle\Manager\CategoryReportManager;
+use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -175,16 +176,18 @@ class ProfileController extends Controller
             );
         }
 
-        $this->getBusinessOverviewReportManager()->registerBusinessView([$businessProfile]);
+        $trackingParams = BusinessProfileUtil::getTrackingVisitParamsData([$businessProfile]);
+        $trackingParams = BusinessProfileUtil::getTrackingCategoriesParamsData(
+            BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS,
+            $businessProfile->getCategories()->toArray(),
+            [$businessProfile->getCatalogLocality()],
+            $trackingParams
+        );
 
         $dcDataDTO = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
         $locale    = LocaleHelper::getLocale($request->getLocale());
 
         $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $locale);
-        $advertisements = $this->getBusinessProfilesManager()->getBusinessProfileAdvertisementImages(
-            $businessProfile,
-            $locale
-        );
 
         $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
         $reviewForm       = $this->getBusinessReviewForm();
@@ -206,8 +209,6 @@ class ProfileController extends Controller
 
         $schema = $this->getBusinessProfilesManager()->buildBusinessProfilesSchema([$businessProfile], true);
 
-        $this->getCategoryReportManager()->registerBusinessVisit($businessProfile);
-
         $showClaimBlock =  $this->getBusinessProfilesManager()->getClaimButtonPermitted($businessProfile);
 
         if ($showClaimBlock) {
@@ -221,7 +222,6 @@ class ProfileController extends Controller
             'seoData'         => $businessProfile,
             'seoTags'         => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_PROFILE),
             'photos'          => $photos,
-            'advertisements'  => $advertisements,
             'lastReview'      => $lastReview,
             'reviewForm'      => $reviewForm->createView(),
             'banners'         => $banners,
@@ -231,6 +231,7 @@ class ProfileController extends Controller
             'showClaimButton' => $showClaimBlock,
             'claimBusinessForm' => $claimBusinessForm,
             'locale'          => $locale,
+            'trackingParams'  => $trackingParams,
         ]);
     }
 

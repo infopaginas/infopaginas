@@ -185,6 +185,20 @@ class BusinessGalleryManager
      * @param string $context
      * @return Media
      */
+    public function createNewAdminMediaEntryFromUploadedFile(UploadedFile $file, $context) : Media
+    {
+        $media = $this->createNewMediaEntryFromUploadedFile($file, $context);
+
+        $this->getEntityManager()->flush();
+
+        return $media;
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @param string $context
+     * @return Media
+     */
     public function createNewMediaEntryFromUploadedFile(UploadedFile $file, $context) : Media
     {
         $imageContext = $this->checkImageUploadContext($context);

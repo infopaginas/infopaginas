@@ -22,7 +22,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app_version: '1.7.1'
+    app_version: '1.8.0'
     locale: en
     locales: [en, es]
     locale_data:
@@ -119,6 +119,7 @@ twig:
         google_map_default_center: '%google_map_default_center%'
         google_map_default_zoom: '%google_map_default_zoom%'
         google_map_min_zoom: '%google_map_min_single_zoom%'
+        media_file_name_max_length: 20
         breadcrumb_max_length: '%breadcrumb_max_length%'
         keyword_max_length: 50
 

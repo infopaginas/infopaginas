@@ -21,6 +21,10 @@
                     <section class="article-description">
                         {{ page.description }}
                     </section>
+
+                    {% if contactForm %}
+                        {% include ':redesign/blocks:contact_us.html.twig' %}
+                    {% endif %}
                 </article>
 
                 {% include ':redesign/blocks/banners:static-page-bottom.html.twig' with { 'bannerType': BANNER_CODE.STATIC_BOTTOM } %}

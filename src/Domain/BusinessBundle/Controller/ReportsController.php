@@ -7,6 +7,7 @@ use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Form\Type\BusinessCloseRequestType;
 use Domain\BusinessBundle\Form\Type\BusinessReportFilterType;
 use Domain\BusinessBundle\Manager\BusinessProfileManager;
+use Domain\ReportBundle\Manager\CategoryReportManager;
 use Domain\ReportBundle\Model\BusinessOverviewModel;
 use Domain\ReportBundle\Google\Analytics\DataFetcher;
 use Domain\ReportBundle\Manager\AdUsageReportManager;
@@ -160,6 +161,39 @@ class ReportsController extends Controller
         $type = $request->request->get('type', null);
 
         $result = $this->getBusinessOverviewReportManager()->registerBusinessInteraction($businessProfileId, $type);
+
+        return new JsonResponse(
+            [
+                'status' => $result,
+            ]
+        );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function eventTrackAction(Request $request)
+    {
+        $data   = $request->request->all();
+        $result = false;
+
+        foreach ($data as $key => $value) {
+            switch ($key) {
+                case BusinessOverviewModel::TYPE_CODE_IMPRESSION:
+                case BusinessOverviewModel::TYPE_CODE_VIEW:
+                    $result = $this->getBusinessOverviewReportManager()->registerBusinessEvent($key, $value);
+                    break;
+                case BusinessOverviewModel::TYPE_CODE_KEYWORD:
+                    $result = $this->getKeywordsReportManager()->registerBusinessKeywordEvent($value);
+                    break;
+                case BusinessOverviewModel::TYPE_CODE_CATEGORY_BUSINESS:
+                case BusinessOverviewModel::TYPE_CODE_CATEGORY_CATALOG:
+                    $result = $this->getCategoryReportManager()->registerCategoryEvent($key, $value);
+                    break;
+            }
+        }
 
         return new JsonResponse(
             [
@@ -411,6 +445,14 @@ class ReportsController extends Controller
     protected function getKeywordsReportManager() : KeywordsReportManager
     {
         return $this->get('domain_report.manager.keywords_report_manager');
+    }
+
+    /**
+     * @return CategoryReportManager
+     */
+    protected function getCategoryReportManager() : CategoryReportManager
+    {
+        return $this->get('domain_report.manager.category_report_manager');
     }
 
     /**

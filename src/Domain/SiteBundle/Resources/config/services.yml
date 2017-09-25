@@ -3,6 +3,8 @@ services:
     domain_site.mailer:
         class: Domain\SiteBundle\Mailer\Mailer
         arguments: ['@mailer', '@oxa_config', '@router']
+        calls:
+            - [ setTemplateEngine, [ '@templating' ]]
 
     #form types section
     domain_site.registration.form.type:

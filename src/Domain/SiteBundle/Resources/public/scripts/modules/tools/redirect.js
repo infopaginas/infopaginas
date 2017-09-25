@@ -1,12 +1,10 @@
-define(['jquery', 'tools/reportTracker'], function( $, ReportTracker ) {
+define(['jquery'], function( $, ReportTracker ) {
     'use strict';
 
     var redirect = function() {
         this.events = {
             "redirectEvent" : ".redirect-event"
         };
-
-        this.reportTracker = new ReportTracker;
 
         this.init();
     };
@@ -25,7 +23,7 @@ define(['jquery', 'tools/reportTracker'], function( $, ReportTracker ) {
         var type = current.data( 'type' );
         var useCurrentTab = current.data( 'current-tab' );
 
-        this.reportTracker.trackEvent( type, id );
+        $( document ).trigger( 'trackingInteractions', [type, id] );
 
         if ( useCurrentTab ) {
             window.location.href = redirectionLink;

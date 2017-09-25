@@ -66,3 +66,20 @@ category_report:
   page_type:
     business: Business
     catalog:  Catalog
+
+feedback_report:
+  mapping:
+    full_name: Full Name
+    business_name: Business Name
+    phone: Phone
+    email: Email
+    subject: Subject
+    message: Message
+    locale: Locale
+    user_id: User Id
+    date: date
+  subject_type:
+    bug: Bug
+    ads: Ads
+    create_business: Create business
+    other: Other

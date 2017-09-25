@@ -75,7 +75,7 @@
                                         <h3>{% trans %}Phone{% endtrans %}</h3>
                                         <ul>
                                             {% for phone in businessProfile.phones %}
-                                                <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                                                <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                                     <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
                                                     <a href="tel:{{ phone.phone }}" class="hide-desktop phone-call" data-id="{{ businessProfile.id }}" data-type="callMobButton">{{ phone.phone }}</a>
                                                     <span class="hide-mobile">{{ phone.phone }}</span>
@@ -158,16 +158,11 @@
                             </section>
                         {% endif %}
 
-                        {% if (advertisements|length > 0 or photos|length > 0) and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
+                        {% if photos|length > 0 and hasSubscription(businessProfile, "CODE_PREMIUM_GOLD") %}
                             <section class="page-section photos slider section--slider hide-before">
                                 {% for photo in photos %}
                                     <div class="slider__item">
                                         <img src="{% path photo.getMedia(), 'normal' %}" alt="{% if photo.description %}{{ photo.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
-                                    </div>
-                                {% endfor %}
-                                {% for ad in advertisements %}
-                                    <div class="slider__item">
-                                        <img src="{% path ad.getMedia(), 'normal' %}" alt="{% if ad.description %}{{ ad.description }}{% else %}{{ businessProfile.getName() }}{% endif %}">
                                     </div>
                                 {% endfor %}
                             </section>

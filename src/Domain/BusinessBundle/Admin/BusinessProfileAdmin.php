@@ -8,6 +8,7 @@ use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Entity\Media\BusinessGallery;
 use Domain\BusinessBundle\Entity\Subscription;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\BusinessBundle\Form\Type\BusinessGalleryAdminType;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\BusinessBundle\Model\StatusInterface;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
@@ -19,6 +20,8 @@ use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
+use Oxa\Sonata\MediaBundle\Form\Type\CollectionMediaType;
 use Oxa\Sonata\MediaBundle\Model\OxaMediaInterface;
 use Oxa\VideoBundle\Entity\VideoMedia;
 use Oxa\VideoBundle\Form\Type\VideoMediaType;
@@ -597,28 +600,29 @@ class BusinessProfileAdmin extends OxaAdmin
         $formMapper
             ->tab('Media')
                 ->with('Gallery')
-                    ->add(
-                        'images',
-                        'sonata_type_collection',
-                        [
-                            'by_reference' => false,
-                            'required'     => false,
-                            'mapped'       => true,
+                    ->add('images', CollectionMediaType::class, [
+                        'entry_type' => BusinessGalleryAdminType::class,
+                        'required'      => false,
+                        'allow_add'     => true,
+                        'allow_delete'  => true,
+                        'allow_extra_fields' => true,
+                        'by_reference' => false,
+                    ])
+                    ->add('addGalleryImage', FileType::class, [
+                        'mapped'   => false,
+                        'required' => false,
+                        'help'     => 'business_profile.help.gallery',
+                        'multiple' => true,
+                        'attr' => [
+                            'accept' => implode(',', AdminHelper::getFormImageFileAccept()),
                         ],
-                        [
-                            'edit'      => 'inline',
-                            'inline'    => 'table',
-                            'link_parameters' => [
-                                'context'   => OxaMediaInterface::CONTEXT_BUSINESS_PROFILE_IMAGES,
-                                'provider'  => OxaMediaInterface::PROVIDER_IMAGE,
-                            ]
-                        ]
-                    )
+                    ])
                     ->add(
                         'logo',
                         'sonata_type_model_list',
                         [
                             'required' => false,
+                            'help'     => 'business_profile.help.logo',
                         ],
                         [
                             'link_parameters' => [
@@ -632,6 +636,7 @@ class BusinessProfileAdmin extends OxaAdmin
                         'sonata_type_model_list',
                         [
                             'required' => false,
+                            'help'     => 'business_profile.help.background',
                         ],
                         [
                             'link_parameters' => [

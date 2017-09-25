@@ -760,25 +760,6 @@ class BusinessProfileManager extends Manager
     /**
      * @param BusinessProfile $businessProfile
      * @param string $locale
-     * @return array
-     */
-    public function getBusinessProfileAdvertisementImages(BusinessProfile $businessProfile, $locale = LocaleHelper::DEFAULT_LOCALE)
-    {
-        $subscriptionPlanCode = $businessProfile->getSubscriptionPlanCode();
-
-        if ($subscriptionPlanCode > SubscriptionPlanInterface::CODE_PREMIUM_PLUS) {
-            $advertisements = $this->getBusinessGalleryRepository()
-                ->findBusinessProfileAdvertisementImages($businessProfile, $locale);
-
-            return $advertisements;
-        }
-
-        return [];
-    }
-
-    /**
-     * @param BusinessProfile $businessProfile
-     * @param string $locale
      *
      * @return array
      */
@@ -3568,5 +3549,15 @@ class BusinessProfileManager extends Manager
         unset($admin, $params, $request);
 
         return $iterator;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Media|null
+     */
+    public function getBusinessGalleryMediaById($id)
+    {
+        return $this->em->getRepository(Media::class)->find($id);
     }
 }

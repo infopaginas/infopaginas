@@ -288,7 +288,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
             $( '[data-item-id = #' + itemId + ']' ).removeAttr( 'disabled' );
 
-            reportTracker.trackEvent( 'removeCompareButton', businessId );
+            $( document ).trigger( 'trackingInteractions', ['removeCompareButton', businessId] );
 
             item.velocity( { opacity: 1, top: 100 }, { display: "none" } );
         });
@@ -297,7 +297,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             $( this ).attr( 'disabled', 'disabled' );
             var itemId = $( this ).data( 'item-id' );
             var businessId = itemId.split( '-' ).slice( -1 )[0] ;
-            reportTracker.trackEvent( 'addCompareButton', businessId );
+            $( document ).trigger( 'trackingInteractions', ['addCompareButton', businessId] );
             $( itemId ).velocity( { opacity: 1, top: 0 }, { display: "flex" } );
         });
 
@@ -370,6 +370,10 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');
 
         singleSelects.select2();
+
+        $( '#domain_page_bundle_feedback_form_type_subject' ).select2({
+            minimumResultsForSearch: -1
+        });
 
         $('#select-from, #select-to').selectize({
             maxItems: 1
@@ -720,7 +724,7 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             var businessProfileId = businessProfile.data( 'business-profile-id' );
 
             if ( businessProfileId ) {
-                reportTracker.trackEvent( type, businessProfileId );
+                $( document ).trigger( 'trackingInteractions', [type, businessProfileId] );
             }
         }
     }
@@ -730,9 +734,9 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
 
     $( document ).on( 'click', phoneCall, function() {
         var itemId = $( this ).data( 'id' );
-        var type = $( this ).data( 'type' );
+        var type   = $( this ).data( 'type' );
 
-        reportTracker.trackEvent( type, itemId );
+        $( document ).trigger( 'trackingInteractions', [type, itemId] );
     });
 
     $( 'video' ).one( 'play', function() {

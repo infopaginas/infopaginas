@@ -24,7 +24,6 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('id')
             ->add('media.name')
             ->add('businessProfile.name')
-            ->add('isPrimary')
             ->add('isActive')
         ;
     }
@@ -42,9 +41,7 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('media.name')
             ->addIdentifier('description')
             ->add('businessProfile')
-            ->add('isPrimary', null, ['editable' => true])
             ->add('isActive', null, ['editable' => true])
-            ->add('sorting', null, ['template' => 'OxaSonataAdminBundle:CRUD:list_sorting.html.twig'])
         ;
         $this->addGridActions($listMapper);
     }
@@ -77,7 +74,6 @@ class BusinessGalleryAdmin extends OxaAdmin
                 'placeholder'   => 'Create an image description as ' .
                     'if you were describing the image to someone who cannot see it',
             ]])
-            ->add('isPrimary')
             ->add('isActive')
         ;
     }
@@ -95,7 +91,6 @@ class BusinessGalleryAdmin extends OxaAdmin
             ->add('media.name')
             ->add('businessProfile')
             ->add('description')
-            ->add('isPrimary')
             ->add('isActive')
         ;
     }

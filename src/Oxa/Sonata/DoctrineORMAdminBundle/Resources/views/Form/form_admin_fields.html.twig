@@ -93,3 +93,58 @@
 
     {% include 'OxaSonataDoctrineORMAdminBundle:CRUD:edit_orm_many_association_script.html.twig' %}
 {% endblock %}
+
+{% block sonata_type_native_collection_media_widget_row %}
+    {% spaceless %}
+        <div class="sonata-collection-row">
+            <div class="row">
+                <div class="col-xs-10">
+                    {{ form_row(child, { label: false, attr: {class: 'media-data-block'} }) }}
+                </div>
+                <div class="col-xs-2 media_gallery-remove-block">
+                    <span class="button-checkbox">
+                        <button type="button" class="btn btn-default gallery-remove-button" data-color="danger" data-text-default="{{ 'collection_row_delete_button'|trans({}, 'SonataAdminBundle') }}" data-text-checked="{{ 'collection_row_delete_button_checked'|trans({}, 'SonataAdminBundle') }}">
+                            <i class="state-icon glyphicon glyphicon-unchecked"></i>
+                            <span>{{ 'collection_row_delete_button'|trans({}, 'SonataAdminBundle') }}</span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock sonata_type_native_collection_media_widget_row %}
+
+{% block sonata_type_native_collection_media_widget %}
+    {% spaceless %}
+        {% if prototype is defined %}
+            {% set child = prototype %}
+            {% set allow_delete_backup = allow_delete %}
+            {% set allow_delete = true %}
+            {% set attr = attr|merge({'data-prototype': block('sonata_type_native_collection_media_widget_row'), 'data-prototype-name': prototype.vars.name, 'class': attr.class|default('') }) %}
+            {% set allow_delete = allow_delete_backup %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_errors(form) }}
+            {% for child in form %}
+                {{ block('sonata_type_native_collection_media_widget_row') }}
+            {% endfor %}
+            {{ form_rest(form) }}
+            {% if allow_add %}
+                <div class="media-upload-block">
+                    <div hidden>
+                        <a href="#" class="btn btn-link sonata-collection-add">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <div>
+                        <div id="{{ form.vars.id }}_dropzone" class="dropzone">{{ 'media_drop_zone_message'|trans({}, 'SonataAdminBundle') }}</div>
+                        <div id="{{ form.vars.id }}_dropzone-error"
+                            data-error-max-count="{{ 'media_max_files_message'|trans({}, 'SonataAdminBundle') }}"
+                            data-error-invalid-extension="{{ 'media_invalid_extension_files_message'|trans({}, 'SonataAdminBundle') }}"
+                            data-error-max-size="{{ 'media_max_size_message'|trans({}, 'SonataAdminBundle') }}"></div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endspaceless %}
+{% endblock sonata_type_native_collection_media_widget %}

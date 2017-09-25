@@ -91,7 +91,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-call-list" aria-labelledby="dropdownMenuCall">
                         {% for phone in item.phones %}
-                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %}>
+                            <li {% if phone.type == BUSINESS_PROFILE_PHONE.TYPE.MAIN %}class="main-phone"{% endif %} title="{{ ('business_profile.phone.tooltip.' ~ phone.type)|trans }}">
                                 <i class="fa {{ get_business_profile_phone_icon(phone) }}"></i>
                                 {{ phone.phone }}
                             </li>

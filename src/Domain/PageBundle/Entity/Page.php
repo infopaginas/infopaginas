@@ -36,6 +36,11 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     const POPULAR_CATEGORY_AGGREGATE_PERIOD = DatesUtil::RANGE_TODAY;
     const POPULAR_CATEGORY_PREFIX = 'popular_category_';
 
+    const CONTACT_SUBJECT_BUG = 'bug';
+    const CONTACT_SUBJECT_ADS = 'ads';
+    const CONTACT_SUBJECT_CREATE_BUSINESS = 'create_business';
+    const CONTACT_SUBJECT_OTHER = 'other';
+
     /**
      * @var int
      *
@@ -476,5 +481,28 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public static function getPopularCategoryKey($id)
     {
         return sprintf('[%s%s]', self::POPULAR_CATEGORY_PREFIX, $id);
+    }
+
+    /**
+     * @param int $code
+     *
+     * @return bool
+     */
+    public static function getShowContactForm($code)
+    {
+        return $code == self::CODE_CONTACT_US;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getContactSubjects()
+    {
+        return [
+            self::CONTACT_SUBJECT_CREATE_BUSINESS => 'contact.form.subject_type.create_business',
+            self::CONTACT_SUBJECT_BUG => 'contact.form.subject_type.bug',
+            self::CONTACT_SUBJECT_ADS => 'contact.form.subject_type.ads',
+            self::CONTACT_SUBJECT_OTHER => 'contact.form.subject_type.other',
+        ];
     }
 }

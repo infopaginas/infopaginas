@@ -31,3 +31,10 @@ label_export_download: Export
 filter.label.period.daily: Daily
 filter.label.period.per_month: Per Month
 relation_not_valid: Some values are not valid.
+collection_row_delete_button: Delete
+collection_row_delete_button_checked: Deleted
+media_preview_loading_message: Please, wait loading...
+media_drop_zone_message: Drag & Drop Files Here
+media_max_files_message: Max files quantity is
+media_max_size_message: Max file size is
+media_invalid_extension_files_message: Invalid file extension

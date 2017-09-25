@@ -160,28 +160,6 @@ class BusinessOverviewReportManager extends BaseReportManager
     }
 
     /**
-     * @param BusinessProfile[] $businessProfiles
-     */
-    public function registerBusinessView(array $businessProfiles)
-    {
-        $this->registerBusinessEvent(
-            BusinessOverviewModel::TYPE_CODE_VIEW,
-            $businessProfiles
-        );
-    }
-
-    /**
-     * @param BusinessProfile[] $businessProfiles
-     */
-    public function registerBusinessImpression(array $businessProfiles)
-    {
-        $this->registerBusinessEvent(
-            BusinessOverviewModel::TYPE_CODE_IMPRESSION,
-            $businessProfiles
-        );
-    }
-
-    /**
      * @param int $businessProfileId
      * @param string $type
      *
@@ -193,7 +171,7 @@ class BusinessOverviewReportManager extends BaseReportManager
             $businessProfile = $this->getBusinessProfileManager()->getRepository()->find($businessProfileId);
 
             if ($businessProfile) {
-                $result = $this->registerBusinessEvent(
+                $result = $this->registerBusinessInteractionEvent(
                     $type,
                     [$businessProfile]
                 );
@@ -207,17 +185,36 @@ class BusinessOverviewReportManager extends BaseReportManager
 
     /**
      * @param string $type
+     * @param array  $businessProfileIds
+     *
+     * @return bool
+     */
+    public function registerBusinessEvent($type, array $businessProfileIds)
+    {
+        if (!in_array($type, BusinessOverviewModel::getBusinessEventTypes()) or !$businessProfileIds) {
+            return false;
+        }
+
+        $data = $this->buildBusinessInteractions($businessProfileIds, $type);
+
+        $this->insertBusinessInteractions($data);
+
+        return true;
+    }
+
+    /**
+     * @param string $type
      * @param array $businessProfiles
      *
      * @return bool
      */
-    private function registerBusinessEvent($type, array $businessProfiles)
+    private function registerBusinessInteractionEvent($type, array $businessProfiles)
     {
         if (!in_array($type, BusinessOverviewModel::getTypes()) or !$businessProfiles) {
             return false;
         }
 
-        $businessProfileIds = BusinessProfileUtil::extractBusinessProfiles($businessProfiles);
+        $businessProfileIds = BusinessProfileUtil::extractEntitiesId($businessProfiles);
 
         $data = $this->buildBusinessInteractions($businessProfileIds, $type);
 
@@ -250,7 +247,7 @@ class BusinessOverviewReportManager extends BaseReportManager
     protected function buildSingleBusinessInteraction($businessId, $action, $date)
     {
         $data = [
-            self::MONGO_DB_FIELD_BUSINESS_ID => $businessId,
+            self::MONGO_DB_FIELD_BUSINESS_ID => (int) $businessId,
             self::MONGO_DB_FIELD_ACTION      => $action,
             self::MONGO_DB_FIELD_DATE_TIME   => $date,
         ];

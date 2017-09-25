@@ -35,3 +35,26 @@
 {% block google_map_front_widget %}
     {% include 'DomainBusinessBundle:Form/widgets:google_map_front.html.twig' %}
 {% endblock %}
+
+{% block media_preview_widget %}
+    {% set media = get_business_gallery_media(form.vars.data) %}
+
+    <div class="form-group gallery-media-block{% if errors|length > 0 %} has-error{% endif %}" id="sonata-ba-field-container-{{ id }}">
+        {{ block('hidden_widget') }}
+        {% if media %}
+            <div class="media-preview-block">
+                <img src="{% path media, 'preview' %}">
+            </div>
+            <div class="media-name-block">
+                <span>{{ media.name|truncate(media_file_name_max_length) }}</span>
+            </div>
+        {% else %}
+            <div class="media-preview-block">
+                <img src="{{ asset('assets/images/spinner-empty-background.gif') }}">
+            </div>
+            <div class="media-name-block">
+                <span>{{ 'media_preview_loading_message'|trans({}, 'SonataAdminBundle') }}</span>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

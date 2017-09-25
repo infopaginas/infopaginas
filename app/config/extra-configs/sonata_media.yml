@@ -44,16 +44,6 @@ sonata_media:
             formats:
                 preview:    { width: 150, height: 150, quality: 70}
                 normal:     { width: 500, height: 500, quality: 70}
-        banner:
-            download:
-                mode: http
-            providers:
-                - sonata.media.provider.image
-            formats:
-                home:       { width: 120, height: 420, quality: 70}
-                portal:     { width: 300, height: 250, quality: 70}
-                serp:       { width: 728, height: 90, quality: 70}
-                serp_boxed: { width: 250, height: 250, quality: 70}
         article:
             download:
                 mode: http
@@ -102,6 +92,7 @@ sonata_media:
             region:         '%amazon_aws_region%' # change if not using US Standard region
             directory:      'uploads/media/%sonata_media.cdn.folder%'
             acl:            public
+            cache_control:  max-age=5184000 # 60 days
 
     providers:
         image:
