@@ -88,6 +88,10 @@
             {% include ':redesign/blocks/tracking:tracking_params.html.twig' %}
         {% endblock %}
 
+        {% block emergencyPopUp %}
+            {% include ':redesign/blocks/emergency:pop-up.html.twig' %}
+        {% endblock %}
+
         <!-- Scripts -->
         {% block scripts %}
             <script src="{{ absolute_url(asset('assetic/app_common_js.js')) }}"></script>

@@ -6,3 +6,11 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Pages}
         calls:
             - [setTranslationDomain, [ 'AdminDomainPageBundle' ] ]
+
+    domain_page.admin.page_link:
+        class: Domain\PageBundle\Admin\PageLinkAdmin
+        arguments: [~, Domain\PageBundle\Entity\PageLink, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Page Links}
+        calls:
+            - [setTranslationDomain, [ 'AdminDomainPageBundle' ] ]

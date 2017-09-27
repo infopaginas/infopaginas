@@ -458,7 +458,15 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         });
     });
 
-//
+    $( document).ready(function() {
+        var emergencyModal = $( '#emergency-pop-up.modal' );
+
+        if ( emergencyModal.length ) {
+            emergencyModal.modalFunc();
+        }
+
+    });
+
 // Categories menu
 
     $.fn.toggleCat = function() {

@@ -165,6 +165,33 @@ class PageAdmin extends OxaAdmin
                 ])
             ->end()
         ;
+
+        if ($pageCode == PageInterface::CODE_EMERGENCY) {
+            $formMapper
+                ->with('Content')
+                    ->add('contentUpdatedAt', 'sonata_type_datetime_picker', [
+                        'required' => false,
+                        'disabled' => true,
+                    ])
+                    ->add('actionLink', null, [
+                        'help' => $this->getHelpMessage('actionLink', $helpMessage),
+                    ])
+                    ->add(
+                        'links',
+                        'sonata_type_collection',
+                        [
+                            'by_reference'  => false,
+                            'required'      => false,
+                        ],
+                        [
+                            'edit'          => 'inline',
+                            'delete_empty'  => false,
+                            'inline'        => 'table',
+                        ]
+                    )
+                ->end()
+            ;
+        }
     }
 
     /**

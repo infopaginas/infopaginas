@@ -49,6 +49,14 @@ sonata_admin:
                     - domain_business.admin.payment_method
                     - domain_business.admin.address.country
                     - domain_business.admin.landing_page_short_cut
+            domain.admin.group.emergency:
+                label: Emergency
+                icon: <i class="fa fa-exclamation-triangle"></i>
+                items:
+                    - domain_emergency.admin.business
+                    - domain_emergency.admin.area
+                    - domain_emergency.admin.category
+                    - domain_emergency.admin.service
             domain.admin.group.page:
                 label: Pages
                 icon: <i class="fa fa-file"></i>

@@ -5,6 +5,7 @@ page:
       description: This value will be used for "copy" field
       seoTitle: This value will be used for SEO Title meta tag (total 60 char). "| Infopaginas" will be added automatically
       seoDescription: This value will be used for SEO desription meta tag (total 160 char)
+      actionLink: Link to external resources
     article_category_list:
       seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically
       seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
@@ -12,5 +13,8 @@ page:
       seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopaginas" will be added automatically
       seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}
     catalog_locality_category:
+      seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically
+      seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.
+    emergency_area_category:
       seoTitle: This value will be used for SEO Title meta tag (total 60 char), placeholders: {placeholders}. "| Infopáginas" will be added automatically
       seoDescription: This value will be used for SEO desription meta tag (total 160 char), placeholders: {placeholders}.

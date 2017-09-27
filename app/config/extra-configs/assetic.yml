@@ -25,12 +25,25 @@ assetic:
             output: 'assetic/app_common_css.css'
             filters:
                 - scssphp
+        app_emergency_css:
+            inputs:
+                - 'bundles/domainemergency/css/emergency.css'
+            output: 'assetic/app_emergency_css.css'
+            filters:
+                - scssphp
         app_common_js:
             inputs:
                 - '@DomainSiteBundle/Resources/public/scripts/require.js'
                 - 'bundles/fosjsrouting/js/router.js'
                 - '@DomainSiteBundle/Resources/public/scripts/vendors/modernizr-2.7.1.min.js'
                 - '@DomainSiteBundle/Resources/public/scripts/modules/helper.js'
+            filters:
+                - jsqueeze
+        app_emergency_js:
+            inputs:
+                - 'bundles/fosjsrouting/js/router.js'
+                - 'bundles/domainsite/scripts/vendors/jquery.min.js'
+                - 'bundles/domainemergency/scripts/emergencyCatalog.js'
             filters:
                 - jsqueeze
         require_common_js:

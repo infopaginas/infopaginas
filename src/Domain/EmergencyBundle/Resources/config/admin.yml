@@ -1,0 +1,32 @@
+services:
+    domain_emergency.admin.area:
+        class: Domain\EmergencyBundle\Admin\EmergencyAreaAdmin
+        arguments: [~, Domain\EmergencyBundle\Entity\EmergencyArea, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Emergency Areas}
+
+    domain_emergency.admin.category:
+        class: Domain\EmergencyBundle\Admin\EmergencyCategoryAdmin
+        arguments: [~, Domain\EmergencyBundle\Entity\EmergencyCategory, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Emergency Categories}
+
+    domain_emergency.admin.working_hours:
+        class: Domain\EmergencyBundle\Admin\EmergencyBusinessWorkingHourAdmin
+        arguments: [~, Domain\EmergencyBundle\Entity\EmergencyBusinessWorkingHour, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Emergency Business Working Hours}
+
+    domain_emergency.admin.service:
+        class: Domain\EmergencyBundle\Admin\EmergencyServiceAdmin
+        arguments: [~, Domain\EmergencyBundle\Entity\EmergencyService, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Emergency Services}
+
+    domain_emergency.admin.business:
+        class: Domain\EmergencyBundle\Admin\EmergencyBusinessAdmin
+        arguments: [~, Domain\EmergencyBundle\Entity\EmergencyBusiness, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Emergency Businesses}
+        calls:
+            - [ setTemplate, ['edit', 'DomainEmergencyBundle:Admin:edit.html.twig']]

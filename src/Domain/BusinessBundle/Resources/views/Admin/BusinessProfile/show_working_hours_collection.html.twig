@@ -5,18 +5,18 @@
         <ul class="sonata-ba-show-one-to-many">
             {% for item in object.collectionWorkingHours %}
                 <li>
-                    {{ item.day }}:
+                    {{ item.days|join(', ') }}:
                     {% if item.openAllTime %}
                         Open all time;
                     {% else %}
                         {{ item.timeStart|date(working_hours_date_format) }} - {{ item.timeEnd|date(working_hours_date_format) }};
                     {% endif %}
 
-                    {% if item.commentEn %}
+                    {% if item.commentEn is defined and item.commentEn %}
                         Comment En: {{ item.commentEn }};
                     {% endif %}
 
-                    {% if item.commentEs %}
+                    {% if item.commentEs is defined and item.commentEs %}
                         Comment Es: {{ item.commentEs }};
                     {% endif %}
                 </li>

@@ -90,6 +90,7 @@ class AppKernel extends Kernel
             new Presta\SitemapBundle\PrestaSitemapBundle(),
             // HTML Purifier
             new Exercise\HTMLPurifierBundle\ExerciseHTMLPurifierBundle(),
+            new Domain\EmergencyBundle\DomainEmergencyBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

@@ -139,6 +139,34 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $redirectUrl;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="content_updated_at", type="datetime", nullable=true)
+     */
+    protected $contentUpdatedAt;
+
+    /**
+     * @var ArrayCollection - Page links
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Domain\PageBundle\Entity\PageLink",
+     *     mappedBy="page",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     * @Assert\Valid()
+     */
+    protected $links;
+
+    /**
+     * @var string - link
+     *
+     * @ORM\Column(name="action_link", type="string", length=1000, nullable=true)
+     * @Assert\Url()
+     * @Assert\Length(max=1000)
+     */
+    protected $actionLink;
+
+    /**
      * Get id
      *
      * @return int
@@ -162,6 +190,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function __construct()
     {
         $this->translations = new ArrayCollection();
+        $this->links        = new ArrayCollection();
     }
 
     /**
@@ -406,6 +435,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             case PageInterface::CODE_ARTICLE_CATEGORY_LIST:
             case PageInterface::CODE_CATALOG_LOCALITY:
             case PageInterface::CODE_CATALOG_LOCALITY_CATEGORY:
+            case PageInterface::CODE_EMERGENCY_AREA_CATEGORY:
                 $validCode = $code;
                 break;
             default:
@@ -427,6 +457,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
                 'description'       => 'page.help_message.default.description',
                 'seoTitle'          => 'page.help_message.default.seoTitle',
                 'seoDescription'    => 'page.help_message.default.seoDescription',
+                'actionLink'        => 'page.help_message.default.actionLink',
                 'placeholders'      => [],
             ],
             PageInterface::CODE_ARTICLE_CATEGORY_LIST => [
@@ -452,6 +483,16 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
                 'seoDescription'    => 'page.help_message.catalog_locality_category.seoDescription',
                 'placeholders'      => [
                     '[locality]',
+                    '[category]',
+                ],
+            ],
+            PageInterface::CODE_EMERGENCY_AREA_CATEGORY => [
+                'title'             => 'page.help_message.default.title',
+                'description'       => 'page.help_message.default.description',
+                'seoTitle'          => 'page.help_message.emergency_area_category.seoTitle',
+                'seoDescription'    => 'page.help_message.emergency_area_category.seoDescription',
+                'placeholders'      => [
+                    '[area]',
                     '[category]',
                 ],
             ],
@@ -504,5 +545,81 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             self::CONTACT_SUBJECT_ADS => 'contact.form.subject_type.ads',
             self::CONTACT_SUBJECT_OTHER => 'contact.form.subject_type.other',
         ];
+    }
+
+    /**
+     * Sets contentUpdatedAt
+     *
+     * @param  \DateTime $updatedAt
+     * @return $this
+     */
+    public function setContentUpdatedAt(\DateTime $updatedAt)
+    {
+        $this->contentUpdatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Returns contentUpdatedAt
+     *
+     * @return \DateTime
+     */
+    public function getContentUpdatedAt()
+    {
+        return $this->contentUpdatedAt;
+    }
+
+    /**
+     * Add $link
+     *
+     * @param PageLink $link
+     *
+     * @return Page
+     */
+    public function addLink(PageLink $link)
+    {
+        $this->links->add($link);
+        $link->setPage($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove $link
+     *
+     * @param PageLink $link
+     */
+    public function removeLink(PageLink $link)
+    {
+        $this->links->removeElement($link);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLinks()
+    {
+        return $this->links;
+    }
+
+    /**
+     * @param string $link
+     *
+     * @return Page
+     */
+    public function setActionLink($link)
+    {
+        $this->actionLink = $link;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionLink()
+    {
+        return $this->actionLink;
     }
 }

@@ -1,0 +1,45 @@
+{% for business in businesses %}
+    <div class="business-block">
+        <div class="name">
+            <h3>{{ business.name }}</h3>
+        </div>
+        <div class="business-data">
+            <div class="label">{{ 'emergency.label.category'|trans }}:</div>
+            <div class="category data">{{ business.category.name }}</div>
+        </div>
+        {% if business.address %}
+            <div class="business-data">
+                <div class="label">{{ 'emergency.label.address'|trans }}:</div>
+                <div class="address data">{{ business.address }}</div>
+            </div>
+        {% endif %}
+
+        {% if business.workingHoursJson %}
+            <div class="business-data">
+                <div class="label">{{ 'emergency.label.working_hours'|trans }}:</div>
+                <div class="working-hours data">
+                    {% include ':redesign/blocks/emergency:working_hours_daily_list.html.twig' with { 'businessProfile': business } %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if business.phone %}
+            <div class="business-data">
+                <div class="label">{{ 'emergency.label.phone'|trans }}:</div>
+                <div class="phone data">{{ business.phone }}</div>
+            </div>
+        {% endif %}
+        {% if not business.paymentMethods.empty %}
+            <div class="business-data">
+                <div class="label">{{ 'emergency.label.payment'|trans }}:</div>
+                <div class="payment data">{{ business.paymentMethods|join(', ') }}</div>
+            </div>
+        {% endif %}
+        {% if not business.services.empty %}
+            <div class="business-data">
+                <div class="label">{{ 'emergency.label.services'|trans }}:</div>
+                <div class="services data">{{ business.services|join(', ') }}</div>
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
