@@ -3,11 +3,7 @@
 namespace Domain\EmergencyBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use Domain\EmergencyBundle\Entity\EmergencyArea;
-use Domain\EmergencyBundle\Entity\EmergencyCategory;
-use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
-use Domain\SiteBundle\Utils\Helpers\SiteHelper;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 
 class EmergencyCatalogItemRepository extends EntityRepository
 {
@@ -28,5 +24,20 @@ class EmergencyCatalogItemRepository extends EntityRepository
         ;
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getCatalogItemsWithContentIterator()
+    {
+        $qb = $this->createQueryBuilder('ci');
+
+        $qb->andWhere('ci.hasContent = TRUE');
+        $qb->andWhere('ci.category IS NOT NULL');
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
     }
 }
