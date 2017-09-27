@@ -100,7 +100,7 @@ class SitemapSubscriber implements EventSubscriberInterface
         $this->addBusinessProfiles();
         $this->addArticleList();
         $this->addArticleCategoryList();
-//        $this->addBusinessProfilesCatalog();
+        $this->addBusinessProfilesCatalog();
         $this->addEmergencyBusinessCatalog();
         $this->addStaticUrls();
     }
