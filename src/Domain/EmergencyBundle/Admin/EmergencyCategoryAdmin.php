@@ -74,9 +74,7 @@ class EmergencyCategoryAdmin extends OxaAdmin
      */
     public function isGranted($action, $category = null)
     {
-        $deniedActions = $this->getDeleteDeniedAction();
-
-        if (in_array($action, $deniedActions)) {
+        if (in_array($action, $this->getDeleteDeniedAction())) {
             return false;
         }
 

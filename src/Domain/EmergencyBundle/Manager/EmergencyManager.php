@@ -68,7 +68,8 @@ class EmergencyManager
     {
         $limit = $this->getSystemItemPerPage();
 
-        return $this->em->getRepository(EmergencyBusiness::class)->getBusinessByAreaAndCategory($area, $category, $limit, $page);
+        return $this->em->getRepository(EmergencyBusiness::class)
+            ->getBusinessByAreaAndCategory($area, $category, $limit, $page);
     }
 
     /**

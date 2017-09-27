@@ -7,7 +7,7 @@ use Domain\ReportBundle\Model\PostponeExportInterface;
 use Domain\ReportBundle\Model\ReportInterface;
 
 /**
- * Feedback
+ * FeedbackReport
  *
  * @ORM\Table(name="feedback_report")
  * @ORM\Entity(repositoryClass="Domain\ReportBundle\Repository\FeedbackReportRepository")

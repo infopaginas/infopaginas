@@ -15,7 +15,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EmergencyService
 {
-
     /**
      * @var int
      *
@@ -71,7 +70,7 @@ class EmergencyService
      */
     public function __toString()
     {
-        return $this->getName() ?: '';
+        return $this->getName() ? : '';
     }
 
     /**

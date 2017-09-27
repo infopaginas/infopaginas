@@ -56,7 +56,7 @@ class PageLink
      */
     public function __toString()
     {
-        return $this->getName() ?: '';
+        return $this->getName() ? : '';
     }
 
     /**
