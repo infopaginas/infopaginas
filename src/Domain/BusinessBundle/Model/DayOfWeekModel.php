@@ -4,6 +4,7 @@ namespace Domain\BusinessBundle\Model;
 
 use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Entity\BusinessProfileWorkingHour;
+use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\ReportBundle\Util\DatesUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -319,11 +320,11 @@ class DayOfWeekModel
     }
 
     /**
-     * @param BusinessProfile $businessProfile
+     * @param BusinessProfile|EmergencyBusiness $businessProfile
      *
      * @return array
      */
-    public static function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
+    public static function getBusinessProfileWorkingHoursList($businessProfile)
     {
         $workingHours = $businessProfile->getCollectionWorkingHours();
 
@@ -339,7 +340,7 @@ class DayOfWeekModel
     }
 
     /**
-     * @param BusinessProfile $businessProfile
+     * @param BusinessProfile|EmergencyBusiness $businessProfile
      *
      * @return \stdClass
      */
@@ -436,7 +437,7 @@ class DayOfWeekModel
     }
 
     /**
-     * @param BusinessProfile $businessProfile
+     * @param BusinessProfile|EmergencyBusiness $businessProfile
      *
      * @return string
      */

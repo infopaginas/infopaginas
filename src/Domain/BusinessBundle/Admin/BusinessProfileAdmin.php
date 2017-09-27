@@ -65,6 +65,11 @@ class BusinessProfileAdmin extends OxaAdmin
     /**
      * @var bool
      */
+    public $emergencyCopyAvailable = true;
+
+    /**
+     * @var bool
+     */
     public $allowBatchRestore = true;
 
     /**
@@ -156,6 +161,12 @@ class BusinessProfileAdmin extends OxaAdmin
             ->add('isActive')
             ->add('isDeleted', null, [
                 'label' => 'Scheduled for deletion',
+            ])
+            ->add('categories.name', null, [
+                'label' => $this->trans('filter.label_categories.en', [], $this->getTranslationDomain())
+            ])
+            ->add('categories.searchTextEs', null, [
+                'label' => $this->trans('filter.label_categories.es', [], $this->getTranslationDomain())
             ])
         ;
     }

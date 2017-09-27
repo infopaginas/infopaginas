@@ -1,0 +1,33 @@
+{% extends ":redesign/layout:emergency.html.twig" %}
+
+{% block bodyClass %}emergency-catalog{% endblock %}
+
+{% block body %}
+    <div class="emergency-title">
+        <h1>{{ area.name }}</h1>
+        <h2>{{ category.name }}</h2>
+    </div>
+
+    <div class="emergency-back-button">
+        <a href="{{ absolute_url(path('emergency_main')) }}">{{ 'emergency.back_button'|trans }}</a>
+    </div>
+
+    <div class="emergency-catalog" id="emergency-catalog">
+        {% include ':redesign/blocks/emergency:emergency-businesses.html.twig' %}
+    </div>
+
+    <div class="show-more">
+        <a id="show-more-button" class="button" data-page="{{ pageNumber }}" data-area="{{ area.slug }}" data-category="{{ category.slug }}" href="{{ absolute_url(path('emergency_catalog', {areaSlug: area.slug, categorySlug: category.slug, page: pageNumber + 1})) }}">{{ 'emergency.load_more.button'|trans }}</a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="{{ absolute_url(asset('assetic/app_emergency_js.js')) }}"></script>
+
+    {% if app.debug %}
+        <script src="{{ absolute_url(path('fos_js_routing_js', { callback: 'fos.Router.setData' })) }}"></script>
+    {% else %}
+        <script src="{{ absolute_url(asset('js/fos_js_routes.js')) }}"></script>
+    {% endif %}
+{% endblock%}

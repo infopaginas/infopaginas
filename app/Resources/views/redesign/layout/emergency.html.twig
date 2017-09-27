@@ -1,0 +1,49 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}</title>
+
+        <meta name="description" content="{% if seoData is defined and seoData.seoDescription %}{{ seoData.seoDescription }}{% endif %}"/>
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+        <meta http-equiv="cleartype" content="on">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ absolute_url(asset('redesign/img/touch/touch-icon.png')) }}">
+        <link rel="shortcut icon" href="{{ absolute_url(asset('redesign/img/touch/touch-icon.png')) }}">
+
+        <!-- Tile icon for Win8 (144x144 + tile color) -->
+        <meta name="msapplication-TileImage" content="{{ absolute_url(asset('redesign/img/touch/touch-icon.png')) }}">
+        <meta name="msapplication-TileColor" content="#222222">
+
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}">
+
+        {% block styles %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_emergency_css.css')) }}" />
+        {% endblock %}
+    </head>
+    <body class="{% block bodyClass %}{% endblock %}">
+        {% block emergencyHeader %}
+            <header class="header">
+                <div class="logo">
+                    <a href="{{ absolute_url(path('domain_site_home_index')) }}">
+                        <img class="logo__icon" src="{{ absolute_url(asset('redesign/img/infopaginas.svg')) }}" width="52" alt="{% trans %}infopaginos.image.alt{% endtrans %}">
+                        <img class="logo__iso" src="{{ absolute_url(asset('redesign/img/infopaginas-iso.svg')) }}" alt="{% trans %}infopaginos.image.alt{% endtrans %}">
+                    </a>
+                </div>
+            </header>
+        {% endblock %}
+
+        {% block body %}{% endblock %}
+
+        {% block scripts %}{% endblock %}
+    </body>
+</html>
+{% endspaceless %}

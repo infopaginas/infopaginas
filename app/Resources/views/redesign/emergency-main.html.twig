@@ -1,0 +1,57 @@
+{% extends ":redesign/layout:emergency.html.twig" %}
+
+{% block bodyClass %}emergency-main{% endblock %}
+
+{% block body %}
+    <div class="emergency-title">
+        <h1>{{ page.title }}</h1>
+        {% if page.contentUpdatedAt %}
+            <h3>{{ 'emergency.updated.title'|trans }}: {{ page.contentUpdatedAt|date(emergency_update_date_format) }}</h3>
+        {% endif %}
+    </div>
+
+    {% if page.description %}
+        <div class="description">
+            <p>{{ page.description }}</p>
+        </div>
+    {% endif %}
+
+    {% if page.actionLink %}
+        <div class="add-item">
+            <a href="{{ page.actionLink }}" class="button">{{ 'emergency.add_item.title'|trans }}</a>
+        </div>
+    {% endif %}
+
+    <div class="emergency-catalog">
+        <ul>
+            {% for catalogItem in catalogItems %}
+                <li>
+                    {{ catalogItem.area.name }}
+                    <ul>
+                        {% for category in catalogItem.categories %}
+                            <li>
+                                <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: category.slug})) }}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="emergency-links">
+        <h2>{{ 'emergency.page_link.title'|trans }}</h2>
+
+        {% if not page.links.empty %}
+            <ul>
+                {% for link in page.links %}
+                    <li>
+                        <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

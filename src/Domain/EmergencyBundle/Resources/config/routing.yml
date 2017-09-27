@@ -1,0 +1,9 @@
+emergency_main:
+    path:     /
+    defaults: { _controller: DomainEmergencyBundle:Emergency:emergency }
+
+emergency_catalog:
+    path:     /area/{areaSlug}/category/{categorySlug}
+    defaults: { _controller: DomainEmergencyBundle:Emergency:catalog }
+    options:
+        expose: true

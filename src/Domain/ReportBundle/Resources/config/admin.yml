@@ -33,7 +33,7 @@ services:
 
     domain_report.admin.feedback_report:
         class: Domain\ReportBundle\Admin\FeedbackReportAdmin
-        arguments: [~, Domain\ReportBundle\Entity\UserActionReport, DomainReportBundle:CRUD]
+        arguments: [~, Domain\ReportBundle\Entity\FeedbackReport, DomainReportBundle:CRUD]
         tags:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Feedback}
         calls:
