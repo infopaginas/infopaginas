@@ -9,6 +9,8 @@ use Domain\BusinessBundle\Entity\CatalogItem;
 use Domain\BusinessBundle\Entity\Category;
 use Domain\BusinessBundle\Model\SubscriptionPlanInterface;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
+use Oxa\ConfigBundle\Model\ConfigInterface;
+use Oxa\ConfigBundle\Service\Config;
 use Presta\SitemapBundle\Sitemap\Url\GoogleMultilangUrlDecorator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -61,6 +63,11 @@ class SitemapSubscriber implements EventSubscriberInterface
     private $defaultHost;
 
     /**
+     * @var Config
+     */
+    private $config;
+
+    /**
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -70,6 +77,7 @@ class SitemapSubscriber implements EventSubscriberInterface
         $this->manager      = $container->get('doctrine.orm.entity_manager');
         $this->context      = $this->urlGenerator->getContext();
         $this->defaultHost  = $this->context->getHost();
+        $this->config       = $container->get('oxa_config');
     }
 
     /**
@@ -92,7 +100,7 @@ class SitemapSubscriber implements EventSubscriberInterface
         $this->addBusinessProfiles();
         $this->addArticleList();
         $this->addArticleCategoryList();
-        $this->addBusinessProfilesCatalog();
+//        $this->addBusinessProfilesCatalog();
         $this->addEmergencyBusinessCatalog();
         $this->addStaticUrls();
     }
@@ -168,16 +176,18 @@ class SitemapSubscriber implements EventSubscriberInterface
 
     protected function addEmergencyBusinessCatalog()
     {
-        $catalogItems = $this->manager->getRepository(EmergencyCatalogItem::class)->getCatalogItemsWithContentIterator();
+        if ($this->getEmergencyFeatureEnabled()) {
+            $catalogItems = $this->manager->getRepository(EmergencyCatalogItem::class)->getCatalogItemsWithContentIterator();
 
-        foreach ($catalogItems as $row) {
-            /* @var $catalogItem \Domain\EmergencyBundle\Entity\EmergencyCatalogItem */
-            $catalogItem = current($row);
+            foreach ($catalogItems as $row) {
+                /* @var $catalogItem \Domain\EmergencyBundle\Entity\EmergencyCatalogItem */
+                $catalogItem = current($row);
 
-            $this->addEmergencyCatalogUrlByCatalogItem($catalogItem);
+                $this->addEmergencyCatalogUrlByCatalogItem($catalogItem);
 
-            $this->manager->detach($row[0]);
-            unset($catalogItem);
+                $this->manager->detach($row[0]);
+                unset($catalogItem);
+            }
         }
     }
 
@@ -494,5 +504,13 @@ class SitemapSubscriber implements EventSubscriberInterface
         }
 
         unset($locality, $category, $localitySlug, $categorySlug);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function getEmergencyFeatureEnabled()
+    {
+        return (bool)$this->config->getSetting(ConfigInterface::EMERGENCY_SITUATION_ON)->getValue();
     }
 }
