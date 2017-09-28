@@ -30,7 +30,7 @@
 {% endif %}
 {% if admin.isGranted('EDIT', object) and admin.emergencyCopyAvailable is defined and admin.emergencyCopyAvailable and config(CONFIG.EMERGENCY_SITUATION_ON) %}
     <a href="{{ path('admin_domain_emergency_emergencybusiness_create', {id: object.id}) }}" class="btn btn-sm btn-default btn-list-action"
-       title="{{ 'action_restore'|trans({}, 'SonataAdminBundle') }}">
+       title="{{ 'action_emergency_copy'|trans({}, 'SonataAdminBundle') }}">
         <i class="glyphicon glyphicon-warning-sign"></i>
     </a>
 {% endif %}

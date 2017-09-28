@@ -13,6 +13,7 @@ flash_postpone_batch_delete_success: Items have been scheduled for deletion
 action_copy: Copy
 flash_batch_copy_success: The copy has completed successfully
 action_restore: Restore
+action_emergency_copy: Create emergency business
 flash_restore_success: The restore has completed successfully
 copy_: copy_
 flash_delete_error_rel: Can not delete object which is used in: "%fields%"

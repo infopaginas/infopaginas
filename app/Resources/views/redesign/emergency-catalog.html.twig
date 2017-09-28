@@ -17,7 +17,9 @@
     </div>
 
     <div class="show-more">
-        <a id="show-more-button" class="button" data-page="{{ pageNumber }}" data-area="{{ area.slug }}" data-category="{{ category.slug }}" href="{{ absolute_url(path('emergency_catalog', {areaSlug: area.slug, categorySlug: category.slug, page: pageNumber + 1})) }}">{{ 'emergency.load_more.button'|trans }}</a>
+        <a id="show-more-button" class="button" data-page="{{ pageNumber }}" data-area="{{ area.slug }}" data-category="{{ category.slug }}" href="{{ absolute_url(path('emergency_catalog', {areaSlug: area.slug, categorySlug: category.slug, page: pageNumber + 1})) }}">
+            <button>{{ 'emergency.load_more.button'|trans }}</button>
+        </a>
     </div>
 {% endblock %}
 
