@@ -581,6 +581,7 @@ no_js.warning.message: Your browser's Javascript functionality is turned off. Pl
 working_hours.label.comment_en: Comment Eng
 working_hours.label.comment_es: Comment Esp
 working_hours.placeholder.days: Please choose days
+working_hours.placeholder.today: Today
 
 contact:
   form:
@@ -605,3 +606,18 @@ business_profile.phone.tooltip:
   main: Main
   fax: Fax
   secondary: Additional
+
+emergency.back_button: Back
+emergency.page_link.title: Helpfull links
+emergency.add_item.title: Add your business
+emergency.updated.title: Updated
+emergency.load_more.button: Load more
+emergency.label.category: Type
+emergency.label.address: Address
+emergency.label.working_hours: Working Hours
+emergency.label.phone: Phone
+emergency.label.payment: Payment
+emergency.label.services: Services
+emergency.pop_up.title: Emergency
+emergency.pop_up.description: Find businesses that offer services after the hurricane.
+emergency.pop_up.button: Click here

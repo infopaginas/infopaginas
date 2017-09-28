@@ -458,7 +458,15 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
         });
     });
 
-//
+    $( document).ready(function() {
+        var emergencyModal = $( '#emergency-pop-up.modal' );
+
+        if ( emergencyModal.length ) {
+            emergencyModal.modalFunc();
+        }
+
+    });
+
 // Categories menu
 
     $.fn.toggleCat = function() {
@@ -885,17 +893,23 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
     // working hours folding
     var workingHoursBlock = $( '.highlights__item--hours' );
     var workingHoursTitle = workingHoursBlock.find( 'h3' );
+    var currentDayData    = workingHoursBlock.find( '.row.day[data-day]' );
+    var currentDayBlock   = currentDayData.find( 'span.hour__day' );
+    var currentDayValue   = currentDayData.data( 'day' );
+    var todayTextValue    = currentDayData.data( 'text' );
 
     workingHoursTitle.on( 'click', function () {
-        var dayList = workingHoursBlock.find( 'ul' ).first();
+        var dayList = workingHoursBlock.find( 'div:first' );
         if ( dayList.hasClass( 'hide-children' ) ) {
             dayList.removeClass( 'hide-children' );
             workingHoursTitle.removeClass( 'arrow-down' );
             workingHoursTitle.addClass( 'arrow-up' );
+            currentDayBlock.html( currentDayValue );
         } else {
             dayList.addClass( 'hide-children' );
             workingHoursTitle.removeClass( 'arrow-up' );
             workingHoursTitle.addClass( 'arrow-down' );
+            currentDayBlock.html( todayTextValue );
         }
     });
 });

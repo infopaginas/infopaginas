@@ -186,11 +186,7 @@ class ProfileController extends Controller
 
         $dcDataDTO = $this->getBusinessProfilesManager()->getSlugDcDataDTO($businessProfile);
         $locale    = LocaleHelper::getLocale($request->getLocale());
-
-        $photos         = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $locale);
-
-        $lastReview       = $this->getBusinessProfilesManager()->getLastReviewForBusinessProfile($businessProfile);
-        $reviewForm       = $this->getBusinessReviewForm();
+        $photos    = $this->getBusinessProfilesManager()->getBusinessProfilePhotoImages($businessProfile, $locale);
 
         if (!$businessProfile->getHideMap()) {
             $locationMarkers  = $this->getBusinessProfilesManager()
@@ -222,8 +218,6 @@ class ProfileController extends Controller
             'seoData'         => $businessProfile,
             'seoTags'         => BusinessProfileUtil::getSeoTags(BusinessProfileUtil::SEO_CLASS_PREFIX_PROFILE),
             'photos'          => $photos,
-            'lastReview'      => $lastReview,
-            'reviewForm'      => $reviewForm->createView(),
             'banners'         => $banners,
             'dcDataDTO'       => $dcDataDTO,
             'schemaJsonLD'    => $schema,

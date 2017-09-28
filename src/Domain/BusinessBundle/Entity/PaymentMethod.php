@@ -66,6 +66,15 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     protected $businessProfiles;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\EmergencyBundle\Entity\EmergencyBusiness",
+     *     mappedBy="paymentMethods",
+     *     cascade={"persist"}
+     *     )
+     */
+    protected $emergencyBusinesses;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
@@ -97,8 +106,9 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
      */
     public function __construct()
     {
-        $this->businessProfiles = new ArrayCollection();
-        $this->translations     = new ArrayCollection();
+        $this->businessProfiles     = new ArrayCollection();
+        $this->emergencyBusinesses  = new ArrayCollection();
+        $this->translations         = new ArrayCollection();
     }
 
     /**
@@ -175,6 +185,42 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     public function getBusinessProfiles()
     {
         return $this->businessProfiles;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\EmergencyBundle\Entity\EmergencyBusiness $business
+     *
+     * @return PaymentMethod
+     */
+    public function addEmergencyBusiness(\Domain\EmergencyBundle\Entity\EmergencyBusiness $business)
+    {
+        $this->emergencyBusinesses->add($business);
+        $business->addPaymentMethod($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove $business
+     *
+     * @param \Domain\EmergencyBundle\Entity\EmergencyBusiness $business
+     */
+    public function removeEmergencyBusiness(\Domain\EmergencyBundle\Entity\EmergencyBusiness $business)
+    {
+        $this->emergencyBusinesses->removeElement($business);
+        $business->removePaymentMethod($this);
+    }
+
+    /**
+     * Get emergencyBusinesses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEmergencyBusinesses()
+    {
+        return $this->emergencyBusinesses;
     }
 
     /**

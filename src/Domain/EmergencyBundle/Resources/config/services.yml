@@ -1,0 +1,11 @@
+services:
+    domain_emergency.listener.emergency_business_listener:
+        class: Domain\EmergencyBundle\EventListener\EmergencyBusinessListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default, priority: 10 }
+
+    domain_emergency.manager.emergency:
+        class: Domain\EmergencyBundle\Manager\EmergencyManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@oxa_config'

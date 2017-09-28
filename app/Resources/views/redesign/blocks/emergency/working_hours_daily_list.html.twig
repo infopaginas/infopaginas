@@ -1,0 +1,40 @@
+{% set workingHoursCollection = get_business_profile_working_hours_list(businessProfile) %}
+
+{% if workingHoursCollection %}
+    <div class="working-hours-list">
+        <div class="hide-children">
+            {% for day, workingHours in workingHoursCollection %}
+                <div class="row day" {% if loop.first %}data-day="{{ day|trans }}" data-text="{{ 'working_hours.placeholder.today'|trans }}"{% endif %}>
+                    <div class="col-day">
+                        <span class="hour__day">
+                            {% if loop.first %}
+                                {{ 'working_hours.placeholder.today'|trans }}
+                            {% else %}
+                                {{ day|trans }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="col-data">
+                        {% if workingHours.items is defined and workingHours.items|length > 0 %}
+                            {% for workingHour in workingHours.items %}
+                                <div class="row">
+                                    <span class="hour__hours">
+                                        {% if workingHour.openAllTime %}
+                                            {% trans %}business.working.hours.open_all_time{% endtrans %}
+                                        {% else %}
+                                            {{ workingHour.timeStart|date(working_hours_date_format) }} - {{ workingHour.timeEnd|date(working_hours_date_format) }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="row">
+                                <span class="hour__hours">{{ 'business.working.hours.closed'|trans }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

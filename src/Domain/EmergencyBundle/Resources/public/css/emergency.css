@@ -1,0 +1,80 @@
+.header .logo a {
+  display: flex;
+  height: 50px;
+}
+.logo {
+  width: 100%;
+}
+.emergency-title h1, h2 {
+  text-align: center;
+}
+.emergency-back-button a:before {
+  content: "\2190";
+}
+a button {
+  text-decoration: none;
+  color: initial;
+  padding: 10px 0;
+  line-height: 1.25;
+  width: 100%;
+  text-align: center;
+}
+.description p {
+  font-size: 20px;
+  text-align: center;
+}
+.emergency-catalog .business-block {
+  border-bottom: grey 1px solid;
+  padding: 10px;
+}
+.business-data .label {
+  width: 25%;
+  display: inline-flex;
+  font-weight: 700;
+}
+.business-data .data {
+  width: 65%;
+  display: inline-flex;
+  margin-left: 3px;
+}
+.business-data .working-hours-list .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+.business-data .working-hours-list .col-day {
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+.business-data .working-hours-list .col-data {
+  flex: 0 0 75%;
+  max-width: 75%;
+  position: relative;
+  width: 100%;
+}
+.business-data .working-hours-list {
+  width: 100%;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+.business-block {
+  line-height: 21px;
+}
+.business-data {
+  margin-bottom: 3px;
+}
+.working-hours-list .row.day[data-day] {
+  cursor: pointer;
+}
+.working-hours-list .hide-children .row.day[data-day] .col-data .row::after {
+  content: '\25bc';
+  padding-left: 0.5em;
+}
+.working-hours-list .row.day[data-day] .col-data .row::after {
+  content: '\25b2';
+  padding-left: 0.5em;
+}
+.working-hours.data .working-hours-list .hide-children > div.day:not([data-day]) {
+  display: none;
+}

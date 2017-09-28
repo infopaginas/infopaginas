@@ -136,3 +136,5 @@ twig:
                 TYPE:  'subject_type'
                 LOCALE: 'locale'
                 USER:   'user_id'
+        CONFIG:
+            EMERGENCY_SITUATION_ON: 'EMERGENCY_SITUATION_ON'

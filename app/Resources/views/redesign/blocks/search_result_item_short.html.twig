@@ -5,17 +5,6 @@
                 <div class="item__header">
                     {% set workingHoursData = get_business_profile_open_status(item) %}
                     {% include ':redesign/blocks/workingHours:working_hours_current_status.html.twig' with { 'workingHoursData': workingHoursData } %}
-                    <div class="rank">
-                        <div class="rank-ta rank-ta--5"></div>
-                        <div class="stars rank__item">
-                            {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(item) %}
-                            {% if reviewsAvgRating|number_format(0) %}
-                                {% for i in 1 .. reviewsAvgRating|number_format(0) %}
-                                    <i class="fa fa-star"></i>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    </div>
                 </div>
                 <div class="item__info">
                     <h2>{{ item.displayedPosition }}. <span class="{{ seoTags.name }}-short">{{ item.name }}</span></h2>

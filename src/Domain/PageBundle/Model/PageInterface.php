@@ -20,6 +20,8 @@ interface PageInterface
     const CODE_CATALOG                      = 12;
     const CODE_CATALOG_LOCALITY             = 13;
     const CODE_CATALOG_LOCALITY_CATEGORY    = 14;
+    const CODE_EMERGENCY                    = 15;
+    const CODE_EMERGENCY_AREA_CATEGORY      = 16;
 
     /**
      * @return mixed

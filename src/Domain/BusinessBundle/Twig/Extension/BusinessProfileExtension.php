@@ -517,7 +517,12 @@ class BusinessProfileExtension extends \Twig_Extension
         return $workingHourData;
     }
 
-    public function getBusinessProfileWorkingHoursList(BusinessProfile $businessProfile)
+    /**
+     * @param BusinessProfile|EmergencyBusiness
+     *
+     * @return \stdClass
+     */
+    public function getBusinessProfileWorkingHoursList($businessProfile)
     {
         $workingHourData = DayOfWeekModel::getBusinessProfileWorkingHoursListFEView($businessProfile);
 

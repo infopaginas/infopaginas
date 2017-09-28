@@ -15,21 +15,6 @@
         </span>
     </div>
 
-    <div class="comparison__row comparison__rating">
-        <div class="rank">
-            <div class="rank-ta rank-ta--5">
-            </div>
-            <div class="stars rank__item">
-                {% set reviewsAvgRating = get_business_profile_reviews_avg_rating(item) %}
-                {% if reviewsAvgRating|number_format(0) %}
-                    {% for i in 1 .. reviewsAvgRating|number_format(0) %}
-                        <i class="fa fa-star"></i>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-    </div><!-- comparison-row -->
-
     <div class="comparison__row comparison__description">
         <h2>
             <a href="{{ absolute_url(path('domain_business_profile_view', { 'citySlug' : item.citySlug, 'slug' : item.slug })) }}" title="{% trans %}Go to...{% endtrans %}">{{ item.displayedPosition }}. <span class="{{ seoTags.name }}-full">{{ item.name }}</span></a>

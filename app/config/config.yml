@@ -134,9 +134,11 @@ twig:
         ads_stat_date_format:      'd.m.Y'
         task_date_format:          'd M, Y, H:i:s A'
         working_hours_date_format: 'g:i A'
+        emergency_update_date_format: 'd F Y, g:ia'
         google_tag_manager_id:     '%google_tag_manager_id%'
         google_analytics_id:       '%google_analytics_id%'
         default_country:           'pr'
+        defaultLocale: '%locale%'
 
 #       validation patterns
         validators: '%validators%'
