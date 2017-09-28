@@ -18,7 +18,9 @@
 
     {% if page.actionLink %}
         <div class="add-item">
-            <a href="{{ page.actionLink }}" class="button">{{ 'emergency.add_item.title'|trans }}</a>
+            <a href="{{ page.actionLink }}">
+                <button>{{ 'emergency.add_item.title'|trans }}</button>
+            </a>
         </div>
     {% endif %}
 
