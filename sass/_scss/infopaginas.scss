@@ -3365,6 +3365,10 @@ a.tag {
   margin-bottom: 20px;
 }
 
+#emergency-pop-up .modal__content {
+  min-height: 200px;
+}
+
 .hide-modal {
   z-index: 999999;
 }

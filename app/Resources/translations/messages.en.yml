@@ -608,7 +608,7 @@ business_profile.phone.tooltip:
   secondary: Additional
 
 emergency.back_button: Back
-emergency.page_link.title: Helpfull links
+emergency.page_link.title: Helpful links
 emergency.add_item.title: Add your business
 emergency.updated.title: Updated
 emergency.load_more.button: Load more
@@ -618,6 +618,7 @@ emergency.label.working_hours: Working Hours
 emergency.label.phone: Phone
 emergency.label.payment: Payment
 emergency.label.services: Services
-emergency.pop_up.title: Emergency
+emergency.pop_up.title: List of working businesses
 emergency.pop_up.description: Find businesses that offer services after the hurricane.
 emergency.pop_up.button: Click here
+emergency.footer.disclaimer: These times are subject to change
