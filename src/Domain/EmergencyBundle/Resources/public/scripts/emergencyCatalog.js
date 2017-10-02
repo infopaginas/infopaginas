@@ -1,8 +1,10 @@
 $( document ).ready( function() {
-    var page = $( '#show-more-button' ).data( 'page' );
+    var button = $( '#show-more-button' );
+    var page   = button.data( 'page' );
+    var spinner = $( '#spinner' );
     var requestSend = false;
 
-    $( '#show-more-button' ).on( 'click', function( e ) {
+    button.on( 'click', function( e ) {
         e.preventDefault();
 
         if ( !requestSend ) {
@@ -10,6 +12,9 @@ $( document ).ready( function() {
             var button          = $( this );
             var areaSlug        = button.data( 'area' );
             var categorySlug    = button.data( 'category' );
+
+            disableButton( button );
+            showSpinner();
             page++;
 
             $.ajax({
@@ -20,7 +25,10 @@ $( document ).ready( function() {
                     if ( response.html ) {
                         $( '#emergency-catalog' ).append( response.html );
                         requestSend = false;
+                        enableButton( button );
                     }
+
+                    hideSpinner();
                 }
             });
         }
@@ -41,4 +49,20 @@ $( document ).ready( function() {
             currentDayBlock.html( todayTextValue );
         }
     });
+
+    function showSpinner() {
+        spinner.removeClass( 'hidden' );
+    }
+
+    function hideSpinner() {
+        spinner.addClass( 'hidden' );
+    }
+
+    function disableButton( button ) {
+        $( button ).attr( 'disabled', 'disabled' );
+    }
+
+    function enableButton( button ) {
+        $( button ).removeAttr( 'disabled' );
+    }
 });
