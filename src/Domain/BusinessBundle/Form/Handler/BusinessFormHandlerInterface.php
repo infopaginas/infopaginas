@@ -11,5 +11,7 @@ interface BusinessFormHandlerInterface
     const MESSAGE_BUSINESS_PROFILE_UPDATED = 'business_profile.message.updated';
     const MESSAGE_BUSINESS_PROFILE_WELCOME = 'business_profile.message.welcome';
 
+    const MESSAGE_EMERGENCY_BUSINESS_CREATED = 'emergency.business_draft.message.created';
+
     const MESSAGE_BUSINESS_PROFILE_FLASH_GROUP = 'success';
 }

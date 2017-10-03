@@ -20,6 +20,9 @@ class UserActionModel implements ReportInterface
     const TYPE_ACTION_TASK_APPROVE  = 'task_approve';
     const TYPE_ACTION_TASK_REJECT   = 'task_reject';
 
+    const TYPE_ACTION_DRAFT_APPROVE  = 'draft_approve';
+    const TYPE_ACTION_DRAFT_REJECT   = 'draft_reject';
+
     const TYPE_ACTION_LOGIN  = 'login';
     const TYPE_ACTION_LOGOUT = 'logout';
 
@@ -41,6 +44,9 @@ class UserActionModel implements ReportInterface
 
         self::TYPE_ACTION_TASK_APPROVE => 'user_action_report.action.task_approve',
         self::TYPE_ACTION_TASK_REJECT  => 'user_action_report.action.task_reject',
+
+        self::TYPE_ACTION_DRAFT_APPROVE => 'user_action_report.action.draft_approve',
+        self::TYPE_ACTION_DRAFT_REJECT  => 'user_action_report.action.draft_reject',
 
         self::TYPE_ACTION_LOGIN  => 'user_action_report.action.login',
         self::TYPE_ACTION_LOGOUT => 'user_action_report.action.logout',
@@ -77,6 +83,9 @@ class UserActionModel implements ReportInterface
 
             self::TYPE_ACTION_TASK_APPROVE,
             self::TYPE_ACTION_TASK_REJECT,
+
+            self::TYPE_ACTION_DRAFT_APPROVE,
+            self::TYPE_ACTION_DRAFT_REJECT,
 
             self::TYPE_ACTION_LOGIN,
             self::TYPE_ACTION_LOGOUT

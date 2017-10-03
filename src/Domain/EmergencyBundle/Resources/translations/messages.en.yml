@@ -1,0 +1,8 @@
+emergency:
+  business_draft:
+    status_pending: Pending
+    status_approved: Approved
+    status_rejected: Rejected
+    status_all:      All
+  business_map:
+    help: This checkbox indicates that geolocation is correct and should be used to calculate business position

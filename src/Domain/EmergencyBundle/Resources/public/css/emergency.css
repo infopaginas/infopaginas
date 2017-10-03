@@ -21,6 +21,7 @@ footer p.disclaimer {
   line-height: 1.25;
   width: 100%;
   text-align: center;
+  cursor: pointer;
 }
 .show-more img.spinner {
   display: block;

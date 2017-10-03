@@ -54,9 +54,19 @@ class EmergencyBusinessWorkingHour
      *     cascade={"persist"},
      *     inversedBy="collectionWorkingHours",
      * )
-     * @ORM\JoinColumn(name="business_profile_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="business_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $business;
+
+    /**
+     * @var EmergencyDraftBusiness
+     * @ORM\ManyToOne(targetEntity="Domain\EmergencyBundle\Entity\EmergencyDraftBusiness",
+     *     cascade={"persist"},
+     *     inversedBy="collectionWorkingHours",
+     * )
+     * @ORM\JoinColumn(name="draft_business_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $draftBusiness;
 
     /**
      * @ORM\Column(name="days", type="json_array", nullable=true)
@@ -197,6 +207,30 @@ class EmergencyBusinessWorkingHour
      * @return EmergencyBusiness
      */
     public function getBusiness()
+    {
+        return $this->business;
+    }
+
+    /**
+     * Set draft business
+     *
+     * @param EmergencyDraftBusiness|null $business
+     *
+     * @return EmergencyBusinessWorkingHour
+     */
+    public function setDraftBusiness(EmergencyDraftBusiness $business = null)
+    {
+        $this->draftBusiness = $business;
+
+        return $this;
+    }
+
+    /**
+     * Get draft business
+     *
+     * @return EmergencyDraftBusiness
+     */
+    public function getDraftBusiness()
     {
         return $this->business;
     }

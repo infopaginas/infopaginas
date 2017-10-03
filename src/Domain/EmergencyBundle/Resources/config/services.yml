@@ -9,3 +9,26 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@oxa_config'
+
+    domain_emergency.form.business_draft:
+        factory_method: createNamed
+        factory_service: form.factory
+        class: Symfony\Component\Form\Form
+        arguments:
+            - 'domain_emergency_bundle_emergency_draft_business_type'
+            - 'domain_emergency_bundle_emergency_draft_business_type'
+
+    domain_emergency.form.type.draft:
+        class: Domain\EmergencyBundle\Form\Type\EmergencyDraftBusinessType
+        arguments: [null]
+        tags:
+            - { name: form.type, alias: domain_emergency_bundle_emergency_draft_business_type }
+
+    domain_emergency.form.handler.draft:
+        class: Domain\EmergencyBundle\Form\Handler\EmergencyDraftBusinessFormHandler
+        scope: request
+        arguments:
+            - '@domain_emergency.form.business_draft'
+            - '@request'
+            - '@domain_emergency.manager.emergency'
+            - '@translator'

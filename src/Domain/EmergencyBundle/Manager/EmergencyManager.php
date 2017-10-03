@@ -7,6 +7,7 @@ use Domain\EmergencyBundle\Entity\EmergencyArea;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
 use Domain\EmergencyBundle\Entity\EmergencyCategory;
+use Domain\EmergencyBundle\Entity\EmergencyDraftBusiness;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
@@ -93,6 +94,23 @@ class EmergencyManager
         return $this->em->getRepository(EmergencyArea::class)->findOneBy([
             'slug' => $slug,
         ]);
+    }
+
+    /**
+     * @return EmergencyDraftBusiness
+     */
+    public function getEmergencyBusinessDraft() : EmergencyDraftBusiness
+    {
+        return new EmergencyDraftBusiness();
+    }
+
+    /**
+     * @param EmergencyDraftBusiness
+     */
+    public function createBusinessDraft($draft)
+    {
+        $this->em->persist($draft);
+        $this->em->flush();
     }
 
     /**

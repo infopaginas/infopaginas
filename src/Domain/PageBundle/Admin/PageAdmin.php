@@ -173,6 +173,7 @@ class PageAdmin extends OxaAdmin
                         'required' => false,
                         'disabled' => true,
                     ])
+                    ->add('useActionLink')
                     ->add('actionLink', null, [
                         'help' => $this->getHelpMessage('actionLink', $helpMessage),
                     ])

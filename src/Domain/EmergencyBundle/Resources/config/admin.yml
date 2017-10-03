@@ -30,3 +30,11 @@ services:
             - {name: sonata.admin, manager_type: orm, group: admin, label: Emergency Businesses}
         calls:
             - [ setTemplate, ['edit', 'DomainEmergencyBundle:Admin:edit.html.twig']]
+
+    domain_emergency.admin.draft_business:
+        class: Domain\EmergencyBundle\Admin\EmergencyDraftBusinessAdmin
+        arguments: [~, Domain\EmergencyBundle\Entity\EmergencyDraftBusiness, OxaSonataAdminBundle:CRUD]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: admin, label: Business Drafts}
+        calls:
+            - [ setTemplate, ['edit', 'DomainEmergencyBundle:Admin:edit.html.twig']]

@@ -622,3 +622,20 @@ emergency.pop_up.title: List of working businesses
 emergency.pop_up.description: Find businesses that offer services after the hurricane.
 emergency.pop_up.button: Click here
 emergency.footer.disclaimer: These times are subject to change
+emergency.business_draft.form_title: Create Business
+emergency.business_draft.name: Name
+emergency.business_draft.category.title: Category
+emergency.business_draft.custom_category.title: Custom Category
+emergency.business_draft.service.placeholder: Start typing
+emergency.business_draft.service.title: Services
+emergency.business_draft.phone.title: Phone
+emergency.business_draft.area.title: Area
+emergency.business_draft.address: Address
+emergency.business_draft.working_hours: Working Hours
+emergency.business_draft.payment.placeholder: Start Typing
+emergency.business_draft.payment.placeholder: Start Typing
+emergency.business_draft.payment.title: Payment Methods
+emergency.business_draft.category.title.others: Others
+emergency.business_draft.message.created: Information has been submitted
+emergency.business_draft.created: Success
+emergency.business_draft.invalid: Validation failed
