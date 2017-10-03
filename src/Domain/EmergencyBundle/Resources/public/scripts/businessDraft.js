@@ -10,9 +10,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'maskedInput
         this.businessFormName = 'domain_emergency_bundle_emergency_draft_business_type';
 
         this.html = {
-            buttons: {
-
-            },
             forms: {
                 businessRequestFormId: '#businessRequestForm'
             },
