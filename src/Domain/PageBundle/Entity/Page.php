@@ -141,12 +141,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $redirectUrl;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(name="content_updated_at", type="datetime", nullable=true)
-     */
-    protected $contentUpdatedAt;
-
-    /**
      * @var ArrayCollection - Page links
      *
      * @ORM\OneToMany(
@@ -556,29 +550,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             self::CONTACT_SUBJECT_ADS => 'contact.form.subject_type.ads',
             self::CONTACT_SUBJECT_OTHER => 'contact.form.subject_type.other',
         ];
-    }
-
-    /**
-     * Sets contentUpdatedAt
-     *
-     * @param  \DateTime $updatedAt
-     * @return $this
-     */
-    public function setContentUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->contentUpdatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Returns contentUpdatedAt
-     *
-     * @return \DateTime
-     */
-    public function getContentUpdatedAt()
-    {
-        return $this->contentUpdatedAt;
     }
 
     /**

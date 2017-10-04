@@ -10,16 +10,12 @@ use Doctrine\ORM\Events;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyBusinessWorkingHour;
-use Domain\PageBundle\Entity\Page;
-use Domain\PageBundle\Model\PageInterface;
+use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
 
 class EmergencyBusinessListener implements EventSubscriber
 {
     /** @var $businessUpdated array */
     private $businessUpdated = [];
-
-    /** @var $emergencyDataUpdated bool */
-    private $emergencyDataUpdated = false;
 
     /**
      * @return array
@@ -43,10 +39,6 @@ class EmergencyBusinessListener implements EventSubscriber
             if ($entity instanceof EmergencyBusinessWorkingHour) {
                 $this->prepareBusinessesForWorkingHoursUpdate($entity);
             }
-
-            if ($entity instanceof EmergencyBusiness) {
-                $this->setEmergencyDataUpdated();
-            }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
@@ -55,7 +47,8 @@ class EmergencyBusinessListener implements EventSubscriber
             }
 
             if ($entity instanceof EmergencyBusiness) {
-                $this->setEmergencyDataUpdated();
+                $changeSet = $uow->getEntityChangeSet($entity);
+                $this->handleEmergencyBusinessValueDiff($entity, $changeSet, $em);
             }
         }
 
@@ -65,12 +58,11 @@ class EmergencyBusinessListener implements EventSubscriber
             }
 
             if ($entity instanceof EmergencyBusiness) {
-                $this->setEmergencyDataUpdated();
+                $this->updateEmergencyCatalogItemLastUpdated($entity->getArea(), $entity->getCategory(), $em);
             }
         }
 
         $this->updateWorkingHoursJsonFields($em);
-        $this->updateEmergencyDataUpdatedAt($em);
     }
 
     /**
@@ -83,23 +75,43 @@ class EmergencyBusinessListener implements EventSubscriber
         if ($business and empty($this->businessUpdated[$business->getId()])) {
             $this->businessUpdated[$business->getId()] = $business;
         }
-
-        $this->setEmergencyDataUpdated();
-    }
-
-    protected function setEmergencyDataUpdated()
-    {
-        $this->emergencyDataUpdated = true;
     }
 
     /**
-     * @param $em EntityManager
+     * @param EmergencyBusiness $business
+     * @param array $diff
+     * @param EntityManager $em
      */
-    protected function updateEmergencyDataUpdatedAt(EntityManager $em)
+    protected function handleEmergencyBusinessValueDiff($business, $diff, EntityManager $em)
     {
-        if ($this->emergencyDataUpdated) {
-            $em->getRepository(Page::class)->setPageContentUpdated(new \Datetime(), PageInterface::CODE_EMERGENCY);
+        if (!empty($diff['category'][0]) or !empty($diff['area'][0])) {
+            if (!empty($diff['category'][0])) {
+                $category = $diff['category'][0];
+            } else {
+                $category = $business->getCategory();
+            }
+
+            if (!empty($diff['area'][0])) {
+                $area = $diff['area'][0];
+            } else {
+                $area = $business->getArea();
+            }
+
+            $this->updateEmergencyCatalogItemLastUpdated($area, $category, $em);
         }
+    }
+
+    /**
+     * @param EmergencyArea     $area
+     * @param EmergencyCategory $category
+     * @param EntityManager $em
+     */
+    protected function updateEmergencyCatalogItemLastUpdated($area, $category, EntityManager $em)
+    {
+        $em->getRepository(EmergencyCatalogItem::class)->setContentUpdated(
+            $area,
+            $category
+        );
     }
 
     /**
