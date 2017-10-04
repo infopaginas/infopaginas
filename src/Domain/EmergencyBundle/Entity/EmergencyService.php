@@ -42,6 +42,15 @@ class EmergencyService
     protected $businesses;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\EmergencyBundle\Entity\EmergencyDraftBusiness",
+     *     mappedBy="services",
+     *     cascade={"persist"}
+     *     )
+     */
+    protected $draftBusinesses;
+
+    /**
      * @var integer - service sorting position
      *
      * @ORM\Column(name="position", type="integer", nullable=true)
@@ -62,7 +71,8 @@ class EmergencyService
      */
     public function __construct()
     {
-        $this->businesses = new ArrayCollection();
+        $this->businesses      = new ArrayCollection();
+        $this->draftBusinesses = new ArrayCollection();
     }
 
     /**
@@ -129,6 +139,42 @@ class EmergencyService
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getBusinesses()
+    {
+        return $this->businesses;
+    }
+
+    /**
+     * Add draft business
+     *
+     * @param EmergencyDraftBusiness $business
+     *
+     * @return EmergencyService
+     */
+    public function addDraftBusiness(EmergencyDraftBusiness $business)
+    {
+        $this->draftBusinesses->add($business);
+        $business->addService($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove draft business
+     *
+     * @param EmergencyDraftBusiness $business
+     */
+    public function removeDraftBusiness(EmergencyDraftBusiness $business)
+    {
+        $this->draftBusinesses->removeElement($business);
+        $business->removeService($this);
+    }
+
+    /**
+     * Get emergencyBusinesses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDraftBusinesses()
     {
         return $this->businesses;
     }

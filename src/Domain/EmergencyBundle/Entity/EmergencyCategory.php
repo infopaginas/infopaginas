@@ -44,6 +44,16 @@ class EmergencyCategory
      */
     protected $businesses;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="Domain\EmergencyBundle\Entity\EmergencyDraftBusiness",
+     *      mappedBy="category",
+     *      cascade={"persist"}
+     * )
+     */
+    protected $draftBusinesses;
 
     /**
      * @var string - Used to create human like url
@@ -76,8 +86,9 @@ class EmergencyCategory
      */
     public function __construct()
     {
-        $this->businesses   = new ArrayCollection();
-        $this->catalogItems = new ArrayCollection();
+        $this->businesses      = new ArrayCollection();
+        $this->draftBusinesses = new ArrayCollection();
+        $this->catalogItems    = new ArrayCollection();
     }
 
     /**
@@ -129,7 +140,7 @@ class EmergencyCategory
      *
      * @return EmergencyCategory
      */
-    public function addBusinesses(EmergencyBusiness $business)
+    public function addBusiness(EmergencyBusiness $business)
     {
         $this->businesses->add($business);
 
@@ -141,7 +152,7 @@ class EmergencyCategory
      *
      * @param EmergencyBusiness $business
      */
-    public function removeBusinessProfile(EmergencyBusiness $business)
+    public function removeBusiness(EmergencyBusiness $business)
     {
         $this->businesses->removeElement($business);
     }
@@ -154,6 +165,40 @@ class EmergencyCategory
     public function getBusinesses()
     {
         return $this->businesses;
+    }
+
+    /**
+     * Add draft business
+     *
+     * @param EmergencyDraftBusiness $business
+     *
+     * @return EmergencyCategory
+     */
+    public function addDraftBusiness(EmergencyDraftBusiness $business)
+    {
+        $this->draftBusinesses->add($business);
+
+        return $this;
+    }
+
+    /**
+     * Remove draft business
+     *
+     * @param EmergencyDraftBusiness $business
+     */
+    public function removeDraftBusiness(EmergencyDraftBusiness $business)
+    {
+        $this->draftBusinesses->removeElement($business);
+    }
+
+    /**
+     * Get draft businesses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDraftBusinesses()
+    {
+        return $this->draftBusinesses;
     }
 
     /**

@@ -361,13 +361,13 @@ define(['jquery', 'tools/reportTracker', 'selectize', 'velocity', 'velocity-ui',
             }
         });
 
-        $('#domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods').selectize({
+        $('#domain_business_bundle_business_profile_form_type_areas, #domain_business_bundle_business_profile_form_type_paymentMethods, #domain_business_bundle_business_profile_form_type_tags, #domain_business_bundle_business_profile_form_type_localities, #domain_business_bundle_business_profile_form_type_neighborhoods, #domain_emergency_bundle_emergency_draft_business_type_services, #domain_emergency_bundle_emergency_draft_business_type_paymentMethods' ).selectize({
             plugins: ['remove_button'],
             delimiter: ',',
             persist: true
         });
 
-        var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality');
+        var singleSelects = $('#domain_business_bundle_business_profile_form_type_country, #domain_business_bundle_business_profile_form_type_catalogLocality, #domain_emergency_bundle_emergency_draft_business_type_category, #domain_emergency_bundle_emergency_draft_business_type_area' );
 
         singleSelects.select2();
 
