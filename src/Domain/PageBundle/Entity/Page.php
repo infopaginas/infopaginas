@@ -659,7 +659,7 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      */
     public function validatePageActionLink(ExecutionContextInterface $context)
     {
-        if ($this->getUseActionLink() and empty($this->getActionLink())) {
+        if ($this->getUseActionLink() and trim($this->getActionLink())) {
             $context->buildViolation('page.action_url.required')
                 ->atPath('actionLink')
                 ->addViolation()
