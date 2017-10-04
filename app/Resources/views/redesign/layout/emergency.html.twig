@@ -25,11 +25,23 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="{% if seoData is defined and seoData.seoTitle %}{{ seoData.seoTitle }}{% else %}Infopáginas{% endif %}">
 
+        {% block googleAnalyticsScript %}
+            {% include ':widgets:google_analytics_script.html.twig' %}
+        {% endblock %}
+
+        {% block googleTagManagerScript %}
+            {% include ':widgets:google_tag_manager_script.html.twig' %}
+        {% endblock %}
+
         {% block styles %}
             <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_emergency_css.css')) }}" />
         {% endblock %}
     </head>
     <body class="{% block bodyClass %}{% endblock %}">
+        {% block googleTagManagerNoScript %}
+            {% include ':widgets:google_tag_manager_no_script.html.twig' %}
+        {% endblock %}
+
         {% block emergencyHeader %}
             <header class="header">
                 <div class="logo">
