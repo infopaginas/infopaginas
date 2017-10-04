@@ -102,3 +102,8 @@ body {
 .working-hours.data .working-hours-list .hide-children > div.day:not([data-day]) {
   display: none;
 }
+span.catalog-item-updated {
+  font-family: Roboto, sans-serif;
+  font-style: italic;
+  font-size: 14px;
+}

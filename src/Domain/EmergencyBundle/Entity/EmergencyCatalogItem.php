@@ -49,6 +49,12 @@ class EmergencyCatalogItem
     protected $hasContent;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="content_updated_at", type="datetime", nullable=true)
+     */
+    protected $contentUpdatedAt;
+
+    /**
      * Get id
      *
      * @return int
@@ -124,5 +130,25 @@ class EmergencyCatalogItem
     public function getHasContent()
     {
         return $this->hasContent;
+    }
+
+    /**
+     * @param \DateTime $contentUpdatedAt
+     *
+     * @return EmergencyCatalogItem
+     */
+    public function setContentUpdatedAt($contentUpdatedAt)
+    {
+        $this->contentUpdatedAt = $contentUpdatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getContentUpdatedAt()
+    {
+        return $this->contentUpdatedAt;
     }
 }

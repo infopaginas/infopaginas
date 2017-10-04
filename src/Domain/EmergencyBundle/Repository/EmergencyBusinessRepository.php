@@ -31,6 +31,39 @@ class EmergencyBusinessRepository extends EntityRepository
      *
      * @param EmergencyArea     $area
      * @param EmergencyCategory $category
+     *
+     * @return \Datetime|null
+     */
+    public function getCatalogItemContentLastUpdated($area, $category)
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        $qb
+            ->select('b.updatedAt')
+            ->where('b.area = :area')
+            ->andWhere('b.category = :category')
+            ->setParameter('area', $area)
+            ->setParameter('category', $category)
+            ->setMaxResults(1)
+            ->orderBy('b.updatedAt', 'DESC')
+        ;
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        if (is_array($result)) {
+            $lastUpdated = current($result);
+        } else {
+            $lastUpdated = null;
+        }
+
+        return $lastUpdated;
+    }
+
+    /**
+     * Counting emergency businesses in catalog branch
+     *
+     * @param EmergencyArea     $area
+     * @param EmergencyCategory $category
      * @param int               $limit
      * @param int               $page
      *

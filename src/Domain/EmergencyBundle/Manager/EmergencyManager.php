@@ -43,8 +43,12 @@ class EmergencyManager
         $catalogItems = $this->getCatalogWithContent();
 
         foreach ($catalogItems as $catalogItem) {
-            $data[$catalogItem->getArea()->getId()]['area']         = $catalogItem->getArea();
-            $data[$catalogItem->getArea()->getId()]['categories'][] = $catalogItem->getCategory();
+            $area     = $catalogItem->getArea();
+            $category = $catalogItem->getCategory();
+
+            $data[$area->getId()]['area'] = $catalogItem->getArea();
+            $data[$area->getId()]['categories'][$category->getId()]['category']  = $category;
+            $data[$area->getId()]['categories'][$category->getId()]['updatedAt'] = $catalogItem->getContentUpdatedAt();
         }
 
         return $data;
