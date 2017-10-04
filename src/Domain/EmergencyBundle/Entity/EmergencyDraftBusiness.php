@@ -20,7 +20,6 @@ use Domain\EmergencyBundle\Validator\Constraints\EmergencyDraftBusinessCategoryT
  */
 class EmergencyDraftBusiness extends EmergencyAbstractBusiness
 {
-
     const STATUS_PENDING  = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
