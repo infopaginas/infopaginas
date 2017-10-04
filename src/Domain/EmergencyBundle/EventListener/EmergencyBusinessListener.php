@@ -11,16 +11,11 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyBusinessWorkingHour;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
-use Domain\PageBundle\Entity\Page;
-use Domain\PageBundle\Model\PageInterface;
 
 class EmergencyBusinessListener implements EventSubscriber
 {
     /** @var $businessUpdated array */
     private $businessUpdated = [];
-
-    /** @var $emergencyDataUpdated bool */
-    private $emergencyDataUpdated = false;
 
     /**
      * @return array
@@ -44,10 +39,6 @@ class EmergencyBusinessListener implements EventSubscriber
             if ($entity instanceof EmergencyBusinessWorkingHour) {
                 $this->prepareBusinessesForWorkingHoursUpdate($entity);
             }
-
-            if ($entity instanceof EmergencyBusiness) {
-                $this->setEmergencyDataUpdated();
-            }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
@@ -56,8 +47,6 @@ class EmergencyBusinessListener implements EventSubscriber
             }
 
             if ($entity instanceof EmergencyBusiness) {
-                $this->setEmergencyDataUpdated();
-
                 $changeSet = $uow->getEntityChangeSet($entity);
                 $this->handleEmergencyBusinessValueDiff($entity, $changeSet, $em);
             }
@@ -69,13 +58,11 @@ class EmergencyBusinessListener implements EventSubscriber
             }
 
             if ($entity instanceof EmergencyBusiness) {
-                $this->setEmergencyDataUpdated();
                 $this->updateEmergencyCatalogItemLastUpdated($entity->getArea(), $entity->getCategory(), $em);
             }
         }
 
         $this->updateWorkingHoursJsonFields($em);
-        $this->updateEmergencyDataUpdatedAt($em);
     }
 
     /**
@@ -88,13 +75,6 @@ class EmergencyBusinessListener implements EventSubscriber
         if ($business and empty($this->businessUpdated[$business->getId()])) {
             $this->businessUpdated[$business->getId()] = $business;
         }
-
-        $this->setEmergencyDataUpdated();
-    }
-
-    protected function setEmergencyDataUpdated()
-    {
-        $this->emergencyDataUpdated = true;
     }
 
     /**
@@ -132,16 +112,6 @@ class EmergencyBusinessListener implements EventSubscriber
             $area,
             $category
         );
-    }
-
-    /**
-     * @param $em EntityManager
-     */
-    protected function updateEmergencyDataUpdatedAt(EntityManager $em)
-    {
-        if ($this->emergencyDataUpdated) {
-            $em->getRepository(Page::class)->setPageContentUpdated(new \Datetime(), PageInterface::CODE_EMERGENCY);
-        }
     }
 
     /**
