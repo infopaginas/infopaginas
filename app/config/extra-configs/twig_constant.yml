@@ -138,3 +138,9 @@ twig:
                 USER:   'user_id'
         CONFIG:
             EMERGENCY_SITUATION_ON: 'EMERGENCY_SITUATION_ON'
+
+        EMERGENCY_FILTER:
+            ALL:    'all'
+            LETTER: 'letter'
+            NUMBER: 'number'
+            OTHER:  'other_char'

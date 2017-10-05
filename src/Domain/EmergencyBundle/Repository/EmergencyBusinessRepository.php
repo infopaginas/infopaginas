@@ -62,6 +62,33 @@ class EmergencyBusinessRepository extends EntityRepository
     }
 
     /**
+     * Get business filter characters
+     *
+     * @param EmergencyArea     $area
+     * @param EmergencyCategory $category
+     *
+     * @return array
+     */
+    public function getCatalogItemFilterCharacters($area, $category)
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        $qb
+            ->select('b.firstSymbol')
+            ->addSelect('LENGTH(b.firstSymbol) as HIDDEN r')
+            ->distinct()
+            ->where('b.area = :area')
+            ->andWhere('b.category = :category')
+            ->setParameter('area', $area)
+            ->setParameter('category', $category)
+            ->orderBy('r')
+            ->addOrderBy('b.firstSymbol')
+        ;
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
      * Counting emergency businesses in catalog branch
      *
      * @param EmergencyArea     $area

@@ -11,6 +11,7 @@ use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyBusinessWorkingHour;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 
 class EmergencyBusinessListener implements EventSubscriber
 {
@@ -25,7 +26,20 @@ class EmergencyBusinessListener implements EventSubscriber
         return [
             Events::onFlush,
             Events::preUpdate,
+            Events::prePersist,
         ];
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof EmergencyBusiness) {
+            $this->manageBusinessFirstSymbol($entity);
+        }
     }
 
     /**
@@ -37,6 +51,7 @@ class EmergencyBusinessListener implements EventSubscriber
 
         if ($entity instanceof EmergencyBusiness) {
             $this->manageBusinessStatusPreUpdate($entity, $args->getEntityManager());
+            $this->manageBusinessFirstSymbol($entity);
         }
     }
 
@@ -157,5 +172,13 @@ class EmergencyBusinessListener implements EventSubscriber
         if (!$business->getIsUpdated() and empty($changeSet['isUpdated'])) {
             $business->setIsUpdated(true);
         }
+    }
+
+    /**
+     * @param EmergencyBusiness $business
+     */
+    protected function manageBusinessFirstSymbol($business)
+    {
+        $business->setFirstSymbol(SiteHelper::getFirstSymbolFilter($business->getName()));
     }
 }

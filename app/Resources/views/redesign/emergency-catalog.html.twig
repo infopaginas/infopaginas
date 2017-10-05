@@ -13,6 +13,20 @@
     </div>
 
     <div class="search-controls">
+        <div class="filter-block">
+            <div class="filter-letters">
+                <span class="letter all checked">{{ 'emergency.catalog_filter.all'|trans }}</span>
+                {% for letter in letters %}
+                    {% if letter == EMERGENCY_FILTER.NUMBER %}
+                        <span class="letter number" data-filter="{{ letter }}">{{ 'emergency.catalog_filter.number'|trans }}</span>
+                    {% elseif letter == EMERGENCY_FILTER.OTHER %}
+                        <span class="letter other" data-filter="{{ letter }}">{{ 'emergency.catalog_filter.other'|trans }}</span>
+                    {% else %}
+                        <span class="letter character" data-filter="{{ letter }}">{{ letter }}</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
         <div class="sorting-block">
             <div>
                 <div class="sorting-block-distance">

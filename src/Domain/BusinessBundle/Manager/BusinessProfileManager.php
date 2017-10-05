@@ -2813,6 +2813,14 @@ class BusinessProfileManager extends Manager
             ]
         ];
 
+        if ($params->characterFilter) {
+            $filters[] = [
+                'match' => [
+                    'first_symbol' => $params->characterFilter,
+                ],
+            ];
+        }
+
         return $filters;
     }
 

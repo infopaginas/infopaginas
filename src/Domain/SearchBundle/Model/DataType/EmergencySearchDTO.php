@@ -32,6 +32,11 @@ class EmergencySearchDTO extends AbstractDTO
     public $orderBy;
 
     /**
+     * @var string
+     */
+    public $characterFilter;
+
+    /**
      * @var float|null
      */
     public $lat = null;
