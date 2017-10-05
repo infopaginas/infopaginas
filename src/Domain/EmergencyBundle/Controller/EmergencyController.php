@@ -76,7 +76,7 @@ class EmergencyController extends Controller
         }
 
         if ($request->getMethod() == Request::METHOD_POST) {
-            if ($businesses) {
+            if ($businesses or $pageNumber == 1) {
                 $html = $this->renderView(
                     ':redesign/blocks/emergency:emergency-businesses.html.twig',
                     [
@@ -97,6 +97,8 @@ class EmergencyController extends Controller
             $pageManager = $this->get('domain_page.manager.page');
             $page = $pageManager->getPageByCode(PageInterface::CODE_EMERGENCY_AREA_CATEGORY);
 
+            $letters = $emergencyManger->getCatalogItemCharacterFilters($area, $category);
+
             return $this->render(
                 ':redesign:emergency-catalog.html.twig',
                 [
@@ -106,6 +108,7 @@ class EmergencyController extends Controller
                     'category'   => $category,
                     'pageNumber' => $pageNumber,
                     'businesses' => $businesses,
+                    'letters'    => $letters,
                 ]
             );
         }

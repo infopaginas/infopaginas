@@ -133,6 +133,26 @@ class EmergencyManager
     }
 
     /**
+     * @param EmergencyArea $area
+     * @param EmergencyCategory $category
+     *
+     * @return array
+     */
+    public function getCatalogItemCharacterFilters($area, $category)
+    {
+        $filtersData = $this->em->getRepository(EmergencyCatalogItem::class)
+            ->getCatalogItemFilterCharacters($area, $category);
+
+        if ($filtersData) {
+            $filters = json_decode(current($filtersData));
+        } else {
+            $filters = [];
+        }
+
+        return $filters;
+    }
+
+    /**
      * @return mixed
      */
     public function setUpdatedAllEmergencyBusinesses()
@@ -152,10 +172,11 @@ class EmergencyManager
         $name = trim(AdminHelper::convertAccentedString($business->getName()));
 
         $data = [
-            'id'          => $business->getId(),
-            'title'       => SearchDataUtil::sanitizeElasticSearchQueryString($name),
-            'area_id'     => $business->getArea()->getId(),
-            'category_id' => $business->getCategory()->getId(),
+            'id'           => $business->getId(),
+            'title'        => SearchDataUtil::sanitizeElasticSearchQueryString($name),
+            'area_id'      => $business->getArea()->getId(),
+            'category_id'  => $business->getCategory()->getId(),
+            'first_symbol' => $business->getFirstSymbol(),
         ];
 
         if ($business->getUseMapAddress()) {
@@ -196,6 +217,10 @@ class EmergencyManager
     {
         $params = [
             'title' => [
+                'type'  => 'string',
+                'index' => 'not_analyzed'
+            ],
+            'first_symbol' => [
                 'type'  => 'string',
                 'index' => 'not_analyzed'
             ],

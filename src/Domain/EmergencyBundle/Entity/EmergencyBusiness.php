@@ -29,6 +29,13 @@ class EmergencyBusiness extends EmergencyAbstractBusiness
     protected $isUpdated;
 
     /**
+     * @var string - Business first symbol filter
+     *
+     * @ORM\Column(name="first_symbol", type="string", length=10, nullable=true)
+     */
+    protected $firstSymbol;
+
+    /**
      * @var EmergencyCategory|null $category
      * @ORM\ManyToOne(targetEntity="Domain\EmergencyBundle\Entity\EmergencyCategory",
      *     inversedBy="businesses",
@@ -120,6 +127,26 @@ class EmergencyBusiness extends EmergencyAbstractBusiness
     public function getIsUpdated()
     {
         return $this->isUpdated;
+    }
+
+    /**
+     * @param string $firstSymbol
+     *
+     * @return EmergencyBusiness
+     */
+    public function setFirstSymbol($firstSymbol)
+    {
+        $this->firstSymbol = $firstSymbol;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstSymbol()
+    {
+        return $this->firstSymbol;
     }
 
     /**

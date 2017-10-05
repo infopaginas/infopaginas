@@ -34,10 +34,18 @@ $( document ).ready( function() {
         }
     });
 
+    $( document ).on( 'click', '.filter-letters span.letter', function( e ) {
+        if ( !requestSend ) {
+            $( '.filter-letters span.letter.checked' ).removeClass( 'checked' );
+            $( this ).addClass( 'checked' );
+
+            getPageContent( false );
+        }
+    });
+
     // sorting
     $( 'input[type=radio][name=order]' ).on( 'change', function() {
         if ( !requestSend ) {
-            catalogBlock.empty();
             getPageContent( false );
         }
     });
@@ -61,16 +69,19 @@ $( document ).ready( function() {
 
             var areaSlug        = button.data( 'area' );
             var categorySlug    = button.data( 'category' );
+            var characterFilter = $( '.filter-letters span.letter.checked' ).data( 'filter' );
 
             if ( usePage ) {
                 page++;
             } else {
                 page = 1;
+                catalogBlock.empty();
             }
 
             var data = {
                 page:  page,
-                order: getSorting()
+                order: getSorting(),
+                charFilter: characterFilter
             };
 
             if ( geoLocationAvailable ) {
@@ -90,9 +101,12 @@ $( document ).ready( function() {
                 success: function( response ) {
                     if ( response.html ) {
                         $( '#emergency-catalog' ).append( response.html );
-                        requestSend = false;
+                        enableButton( button );
+                    } else if ( !usePage ) {
                         enableButton( button );
                     }
+
+                    requestSend = false;
 
                     enableSorting();
                     hideSpinner();

@@ -196,6 +196,8 @@ class SearchManager extends Manager
         $latitude  = SearchDataUtil::getEmergencyCatalogLatitudeFromRequest($request);
         $longitude = SearchDataUtil::getEmergencyCatalogLongitudeFromRequest($request);
 
+        $characterFilter = SearchDataUtil::getEmergencyCatalogCharFilterFromRequest($request);
+
         if (!$latitude and !$longitude) {
             $orderBy = SearchDataUtil::EMERGENCY_ORDER_BY_ALPHABET;
         } else {
@@ -207,6 +209,10 @@ class SearchManager extends Manager
         if ($orderBy == SearchDataUtil::EMERGENCY_ORDER_BY_DISTANCE) {
             $searchDTO->lat = $latitude;
             $searchDTO->lng = $longitude;
+        }
+
+        if ($characterFilter) {
+            $searchDTO->characterFilter = $characterFilter;
         }
 
         return $searchDTO;

@@ -55,6 +55,13 @@ class EmergencyCatalogItem
     protected $contentUpdatedAt;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="filters", type="text", nullable=true)
+     */
+    protected $filters;
+
+    /**
      * Get id
      *
      * @return int
@@ -150,5 +157,25 @@ class EmergencyCatalogItem
     public function getContentUpdatedAt()
     {
         return $this->contentUpdatedAt;
+    }
+
+    /**
+     * @param string $filters
+     *
+     * @return EmergencyCatalogItem
+     */
+    public function setFilters($filters)
+    {
+        $this->filters = $filters;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilters()
+    {
+        return $this->filters;
     }
 }

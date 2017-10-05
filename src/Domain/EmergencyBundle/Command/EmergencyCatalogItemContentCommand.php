@@ -14,9 +14,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Filesystem\LockHandler;
 
 class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
 {
+    const EMERGENCY_CATALOG_LOCK = 'EMERGENCY_CATALOG.lock';
+
     /* @var EntityManager $em */
     protected $em;
 
@@ -37,10 +40,14 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $this->config = $this->getContainer()->get('oxa_config');
+        $lockHandler = new LockHandler(self::EMERGENCY_CATALOG_LOCK);
 
-        $this->updateCatalogItem();
+        if (!$lockHandler->lock()) {
+            $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
+            $this->config = $this->getContainer()->get('oxa_config');
+
+            $this->updateCatalogItem();
+        }
     }
 
     protected function updateCatalogItem()
@@ -80,6 +87,18 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
 
                         if ($lastUpdated > $catalogItem->getContentUpdatedAt()) {
                             $catalogItem->setContentUpdatedAt($lastUpdated);
+                        }
+
+                        $charactersData = $this->getCatalogItemFilterCharacters($catalogArea, $category);
+
+                        if ($charactersData) {
+                            $characters = [];
+
+                            foreach ($charactersData as $row) {
+                                $characters[] = current($row);
+                            }
+
+                            $catalogItem->setFilters(json_encode($characters));
                         }
                     }
 
@@ -125,6 +144,17 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
     protected function getCatalogItemContentLastUpdated($area, $category)
     {
         return $this->em->getRepository(EmergencyBusiness::class)->getCatalogItemContentLastUpdated($area, $category);
+    }
+
+    /**
+     * @param EmergencyArea $area
+     * @param EmergencyCategory $category
+     *
+     * @return array
+     */
+    protected function getCatalogItemFilterCharacters($area, $category)
+    {
+        return $this->em->getRepository(EmergencyBusiness::class)->getCatalogItemFilterCharacters($area, $category);
     }
 
     /**

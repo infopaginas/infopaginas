@@ -111,3 +111,21 @@ span.catalog-item-updated {
   max-width: 40%;
   display: inline-flex;
 }
+.search-controls span.letter.checked {
+  font-weight: 700;
+  color: #000;
+}
+.search-controls span.letter {
+  display: inline-flex;
+  margin: 5px;
+  cursor: pointer;
+  color: -webkit-link;
+  text-decoration: underline;
+}
+.search-controls span.letter.character {
+  text-transform: uppercase;
+}
+.search-controls .filter-block {
+  max-width: 60%;
+  display: inline-flex;
+}

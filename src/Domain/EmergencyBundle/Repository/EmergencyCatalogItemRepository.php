@@ -64,4 +64,28 @@ class EmergencyCatalogItemRepository extends EntityRepository
 
         return $result;
     }
+
+    /**
+     * Get business filter characters
+     *
+     * @param EmergencyArea     $area
+     * @param EmergencyCategory $category
+     *
+     * @return array
+     */
+    public function getCatalogItemFilterCharacters($area, $category)
+    {
+        $qb = $this->createQueryBuilder('ci');
+
+        $qb
+            ->select('ci.filters')
+            ->where('ci.area = :area')
+            ->andWhere('ci.category = :category')
+            ->setParameter('area', $area)
+            ->setParameter('category', $category)
+            ->setMaxResults(1)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

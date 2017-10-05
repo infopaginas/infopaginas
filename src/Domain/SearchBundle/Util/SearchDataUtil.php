@@ -5,6 +5,7 @@ namespace Domain\SearchBundle\Util;
 use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Oxa\GeolocationBundle\Model\Geolocation\LocationValueObject;
 
@@ -17,6 +18,11 @@ class SearchDataUtil
     const DEFAULT_EMERGENCY_ORDER_BY_VALUE = self::EMERGENCY_ORDER_BY_ALPHABET;
     const EMERGENCY_ORDER_BY_DISTANCE = 'distance';
     const EMERGENCY_ORDER_BY_ALPHABET = 'alphabet';
+
+    const EMERGENCY_FILTER_ALL_CHARACTER = 'all';
+    const EMERGENCY_FILTER_LETTER        = 'letter';
+    const EMERGENCY_FILTER_NUMBER        = 'number';
+    const EMERGENCY_FILTER_OTHER         = 'other_char';
 
     const DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR = ' ';
 
@@ -155,6 +161,34 @@ class SearchDataUtil
     public static function getEmergencyCatalogLongitudeFromRequest(Request $request)
     {
         return $request->get('lng', null);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public static function getEmergencyCatalogCharFilterFromRequest(Request $request)
+    {
+        $filter = $request->get('charFilter', null);
+
+        if ($filter and !in_array($filter, self::getAllowedCharFilters())) {
+            $filter = SiteHelper::getFirstSymbolFilter($filter);
+        }
+
+        return $filter;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllowedCharFilters()
+    {
+        return [
+            self::EMERGENCY_FILTER_ALL_CHARACTER,
+            self::EMERGENCY_FILTER_NUMBER,
+            self::EMERGENCY_FILTER_OTHER,
+        ];
     }
 
     /**

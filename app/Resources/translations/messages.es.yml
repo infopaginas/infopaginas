@@ -644,3 +644,7 @@ emergency.business_draft.invalid: Validación fallida
 
 emergency.catalog_sorting.distance: Más cercanos
 emergency.catalog_sorting.alphabet: Alfabeto
+emergency.catalog_filter.number: 0-9
+emergency.catalog_filter.other: Otros
+emergency.catalog_filter.all: Todos
+emergency.catalog_search.empty: No hay negocios aquí todavía
