@@ -43,11 +43,13 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
         $lockHandler = new LockHandler(self::EMERGENCY_CATALOG_LOCK);
 
         if (!$lockHandler->lock()) {
-            $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
-            $this->config = $this->getContainer()->get('oxa_config');
-
-            $this->updateCatalogItem();
+            return $output->writeln('Command is locked by another process');
         }
+
+        $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->config = $this->getContainer()->get('oxa_config');
+
+        $this->updateCatalogItem();
     }
 
     protected function updateCatalogItem()
