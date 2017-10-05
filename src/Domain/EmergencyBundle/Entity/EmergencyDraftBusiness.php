@@ -24,6 +24,9 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
 
+    const FIELD_CATEGORY = 'category';
+    const FIELD_CUSTOM_CATEGORY = 'customCategory';
+
     /**
      * @var string
      *
@@ -41,6 +44,7 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness
     protected $customCategory;
 
     /**
+     * Related to FIELD_CUSTOM_CATEGORY const
      * @var string - Custom working hours
      *
      * @ORM\Column(name="custom_working_hours", type="string", length=255, nullable=true)
@@ -49,6 +53,7 @@ class EmergencyDraftBusiness extends EmergencyAbstractBusiness
     protected $customWorkingHours;
 
     /**
+     * Related to FIELD_CATEGORY const
      * @var EmergencyCategory|null $category
      * @ORM\ManyToOne(targetEntity="Domain\EmergencyBundle\Entity\EmergencyCategory",
      *     inversedBy="draftBusinesses",

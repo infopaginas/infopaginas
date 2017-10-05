@@ -3392,6 +3392,11 @@ a.tag {
   @media only screen and (min-width: 805px) {
     padding: 20px;
   }
+
+  &.flash-success-message {
+    background: #acc02f;
+    color: #fff;
+  }
 }
 
 input, textarea {
