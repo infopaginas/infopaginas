@@ -15,6 +15,7 @@ use Sonata\TranslationBundle\Model\Gedmo\TranslatableInterface;
 use Oxa\Sonata\AdminBundle\Util\Traits\OxaPersonalTranslatable as PersonalTranslatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Page
@@ -23,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Domain\PageBundle\Repository\PageRepository")
  * @ORM\HasLifecycleCallbacks
  * @Gedmo\TranslationEntity(class="Domain\PageBundle\Entity\Translation\PageTranslation")
+ * @Assert\Callback(methods={"validatePageActionLink"})
  */
 class Page implements DefaultEntityInterface, TranslatableInterface, PageInterface
 {
@@ -139,12 +141,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     protected $redirectUrl;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(name="content_updated_at", type="datetime", nullable=true)
-     */
-    protected $contentUpdatedAt;
-
-    /**
      * @var ArrayCollection - Page links
      *
      * @ORM\OneToMany(
@@ -165,6 +161,13 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
      * @Assert\Length(max=1000)
      */
     protected $actionLink;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="use_action_link", type="boolean", options={"default" : 0})
+     */
+    protected $useActionLink;
 
     /**
      * Get id
@@ -191,6 +194,8 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     {
         $this->translations = new ArrayCollection();
         $this->links        = new ArrayCollection();
+
+        $this->useActionLink = false;
     }
 
     /**
@@ -548,29 +553,6 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     }
 
     /**
-     * Sets contentUpdatedAt
-     *
-     * @param  \DateTime $updatedAt
-     * @return $this
-     */
-    public function setContentUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->contentUpdatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Returns contentUpdatedAt
-     *
-     * @return \DateTime
-     */
-    public function getContentUpdatedAt()
-    {
-        return $this->contentUpdatedAt;
-    }
-
-    /**
      * Add $link
      *
      * @param PageLink $link
@@ -621,5 +603,38 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
     public function getActionLink()
     {
         return $this->actionLink;
+    }
+
+    /**
+     * @param boolean $useActionLink
+     *
+     * @return Page
+     */
+    public function setUseActionLink($useActionLink)
+    {
+        $this->useActionLink = $useActionLink;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseActionLink()
+    {
+        return $this->useActionLink;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function validatePageActionLink(ExecutionContextInterface $context)
+    {
+        if ($this->getUseActionLink() and !trim($this->getActionLink())) {
+            $context->buildViolation('page.action_url.required')
+                ->atPath('actionLink')
+                ->addViolation()
+            ;
+        }
     }
 }

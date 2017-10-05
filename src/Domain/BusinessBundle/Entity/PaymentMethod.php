@@ -75,6 +75,15 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     protected $emergencyBusinesses;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Domain\EmergencyBundle\Entity\EmergencyDraftBusiness",
+     *     mappedBy="paymentMethods",
+     *     cascade={"persist"}
+     *     )
+     */
+    protected $emergencyDraftBusinesses;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
@@ -108,6 +117,7 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     {
         $this->businessProfiles     = new ArrayCollection();
         $this->emergencyBusinesses  = new ArrayCollection();
+        $this->emergencyDraftBusinesses = new ArrayCollection();
         $this->translations         = new ArrayCollection();
     }
 
@@ -221,6 +231,42 @@ class PaymentMethod implements DefaultEntityInterface, CopyableEntityInterface, 
     public function getEmergencyBusinesses()
     {
         return $this->emergencyBusinesses;
+    }
+
+    /**
+     * Add businessProfile
+     *
+     * @param \Domain\EmergencyBundle\Entity\EmergencyDraftBusiness $business
+     *
+     * @return PaymentMethod
+     */
+    public function addEmergencyDraftBusiness(\Domain\EmergencyBundle\Entity\EmergencyDraftBusiness $business)
+    {
+        $this->emergencyDraftBusinesses->add($business);
+        $business->addPaymentMethod($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove $business
+     *
+     * @param \Domain\EmergencyBundle\Entity\EmergencyDraftBusiness $business
+     */
+    public function removeEmergencyDraftBusiness(\Domain\EmergencyBundle\Entity\EmergencyDraftBusiness $business)
+    {
+        $this->emergencyDraftBusinesses->removeElement($business);
+        $business->removePaymentMethod($this);
+    }
+
+    /**
+     * Get emergencyDraftBusinesses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEmergencyDraftBusinesses()
+    {
+        return $this->emergencyDraftBusinesses;
     }
 
     /**

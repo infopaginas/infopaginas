@@ -21,6 +21,7 @@ footer p.disclaimer {
   line-height: 1.25;
   width: 100%;
   text-align: center;
+  cursor: pointer;
 }
 .show-more img.spinner {
   display: block;
@@ -100,4 +101,13 @@ body {
 }
 .working-hours.data .working-hours-list .hide-children > div.day:not([data-day]) {
   display: none;
+}
+span.catalog-item-updated {
+  font-family: Roboto, sans-serif;
+  font-style: italic;
+  font-size: 14px;
+}
+.search-controls .sorting-block {
+  max-width: 40%;
+  display: inline-flex;
 }

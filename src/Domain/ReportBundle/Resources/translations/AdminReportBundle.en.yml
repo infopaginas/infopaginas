@@ -47,6 +47,9 @@ user_action_report:
     task_approve: Approve task
     task_reject: Reject task
 
+    draft_approve: Approve draft
+    draft_reject: Reject draft
+
     login: Login
     logout: Logout
   mapping:

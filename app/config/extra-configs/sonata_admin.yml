@@ -54,6 +54,7 @@ sonata_admin:
                 icon: <i class="fa fa-exclamation-triangle"></i>
                 items:
                     - domain_emergency.admin.business
+                    - domain_emergency.admin.draft_business
                     - domain_emergency.admin.area
                     - domain_emergency.admin.category
                     - domain_emergency.admin.service

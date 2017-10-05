@@ -169,10 +169,7 @@ class PageAdmin extends OxaAdmin
         if ($pageCode == PageInterface::CODE_EMERGENCY) {
             $formMapper
                 ->with('Content')
-                    ->add('contentUpdatedAt', 'sonata_type_datetime_picker', [
-                        'required' => false,
-                        'disabled' => true,
-                    ])
+                    ->add('useActionLink')
                     ->add('actionLink', null, [
                         'help' => $this->getHelpMessage('actionLink', $helpMessage),
                     ])

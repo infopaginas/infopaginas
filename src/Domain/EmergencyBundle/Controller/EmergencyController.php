@@ -2,11 +2,10 @@
 
 namespace Domain\EmergencyBundle\Controller;
 
-use Domain\EmergencyBundle\Entity\EmergencyArea;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
-use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Domain\EmergencyBundle\Manager\EmergencyManager;
 use Domain\PageBundle\Model\PageInterface;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,15 +56,15 @@ class EmergencyController extends Controller
             throw $this->createNotFoundException();
         }
 
-        $pageManager = $this->get('domain_page.manager.page');
-        $page = $pageManager->getPageByCode(PageInterface::CODE_EMERGENCY_AREA_CATEGORY);
-
         $area     = $emergencyManger->getAreaBySlug($areaSlug);
         $category = $emergencyManger->getCategoryBySlug($categorySlug);
-        $pageNumber = $request->get('page', 1);
+        $pageNumber = SearchDataUtil::getPageFromRequest($request);
 
         if ($area and $category) {
-            $businesses = $emergencyManger->getBusinessByAreaAndCategory($area, $category, $pageNumber);
+            $searchManager = $this->get('domain_search.manager.search');
+
+            $searchParams = $searchManager->getEmergencySearchDTO($request, $area->getId(), $category->getId());
+            $businesses   = $searchManager->searchEmergencyBusinessByAreaAndCategory($searchParams);
 
             $placeholders = [
                 '[area]'      => $area->getName(),
@@ -95,6 +94,9 @@ class EmergencyController extends Controller
                 'html' => $html,
             ]);
         } else {
+            $pageManager = $this->get('domain_page.manager.page');
+            $page = $pageManager->getPageByCode(PageInterface::CODE_EMERGENCY_AREA_CATEGORY);
+
             return $this->render(
                 ':redesign:emergency-catalog.html.twig',
                 [

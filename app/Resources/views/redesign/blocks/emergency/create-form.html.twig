@@ -1,0 +1,69 @@
+{% import '::widgets/custom_form_label_redesign.html.twig' as custom_form_label %}
+
+<h3>{{ 'emergency.business_draft.form_title'|trans }}</h3>
+<div class="form-column__container clearfix">
+    <div class="form__section">
+        <div class="form__row">
+            <div class="form__field field--name">
+                {{ custom_form_label.widget(businessForm.name) }}
+                {{ form_widget(businessForm.name) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form__section">
+    <div class="form-column__container clearfix">
+        <div class="form__column">
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessForm.category) }}
+                {{ form_widget(businessForm.category, {'attr': {'style': 'width: 100%'}}) }}
+            </div>
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--custom-category">
+                    {{ custom_form_label.widget(businessForm.customCategory) }}
+                    {{ form_widget(businessForm.customCategory) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--phone">
+                    {{ custom_form_label.widget(businessForm.phone) }}
+                    {{ form_widget(businessForm.phone) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessForm.services) }}
+                {{ form_widget(businessForm.services) }}
+            </div>
+        </div>
+
+        <div class="form__column">
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessForm.area) }}
+                {{ form_widget(businessForm.area, {'attr': {'style': 'width: 100%'}}) }}
+            </div>
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--address">
+                    {{ custom_form_label.widget(businessForm.address) }}
+                    {{ form_widget(businessForm.address) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row">
+                <div class="form__field field--working-hours">
+                    {{ custom_form_label.widget(businessForm.customWorkingHours) }}
+                    {{ form_widget(businessForm.customWorkingHours) }}
+                </div>
+            </div>
+
+            <div class="form__row vertical__row">
+                {{ custom_form_label.widget(businessForm.paymentMethods) }}
+                {{ form_widget(businessForm.paymentMethods) }}
+            </div>
+        </div>
+    </div>
+</div>

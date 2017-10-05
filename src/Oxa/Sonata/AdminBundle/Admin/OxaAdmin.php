@@ -262,6 +262,16 @@ class OxaAdmin extends BaseAdmin
     /**
      * @return array
      */
+    protected function getEditDeniedAction()
+    {
+        return [
+            'EDIT',
+        ];
+    }
+
+    /**
+     * @return array
+     */
     protected function getAllowViewOnlyAction()
     {
         return [
@@ -365,6 +375,7 @@ class OxaAdmin extends BaseAdmin
             case UserActionModel::TYPE_ACTION_CREATE:
             case UserActionModel::TYPE_ACTION_UPDATE:
             case UserActionModel::TYPE_ACTION_RESTORE:
+            case UserActionModel::TYPE_ACTION_DRAFT_REJECT:
                 if ($entity and $entity->getId()) {
                     $url = $this->generateUrl(
                         self::SONATA_URL_TYPE_EDIT,
@@ -376,6 +387,7 @@ class OxaAdmin extends BaseAdmin
                 }
                 break;
             case UserActionModel::TYPE_ACTION_VIEW_SHOW_PAGE:
+            case UserActionModel::TYPE_ACTION_DRAFT_APPROVE:
             case UserActionModel::TYPE_ACTION_POSTPONE_DELETE:
                 if ($this->hasRoute(self::SONATA_URL_TYPE_SHOW)) {
                     $urlType = self::SONATA_URL_TYPE_SHOW;

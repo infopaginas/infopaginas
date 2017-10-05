@@ -5,7 +5,6 @@ namespace Domain\EmergencyBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType as BusinessWorkingHourTypeValidator;
 
@@ -17,51 +16,17 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  * @ORM\HasLifecycleCallbacks
  * @BusinessWorkingHourTypeValidator()
  */
-class EmergencyBusiness
+class EmergencyBusiness extends EmergencyAbstractBusiness
 {
-    use TimestampableEntity;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    protected $id;
-
-    /**
-     * @var string - Business name
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @Assert\NotBlank()
-     */
-    protected $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address", type="string", length=255, nullable=true)
-     * @Assert\Length(max=255, maxMessage="business_profile.max_length")
-     * @Assert\NotBlank()
-     */
-    protected $address;
-
-    /**
-     * @var string - Contact phone number
-     *
-     * @ORM\Column(name="phone", type="string", length=15, nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $phone;
+    const ELASTIC_DOCUMENT_TYPE = 'EmergencyBusiness';
+    const DISTANCE_TO_BUSINESS_PRECISION = 1;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_active", type="boolean", options={"default" : 0})
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 0})
      */
-    protected $isActive;
+    protected $isUpdated;
 
     /**
      * @var EmergencyCategory|null $category
@@ -120,304 +85,70 @@ class EmergencyBusiness
     protected $collectionWorkingHours;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="working_hours_json", type="text", nullable=true)
+     * Distance to the user
      */
-    protected $workingHoursJson;
+    protected $distance;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->paymentMethods = new ArrayCollection();
-        $this->services       = new ArrayCollection();
-        $this->collectionWorkingHours = new ArrayCollection();
+        parent::__construct();
 
         $this->isActive       = true;
+        $this->isUpdated      = true;
     }
 
     /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getName() ?: '';
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
+     * @param boolean $isUpdated
      *
      * @return EmergencyBusiness
      */
-    public function setName($name)
+    public function setIsUpdated($isUpdated)
     {
-        $this->name = $name;
+        $this->isUpdated = $isUpdated;
 
         return $this;
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * @return boolean
      */
-    public function getName()
+    public function getIsUpdated()
     {
-        return $this->name;
+        return $this->isUpdated;
     }
 
     /**
-     * Set address
-     *
-     * @param string $address
+     * @param float|null $distance
      *
      * @return EmergencyBusiness
      */
-    public function setAddress($address)
+    public function setDistance($distance)
     {
-        $this->address = $address;
+        $this->distance = $distance;
 
         return $this;
     }
 
     /**
-     * @param string $phone
-     *
-     * @return EmergencyBusiness
+     * @return float|null
      */
-    public function setPhone($phone)
+    public function getDistance()
     {
-        $this->phone = $phone;
-
-        return $this;
+        return $this->distance;
     }
 
     /**
-     * Get address
+     * Get formatted distance
      *
      * @return string
      */
-    public function getAddress()
+    public function getDistanceUX()
     {
-        return $this->address;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    /**
-     * @param boolean $isActive
-     *
-     * @return EmergencyBusiness
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     * Set $area
-     *
-     * @param EmergencyArea|null $area
-     *
-     * @return EmergencyBusiness
-     */
-    public function setArea(EmergencyArea $area = null)
-    {
-        $this->area = $area;
-
-        return $this;
-    }
-
-    /**
-     * Get area
-     *
-     * @return EmergencyArea|null
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
-     * Set category
-     *
-     * @param EmergencyCategory|null $category
-     *
-     * @return EmergencyBusiness
-     */
-    public function setCategory(EmergencyCategory $category = null)
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return EmergencyCategory|null
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
-     * Add paymentMethod
-     *
-     * @param \Domain\BusinessBundle\Entity\PaymentMethod $paymentMethod
-     *
-     * @return EmergencyBusiness
-     */
-    public function addPaymentMethod(\Domain\BusinessBundle\Entity\PaymentMethod $paymentMethod)
-    {
-        $this->paymentMethods->add($paymentMethod);
-
-        return $this;
-    }
-
-    /**
-     * Remove paymentMethod
-     *
-     * @param \Domain\BusinessBundle\Entity\PaymentMethod $paymentMethod
-     */
-    public function removePaymentMethod(\Domain\BusinessBundle\Entity\PaymentMethod $paymentMethod)
-    {
-        $this->paymentMethods->removeElement($paymentMethod);
-    }
-
-    /**
-     * Get paymentMethods
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPaymentMethods()
-    {
-        return $this->paymentMethods;
-    }
-
-    /**
-     * Add paymentMethod
-     *
-     * @param EmergencyService $service
-     *
-     * @return EmergencyBusiness
-     */
-    public function addService(EmergencyService $service)
-    {
-        $this->services->add($service);
-
-        return $this;
-    }
-
-    /**
-     * Remove service
-     *
-     * @param EmergencyService $service
-     */
-    public function removeService(EmergencyService $service)
-    {
-        $this->services->removeElement($service);
-    }
-
-    /**
-     * Get services
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getServices()
-    {
-        return $this->services;
-    }
-
-    /**
-     * Add $workingHour
-     *
-     * @param EmergencyBusinessWorkingHour $workingHour
-     *
-     * @return EmergencyBusiness
-     */
-    public function addCollectionWorkingHour($workingHour)
-    {
-        $this->collectionWorkingHours->add($workingHour);
-        $workingHour->setBusiness($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove $workingHours
-     *
-     * @param EmergencyBusinessWorkingHour $workingHours
-     */
-    public function removeCollectionWorkingHour(EmergencyBusinessWorkingHour $workingHours)
-    {
-        $this->collectionWorkingHours->removeElement($workingHours);
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getCollectionWorkingHours()
-    {
-        return $this->collectionWorkingHours;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWorkingHoursJson()
-    {
-        return $this->workingHoursJson;
-    }
-
-    /**
-     * @param string $workingHoursJson
-     *
-     * @return EmergencyBusiness
-     */
-    public function setWorkingHoursJson($workingHoursJson)
-    {
-        $this->workingHoursJson = $workingHoursJson;
-
-        return $this;
-    }
-
-    /**
-     * @return \stdClass
-     */
-    public function getWorkingHoursJsonAsObject()
-    {
-        return json_decode($this->getWorkingHoursJson());
+        return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
     }
 }

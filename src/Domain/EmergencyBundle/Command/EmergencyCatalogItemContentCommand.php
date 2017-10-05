@@ -75,6 +75,14 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
 
                     $catalogItem->setHasContent((bool)$countCategoryContent);
 
+                    if ($countCategoryContent) {
+                        $lastUpdated = $this->getCatalogItemContentLastUpdated($catalogArea, $category);
+
+                        if ($lastUpdated > $catalogItem->getContentUpdatedAt()) {
+                            $catalogItem->setContentUpdatedAt($lastUpdated);
+                        }
+                    }
+
                     $countAreaContent += $countCategoryContent;
                 }
 
@@ -106,6 +114,17 @@ class EmergencyCatalogItemContentCommand extends ContainerAwareCommand
     protected function getCountCatalogItemContent($area, $category)
     {
         return $this->em->getRepository(EmergencyBusiness::class)->countCatalogItemContent($area, $category);
+    }
+
+    /**
+     * @param EmergencyArea $area
+     * @param EmergencyCategory $category
+     *
+     * @return \Datetime|null
+     */
+    protected function getCatalogItemContentLastUpdated($area, $category)
+    {
+        return $this->em->getRepository(EmergencyBusiness::class)->getCatalogItemContentLastUpdated($area, $category);
     }
 
     /**

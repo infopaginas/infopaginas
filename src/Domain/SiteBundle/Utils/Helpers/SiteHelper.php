@@ -81,4 +81,21 @@ class SiteHelper
 
         return $query;
     }
+
+    /**
+     * @param array $data
+     * @param int $id
+     *
+     * @return array|null
+     */
+    public static function searchEntityByIdsInArray($data, $id)
+    {
+        foreach ($data as $item) {
+            if ($item->getId() == $id) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Domain\SearchBundle\Util;
 
+use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchDTO;
 use Domain\SearchBundle\Model\DataType\SearchResultsDTO;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +13,10 @@ class SearchDataUtil
     const ORDER_BY_RELEVANCE        = 'relevance';
     const ORDER_BY_DISTANCE         = 'distance';
     const DEFAULT_ORDER_BY_VALUE    = 'relevance';
+
+    const DEFAULT_EMERGENCY_ORDER_BY_VALUE = self::EMERGENCY_ORDER_BY_ALPHABET;
+    const EMERGENCY_ORDER_BY_DISTANCE = 'distance';
+    const EMERGENCY_ORDER_BY_ALPHABET = 'alphabet';
 
     const DEFAULT_ELASTIC_SEARCH_WORD_SEPARATOR = ' ';
 
@@ -47,6 +52,20 @@ class SearchDataUtil
     public static function buildRequestDTO($query, LocationValueObject $location, int $page, int $limit) : SearchDTO
     {
         return new SearchDTO($query, $location, $page, $limit);
+    }
+
+    /**
+     * @param int $page
+     * @param int $limit
+     * @param int $areaId
+     * @param int $categoryId
+     * @param string $orderBy
+     *
+     * @return EmergencySearchDTO
+     */
+    public static function buildEmergencyRequestDTO($page, $limit, $areaId, $categoryId, $orderBy) : EmergencySearchDTO
+    {
+        return new EmergencySearchDTO($page, $limit, $areaId, $categoryId, $orderBy);
     }
 
     /**
@@ -106,6 +125,36 @@ class SearchDataUtil
     public static function getOrderByFromRequest(Request $request)
     {
         return $request->get('order', self::ORDER_BY_RELEVANCE);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public static function getEmergencyCatalogOrderByFromRequest(Request $request)
+    {
+        return $request->get('order', self::DEFAULT_EMERGENCY_ORDER_BY_VALUE);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public static function getEmergencyCatalogLatitudeFromRequest(Request $request)
+    {
+        return $request->get('lat', null);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public static function getEmergencyCatalogLongitudeFromRequest(Request $request)
+    {
+        return $request->get('lng', null);
     }
 
     /**

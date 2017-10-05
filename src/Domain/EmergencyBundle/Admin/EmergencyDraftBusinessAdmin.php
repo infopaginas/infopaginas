@@ -2,84 +2,26 @@
 
 namespace Domain\EmergencyBundle\Admin;
 
-use Domain\BusinessBundle\Entity\BusinessProfile;
 use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourTypeValidator;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
+use Domain\EmergencyBundle\Entity\EmergencyDraftBusiness;
+use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\Sonata\AdminBundle\Admin\OxaAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\CoreBundle\Form\Type\BooleanType;
-use Sonata\CoreBundle\Form\Type\EqualType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
- * Class EmergencyBusinessAdmin
+ * Class EmergencyDraftBusinessAdmin
  * @package Domain\EmergencyBundle\Admin
  */
-class EmergencyBusinessAdmin extends OxaAdmin
+class EmergencyDraftBusinessAdmin extends OxaAdmin
 {
-    /**
-     * @return EmergencyBusiness
-     */
-    public function getNewInstance()
-    {
-        $instance = parent::getNewInstance();
-        $container = $this->getConfigurationPool()->getContainer();
-
-        if ($this->getRequest()->getMethod() == Request::METHOD_GET) {
-            $parentId = $this->getRequest()->get('id', null);
-
-            if ($parentId) {
-                $parent = $container->get('doctrine')->getRepository(BusinessProfile::class)->find($parentId);
-
-                if ($parent) {
-                    $instance = $this->cloneParentEntity($parent, $instance);
-                }
-            }
-        }
-
-        return $instance;
-    }
-
-    /**
-     * @param BusinessProfile   $parent
-     * @param EmergencyBusiness $instance
-     *
-     * @return EmergencyBusiness
-     */
-    protected function cloneParentEntity(BusinessProfile $parent, $instance)
-    {
-        $instance->setName($parent->getName());
-        $instance->setAddress($parent->getFullAddress());
-
-        if (!$parent->getPhones()->isEmpty()) {
-            $mainPhone = $parent->getMainPhone();
-
-            if ($mainPhone) {
-                $phone = $mainPhone;
-            } else {
-                $phone = $parent->getPhones()->first();
-            }
-
-            $instance->setPhone($phone->getPhone());
-        }
-
-        if ($parent->getLatitude() and $parent->getLongitude()) {
-            $instance->setUseMapAddress(true);
-            $instance->setLatitude($parent->getLatitude());
-            $instance->setLongitude($parent->getLongitude());
-            $instance->setGoogleAddress($parent->getGoogleAddress());
-        }
-
-        return $instance;
-    }
-
     /**
      * @param DatagridMapper $datagridMapper
      */
@@ -96,6 +38,12 @@ class EmergencyBusinessAdmin extends OxaAdmin
             ->add('phone')
             ->add('paymentMethods')
             ->add('services')
+            ->add('status', null, [
+                'field_options' => [
+                    'choices' => EmergencyDraftBusiness::getStatuses(),
+                ],
+                'field_type' => 'choice',
+            ])
         ;
     }
 
@@ -106,6 +54,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
     {
         $this->datagridValues['_sort_by']    = 'updatedAt';
         $this->datagridValues['_sort_order'] = 'DESC';
+        $this->datagridValues['status']['value'] = EmergencyDraftBusiness::STATUS_PENDING;
 
         return parent::getFilterParameters();
     }
@@ -142,6 +91,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
             ])
             ->add('address')
             ->add('phone')
+            ->add('status')
             ->add('updatedAt')
         ;
 
@@ -153,13 +103,16 @@ class EmergencyBusinessAdmin extends OxaAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $business = $this->getSubject();
+        $draft = $this->getSubject();
 
         $formMapper
             ->with('Main')
                 ->add('name')
             ->end()
             ->with('Working hours')
+                ->add('customWorkingHours', null, [
+                    'help' => 'emergency.custom_working_hour.help',
+                ])
                 ->add(
                     'collectionWorkingHours',
                     'sonata_type_collection',
@@ -211,15 +164,16 @@ class EmergencyBusinessAdmin extends OxaAdmin
                     'btn_delete'    => false,
                     'btn_add'       => false,
                 ])
+                ->add('customCategory')
             ->end()
         ;
 
         // Map Block
         $oxaConfig = $this->getConfigurationPool()->getContainer()->get('oxa_config');
 
-        if ($business->getLatitude() and $business->getLongitude()) {
-            $latitude   = $business->getLatitude();
-            $longitude  = $business->getLongitude();
+        if ($draft->getLatitude() and $draft->getLongitude()) {
+            $latitude   = $draft->getLatitude();
+            $longitude  = $draft->getLongitude();
         } else {
             $latitude   = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LATITUDE);
             $longitude  = $oxaConfig->getValue(ConfigInterface::DEFAULT_MAP_COORDINATE_LONGITUDE);
@@ -239,6 +193,17 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ])
             ->end()
         ;
+
+        $formMapper
+            ->with('Status')
+                ->add('status', ChoiceType::class, [
+                    'choices' => EmergencyDraftBusiness::getStatuses(),
+                    'multiple' => false,
+                    'expanded' => true,
+                    'required' => true,
+                ])
+            ->end()
+        ;
     }
 
     /**
@@ -254,6 +219,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ->add('collectionWorkingHours', null, [
                     'template' => 'DomainBusinessBundle:Admin:BusinessProfile/show_working_hours_collection.html.twig',
                 ])
+                ->add('customWorkingHours')
             ->end()
             ->with('Address')
                 ->add('address')
@@ -276,6 +242,7 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ->add('category', null, [
                     'template' => 'OxaSonataAdminBundle:ShowFields:show_orm_many_to_one.html.twig',
                 ])
+                ->add('customCategory')
             ->end()
             ->with('Map')
                 ->add('useMapAddress')
@@ -284,5 +251,111 @@ class EmergencyBusinessAdmin extends OxaAdmin
                 ->add('googleAddress')
             ->end()
         ;
+    }
+
+    /**
+     * @param EmergencyDraftBusiness $draft
+     */
+    public function postUpdate($draft)
+    {
+        $status = $draft->getStatus();
+
+        if ($status == EmergencyDraftBusiness::STATUS_APPROVED) {
+            $this->approveDraft($draft);
+        } elseif ($status == EmergencyDraftBusiness::STATUS_REJECTED) {
+            $this->rejectDraft($draft);
+        } else {
+            parent::postUpdate($draft);
+        }
+    }
+
+    /**
+     * @param EmergencyDraftBusiness $draft
+     */
+    protected function approveDraft($draft)
+    {
+        $this->handleActionLog(
+            UserActionModel::TYPE_ACTION_DRAFT_APPROVE,
+            $draft
+        );
+
+        $business = $this->createEmergencyBusinessFromDraft($draft);
+
+        $this->handleActionLog(
+            UserActionModel::TYPE_ACTION_CREATE,
+            $business
+        );
+    }
+
+    /**
+     * @param EmergencyDraftBusiness $draft
+     */
+    protected function rejectDraft($draft)
+    {
+        $this->handleActionLog(
+            UserActionModel::TYPE_ACTION_DRAFT_REJECT,
+            $draft
+        );
+    }
+
+    /**
+     * @param EmergencyDraftBusiness $draft
+     *
+     * @return EmergencyBusiness
+     */
+    protected function createEmergencyBusinessFromDraft($draft)
+    {
+        $business = new EmergencyBusiness();
+
+        $business->setName($draft->getName());
+        $business->setAddress($draft->getAddress());
+        $business->setPhone($draft->getPhone());
+        $business->setCategory($draft->getCategory());
+        $business->setArea($draft->getArea());
+
+        $business->setUseMapAddress($draft->getUseMapAddress());
+        $business->setGoogleAddress($draft->getGoogleAddress());
+        $business->setLatitude($draft->getLatitude());
+        $business->setLongitude($draft->getLongitude());
+
+        foreach ($draft->getPaymentMethods() as $paymentMethod) {
+            $business->addPaymentMethod($paymentMethod);
+        }
+
+        foreach ($draft->getServices() as $service) {
+            $business->addService($service);
+        }
+
+        foreach ($draft->getCollectionWorkingHours() as $collectionWorkingHours) {
+            $workingHours = clone $collectionWorkingHours;
+
+            $business->addCollectionWorkingHour($workingHours);
+        }
+
+        $container = $this->getConfigurationPool()->getContainer();
+        $em = $container->get('doctrine.orm.entity_manager');
+
+        $em->persist($business);
+        $em->flush($business);
+
+        return $business;
+    }
+
+    /**
+     * @param string $name
+     * @param EmergencyDraftBusiness $draft
+     * @return bool
+     */
+    public function isGranted($name, $draft = null)
+    {
+        $deniedActions = $this->getEditDeniedAction();
+
+        if ($draft and in_array($name, $deniedActions) and
+            $draft->getStatus() == EmergencyDraftBusiness::STATUS_APPROVED
+        ) {
+            return false;
+        }
+
+        return parent::isGranted($name, $draft);
     }
 }
