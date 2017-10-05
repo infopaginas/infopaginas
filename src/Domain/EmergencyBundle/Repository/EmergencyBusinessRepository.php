@@ -4,6 +4,8 @@ namespace Domain\EmergencyBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
+use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 
 class EmergencyBusinessRepository extends EntityRepository
 {
@@ -83,6 +85,52 @@ class EmergencyBusinessRepository extends EntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->orderBy('b.name')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getActiveBusinessIterator()
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->andWhere('b.isUpdated = true')
+        ;
+
+        $query = $this->getEntityManager()->createQuery($qb->getDQL());
+
+        return $query->iterate();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function setUpdatedAllEmergencyBusinesses()
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainEmergencyBundle:EmergencyBusiness', 'b')
+            ->set('b.isUpdated', ':isUpdated')
+            ->setParameter('isUpdated', true)
+            ->getQuery()
+            ->execute()
+        ;
+
+        return $result;
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return EmergencyBusiness[]
+     */
+    public function getAvailableBusinessesByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->andWhere('b.id IN (:ids)')
+            ->setParameter('ids', $ids)
         ;
 
         return $qb->getQuery()->getResult();

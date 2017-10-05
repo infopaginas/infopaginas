@@ -12,6 +12,22 @@
         <a href="{{ absolute_url(path('emergency_main')) }}">{{ 'emergency.back_button'|trans }}</a>
     </div>
 
+    <div class="search-controls">
+        <div class="sorting-block">
+            <div>
+                <div class="sorting-block-distance">
+                    <input type="radio" id="sortDistance" name="order" value="distance" disabled>
+                    <label for="sortDistance">{{ 'emergency.catalog_sorting.distance'|trans }}</label>
+                </div>
+
+                <div class="sorting-block-alp">
+                    <input type="radio" id="sortAlphabetically" name="order" value="alphabet" disabled checked>
+                    <label for="sortAlphabetically">{{ 'emergency.catalog_sorting.alphabet'|trans }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="emergency-catalog" id="emergency-catalog">
         {% include ':redesign/blocks/emergency:emergency-businesses.html.twig' %}
     </div>

@@ -56,6 +56,7 @@ class SyncBusinessElasticCommand extends ContainerAwareCommand
         $businessProfileManager->handleLocalityElasticSync();
         $businessProfileManager->handleCategoryElasticSync();
         $businessProfileManager->handleBusinessElasticSync();
+        $businessProfileManager->handleEmergencyBusinessElasticSync();
 
         $lockHandler->release();
         $logger->addInfo($logger::ELASTIC_SYNC, $logger::STATUS_END, 'execute:stop');

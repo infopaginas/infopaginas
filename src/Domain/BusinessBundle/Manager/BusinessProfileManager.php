@@ -33,10 +33,13 @@ use Domain\BusinessBundle\Util\SlugUtil;
 use Domain\BusinessBundle\Util\Task\RelationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\TranslationChangeSetUtil;
 use Domain\BusinessBundle\Util\Task\WorkingHoursChangeSetUtil;
+use Domain\EmergencyBundle\Entity\EmergencyBusiness;
+use Domain\EmergencyBundle\Manager\EmergencyManager;
 use Domain\PageBundle\Entity\Page;
 use Domain\ReportBundle\Manager\BaseReportManager;
 use Domain\ReportBundle\Model\ExporterInterface;
 use Domain\ReportBundle\Util\DatesUtil;
+use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
 use Domain\SearchBundle\Model\Manager\SearchManager;
 use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
@@ -81,6 +84,9 @@ class BusinessProfileManager extends Manager
     /** @var LocalityManager */
     protected $localityManager;
 
+    /** @var EmergencyManager */
+    protected $emergencyManager;
+
     /** @var  TranslatableListener */
     private $translatableListener;
 
@@ -115,6 +121,7 @@ class BusinessProfileManager extends Manager
 
         $this->categoryManager = $container->get('domain_business.manager.category');
         $this->localityManager = $container->get('domain_business.manager.locality');
+        $this->emergencyManager = $container->get('domain_emergency.manager.emergency');
 
         $this->translatableListener = $container->get('sonata_translation.listener.translatable');
 
@@ -297,6 +304,18 @@ class BusinessProfileManager extends Manager
     public function searchClosestBusinesses(SearchDTO $searchParams)
     {
         $searchResultsData = $this->searchClosestBusinessesInElastic($searchParams);
+
+        return $searchResultsData;
+    }
+
+    /**
+     * @param EmergencySearchDTO $searchParams
+     *
+     * @return array
+     */
+    public function searchEmergencyBusinesses(EmergencySearchDTO $searchParams)
+    {
+        $searchResultsData = $this->searchEmergencyBusinessesInElastic($searchParams);
 
         return $searchResultsData;
     }
@@ -1654,6 +1673,34 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param array $search
+     * @param $latitude  float|null
+     * @param $longitude float|null
+     *
+     * @return array
+     */
+    protected function setEmergencyBusinessDynamicValues($search, $latitude, $longitude)
+    {
+        $search['data'] = array_map(function ($item) use ($latitude, $longitude) {
+            /** @var $item EmergencyBusiness */
+            if ($item->getUseMapAddress() and $item->getLatitude() and $item->getLongitude()) {
+                $distance = GeolocationUtils::getDistanceForPoint(
+                    $latitude,
+                    $longitude,
+                    $item->getLatitude(),
+                    $item->getLongitude()
+                );
+
+                $item->setDistance($distance);
+            }
+
+            return $item;
+        }, $search['data']);
+
+        return $search;
+    }
+
+    /**
      * @param $searchParams SearchDTO
      *
      * @return array
@@ -1734,6 +1781,25 @@ class BusinessProfileManager extends Manager
         $coordinates = $searchParams->getCurrentCoordinates();
 
         $search = $this->setBusinessDynamicValues($search, $coordinates);
+
+        return $search;
+    }
+
+    /**
+     * @param $searchParams EmergencySearchDTO
+     *
+     * @return array
+     */
+    protected function searchEmergencyBusinessesInElastic(EmergencySearchDTO $searchParams)
+    {
+        $searchQuery = $this->getElasticSearchEmergencyBusinessesQuery($searchParams);
+        $response    = $this->searchEmergencyBusinessElastic($searchQuery);
+
+        $search = $this->emergencyManager->getEmergencyBusinessesFromElasticResponse($response);
+
+        if ($searchParams->sortingByDistanceAvailable()) {
+            $search = $this->setEmergencyBusinessDynamicValues($search, $searchParams->lat, $searchParams->lng);
+        }
 
         return $search;
     }
@@ -1822,6 +1888,18 @@ class BusinessProfileManager extends Manager
     protected function searchBusinessElastic($searchQuery)
     {
         $response = $this->searchElastic($searchQuery, BusinessProfile::ELASTIC_DOCUMENT_TYPE);
+
+        return $response;
+    }
+
+    /**
+     * @param array $searchQuery
+     *
+     * @return array
+     */
+    protected function searchEmergencyBusinessElastic($searchQuery)
+    {
+        $response = $this->searchElastic($searchQuery, EmergencyBusiness::ELASTIC_DOCUMENT_TYPE);
 
         return $response;
     }
@@ -1999,6 +2077,7 @@ class BusinessProfileManager extends Manager
                 $this->getRepository()->setUpdatedAllBusinessProfiles();
                 $this->categoryManager->setUpdatedAllCategories();
                 $this->localityManager->setUpdatedAllLocalities();
+                $this->emergencyManager->setUpdatedAllEmergencyBusinesses();
 
                 $status = true;
             }
@@ -2016,8 +2095,15 @@ class BusinessProfileManager extends Manager
         $businessAdMapping = $this->getBusinessAdElasticSearchMapping();
         $categoryMapping   = $this->categoryManager->getCategoryElasticSearchMapping();
         $localityMapping   = $this->localityManager->getLocalityElasticSearchMapping();
+        $emergencyMapping  = $this->emergencyManager->getEmergencyBusinessElasticSearchMapping();
 
-        $mappings = array_merge($businessMapping, $businessAdMapping, $categoryMapping, $localityMapping);
+        $mappings = array_merge(
+            $businessMapping,
+            $businessAdMapping,
+            $categoryMapping,
+            $localityMapping,
+            $emergencyMapping
+        );
 
         return $mappings;
     }
@@ -2185,6 +2271,18 @@ class BusinessProfileManager extends Manager
 
     /**
      * @param array $data
+     *
+     * @return mixed
+     */
+    public function addEmergencyBusinessToElasticIndex($data)
+    {
+        $response = $this->addElasticBulkItemData($data, EmergencyBusiness::ELASTIC_DOCUMENT_TYPE);
+
+        return $response;
+    }
+
+    /**
+     * @param array $data
      * @param string $documentType
      *
      * @return bool
@@ -2284,6 +2382,18 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param int $id
+     *
+     * @return bool
+     */
+    public function removeEmergencyBusinessFromElastic($id)
+    {
+        $status = $this->removeItemFromElastic($id, EmergencyBusiness::ELASTIC_DOCUMENT_TYPE);
+
+        return $status;
+    }
+
+    /**
      * @param SearchDTO $params
      * @param array $excludeIds
      *
@@ -2330,6 +2440,24 @@ class BusinessProfileManager extends Manager
 
         $searchQuery = $this->getElasticBaseQuery($params->page, $params->limit);
         $searchQuery = $this->addElasticMainQuery($searchQuery, $closestBusinessQuery);
+        $searchQuery = $this->addElasticSortQuery($searchQuery, $sort);
+
+        return $searchQuery;
+    }
+
+    /**
+     * @param EmergencySearchDTO $params
+     *
+     * @return array
+     */
+    protected function getElasticSearchEmergencyBusinessesQuery(EmergencySearchDTO $params)
+    {
+        $sort = $this->getEmergencyCatalogElasticSortQuery($params);
+
+        $filters = $this->getElasticEmergencyCatalogFilters($params);
+
+        $searchQuery = $this->getElasticBaseQuery($params->page, $params->limit);
+        $searchQuery = $this->addElasticFiltersQuery($searchQuery, $filters);
         $searchQuery = $this->addElasticSortQuery($searchQuery, $sort);
 
         return $searchQuery;
@@ -2666,6 +2794,29 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param EmergencySearchDTO $params
+     *
+     * @return array
+     */
+    protected function getElasticEmergencyCatalogFilters(EmergencySearchDTO $params)
+    {
+        $filters = [
+            [
+                'match' => [
+                    'category_id' => (int) $params->categoryId,
+                ],
+            ],
+            [
+                'match' => [
+                    'area_id' => (int) $params->areaId,
+                ],
+            ]
+        ];
+
+        return $filters;
+    }
+
+    /**
      * @param array $searchQuery
      * @param array $locationQuery
      *
@@ -2833,6 +2984,51 @@ class BusinessProfileManager extends Manager
     }
 
     /**
+     * @param EmergencySearchDTO $params
+     *
+     * @return array
+     */
+    protected function getEmergencyCatalogElasticSortQuery(EmergencySearchDTO $params)
+    {
+        $sort = [];
+
+        if (SearchDataUtil::EMERGENCY_ORDER_BY_DISTANCE == $params->orderBy) {
+            $sort = array_merge($sort, $this->getEmergencyElasticGeoSortQuery($params));
+            $sort = array_merge($sort, $this->getElasticEmergencyTitleSortQuery());
+        } else {
+            $sort = array_merge($sort, $this->getElasticEmergencyTitleSortQuery());
+            $sort = array_merge($sort, $this->getEmergencyElasticGeoSortQuery($params));
+        }
+
+        return $sort;
+    }
+
+    /**
+     * @param EmergencySearchDTO $params
+     *
+     * @return array
+     */
+    protected function getEmergencyElasticGeoSortQuery(EmergencySearchDTO $params)
+    {
+        if ($params->sortingByDistanceAvailable()) {
+            $sort = [
+                '_geo_distance' => [
+                    'location' => [
+                        'lat' => $params->lat,
+                        'lon' => $params->lng,
+                    ],
+                    'unit' => 'mi',
+                    'order' => 'asc',
+                ],
+            ];
+        } else {
+            $sort = [];
+        }
+
+        return $sort;
+    }
+
+    /**
      * @return array
      */
     protected function getElasticSubscriptionSortQuery()
@@ -2852,6 +3048,18 @@ class BusinessProfileManager extends Manager
         return [
             '_score' => [
                 'order' => 'desc',
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getElasticEmergencyTitleSortQuery()
+    {
+        return [
+            'title' => [
+                'order'  => 'asc',
             ],
         ];
     }
@@ -3410,6 +3618,57 @@ class BusinessProfileManager extends Manager
 
             if ($data) {
                 $this->addLocalitiesToElasticIndex($data);
+            }
+
+            $this->em->flush();
+        }
+    }
+
+    public function handleEmergencyBusinessElasticSync()
+    {
+        $index = $this->createElasticSearchIndex();
+
+        if ($index) {
+            $businesses = $this->emergencyManager->getUpdatedLocalitiesIterator();
+
+            $countDoctrine = 0;
+            $batchDoctrine = 20;
+
+            $countElastic = 0;
+            $batchElastic = $this->elasticSearchManager->getIndexingPage();
+
+            $data = [];
+
+            foreach ($businesses as $businessRow) {
+                /* @var $business EmergencyBusiness */
+                $business = current($businessRow);
+
+                $item = $this->emergencyManager->buildEmergencyBusinessElasticData($business);
+
+                if ($item) {
+                    $data[] = $item;
+                } else {
+                    $this->removeEmergencyBusinessFromElastic($business->getId());
+                }
+
+                $business->setIsUpdated(false);
+
+                if (($countElastic % $batchElastic) === 0) {
+                    $this->addEmergencyBusinessToElasticIndex($data);
+                    $data = [];
+                }
+
+                if (($countDoctrine % $batchDoctrine) === 0) {
+                    $this->em->flush();
+                    $this->em->clear();
+                }
+
+                $countElastic ++;
+                $countDoctrine ++;
+            }
+
+            if ($data) {
+                $this->addEmergencyBusinessToElasticIndex($data);
             }
 
             $this->em->flush();

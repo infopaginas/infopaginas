@@ -107,3 +107,7 @@ span.catalog-item-updated {
   font-style: italic;
   font-size: 14px;
 }
+.search-controls .sorting-block {
+  max-width: 40%;
+  display: inline-flex;
+}

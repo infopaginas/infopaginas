@@ -41,5 +41,11 @@
                 <div class="services data">{{ business.services|join(', ') }}</div>
             </div>
         {% endif %}
+        {% if business.distance %}
+            <div class="business-data">
+                <div class="label">{{ 'emergency.label.distance'|trans }}:</div>
+                <div class="services data">{{ business.distanceUX }} {{ 'emergency.label.miles_away'|trans }}</div>
+            </div>
+        {% endif %}
     </div>
 {% endfor %}
