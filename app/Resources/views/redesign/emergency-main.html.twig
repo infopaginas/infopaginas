@@ -19,17 +19,17 @@
     {% if page.actionLink %}
         <div class="add-item">
             <a href="{{ page.actionLink }}">
-                <button>{{ 'emergency.add_item.title'|trans }}</button>
+                <button class="button">{{ 'emergency.add_item.title'|trans }}</button>
             </a>
         </div>
     {% endif %}
 
     <div class="emergency-catalog">
-        <ul>
+        <ul class="area-block">
             {% for catalogItem in catalogItems %}
                 <li>
-                    {{ catalogItem.area.name }}
-                    <ul>
+                    <h3>{{ catalogItem.area.name }}</h3>
+                    <ul class="category-block">
                         {% for category in catalogItem.categories %}
                             <li>
                                 <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: category.slug})) }}">

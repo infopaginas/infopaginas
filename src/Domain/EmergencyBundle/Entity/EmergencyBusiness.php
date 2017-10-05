@@ -92,7 +92,6 @@ class EmergencyBusiness
      *     cascade={"persist"}
      *     )
      * @ORM\JoinTable(name="emergency_business_payment_methods")
-     * @Assert\Count(min="1")
      */
     protected $paymentMethods;
 
@@ -117,7 +116,6 @@ class EmergencyBusiness
      *     orphanRemoval=true
      * )
      * @Assert\Valid()
-     * @Assert\Count(min="1")
      */
     protected $collectionWorkingHours;
 
