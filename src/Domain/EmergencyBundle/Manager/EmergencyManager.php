@@ -8,9 +8,13 @@ use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyCatalogItem;
 use Domain\EmergencyBundle\Entity\EmergencyCategory;
 use Domain\EmergencyBundle\Entity\EmergencyDraftBusiness;
+use Domain\SearchBundle\Model\DataType\EmergencySearchDTO;
+use Domain\SearchBundle\Util\SearchDataUtil;
 use Domain\SiteBundle\Utils\Helpers\LocaleHelper;
+use Domain\SiteBundle\Utils\Helpers\SiteHelper;
 use Oxa\ConfigBundle\Model\ConfigInterface;
 use Oxa\ConfigBundle\Service\Config;
+use Oxa\Sonata\AdminBundle\Util\Helpers\AdminHelper;
 
 class EmergencyManager
 {
@@ -60,21 +64,6 @@ class EmergencyManager
     public function getCatalogWithContent()
     {
         return $this->em->getRepository(EmergencyCatalogItem::class)->getCatalogItemWithContent();
-    }
-
-    /**
-     * @param EmergencyArea     $area
-     * @param EmergencyCategory $category
-     * @param int               $page
-     *
-     * @return EmergencyBusiness[]
-     */
-    public function getBusinessByAreaAndCategory($area, $category, $page = 1)
-    {
-        $limit = $this->getSystemItemPerPage();
-
-        return $this->em->getRepository(EmergencyBusiness::class)
-            ->getBusinessByAreaAndCategory($area, $category, $limit, $page);
     }
 
     /**
@@ -131,5 +120,148 @@ class EmergencyManager
     public function getSystemItemPerPage()
     {
         return (int)$this->config->getSetting(ConfigInterface::DEFAULT_RESULTS_PAGE_SIZE)->getValue();
+    }
+
+    /**
+     * @return IterableResult
+     */
+    public function getUpdatedLocalitiesIterator()
+    {
+        $localities = $this->em->getRepository(EmergencyBusiness::class)->getActiveBusinessIterator();
+
+        return $localities;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function setUpdatedAllEmergencyBusinesses()
+    {
+        $data = $this->em->getRepository(EmergencyBusiness::class)->setUpdatedAllEmergencyBusinesses();
+
+        return $data;
+    }
+
+    /**
+     * @param EmergencyBusiness $business
+     *
+     * @return array
+     */
+    public function buildEmergencyBusinessElasticData($business)
+    {
+        $name = trim(AdminHelper::convertAccentedString($business->getName()));
+
+        $data = [
+            'id'          => $business->getId(),
+            'title'       => SearchDataUtil::sanitizeElasticSearchQueryString($name),
+            'area_id'     => $business->getArea()->getId(),
+            'category_id' => $business->getCategory()->getId(),
+        ];
+
+        if ($business->getUseMapAddress()) {
+            $data['location'] = [
+                'lat' => $business->getLatitude(),
+                'lon' => $business->getLongitude(),
+            ];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param bool $sourceEnabled
+     *
+     * @return array
+     */
+    public function getEmergencyBusinessElasticSearchMapping($sourceEnabled = true)
+    {
+        $properties = $this->getEmergencyBusinessElasticSearchIndexParams();
+
+        $data = [
+            EmergencyBusiness::ELASTIC_DOCUMENT_TYPE => [
+                '_source' => [
+                    'enabled' => $sourceEnabled,
+                ],
+                'properties' => $properties,
+            ],
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEmergencyBusinessElasticSearchIndexParams()
+    {
+        $params = [
+            'title' => [
+                'type'  => 'string',
+                'index' => 'not_analyzed'
+            ],
+            'area_id' => [
+                'type' => 'integer'
+            ],
+            'category_id' => [
+                'type' => 'integer'
+            ],
+            'location' => [
+                'type' => 'geo_point',
+            ],
+        ];
+
+        return $params;
+    }
+
+    /**
+     * @param array $response
+     *
+     * @return array
+     */
+    public function getEmergencyBusinessesFromElasticResponse($response)
+    {
+        $data  = [];
+        $total = 0;
+
+        if (!empty($response['hits']['total'])) {
+            $total = $response['hits']['total'];
+        }
+
+        if (!empty($response['hits']['hits'])) {
+            $result = $response['hits']['hits'];
+            $dataIds = [];
+
+            foreach ($result as $item) {
+                $dataIds[] = $item['_id'];
+            }
+
+            $data = $this->getAvailableBusinessesByIds($dataIds);
+        }
+
+        return [
+            'data' => $data,
+            'total' => $total,
+        ];
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return EmergencyBusiness[]
+     */
+    public function getAvailableBusinessesByIds($ids)
+    {
+        $businesses = $this->em->getRepository(EmergencyBusiness::class)->getAvailableBusinessesByIds($ids);
+        $data = [];
+
+        foreach ($ids as $id) {
+            $item = SiteHelper::searchEntityByIdsInArray($businesses, $id);
+
+            if ($item) {
+                $data[] = $item;
+            }
+        }
+
+        return $data;
     }
 }

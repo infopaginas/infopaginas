@@ -24,7 +24,20 @@ class EmergencyBusinessListener implements EventSubscriber
     {
         return [
             Events::onFlush,
+            Events::preUpdate,
         ];
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof EmergencyBusiness) {
+            $this->manageBusinessStatusPreUpdate($entity, $args->getEntityManager());
+        }
     }
 
     /**
@@ -130,6 +143,19 @@ class EmergencyBusinessListener implements EventSubscriber
                 $business->setWorkingHoursJson($workingHours);
                 $uow->recomputeSingleEntityChangeSet($metadata, $business);
             }
+        }
+    }
+
+    /**
+     * @param EmergencyBusiness $business
+     * @param EntityManager     $em
+     */
+    protected function manageBusinessStatusPreUpdate($business, $em)
+    {
+        $changeSet = $em->getUnitOfWork()->getEntityChangeSet($business);
+
+        if (!$business->getIsUpdated() and empty($changeSet['isUpdated'])) {
+            $business->setIsUpdated(true);
         }
     }
 }

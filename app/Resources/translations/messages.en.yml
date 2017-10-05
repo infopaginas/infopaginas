@@ -618,6 +618,8 @@ emergency.label.working_hours: Working Hours
 emergency.label.phone: Phone
 emergency.label.payment: Payment
 emergency.label.services: Services
+emergency.label.distance: Distance
+emergency.label.miles_away: miles
 emergency.pop_up.title: List of working businesses
 emergency.pop_up.description: Find businesses that offer services after the hurricane.
 emergency.pop_up.button: Click here
@@ -639,3 +641,6 @@ emergency.business_draft.category.title.others: Others
 emergency.business_draft.message.created: Information has been submitted
 emergency.business_draft.created: Success
 emergency.business_draft.invalid: Validation failed
+
+emergency.catalog_sorting.distance: Distance
+emergency.catalog_sorting.alphabet: Alphabet

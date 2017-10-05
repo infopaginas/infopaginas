@@ -618,6 +618,8 @@ emergency.label.working_hours: Working Hours
 emergency.label.phone: Telefono
 emergency.label.payment: Pagar con
 emergency.label.services: Servicios addicionales
+emergency.label.distance: Distancia
+emergency.label.miles_away: miles
 emergency.pop_up.title: Lista de negocios abiertos
 emergency.pop_up.description: Encuentra los negocios que están ofreciendo servicios luego del huracán
 emergency.pop_up.button: Click aquí
@@ -639,3 +641,6 @@ emergency.business_draft.category.title.others: Otros
 emergency.business_draft.message.created: Información ha sido enviada
 emergency.business_draft.created: Éxito
 emergency.business_draft.invalid: Validación fallida
+
+emergency.catalog_sorting.distance: Más cercanos
+emergency.catalog_sorting.alphabet: Alfabeto

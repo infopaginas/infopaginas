@@ -18,6 +18,16 @@ use Domain\BusinessBundle\Validator\Constraints\BusinessProfileWorkingHourType a
  */
 class EmergencyBusiness extends EmergencyAbstractBusiness
 {
+    const ELASTIC_DOCUMENT_TYPE = 'EmergencyBusiness';
+    const DISTANCE_TO_BUSINESS_PRECISION = 1;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_updated", type="boolean", options={"default" : 0})
+     */
+    protected $isUpdated;
+
     /**
      * @var EmergencyCategory|null $category
      * @ORM\ManyToOne(targetEntity="Domain\EmergencyBundle\Entity\EmergencyCategory",
@@ -75,6 +85,13 @@ class EmergencyBusiness extends EmergencyAbstractBusiness
     protected $collectionWorkingHours;
 
     /**
+     * @var float
+     *
+     * Distance to the user
+     */
+    protected $distance;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -82,5 +99,56 @@ class EmergencyBusiness extends EmergencyAbstractBusiness
         parent::__construct();
 
         $this->isActive       = true;
+        $this->isUpdated      = true;
+    }
+
+    /**
+     * @param boolean $isUpdated
+     *
+     * @return EmergencyBusiness
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
+    }
+
+    /**
+     * @param float|null $distance
+     *
+     * @return EmergencyBusiness
+     */
+    public function setDistance($distance)
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getDistance()
+    {
+        return $this->distance;
+    }
+
+    /**
+     * Get formatted distance
+     *
+     * @return string
+     */
+    public function getDistanceUX()
+    {
+        return number_format($this->getDistance(), self::DISTANCE_TO_BUSINESS_PRECISION, '.', '');
     }
 }
