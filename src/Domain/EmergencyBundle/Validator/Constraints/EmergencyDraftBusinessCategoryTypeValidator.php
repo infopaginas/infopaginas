@@ -14,22 +14,19 @@ class EmergencyDraftBusinessCategoryTypeValidator extends ConstraintValidator
      */
     public function validate($business, Constraint $constraint)
     {
-        $hasError = false;
-        $path     = '';
+        $errorPath = '';
 
         if ($business->getStatus() != EmergencyDraftBusiness::STATUS_APPROVED) {
             if (!$business->getCategory() and empty($business->getCustomCategory())) {
-                $hasError = true;
-                $path = EmergencyDraftBusiness::FIELD_CUSTOM_CATEGORY;
+                $errorPath = EmergencyDraftBusiness::FIELD_CUSTOM_CATEGORY;
             }
         } elseif (!$business->getCategory()) {
-            $hasError = true;
-            $path = EmergencyDraftBusiness::FIELD_CATEGORY;
+            $errorPath = EmergencyDraftBusiness::FIELD_CATEGORY;
         }
 
-        if ($hasError and $path) {
+        if ($errorPath) {
             $this->context->buildViolation($constraint->message)
-                ->atPath($path)
+                ->atPath($errorPath)
                 ->addViolation()
             ;
         }
