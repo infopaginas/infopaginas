@@ -6,3 +6,5 @@ emergency:
     status_all:      All
   business_map:
     help: This checkbox indicates that geolocation is correct and should be used to calculate business position
+  custom_working_hour:
+    help: Please add working hours using appropriate format otherwise these data won't be added to the business

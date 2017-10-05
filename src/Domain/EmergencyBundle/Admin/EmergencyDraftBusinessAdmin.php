@@ -110,7 +110,9 @@ class EmergencyDraftBusinessAdmin extends OxaAdmin
                 ->add('name')
             ->end()
             ->with('Working hours')
-                ->add('customWorkingHours')
+                ->add('customWorkingHours', null, [
+                    'help' => 'emergency.custom_working_hour.help',
+                ])
                 ->add(
                     'collectionWorkingHours',
                     'sonata_type_collection',

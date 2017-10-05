@@ -12,7 +12,7 @@
 
     <div class="container clearfix" id="success-block" {% if flashMessages is empty %}style="display: none;"{% endif %}>
         <section class="page-section">
-            <div class="form__section">
+            <div class="form__section flash-success-message">
                 <strong>
                     {% for flashMessage in flashMessages %}
                         {{ flashMessage }}
