@@ -1,0 +1,20 @@
+emergency_main_redirect:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: emergency_main
+        permanent: true
+
+emergency_business_draft_create_redirect:
+    path:     /business/create
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: emergency_business_draft_create
+        permanent: true
+
+emergency_catalog_redirect:
+    path:     /area/{areaSlug}/category/{categorySlug}
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: emergency_catalog
+        permanent: true
