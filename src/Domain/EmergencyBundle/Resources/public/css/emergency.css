@@ -40,7 +40,7 @@ footer p.disclaimer {
   border-bottom: grey 1px solid;
   padding: 10px;
 }
-.emergency-catalog .area-block {
+.emergency-catalog .area-block, .container-block {
   list-style-type: none;
 }
 .emergency-catalog .category-block li {
