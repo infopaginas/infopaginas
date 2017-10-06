@@ -13,6 +13,7 @@ use Domain\BusinessBundle\Entity\LandingPageShortCut;
 use Domain\BusinessBundle\Entity\Locality;
 use Domain\BusinessBundle\Entity\PaymentMethod;
 use Domain\BusinessBundle\Entity\SubscriptionPlan;
+use Domain\EmergencyBundle\Entity\EmergencyAbstractBusiness;
 use Domain\ReportBundle\Model\UserActionModel;
 use Oxa\Sonata\AdminBundle\Model\CopyableEntityInterface;
 use Oxa\Sonata\AdminBundle\Model\DefaultEntityInterface;
@@ -158,6 +159,11 @@ class AdminManager extends DefaultManager
 
                 //allow delete article
                 if ($entity instanceof Article) {
+                    continue;
+                }
+
+                //allow delete emergency businesses and drafts
+                if ($entity instanceof EmergencyAbstractBusiness) {
                     continue;
                 }
 
