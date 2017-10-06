@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
+use Domain\BusinessBundle\Manager\BusinessProfileManager;
 use Domain\BusinessBundle\Model\DayOfWeekModel;
 use Domain\EmergencyBundle\Entity\EmergencyBusiness;
 use Domain\EmergencyBundle\Entity\EmergencyBusinessWorkingHour;
@@ -18,6 +19,17 @@ class EmergencyBusinessListener implements EventSubscriber
     /** @var $businessUpdated array */
     private $businessUpdated = [];
 
+    /** @var BusinessProfileManager $businessProfileManager */
+    private $businessProfileManager;
+
+    /**
+     * @param BusinessProfileManager $businessProfileManager
+     */
+    public function setBusinessProfileManager($businessProfileManager)
+    {
+        $this->businessProfileManager = $businessProfileManager;
+    }
+
     /**
      * @return array
      */
@@ -27,6 +39,7 @@ class EmergencyBusinessListener implements EventSubscriber
             Events::onFlush,
             Events::preUpdate,
             Events::prePersist,
+            Events::preRemove,
         ];
     }
 
@@ -52,6 +65,18 @@ class EmergencyBusinessListener implements EventSubscriber
         if ($entity instanceof EmergencyBusiness) {
             $this->manageBusinessStatusPreUpdate($entity, $args->getEntityManager());
             $this->manageBusinessFirstSymbol($entity);
+        }
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function preRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof EmergencyBusiness) {
+            $this->businessProfileManager->removeEmergencyBusinessFromElastic($entity->getId());
         }
     }
 
