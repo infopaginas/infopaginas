@@ -421,9 +421,11 @@ class BusinessGalleryManager
     protected function checkUploadedFileType($file)
     {
         if (in_array($file->getMimeType(), SiteHelper::$imageContentTypes)) {
-            return true;
+            $status = true;
+        } else {
+            $status = false;
         }
 
-        return false;
+        return $status;
     }
 }
