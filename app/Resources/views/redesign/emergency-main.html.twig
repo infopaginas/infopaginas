@@ -1,61 +1,94 @@
-{% extends ":redesign/layout:emergency.html.twig" %}
+{% extends "redesign/layout/base.html.twig" %}
 
-{% block bodyClass %}emergency-main{% endblock %}
+{% block videoJs %}{% endblock %}
+
+{% block doubleClickHeader %}{% endblock %}
+
+{% block bannerSettings %}{% endblock %}
+
+{% block trackingParams %}{% endblock %}
+
+{% block modals %}{% endblock %}
+
+{% block emergencyPopUp %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block styles %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ absolute_url(asset('assetic/app_emergency_css.css')) }}" />
+{% endblock %}
+
+{% block searchHeader %}
+    {% include ':redesign/blocks/emergency:search-header.html.twig' %}
+{% endblock %}
+
+{% block bodyClass %}generic-page has-sidebar{% endblock %}
 
 {% block body %}
-    <div class="emergency-title">
-        <h1>{{ page.title }}</h1>
-    </div>
-
-    {% if page.description %}
-        <div class="description">
-            <p>{{ page.description }}</p>
-        </div>
-    {% endif %}
-
-    <div class="add-item">
-        {% if page.useActionLink and page.actionLink %}
-            {% set actionLink = page.actionLink %}
-        {% else %}
-            {% set actionLink = absolute_url(path('emergency_business_draft_create')) %}
-        {% endif %}
-
-        <a href="{{ actionLink }}">
-            <button class="button">{{ 'emergency.add_item.title'|trans }}</button>
-        </a>
-    </div>
-
-    <div class="emergency-catalog">
-        <ul class="area-block">
-            {% for catalogItem in catalogItems %}
-                <li>
-                    <h3>{{ catalogItem.area.name }}</h3>
-                    <ul class="category-block">
-                        {% for item in catalogItem.categories %}
-                            <li>
-                                <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: item.category.slug})) }}">{{ item.category.name }}</a>
-                                {% if item.updatedAt %}
-                                    <span class="catalog-item-updated">&nbsp;{{ item.updatedAt|date(emergency_catalog_update_date_format) }}</span>
+    <div class="main__container main__container--centered">
+        <div class="container clearfix">
+            <div class="main main-column">
+                <article class="article emergency-catalog-block">
+                    <section class="emergency-catalog-header page-section">
+                        <h1><strong>{{ page.title }}</strong></h1>
+                        <div class="create-emergency-business">
+                            <div class="tagcloud">
+                                {% if page.useActionLink and page.actionLink %}
+                                    {% set actionLink = page.actionLink %}
+                                {% else %}
+                                    {% set actionLink = absolute_url(path('emergency_business_draft_create')) %}
                                 {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
 
-    <div class="emergency-links">
-        <h2>{{ 'emergency.page_link.title'|trans }}</h2>
+                                <a href="{{ actionLink }}" class="button button--text" rel="nofollow">{{ 'emergency.add_item.title'|trans }}</a>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="page-section highlights-section">
+                        <div class="highlights">
+                            {% for catalogItem in catalogItems %}
+                                <div class="highlights__item">
+                                    <h3>{{ catalogItem.area.name }}</h3>
+                                    <ul>
+                                        {% for item in catalogItem.categories %}
+                                            <li>
+                                                <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: item.category.slug})) }}">{{ item.category.name }}</a>
+                                                {% if item.updatedAt %}
+                                                    <span class="catalog-item-updated">&nbsp;{{ item.updatedAt|date(emergency_catalog_update_date_format) }}</span>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </section>
 
-        {% if not page.links.empty %}
-            <ul>
-                {% for link in page.links %}
-                    <li>
-                        <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+                    <section class="emergency-catalog-header page-section">
+                        <h2><strong>{{ 'emergency.page_link.title'|trans }}</strong></h2>
+                    </section>
+                    <section class="page-section highlights-section">
+                        <div class="highlights">
+                            <div class="highlights__item">
+                                {% if not page.links.empty %}
+                                    <ul>
+                                        {% for link in page.links %}
+                                            <li>
+                                                <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                    <section class="footer">
+                        <p class="disclaimer">* {{ 'emergency.footer.disclaimer'|trans }}</p>
+                    </section>
+                </article>
+            </div>
+        </div>
     </div>
 {% endblock %}
+
+{% block scripts %}{% endblock%}
