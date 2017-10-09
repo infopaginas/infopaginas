@@ -49,12 +49,16 @@
         <h2>{{ 'emergency.page_link.title'|trans }}</h2>
 
         {% if not page.links.empty %}
-            <ul>
-                {% for link in page.links %}
-                    <li>
-                        <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
-                    </li>
-                {% endfor %}
+            <ul class="container-block">
+                <li>
+                    <ul>
+                        {% for link in page.links %}
+                            <li>
+                                <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
             </ul>
         {% endif %}
     </div>
