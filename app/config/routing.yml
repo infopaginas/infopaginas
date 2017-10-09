@@ -1,6 +1,6 @@
 domain_emergency:
     resource: "@DomainEmergencyBundle/Resources/config/routing.yml"
-    prefix:   /emergency
+    prefix:   /
 
 jmaitan_media:
     resource: "@JMaitanSonataMediaCropBundle/Resources/config/routing.xml"
