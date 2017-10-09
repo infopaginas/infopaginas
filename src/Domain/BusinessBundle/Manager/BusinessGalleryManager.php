@@ -51,7 +51,7 @@ class BusinessGalleryManager
 
         /** @var UploadedFile $file */
         foreach ($fileBag->get('files') as $file) {
-            if ($this->checkUploadedFileSize($file->getSize(), $context)) {
+            if ($this->checkUploadedFileSize($file->getSize(), $context) and $this->checkUploadedFileType($file)) {
                 $media = $this->createNewMediaEntryFromUploadedFile(
                     $file,
                     $context
@@ -407,6 +407,20 @@ class BusinessGalleryManager
     protected function checkUploadedFileSize($size, $context)
     {
         if (Media::getMediaMaxSizeByContext($context) >= $size) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param UploadedFile $file
+     *
+     * @return bool
+     */
+    protected function checkUploadedFileType($file)
+    {
+        if (in_array($file->getMimeType(), SiteHelper::$imageContentTypes)) {
             return true;
         }
 
