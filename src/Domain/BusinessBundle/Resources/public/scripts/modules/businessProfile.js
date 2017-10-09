@@ -62,6 +62,10 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             neighborhood: null
         };
 
+        this.ajaxLocked = {
+            neighborhood: false
+        };
+
         this.newProfileRequestFormHandler = new FormHandler({
             formId: this.html.forms.newProfileRequestFormId,
             spinnerId: this.html.newProfileRequestSpinnerContainerId
@@ -523,7 +527,6 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
         var businessProfileId = $( self.html.forms.newProfileRequestFormId ).data( 'id' );
 
         updatedLocalities();
-        updatedNeighborhoods();
 
         addAreasEvents();
 
@@ -533,7 +536,9 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             });
 
             $( self.html.fields.localitiesFieldId ).on( 'change', function() {
-                updatedNeighborhoods();
+                if ( !self.ajaxLocked.neighborhood ) {
+                    updatedNeighborhoods();
+                }
             });
 
             $( 'body' ).on( 'click', 'a.select-all-button', function( e ) {
@@ -558,6 +563,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
             };
 
             if ( localitiesField.length ) {
+                self.ajaxLocked.neighborhood = true;
+
                 var selectBlock = localitiesField.selectize( self.selectizeOptions );
                 var selectize = selectBlock[0].selectize;
 
@@ -570,6 +577,8 @@ define(['jquery', 'bootstrap', 'business/tools/form', 'tools/spin', 'tools/selec
 
                 self.ajax.locality = $.post( Routing.generate('domain_business_get_localities', {businessProfileId: businessProfileId}), data, function( response ) {
                     updateSelectizeFieldValues( localitiesField, response.data, selectize );
+                    self.ajaxLocked.neighborhood = false;
+                    updatedNeighborhoods();
                 });
             }
         }
