@@ -195,8 +195,6 @@ $( document ).ready( function() {
         updatedLocalitiesBlock( this );
     });
 
-    updatedNeighborhoods();
-
     localitiesField.on( 'change', function() {
         updatedNeighborhoods();
     });
