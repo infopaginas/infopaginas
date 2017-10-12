@@ -10,5 +10,27 @@ namespace Domain\PageBundle\Repository;
  */
 class PageRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * workaround for unstable EntityManagerInterface#flush() inside of event lintener
+     *
+     * @param \Datetime $date
+     * @param int       $code
+     *
+     * @return mixed
+     */
+    public function setPageContentUpdated($date, $code)
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update('DomainPageBundle:Page', 'p')
+            ->where('p.code = :code')
+            ->set('p.contentUpdatedAt', ':date')
+            ->setParameter('code', $code)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->execute()
+        ;
 
+        return $result;
+    }
 }
