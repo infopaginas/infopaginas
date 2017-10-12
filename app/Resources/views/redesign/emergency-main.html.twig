@@ -5,6 +5,9 @@
 {% block body %}
     <div class="emergency-title">
         <h1>{{ page.title }}</h1>
+        {% if page.contentUpdatedAt %}
+            <h3>{{ 'emergency.updated.title'|trans }}: {{ page.contentUpdatedAt|date(emergency_update_date_format) }}</h3>
+        {% endif %}
     </div>
 
     {% if page.description %}
@@ -34,9 +37,6 @@
                         {% for item in catalogItem.categories %}
                             <li>
                                 <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: item.category.slug})) }}">{{ item.category.name }}</a>
-                                {% if item.updatedAt %}
-                                    <span class="catalog-item-updated">&nbsp;{{ item.updatedAt|date(emergency_catalog_update_date_format) }}</span>
-                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
