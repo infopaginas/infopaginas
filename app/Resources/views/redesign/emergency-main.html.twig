@@ -32,6 +32,9 @@
                 <article class="article emergency-catalog-block">
                     <section class="emergency-catalog-header page-section">
                         <h1><strong>{{ page.title }}</strong></h1>
+                        {% if page.contentUpdatedAt %}
+                            <h3>{{ 'emergency.updated.title'|trans }}: {{ page.contentUpdatedAt|date(emergency_update_date_format) }}</h3>
+                        {% endif %}
                         <div class="create-emergency-business">
                             <div class="tagcloud">
                                 {% if page.useActionLink and page.actionLink %}
@@ -53,9 +56,6 @@
                                         {% for item in catalogItem.categories %}
                                             <li>
                                                 <a href="{{ absolute_url(path('emergency_catalog', {areaSlug: catalogItem.area.slug, categorySlug: item.category.slug})) }}">{{ item.category.name }}</a>
-                                                {% if item.updatedAt %}
-                                                    <span class="catalog-item-updated">&nbsp;{{ item.updatedAt|date(emergency_catalog_update_date_format) }}</span>
-                                                {% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>

@@ -66,18 +66,4 @@ class EmergencyCategoryAdmin extends OxaAdmin
             ->add('slug')
         ;
     }
-
-    /**
-     * @param string            $action
-     * @param EmergencyCategory $category
-     * @return bool
-     */
-    public function isGranted($action, $category = null)
-    {
-        if (in_array($action, $this->getDeleteDeniedAction())) {
-            return false;
-        }
-
-        return parent::isGranted($action, $category);
-    }
 }
