@@ -1,0 +1,18 @@
+{% if pageLinks[type] is defined %}
+    <section class="emergency-catalog-header page-section">
+        <h2><strong>{{ title|trans }}</strong></h2>
+    </section>
+    <section class="page-section highlights-section">
+        <div class="highlights">
+            <div class="highlights__item">
+                <ul>
+                    {% for link in pageLinks[type] %}
+                        <li>
+                            <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endif %}

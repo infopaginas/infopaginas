@@ -147,3 +147,7 @@ article a.button:visited:hover {
 article.emergency-catalog-block .highlights ul li {
   line-height: 23px;
 }
+article.emergency-catalog-block section.catalog-bordered-block {
+  border-bottom: #192f4d 1px solid;
+  border-top: #192f4d 1px solid;
+}

@@ -47,7 +47,11 @@
                             </div>
                         </div>
                     </section>
-                    <section class="page-section highlights-section">
+
+                    {% include ':redesign/blocks/emergency:page-links.html.twig' with {type: PAGE_LINK.TYPE.OFFER, title: 'emergency.page_link.offer_title'} %}
+
+                    <section class="page-section highlights-section catalog-bordered-block emergency-catalog-header">
+                        <h2><strong>{{ 'Catalog'|trans }}</strong></h2>
                         <div class="highlights">
                             {% for catalogItem in catalogItems %}
                                 <div class="highlights__item">
@@ -64,24 +68,8 @@
                         </div>
                     </section>
 
-                    <section class="emergency-catalog-header page-section">
-                        <h2><strong>{{ 'emergency.page_link.title'|trans }}</strong></h2>
-                    </section>
-                    <section class="page-section highlights-section">
-                        <div class="highlights">
-                            <div class="highlights__item">
-                                {% if not page.links.empty %}
-                                    <ul>
-                                        {% for link in page.links %}
-                                            <li>
-                                                <a href="{{ link.link }}" target="_blank">{{ link.name }}</a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </section>
+                    {% include ':redesign/blocks/emergency:page-links.html.twig' with {type: PAGE_LINK.TYPE.LINK, title: 'emergency.page_link.link_title'} %}
+
                     <section class="footer">
                         <p class="disclaimer">* {{ 'emergency.footer.disclaimer'|trans }}</p>
                     </section>

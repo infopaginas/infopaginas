@@ -666,4 +666,18 @@ class Page implements DefaultEntityInterface, TranslatableInterface, PageInterfa
             ;
         }
     }
+
+    /**
+     * @return PageLink[]
+     */
+    public function getLinksGroupedByTypes()
+    {
+        $links = [];
+
+        foreach ($this->getLinks() as $link) {
+            $links[$link->getType()][] = $link;
+        }
+
+        return $links;
+    }
 }
