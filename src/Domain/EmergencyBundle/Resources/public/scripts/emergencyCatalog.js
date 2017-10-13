@@ -139,9 +139,11 @@ $( document ).ready( function() {
 
     function disableButton( button ) {
         $( button ).attr( 'disabled', 'disabled' );
+        $( button ).removeClass( 'button--action' );
     }
 
     function enableButton( button ) {
         $( button ).removeAttr( 'disabled' );
+        $( button ).addClass( 'button--action' );
     }
 });

@@ -1,27 +1,10 @@
-.header .logo a {
-  display: flex;
-  height: 50px;
-}
-footer p.disclaimer {
+section.footer p.disclaimer {
   font-style: italic;
   font-size: small;
 }
-.logo {
-  width: 100%;
-}
-.emergency-title h1, h2 {
+.page-section .show-more {
   text-align: center;
-}
-.emergency-back-button a:before {
-  content: "\2190";
-}
-.button {
-  text-decoration: none;
-  padding: 10px 0;
-  line-height: 1.25;
-  width: 100%;
-  text-align: center;
-  cursor: pointer;
+  margin: 20px;
 }
 .show-more img.spinner {
   display: block;
@@ -40,7 +23,7 @@ footer p.disclaimer {
   border-bottom: grey 1px solid;
   padding: 10px;
 }
-.emergency-catalog .area-block, .container-block {
+.emergency-catalog .area-block {
   list-style-type: none;
 }
 .emergency-catalog .category-block li {
@@ -52,12 +35,12 @@ footer p.disclaimer {
   font-size: 16px;
 }
 .business-data .label {
-  width: 25%;
+  width: 35%;
   display: inline-flex;
   font-weight: 700;
 }
 .business-data .data {
-  width: 65%;
+  width: 60%;
   display: inline-flex;
   margin-left: 3px;
 }
@@ -82,7 +65,9 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
 }
-.business-block {
+.main article .business-block {
+  border-bottom: #aaa 1px solid;
+  padding: 10px;
   line-height: 21px;
 }
 .business-data {
@@ -102,13 +87,15 @@ body {
 .working-hours.data .working-hours-list .hide-children > div.day:not([data-day]) {
   display: none;
 }
-span.catalog-item-updated {
+.article span.catalog-item-updated {
   font-family: Roboto, sans-serif;
   font-style: italic;
   font-size: 14px;
+  margin-left: 10px;
 }
 .search-controls .sorting-block {
-  max-width: 40%;
+  margin-left: 10px;
+  max-width: 35%;
   display: inline-flex;
 }
 .search-controls span.letter.checked {
@@ -128,4 +115,35 @@ span.catalog-item-updated {
 .search-controls .filter-block {
   max-width: 60%;
   display: inline-flex;
+}
+.article.emergency-catalog-block {
+  padding-top: 0;
+}
+.article .emergency-catalog-header h2 {
+  color: #1e4b82;
+  font-size: 18px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-align: left;
+}
+.article.emergency-catalog-block li a {
+  color: -webkit-link;
+  text-decoration: underline;
+}
+article.emergency-catalog-block .highlights .highlights__item {
+  flex: none;
+  width: 100%;
+}
+article a.button:visited:hover {
+  color: #fff;
+}
+.emergency-catalog-header h1 {
+  margin-bottom: 10px;
+}
+.emergency-catalog-header h2 {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+article.emergency-catalog-block .highlights ul li {
+  line-height: 23px;
 }
